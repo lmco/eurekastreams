@@ -47,13 +47,17 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Like count widget.
  */
 public class ResourceCountWidget extends Composite
 {
+    /**
+     * How far down the popout arrow needs to be from the top of the bubble given the button it points to.
+     */
+    private static final int POPOUT_ARROW_TOP_OFFSET = -6;
+
     /**
      * Main widget.
      */
@@ -68,6 +72,11 @@ public class ResourceCountWidget extends Composite
      * Shows users who have liked this.
      */
     private static FlowPanel usersWhoLikedPanelWrapper;
+
+    /**
+     * Arrow pointing from the bubble to the button.
+     */
+    private static Label popoutArrow = new Label();
 
     /**
      * Added to root panel.
@@ -85,11 +94,6 @@ public class ResourceCountWidget extends Composite
     final Anchor likeCountLink = new Anchor();
 
     /**
-     * Liked label.
-     */
-    private static Label likedLabel = new Label();
-
-    /**
      * Avatar panel.
      */
     private static FlowPanel avatarPanel = new FlowPanel();
@@ -103,11 +107,6 @@ public class ResourceCountWidget extends Composite
      * Liker overflow.
      */
     private PersonModelView likerOverflow;
-
-    /**
-     * Resource ID.
-     */
-    private final String thisResourceUrl;
 
     /**
      * Liked status.
@@ -129,16 +128,6 @@ public class ResourceCountWidget extends Composite
     private static Anchor viewAll = new Anchor("view all");
 
     /**
-     * Current resource being shown.
-     */
-    private static String currentResourceUrl = "";
-
-    /**
-     * Current activity like status..
-     */
-    private static Boolean isLiked;
-
-    /**
      * The body.
      */
     private static FlowPanel userLikedBody = new FlowPanel();
@@ -151,11 +140,6 @@ public class ResourceCountWidget extends Composite
      * If the user has mouse over.
      */
     private static int hasMousedOver = 0;
-
-    /**
-     * The contianer.
-     */
-    private Widget containerWidget = null;
 
     /**
      * Resouce url.
@@ -241,12 +225,13 @@ public class ResourceCountWidget extends Composite
             }
         };
 
-        final Label arrow = new Label();
-        arrow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectPopoutArrow());
+        popoutArrow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectPopoutArrow());
 
-        usersWhoLikedPanelWrapper.add(arrow);
+        usersWhoLikedPanelWrapper.add(popoutArrow);
 
-        viewAll.setVisible(false);
+        viewAll.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectShowAllUsersWhoLikedActivity());
+        viewAll.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
+        // viewAll.setVisible(false);
         viewAll.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
@@ -281,7 +266,6 @@ public class ResourceCountWidget extends Composite
         userLikedFooter.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivityFooter());
         usersWhoLikedPanel.add(userLikedFooter);
 
-        userLikedBody.add(likedLabel);
         userLikedBody.add(avatarPanel);
         userLikedBody.add(viewAll);
         usersWhoLikedPanelWrapper.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER | Event.ONCLICK);
@@ -291,7 +275,7 @@ public class ResourceCountWidget extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCountType
      *            the count type.
      * @param inResoureceUrl
@@ -313,7 +297,6 @@ public class ResourceCountWidget extends Composite
             final String desc, final String[] thumbs, final Integer inLikeCount, final List<PersonModelView> inLikers,
             final Boolean inIsLiked)
     {
-        thisResourceUrl = inResoureceUrl;
         thisIsLiked = inIsLiked;
         countType = inCountType;
         resourceUrl = inResoureceUrl;
@@ -349,9 +332,8 @@ public class ResourceCountWidget extends Composite
             public void onClick(final ClickEvent event)
             {
                 String actorType = CountType.LIKES.equals(inCountType) ? "likes" : "shares";
-                Window.open(
-                        "/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl=" + inResoureceUrl,
-                        null, "height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
+                Window.open("/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl="
+                        + inResoureceUrl, null, "height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
 
             }
         });
@@ -380,9 +362,10 @@ public class ResourceCountWidget extends Composite
                 {
                     if (event.getResponse())
                     {
+                        likeContainer.removeStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                .eurekaConnectLikeButton());
                         likeContainer
-                                .removeStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLikeButton());
-                        likeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectUnlikeButton());
+                                .addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectUnlikeButton());
                         updatePanel(LikeActionType.ADD_LIKE);
                         currentPanel.showPanel();
                         usersWhoLikedPanelWrapper.setVisible(true);
@@ -418,7 +401,6 @@ public class ResourceCountWidget extends Composite
             likeContainer.add(likeLink);
             likeContainer.add(likeCountLink);
             likeCountPanel.add(likeContainer);
-            containerWidget = likeContainer;
         }
         else
         {
@@ -450,7 +432,6 @@ public class ResourceCountWidget extends Composite
             shareContainer.add(shareLink);
             shareContainer.add(likeCountLink);
             likeCountPanel.add(shareContainer);
-            containerWidget = shareContainer;
         }
 
         widget.add(likeCountPanel);
@@ -466,13 +447,13 @@ public class ResourceCountWidget extends Composite
         hasMousedOver++;
         final int hasMouseOverVal = hasMousedOver;
         currentPanel = this;
-        isLiked = thisIsLiked;
-        currentResourceUrl = thisResourceUrl;
-        viewAll.setVisible(false);
+        viewAll.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
+        // viewAll.setVisible(false);
         avatarPanel.clear();
-        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 9 + 1 + "px");
-        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", widget.getAbsoluteLeft()
-                + containerWidget.getElement().getClientWidth() + "px");
+
+        int widgetTop = widget.getAbsoluteTop();
+        int newTopMargin = widgetTop + POPOUT_ARROW_TOP_OFFSET;
+        DOM.setStyleAttribute(popoutArrow.getElement(), "marginTop", newTopMargin + "px");
 
         for (PersonModelView liker : likers)
         {
@@ -482,17 +463,10 @@ public class ResourceCountWidget extends Composite
 
         if (likeCount > MAXLIKERSSHOWN)
         {
-            viewAll.setVisible(true);
+            viewAll.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
+            // viewAll.setVisible(true);
         }
 
-        if (countType.equals(CountType.LIKES))
-        {
-            likedLabel.setText(likeCount + " people liked this");
-        }
-        else
-        {
-            likedLabel.setText(likeCount + " people shared this");
-        }
         innerLikeCountLink.setText(likeCount.toString());
 
         timerFactory.runTimer(INITIAL_TIMER_EXPIRATION, new TimerHandler()
@@ -510,7 +484,7 @@ public class ResourceCountWidget extends Composite
 
     /**
      * Update the panel.
-     * 
+     *
      * @param likeActionType
      *            the action that's being taken.
      */

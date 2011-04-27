@@ -199,7 +199,7 @@ public class CommentWidget extends Composite
          */
         public CommentWidgetPostToStreamComposite(final StreamScope inScope)
         {
-            super(inScope);
+            super(inScope, "Leave a Comment");
 
             accountLocked = Session.getInstance().getCurrentPerson().isAccountLocked();
             if (!accountLocked)

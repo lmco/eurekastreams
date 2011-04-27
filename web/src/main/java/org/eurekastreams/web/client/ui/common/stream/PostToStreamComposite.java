@@ -60,6 +60,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class PostToStreamComposite extends FlowPanel
 {
+    /** Default text to show when post box is empty. */
+    private static final String DEFAULT_POST_BOX_DEFAULT_TEXT = "Something to share?";
+
+    /** Text to show when post box is empty. */
+    private final String postBoxDefaultText;
+
     /** Maximum length of a message. */
     private static final int MAX_MESSAGE_LENGTH = 250;
 
@@ -116,6 +122,20 @@ public class PostToStreamComposite extends FlowPanel
      */
     public PostToStreamComposite(final StreamScope inScope)
     {
+        this(inScope, DEFAULT_POST_BOX_DEFAULT_TEXT);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param inScope
+     *            the scope.
+     * @param inPostBoxDefaultText
+     *            Text to show when box is empty.
+     */
+    public PostToStreamComposite(final StreamScope inScope, final String inPostBoxDefaultText)
+    {
+        postBoxDefaultText = inPostBoxDefaultText;
         setupWidgets(inScope);
         setupEvents();
 
@@ -137,7 +157,7 @@ public class PostToStreamComposite extends FlowPanel
         charsRemaining = new Label();
         postButton = new Label("Post");
         message = new PostToStreamTextboxPanel();
-        message.setText("Something to share?");
+        message.setText(postBoxDefaultText);
         message.setVisible(false); // Hide until post ready event.
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToStream());
@@ -247,7 +267,7 @@ public class PostToStreamComposite extends FlowPanel
             public void update(final MessageStreamAppendEvent event)
             {
                 addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
-                message.setText("Something to share?");
+                message.setText(postBoxDefaultText);
             }
         });
 
@@ -333,14 +353,26 @@ public class PostToStreamComposite extends FlowPanel
     /**
      * Sets up the magic show/hide for the publisher.
      */
-    public static native void setUpMinimizer()
+    public void setUpMinimizer()
+    {
+        nativeSetUpMinimizer(postBoxDefaultText);
+    }
+
+    /**
+     * Sets up the magic show/hide for the publisher.
+     *
+     * @param inDefaultMessage
+     *            Message to display when box is empty.
+     */
+    private static native void nativeSetUpMinimizer(final String inDefaultMessage)
     /*-{
+           $wnd.defaultMessage = inDefaultMessage;
            $wnd.overPoster = false;
            $doc.onmousedown = function() {
                if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
                {
                    setTimeout(function() { $wnd.jQuery('#post-to-stream').addClass('small'); },500);
-                   setTimeout(function() { $wnd.jQuery('#post-to-stream textarea').val('Something to share?'); },500);
+                   setTimeout(function() { $wnd.jQuery('#post-to-stream textarea').val($wnd.defaultMessage); },500);
                }
                else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
                {
@@ -482,7 +514,8 @@ public class PostToStreamComposite extends FlowPanel
             recipientType = EntityType.GROUP;
         }
 
-        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator() : new NotePopulator();
+        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                : new NotePopulator();
         ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType, scope.getUniqueKey(),
                 new PostPopulator(), objectStrat);
         PostActivityRequest postRequest = new PostActivityRequest(activity);

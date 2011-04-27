@@ -1658,6 +1658,7 @@ body .post-expanded-panel .content-warning {
 	overflow: hidden;
 	margin-top: 2px;
 	height: 20px;
+	z-index: 11 !important;
 }
 
 @sprite .stream-titlebar .add-as-gadget:hover div:first-child {
@@ -2260,6 +2261,12 @@ body .post-to-stream .over-character-limit {
 	padding-right: 3px;
 }
 
+.eureka-connect-liked-activity-wrapper .users-who-liked-activity .gwt-Label {
+	position: static;
+	margin-top: -7px;
+	padding-bottom: 2px;
+}
+
 .users-who-liked-activity .users-who-liked-activity-body>div {
 	zoom: 1;
 }
@@ -2292,6 +2299,8 @@ body .post-to-stream .over-character-limit {
 .eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-body
  {
 	background-image: url(style/images/like-modal-narrow-bg.png);
+	overflow: auto;
+	padding-bottom: 0px;
 }
 .eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-footer
  {
@@ -7845,10 +7854,13 @@ html,body {
 
 .eureka-connect-like-share-container {
 	padding: 5px;
+	padding-left: 0px;
 }
 
 body div.eureka-connect-liked-activity-wrapper {
 	margin-left: 5px;
+	left: 103px;
+	top: 12px;
 }
 
 .eureka-connect-share-widget-container {
@@ -7872,17 +7884,25 @@ body div.eureka-connect-liked-activity-wrapper {
 	background-repeat: no-repeat;
 	display: inline-block;
 	padding-right: 5px;
-	margin-top: 10px;
+	margin-top: 5px;
 	cursor: pointer;
 }
 
-.eureka-connect-share-button a.eureka-connect-count, .eureka-connect-like-button a.eureka-connect-count, 
-	.eureka-connect-unlike-button a.eureka-connect-count {
+.eureka-connect-share-button a.eureka-connect-count, 
+.eureka-connect-like-button a.eureka-connect-count, 
+.eureka-connect-unlike-button a.eureka-connect-count
+{
 	background-image: url(style/images/like_right_gradient.png);
 	padding: 3px 5px 0;
 	display: block;
 	height: 24px;
 	float: left;
+}
+
+.eureka-connect-share-button a.eureka-connect-count:hover, 
+.eureka-connect-like-button a.eureka-connect-count:hover, 
+.eureka-connect-unlike-button a.eureka-connect-count:hover {
+	color: #333333;
 }
 
 .eureka-connect-share-button a:first-child {
@@ -7916,7 +7936,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	width: 20px;
 	height: 20px;
 	margin-left: -30px;
-	margin-top: 5px;
+	margin-top: 1px;
 }
 
 .eureka-connect-liked-activity { }
@@ -7967,6 +7987,15 @@ body div.eureka-connect-liked-activity-wrapper {
 	margin-bottom: 10px;
 }
 
+.eureka-connect-show-all-users-who-liked-activity {
+	float: right;
+	font-weight: normal;
+}
+
+.eureka-connect-show-all-users-who-liked-activity.hide {
+	visibility: hidden;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 IE SPECIFIC CSS.
@@ -7979,7 +8008,8 @@ IE SPECIFIC CSS.
 	}
 	
 	.eureka-connect-liked-activity {
-		margin-top: -30px;
+		position: relative;
+		left: -25px;
 	}
 
 	.pending-group-membership-item >div {
@@ -9197,6 +9227,12 @@ IE SPECIFIC CSS.
 	.stream-view-dialog-body .form-element:first-child .form-instructions {
 		display: none;
 	}
+	
+	.eureka-connect-popout-arrow {
+		position: relative;
+		z-index: 200;
+	}
+	
 	
 	/* Unrelated items which all need the IE equivalent of inline-block */
 	.content-warning > div:first-child,

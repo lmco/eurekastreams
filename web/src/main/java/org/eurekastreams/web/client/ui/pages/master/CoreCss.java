@@ -2288,4 +2288,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-users-who-liked-activity")
     String eurekaConnectUsersWhoLikedActivity();
+
+    @ClassName("eureka-connect-show-all-users-who-liked-activity")
+    String eurekaConnectShowAllUsersWhoLikedActivity();
 }
