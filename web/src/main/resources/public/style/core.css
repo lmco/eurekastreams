@@ -31,6 +31,11 @@
 @external .notif-entry*;
 @external .maximized;
 @external .eureka-connect-*;
+@external .delegation-*;
+@external .delegation-item .avatar;
+@external .delegation-item .avatar-image;
+@external .delegation-item .avatar-image-Small;
+@external .connection-item-info;
 
 * {	
 	outline: none;
