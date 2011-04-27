@@ -8954,7 +8954,7 @@ IE SPECIFIC CSS.
 	}
 	
 	.auto-complete.form-element .yui-ac-content {
-		margin-top: 55px ! important;
+		margin-top: -25px ! important;
 	}
 	
 	.modal-content-panel .form-container>div>.scope-form-element>.yui-ac>.yui-ac-container>.yui-ac-content
