@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -30,7 +31,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * Thumbnail selector.
  */
-public class ThumbnailSelectorComposite extends FlowPanel
+public class ThumbnailSelectorComposite extends Composite
 {
     /**
      * The selected thumbnail.
@@ -58,12 +59,7 @@ public class ThumbnailSelectorComposite extends FlowPanel
     private final Label caption = new Label("Select Image: ");
 
     /**
-     * Selected thumbnail container.
-     */
-    private final FlowPanel selectedThumbContainer = new FlowPanel();
-
-    /**
-     * Selected thumbnail container.
+     * Paging controls panel.
      */
     private final FlowPanel pagingContainer = new FlowPanel();
 
@@ -82,9 +78,9 @@ public class ThumbnailSelectorComposite extends FlowPanel
     public ThumbnailSelectorComposite()
     {
         selectedThumbnail.addStyleName(StaticResourceBundle.INSTANCE.coreCss().thumbnail());
-        this.add(selectedThumbContainer);
-        selectedThumbContainer.add(selectedThumbnail);
+        initWidget(selectedThumbnail);
 
+        // build the paging controls as a separate panel which is not added to the composite
         pagingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().thumbnailSelectorControls());
         pagingContainer.add(caption);
         pagingContainer.add(prevThumb);
@@ -137,7 +133,7 @@ public class ThumbnailSelectorComposite extends FlowPanel
 
     /**
      * Sets the link information for which the control will display thumbnails.
-     * 
+     *
      * @param inLink
      *            Link information.
      */
@@ -171,10 +167,10 @@ public class ThumbnailSelectorComposite extends FlowPanel
 
     /**
      * Gets the paging controls.
-     * 
+     *
      * @return the paging controls.
      */
-    public FlowPanel getPagingControlls()
+    public FlowPanel getPagingControls()
     {
         return pagingContainer;
     }

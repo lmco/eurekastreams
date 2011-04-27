@@ -21,6 +21,9 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface CoreCss extends CssResource
 {
+    @ClassName("ac-input-wrapper")
+    String acInputWrapper();
+
     @ClassName("access-denied")
     String accessDenied();
 
@@ -2035,6 +2038,12 @@ public interface CoreCss extends CssResource
 
     @ClassName("text-box")
     String textBox();
+
+    @ClassName("textbox-input-wrapper")
+    String textboxInputWrapper();
+
+    @ClassName("textarea-input-wrapper")
+    String textareaInputWrapper();
 
     String themeable();
 
