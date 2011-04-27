@@ -10,7 +10,7 @@ eurekastreams.delegation.container = function()
     return {
     	getDelegateWidget : function(moduleId, ntid, displayName, avatarUrl)
     	{
-    		return "<div class='delegation-item "+ntid+"'><div class='avatar'><a class='gwt-InlineHyperlink' href='#people/" + ntid + "'><img class='gwt-Image avatar-image avatar-image-Small' src='" + avatarUrl + "'></a></div><div class='connection-item-info'><div class='connection-item-name'>" + displayName + "</div><a href='javascript:eurekastreams.delegation.container.removeDelegate("+moduleId+",\""+ntid+"\")'>Remove Delegate</a></div></div>"
+    		return "<div class='delegation-item "+ntid+"'><div class='avatar'><a class='gwt-InlineHyperlink' target='_blank' href='#people/" + ntid + "'><img class='gwt-Image avatar-image avatar-image-Small' src='" + avatarUrl + "'></a></div><div class='connection-item-info'><div class='connection-item-name'>" + displayName + "</div><a href='javascript:eurekastreams.delegation.container.removeDelegate("+moduleId+",\""+ntid+"\")'>Remove Delegate</a></div></div>"
     	},
     	addADelegate : function(moduleId, ntid, displayName, avatarUrl)
     	{
