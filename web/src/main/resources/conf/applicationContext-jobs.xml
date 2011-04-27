@@ -39,12 +39,6 @@
 	
 	<!-- Job Definitions -->
 	
-	<!-- Daily Usage Metrics -->
-	<bean id="generateDailyUsageSummaryJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
-        <constructor-arg value="generateDailyUsageSummaryAction" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
-	
 	<!-- Pull feeds from internet, commit to database and queue the changes in memcached -->
     <bean id="refreshFeedsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
         <constructor-arg value="refreshFeedsAction" />
@@ -163,12 +157,6 @@
 		<property name="repeatCount" value="0" />
 	</bean>
 	
-	<!-- Update the daily usage metrics from yesterday - runs at 2:15 am -->
-    <bean id="generateDailyUsageSummaryJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="generateDailyUsageSummaryJob" />
-        <property name="cronExpression" value="0 15 2 * * ?" />
-    </bean> 
-	
     <!-- refresh feeds from the internet every 5 minutes -->
     <bean id="refreshFeedsJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="refreshFeedsJob" />
@@ -199,7 +187,6 @@
                 <ref bean="gadgetDefUserCountRefreshJobTrigger" />
                 <ref bean="expiredActivitiesCleanupJobTrigger" />
 				<ref bean="pluginDefUserIndexJobTrigger" />
-				<ref bean="generateDailyUsageSummaryJobTrigger" />
             </list> 
         </property>
     </bean>	

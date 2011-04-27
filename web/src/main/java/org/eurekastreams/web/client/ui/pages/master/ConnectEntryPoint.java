@@ -178,7 +178,7 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onSessionInitFailure(final Throwable caught)
     {
-        final Label errLabel = new Label("Unable to connect to Eureka Streams.");
+        final Label errLabel = new Label("Eureka is down for maintence and will be back as soon as possible.");
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
@@ -190,7 +190,7 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onPersonFetchFailure(final Throwable caught)
     {
-        final Label errLabel = new Label("Unable to connect to Eureka Streams.");
+        final Label errLabel = new Label("Eureka is down for maintence and will be back as soon as possible.");
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
@@ -212,7 +212,7 @@ public class ConnectEntryPoint implements EntryPoint
             }
         }
 
-        final Label errLabel = new Label("Unable to connect to load widget.");
+        final Label errLabel = new Label("Eureka is down for maintence and will be back as soon as possible.");
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
