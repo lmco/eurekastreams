@@ -30,13 +30,13 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
  * Auto complete drop down widget.
- * 
+ *
  */
 public abstract class AutoCompleteDropDownPanel extends FlowPanel
 {
     /**
      * The possible form element types.
-     * 
+     *
      */
     public enum ElementType
     {
@@ -52,13 +52,13 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * The command interface for what happens when one selects the item.
-     * 
+     *
      */
     public interface OnItemSelectedCommand
     {
         /**
          * Gets called when the item is selected.
-         * 
+         *
          * @param obj
          *            the javascript object of the selected.
          */
@@ -85,7 +85,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param url
      *            the resource url.
      */
@@ -96,7 +96,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param url
      *            the resource url.
      * @param inElementType
@@ -107,20 +107,23 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().autoComplete());
 
+        final SimplePanel textWrapper = new SimplePanel();
+
         if (inElementType == ElementType.TEXTBOX)
         {
             textBox = new TextBox();
             textWidget = textBox;
+            textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().textboxInputWrapper());
         }
         else
         {
             textWidget = new ExtendedTextArea();
+            textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().textareaInputWrapper());
         }
         textWidget.getElement().setAttribute("id", "actb-" + rand);
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
-        final SimplePanel textWrapper = new SimplePanel();
-        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
+        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().acInputWrapper());
         textWrapper.add(textWidget);
         this.add(textWrapper);
 
@@ -141,7 +144,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets the default text.
-     * 
+     *
      * @param text
      *            the text.
      */
@@ -161,7 +164,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets the text.
-     * 
+     *
      * @param text
      *            The text.
      */
@@ -180,7 +183,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Set the maxlength field.
-     * 
+     *
      * @param maxLength
      *            the length to set.
      */
@@ -191,7 +194,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Get the text from the text box.
-     * 
+     *
      * @return The text.
      */
     public String getText()
@@ -201,7 +204,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Returns the random identifier.
-     * 
+     *
      * @return the random identifier.
      */
     public String getRandomIdentifier()
@@ -211,7 +214,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Set up the command.
-     * 
+     *
      * @param inCommand
      *            the command.
      */
@@ -222,7 +225,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Gets called by the JSNI when the item is selected.
-     * 
+     *
      * @param obj
      *            the javascript object.
      */
@@ -236,7 +239,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Returns the text widget.
-     * 
+     *
      * @return the text widget.
      */
     protected TextBoxBase getTextWidget()
@@ -246,7 +249,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets up the auto complete.
-     * 
+     *
      * @param taId
      *            the text area id.
      * @param acdId

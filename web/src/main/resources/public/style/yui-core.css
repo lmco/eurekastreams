@@ -5,13 +5,12 @@
 }
 
 .yui-skin-sam .yui-ac-input {
-	position: absolute;
 	width: 100%;
 }
 
 .yui-skin-sam .yui-ac-container {
-	position: absolute;
-	top: 1.6em;
+	position: relative;
+	margin-top: -3px;
 	width: 100%;
 }
 

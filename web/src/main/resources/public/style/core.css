@@ -1528,16 +1528,16 @@ body .terms-of-service-modal .agree-button-disabled {
 }
 
 .post-to-stream {
-	padding: 10px 105px 10px 10px;
-	zoom: 1;
-}
-
-.profile .post-to-stream {
-	padding-right: 100px;
+	padding: 10px;
 }
 
 .post-to-stream.small {
 	overflow: hidden;
+}
+
+.post-expanded-panel
+{
+	margin-top: 10px;
 }
 
 body .post-expanded-panel .content-warning {
@@ -1598,7 +1598,6 @@ body .post-expanded-panel .content-warning {
 	margin-left: 5px;
 	margin-top: 3px;
 	text-align: left;
-	position: relative;
 }
 
 @sprite .stream-titlebar .stream-title-fader {
@@ -1658,9 +1657,7 @@ body .post-expanded-panel .content-warning {
 	text-indent: 1000em;
 	overflow: hidden;
 	margin-top: 2px;
-	position: relative;
 	height: 20px;
-	z-index: 11 ! important;
 }
 
 @sprite .stream-titlebar .add-as-gadget:hover div:first-child {
@@ -1777,13 +1774,17 @@ div.new-messages-notification>div.refresh-stream {
 	margin-top: 5px;
 }
 
-
-.profile .post-to-stream textarea {
-	margin-bottom: 10px;
+.post-to-stream .ac-input-wrapper {
 }
 
-.post-to-stream .post-entry-panel {
-	position: relative;
+.post-to-stream .textarea-input-wrapper {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.post-to-stream .textbox-input-wrapper {
+	margin-left: 3px;
+	margin-right: 3px;
 }
 
 .post-to-stream textarea {
@@ -1793,11 +1794,11 @@ div.new-messages-notification>div.refresh-stream {
 	overflow: auto;
 	border: 1px solid #bbbbbb;
 	font-size: 14px;
-	display: inline-block;
-	zoom: 1;
+	margin-left: -10px;
+	color: black;
 }
 
-body .post-to-stream.small textarea {
+.post-to-stream.small textarea {
 	height: 20px;
 	color: #999999;
 	font-weight: bold;
@@ -1835,21 +1836,19 @@ body .post-to-stream .over-character-limit {
 
 .post-to-stream .post-info-container {
 	text-align: center;
-	position: absolute !important;
-	top: 0px;
-	right: -90px;
-	display: inline-block;
+	float: right;
 }
 
 .post-to {
 	margin-top: 3px;
 	text-align: right;
-	width: 580px;
+	width: 600px;
 }
 
 .post-to .label {
 	font-weight: bold;
 	margin-right: 5px;
+	display: inline-block;
 }
 
 .post-to .auto-complete {
@@ -1864,7 +1863,7 @@ body .post-to-stream .over-character-limit {
 .post-to .auto-complete input {
 	padding: 3px;
 	height: 16px;
-	padding-left: 7px;
+	margin-left: -3px;
 }
 
 .share-message-dialog .auto-complete input {
@@ -1875,26 +1874,16 @@ body .post-to-stream .over-character-limit {
 	color: #666666;
 }
 
-.post-to .gwt-RadioButton input {
-	position: relative;
-	top: 3px;
-}
-
-.post-to .yui-ac-container,.share-message-dialog .post-to .yui-ac-container
-	{
-	margin-top: 3px;
+.post-to > .gwt-RadioButton > input {
+	vertical-align: sub;
 }
 
 .post-to .yui-ac-container {
 	width: 160px;
 }
 
-.post-to .yui-ac-input {
-	position: relative !important;
-}
-
 .post-to label {
-	margin-left: 10px;
+	margin-left: 5px;
 	margin-right: 20px;
 	color: #333;
 }
@@ -1961,7 +1950,11 @@ body .post-to-stream .over-character-limit {
 	border: 1px solid #BBB;
 }
 
-.attach-link-container>.link-panel,.attach-link-container>.attach-link {
+.attach-link-container {
+	margin-right: 85px;
+}
+
+.attach-link-container > div {
 	margin-top: 10px;
 	margin-right: -1px;
 }
@@ -2848,8 +2841,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-cancel-button,.form-submit-button,.form-update-button,.form-share-button
-	{
-	display: inline-block;
+{
 	overflow: hidden;
 	float: left;
 }
@@ -3406,8 +3398,8 @@ body .shortname-form-element input {
 .options {
 	list-style: none;
 	padding-left: 0;
-	display: inline-block;
-	margin: 5px 0;
+	float: left;
+	margin-top: 5px;
 	font-size: 12px;
 }
 
@@ -3648,6 +3640,7 @@ body .options>li>.option-title:hover {
 	text-decoration: none;
 	color: black;
 	padding: 5px 10px;
+	display: inline-block;
 }
 
 .options .connection-filter-button.active,.options .sort-option.active {
@@ -3674,20 +3667,17 @@ body .options>li>.option-title:hover {
 	min-width: 490px;
 	margin: 5px 10px 20px;
 	border-bottom: 1px solid #CCCCCC;
-	padding: 0px 10px 13px;
+	padding: 0px 10px 7px;
+	overflow: auto;
 }
 
 .empty-list .top-pager,.empty-list .bottom-pager {
 	display: none;
 }
 
-.navpanel .options {
-	position: relative;
-	top: 5px;
-}
-
 .navpanel .options .gwt-Label {
-	float: left;
+	display: inline-block;
+	padding-bottom: 5px;
 	margin-right: 15px;
 	font-weight: bold;
 }
@@ -5479,10 +5469,6 @@ body .gallery-search-results-list .options-panel {
 	padding-bottom: 40px;
 }
 
-.gallery-contents .options {
-	float: left;
-}
-
 .gallery-contents .pager-container {
 	width: 180px;
 }
@@ -6036,7 +6022,6 @@ body .stream-page-container>div.form-error-box {
 
 .auto-complete {
 	margin-left: 170px;
-	position: relative !important;
 }
 
 .auto-complete.form-element textarea {
@@ -6755,8 +6740,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .form-share-button {
-	position: relative;
-	top: 15px;
+	margin-top: 15px;
 	margin-right: 10px;
 }
 
@@ -7729,29 +7713,14 @@ body .url-validator .required-form-label {
 }
 
 .post-entry-panel .auto-complete {
-	margin-left: 0px;
-}
-
-.post-entry-panel .auto-complete {
-	display: block;
 	margin-left: 40px;
-	margin-right: 20px;
-	zoom: 1;
-}
-
-.post-entry-panel .auto-complete textarea {
-	color: black;
-	position: relative;
+	margin-right: 87px;
 }
 
 .post-entry-avatar {
 	float: left;
 	margin-top: 4px;
 	margin-right: 10px;	
-}
-
-.post-entry-panel .yui-ac-content {
-	margin-top: 49px;
 }
 
 .delegation-container {
@@ -8115,6 +8084,10 @@ IE SPECIFIC CSS.
 		margin-left: -20px;
 	}
 	
+	.share-message-dialog .share-message-cancel {
+		margin-top: 15px;
+	}
+
 	.stream-view-dialog .auto-complete.yui-skin-sam .yui-ac-container {
 		margin-top: 1.7em;
 	}
@@ -8136,7 +8109,6 @@ IE SPECIFIC CSS.
 	
 	.search-list .search-list-button {
 		display: inline;
-		margin-top: 1px;
 	}
 	
 	.org-lookup-form-element .form-lookup-button {
@@ -8353,24 +8325,20 @@ IE SPECIFIC CSS.
 		width: 158px;
 	}
 	
-	.post-to .auto-complete input {
-		top: 5px;
-	}
-	
 	.post-to .auto-complete {
 		zoom: 1;
 		display: inline;
 		margin-left: -20px;
 		width: 150px;
 	}
-	
-	.post-to {
-		top: -5px;
+
+	.post-to .yui-ac-container .yui-ac-content {
+		margin-left: -150px;
 	}
-	
-	.post-to-stream .post-info-container {
-		display: inline;
-		zoom: 1;
+
+	.eureka-connect-share-widget-container  .post-to .yui-ac-container .yui-ac-content,
+	.share-message-dialog .post-to .yui-ac-container .yui-ac-content {
+		margin-left: 0px;
 	}
 	
 	.post-to-stream .content-warning {
@@ -8461,11 +8429,6 @@ IE SPECIFIC CSS.
 		top: 5px;
 	}
 	
-	.search-box input,.search-box .search-list-button {
-		position: relative ! important;
-		top: 2px;
-	}
-	
 	.form-verifying-spinny,.form-submit-spinny {
 		zoom: 1;
 		display: inline;
@@ -8492,8 +8455,8 @@ IE SPECIFIC CSS.
 		margin: 0;
 	}
 	
-	.form-cancel-button,.form-submit-button,.form-update-button,.form-share-button
-		{
+	.form-submit-button,.form-update-button
+	{
 		zoom: 1;
 		display: inline;
 	}
@@ -8636,11 +8599,6 @@ IE SPECIFIC CSS.
 		display: inline;
 	}
 	
-	.options {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.personal-settings-background .auto-complete.yui-skin-sam .yui-ac-container
 		{
 		margin-top: -15px;
@@ -8675,23 +8633,6 @@ IE SPECIFIC CSS.
 	
 	.settings .hideable-richtextarea .yui-editor-container {
 		float: left;
-	}
-	
-	.navpanel .options {
-		float: left;
-	}
-	
-	.navpanel {
-		padding: 0px 10px 10px;
-	}
-	.sort-option {
-		position: relative;
-		top: -5px;
-	}
-	
-	.options .connection-filter-button,.options .sort-option {
-		position: relative;
-		zoom: 1;
 	}
 	
 	.connection-item-info {
@@ -9090,15 +9031,10 @@ IE SPECIFIC CSS.
 	}
 
 	.attach-link .add-button-submit {
-		display: inline;
-		zoom: 1;
-		margin-top: -13px;
-	}
-	
-	body .post-to-stream textarea {
-		padding-bottom: 0;
-		position: relative;
-		top: 0;
+		display: block;
+		float: right;
+		margin-top: -27px;
+		margin-right: 10px;
 	}
 	
 	body div.portal-boundary div.layout-container {
@@ -9114,7 +9050,7 @@ IE SPECIFIC CSS.
 	}
 	
 	.stream-container>.layout-container>div>div.post-to-stream-container+div
-		{
+	{
 		position: static !important;
 	}
 	
@@ -9152,23 +9088,22 @@ IE SPECIFIC CSS.
 		zoom: 1;
 	}
 	
-	body .post-to .yui-ac-container {
-		position: absolute;
-		left: 0;
-		margin-top: 9px;
-	}
-	
 	body .profile-page-container .post-to .yui-ac-container {
 		margin-left: -150px;
 	}
-	
-	.post-to>span {
-		position: relative;
-		bottom: 8px;
+
+	.post-to {
+		max-height: 24px;
 	}
 	
-	.post-to>.stream-scope {
-		top: 5px;
+	.post-to > .gwt-RadioButton > input, .post-to > .gwt-RadioButton > label {
+		vertical-align: super;
+	}
+
+	.post-to  > .label {
+		display: inline;
+		zoom: 1;
+		padding-bottom: 8px;
 	}
 	
 	body .post-to ul {
@@ -9242,7 +9177,7 @@ IE SPECIFIC CSS.
 	}
 	
 	.post-expanded-panel {
-		z-index: 89 ! important;
+		margin-top: 5px;
 	}
 	
 	.org-lookup-form-element .form-instructions {
@@ -9263,11 +9198,20 @@ IE SPECIFIC CSS.
 		display: none;
 	}
 	
-	.content-warning > div:first-child {
+	/* Unrelated items which all need the IE equivalent of inline-block */
+	.content-warning > div:first-child,
+	.navpanel .options .gwt-Label,
+	.options .connection-filter-button,.options .sort-option
+	{
 		display: inline;
 		zoom: 1;
 	}
 
+	/* Unrelated items which IE lays out wrong unless zoom=1 is specified */
+	.attach-link,
+	.link-panel {
+		zoom: 1;
+	}
 }
 /*/////////////////////////////////////////////////////////////////////////////
 

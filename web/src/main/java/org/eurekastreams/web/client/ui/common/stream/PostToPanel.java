@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 
@@ -111,7 +110,7 @@ public class PostToPanel extends FlowPanel
 
             final PostToPanel thisBuffered = this;
 
-            Label postTo = new InlineLabel("Post to:");
+            Label postTo = new Label("Post to:");
             postTo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().label());
             this.add(postTo);
 

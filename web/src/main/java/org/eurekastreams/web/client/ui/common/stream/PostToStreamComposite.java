@@ -161,8 +161,8 @@ public class PostToStreamComposite extends FlowPanel
         Panel entryPanel = new FlowPanel();
         entryPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryPanel());
         entryPanel.add(avatar);
-        entryPanel.add(message);
         entryPanel.add(postInfoContainer);
+        entryPanel.add(message);
         add(entryPanel);
 
         // below text area: links and post to on one line, then content warning below

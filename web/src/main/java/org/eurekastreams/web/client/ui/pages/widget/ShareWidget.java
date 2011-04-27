@@ -199,8 +199,8 @@ public class ShareWidget extends Composite
         Panel entryPanel = new FlowPanel();
         entryPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryPanel());
         entryPanel.add(avatar);
-        entryPanel.add(message);
         entryPanel.add(postInfoContainer);
+        entryPanel.add(message);
 
         postContainer.add(entryPanel);
 
