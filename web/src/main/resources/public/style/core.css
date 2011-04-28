@@ -1808,6 +1808,16 @@ div.new-messages-notification>div.refresh-stream {
 	color: black;
 }
 
+.post-to-stream .yui-skin-sam.yui-ac textarea.gwt-TextArea.yui-ac-input
+{
+    color: black;
+}
+
+.post-to-stream.small .yui-skin-sam.yui-ac textarea.gwt-TextArea.yui-ac-input
+{
+    color: #999999;
+}
+
 .post-to-stream.small textarea {
 	height: 20px;
 	color: #999999;
