@@ -111,7 +111,7 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         }
         dto.setStreamScopeId(sharedResourceStreamScope.getId());
 
-        // since we know the destination SharedResource id, we can get the likers much quicker
+        // since we know the destination SharedResource id, we can get the likers and sharers much quicker
         inRequest.setSharedResourceId(sharedResourceStreamScope.getDestinationEntityId());
 
         List<Long> sharedPersonIds = getPeopleThatSharedResourceMapper.execute(inRequest);

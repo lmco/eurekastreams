@@ -61,6 +61,21 @@ public class GetPeopleWhoLikedResourceDbMapperTest extends MapperTest
     }
 
     /**
+     * Text execute, expecting results, by shared resource id.
+     */
+    @Test
+    public void testExecuteWithResultsBySharedResourceId()
+    {
+        final Long personId1 = 42L;
+        final Long personId2 = 99L;
+
+        List<Long> peopleIds = sut.execute(new SharedResourceRequest(new Long(5), null));
+        assertEquals(2, peopleIds.size());
+        assertTrue(peopleIds.contains(personId1));
+        assertTrue(peopleIds.contains(personId2));
+    }
+
+    /**
      * Text execute, expecting results, including the shared resource id.
      */
     @Test

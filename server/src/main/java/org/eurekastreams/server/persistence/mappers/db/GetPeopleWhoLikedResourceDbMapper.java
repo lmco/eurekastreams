@@ -49,7 +49,7 @@ public class GetPeopleWhoLikedResourceDbMapper extends BaseArgDomainMapper<Share
             // quick. tell hibernate to only get 1 record - hopefully this'll make the query quit quicker
             List<Long> sharedResourceIds = getEntityManager()
                     .createQuery("SELECT id FROM SharedResource WHERE uniqueKey = :uniqueKey")
-                    .setParameter("uniqueKey", inRequest.getUniqueKey()).setMaxResults(1).getResultList();
+                    .setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase()).setMaxResults(1).getResultList();
             if (sharedResourceIds.size() == 0)
             {
                 // shared resource doesn't exist - user can't be following it

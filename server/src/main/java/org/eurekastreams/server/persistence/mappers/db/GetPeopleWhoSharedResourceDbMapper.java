@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.SharedResourceRequest;
@@ -37,12 +38,32 @@ public class GetPeopleWhoSharedResourceDbMapper extends BaseArgDomainMapper<Shar
     @SuppressWarnings("unchecked")
     public List<Long> execute(final SharedResourceRequest inRequest)
     {
+        Long sharedResourceId = null;
+        if (inRequest.getSharedResourceId() != null && inRequest.getSharedResourceId() > 0)
+        {
+            // caller passed in the shared resource id - fast query
+            sharedResourceId = inRequest.getSharedResourceId();
+        }
+        else
+        {
+            // caller passed in the shared resource unique key - get the id first - there's an index, so it should be
+            // quick. tell hibernate to only get 1 record - hopefully this'll make the query quit quicker
+            List<Long> sharedResourceIds = getEntityManager()
+                    .createQuery("SELECT id FROM SharedResource WHERE uniqueKey = :uniqueKey")
+                    .setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase()).setMaxResults(1).getResultList();
+            if (sharedResourceIds.size() == 0)
+            {
+                // shared resource doesn't exist - user can't be following it
+                return new ArrayList<Long>();
+            }
+            sharedResourceId = sharedResourceIds.get(0);
+        }
         List<Long> peopleIds = getEntityManager()
                 .createQuery(
                         "SELECT DISTINCT p.id FROM Person p, Activity a WHERE p.accountId = a.actorId "
-                                + "AND a.actorType = :actorType AND a.sharedLink.uniqueKey = :uniqueKey")
-                .setParameter("actorType", ActorType.PERSON)
-                .setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase()).getResultList();
+                                + "AND a.actorType = :actorType AND a.sharedLink.id = :sharedResourceId")
+                .setParameter("actorType", ActorType.PERSON).setParameter("sharedResourceId", sharedResourceId)
+                .getResultList();
 
         return peopleIds;
     }
