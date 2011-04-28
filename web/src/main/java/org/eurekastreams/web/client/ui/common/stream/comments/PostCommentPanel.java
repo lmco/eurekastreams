@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,12 +50,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Post comment panel.
- * 
+ *
  */
 public class PostCommentPanel extends FlowPanel
 {
@@ -89,7 +90,7 @@ public class PostCommentPanel extends FlowPanel
     /**
      * The message id.
      */
-    private Long messageId;
+    private final Long messageId;
 
     /**
      * If the fake text box shouldn't show when unactivated.
@@ -98,7 +99,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inMessageId
      *            the message id.
      * @param inFullCollapse
@@ -154,8 +155,11 @@ public class PostCommentPanel extends FlowPanel
         FlowPanel body = new FlowPanel();
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
 
+        SimplePanel boxWrapper = new SimplePanel();
+        boxWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().boxWrapper());
         commentBox = new ExtendedTextArea();
-        body.add(commentBox);
+        boxWrapper.add(commentBox);
+        body.add(boxWrapper);
         commentBox.setFocus(true);
 
         countDown = new Label(Integer.toString(MAXLENGTH));
@@ -165,14 +169,15 @@ public class PostCommentPanel extends FlowPanel
         post = new Hyperlink("post", History.getToken());
         post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postButton());
         post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
+        body.add(post);
 
         final Label warning = new Label();
         warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warning());
         warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         body.add(warning);
 
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -199,26 +204,26 @@ public class PostCommentPanel extends FlowPanel
                     CommentDTO comment = new CommentDTO();
                     comment.setBody(commentBox.getText());
                     comment.setActivityId(messageId);
-                    Session.getInstance().getActionProcessor().makeRequest(
-                            new ActionRequestImpl<CommentDTO>("postActivityCommentAction", comment),
-                            new AsyncCallback<CommentDTO>()
-                            {
-                                /* implement the async call back methods */
-                                public void onFailure(final Throwable caught)
-                                {
+                    Session.getInstance()
+                            .getActionProcessor()
+                            .makeRequest(new ActionRequestImpl<CommentDTO>("postActivityCommentAction", comment),
+                                    new AsyncCallback<CommentDTO>()
+                                    {
+                                        /* implement the async call back methods */
+                                        public void onFailure(final Throwable caught)
+                                        {
 
-                                }
+                                        }
 
-                                public void onSuccess(final CommentDTO result)
-                                {
-                                    Session.getInstance().getEventBus().notifyObservers(
-                                            new CommentAddedEvent(result, messageId));
-                                }
-                            });
+                                        public void onSuccess(final CommentDTO result)
+                                        {
+                                            Session.getInstance().getEventBus()
+                                                    .notifyObservers(new CommentAddedEvent(result, messageId));
+                                        }
+                                    });
                 }
             }
         });
-        body.add(post);
 
         this.add(body);
         commentBox.setFocus(true);
@@ -280,13 +285,13 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Set the focus.
-     * 
+     *
      * @param el
      *            the element
      */
     public static native void nativeSetFocus(final Element el) /*-{
                                                                     el.focus();
-                                                             }-*/;
+                                                               }-*/;
 
     /**
      * Gets triggered whenever the comment changes.

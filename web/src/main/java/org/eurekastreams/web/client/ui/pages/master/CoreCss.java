@@ -152,6 +152,9 @@ public interface CoreCss extends CssResource
     @ClassName("bottom-pager")
     String bottomPager();
 
+    @ClassName("box-wrapper")
+    String boxWrapper();
+
     String breadcrumb();
 
     @ClassName("breadcrumb-label")

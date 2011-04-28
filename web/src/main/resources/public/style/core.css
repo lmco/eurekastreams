@@ -1988,20 +1988,25 @@ body .post-to-stream .over-character-limit {
 }
 
 .attach-link .add-button-submit {
-	display: inline-block;
-	margin-top: -4px;
+	float: right;
+	margin-top: 5px;
 }
 
 @sprite body .attach-link .verifying-link {
 	gwt-image: "waitSpinner";
 }
 
-.attach-link input {
+.attach-link .box-wrapper input {
 	border: 1px solid #bbbbbb;
 	padding: 5px;
+	margin-left: -5px;
+	width: 100%;
+}
+
+.attach-link .box-wrapper {
 	margin-top: 4px;
-	width: 80%;
-	margin-right: 5px;
+	margin-left: 5px;
+	margin-right: 92px;
 }
 
 @sprite .post-to-stream .post-button {
@@ -2013,6 +2018,14 @@ body .post-to-stream .over-character-limit {
 
 @sprite body .post-to-stream .post-button.inactive {
 	gwt-image: "postBtnInactive";
+}
+
+@sprite .eureka-connect-share-widget-container .post-to-stream .post-button {
+	gwt-image: "shareBtn";
+}
+
+@sprite body .eureka-connect-share-widget-container .post-to-stream .post-button.inactive {
+	gwt-image: "shareBtnInactive";
 }
 
 .stream-message-item {
@@ -6183,9 +6196,15 @@ body .dragdrop-proxy {
 	float: left;
 }
 
+.message-comment .box-wrapper {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .message-comment .gwt-TextArea {
 	border: 1px solid #CCCCCC;
-	width: 495px;
+	width: 100%;
+	margin-left: -10px;
 	padding: 6px 10px;
 	font-size: 13px;
 	overflow: auto;
@@ -6213,15 +6232,15 @@ body .dragdrop-proxy {
 }
 
 .message-comment .warning,.share-message-dialog .warning {
-	background: url(style/images/information-circle-icon.png) no-repeat left
-		2px;
+	background: url(style/images/information-circle-icon.png) no-repeat left 2px;
 	color: #666666;
 	font-size: 11px;
 	padding-left: 25px;
 	margin-top: 5px;
-	width: 430px;
 	margin-bottom: -2px;
+	margin-right: 50px;
 	padding-bottom: 2px;
+	min-height: 40px;
 }
 
 .modal .message-comment .warning,.share-message-dialog .warning {
@@ -6229,18 +6248,15 @@ body .dragdrop-proxy {
 	height: 17px;
 }
 
-.message-comment .characters-remaining,.share-message-dialog .characters-remaining
-	{
+.message-comment .characters-remaining,.share-message-dialog .characters-remaining {
 	color: #666666;
 	font-weight: bold;
 	padding-top: 5px;
-	margin-right: 12px;
 	float: right;
 	text-align: right;
 }
 
-.profile-page-container .message-comment .characters-remaining,.share-message-dialog .characters-remaining
-	{
+.profile-page-container .message-comment .characters-remaining,.share-message-dialog .characters-remaining {
 	margin-right: -5px;
 }
 
@@ -6252,7 +6268,8 @@ body .dragdrop-proxy {
 	margin-top: 5px;
 	overflow: hidden;
 	text-indent: -1000em;
-	margin-left: 477px;
+	clear: both;
+	float: right;
 }
 
 .message-comment .post-button.inactive {
@@ -7832,14 +7849,18 @@ html,body {
 }
 
 .eureka-connect-badge-name {
-	font-size: 18px;
+	font-size: 14px;
+	font-weight: bold;
 }
 
 .eureka-connect-badge-title {
-	font-color: black;
+	font-size: 12px;
+	font-color: #666;
 }
 
 .eureka-connect-badge-company {
+	font-size: 12px;
+	font-color: #666;
 }
 
 .eureka-connect-badge-container {
@@ -7992,7 +8013,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	margin-bottom: 10px;
 }
 
-.eureka-connect-show-all-users-who-liked-activity {
+.like-count-widget a.eureka-connect-show-all-users-who-liked-activity {
 	float: right;
 	font-weight: normal;
 }
@@ -8070,10 +8091,6 @@ IE SPECIFIC CSS.
 	.modal-content-panel {
 		margin-top: -20px;
 		padding-top: 15px;
-	}
-	
-	.message-comment .post-button {
-		margin-left: 475px;
 	}
 	
 	.message-comment>.body {
@@ -8280,6 +8297,11 @@ IE SPECIFIC CSS.
 	
 	.search-list input {
 		position: static !important;
+	}
+
+	.eureka-connect-full-stream  .search-list input,
+	.connect-widget-comment .search-list input {
+		width: 175px;
 	}
 	
 	.header-bar .search-list input {
@@ -9065,11 +9087,13 @@ IE SPECIFIC CSS.
 		margin-left: 5px;
 	}
 
+	.attach-link .box-wrapper input {
+		width: 98%;
+	}
+
 	.attach-link .add-button-submit {
 		display: block;
-		float: right;
-		margin-top: -27px;
-		margin-right: 10px;
+		margin-top: 7px;
 	}
 	
 	body div.portal-boundary div.layout-container {

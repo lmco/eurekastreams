@@ -128,6 +128,12 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/postBtn.png")
     ImageResource postBtn();
 
+    @Source("style/images/shareBtnInactive.png")
+    ImageResource shareBtnInactive();
+
+    @Source("style/images/share-btn.png")
+    ImageResource shareBtn();
+
     @Source("style/images/moveBtnInactive.png")
     ImageResource moveBtnInactive();
 

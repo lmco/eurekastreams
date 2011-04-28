@@ -36,6 +36,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -121,8 +122,12 @@ public class AddLinkComposite extends FlowPanel
         addLinkLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         addPanel.add(addLinkLabel);
 
-        addPanel.add(linkUrl);
+        SimplePanel boxWrapper = new SimplePanel();
+        boxWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().boxWrapper());
+        boxWrapper.add(linkUrl);
+
         addPanel.add(fetchLink);
+        addPanel.add(boxWrapper);
         fetchLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButtonSubmit());
 
         // -- Setup the link display panel (thumbnail selector, field to update title) --
@@ -244,7 +249,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Called when a link is added to the message.
-     * 
+     *
      * @param link
      *            the link that was added.
      */
@@ -295,7 +300,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Fetch link.
-     * 
+     *
      * @param inLinkUrl
      *            link url.
      */
