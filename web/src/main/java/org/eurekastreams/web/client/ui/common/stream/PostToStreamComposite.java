@@ -116,7 +116,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -127,7 +127,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      * @param inPostBoxDefaultText
@@ -145,7 +145,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -266,8 +266,12 @@ public class PostToStreamComposite extends FlowPanel
         {
             public void update(final MessageStreamAppendEvent event)
             {
+                errorMsg.setVisible(false);
                 addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
+                messageText = "";
                 message.setText(postBoxDefaultText);
+                onRemainingCharactersChanged();
+                links.close();
             }
         });
 
@@ -328,18 +332,6 @@ public class PostToStreamComposite extends FlowPanel
                         showPostButton();
                     }
                 });
-
-        eventBus.addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
-        {
-            public void update(final MessageStreamAppendEvent evt)
-            {
-                hidePostButton();
-                errorMsg.setVisible(false);
-                message.setText("");
-                links.close();
-                checkMessageTextChanged();
-            }
-        });
     }
 
     /**
@@ -360,7 +352,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Sets up the magic show/hide for the publisher.
-     *
+     * 
      * @param inDefaultMessage
      *            Message to display when box is empty.
      */
@@ -402,7 +394,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Get the scope.
-     *
+     * 
      * @return the scope.
      */
     public StreamScope getScope()
@@ -412,7 +404,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Set the scope.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -514,8 +506,7 @@ public class PostToStreamComposite extends FlowPanel
             recipientType = EntityType.GROUP;
         }
 
-        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                : new NotePopulator();
+        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator() : new NotePopulator();
         ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType, scope.getUniqueKey(),
                 new PostPopulator(), objectStrat);
         PostActivityRequest postRequest = new PostActivityRequest(activity);
