@@ -33,6 +33,11 @@ public class SharedResourceRequest implements Serializable
     private String uniqueKey;
 
     /**
+     * If set, this will be used to query instead of the unique key - will produce faster queries.
+     */
+    private Long sharedResourceId;
+
+    /**
      * The person id.
      */
     private Long personId;
@@ -55,6 +60,20 @@ public class SharedResourceRequest implements Serializable
     public SharedResourceRequest(final String inUniqueKey, final Long inPersonId)
     {
         uniqueKey = inUniqueKey;
+        personId = inPersonId;
+    }
+
+    /**
+     * Constructor - using shared resource id instead of unique key - faster, if you can use it.
+     * 
+     * @param inSharedResourceId
+     *            the shared resource id
+     * @param inPersonId
+     *            the person Id
+     */
+    public SharedResourceRequest(final Long inSharedResourceId, final Long inPersonId)
+    {
+        sharedResourceId = inSharedResourceId;
         personId = inPersonId;
     }
 
@@ -94,6 +113,27 @@ public class SharedResourceRequest implements Serializable
     public void setPersonId(final Long inPersonId)
     {
         personId = inPersonId;
+    }
+
+    /**
+     * Get the shared resource id - if not null, it'll be used for a faster query.
+     * 
+     * @return the sharedResourceId
+     */
+    public Long getSharedResourceId()
+    {
+        return sharedResourceId;
+    }
+
+    /**
+     * Set the shared resource id - if not null, will be used instead of unique key, and will be much faster.
+     * 
+     * @param inSharedResourceId
+     *            the sharedResourceId to set
+     */
+    public void setSharedResourceId(final Long inSharedResourceId)
+    {
+        sharedResourceId = inSharedResourceId;
     }
 
 }

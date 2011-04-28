@@ -142,8 +142,8 @@
 	<!-- Resource StreamScope -->
 	<StreamScope id="100" scopeType="RESOURCE" uniqueKey="resource1" version="1" destinationEntityId="0" />
 	
-	<StreamScope id="101" scopeType="RESOURCE" uniqueKey="http://foo.foo.com/foo.html" version="1" destinationEntityId="0" />
-	<StreamScope id="102" scopeType="RESOURCE" uniqueKey="http://foo.com/foo.html" version="1" destinationEntityId="0" />	
+	<StreamScope id="101" scopeType="RESOURCE" uniqueKey="http://foo.foo.com/foo.html" version="1" destinationEntityId="102" />
+	<StreamScope id="102" scopeType="RESOURCE" uniqueKey="http://foo.com/foo.html" version="1" destinationEntityId="101" />	
 	
 	<Organization id="5" version="1" description="Mission Statement"
 		name="Test Organization Name" allUsersCanCreateGroups="true"

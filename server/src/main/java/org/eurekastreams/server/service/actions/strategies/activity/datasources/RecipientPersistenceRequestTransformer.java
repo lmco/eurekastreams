@@ -22,6 +22,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -43,9 +44,9 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     private GetDomainGroupsByShortNames groupMapper;
 
     /**
-     * Resource StreamScope id mapper.
+     * Resource StreamScope mapper.
      */
-    private DomainMapper<String, Long> resourceStreamScopeIdMapper;
+    private DomainMapper<String, StreamScope> resourceStreamScopeMapper;
 
     /**
      * Constructor.
@@ -54,17 +55,17 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
      *            Mapper for getting PersonModelViews from a list of account ids.
      * @param inGroupMapper
      *            the group mapper.
-     * @param inResourceStreamScopeIdMapper
-     *            Resource StreamScope id mapper.
+     * @param inResourceStreamScopeMapper
+     *            Resource StreamScope mapper.
      */
     public RecipientPersistenceRequestTransformer(
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetDomainGroupsByShortNames inGroupMapper,
-            final DomainMapper<String, Long> inResourceStreamScopeIdMapper)
+            final DomainMapper<String, StreamScope> inResourceStreamScopeMapper)
     {
         getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
-        resourceStreamScopeIdMapper = inResourceStreamScopeIdMapper;
+        resourceStreamScopeMapper = inResourceStreamScopeMapper;
     }
 
     /**
@@ -112,10 +113,10 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
         if (resourceKey != null && !resourceKey.equals(""))
         {
-            Long streamScopeId = resourceStreamScopeIdMapper.execute(resourceKey);
-            if (streamScopeId != null && streamScopeId > 0)
+            StreamScope streamScope = resourceStreamScopeMapper.execute(resourceKey);
+            if (streamScope != null && streamScope.getId() > 0)
             {
-                streamScopeIds.add(streamScopeId);
+                streamScopeIds.add(streamScope.getId());
             }
         }
 

@@ -372,7 +372,7 @@
 	   <constructor-arg ref="getPersonByAccountIdMapper" />
 	   <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 	   <constructor-arg>
-		   <bean class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKey">
+		   <bean class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
 		        <constructor-arg>
 		             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
 		        </constructor-arg>

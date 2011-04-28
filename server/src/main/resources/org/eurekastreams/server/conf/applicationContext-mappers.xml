@@ -2142,7 +2142,7 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 		<constructor-arg ref="getPersonByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />	
-		<constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" />			
+		<constructor-arg ref="getStreamScopeForResourceScopeTypeByUniqueKeyExceptionIfNotFound" />			
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	
@@ -2627,14 +2627,14 @@
     </bean>
     
     <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
-        <constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKey" />
+        <constructor-arg ref="getStreamScopeForResourceScopeTypeByUniqueKey" />
         <constructor-arg ref="getPeopleIdsThatSharedSharedResource" />
         <constructor-arg ref="getPeopleIdsThatLikedSharedResource" />
         <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
     </bean>
     
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null if exactly one result not found. -->
-    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKey">
+    <bean id="getStreamScopeForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
              <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
         </constructor-arg>
@@ -2642,7 +2642,7 @@
     </bean>
     
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, throws exception if exactly one result not found. -->
-    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKey">
+    <bean id="getStreamScopeForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
              <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
         </constructor-arg>

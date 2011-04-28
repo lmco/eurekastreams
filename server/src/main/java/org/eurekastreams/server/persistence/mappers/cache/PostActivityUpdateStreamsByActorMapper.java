@@ -19,6 +19,7 @@ import java.util.Collections;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
@@ -41,9 +42,9 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
     private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
 
     /**
-     * Mapper to get a stream scope id by scope type and unique key.
+     * Mapper to get a stream scope by scope type and unique key.
      */
-    private DomainMapper<String, Long> getResourceStreamScopeIdByKeyMapper;
+    private DomainMapper<String, StreamScope> getResourceStreamScopeIdByKeyMapper;
 
     /**
      * Constructor for the {@link PostActivityUpdateStreamsByActorMapper}.
@@ -53,12 +54,12 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
      * @param inBulkDomainGroupsByShortNameMapper
      *            - instance of the {@link GetDomainGroupsByShortNames} mapper.
      * @param inGetResourceStreamScopeIdByKeyMapper
-     *            Mapper to get a stream scope id by scope type and unique key.
+     *            Mapper to get a stream scope by scope type and unique key.
      */
     public PostActivityUpdateStreamsByActorMapper(
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
-            final DomainMapper<String, Long> inGetResourceStreamScopeIdByKeyMapper)
+            final DomainMapper<String, StreamScope> inGetResourceStreamScopeIdByKeyMapper)
     {
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
@@ -93,9 +94,11 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + person.getStreamId(), activityId);
             break;
         case RESOURCE:
-            getCache().addToTopOfList(
-                    CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + getResourceStreamScopeIdByKeyMapper.execute(uniqueKey),
-                    activityId);
+            StreamScope scope = getResourceStreamScopeIdByKeyMapper.execute(uniqueKey);
+            if (scope != null)
+            {
+                getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + scope.getId(), activityId);
+            }
 
             // if showInStream is true and author is person, add to actors (author)'s stream also.
             if (activity.getShowInStream() && activity.getActor().getType() == EntityType.PERSON)
@@ -104,6 +107,7 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
                         .getUniqueIdentifier());
                 getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + actor.getStreamId(), activityId);
             }
+
             break;
         default:
             break;

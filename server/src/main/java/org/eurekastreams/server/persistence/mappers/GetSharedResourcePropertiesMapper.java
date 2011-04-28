@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 
@@ -36,9 +37,9 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     private Log log = LogFactory.make();
 
     /**
-     * Mapper to get a stream scope id by scope type and unique key.
+     * Mapper to get a stream scope by scope type and unique key.
      */
-    private DomainMapper<String, Long> getResourceStreamScopeIdByKeyMapper;
+    private DomainMapper<String, StreamScope> getResourceStreamScopeByKeyMapper;
 
     /**
      * Mapper that gets the ids of people that liked a shared resource.
@@ -58,8 +59,8 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     /**
      * Constructor.
      * 
-     * @param inGetResourceStreamScopeIdByKeyMapper
-     *            Mapper to get a stream scope id by scope type and unique key.
+     * @param inGetResourceStreamScopeByKeyMapper
+     *            Mapper to get a stream scope by scope type and unique key.
      * @param inGetPeopleThatSharedResourceMapper
      *            Mapper that gets the ids of people that liked a shared resource.
      * @param inGetPeopleThatLikedResourceMapper
@@ -67,12 +68,13 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
      * @param inGetPeopleModelViewsByIdsMapper
      *            mapper to get person model views
      */
-    public GetSharedResourcePropertiesMapper(final DomainMapper<String, Long> inGetResourceStreamScopeIdByKeyMapper,
+    public GetSharedResourcePropertiesMapper(
+            final DomainMapper<String, StreamScope> inGetResourceStreamScopeByKeyMapper,
             final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatSharedResourceMapper,
             final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatLikedResourceMapper,
             final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleModelViewsByIdsMapper)
     {
-        getResourceStreamScopeIdByKeyMapper = inGetResourceStreamScopeIdByKeyMapper;
+        getResourceStreamScopeByKeyMapper = inGetResourceStreamScopeByKeyMapper;
         getPeopleThatSharedResourceMapper = inGetPeopleThatSharedResourceMapper;
         getPeopleThatLikedResourceMapper = inGetPeopleThatLikedResourceMapper;
         getPeopleModelViewsByIdsMapper = inGetPeopleModelViewsByIdsMapper;
@@ -94,19 +96,23 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         dto.setLikersSample(new ArrayList<PersonModelView>());
 
         // either null or a stream scope id
-        Long streamScopeId = getResourceStreamScopeIdByKeyMapper.execute(inRequest.getUniqueKey());
-        dto.setStreamScopeId(streamScopeId);
+        StreamScope sharedResourceStreamScope = getResourceStreamScopeByKeyMapper.execute(inRequest.getUniqueKey());
 
         // if the stream scope doesn't exist, then this resource doesn't either
-        if (streamScopeId == null)
+        if (sharedResourceStreamScope == null)
         {
             // not found - if the shared resource existed, it would have a stream scope, so we can stop looking through
             // the other tables now
+            dto.setStreamScopeId(null);
             dto.setIsLiked(false);
             dto.setLikeCount(0);
             dto.setShareCount(0);
             return dto;
         }
+        dto.setStreamScopeId(sharedResourceStreamScope.getId());
+
+        // since we know the destination SharedResource id, we can get the likers much quicker
+        inRequest.setSharedResourceId(sharedResourceStreamScope.getDestinationEntityId());
 
         List<Long> sharedPersonIds = getPeopleThatSharedResourceMapper.execute(inRequest);
         List<Long> likedPersonIds = getPeopleThatLikedResourceMapper.execute(inRequest);
