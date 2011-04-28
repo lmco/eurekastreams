@@ -42,6 +42,7 @@ public class ShareActivityWidget extends Composite
     public ShareActivityWidget(final Long activityId)
     {
         final SimplePanel main = new SimplePanel();
+        main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shareMessageDialog());
         initWidget(main);
 
         EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()

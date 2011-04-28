@@ -7855,12 +7855,12 @@ html,body {
 
 .eureka-connect-badge-title {
 	font-size: 12px;
-	font-color: #666;
+	color: #666;
 }
 
 .eureka-connect-badge-company {
 	font-size: 12px;
-	font-color: #666;
+	color: #666;
 }
 
 .eureka-connect-badge-container {
