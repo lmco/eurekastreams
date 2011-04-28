@@ -59,6 +59,9 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ShareWidget extends Composite
 {
+    /** Max length. */
+    private static final int MAXLENGTH = 250;
+
     /** The display link panel. */
     private final FlowPanel displayPanel = new FlowPanel();
 
@@ -87,6 +90,18 @@ public class ShareWidget extends Composite
      * Default text for postbox.
      */
     private final String defaultText = "Add comment to Post";
+
+    /** The count down label. */
+    private final Label countDown = new Label();
+
+    /** If share button is inactive. */
+    private boolean inactive = false;
+
+    /** The post button. */
+    private final Label postButton = new Label("Post");
+
+    /** The message entry box. */
+    private final PostToStreamTextboxPanel message = new PostToStreamTextboxPanel();
 
     /**
      * Constructor.
@@ -168,7 +183,7 @@ public class ShareWidget extends Composite
         postContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
         postContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToStreamContainer());
 
-        Label postButton = new Label("Post");
+
 
         FlowPanel postInfoContainer = new FlowPanel();
         postInfoContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postInfoContainer());
@@ -176,7 +191,7 @@ public class ShareWidget extends Composite
         postButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postButton());
         postInfoContainer.add(postButton);
 
-        final PostToStreamTextboxPanel message = new PostToStreamTextboxPanel();
+
         message.setText(defaultText);
 
         // user clicked in message text box
@@ -296,6 +311,27 @@ public class ShareWidget extends Composite
         });
 
         linkDesc.setText(addedLink.getDescription());
+    }
+
+    /**
+     * Gets triggered whenever the comment changes.
+     */
+    private void onCommentChanges()
+    {
+        Integer charsRemaining = MAXLENGTH - message.getText().length();
+        countDown.setText(charsRemaining.toString());
+        if (charsRemaining >= 0)
+        {
+            countDown.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
+            postButton.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
+            inactive = false;
+        }
+        else
+        {
+            countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
+            postButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
+            inactive = true;
+        }
     }
 
     /**
