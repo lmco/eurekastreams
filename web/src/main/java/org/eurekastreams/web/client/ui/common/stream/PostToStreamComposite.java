@@ -116,7 +116,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -127,7 +127,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inScope
      *            the scope.
      * @param inPostBoxDefaultText
@@ -145,7 +145,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -183,6 +183,9 @@ public class PostToStreamComposite extends FlowPanel
         entryPanel.add(avatar);
         entryPanel.add(postInfoContainer);
         entryPanel.add(message);
+        SimplePanel breakPanel = new SimplePanel();
+        breakPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breakClass());
+        entryPanel.add(breakPanel);
         add(entryPanel);
 
         // below text area: links and post to on one line, then content warning below
@@ -352,7 +355,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Sets up the magic show/hide for the publisher.
-     * 
+     *
      * @param inDefaultMessage
      *            Message to display when box is empty.
      */
@@ -394,7 +397,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Get the scope.
-     * 
+     *
      * @return the scope.
      */
     public StreamScope getScope()
@@ -404,7 +407,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Set the scope.
-     * 
+     *
      * @param inScope
      *            the scope.
      */

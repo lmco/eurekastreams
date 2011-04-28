@@ -1780,6 +1780,10 @@ div.new-messages-notification>div.refresh-stream {
 	margin-top: 5px;
 }
 
+.connect-widget-comment .more-button {
+	padding-bottom: 5px;
+}
+
 .post-to-stream .ac-input-wrapper {
 }
 
@@ -2279,10 +2283,27 @@ body .post-to-stream .over-character-limit {
 	padding-right: 3px;
 }
 
+.users-who-liked-activity-wrapper.eureka-connect-liked-activity-wrapper.like-count-widget {
+	margin-right: 0px;
+}
+
 .eureka-connect-liked-activity-wrapper .users-who-liked-activity .gwt-Label {
 	position: static;
 	margin-top: -7px;
 	padding-bottom: 2px;
+}
+
+.eureka-connect-liked-activity-wrapper .avatar a {
+	margin-top: 0px;
+}
+
+.eureka-connect-liked-activity-wrapper .users-who-liked-activity .users-who-liked-activity-body > div > div.avatar {
+	margin-bottom: 0px;
+}
+
+.eureka-connect-liked-activity-wrapper .users-who-liked-activity-body {
+	overflow: hidden;
+	height: 48px;
 }
 
 .users-who-liked-activity .users-who-liked-activity-body>div {
@@ -2317,7 +2338,7 @@ body .post-to-stream .over-character-limit {
 .eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-body
  {
 	background-image: url(style/images/like-modal-narrow-bg.png);
-	overflow: auto;
+	overflow: hidden;
 	padding-bottom: 0px;
 }
 .eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-footer
@@ -7885,7 +7906,7 @@ html,body {
 
 body div.eureka-connect-liked-activity-wrapper {
 	margin-left: 5px;
-	left: 103px;
+	left: 102px;
 	top: 12px;
 }
 
@@ -7956,7 +7977,7 @@ body div.eureka-connect-liked-activity-wrapper {
 }
 
 .eureka-connect-popout-arrow {
-	background-image: url(style/images/popup_indent.png);
+	background-image: url(style/images/popout-indent-narrow.png);
 	background-repeat: no-repeat;
 	float: left;
 	width: 20px;
@@ -7969,6 +7990,7 @@ body div.eureka-connect-liked-activity-wrapper {
 
 .eureka-connect-users-who-liked-activity {
 	width: 160px;	
+	margin-left: -26px;
 }
 
 .eureka-connect-full-stream
@@ -8027,6 +8049,7 @@ body div.eureka-connect-liked-activity-wrapper {
 IE SPECIFIC CSS.
 
 /////////////////////////////////////////////////////////////////////////////*/
+
 @if user.agent ie6 ie8 { 
 	.eureka-connect-like-button, .eureka-connect-unlike-button, .eureka-connect-share-button {
 		display: inline;
@@ -8161,6 +8184,7 @@ IE SPECIFIC CSS.
 	
 	.search-list .search-list-button {
 		display: inline;
+		margin-top: 1px;
 	}
 	
 	.org-lookup-form-element .form-lookup-button {
