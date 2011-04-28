@@ -45,7 +45,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     /**
      * Resource StreamScope id mapper.
      */
-    private DomainMapper<List<String>, List<Long>> resourceStreamScopeIdMapper;
+    private DomainMapper<String, Long> resourceStreamScopeIdMapper;
 
     /**
      * Constructor.
@@ -60,7 +60,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     public RecipientPersistenceRequestTransformer(
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetDomainGroupsByShortNames inGroupMapper,
-            final DomainMapper<List<String>, List<Long>> inResourceStreamScopeIdMapper)
+            final DomainMapper<String, Long> inResourceStreamScopeIdMapper)
     {
         getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
@@ -82,7 +82,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
         List<String> personIds = new ArrayList<String>();
         List<String> groupIds = new ArrayList<String>();
-        List<String> resourceKeys = new ArrayList<String>();
+        String resourceKey = null;
 
         for (int i = 0; i < recipients.size(); i++)
         {
@@ -98,7 +98,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
                 groupIds.add(req.getString("name"));
                 break;
             case RESOURCE:
-                resourceKeys.add(req.getString("name"));
+                resourceKey = req.getString("name");
                 break;
             default:
                 throw new RuntimeException("Unhandled type.");
@@ -110,9 +110,13 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
         final ArrayList<Long> streamScopeIds = new ArrayList<Long>();
 
-        if (!resourceKeys.isEmpty())
+        if (resourceKey != null && !resourceKey.equals(""))
         {
-            streamScopeIds.addAll(resourceStreamScopeIdMapper.execute(resourceKeys));
+            Long streamScopeId = resourceStreamScopeIdMapper.execute(resourceKey);
+            if (streamScopeId != null && streamScopeId > 0)
+            {
+                streamScopeIds.add(streamScopeId);
+            }
         }
 
         for (PersonModelView person : people)

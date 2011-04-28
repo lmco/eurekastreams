@@ -2016,7 +2016,7 @@
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
                                     <constructor-arg ref="getPeopleByAccountIdsMapper" />   
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                                    <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
+                                    <constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKey" />
                                 </bean>
                             </entry>
                             <entry key="organization">

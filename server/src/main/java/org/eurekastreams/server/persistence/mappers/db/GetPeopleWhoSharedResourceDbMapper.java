@@ -37,11 +37,12 @@ public class GetPeopleWhoSharedResourceDbMapper extends BaseArgDomainMapper<Shar
     @SuppressWarnings("unchecked")
     public List<Long> execute(final SharedResourceRequest inRequest)
     {
-        List<Long> peopleIds = getEntityManager().createQuery(
-                "SELECT DISTINCT p.id FROM Person p, Activity a WHERE p.accountId = a.actorId "
-                        + "AND a.actorType = :actorType " + "AND a.sharedLink.uniqueKey = :uniqueKey").setParameter(
-                "actorType", ActorType.PERSON).setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase())
-                .getResultList();
+        List<Long> peopleIds = getEntityManager()
+                .createQuery(
+                        "SELECT DISTINCT p.id FROM Person p, Activity a WHERE p.accountId = a.actorId "
+                                + "AND a.actorType = :actorType AND a.sharedLink.uniqueKey = :uniqueKey")
+                .setParameter("actorType", ActorType.PERSON)
+                .setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase()).getResultList();
 
         return peopleIds;
     }

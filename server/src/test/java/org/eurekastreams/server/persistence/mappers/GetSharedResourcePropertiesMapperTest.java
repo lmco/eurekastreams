@@ -101,12 +101,6 @@ public class GetSharedResourcePropertiesMapperTest
             {
                 oneOf(getResourceStreamScopeIdByKeyMapper).execute(with(uniqueKey));
                 will(returnValue(streamScopeId));
-
-                oneOf(getPeopleThatSharedResourceMapper).execute(with(request));
-                will(returnValue(new ArrayList<Long>()));
-
-                oneOf(getPeopleThatLikedResourceMapper).execute(with(request));
-                will(returnValue(new ArrayList<Long>()));
             }
         });
 

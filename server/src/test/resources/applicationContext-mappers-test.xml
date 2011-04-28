@@ -371,7 +371,14 @@
 	   class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 	   <constructor-arg ref="getPersonByAccountIdMapper" />
 	   <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-	   <constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" />
+	   <constructor-arg>
+		   <bean class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKey">
+		        <constructor-arg>
+		             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
+		        </constructor-arg>
+		        <constructor-arg value="true" />
+		    </bean>
+	   </constructor-arg>
 	   <property name="cache" ref="testCache" />
 	</bean>
 
@@ -509,18 +516,6 @@
     <bean id="getCommentsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetCommentsByIdsDbMapper">
         <constructor-arg ref="commentDTOPopulator" />
     </bean>   
-    
-    <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, throws exception if exactly one result not found. -->
-    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
-        <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
-        <constructor-arg value="true" />
-    </bean> 
-    
-    <bean id="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsForScopeTypeByUniqueKeys" >
-        <constructor-arg>
-             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
-        </constructor-arg>
-    </bean>    
     
     <bean id="getThemeXmlUrlByUuidDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetThemeXmlUrlByUuidDbMapper"/>
     

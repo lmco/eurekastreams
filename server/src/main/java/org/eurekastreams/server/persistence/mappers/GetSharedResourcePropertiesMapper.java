@@ -89,18 +89,32 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     public SharedResourceDTO execute(final SharedResourceRequest inRequest)
     {
         SharedResourceDTO dto = new SharedResourceDTO();
+        dto.setKey(inRequest.getUniqueKey());
+        dto.setSharersSample(new ArrayList<PersonModelView>());
+        dto.setLikersSample(new ArrayList<PersonModelView>());
 
-        // get the stream scope id if it exists
-        dto.setStreamScopeId(getResourceStreamScopeIdByKeyMapper.execute(inRequest.getUniqueKey()));
+        // either null or a stream scope id
+        Long streamScopeId = getResourceStreamScopeIdByKeyMapper.execute(inRequest.getUniqueKey());
+        dto.setStreamScopeId(streamScopeId);
+
+        // if the stream scope doesn't exist, then this resource doesn't either
+        if (streamScopeId == null)
+        {
+            // not found - if the shared resource existed, it would have a stream scope, so we can stop looking through
+            // the other tables now
+            dto.setIsLiked(false);
+            dto.setLikeCount(0);
+            dto.setShareCount(0);
+            return dto;
+        }
 
         List<Long> sharedPersonIds = getPeopleThatSharedResourceMapper.execute(inRequest);
         List<Long> likedPersonIds = getPeopleThatLikedResourceMapper.execute(inRequest);
 
-        dto.setKey(inRequest.getUniqueKey());
+        // need to check if the current user liked this before trimming the list
+        dto.setIsLiked(likedPersonIds.contains(inRequest.getPersonId()));
         dto.setLikeCount(likedPersonIds.size());
         dto.setShareCount(sharedPersonIds.size());
-        dto.setSharersSample(new ArrayList<PersonModelView>());
-        dto.setLikersSample(new ArrayList<PersonModelView>());
 
         log.info("Getting shared and liked people lists for shared resource with key: " + inRequest.getUniqueKey());
 
@@ -112,8 +126,6 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         {
             likedPersonIds = likedPersonIds.subList(0, 4);
         }
-        
-        dto.setIsLiked(likedPersonIds.contains(inRequest.getPersonId()));
 
         // get the people
         List<Long> personIds = new ArrayList<Long>();
@@ -122,7 +134,6 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         {
             if (!personIds.contains(id))
             {
-                log.debug("Person id: " + id + " not found in " + personIds.toString());
                 personIds.add(id);
             }
         }
@@ -130,7 +141,7 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         if (personIds.size() > 0)
         {
             List<PersonModelView> people = getPeopleModelViewsByIdsMapper.execute(personIds);
-            PersonModelView foundPerson, newPerson;
+            PersonModelView foundPerson;
             for (long personId : personIds)
             {
                 foundPerson = findPersonInList(people, personId);

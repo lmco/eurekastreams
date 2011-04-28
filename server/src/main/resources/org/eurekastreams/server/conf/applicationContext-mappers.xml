@@ -2634,14 +2634,18 @@
     </bean>
     
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null if exactly one result not found. -->
-    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
-        <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
+    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKey">
+        <constructor-arg>
+             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
+        </constructor-arg>
         <constructor-arg value="false" />
     </bean>
     
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, throws exception if exactly one result not found. -->
-    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
-        <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
+    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKey">
+        <constructor-arg>
+             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
+        </constructor-arg>
         <constructor-arg value="true" />
     </bean>
     
@@ -2649,12 +2653,6 @@
     <bean id="activityDTOMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
         <constructor-arg ref="bulkActivitiesMapper" />
         <constructor-arg value="false" />
-    </bean>            
-    
-    <bean id="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsForScopeTypeByUniqueKeys" >
-        <constructor-arg>
-             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
-        </constructor-arg>
     </bean>
     
 </beans>
