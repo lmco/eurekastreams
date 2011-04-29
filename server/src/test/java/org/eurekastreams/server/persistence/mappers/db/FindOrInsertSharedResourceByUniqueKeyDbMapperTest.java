@@ -59,7 +59,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        assertNull(sut.execute(new SharedResourceRequest(null, null)));
+        assertNull(sut.execute(new SharedResourceRequest(-1L, null)));
     }
 
     /**

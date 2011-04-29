@@ -17,15 +17,16 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.springframework.util.Assert;
 
 /**
- * Return stream scope id for a configured ScopeType give a unique key, either returning null or exception when not
- * found, determined by the constructor arg.
+ * Return stream scope for a configured ScopeType give a unique key, either returning null or exception when not found,
+ * determined by the constructor arg.
  */
-public class GetStreamScopeIdForScopeTypeByUniqueKey extends BaseArgDomainMapper<String, Long>
+public class GetStreamScopeForScopeTypeByUniqueKey extends BaseArgDomainMapper<String, StreamScope>
 {
     /**
      * The scope type.
@@ -45,7 +46,7 @@ public class GetStreamScopeIdForScopeTypeByUniqueKey extends BaseArgDomainMapper
      * @param inThrowExceptionOnNotFound
      *            whether to throw a RuntimeException when no results found - else returns null
      */
-    public GetStreamScopeIdForScopeTypeByUniqueKey(final ScopeType inScopeType, //
+    public GetStreamScopeForScopeTypeByUniqueKey(final ScopeType inScopeType, //
             final boolean inThrowExceptionOnNotFound)
     {
         scopeType = inScopeType;
@@ -58,17 +59,18 @@ public class GetStreamScopeIdForScopeTypeByUniqueKey extends BaseArgDomainMapper
      * 
      * @param inUniqueKey
      *            unique key
-     * @return scope id for key if present.
+     * @return stream scope for key if present
      */
     @Override
-    public Long execute(final String inUniqueKey)
+    public StreamScope execute(final String inUniqueKey)
     {
         // short circuit here as IN clause with emtpy list causes syntax error.
         if (inUniqueKey != null && !inUniqueKey.isEmpty())
         {
-            List<Long> results = getEntityManager()
-                    .createQuery("SELECT id FROM StreamScope WHERE scopeType = :scopeType AND uniqueKey = :uniqueKey")
-                    .setParameter("scopeType", scopeType).setParameter("uniqueKey", inUniqueKey).getResultList();
+            List<StreamScope> results = getEntityManager()
+                    .createQuery("FROM StreamScope WHERE scopeType = :scopeType AND uniqueKey = :uniqueKey")
+                    .setParameter("scopeType", scopeType).setMaxResults(1).setParameter("uniqueKey", inUniqueKey)
+                    .getResultList();
             if (results != null && results.size() == 1)
             {
                 // found results

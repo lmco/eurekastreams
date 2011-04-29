@@ -15,25 +15,26 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for GetStreamScopeIdsForScopeTypeByUniqueKey.
+ * Test for GetStreamScopeForScopeTypeByUniqueKey.
  */
-public class GetStreamScopeIdsForScopeTypeByUniqueKeyTest extends MapperTest
+public class GetStreamScopeForScopeTypeByUniqueKeyTest extends MapperTest
 {
     /**
      * System under test - throws exception when result not found.
      */
-    private GetStreamScopeIdForScopeTypeByUniqueKey sutThatThrowsExceptionWhenNotFound;
+    private GetStreamScopeForScopeTypeByUniqueKey sutThatThrowsExceptionWhenNotFound;
 
     /**
      * System under test - returns zero when result not found.
      */
-    private GetStreamScopeIdForScopeTypeByUniqueKey sutThatReturnsZeroWhenNotFound;
+    private GetStreamScopeForScopeTypeByUniqueKey sutThatReturnsZeroWhenNotFound;
 
     /**
      * Setup method.
@@ -41,10 +42,10 @@ public class GetStreamScopeIdsForScopeTypeByUniqueKeyTest extends MapperTest
     @Before
     public void setup()
     {
-        sutThatThrowsExceptionWhenNotFound = new GetStreamScopeIdForScopeTypeByUniqueKey(ScopeType.PERSON, true);
+        sutThatThrowsExceptionWhenNotFound = new GetStreamScopeForScopeTypeByUniqueKey(ScopeType.PERSON, true);
         sutThatThrowsExceptionWhenNotFound.setEntityManager(getEntityManager());
 
-        sutThatReturnsZeroWhenNotFound = new GetStreamScopeIdForScopeTypeByUniqueKey(ScopeType.PERSON, false);
+        sutThatReturnsZeroWhenNotFound = new GetStreamScopeForScopeTypeByUniqueKey(ScopeType.PERSON, false);
         sutThatReturnsZeroWhenNotFound.setEntityManager(getEntityManager());
     }
 
@@ -55,8 +56,10 @@ public class GetStreamScopeIdsForScopeTypeByUniqueKeyTest extends MapperTest
     public void testWhenExists()
     {
         final Long expectedId = 3L;
-        Long result = sutThatThrowsExceptionWhenNotFound.execute("csagan");
-        org.junit.Assert.assertEquals(expectedId, result);
+        final Long destinationEntityId = 4507L;
+        StreamScope result = sutThatThrowsExceptionWhenNotFound.execute("csagan");
+        org.junit.Assert.assertEquals(new Long(expectedId), new Long(result.getId()));
+        org.junit.Assert.assertEquals(destinationEntityId, result.getDestinationEntityId());
     }
 
     /**

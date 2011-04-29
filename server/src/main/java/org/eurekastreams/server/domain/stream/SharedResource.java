@@ -57,7 +57,7 @@ public class SharedResource extends DomainEntity implements Serializable
      */
     @Basic(optional = false)
     @NaturalId(mutable = false)
-    @Length(min = 1, max = MAX_UNIQUE_KEY_LENGTH, // 
+    @Length(min = 1, max = MAX_UNIQUE_KEY_LENGTH, //
     message = "A resource identifier must be no more than " + MAX_UNIQUE_KEY_LENGTH + " characters")
     private String uniqueKey;
 

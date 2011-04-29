@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.SharedResourceRequest;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 import org.jmock.Expectations;
@@ -50,7 +51,7 @@ public class GetSharedResourcePropertiesMapperTest
     /**
      * Mapper to get a stream scope id from type and key.
      */
-    private DomainMapper<String, Long> getResourceStreamScopeIdByKeyMapper = context.mock(DomainMapper.class,
+    private DomainMapper<String, StreamScope> getResourceStreamScopeByKeyMapper = context.mock(DomainMapper.class,
             "getStreamScopeIdFromTypeAndKeyMapper");
 
     /**
@@ -81,7 +82,7 @@ public class GetSharedResourcePropertiesMapperTest
     @Before
     public void setup()
     {
-        sut = new GetSharedResourcePropertiesMapper(getResourceStreamScopeIdByKeyMapper,
+        sut = new GetSharedResourcePropertiesMapper(getResourceStreamScopeByKeyMapper,
                 getPeopleThatSharedResourceMapper, getPeopleThatLikedResourceMapper, getPeopleModelViewsByIdsMapper);
         getPeopleModelViewsByIdsMapper.setCannedResponse(null);
     }
@@ -93,14 +94,14 @@ public class GetSharedResourcePropertiesMapperTest
     public void testExecuteWhenSharedResourceDNE()
     {
         final String uniqueKey = "http://foo.com";
-        final Long streamScopeId = null;
+        final StreamScope sharedResourceStreamScope = null;
         final SharedResourceRequest request = new SharedResourceRequest(uniqueKey, null);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(getResourceStreamScopeIdByKeyMapper).execute(with(uniqueKey));
-                will(returnValue(streamScopeId));
+                oneOf(getResourceStreamScopeByKeyMapper).execute(with(uniqueKey));
+                will(returnValue(sharedResourceStreamScope));
             }
         });
 
@@ -122,11 +123,15 @@ public class GetSharedResourcePropertiesMapperTest
     public void testExecuteWhenSharedExists()
     {
         final String uniqueKey = "http://foo.com";
-        final Long streamScopeId = 23881L;
+        final StreamScope sharedResourceStreamScope = context.mock(StreamScope.class);
         final SharedResourceRequest request = new SharedResourceRequest(uniqueKey, null);
         final List<Long> sharerIds = new ArrayList<Long>();
         final List<Long> likerIds = new ArrayList<Long>();
         final List<PersonModelView> people = new ArrayList<PersonModelView>();
+
+        final Long streamScopeId = 282834L;
+        final Long sharedResourceId = 83348L;
+
         people.add(buildPersonModelView(1L));
         people.add(buildPersonModelView(2L));
         people.add(buildPersonModelView(3L));
@@ -155,8 +160,14 @@ public class GetSharedResourcePropertiesMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getResourceStreamScopeIdByKeyMapper).execute(with(uniqueKey));
+                oneOf(sharedResourceStreamScope).getId();
                 will(returnValue(streamScopeId));
+
+                oneOf(sharedResourceStreamScope).getDestinationEntityId();
+                will(returnValue(sharedResourceId));
+
+                oneOf(getResourceStreamScopeByKeyMapper).execute(with(uniqueKey));
+                will(returnValue(sharedResourceStreamScope));
 
                 oneOf(getPeopleThatSharedResourceMapper).execute(with(request));
                 will(returnValue(sharerIds));
@@ -168,6 +179,9 @@ public class GetSharedResourcePropertiesMapperTest
 
         // execute sut
         SharedResourceDTO result = sut.execute(request);
+
+        // make sure the request was updated with the shared resource id
+        assertEquals(sharedResourceId, request.getSharedResourceId());
 
         // make sure the people mapper was given the right list of people
         assertEquals(7, getPeopleModelViewsByIdsMapper.getStoredRequest().size());
