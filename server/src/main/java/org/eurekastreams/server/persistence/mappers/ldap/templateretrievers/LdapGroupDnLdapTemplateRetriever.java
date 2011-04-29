@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.ldap.templateretrievers;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.server.persistence.mappers.requests.LdapLookupRequest;
 import org.springframework.ldap.core.LdapTemplate;
 
@@ -57,7 +58,7 @@ public class LdapGroupDnLdapTemplateRetriever extends BaseLdapTemplateRetriever
         {
             for (String key : getLdapTemplates().keySet())
             {
-                if (testString.indexOf("dc=" + key.toLowerCase()) != -1)
+                if (StringUtils.containsIgnoreCase(testString, "dc=" + key))
                 {
                     return getLdapTemplates().get(key);
                 }
