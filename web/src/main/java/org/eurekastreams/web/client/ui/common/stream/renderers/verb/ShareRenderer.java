@@ -162,7 +162,7 @@ public class ShareRenderer implements VerbRenderer
      */
     public List<StatefulRenderer> getMetaDataItemRenderers()
     {
-        return Collections.singletonList((StatefulRenderer) new MetadataLinkRenderer("Posted by", activity
+        return Collections.singletonList((StatefulRenderer) new MetadataLinkRenderer("Posted by ", activity
                 .getOriginalActor()
                 .getUniqueIdentifier(), activity.getOriginalActor().getDisplayName()));
     }
