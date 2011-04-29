@@ -2320,6 +2320,10 @@ body .post-to-stream .over-character-limit {
 	zoom: 1;
 }
 
+.eureka-connect-liked-activity-wrapper {
+    width: 165px;
+}
+
 .users-who-liked-activity .users-who-liked-activity-body>div>* {
 	margin-right: 5px;
 	margin-bottom: 5px;
