@@ -101,7 +101,6 @@ public class EmployeeLookupViewModel
             {
                 String searchText = view.getLastName().getText();
                 boolean anyText = !searchText.isEmpty();
-                setSearchButtonStatus(anyText);
                 if (anyText && ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown())
                 {
                     model.fetch(new PersonLookupRequest(searchText, MAX_RESULTS + 1), true);
@@ -208,27 +207,6 @@ public class EmployeeLookupViewModel
         {
             select.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
             select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
-        }
-    }
-
-    /**
-     * Sets the enabled/disabled state of the search button.
-     *
-     * @param active
-     *            If new state is active.
-     */
-    private void setSearchButtonStatus(final boolean active)
-    {
-        Widget search = view.getSearch();
-        if (active)
-        {
-            search.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
-            search.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
-        }
-        else
-        {
-            search.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
-            search.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
         }
     }
 }

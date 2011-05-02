@@ -4128,7 +4128,7 @@ body .options>li>.option-title:hover {
 }
 
 .directory .options.views {
-	margin-top: 95px;
+	margin-top: -45px;
 	position: absolute;
 	left: 15px;
 	width: 180px;
@@ -7998,6 +7998,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	height: 20px;
 	margin-left: -30px;
 	margin-top: 1px;
+	z-index: 100;
 }
 
 .eureka-connect-liked-activity { }
@@ -8875,7 +8876,6 @@ IE SPECIFIC CSS.
 	}
 	
 	.directory .options.views {
-		margin-top: 105px;
 	}
 	
 	.options.views>div,.options>div>div {
