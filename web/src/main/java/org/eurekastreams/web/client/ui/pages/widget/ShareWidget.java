@@ -29,8 +29,10 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PostReadyEvent;
+import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
 import org.eurekastreams.web.client.model.ActivityModel;
+import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
@@ -48,10 +50,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -183,14 +191,15 @@ public class ShareWidget extends Composite
         postContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
         postContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToStreamContainer());
 
-
-
         FlowPanel postInfoContainer = new FlowPanel();
         postInfoContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postInfoContainer());
 
         postButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postButton());
         postInfoContainer.add(postButton);
 
+        countDown.setText(Integer.toString(MAXLENGTH));
+        countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
+        postInfoContainer.add(countDown);
 
         message.setText(defaultText);
 
@@ -208,6 +217,23 @@ public class ShareWidget extends Composite
             }
         });
 
+        // changes to the message for character countdown
+        message.addKeystrokeHandler(new KeyUpHandler()
+        {
+            public void onKeyUp(final KeyUpEvent inEvent)
+            {
+                onCommentChanges();
+
+            }
+        });
+        message.addValueChangedHandler(new ValueChangeHandler<String>()
+        {
+            public void onValueChange(final ValueChangeEvent<String> inEvent)
+            {
+                onCommentChanges();
+            }
+        });
+
         AvatarWidget avatar = new AvatarWidget(person, EntityType.PERSON, Size.VerySmall);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryAvatar());
 
@@ -219,11 +245,26 @@ public class ShareWidget extends Composite
 
         postContainer.add(entryPanel);
 
+        FlowPanel contentWarningContainer = new FlowPanel();
+        contentWarningContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().contentWarning());
+        contentWarningContainer.add(new SimplePanel());
+        final InlineLabel contentWarning = new InlineLabel();
+        contentWarningContainer.add(contentWarning);
+        postContainer.add(contentWarningContainer);
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
+                {
+                    public void update(final GotSystemSettingsResponseEvent event)
+                    {
+                        contentWarning.setText(event.getResponse().getContentWarningText());
+                    }
+                });
+        SystemSettingsModel.getInstance().fetch(null, true);
+
         widget.add(postContainer);
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
-
             public void update(final MessageStreamAppendEvent arg1)
             {
                 closeWindow();
