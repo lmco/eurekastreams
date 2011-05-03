@@ -136,7 +136,7 @@
 
 	<bean id="searchGroupsByPrefixMapper"
 		class="org.eurekastreams.server.persistence.mappers.SearchPeopleAndGroupsByPrefix">
-		<constructor-arg value="20" /> <!-- default max results -->
+		<constructor-arg value="7" /> <!-- default max results -->
 		<constructor-arg ref="groupPersonSearchRequestBuilder" />
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
