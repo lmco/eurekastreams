@@ -6113,6 +6113,11 @@ body .stream-page-container>div.form-error-box {
 	position: relative;
 }
 
+.stream-lists .auto-complete.form-element .yui-ac-container {
+	position: absolute;
+}
+
+
 .modal-content-panel .form-container>div>.scope-form-element>.yui-ac.auto-complete .yui-ac-container
 	{
 	z-index: 2001;
