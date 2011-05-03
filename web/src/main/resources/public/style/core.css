@@ -2035,11 +2035,11 @@ body .post-to-stream .over-character-limit {
 }
 
 @sprite .eureka-connect-share-widget-container .post-to-stream .post-button {
-	gwt-image: "shareBtn";
+	gwt-image: "shareBtnTall";
 }
 
 @sprite body .eureka-connect-share-widget-container .post-to-stream .post-button.inactive {
-	gwt-image: "shareBtnInactive";
+	gwt-image: "shareBtnTallInactive";
 }
 
 .stream-message-item {
