@@ -1,305 +1,688 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Module>
-	<ModulePrefs title="Activity App"
-		thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png"
-		title_url="http://eurekastreams.org" author="Eureka Streams"
-		author_email="support@eurekastreams.org">
-		<Require feature="opensocial-0.9" />
-		<Require feature="views" />
-		<Require feature="dynamic-height" />
-		<Require feature="opensocial-templates">
-			<Param name="client">true</Param>
-		</Require>
-		<Require feature="opensocial-data" />
-		<Require feature="opensocial-data-context" />
-		<Require feature="settitle" />
-		<Require feature="eurekastreams-core" />
-		<Require feature="xmlutil" />
-		<Optional feature="content-rewrite">
-			<Param name="include-tags" />
-		</Optional>
-	</ModulePrefs>
-	<UserPref name="filterId" datatype="hidden" default_value="0" />
-	<UserPref name="filterType" datatype="hidden" default_value="compositestream" />
-	<UserPref name="streamType" datatype="hidden" default_value="" />
-	<UserPref name="shortName" datatype="hidden" default_value="" />
-	<UserPref name="searchId" datatype="hidden" default_value="0" />
+    <ModulePrefs title="Activity" thumbnail="${build.web.baseurl}/style/images/isgs_news.png" title_url="http://communications.isgs.lmco.com" author="Eureka Streams"
+        description="IS&amp;GS News app provides a listing of the recent IS&amp;GS News headlines, Product Line, and Location specific articles." author_email="support@eurekastreams.org">
+        <Require feature="opensocial-0.9" />
+        <Require feature="osapi" />
+        <Require feature="views" />
+        <Require feature="dynamic-height" />
+        <Require feature="opensocial-data"/>
+        <Require feature="opensocial-data-context"/>
+        <Require feature="settitle" />
+        <Require feature="eurekastreams-core" />
+        <Require feature="xmlutil"/>
+        <Optional feature="content-rewrite">
+                        <Param name="expires">86400</Param>
+                        <Param name="include-url"></Param>
+                        <Param name="minify-css">true</Param>
+                        <Param name="minify-js">true</Param>
+                        <Param name="minify-html">true</Param>
+        </Optional>
+    </ModulePrefs>
 	<UserPref name="gadgetTitle" datatype="text" default_value="Activity App" />
-	<UserPref name="streamQuery" datatype="text" default_value="" />
-
-	<Content type="html" view="canvas">
+	<UserPref name="streamQuery" datatype="hidden" default_value="" />
+	<UserPref name="streamLocation" datatype="hidden" default_value="" />
+    <Content type="html" view="default, canvas">
     <![CDATA[
+        <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" " http://www.w3.org/ TR/html4/strict.dtd">
+    <link rel="stylesheet" type="text/css" href="${build.web.baseurl}/style/eureka-apps.css" />
         <style type="text/css">
-        .stream-message-item .message-body
+        .tab-bar
         {
-            width: 570px ! important;
-            display: block;
+            padding-bottom: 10px ! important;
         }
+
+		.list-view-item, .list-view-item .item-contents
+		{
+			height:auto;
+		}
+		.avatar
+		{
+			display:inline-block;
+			*display:inline;
+			zoom:1;
+			margin-right:10px;
+			vertical-align:top;
+		}
+		.avatar img
+		{
+			height:35px;
+			padding:1px;
+			width:35px;
+			border:1px solid #BBB;
+		}
+		.comment .avatar img
+		{
+			height:25px;
+			width:25px;
+		}
+		.meta
+		{
+			color:#666;
+			font-size:8pt;
+			margin-top:4px;
+			margin-bottom:4px;
+		}
+		.post
+		{
+			white-space:normal;
+			line-height:1.5;
+			margin-top:3px;
+			font-size:12px;
+            width: 95%;
+		}
+		.activity-container
+		{
+			display:inline-block;
+			*display:inline;
+			zoom:1;
+            width: 80%;
+            white-space: normal ! important;
+		}
+		.comment .activity-container
+		{
+			margin-top:-5px;
+			margin-right:40px;
+		}
+		div.list-view-item:hover
+		{
+			background:#EEE
+		}
+		div.list-view-item .fade-out
+		{
+			display:none;
+		}
+		div.post-in-comment
+		{
+			background:#EEE;
+			border-bottom:1px solid #BBB;
+			padding:10px;
+			overflow:hidden;
+			white-space:pre;
+		}
+		div.comment
+		{
+			border-bottom:1px solid #BBB;
+			padding:10px;
+			overflow:hidden;
+			white-space:pre;
+            padding-left: 20px;
+		}
+		div.post-in-comment strong, .actor-line
+		{
+			font-size:13px;
+		}
+		.actor-line a
+		{
+			font-weight: bold;
+		}
+		div.comment strong
+		{
+			font-size:12px;
+		}
+		div.post-contents
+		{
+			position:absolute;
+			bottom:0;
+			background:#F3F3F3;
+			border-top:1px solid #BBB;
+			padding:10px;
+			height:130px;
+			*height:120px;
+		}
+        div.post-contents div.post-button
+        {
+            background-image: url(${build.web.baseurl}/style/images/gadget-post.png);
+            text-indent: -9999em;
+            display: block;
+            overflow: hidden;
+            width: 46px;
+            height: 24px;
+            cursor: pointer;
+        }
+        body div.post-contents div.post-button-disabled
+        {
+            background-image: url(${build.web.baseurl}/style/images/gadget-post-disabled.png);
+        }
+		textarea
+		{
+			border:1px solid #BBB;
+			display:block;
+			margin-bottom:5px;
+			padding:5px;
+		}
+		.post-button, .cancel-button
+		{
+			float:right;
+		}
+		.cancel-button
+		{
+			padding-left:10px;
+			padding-right:2px;
+			cursor:pointer;
+			color:#0066CC;
+            font-size: 12px;
+            padding-top: 3px;
+		}
+        .slide-arrow
+        {
+            *background-position: top right;
+            *width: 30px;
+            *margin-right: -15px;
+            background-repeat: no-repeat;
+        }
+        .search-results
+        {
+            z-index: 101;
+        }
+
+        .error
+        {
+            padding: 10px;
+        }
+
+        .error strong
+        {
+            color: red;
+            display: block;
+            margin-bottom: 10px;
+        }
+		
+		.tab-bar
+		{
+			padding-bottom: 5px;
+		}
+		
+		.go-to-stream
+		{
+			display: block;
+			background: transparent url(${build.web.baseurl}/style/images/gadget-jump-out.png) no-repeat scroll 5px 0px;
+			text-indent:-1000em;
+			overflow:hidden;
+			width: 30px;
+			height: 23px;
+		}
+
+        .search-results-title
+        {
+            height: 18px; 
+            width: 255px; 
+            overflow: hidden; 
+            float: left;
+            padding-top: 3px;
+        }
+		
         </style>
+        <script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js" ></script>
+        <script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js" ></script>
+
+        <script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
+            <os:ViewerRequest key="databindviewer"/>
+        </script>
     ]]>
-	</Content>
+    </Content>
 
-
-	<Content type="html" view="default, profile, canvas">
+    <Content type="html" view="default,canvas">
     <![CDATA[
-        <script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js"></script>
-        <link type="text/css" rel="stylesheet" href="${build.web.baseurl}/style/core.css" type="text/css" />
-        
-        <style type="text/css">
-	           .avatar
-                {
-                    clear:left;
-                    float:left;
-                    position: absolute;
-                }
-                .activity-footer
-                {
-                	color: #666666;
-                	padding-right:0px;
-                	padding-top:10px;
-                	text-align:right;
-                }
-                .activity-footer a
-                {
-                	text-decoration: none;
-                }
-                .message-metadata
-                {
-                	color: #666  !important;
-                    *clear:left  !important;
-                }
-
-                .message-metadata > div 
-                {
-                    clear:left  !important;
-		        }
-                .blank-activity
-                {
-                	border-bottom: 1px solid #BBB;
-                	color: #666666;
-                	font-size: 16px;
-                	font-weight: bold;
-                	margin-left:10px;
-                	margin-right:10px;
-                	padding-bottom:10px;
-                	padding-top:10px;
-                	text-align:center;
-                }
-		.message-link
-		{
-			font-size:11px !important;
-		}
-		.stream-message-item
-		{
-			padding-bottom: 10px !important;
-			padding-top: 10px !important;
-			margin: 0 !important;
-			font-style: normal !important;
-            clear: both;			
-            border-bottom:1px solid #CCCCCC;
-		}
-
-		.stream-message-item .description
-		{
-		  overflow: visible ! important;
-		}
-		
-		.message-container
-		{
-			font-style: normal !important;
-			margin-top: -5px;
-		}
-		.description
-		{
-			padding-left: 10px !important;
-		}
-		body
-		{
-			background-color:white;
-			width:auto;
-            padding:10px;
-		}
-		a:link.timestamp, a:visited.timestamp, a:active.timestamp
-		{
-			color:#666666
-		}
-		.error
-		{
-			font-size:14pt;
-			font-weight:bold;
-		}
-		.error-details
-		{
-			margin-left:30px;
-			color:#666666
-		}
-		.message-container strong
-		{
-		  display:block;
-		}
-        </style>
-    	
+        <div id='activity-container'></div>
         <script type="text/javascript">
-            
-            function init()
+		
+	var prefs_ = new gadgets.Prefs();
+	viewerJSON = opensocial.data.DataContext.getDataSet("databindviewer")
+	var currentUserName = viewerJSON.accounts[0].username;
+	var baseAPIURL = '${build.web.baseurl}/api/0/read';
+		
+	var maxIds = [];
+	var activitiesById = [];
+	var baseQuery;
+	var main = jQuery("<div/>");
+	var currentUser = opensocial.data.DataContext.getDataSet("databindviewer");
+	var streamLocation = '';
+    var warningText = "";
+    var hasBeenClicked = false;
+    
+    jQuery('body').click(function()
+        {
+            if(!hasBeenClicked)
             {
-                var prefs_ = new gadgets.Prefs();
-
-                var cleanTitle = gadgets.util.unescapeString(prefs_.getString("gadgetTitle"));
-                gadgets.window.setTitle(cleanTitle);
-                
-        		var activityJSON = opensocial.data.DataContext.getDataSet("activityDataSet");
-
-                if (activityJSON.status != "200")
-                {
-                    var streamType = prefs_.getString("streamType");
-                    var niceType = "stream";
-                    
-                    if (streamType == "streamsearch")
-                    {
-                    	niceType = "saved search";
-                    }
-                    if (streamType == "compositestream")
-                    {
-                    	niceType = "list";
-                    }
-                    else if (streamType == "groupstream")
-                    {
-                    	niceType = "group";
-                    }
-                    
-                    var message = "There was an error retrieving this " + niceType + ".  Please ensure the " + niceType + " still exists then refresh the app to try again.";
-                    var jsonMsg = {'message' : message};
-                	opensocial.template.getTemplate('uos:errorTemplate').renderInto(document.getElementById('activity-view'), jsonMsg);
-                }
-                else if(activityJSON.content.activities.length == 0)
-                {
-                	activityJSON.footer = getFooter(prefs_);
-                	opensocial.template.getTemplate('uos:blankTemplate').renderInto(document.getElementById('activity-view'), activityJSON);
-                }
-                else
-                {
-                    activityJSON.content.footer = getFooter(prefs_);
-                	opensocial.template.getTemplate('uos:viewTemplate').renderInto(document.getElementById('activity-view'), activityJSON.content);
-                    jQuery('.message-body').each(function() {
-                        $(this).text($(this).text().replace('%EUREKA:ACTORNAME%', $(this).siblings().find('a').text()));
-                    });
-                }
-                setTimeout('gadgets.window.adjustHeight()',500);                                
+                Eureka.makeOauthRequest(buildApiUrl('registerUsageMetric', {"pageView":"false", "streamView":"true"}),
+                   function(nothing)
+                   {
+                       hasBeenClicked = true;
+                   }, 1);
             }
-            
-            gadgets.util.registerOnLoadHandler(init);
+        });
+
+	function buildApiUrl(apiName, request, params)
+	{
+		if (params)
+		{
+			if (typeof params != 'string')
+				params = JSON.stringify(params);
+		}
+		else if (request)
+		{
+			if (typeof request == 'object')
+				request = JSON.stringify(request);
+			params = '{"request":' + request + '}';
+		}
+		else
+			params = '{}';
+		
+		return baseAPIURL + '/' + apiName + '/' + encodeURIComponent(params);
+	}
+	
+	function getAvatar(avatarId, type)
+	{
+		if (avatarId == null && type == "GROUP") return "${build.web.baseurl}/style/images/noPhoto50-group.png"
+		if (avatarId == null && type == "PERSON") return "${build.web.baseurl}/style/images/noPhoto50.png"
+		return  "${build.web.baseurl}/eurekastreams/photos?img=s"+avatarId;
+	}
+
+	function toggleLikeActivity(activityId)
+	{
+		var likeLink = jQuery("#like-link");
+		var likeAction = "ADD_LIKE";
+		
+		if (likeLink.text()=="Unlike")
+		{
+		  likeAction = "REMOVE_LIKE";
+		  jQuery("#like-link").text("Like");		  
+		  activitiesById[activityId].liked = false;
+		}
+		else
+		{
+		  jQuery("#like-link").text("Unlike");
+		  activitiesById[activityId].liked = true;
+		}
+
+		Eureka.makeOauthRequest(buildApiUrl('setActivityLiked', {"activityId":activityId, "likeActionType":likeAction}),
+			function(results)
+			{
+				var activity = activitiesById[activityId];
 				
-		// Had to move this into a function since the gadget xml didn't want to validate with the addition
-		// of the ampersand and a second parameter
-		function activityNav(activityId)
+				var likeLink = jQuery(".like-count");
+				if (likeAction == "ADD_LIKE")
+				{
+					activity.likeCount++;
+					jQuery(".likes-link-container").show();					
+				} 
+				else 
+				{
+					activity.likeCount--;
+					if (activity.likeCount <= 0)
+					{
+						jQuery(".likes-link-container").hide();	
+					}
+					
+				}
+				likeLink.text(activity.likeCount == 1 ? "1 Like" : activity.likeCount + " Likes");
+				jQuery(".like-count-number.item" + activityId).text(activity.likeCount);
+
+			}, 1);
+	}
+
+	function whoLikedThis(activityId)
+	{
+		var activity = activitiesById[activityId];
+		var whoLikedThisContainer = jQuery("<div></div>");
+
+		Eureka.makeOauthRequest(buildApiUrl('getActivityLikers',activity.id),
+			function(results)
+			{
+				for (var i in results.data)
+				{
+					var liker = results.data[i];
+
+					var rendered = jQuery("<div class='comment'><div class='avatar'><img src='" + getAvatar(liker.avatarId, "PERSON") + "'></div><div class='activity-container'><div><a target='_blank'  href='${build.web.baseurl}/#people/" + liker.accountId + "'><strong>%LIKERNAME%</strong></a></div></div></div>").appendTo(whoLikedThisContainer);
+					rendered.find('strong:contains("%LIKERNAME%")').text(liker.displayName);
+				}
+			}, 1);
+
+		var scrolledList = new Eureka.ScrolledList(whoLikedThisContainer, function() { scrolledList.endOfList(); }, 356);
+		var basicContainer = new Eureka.BasicContainer(scrolledList.getContainer(), "Who Liked This", true, false);
+		Eureka.Container.switchView(basicContainer.getContainer());
+	}
+
+
+	function getCommentsPanel()
+	{
+		var commentDiv = jQuery("#comments-for");
+		var activityId = commentDiv.attr("class").split("-")[1];
+		var activity = activitiesById[activityId];
+		var props = activity.baseObjectProperties;
+
+		var likeStr = activity.liked ? "Unlike" : "Like";
+		var likesStr = "";
+
+		if (activity.likeCount == 0)
 		{
-		    var prefs_ = new gadgets.Prefs();
-            var streamLocation = prefs_.getString("streamLocation");
-            var suffix = "showComment=true&activityId=" + activityId;
+			likesStr = "<span style='display:none' class='likes-link-container'> • <a class='like-count' href='javascript:whoLikedThis("+activity.id+");'>"+activity.likeCount+" Like</a></span>";
+		}
+		else if (activity.likeCount == 1)
+		{
+			 likesStr = "<span class='likes-link-container'> • <a class='like-count' href='javascript:whoLikedThis("+activity.id+");'>"+activity.likeCount+" Like</a></span>";
+		}
+		else
+		{
+			 likesStr = "<span class='likes-link-container'> • <a class='like-count' href='javascript:whoLikedThis("+activity.id+");'>"+activity.likeCount+" Likes</a></span>";
+		}
+
+		var rendered = commentDiv.html("<div class='post-in-comment'><div class='avatar'><img src='" + getAvatar(activity.actor.avatarId, activity.actor.type) + "'></div><div class='activity-container'><div class='actor-line'><a target='_blank'  href='${build.web.baseurl}/#people/" + activity.actor.uniqueIdentifier + "'><strong>%USERNAME%</strong></a></div><div class='post'></div><div class='meta'>" + eurekastreams.core.getTimeAgo(activity.postedTime) + " • <a id='like-link' href='javascript:toggleLikeActivity(\"" + activity.id + "\");'>" + likeStr + "</a>" + likesStr + "</div></div></div>");
+		rendered.find('strong:contains("%USERNAME%")').text(activity.actor.displayName);
+		
+        if (props.content != null)
+        {
+            commentDiv.find(".post-in-comment .post").text(props.content.replace('%EUREKA:ACTORNAME%', activity.actor.displayName));
+        }
+        
+        if (props.targetTitle != null && props.targetUrl != null && activity.baseObjectType == "BOOKMARK")
+        {
+            commentDiv.find(".post-in-comment .post").append("<div><a target='_NEW' href='" + props.targetUrl  + "'>" + props.targetTitle  + "</a></div>");         
+        }
+        
+		if (activity.destinationStream.type == 'RESOURCE')
+		{
+			var actorLine = rendered.find('div.actor-line');
+			actorLine.append(' commented on ');
+			jQuery('<a target="_blank"/>').text(props.resourceTitle).attr('href',props.resourceUrl).appendTo(actorLine);
+			if (props.siteTitle)
+			{
+				actorLine.append(' from ');
+				jQuery('<a target="_blank"/>').text(props.siteTitle).attr('href',props.siteUrl).appendTo(actorLine);
+			}
+		}
+		
+		var commentContainer = jQuery('<div></div>');
+
+		Eureka.makeOauthRequest(buildApiUrl('getActivityById',activity.id),
+			function(results)
+			{
+				for (var i in results.data.comments)
+				{
+					var comment = results.data.comments[i];
+
+					var renderedComment = jQuery("<div class='comment'><div class='avatar'><img src='" + getAvatar(comment.authorAvatarId, "PERSON") + "'></div><div class='activity-container'><div><a target='_blank'  href='${build.web.baseurl}/#people/" + comment.authorAccountId + "'><strong>%USERNAME%</strong></a></div><div class='post'></div><div class='meta'>" + eurekastreams.core.getTimeAgo(comment.timeSent) + "</div></div></div>").appendTo(commentContainer);
+					renderedComment.find('.post').text(comment.body);
+					renderedComment.find('strong:contains("%USERNAME%")').text(comment.authorDisplayName);
+				}
+			}, 1);
+
+		var scrollHeight = jQuery("body").height() - 40 - commentDiv.height() - 54;
+
+		var scrolledList = new Eureka.ScrolledList(commentContainer, function() { scrolledList.endOfList(); }, scrollHeight);
+		commentDiv.append(scrolledList.getContainer());
+	}
+
+	function getOtherSorts(sort, keywords, className)
+	{
+		var query = jQuery.extend(true, {}, baseQuery);
+		query.count="50";
+		query.query.sortBy = sort;
+
+		if (keywords != "")
+		{
+			query.query.keywords = keywords;
+		}
+        
+		query = gadgets.json.stringify(query).replace(/\"/g, "'");
+
+		Eureka.makeOauthRequest(buildApiUrl('getActivitiesByRequest', '"' + query + '"'),
+		function(results)
+		{
+			if (results.data.pagedSet.length > 0)
+			{
+				var newActivityList = createScrolledActivityList(results.data.pagedSet, sort, keywords);
+				jQuery("."+className).append(newActivityList); 
+				jQuery("."+className).css("height", "auto");
+			}
+		}, 1);
+	}
+
+	function createActivityList(activities, keywords, sort)
+	{
+		var activityList = new Eureka.ListView();
+
+		for (i in activities)
+		{
+			var activity = activities[i];
+			var id = activity.id;
+			activitiesById[id] = activity;
+
+            var activityStr = "<div><div class='avatar'><img src='" + getAvatar(activity.actor.avatarId, activity.actor.type) + "'></div>" +
+            	"<div class='activity-container'><div><strong>%ACTORNAME%</strong>";
+
+			var actorLineReplacements = {};
+            if (activity.destinationStream.type != activity.actor.type || activity.destinationStream.destinationEntityId != activity.actor.id)
+            {
+				if (activity.destinationStream.type == 'RESOURCE')
+				{
+					actorLineReplacements['RESOURCETITLE'] = activity.baseObjectProperties.resourceTitle;
+					activityStr += " commented on <strong>%RESOURCETITLE%</strong>";
+					if (activity.baseObjectProperties.siteTitle)
+					{
+						actorLineReplacements['SITETITLE'] = activity.baseObjectProperties.siteTitle;
+						activityStr += " from <strong>%SITETITLE%</strong>";
+					}
+				}
+				else
+				{
+					actorLineReplacements['DESTNAME'] = activity.destinationStream.displayName;
+					activityStr += " to <strong>%DESTNAME%</strong>";
+				}
+            }
+
+            activityStr += "</div><div class='post item"+id+"'></div>" + 
+            	"<div class='meta'>"+eurekastreams.core.getTimeAgo(activity.postedTime) +
+            	" • <span class='comment-count-number item" + id +"'>" + activity.commentCount + "</span> comments • " +
+            	"<span class='like-count-number item" + id +"'>" + activity.likeCount + "</span> likes</div></div></div>";
+
+			var item = activityList.addItem(activityStr,"", "",new Eureka.BasicContainer(jQuery("<div id='comments-for' class='act-"+activity.id+"'></div>"), "Comments", true, false).getContainer(), function(count) { getCommentsPanel(); }, true);
+
+			item.find('strong:contains("%ACTORNAME%")').text(activity.actor.displayName);
+			for (var key in actorLineReplacements)
+			{
+				item.find('strong:contains("%' + key + '%")').text(actorLineReplacements[key]);
+			}
+			
+            if (activity.baseObjectProperties.content != null)
+            {
+                item.find(".post.item"+id).text(activity.baseObjectProperties.content.replace('%EUREKA:ACTORNAME%', activity.actor.displayName));
+            }
+
+            if (activity.baseObjectProperties.targetTitle != null && activity.baseObjectProperties.targetUrl != null && activity.baseObjectType == "BOOKMARK")
+            {
+			    item.find(".post.item"+id).append("<div><a target='_NEW' href='" + activity.baseObjectProperties.targetUrl  + "'>" + activity.baseObjectProperties.targetTitle  + "</a></div>");
+                if (activity.baseObjectProperties.description != null)
+                {
+			        item.find(".post.item"+id).append("<div>" + activity.baseObjectProperties.description + "</div>");
+                }
+            }
+			maxIds[keywords] = id;
+		}
+
+		return activityList;
+	}
+	
+	function createScrolledActivityList(activities, sort, keywords)
+	{
+		var activityList = createActivityList(activities, keywords, sort);
+		var container = new jQuery("<div></div>");
+		var scrolledList = new Eureka.ScrolledList(activityList.getContainer(), function() 
+			{
+			    if (sort == null)
+			    {
+				var query = jQuery.extend(true, {}, baseQuery);
+				query.maxId = maxIds[keywords];
+				if (keywords != "")
+				{
+					query.query.keywords = keywords;
+				}
+                
+                //Default to data sort if none is provided.
+                query.query.sortBy = 'date';
+
+				var request = '"' + gadgets.json.stringify(query).replace(/\"/g, "'") + '"';
+				Eureka.makeOauthRequest(buildApiUrl('getActivitiesByRequest', request),
+					function(results)
+					{
+						if (results.data.pagedSet.length > 0)
+						{
+                            var newActivityList = createActivityList(results.data.pagedSet, keywords, sort);
+							scrolledList.appendToList(newActivityList.getContainer()); 
+                            Eureka.resize();
+						}
+						else
+						{
+							scrolledList.endOfList();
+						}
+					}, 1);
+			    }
+			    else
+			    {
+				scrolledList.endOfList();
+			    }
+			}, 356);
+
+		container.append(scrolledList.getContainer());
+
+		return container;
+	}        
+
+	function getMain(activityJSON, keywords)
+	{
+		var rand = Math.floor(Math.random()*10000);
+
+		var main = jQuery("<div/>");
+				
+        	var tabContainer = new Eureka.TabPanel();
+		tabContainer.addTab("Recent", createScrolledActivityList(activityJSON, null, keywords));
+		tabContainer.addTab("Popular", jQuery("<div style='height:440px' class='interesting"+rand+"'></div>"), false, function() { getOtherSorts("interesting", keywords, "interesting"+rand); });
+		tabContainer.addTab("Active", jQuery("<div style='height:440px' class='commentdate"+rand+"'></div>"), true, function() { getOtherSorts("commentdate", keywords, "commentdate"+rand); });
+                main.append(tabContainer.getContainer());
+		return main;
+				
+	}
+
+	function renderMain(results, hideSearch)
+	{
+		var activityJSON = results.data.pagedSet;
+		var search = new Eureka.SearchBar(function(value)
+		{	
+			var query = jQuery.extend(true, {}, baseQuery);
+			query.query.keywords = value;
             
-            if (streamLocation.indexOf('?') == -1)
+            if(query.query.sortBy == null)
             {
-                eurekastreams.core.navigate(streamLocation  + "?" + suffix);
+                query.query.sortBy = 'date';
             }
-            else
-            {
-                eurekastreams.core.navigate(streamLocation  + "&" + suffix);
-            }
-		}
+
+			var request = '"' + gadgets.json.stringify(query).replace(/\"/g, "'") + '"';
+			Eureka.makeOauthRequest(buildApiUrl('getActivitiesByRequest', request),
+			function(results)
+			{
+				search.setResultsPanel(getMain(results.data.pagedSet, value));
+			}, 1);
+		});
 		
-		function getFooter(prefs_)
+		if (streamLocation)
 		{
-		   return prefs_.getString("streamLocation");
+			search.addObj(jQuery('<a href="${build.web.baseurl}/#' + streamLocation + '" target="_blank" class="go-to-stream" title="Go to Stream">Go to Stream</a>'));
 		}
-		</script>
-
-		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
-			<os:OwnerRequest key="databindowner" />
-			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/${UserPrefs.streamQuery}" authz="OAUTH" oauth_use_token="never" oauth_service_name="eurekastreams" sign_owner="false" sign_viewer="false"  />
-		</script>		
-
 		
-        <script type="text/os-template" xmlns:os="http://eurekastreams.org" tag="uos:viewTemplate">
-			<div class="stream-message-item list-item DEFAULT" repeat="${activities}"> 
-			  <div class="avatar">
-			  	<img class="gwt-Image avatar-image avatar-image-VerySmall" src="${build.web.baseurl}${actorAvatarPath}" />
-			  </div>
-			  <div class="description">
-			  	<div class="message-container DEFAULT">
-				  	<strong if="${actorUniqueIdentifier == destinationUniqueIdentifier}">
-						 <a if="${destinationType == 'PERSON'}" href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
-						 <a if="${destinationType == 'GROUP'}" href="javascript:eurekastreams.core.navigate('groups/${actorUniqueIdentifier}')">${actorDisplayName}</a>
-					</strong>
-				  	<strong if="${actorUniqueIdentifier != destinationUniqueIdentifier}">
-						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
-						 to
-						 <span if="${destinationType == 'PERSON'}"><a href="javascript:eurekastreams.core.navigate('people/${destinationUniqueIdentifier}')">${destinationDisplayName}</a></span>
-						 <span if="${destinationType == 'GROUP'}"><a href="javascript:eurekastreams.core.navigate('groups/${destinationUniqueIdentifier}')">${destinationDisplayName}</a></span>
-					</strong>
-			  		<span class="message-body" id="activity-body-${activityId}">${content}</span>
-					<!-- TODO: MODULARIZE THIS!!!! -->			  		
-					<div if="${baseObjectType == 'BOOKMARK'}">
-			  		  <div if="${thumbnail != null && thumbnail != ''}" class="message-link has-thumbnail">
-			  		  	<div> <img class="thumbnail" src="${thumbnail}" /> </div>
-			  		  	<div> <a class="title" href="${targetUrl}" target="_blank">${targetTitle}</a> </div>
-			  		  	<div class="meta-description">${description}</div>
-			  		  </div>
-			  		  <div if="${thumbnail == null || thumbnail == ''}" class="message-link">
-			  		  	<div> <a class="title" href="${targetUrl}" target="_blank">${targetTitle}</a> </div>
-			  		  	<div class="meta-description">${description}</div>
-			  		  </div>
-			  		</div>
-			  	   
-			  	</div>
-			  	<div class="message-metadata">
-			  	  	<div if="${verb == 'SHARE'}" style="white-space:nowrap">
-						Posted by <a href="javascript:eurekastreams.core.navigate('people/${originalActorUniqueIdentifier}')">${originalActorDisplayName}</a>
-					</div>
-			  		<div style="display:block; white-space:nowrap">
-				  		<a class="timestamp" href="javascript:activityNav('${activityId}')">${postedTimeAgo}</a>
-				  		 • 
-						<a href="javascript:activityNav('${activityId}')">
-							<span if="${commentCount == '1'}">1 comment</span>
-							<span if="${commentCount != '1'}">${commentCount} comments</span>
-						</a>
-						<span if="${likeCount >= '1'}">
-						 • 
-                        <a href="javascript:activityNav('${activityId}')">
-                            <span if="${likeCount == '1'}">1 like</span>
-                            <span if="${likeCount != '1'}">${commentCount} likes</span>
-                        </a>
-						</span>
-					</div>
-				</div>
-			  </div>
-	        </div>
-            <div class="activity-footer">
-            	<a href="javascript:eurekastreams.core.navigate('${footer}')">Go to Stream</a>
-            </div>
-		</script>
+        if (hideSearch)
+        {
+            main.append('<div class="title-bar search-keywords"><div class="search-results-title">Results for: '+hideSearch+'</div><a href="${build.web.baseurl}/#' + streamLocation + '" target="_blank" class="go-to-stream" style="float: right" title="Go to Stream">Go to Stream</a></div>');
+        }
+        else
+        {
+	    	main.append(search.getContainer());
+        }
+        main.append(getMain(activityJSON, ""));
+	}
 
-        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:os="http://eurekastreams.org" tag="uos:errorTemplate">
-            <div class="error">Error retrieving content</div>
-            <div class="error-details">${message}</div>
-        </script>
-        
-        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:os="http://eurekastreams.org" tag="uos:blankTemplate">
-            <div class="blank-activity">
-                No current activity
-            </div>
-            <div class="activity-footer">
-            	<a href="javascript:eurekastreams.core.navigate('${footer}')">Go to Stream</a>
-            </div>
-        </script>
-        
-        <!-- Template that is always rendered, all other templates are positioned in 
-        this template using template api calls. -->
-        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup">
-            <div id="activity-view"></div>
+	function renderResults(results, hideSearch)
+	{
+       		Eureka.Container.init("activity-container", false);
+		renderMain(results, hideSearch);
+		Eureka.Container.switchView(main);
+	}
+
+	function render()
+	{
+		var prefs_ = new gadgets.Prefs();
+		var queryString = prefs_.getString("streamQuery");
+		streamLocation = prefs_.getString("streamLocation");
+        gadgets.window.setTitle(gadgets.util.unescapeString(prefs_.getString("gadgetTitle")));
+        Eureka.makeOauthRequest(buildApiUrl('getSystemSettings'),
+        function(results) {
+            warningText = results.data.contentWarningText;
+		
+		    if (queryString.indexOf("saved/")>-1)
+	    	{
+    			var streamId = queryString.split("/")[1];
+
+		    	// I only have an ID, get the stream from the users list and extract the query from it.
+	    		Eureka.makeOauthRequest(buildApiUrl('getCurrentUserStreams'),
+    				function(results) { 
+                        var found = false;
+    					for (var i in results.data.streamFilters)
+	    				{
+    						if (results.data.streamFilters[i].id==streamId)
+	    					{
+                                found = true;
+                                baseQuery = gadgets.json.parse(results.data.streamFilters[i].request);
+                                var jsonQuery = jQuery.extend(true, {}, baseQuery);
+                                if(jsonQuery.query.sortyBy == null)
+                                {
+                                    jsonQuery.query.sortBy = 'date';
+                                }
+                                var hideSearch = false;
+                                if (jsonQuery.query.keywords)
+                                {
+                                    hideSearch = jsonQuery.query.keywords;
+                                }
+                            
+								var request = '"' + gadgets.json.stringify(jsonQuery).replace(/\"/g, "'") + '"';
+								Eureka.makeOauthRequest(buildApiUrl('getActivitiesByRequest', request),
+						    		function(results) { renderResults(results, hideSearch); }, 1);
+                                found = true;
+				    		}
+			    		}		
+
+                        if (found == false)
+                        {
+                            jQuery("body").html("<div class='error'><strong>Content no longer valid</strong> This stream has been deleted.</div>");
+                        }
+    
+	    			}, 1);
+
+    		}
+	    	else
+    		{
+                baseQuery = gadgets.json.parse(queryString.replace(/&#34;/g, "\""));
+                var jsonQuery = jQuery.extend(true, {}, baseQuery);
+                if(jsonQuery.query.sortyBy == null)
+                {
+                    jsonQuery.query.sortBy = 'date';
+                }
+				var request = '"' + gadgets.json.stringify(jsonQuery).replace(/\"/g, "'") + '"';
+				Eureka.makeOauthRequest(buildApiUrl('getActivitiesByRequest', request),
+                    function(results) { renderResults(results); }, 1);
+    		}
+        }, 1);
+
+	}
+
+	function init()
+	{
+		render();
+	}
+            
+	setTimeout(function() {init();}, 100);
         </script>
     ]]>
-	</Content>
+    </Content>
 
 
 </Module>

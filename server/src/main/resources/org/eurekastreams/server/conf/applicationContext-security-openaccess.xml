@@ -17,9 +17,9 @@
         <intercept-url pattern="/no_credentials.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/style/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/scripts/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/org.eurekastreams.web.Application.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/org.eurekastreams.web.ApplicationDev.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/*.cache.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/eureka.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/eureka.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/*.cache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
 		<intercept-url pattern="/requestaccess.html" filters="none"/>
         <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/gwt-dnd.css" access="ROLE_ANONYMOUS, ROLE_USER"/>
