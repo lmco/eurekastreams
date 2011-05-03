@@ -115,7 +115,7 @@
 
 	<bean name="gadgetMetaDataHttpFetcher"
 		class="org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataHttpFetcher">
-		<property name="currentAppContextBaseUrl" value="${eureka.web.baseurl}" />
+		<property name="currentAppContextBaseUrl" value="${eureka.web.instanceurl}" />
 	</bean>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
