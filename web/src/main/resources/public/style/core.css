@@ -565,23 +565,32 @@ div.banner-container {
 }
 
 .login-button,.cancel-button {
-	display: inline-block;
-	zoom: 1;
-	overflow: hidden;
-	margin-right: 20px;
+    display: inline-block;
+    overflow: hidden;
+    margin-right: 20px;
+}
+
+.login-button {
+    width: 75px;
+}
+
+.cancel-button {
+    width: 73px;
 }
 
 .login-button a,.cancel-button a {
-	width: 100%;
-	padding-left: 500px;
+    height: 26px;
+    width: 100%;
+    display: inline-block;
+    padding-left: 500px;
 }
 
-@sprite .login-button a {
-	gwt-image: "loginBtn";
+.login-button a {
+    background: url(style/images/loginBtn.png);
 }
 
-@sprite .cancel-button a {
-	gwt-image: "cancelBtn";
+.cancel-button a {
+    background: url(style/images/cancelBtn.png);
 }
 
 div.close-button {
@@ -8208,6 +8217,7 @@ IE SPECIFIC CSS.
 	
 	.login-button,.cancel-button {
 		display: inline;
+        zoom: 1;
 	}
 	
 	.modal-title {
