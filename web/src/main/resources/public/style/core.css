@@ -6104,8 +6104,8 @@ body .stream-page-container>div.form-error-box {
 	position: relative;
 }
 
-.stream-lists .auto-complete.form-element .yui-ac-container {
-	position: absolute;
+.scope-form-element .yui-ac-container {
+	position: absolute ! important;
 }
 
 
