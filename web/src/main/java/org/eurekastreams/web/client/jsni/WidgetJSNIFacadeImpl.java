@@ -579,38 +579,37 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      */
     public static native String nativeGetCenteredPopupFeatureString(final int width, final int height)
     /*-{
-        var left = 0;
-        var top = 0;
+        var wnd = $wnd;
+        var doc = wnd.document;
+        var x;
+        var y;
 
-        var offsetX = $wnd.screenX;
-        if (offsetX == undefined)
-                offsetX = $wnd.screenLeft;
-        if (offsetX == undefined)
-                left = (screen.availWidth - width) / 2;
+        // for FireFox - center over the main browser window
+        if (wnd.screenX != undefined && wnd.screenY != undefined && wnd.outerWidth && wnd.outerHeight)
+        {
+                x = (wnd.outerWidth - width) / 2 + wnd.screenX;
+                y = (wnd.outerHeight - height) / 2 + wnd.screenY;
+        }
+        // for IE when not in an iframe - center over the page
+        else if (wnd.screenLeft != undefined && wnd.screenTop != undefined && wnd.top == wnd.self &&
+            doc.documentElement && doc.documentElement.offsetWidth && doc.documentElement.offsetHeight)
+        {
+                x = (doc.documentElement.offsetWidth - width) / 2 + wnd.screenLeft;
+                y = (doc.documentElement.offsetHeight - height) / 2 + wnd.screenTop;
+        }
+        // otherwise center on screen, since there is not enough info to center over browser window if in an iframe
         else
         {
-            var windowWidth = $wnd.outerWidth;
-            if (windowWidth == undefined)
-                    windowWidth = $wnd.innerWidth;
-            if (windowWidth == undefined)
-                    windowWidth = document.body.clientWidth;
-            left = offsetX + ((windowWidth == undefined) ? 0 : (windowWidth - width) / 2);
+                x = (screen.availWidth - width) / 2;
+                y = (screen.availHeight - height) / 2;
         }
 
-        var offsetY = $wnd.screenY;
-        if (offsetY == undefined)
-                offsetY = $wnd.screenTop;
-        if (offsetY == undefined)
-                top = (screen.availHeight - height) / 2;
-        else
-        {
-            var windowHeight = $wnd.outerHeight;
-            if (windowHeight == undefined)
-                    windowHeight = $wnd.innerHeight;
-            if (windowHeight == undefined)
-                    windowHeight = document.body.clientHeight;
-            top = offsetY + ((windowHeight == undefined) ? 0 : (windowHeight - height) / 2);
-        }
-        return "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top;
+        var positionString = 'width=' + width + ',height=' + height;
+
+        // validate
+        if (x >= 0 && x + width < screen.availWidth && y >= 0 && y + height < screen.availHeight)
+                positionString += ',left=' + x + ',top=' + y;
+
+        return positionString;
     }-*/;
 }
