@@ -50,6 +50,9 @@
     <!-- Initialize Class and Field Bridges with singleton setters -->
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-bridges-initialization.xml" />    
 
+    <!-- Initialize Entities with the web root url so we can translate relative to absolute urls -->
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-webroot-initialization.xml" />
+
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorybrowsing.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />    

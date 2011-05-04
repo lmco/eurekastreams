@@ -33,7 +33,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "classpath:applicationContext*-test.xml" })
 public class ThemeTest
 {
-
     /**
      * UUID used by SUT.
      */
@@ -80,9 +79,8 @@ public class ThemeTest
     @Before
     public final void setUp()
     {
-        theme =
-                new Theme("http://www.example.org/theme.xml", testName, testDescription, "generated.css", uuid,
-                        "bannerId", testAuthorName, testAuthorEmail);
+        theme = new Theme("http://www.example.org/theme.xml", testName, testDescription, "generated.css", uuid,
+                "bannerId", testAuthorName, testAuthorEmail);
         theme.setOwner(person);
     }
 
@@ -169,4 +167,25 @@ public class ThemeTest
         assertEquals("property should be gotten", testAuthorEmail, theme.getAuthorEmail());
     }
 
+    /**
+     * Test the static web root affects the url.
+     */
+    @Test
+    public void testWebRoot()
+    {
+        String existingWebRoot = Theme.getWebRootUrl();
+        Theme theme1 = new Theme();
+
+        Theme.setWebRootUrl(null);
+        theme1.setUrl("foo");
+        assertEquals("foo", theme1.getUrl());
+
+        Theme.setWebRootUrl("http://foo.com");
+        assertEquals("http://foo.com/foo", theme1.getUrl());
+
+        theme1.setUrl("http://bar.com/foo");
+        assertEquals("http://bar.com/foo", theme1.getUrl());
+
+        Theme.setWebRootUrl(existingWebRoot);
+    }
 }
