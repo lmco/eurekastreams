@@ -231,7 +231,13 @@
 	viewerJSON = opensocial.data.DataContext.getDataSet("databindviewer")
 	var currentUserName = viewerJSON.accounts[0].username;
 	var baseAPIURL = '${build.web.baseurl}/api/0/full';
-		
+
+    if (baseAPIURL.indexOf('/') == 0)
+    {
+        baseAPIURL = window.location.protocol + "//" + window.location.host + baseAPIURL;
+    }
+
+
 	var maxIds = [];
 	var activitiesById = [];
 	var baseQuery;
