@@ -26,6 +26,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.ResourceLikeChangeEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.LikeResourceModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
@@ -236,11 +237,8 @@ public class ResourceCountWidget extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                String actorType = CountType.LIKES.equals(countType) ? "likes" : "shares";
-                Window.open("/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl=" + resourceUrl,
-                        null, "height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
+                showActorsPopup(countType, resourceUrl);
             }
-
         });
 
         usersWhoLikedPanelWrapper.setVisible(false);
@@ -328,13 +326,9 @@ public class ResourceCountWidget extends Composite
         likeCountLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectCount());
         likeCountLink.addClickHandler(new ClickHandler()
         {
-
             public void onClick(final ClickEvent event)
             {
-                String actorType = CountType.LIKES.equals(inCountType) ? "likes" : "shares";
-                Window.open("/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl="
-                        + inResoureceUrl, null, "height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
-
+                showActorsPopup(inCountType, inResoureceUrl);
             }
         });
 
@@ -413,6 +407,8 @@ public class ResourceCountWidget extends Composite
                 public void onClick(final ClickEvent arg0)
                 {
                     String thumbsStr = "";
+                    final int height = 380;
+                    final int width = 800;
 
                     for (String thumb : thumbs)
                     {
@@ -425,7 +421,8 @@ public class ResourceCountWidget extends Composite
 
                     Window.open("/widget.html?widget=sharedialog&thumbs=" + thumbsStr + "&desc=" + desc + "&title="
                             + title + "&resourceurl=" + inResoureceUrl, null,
-                            "height=325,width=800,status=yes,toolbar=no,menubar=no,location=no");
+                            WidgetJSNIFacadeImpl.nativeGetCenteredPopupFeatureString(width, height)
+                                    + ",status=yes,toolbar=no,menubar=no,location=no");
                 }
             });
 
@@ -536,5 +533,23 @@ public class ResourceCountWidget extends Composite
         }
 
         likeCountLink.setText(likeCount.toString());
+    }
+
+    /**
+     * Pops up a window showing a list of people.
+     *
+     * @param inCountType
+     *            Type of people.
+     * @param inResoureceUrl
+     *            URL of resource.
+     */
+    private static void showActorsPopup(final CountType inCountType, final String inResoureceUrl)
+    {
+        final int height = 320;
+        final int width = 400;
+        String actorType = CountType.LIKES.equals(inCountType) ? "likes" : "shares";
+        Window.open("/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl=" + inResoureceUrl, null,
+                WidgetJSNIFacadeImpl.nativeGetCenteredPopupFeatureString(width, height)
+                        + ",status=yes,toolbar=no,menubar=no,location=no");
     }
 }
