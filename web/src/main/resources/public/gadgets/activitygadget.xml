@@ -12,7 +12,7 @@
         <Require feature="eurekastreams-core" />
         <Require feature="xmlutil"/>
         <Optional feature="content-rewrite">
-                        <Param name="expires">86400</Param>
+                        <Param name="expires">1</Param>
                         <Param name="include-url"></Param>
                         <Param name="minify-css">true</Param>
                         <Param name="minify-js">true</Param>
@@ -230,7 +230,7 @@
 	var prefs_ = new gadgets.Prefs();
 	viewerJSON = opensocial.data.DataContext.getDataSet("databindviewer")
 	var currentUserName = viewerJSON.accounts[0].username;
-	var baseAPIURL = '${build.web.baseurl}/api/0/read';
+	var baseAPIURL = '${build.web.baseurl}/api/0/full';
 		
 	var maxIds = [];
 	var activitiesById = [];
@@ -408,10 +408,29 @@
 				}
 			}, 1);
 
-		var scrollHeight = jQuery("body").height() - 40 - commentDiv.height() - 54;
+		var scrollHeight = jQuery("body").height() - 40 - commentDiv.height() - 41;
 
 		var scrolledList = new Eureka.ScrolledList(commentContainer, function() { scrolledList.endOfList(); }, scrollHeight);
 		commentDiv.append(scrolledList.getContainer());
+		
+		var postCommentBox = new Eureka.PostBox("Post a Comment...", function(comment)
+		{
+			var renderedComment = jQuery("<div class='comment'><div class='avatar'><img src='" + currentUser.thumbnailUrl + "'></div><div class='activity-container'><div><a target='_blank' href='" + currentUser.profileUrl + "'><strong>%USERNAME%</strong></a></div><div class='post'></div><div class='meta'>Less than 1 minute ago</div></div></div>").appendTo(commentContainer);
+			renderedComment.find('.post').text(comment);
+			renderedComment.find('strong:contains("%USERNAME%")').text(currentUser.name.formatted);
+
+			scrolledList.scrollToBottom(0);
+
+			Eureka.makeOauthRequest(buildApiUrl('postActivityCommentDTO',{"activityId":activity.id, "body":comment}),
+				function(results)
+				{
+				}, 1);
+				
+			activity.commentCount++;
+			jQuery(".comment-count-number.item" + activityId).text(activity.commentCount);
+			
+		}, 250, warningText);
+		commentDiv.append(postCommentBox.getContainer());
 	}
 
 	function getOtherSorts(sort, keywords, className)
@@ -546,6 +565,19 @@
 
 		container.append(scrolledList.getContainer());
 
+		if (baseQuery.query.recipient != null && baseQuery.query.recipient[0].type=="GROUP")
+		{
+			var postBox = new Eureka.PostBox("Post to the Group...", function(message)
+			{
+			    Eureka.makeOauthRequest(buildApiUrl('postGroupActivityDTO', {"activityDTO":{"baseObjectType":"NOTE", "verb":"POST", "destinationStream":{"type":"GROUP", "uniqueIdentifier":baseQuery.query.recipient[0].name}, "baseObjectProperties":{"content":message}}}),
+				function(nothing)
+				{
+                    eurekastreams.core.refreshCurrentGadget();
+				}, 1);
+			
+			}, 250, warningText);
+			container.append(postBox.getContainer());
+		}
 		return container;
 	}        
 
@@ -557,8 +589,8 @@
 				
         	var tabContainer = new Eureka.TabPanel();
 		tabContainer.addTab("Recent", createScrolledActivityList(activityJSON, null, keywords));
-		tabContainer.addTab("Popular", jQuery("<div style='height:440px' class='interesting"+rand+"'></div>"), false, function() { getOtherSorts("interesting", keywords, "interesting"+rand); });
-		tabContainer.addTab("Active", jQuery("<div style='height:440px' class='commentdate"+rand+"'></div>"), true, function() { getOtherSorts("commentdate", keywords, "commentdate"+rand); });
+		tabContainer.addTab("Popular", jQuery("<div style='height:397px' class='interesting"+rand+"'></div>"), false, function() { getOtherSorts("interesting", keywords, "interesting"+rand); });
+		tabContainer.addTab("Active", jQuery("<div style='height:397px' class='commentdate"+rand+"'></div>"), true, function() { getOtherSorts("commentdate", keywords, "commentdate"+rand); });
                 main.append(tabContainer.getContainer());
 		return main;
 				
