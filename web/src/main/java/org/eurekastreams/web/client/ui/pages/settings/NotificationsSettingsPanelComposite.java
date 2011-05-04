@@ -203,12 +203,12 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
             {
                 String caption = groupGrid.getText(row, 0);
                 FlowPanel cellPanel = new FlowPanel();
-                cellPanel.add(new InlineLabel(caption + " "));
+                cellPanel.add(new InlineLabel(caption + " ("));
 
                 GroupSubscriptionDialogContent dialogContent = new GroupSubscriptionDialogContent();
                 final Dialog dialog = new Dialog(dialogContent);
 
-                InlineLabel manageLink = new InlineLabel("(manage)");
+                InlineLabel manageLink = new InlineLabel("manage");
                 manageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
                 manageLink.addClickHandler(new ClickHandler()
                 {
@@ -218,6 +218,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
                     }
                 });
                 cellPanel.add(manageLink);
+                cellPanel.add(new InlineLabel(")"));
                 groupGrid.setWidget(row, 0, cellPanel);
                 break;
             }
