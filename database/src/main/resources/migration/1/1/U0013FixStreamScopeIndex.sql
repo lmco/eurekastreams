@@ -3,5 +3,5 @@ insert into db_version (major, minor, patch, scriptname, description) values (1,
 
 CREATE INDEX streamscope_scopeType_uniquekey_idx
   ON streamscope
-  USING btree
+  USING btree 
   (scopeType, uniquekey);
