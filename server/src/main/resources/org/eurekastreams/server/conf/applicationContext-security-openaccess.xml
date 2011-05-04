@@ -18,7 +18,6 @@
         <intercept-url pattern="/style/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/scripts/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/eureka.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/eureka.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/*.cache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
 		<intercept-url pattern="/requestaccess.html" filters="none"/>
         <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS, ROLE_USER"/>

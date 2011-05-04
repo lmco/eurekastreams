@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
+import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -30,6 +31,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.restlet.data.Form;
+import org.restlet.data.Reference;
 import org.restlet.data.Request;
 
 /**
@@ -59,6 +61,11 @@ public class OAuthRequestToPrincipalTransformerTest
     private PrincipalPopulator pp = context.mock(PrincipalPopulator.class);
 
     /**
+     * OpenSocialPrincipalPopulator mock.
+     */
+    private OpenSocialPrincipalPopulator opp = context.mock(OpenSocialPrincipalPopulator.class);
+
+    /**
      * Principal mock.
      */
     private Principal principal = context.mock(Principal.class);
@@ -74,7 +81,7 @@ public class OAuthRequestToPrincipalTransformerTest
     @Before
     public void setup()
     {
-        sut = new OAuthRequestToPrincipalTransformer(pp);
+        sut = new OAuthRequestToPrincipalTransformer(pp, opp);
     }
 
     /**
@@ -137,17 +144,69 @@ public class OAuthRequestToPrincipalTransformerTest
      * Test.
      */
     @Test
-    public void testWithNullAccountId()
+    public void testWithOSId()
     {
         final Map<String, Object> requestAttributes = new HashMap<String, Object>();
         final Form headers = new Form();
         requestAttributes.put("org.restlet.http.headers", headers);
+
+        final Reference origRef = context.mock(Reference.class);
+        final Form queryForm = context.mock(Form.class);
+        
+        final String osId = "osid";
 
         context.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(requestAttributes));
+
+                oneOf(request).getOriginalRef();
+                will(returnValue(origRef));
+
+                oneOf(origRef).getQueryAsForm();
+                will(returnValue(queryForm));
+
+                oneOf(queryForm).getFirstValue("opensocial_viewer_id");
+                will(returnValue(osId));
+                
+                allowing(opp).getPrincipal(osId);
+                will(returnValue(principal));
+            }
+        });
+
+        assertEquals(principal, sut.transform(request));
+
+        context.assertIsSatisfied();
+    }
+    
+    /**
+     * Test.
+     */
+    @Test
+    public void testWithNullAccountId()
+    {
+        final Map<String, Object> requestAttributes = new HashMap<String, Object>();
+        final Form headers = new Form();
+        requestAttributes.put("org.restlet.http.headers", headers);
+
+        final Reference origRef = context.mock(Reference.class);
+        final Form queryForm = context.mock(Form.class);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(request).getAttributes();
+                will(returnValue(requestAttributes));
+
+                oneOf(request).getOriginalRef();
+                will(returnValue(origRef));
+
+                oneOf(origRef).getQueryAsForm();
+                will(returnValue(queryForm));
+
+                oneOf(queryForm).getFirstValue("opensocial_viewer_id");
+                will(returnValue(null));
 
             }
         });
@@ -165,12 +224,23 @@ public class OAuthRequestToPrincipalTransformerTest
     {
         final Map<String, Object> requestAttributes = new HashMap<String, Object>();
 
+        final Reference origRef = context.mock(Reference.class);
+        final Form queryForm = context.mock(Form.class);
+
         context.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(requestAttributes));
+                
+                oneOf(request).getOriginalRef();
+                will(returnValue(origRef));
+                
+                oneOf(origRef).getQueryAsForm();
+                will(returnValue(queryForm));
 
+                oneOf(queryForm).getFirstValue("opensocial_viewer_id");
+                will(returnValue(null));
             }
         });
 

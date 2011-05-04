@@ -9330,6 +9330,11 @@ IE SPECIFIC CSS.
 	.link-panel {
 		zoom: 1;
 	}
+	
+	.login-content input.gwt-TextBox,.login-content input.gwt-PasswordTextBox
+	{
+		margin-left: -80px;
+	}
 }
 /*/////////////////////////////////////////////////////////////////////////////
 

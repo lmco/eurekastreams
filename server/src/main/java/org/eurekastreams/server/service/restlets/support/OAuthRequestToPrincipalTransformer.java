@@ -15,8 +15,11 @@
  */
 package org.eurekastreams.server.service.restlets.support;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.restlet.data.Form;
 import org.restlet.data.Request;
@@ -27,6 +30,10 @@ import org.restlet.data.Request;
  */
 public class OAuthRequestToPrincipalTransformer implements Transformer<Request, Principal>
 {
+    /**
+     * Logger.
+     * */
+    private static Log log = LogFactory.make();
 
     /**
      * Principal populator.
@@ -34,14 +41,23 @@ public class OAuthRequestToPrincipalTransformer implements Transformer<Request, 
     PrincipalPopulator principalPopulator;
 
     /**
+     * Opensocial principal population.
+     */
+    OpenSocialPrincipalPopulator osPopulator;
+
+    /**
      * Constructor.
      * 
      * @param inPrincipalPopulator
      *            PrincipalPopulator to create principal.
+     * @param inOsPrincipalPopulator
+     *            the opensocial principal populator.
      */
-    public OAuthRequestToPrincipalTransformer(final PrincipalPopulator inPrincipalPopulator)
+    public OAuthRequestToPrincipalTransformer(final PrincipalPopulator inPrincipalPopulator,
+            final OpenSocialPrincipalPopulator inOsPrincipalPopulator)
     {
         principalPopulator = inPrincipalPopulator;
+        osPopulator = inOsPrincipalPopulator;
     }
 
     /**
@@ -67,9 +83,18 @@ public class OAuthRequestToPrincipalTransformer implements Transformer<Request, 
             }
         }
 
+        // If header doesn't exist fall back on opensocial param populated by shindig.
         if (accountid != null)
         {
             result = principalPopulator.getPrincipal(accountid, "");
+        }
+        else
+        {
+            String osId = inTransformType.getOriginalRef().getQueryAsForm().getFirstValue("opensocial_viewer_id");
+            if (osId != null)
+            {
+                result = osPopulator.getPrincipal(osId);
+            }
         }
 
         return result;

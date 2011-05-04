@@ -212,6 +212,7 @@
 
     <bean id="oAuthRequestToPrincipalTransformer" class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
         <constructor-arg ref="dataStorePrincipalPopulator"/>            
+        <constructor-arg ref="openSocialPrincipalPopulator"/>            
     </bean>         
 
 	<util:list id="principalExtractorsContextAndRequest">
