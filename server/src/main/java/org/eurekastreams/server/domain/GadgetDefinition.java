@@ -46,13 +46,18 @@ import org.hibernate.search.annotations.Store;
 
 /**
  * This class represents the Gadget domain object.
- *
+ * 
  */
 @SuppressWarnings("serial")
 @Entity
 @Indexed
 public class GadgetDefinition extends DomainEntity implements Serializable, GalleryItem, GeneralGadgetDefinition
 {
+    /**
+     * The web root url - set by configuration.
+     */
+    private static String webRootUrl;
+
     /**
      * Storage for the url that describes the location of the gadget definition.
      */
@@ -118,18 +123,15 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     @JoinColumn(name = "ownerId")
     private Person owner;
 
-
     /*
      * Gadget Metadata
-     *
-     * Meta Data contained in gadgets shouldn normally not be stored in the database
-     * This data should come from shindig.
-     *
+     * 
+     * Meta Data contained in gadgets shouldn normally not be stored in the database This data should come from shindig.
      */
 
     /**
      * The gadget title.
-     *
+     * 
      * This is not transient because we need it to set a gadgets title.
      */
     @Column(nullable = true)
@@ -140,7 +142,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * The gadget description.
-     *
+     * 
      * This appears to be in here for search purposes.
      */
     @Transient
@@ -151,7 +153,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * The gadget author.
-     *
+     * 
      * This appears to be in here for search purposes.
      */
     @Transient
@@ -181,7 +183,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * Constructor with passing in the url to find the gadget definition.
-     *
+     * 
      * @param inUrl
      *            - url of the gadget definition.
      * @param inUuid
@@ -198,7 +200,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * Constructor with passing in the url to find the gadget definition.
-     *
+     * 
      * @param inUrl
      *            - url of the gadget definition.
      * @param inUuid
@@ -212,18 +214,25 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * This method returns the url of the gadget definition.
-     *
+     * 
      * @return Returns the url of the gadget definition.
      */
     @Override
     public String getUrl()
     {
-        return url;
+        if (GadgetDefinition.webRootUrl != null && url != null && !url.contains("://"))
+        {
+            return GadgetDefinition.webRootUrl + "/" + url;
+        }
+        else
+        {
+            return url;
+        }
     }
 
     /**
      * Getter for the theme's UUID.
-     *
+     * 
      * @return the UUID of the theme.
      */
     @Override
@@ -234,7 +243,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inUUID
      *            UUID to use.
      */
@@ -246,7 +255,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * Getter for the theme's Category.
-     *
+     * 
      * @return the Category of the theme.
      */
     @Override
@@ -257,7 +266,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inCategory
      *            Category to use.
      */
@@ -269,7 +278,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inUrl
      *            The URL of the gadget def.
      */
@@ -422,14 +431,33 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
         return created;
     }
 
-
     /**
      * Sets the id.
-     * @param inId the id.
+     * 
+     * @param inId
+     *            the id.
      */
     @Override
     public void setId(final long inId)
     {
         super.setId(inId);
     }
+
+    /**
+     * @return the webRootUrl
+     */
+    public static String getWebRootUrl()
+    {
+        return webRootUrl;
+    }
+
+    /**
+     * @param inWebRootUrl
+     *            the webRootUrl to set
+     */
+    public static void setWebRootUrl(final String inWebRootUrl)
+    {
+        webRootUrl = inWebRootUrl;
+    }
+
 }

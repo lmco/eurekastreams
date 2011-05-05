@@ -67,16 +67,10 @@ public class ResizeAvatarExecutionTest
      */
     private Person person = context.mock(Person.class);
 
-
-
     /**
      * Mocked image writer.
      */
     private ImageWriter imageWriter = context.mock(ImageWriter.class);
-
-
-
-
 
     /**
      * Mocked HashGenerator.
@@ -118,6 +112,16 @@ public class ResizeAvatarExecutionTest
     private Principal principal = context.mock(Principal.class);
 
     /**
+     * Image height.
+     */
+    private final int imageHeight = 500;
+
+    /**
+     * Image width.
+     */
+    private final int imageWidth = 1000;
+
+    /**
      * Setup the test.
      */
     @Before
@@ -128,7 +132,7 @@ public class ResizeAvatarExecutionTest
 
     /**
      * Test the action. Includes a cache update strategy.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -140,7 +144,6 @@ public class ResizeAvatarExecutionTest
         context.checking(new Expectations()
         {
             {
-                ignoring(imageMock);
                 ignoring(user);
                 ignoring(hasher);
 
@@ -153,7 +156,25 @@ public class ResizeAvatarExecutionTest
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
+                allowing(imageMock).getWidth(null);
+                will(returnValue(imageWidth));
 
+                allowing(imageMock).getHeight(null);
+                will(returnValue(imageHeight));
+
+                allowing(imageMock).getWidth();
+                will(returnValue(imageWidth));
+
+                allowing(imageMock).getHeight();
+                will(returnValue(imageHeight));
+
+                allowing(imageMock).getSubimage(1, 2, 3, 3);
+                will(returnValue(imageMock));
+
+                allowing(imageMock).getColorModel();
+                allowing(imageMock).getType();
+                allowing(imageMock).getRaster();
+                allowing(imageMock).getAccelerationPriority();
 
                 oneOf(finder).findEntity(principal, 1L);
                 will(returnValue(person));
@@ -189,7 +210,7 @@ public class ResizeAvatarExecutionTest
 
     /**
      * Test the action. No cache updater.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -201,7 +222,6 @@ public class ResizeAvatarExecutionTest
         context.checking(new Expectations()
         {
             {
-                ignoring(imageMock);
                 ignoring(user);
 
                 allowing(taskHandlerActionContext).getActionContext();
@@ -213,12 +233,31 @@ public class ResizeAvatarExecutionTest
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
-
                 oneOf(finder).findEntity(principal, 1L);
                 will(returnValue(person));
 
                 oneOf(person).getAvatarId();
                 allowing(person).getId();
+
+                allowing(imageMock).getWidth(null);
+                will(returnValue(imageWidth));
+
+                allowing(imageMock).getHeight(null);
+                will(returnValue(imageHeight));
+
+                allowing(imageMock).getWidth();
+                will(returnValue(imageWidth));
+
+                allowing(imageMock).getHeight();
+                will(returnValue(imageHeight));
+
+                allowing(imageMock).getSubimage(1, 2, 3, 3);
+                will(returnValue(imageMock));
+
+                allowing(imageMock).getColorModel();
+                allowing(imageMock).getType();
+                allowing(imageMock).getRaster();
+                allowing(imageMock).getAccelerationPriority();
 
                 oneOf(person).setAvatarCropX(1);
                 oneOf(person).setAvatarCropY(2);

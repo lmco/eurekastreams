@@ -34,11 +34,10 @@ public class PluginDefinitionTest
     /**
      * Subject under test.
      */
-    PluginDefinition sut; 
-    
+    PluginDefinition sut;
+
     /**
-     * Very basic test to ensure that the gadget constructor stores parameters 
-     * correctly.
+     * Very basic test to ensure that the gadget constructor stores parameters correctly.
      */
     @Test
     public void sutinitionConstructor()
@@ -47,7 +46,7 @@ public class PluginDefinitionTest
         GalleryItemCategory gic = new GalleryItemCategory("face");
         Person person = new Person();
         person.setBiography("hello test");
-        
+
         sut = new PluginDefinition();
 
         sut.setUrl(gadgetUrl);
@@ -55,15 +54,37 @@ public class PluginDefinitionTest
         sut.setShowInGallery(false);
         sut.setNumberOfUsers(5);
         sut.setOwner(person);
-        
+
         assertEquals(gadgetUrl, sut.getUrl());
         assertEquals(gic, sut.getCategory());
         assertEquals(Boolean.FALSE, sut.getShowInGallery());
         assertEquals(5, sut.getNumberOfUsers());
         assertEquals("hello test", sut.getOwner().getBiography());
-        
+
     }
-    
+
+    /**
+     * Test the static web root affects the url.
+     */
+    @Test
+    public void testWebRoot()
+    {
+        String existingWebRoot = PluginDefinition.getWebRootUrl();
+        PluginDefinition pluginDefinition = new PluginDefinition();
+
+        PluginDefinition.setWebRootUrl(null);
+        pluginDefinition.setUrl("foo");
+        assertEquals("foo", pluginDefinition.getUrl());
+
+        PluginDefinition.setWebRootUrl("http://foo.com");
+        assertEquals("http://foo.com/foo", pluginDefinition.getUrl());
+
+        pluginDefinition.setUrl("http://bar.com/foo");
+        assertEquals("http://bar.com/foo", pluginDefinition.getUrl());
+
+        PluginDefinition.setWebRootUrl(existingWebRoot);
+    }
+
     /**
      * Tests the transient properties.
      */
@@ -71,11 +92,11 @@ public class PluginDefinitionTest
     public void transientPropertiesTest()
     {
         sut = new PluginDefinition();
-        
+
         final Long updateF = 3L;
-        
+
         sut.setUpdateFrequency(updateF);
-        
+
         assertEquals(updateF, sut.getUpdateFrequency());
     }
 

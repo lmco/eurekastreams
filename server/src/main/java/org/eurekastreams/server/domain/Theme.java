@@ -62,6 +62,11 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     private final int maxDescriptionLength = 200;
 
     /**
+     * The web root url - set by configuration.
+     */
+    private static String webRootUrl;
+
+    /**
      * The unique (case-insensitive) URL to the theme XML file.
      */
     @Basic(optional = false)
@@ -262,7 +267,14 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
      */
     public String getUrl()
     {
-        return themeUrl;
+        if (Theme.webRootUrl != null && themeUrl != null && !themeUrl.contains("://"))
+        {
+            return Theme.webRootUrl + "/" + themeUrl;
+        }
+        else
+        {
+            return themeUrl;
+        }
     }
 
     /**
@@ -489,5 +501,22 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     public void setShowInGallery(final Boolean inShowInGallery)
     {
         // Nothing to do here for themes.
+    }
+
+    /**
+     * @return the webRootUrl
+     */
+    public static String getWebRootUrl()
+    {
+        return webRootUrl;
+    }
+
+    /**
+     * @param inWebRootUrl
+     *            the webRootUrl to set
+     */
+    public static void setWebRootUrl(final String inWebRootUrl)
+    {
+        webRootUrl = inWebRootUrl;
     }
 }

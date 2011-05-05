@@ -43,13 +43,13 @@ public class GadgetDefinitionTest
 
         /** fixture. */
         String gadgetUrl = "http://www.example.com";
-        GadgetDefinition sut =
-                new GadgetDefinition(gadgetUrl, UUID.randomUUID().toString(), new GalleryItemCategory("somecategory"));
+        GadgetDefinition sut = new GadgetDefinition(gadgetUrl, UUID.randomUUID().toString(), new GalleryItemCategory(
+                "somecategory"));
         assertEquals("gadget url does not match url passed into the constructor.", gadgetUrl, sut.getUrl());
 
         List<Gadget> gadgets = new ArrayList<Gadget>();
-        GadgetDefinition def =
-                new GadgetDefinition(gadgetUrl, UUID.randomUUID().toString(), new GalleryItemCategory("somecategory"));
+        GadgetDefinition def = new GadgetDefinition(gadgetUrl, UUID.randomUUID().toString(), new GalleryItemCategory(
+                "somecategory"));
         Gadget gadget = new Gadget(def, 1, 0, new Person(), "");
         gadgets.clear();
         gadgets.add(gadget);
@@ -85,5 +85,27 @@ public class GadgetDefinitionTest
         assertEquals(title, sut.getGadgetTitle());
         assertEquals(desc, sut.getGadgetDescription());
 
+    }
+
+    /**
+     * Test the static web root affects the url.
+     */
+    @Test
+    public void testWebRoot()
+    {
+        String existingWebRoot = GadgetDefinition.getWebRootUrl();
+        GadgetDefinition gd = new GadgetDefinition();
+
+        GadgetDefinition.setWebRootUrl(null);
+        gd.setUrl("foo");
+        assertEquals("foo", gd.getUrl());
+
+        GadgetDefinition.setWebRootUrl("http://foo.com");
+        assertEquals("http://foo.com/foo", gd.getUrl());
+
+        gd.setUrl("http://bar.com/foo");
+        assertEquals("http://bar.com/foo", gd.getUrl());
+
+        GadgetDefinition.setWebRootUrl(existingWebRoot);
     }
 }

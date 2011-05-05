@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <!-- Give web root to Theme -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass"
+            value="org.eurekastreams.server.domain.Theme" />
+        <property name="targetMethod" value="setWebRootUrl" />
+        <property name="arguments">
+            <list>
+                <value>${eureka.web.baseurl}</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Give web root to GadgetDefinition -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass"
+            value="org.eurekastreams.server.domain.GadgetDefinition" />
+        <property name="targetMethod" value="setWebRootUrl" />
+        <property name="arguments">
+            <list>
+                <value>${eureka.web.baseurl}</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Give web root to Theme -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass"
+            value="org.eurekastreams.server.domain.stream.plugins.PluginDefinition" />
+        <property name="targetMethod" value="setWebRootUrl" />
+        <property name="arguments">
+            <list>
+                <value>${eureka.web.baseurl}</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>  

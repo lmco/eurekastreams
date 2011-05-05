@@ -45,6 +45,10 @@ import org.hibernate.annotations.NaturalId;
 @Entity
 public class PluginDefinition extends DomainEntity implements GalleryItem, Serializable, GeneralGadgetDefinition
 {
+    /**
+     * The web root url - set by configuration.
+     */
+    private static String webRootUrl;
 
     /**
      * Object type optionally defined by plugin.
@@ -218,7 +222,14 @@ public class PluginDefinition extends DomainEntity implements GalleryItem, Seria
      */
     public String getUrl()
     {
-        return url;
+        if (PluginDefinition.webRootUrl != null && url != null && !url.contains("://"))
+        {
+            return PluginDefinition.webRootUrl + "/" + url;
+        }
+        else
+        {
+            return url;
+        }
     }
 
     /**
@@ -283,4 +294,20 @@ public class PluginDefinition extends DomainEntity implements GalleryItem, Seria
         showInGallery = inShowInGallery;
     }
 
+    /**
+     * @return the webRootUrl
+     */
+    public static String getWebRootUrl()
+    {
+        return webRootUrl;
+    }
+
+    /**
+     * @param inWebRootUrl
+     *            the webRootUrl to set
+     */
+    public static void setWebRootUrl(final String inWebRootUrl)
+    {
+        webRootUrl = inWebRootUrl;
+    }
 }
