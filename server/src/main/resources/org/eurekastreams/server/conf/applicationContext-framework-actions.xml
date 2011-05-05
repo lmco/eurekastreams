@@ -618,7 +618,9 @@
     </bean>
 
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidationStrategy"/>
+        </constructor-arg>
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
