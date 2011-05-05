@@ -15,13 +15,8 @@
  */
 package org.eurekastreams.server.action.execution.profile;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -37,9 +32,12 @@ import org.eurekastreams.server.service.actions.strategies.EntityFinder;
 import org.eurekastreams.server.service.actions.strategies.HashGeneratorStrategy;
 import org.eurekastreams.server.service.actions.strategies.ImageWriter;
 
+import com.mortennobel.imagescaling.AdvancedResizeOp;
+import com.mortennobel.imagescaling.ResampleOp;
+
 /**
  * Gets the avatar and resizes it to 2 thumbnails based on input.
- *
+ * 
  * @param <T>
  *            the avatar entity type.
  */
@@ -83,7 +81,7 @@ public class ResizeAvatarExecution<T extends AvatarEntity> implements
 
     /**
      * Set the optional strategy to update the cache after saving the avatar.
-     *
+     * 
      * @param inCacheUpdaterStrategy
      *            the strategy to update the cache after saving the avatar
      */
@@ -99,7 +97,7 @@ public class ResizeAvatarExecution<T extends AvatarEntity> implements
 
     /**
      * The constructor for the resize avatar action.
-     *
+     * 
      * @param inMapper
      *            the person mapper.
      * @param inHasher
@@ -109,9 +107,8 @@ public class ResizeAvatarExecution<T extends AvatarEntity> implements
      * @param inFinder
      *            the finder.
      */
-    public ResizeAvatarExecution(final DomainEntityMapper<T> inMapper,
-            final HashGeneratorStrategy inHasher, final ImageWriter inImageWriter,
-            final EntityFinder<T> inFinder)
+    public ResizeAvatarExecution(final DomainEntityMapper<T> inMapper, final HashGeneratorStrategy inHasher,
+            final ImageWriter inImageWriter, final EntityFinder<T> inFinder)
     {
         this.imageWriter = inImageWriter;
         this.hasher = inHasher;
@@ -186,7 +183,7 @@ public class ResizeAvatarExecution<T extends AvatarEntity> implements
 
     /**
      * Creates a resized thumbnail of the image in memory.
-     *
+     * 
      * @param originalImage
      *            the original image to resize.
      * @param x
@@ -202,23 +199,10 @@ public class ResizeAvatarExecution<T extends AvatarEntity> implements
     private BufferedImage createResizedCopy(final Image originalImage, final int x, final int y, final int scaleSize,
             final int cropSize)
     {
-        BufferedImage scaledBI = new BufferedImage(scaleSize, scaleSize, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = scaledBI.createGraphics();
+        BufferedImage crop = ((BufferedImage) originalImage).getSubimage(x, y, cropSize, cropSize);
 
-        Map<RenderingHints.Key, Object> hints = new HashMap<RenderingHints.Key, Object>();
-
-        hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        hints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        hints.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g.addRenderingHints(hints);
-        log.info("Set rendering hints");
-        g.setComposite(AlphaComposite.Src);
-        g.drawImage(originalImage, 0, 0, scaleSize, scaleSize, x, y, cropSize + x, cropSize + y, null);
-        g.dispose();
-        return scaledBI;
-
+        ResampleOp resampleOp = new ResampleOp(scaleSize, scaleSize);
+        resampleOp.setUnsharpenMask(AdvancedResizeOp.UnsharpenMask.Normal);
+        return resampleOp.filter(crop, null);
     }
 }

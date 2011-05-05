@@ -15,14 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.profile;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -40,10 +35,13 @@ import org.eurekastreams.server.service.actions.strategies.CacheUpdater;
 import org.eurekastreams.server.service.actions.strategies.EntityFinder;
 import org.eurekastreams.server.service.actions.strategies.ImageWriter;
 
+import com.mortennobel.imagescaling.AdvancedResizeOp;
+import com.mortennobel.imagescaling.ResampleOp;
+
 /**
  * Saves the avatar to the disk. If it's too big, it resizes it to the correct size. Also, it generates two thumbnails
  * for it by calling the resizing action.
- *
+ * 
  * @param <T>
  *            the avatar entity type.
  */
@@ -93,7 +91,7 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
 
     /**
      * Set the optional strategy to update the cache after saving the avatar.
-     *
+     * 
      * @param inCacheUpdaterStrategy
      *            the strategy to update the cache after saving the avatar
      */
@@ -104,7 +102,7 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inMapper
      *            the person mapper.
      * @param inAction
@@ -129,7 +127,7 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
     /**
      * Saves the avatar to the disk. If it's too big, it resizes it to the correct size. Also, it generates two
      * thumbnails for it by calling the resizing action.
-     *
+     * 
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return the entity.
@@ -144,7 +142,6 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
             String avatarId = request.getImageId();
             Long entityId = request.getEntityId();
 
-
             T avatarEntity = finder.findEntity(inActionContext.getActionContext().getPrincipal(), entityId);
 
             String oldAvatarId = avatarEntity.getAvatarId();
@@ -154,7 +151,6 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
             mapper.flush();
 
             BufferedImage originalImage = imageWriter.getImageFromFile(request.getFileItem());
-
 
             Integer scaleX = SCALE_X;
             Integer scaleY = SCALE_Y;
@@ -169,24 +165,9 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
                 scaleX = (scaleY * originalImage.getWidth(null)) / originalImage.getHeight(null);
             }
 
-            BufferedImage scaledImage = new BufferedImage(scaleX, scaleY, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = scaledImage.createGraphics();
-
-            Map<RenderingHints.Key, Object> hints = new HashMap<RenderingHints.Key, Object>();
-
-            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-            hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            hints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-            hints.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-            hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-            g.addRenderingHints(hints);
-            log.info("Set rendering hints");
-
-            g.setComposite(AlphaComposite.Src);
-            g.drawImage(originalImage, 0, 0, scaleX, scaleY, 0, 0, originalImage.getWidth(null), originalImage
-                    .getHeight(null), null);
-            g.dispose();
+            ResampleOp resampleOp = new ResampleOp(scaleX, scaleY);
+            resampleOp.setUnsharpenMask(AdvancedResizeOp.UnsharpenMask.Normal);
+            BufferedImage scaledImage = resampleOp.filter(originalImage, null);
 
             imageWriter.write(scaledImage, "o" + avatarId);
 
@@ -210,9 +191,8 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
             ResizeAvatarRequest resizeRequest = new ResizeAvatarRequest(x, y, cropSize, Boolean.FALSE, entityId);
             ServiceActionContext actionContext = // \n
             new ServiceActionContext(resizeRequest, inActionContext.getActionContext().getPrincipal());
-            TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerContext =
-                new TaskHandlerActionContext<PrincipalActionContext>(
-                    actionContext, new ArrayList<UserActionRequest>());
+            TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerContext = //
+            new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
             T newEntity = (T) avatarResizer.execute(currentTaskHandlerContext);
 
             // If all is well, delete the old avatar:
