@@ -17,13 +17,13 @@ package org.eurekastreams.web.client.ui.common.autocomplete;
 
 /**
  * Auto complete drop down widget.
- *
+ * 
  */
 public class AutoCompleteEntityDropDownPanel extends AutoCompleteDropDownPanel
 {
     /**
      * Default constructor.
-     *
+     * 
      * @param inUrl
      *            the resource url.
      */
@@ -34,7 +34,7 @@ public class AutoCompleteEntityDropDownPanel extends AutoCompleteDropDownPanel
 
     /**
      * Sets up the auto complete.
-     *
+     * 
      * @param taId
      *            the text area id.
      * @param acdId
@@ -43,15 +43,14 @@ public class AutoCompleteEntityDropDownPanel extends AutoCompleteDropDownPanel
      *            the url.
      */
     @Override
-    protected void setUpAutoComplete(final String taId,
-            final String acdId, final String url)
+    protected void setUpAutoComplete(final String taId, final String acdId, final String url)
     {
         setUpAutoCompleteJSON(taId, acdId, url);
     }
 
     /**
      * Sets up the auto complete.
-     *
+     * 
      * @param taId
      *            the text area id.
      * @param acdId
@@ -59,8 +58,7 @@ public class AutoCompleteEntityDropDownPanel extends AutoCompleteDropDownPanel
      * @param url
      *            the url.
      */
-    private static native void setUpAutoCompleteJSON(final String taId,
-            final String acdId, final String url)
+    private static native void setUpAutoCompleteJSON(final String taId, final String acdId, final String url)
     /*-{
        var autocompleteConfig={
           config:{
@@ -81,18 +79,20 @@ public class AutoCompleteEntityDropDownPanel extends AutoCompleteDropDownPanel
        oDS.resultTypeList = false;
        oDS.responseSchema={
            resultsList:"entities",
-           fields: ["displayName","entityType","uniqueId","streamScopeId"]
-       };
-       oDS.formatResult = function(oResultData, sQuery, sResultMatch) {
-           return oResultData.displayName;
-       };
+           fields: ["entityType","uniqueId","streamScopeId","displayName"]
+       };       
 
        myAutoComp =new $wnd.YAHOO.widget.AutoComplete(autocompleteConfig.config.textAreaId,
            autocompleteConfig.config.autoCompleteDiv, oDS);
        myAutoComp.queryDelay=.2;
+       
 
        myAutoComp.generateRequest=function(sQuery){return sQuery+"/";};
        myAutoComp.delimChar=autocompleteConfig.config.delimiter;
+       
+       myAutoComp.formatResult = function(oResultData, sQuery, sResultMatch) {            
+           return oResultData[3];
+       };
 
        if (myAutoComp.itemSelectEvent != null)
        {
