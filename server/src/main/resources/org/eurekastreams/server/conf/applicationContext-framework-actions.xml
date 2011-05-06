@@ -4919,9 +4919,28 @@
             <bean parent="baseParamExecuteDomainMapperExecution">
                <constructor-arg>
                     <bean class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
+                        
                         <!-- Get the people ids that liked the shared resource -->
-                        <constructor-arg ref="getPeopleIdsThatLikedSharedResource" />
+                        <constructor-arg>
+                        
+                            <!-- via the shared resource cache/db mapper -->
+                            <bean class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
+                                
+                                <!-- Get the shared resource dto from cache/database -->
+                                <constructor-arg ref="getSharedResourceByKeyMapper" />
+                                
+                                <!-- Transform the shared resource dto to a list of people ids that liked it -->
+                                <constructor-arg>
+                                    <bean class="org.eurekastreams.server.service.actions.strategies.SharedResourceDTOToLikerPeopleIdsTransformer" />
+                                </constructor-arg>
+                                
+                            </bean>
+                            	   
+                        </constructor-arg>
+                        
+                        <!-- And convert those people ids to PersonModelViews -->
                         <constructor-arg ref="getPersonsByIdsMapper" />
+                        
                     </bean>
                 </constructor-arg>
             </bean>
@@ -4936,8 +4955,25 @@
             <bean parent="baseParamExecuteDomainMapperExecution">
 		        <constructor-arg>
 		            <bean class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
-		                <!-- Get the people ids that shared the shared resource -->  
-		                <constructor-arg ref="getPeopleIdsThatSharedSharedResource" />
+		                
+		                <!-- Get the people ids that liked the shared resource -->
+                        <constructor-arg>
+                        
+                            <!-- via the shared resource cache/db mapper -->
+                            <bean class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
+                                
+                                <!-- Get the shared resource dto from cache/database -->
+                                <constructor-arg ref="getSharedResourceByKeyMapper" />
+                                
+                                <!-- Transform the shared resource dto to a list of people ids that liked it -->
+                                <constructor-arg>
+                                    <bean class="org.eurekastreams.server.service.actions.strategies.SharedResourceDTOToSharerPeopleIdsTransformer" />
+                                </constructor-arg>
+                                
+                            </bean>
+                                   
+                        </constructor-arg>
+		                
 		                <constructor-arg ref="getPersonsByIdsMapper" />
 		            </bean>
 		        </constructor-arg>
