@@ -2155,6 +2155,7 @@
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
+        <constructor-arg ref="memcachedCache" />
     </bean>
 
     <bean id="postPersonActivityExecutionStrategy"
@@ -2172,6 +2173,7 @@
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
+        <constructor-arg ref="memcachedCache" />
     </bean>
     
     <bean id="postResourceActivityExecutionStrategy"
@@ -2190,6 +2192,7 @@
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
+        <constructor-arg ref="memcachedCache" />
     </bean>    
 
     <bean id="sendGroupAccessRequestAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
@@ -3269,6 +3272,7 @@
             <bean class="org.eurekastreams.server.action.execution.stream.SetSharedResourceLikeExecution">
                 <constructor-arg ref="setLikedSharedResourceStatusDbMapper" />
                 <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
+                <constructor-arg ref="memcachedCache" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
@@ -4889,8 +4893,9 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean parent="baseParamExecuteDomainMapperExecution">
+            <bean class="org.eurekastreams.server.action.execution.GetSharedResourcePropertiesExecution">
                 <constructor-arg ref="getSharedResourceByKeyMapper" />
+                <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

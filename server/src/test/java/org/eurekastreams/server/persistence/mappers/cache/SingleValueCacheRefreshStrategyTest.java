@@ -74,4 +74,31 @@ public class SingleValueCacheRefreshStrategyTest
         sut.refresh(request, response);
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test refresh() with null suffix.
+     */
+    @Test(expected = RuntimeException.class)
+    public void testRefreshWithNullSuffix()
+    {
+        final Object request = new Object();
+        final Object response = new Object();
+        final String prefix = "PREFIX:";
+        final String suffix = null;
+
+        SingleValueCacheRefreshStrategy<Object, Object> sut = new SingleValueCacheRefreshStrategy<Object, Object>(
+                prefix, cacheKeySuffixTransformer);
+        sut.setCache(cache);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(cacheKeySuffixTransformer).transform(request);
+                will(returnValue(suffix));
+
+            }
+        });
+
+        sut.refresh(request, response);
+    }
 }

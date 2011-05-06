@@ -58,6 +58,12 @@ public class SingleValueCacheRefreshStrategy<Request, Response> extends CachedDo
     public void refresh(final Request inRequest, final Response inResponse)
     {
         String cacheKeySuffix = cacheKeySuffixTransformer.transform(inRequest);
+        if (cacheKeySuffix == null)
+        {
+            // have to throw an exception here - if we don't, then all values that return null will be considered
+            // the same cache key
+            throw new RuntimeException("Null cache key suffix");
+        }
         getCache().set(cacheKeyPrefix + cacheKeySuffix, inResponse);
     }
 }

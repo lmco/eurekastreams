@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.execution.stream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +39,8 @@ import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -87,6 +90,11 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
     private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
 
     /**
+     * The cache to use to clean up shared resources.
+     */
+    private Cache cache;
+
+    /**
      * Constructor for the PostActivityExecutionStrategy.
      * 
      * @param inInsertMapper
@@ -101,13 +109,16 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
      *            - instance of the {@link PostActivityUpdateStreamsByActorMapper}.
      * @param inFindOrInsertSharedResourceMapper
      *            mapper to find or insert shared resources
+     * @param inCache
+     *            the cache to use to clean up shared resources immediately
      */
     public PostActivityExecutionStrategy(final InsertMapper<Activity> inInsertMapper,
             final InsertActivityComment inInsertCommentDAO,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
             final RecipientRetriever inRecipientRetriever,
             final PostActivityUpdateStreamsByActorMapper inUpdateStreamsByActorMapper,
-            final DomainMapper<SharedResourceRequest, SharedResource> inFindOrInsertSharedResourceMapper)
+            final DomainMapper<SharedResourceRequest, SharedResource> inFindOrInsertSharedResourceMapper,
+            final Cache inCache)
     {
         insertMapper = inInsertMapper;
         insertCommentDAO = inInsertCommentDAO;
@@ -115,6 +126,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         recipientRetriever = inRecipientRetriever;
         updateStreamsByActorMapper = inUpdateStreamsByActorMapper;
         findOrInsertSharedResourceMapper = inFindOrInsertSharedResourceMapper;
+        cache = inCache;
     }
 
     /**
@@ -134,7 +146,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         ActivityDTO inActivityDTO = ((PostActivityRequest) inActionContext.getActionContext().getParams())
                 .getActivityDTO();
         ActivityDTO persistedActivityDTO;
-        Activity newActivity = convertDTOToActivity(inActivityDTO);
+        Activity newActivity = convertDTOToActivity(inActivityDTO, inActionContext.getUserActionRequests());
         List<UserActionRequest> queueRequests = new ArrayList<UserActionRequest>();
 
         String actorAccountName = inActionContext.getActionContext().getPrincipal().getAccountId();
@@ -205,9 +217,12 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
      * 
      * @param inActivityDTO
      *            - ActivityDTO instance to be converted.
+     * @param inUserActionRequestList
+     *            the user action request list - add any post-transaction requests to this list
      * @return - Activity object populated with the values from the ActivityDTO passed in.
      */
-    private Activity convertDTOToActivity(final ActivityDTO inActivityDTO)
+    private Activity convertDTOToActivity(final ActivityDTO inActivityDTO,
+            final List<UserActionRequest> inUserActionRequestList)
     {
         Activity currentActivity = new Activity();
         currentActivity.setAnnotation(inActivityDTO.getAnnotation());
@@ -232,13 +247,28 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
                 && inActivityDTO.getBaseObjectProperties().get("targetUrl") != null)
         {
             String url = inActivityDTO.getBaseObjectProperties().get("targetUrl");
-            // has a link to share
-            logger.info("New activity shares link with url: " + url);
-            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(url, null));
-            if (sr != null)
+            if (url != null)
             {
-                logger.info("Found shared resource - id: " + sr.getId());
-                currentActivity.setSharedLink(sr);
+                // has a link to share
+                logger.info("New activity shares link with url: " + url);
+
+                SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(url, null));
+                if (sr != null)
+                {
+                    logger.info("Found shared resource - id: " + sr.getId());
+                    currentActivity.setSharedLink(sr);
+
+                    String cacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + url.toLowerCase();
+
+                    // delete the cache immediately
+                    logger.debug("Immediately deleting cache key while in transaction '" + cacheKey
+                            + "', then queuing it up for post-transaction cleanup to avoid race.");
+                    cache.delete(cacheKey);
+
+                    // queue up a cache delete for after this transaction is closed - to prevent race condition
+                    inUserActionRequestList.add(new UserActionRequest("deleteCacheKeysAction", null,
+                            (Serializable) Collections.singleton(cacheKey)));
+                }
             }
         }
 

@@ -17,6 +17,9 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import junit.framework.Assert;
 
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
@@ -32,6 +35,8 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -128,6 +133,11 @@ public class PostActivityExecutionStrategyTest
     private static final String OPENSOCIAL_ID = "testopensocial";
 
     /**
+     * Cache.
+     */
+    private Cache cache = context.mock(Cache.class);
+
+    /**
      * Prepare the test suite.
      */
     @Before
@@ -138,7 +148,7 @@ public class PostActivityExecutionStrategyTest
         // the default.
         sut = new PostActivityExecutionStrategy(activityInsertMapperMock, commentInsertMapperMock,
                 activitiesMapperMock, recipientRetrieverMock, updateStreamsByActorMapperMock,
-                findOrInsertSharedResourceMapper);
+                findOrInsertSharedResourceMapper, cache);
     }
 
     /**
@@ -207,6 +217,8 @@ public class PostActivityExecutionStrategyTest
 
         final SharedResource sr = new SharedResource();
 
+        final String expectedCacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + "http://foo.com";
+
         context.checking(new Expectations()
         {
             {
@@ -227,12 +239,47 @@ public class PostActivityExecutionStrategyTest
 
                 oneOf(findOrInsertSharedResourceMapper).execute(with(any(SharedResourceRequest.class)));
                 will(returnValue(sr));
+
+                oneOf(cache).delete(expectedCacheKey);
             }
         });
 
         TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
         = new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
+
+        Assert.assertEquals(3, currentTaskHandlerActionContext.getUserActionRequests().size());
+
+        // make sure all of the actions are kicked off
+        boolean postActivityAsyncActionFound = false;
+        boolean createNotificationsActionFound = false;
+        boolean deleteCacheKeysActionFound = false;
+
+        for (UserActionRequest req : currentTaskHandlerActionContext.getUserActionRequests())
+        {
+            if (req.getActionKey().equals("postActivityAsyncAction"))
+            {
+                postActivityAsyncActionFound = true;
+            }
+            else if (req.getActionKey().equals("createNotificationsAction"))
+            {
+                createNotificationsActionFound = true;
+            }
+            else if (req.getActionKey().equals("deleteCacheKeysAction"))
+            {
+                deleteCacheKeysActionFound = true;
+                Set<String> params = (Set<String>) req.getParams();
+                Assert.assertEquals(1, params.size());
+                for (String s : params)
+                {
+                    Assert.assertEquals(expectedCacheKey, s);
+                }
+            }
+        }
+
+        Assert.assertTrue(postActivityAsyncActionFound);
+        Assert.assertTrue(createNotificationsActionFound);
+        Assert.assertTrue(deleteCacheKeysActionFound);
 
         context.assertIsSatisfied();
     }

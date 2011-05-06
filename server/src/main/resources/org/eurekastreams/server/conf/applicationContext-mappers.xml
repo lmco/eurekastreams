@@ -2626,12 +2626,48 @@
         <constructor-arg ref="personModelViewAvatarDisplayTransformer" />
     </bean>
     
-    <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
+    
+    <bean id="sharedResourceRequestToUniqueKeyTransformer" class="org.eurekastreams.server.persistence.mappers.cache.SharedResourceRequestToUniqueKeyTransformer" />
+    <bean id="getSharedResourceByKeyDBMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
         <constructor-arg ref="getStreamScopeForResourceScopeTypeByUniqueKey" />
         <constructor-arg ref="getPeopleIdsThatSharedSharedResource" />
         <constructor-arg ref="getPeopleIdsThatLikedSharedResource" />
-        <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
     </bean>
+    <!-- 
+        Mapper to get the cacheable components of a SharedResourceDTO, which is everything except whether the current person liked it, and does not include
+        any avatar info for the people that liked it.
+     -->
+    <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+               <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg>
+                            <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY" />
+                        </constructor-arg>
+                        <constructor-arg ref="sharedResourceRequestToUniqueKeyTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper -->
+        <constructor-arg ref="getSharedResourceByKeyDBMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY" />
+                </constructor-arg>
+                <constructor-arg ref="sharedResourceRequestToUniqueKeyTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>       
+    </bean>
+    
     
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null if exactly one result not found. -->
     <bean id="getStreamScopeForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
