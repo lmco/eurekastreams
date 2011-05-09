@@ -47,7 +47,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test class for Person.
- *
+ * 
  * Note: for tabGroups testing, tab groups are named after electron shells 1s, 2s, 2p, 3s, 3p, 3d
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -104,7 +104,6 @@ public class PersonTest
         sut.setEmail("homer@gmail.com");
         sut.setLocation("90210");
         sut.setParentOrganization(org);
-        sut.setRelatedOrganizations(relatedOrganizations);
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         message = null;
     }
@@ -150,7 +149,6 @@ public class PersonTest
         assertEquals("Doe", sut.getLastName());
         assertEquals("John", sut.getPreferredName());
     }
-
 
     /**
      * Tests creating a PersonModelView from a Person.
@@ -417,7 +415,7 @@ public class PersonTest
 
     /**
      * jobDescription too long
-     *
+     * 
      * hibernate validation.
      */
     @Test
@@ -438,7 +436,7 @@ public class PersonTest
 
     /**
      * non-parsable zip code
-     *
+     * 
      * hibernate validation.
      */
     @Test
@@ -453,7 +451,7 @@ public class PersonTest
 
     /**
      * test phone numbers
-     *
+     * 
      * hibernate validation.
      */
     @Test
@@ -474,7 +472,7 @@ public class PersonTest
 
     /**
      * Core of phone number test: insures the given value is acceptable or not.
-     *
+     * 
      * @param testValue
      *            Test value for a phone nubmer.
      * @param ok
@@ -505,19 +503,6 @@ public class PersonTest
         sut.addTab(tab, TabGroupType.START);
         actual = sut.getTabs(TabGroupType.START);
         assertTrue("new tab is missing", actual.contains(tab));
-    }
-
-    /**
-     * Test adding an organization to the person related list.
-     */
-    @Test
-    public void addRelatedOrganization()
-    {
-        Organization org = new Organization("newOrg", "shortOrgName");
-        sut.addRelatedOrganization(org);
-
-        List<Organization> actual = sut.getRelatedOrganizations();
-        assertTrue("new organizations is missing", actual.contains(org));
     }
 
     /**

@@ -77,7 +77,7 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
      * @throws ValidationException
      *             if there is a validation problem.
      */
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings( { "unchecked", "deprecation" })
     @Override
     public void validate(final ServiceActionContext inActionContext) throws ValidationException
     {

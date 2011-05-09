@@ -389,8 +389,7 @@
                 <constructor-arg ref="moveOrganizationPeopleMapper" />
                 <constructor-arg ref="getOrganizationsByIdsMapper" />
                 <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="deleteOrganizationMapper" />
-                <constructor-arg ref="getPeopleIdsWithRelatedOrg" />   
+                <constructor-arg ref="deleteOrganizationMapper" />   
                 <constructor-arg ref="jpaOrganizationMapper" />  
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
@@ -3658,7 +3657,6 @@
                         <constructor-arg value="${eureka.profile.emailregexerror}" />
                      </bean>
                 </constructor-arg>
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
             </bean>
         </constructor-arg>
         <constructor-arg>
@@ -3670,7 +3668,6 @@
         <constructor-arg>
             <!-- Execution -->
             <bean class="org.eurekastreams.server.action.execution.UpdatePersonExecution">
-                <constructor-arg ref="jpaOrganizationMapper"/>
                 <constructor-arg ref="jpaPersonMapper"/>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
@@ -4349,7 +4346,6 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetPersonExecution">
                 <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="populatePeopleWithSkeletonRelatedOrgsCacheMapper" />
                 <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper"/>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">

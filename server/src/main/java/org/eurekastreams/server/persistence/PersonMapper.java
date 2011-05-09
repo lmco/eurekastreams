@@ -175,22 +175,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     }
 
     /**
-     * Finds people that have been orphaned from their parent organization.
-     * 
-     * @return List&lt;Person&gt; A list of person objects that have a parent organization that is not in their related
-     *         organization list
-     */
-    @SuppressWarnings("unchecked")
-    public List<Person> findOrphanedPeople()
-    {
-        Query q = getEntityManager().createQuery(
-                "SELECT p FROM Person p WHERE p.parentOrganization NOT IN ELEMENTS (p.relatedOrganizations)");
-        List<Person> orphanedPeople = q.getResultList();
-
-        return orphanedPeople;
-    }
-
-    /**
      * Purges the related organizations for all people.
      * 
      */

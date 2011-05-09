@@ -53,7 +53,6 @@ import org.eurekastreams.server.search.bridge.EducationListStringBridge;
 import org.eurekastreams.server.search.bridge.JobsListStringBridge;
 import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
 import org.eurekastreams.server.search.bridge.OrganizationToShortNameFieldBridge;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.IndexColumn;
@@ -347,19 +346,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
             // field bridge
             bridge = @FieldBridge(impl = OrgIdHierarchyFieldBridge.class)) })
     private Organization parentOrganization;
-
-    /**
-     * The organizations a person is related to.
-     */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-    @JoinTable(name = "Person_RelatedOrganization",
-    // join columns
-    joinColumns = { @JoinColumn(table = "Person", name = "personId") },
-    // inverse join columns
-    inverseJoinColumns = { @JoinColumn(table = "Organization", name = "organizationId") },
-    // unique constraints
-    uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "organizationId" }) })
-    private List<Organization> relatedOrganizations = new ArrayList<Organization>();
 
     /**
      * Job description for person.
@@ -1308,39 +1294,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Returns list of organizations this person is related to.
-     * 
-     * @return list of organizations this person is related to.
-     */
-    public List<Organization> getRelatedOrganizations()
-    {
-        return relatedOrganizations;
-
-    }
-
-    /**
-     * Set a list of organizations to be related to this person.
-     * 
-     * @param inOrganizations
-     *            A list of organizations this person is related to.
-     */
-    public void setRelatedOrganizations(final List<Organization> inOrganizations)
-    {
-        relatedOrganizations = inOrganizations;
-    }
-
-    /**
-     * Add the organization as a relation to this person.
-     * 
-     * @param inOrganization
-     *            The organization to add as a relation to this person.
-     */
-    public void addRelatedOrganization(final Organization inOrganization)
-    {
-        relatedOrganizations.add(inOrganization);
-    }
-
-    /**
      * @param inOrganization
      *            the parentOrganization to set
      */
@@ -1891,20 +1844,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setPreferredName(preferredName);
         p.setJobDescription(getJobDescription());
         p.setCompanyName(getCompanyName());
-
-        if (relatedOrganizations != null)
-        {
-            List<OrganizationModelView> relatedOrgMvs = new ArrayList<OrganizationModelView>();
-            for (Organization o : relatedOrganizations)
-            {
-                OrganizationModelView orgMv = new OrganizationModelView();
-                orgMv.setEntityId(o.getId());
-                orgMv.setShortName(o.getShortName());
-                orgMv.setName(o.getName());
-                relatedOrgMvs.add(orgMv);
-            }
-            p.setRelatedOrganizations(relatedOrgMvs);
-        }
         p.setAvatarCropSize(avatarCropSize);
         p.setAvatarCropX(avatarCropX);
         p.setAvatarCropY(avatarCropY);

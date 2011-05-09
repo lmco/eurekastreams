@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
-import org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -88,12 +87,6 @@ public class GetPersonExecutionTest
     private GetPersonExecution sut = null;
 
     /**
-     * Mapper to populate a person's related orgs with skeleton organizations from cache.
-     */
-    private PopulatePeopleWithSkeletonRelatedOrgsCacheMapper skeletonRelatedOrgsMapper = context
-            .mock(PopulatePeopleWithSkeletonRelatedOrgsCacheMapper.class);
-
-    /**
      * Mocked mapper for retrieving the banner id.
      */
     private GetBannerIdByParentOrganizationStrategy getBannerIdMapperMock = context
@@ -105,8 +98,7 @@ public class GetPersonExecutionTest
     @Before
     public final void setup()
     {
-        sut = new GetPersonExecution(mapper, skeletonRelatedOrgsMapper, peopleParentOrgSkeletonPopulatorMock,
-                getBannerIdMapperMock);
+        sut = new GetPersonExecution(mapper, peopleParentOrgSkeletonPopulatorMock, getBannerIdMapperMock);
     }
 
     /**
@@ -136,8 +128,6 @@ public class GetPersonExecutionTest
                 will(returnValue(bg));
 
                 oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
-
-                oneOf(skeletonRelatedOrgsMapper).execute(testPerson);
 
                 oneOf(testPerson).getParentOrgId();
                 will(returnValue(1L));
@@ -180,8 +170,6 @@ public class GetPersonExecutionTest
                 oneOf(testPerson).getTabs(TabGroupType.START);
 
                 oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
-
-                oneOf(skeletonRelatedOrgsMapper).execute(testPerson);
 
                 oneOf(testPerson).getParentOrgId();
                 will(returnValue(1L));

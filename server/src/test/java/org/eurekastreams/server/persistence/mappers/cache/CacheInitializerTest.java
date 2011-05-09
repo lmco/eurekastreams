@@ -63,16 +63,17 @@ public class CacheInitializerTest
         final DomainGroupCacheLoader domainGroupCacheLoader = context.mock(DomainGroupCacheLoader.class);
         final OrganizationEntityCacheUpdater orgHierarchyCacheLoader = context
                 .mock(OrganizationEntityCacheUpdater.class);
-        final PersonCacheLoader personCacheLoader = context.mock(PersonCacheLoader.class);
+        final PersonEntityCacheUpdater personEntityCacheLoader = context.mock(PersonEntityCacheUpdater.class);
 
-        new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, orgHierarchyCacheLoader, personCacheLoader);
+        new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, orgHierarchyCacheLoader,
+                personEntityCacheLoader);
 
         // can't really test b/c there's no getter - oh well.
     }
 
     /**
      * Tests cache initialization.
-     *
+     * 
      * @throws Exception
      *             on error.
      */

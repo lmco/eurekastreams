@@ -33,14 +33,11 @@ import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
-import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -88,13 +85,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     };
 
     /**
-     * Mapper to get related org ids for people.
-     */
-    private GetRelatedOrganizationIdsByPersonId
-    // line break
-    getRelatedOrganizationIdsByPersonIdMapper = new GetRelatedOrganizationIdsByPersonId();
-
-    /**
      * Setup.
      */
     @Before
@@ -103,7 +93,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
         DomainGroup.setEntityCacheUpdater(null);
         cache = new SimpleMemoryCache();
 
-        getRelatedOrganizationIdsByPersonIdMapper.setEntityManager(getEntityManager());
         groupCacheLoader = new DomainGroupCacheLoader(new DomainGroupQueryStrategy());
 
         groupCacheLoader.setEntityManager(getEntityManager());
@@ -270,12 +259,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     @Transactional
     public void testRemoveFollower()
     {
-        PersonCacheLoader personLoader = new PersonCacheLoader(new PersonQueryStrategy(),
-                getRelatedOrganizationIdsByPersonIdMapper);
-        personLoader.setCache(cache);
-        personLoader.setEntityManager(getEntityManager());
-        personLoader.initialize();
-
         DomainGroup group = jpaGroupMapper.findByShortName("group1");
         Person burns = jpaPersonMapper.findByAccountId("mrburns");
 

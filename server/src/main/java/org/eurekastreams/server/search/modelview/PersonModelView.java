@@ -53,11 +53,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public static final String ORG_PARENT_KEY = "parentOrganization";
 
     /**
-     * related org key.
-     */
-    public static final String RELATED_ORG_KEY = "relatedOrganizations";
-
-    /**
      * The key for the nick name/preferred name.
      */
     public static final String PREFERREDNAME_KEY = "preferredName";
@@ -249,11 +244,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private String email = null;
 
     /**
-     * List of related organization ids.
-     */
-    private List<Long> relatedOrganizationIds;
-
-    /**
      * The date the current user last accepted the terms of service.
      */
     private Date lastAcceptedTermsOfService = null;
@@ -297,12 +287,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * Fax number.
      */
     private String fax = null;
-
-    /**
-     * A person's related organizations - null if not set, empty list if none. Only the id, name, and short name are
-     * populated.
-     */
-    private List<OrganizationModelView> relatedOrganizations = null;
 
     /**
      * A person's interests - null if not set, empty list if none.
@@ -492,10 +476,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("streamPostable"))
         {
             setStreamPostable((Boolean) properties.get("streamPostable"));
-        }
-        if (properties.containsKey("relatedOrganizationIds"))
-        {
-            setRelatedOrganizationIds((List<Long>) properties.get("relatedOrganizationIds"));
         }
         if (properties.containsKey("lastAcceptedTermsOfService"))
         {
@@ -985,27 +965,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     * Get the IDs of the related organizations for this person.
-     * 
-     * @return the IDs of the related organizations for this person.
-     */
-    public List<Long> getRelatedOrganizationIds()
-    {
-        return relatedOrganizationIds;
-    }
-
-    /**
-     * Set the IDs of the related organizations for this person.
-     * 
-     * @param inRelatedOrganizationIds
-     *            the IDs of the related organizations for this person
-     */
-    public void setRelatedOrganizationIds(final List<Long> inRelatedOrganizationIds)
-    {
-        relatedOrganizationIds = inRelatedOrganizationIds;
-    }
-
-    /**
      * 
      * @return videos the person has opted out of.
      */
@@ -1169,23 +1128,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setJobDescription(final String inJobDescription)
     {
         jobDescription = inJobDescription;
-    }
-
-    /**
-     * @return the relatedOrganizations
-     */
-    public List<OrganizationModelView> getRelatedOrganizations()
-    {
-        return relatedOrganizations;
-    }
-
-    /**
-     * @param inRelatedOrganizations
-     *            the relatedOrganizations to set
-     */
-    public void setRelatedOrganizations(final List<OrganizationModelView> inRelatedOrganizations)
-    {
-        relatedOrganizations = inRelatedOrganizations;
     }
 
     /**

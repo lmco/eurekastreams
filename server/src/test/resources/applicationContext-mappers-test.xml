@@ -401,14 +401,6 @@
 		<constructor-arg ref="domainGroupQueryStrategy"/>
 		<property name="cache" ref="testCache" />
 	</bean>
-
-	<!-- Person Cache Loader -->
-	<bean id="personCacheLoader"
-		class="org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader">
-		<constructor-arg ref="personQueryStrategy" />
-		<constructor-arg ref="getRelatedOrganizationIdsByPersonId"/>
-        <property name="cache" ref="testCache" />
-	</bean>
 	
 	<bean id="followedActivityIdsLoader" class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
     
@@ -450,11 +442,6 @@
 		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadApplicationAlertCountByUserId">
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
-
-	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
-		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
-		<constructor-arg ref="getPersonsByIdsDBMapper" />
-	</bean>
 	
 	<bean id="deleteGroupActivity" class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
 	
@@ -474,8 +461,6 @@
 		<constructor-arg ref="getOrgShortNamesByIdsMapper" />
 	</bean>
 
-	<bean id="getRelatedOrganizationIdsByPersonId" class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
-	
 	<bean id="getExpiredActivities" class="org.eurekastreams.server.persistence.mappers.db.GetExpiredActivities" />
 	
 	<bean id="removeExpiredActivities"
@@ -504,8 +489,6 @@
     <bean id="getPeopleSkillsByPeopleIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSkillsAndInterestsByEmployeeIdsDbMapper" />
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
-        <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
         <constructor-arg ref="getPeopleSkillsByPeopleIdsDbMapper" />
     </bean>
     
@@ -538,8 +521,6 @@
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
 	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
-	
-	<bean id="getPeopleIdsWithRelatedOrg" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsWithRelatedOrg" />
 	
 	<bean id="syncParentOrgForGroupActivities" class="org.eurekastreams.server.persistence.mappers.db.SyncParentOrgForGroupActivities" />
 	

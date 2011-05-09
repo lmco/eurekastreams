@@ -2295,12 +2295,6 @@
 		<constructor-arg ref="getOrganizationsByIdsMapper" />
 	</bean>
 
-	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper"
-		class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
-		<constructor-arg ref="getOrganizationsByIdsMapper" />
-		<constructor-arg ref="getPersonsByIdsMapper" />
-	</bean>
-
 	<bean id="deleteGroupActivity"
 		class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
 
@@ -2321,9 +2315,6 @@
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
 		<constructor-arg ref="getOrgShortNamesByIdsMapper" />
 	</bean>
-
-	<bean id="getRelatedOrganizationIdsByPersonId"
-		class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
 
 	<bean id="updateActivityFlagMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.UpdateActivityFlag" />
@@ -2503,8 +2494,6 @@
     
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
-        <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-        <constructor-arg ref="getOrganizationsByIdsMapper" />
         <constructor-arg ref="getPeopleSkillsByPeopleIdsDbMapper" />
     </bean>  
     
@@ -2553,9 +2542,7 @@
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
         <constructor-arg ref="getOrgShortNamesByIdsMapper" />
 	</bean>
-	
-	<bean id="getPeopleIdsWithRelatedOrg" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsWithRelatedOrg" />
-	
+
 	<bean id="syncParentOrgForGroupActivities" class="org.eurekastreams.server.persistence.mappers.db.SyncParentOrgForGroupActivities" />
 	
 	<bean id="getActivityIdsPostedToStreamByUniqueKeyAndScopeType" 

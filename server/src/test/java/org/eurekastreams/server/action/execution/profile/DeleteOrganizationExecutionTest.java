@@ -45,7 +45,7 @@ import org.junit.Test;
 
 /**
  * Test for DeleteOrganizationExecution.
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 public class DeleteOrganizationExecutionTest
@@ -78,15 +78,9 @@ public class DeleteOrganizationExecutionTest
     private FindByIdMapper<Organization> orgByIdMapper = context.mock(FindByIdMapper.class, "orgByIdMapper");
 
     /**
-     * Mapper to delete org and related objects.
+     * Mapper to delete org objects.
      */
     private DomainMapper<Long, Boolean> deleteOrgMapper = context.mock(DomainMapper.class, "deleteOrgMapper");
-
-    /**
-     * Mapper to get person ids for those that have given org as related org.
-     */
-    private DomainMapper<Long, Set<Long>> relatedOrgPersonIdsMapper = context.mock(DomainMapper.class,
-            "relatedOrgPersonIdMapper");
 
     /**
      * {@link OrganizationMapper}. This is used for updating org stats only.
@@ -150,7 +144,7 @@ public class DeleteOrganizationExecutionTest
      * System under test.
      */
     private DeleteOrganizationExecution sut = new DeleteOrganizationExecution(movePeopleMapper, orgDTOByIdMapper,
-            orgByIdMapper, deleteOrgMapper, relatedOrgPersonIdsMapper, organizationMapper, orgTraverserBuilder);
+            orgByIdMapper, deleteOrgMapper, organizationMapper, orgTraverserBuilder);
 
     /**
      * Test.
@@ -198,9 +192,6 @@ public class DeleteOrganizationExecutionTest
 
                 allowing(movePeopleMapper).execute(with(any(MoveOrganizationPeopleRequest.class)));
                 will(returnValue(response));
-
-                allowing(relatedOrgPersonIdsMapper).execute(orgId);
-                will(returnValue(movedPeopleIds));
 
                 allowing(deleteOrgMapper).execute(orgId);
 

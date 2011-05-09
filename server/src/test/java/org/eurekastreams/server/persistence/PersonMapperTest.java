@@ -197,39 +197,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
     }
 
     /**
-     * Test the finding of orphaned people. Any orphaned person is defined as a person who has a parent organization
-     * assignment but does not have that parent organization listed in their related organization list.
-     */
-    @Test
-    public void testFindOrphanedPeople()
-    {
-        List<Person> orphanedPeople = jpaPersonMapper.findOrphanedPeople();
-        assertTrue("The list of orphaned people was not correct; expected 1, got " + orphanedPeople.size(),
-                orphanedPeople.size() == 1);
-
-        Person mrburns = jpaPersonMapper.findById(mrburnsPersonId);
-        assertTrue("The list did not contain the correct person", orphanedPeople.contains(mrburns));
-    }
-
-    /**
-     * Test the purging of related organizations for all people.
-     */
-    @Test
-    public void testPurgeRelatedOrganizations()
-    {
-        Person ford = jpaPersonMapper.findById(fordPersonId);
-        assertTrue("Getting related organizations list was empty", ford.getRelatedOrganizations().size() == 2);
-
-        // method invocation under test
-        jpaPersonMapper.purgeRelatedOrganizations();
-
-        getEntityManager().clear();
-
-        ford = jpaPersonMapper.findById(fordPersonId);
-        assertTrue("Getting related organizations list was not empty", ford.getRelatedOrganizations().size() == 0);
-    }
-
-    /**
      * Test inserting a person w/profile properties.
      */
     @Test
@@ -722,7 +689,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
 
         /**
          * Get the updated person.
-         *
+         * 
          * @return the updated person
          */
         public Person getUpdatedPerson()
@@ -732,7 +699,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
 
         /**
          * Get the person person.
-         *
+         * 
          * @return the persisted person
          */
         public Person getPersistedPerson()
@@ -742,7 +709,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
 
         /**
          * Updater callback.
-         *
+         * 
          * @param inUpdatedPerson
          *            the person just updated
          */
@@ -754,7 +721,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
 
         /**
          * Persisted callback.
-         *
+         * 
          * @param inPersistedPerson
          *            the person being persisted
          */

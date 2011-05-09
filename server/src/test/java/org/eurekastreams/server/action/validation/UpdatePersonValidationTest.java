@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.context.Principal;
@@ -28,9 +27,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -39,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test for person update validation.
- *
+ * 
  */
 public class UpdatePersonValidationTest
 {
@@ -64,19 +61,9 @@ public class UpdatePersonValidationTest
     private EmailAddressValidator emailValidator = new EmailAddressValidator(".*@.*", "");
 
     /**
-     * Mocked get Org Names.
-     */
-    private GetOrganizationsByShortNames orgMapperMock = context.mock(GetOrganizationsByShortNames.class);
-
-    /**
      * subject under test.
      */
     private UpdatePersonValidation sut;
-
-    /**
-     * array of org shortnames.
-     */
-    private ArrayList<String> relatedOrgShortNames;
 
     /**
      * Test setup.
@@ -84,11 +71,8 @@ public class UpdatePersonValidationTest
     @Before
     public void setup()
     {
+        sut = new UpdatePersonValidation(emailValidator);
 
-        sut = new UpdatePersonValidation(emailValidator, orgMapperMock);
-        relatedOrgShortNames = new ArrayList<String>();
-        relatedOrgShortNames.add("shortname1");
-        relatedOrgShortNames.add("shortname2");
     }
 
     /**
@@ -114,19 +98,8 @@ public class UpdatePersonValidationTest
         formData.put(PersonModelView.EMAIL_KEY, "email@email.com");
         formData.put(PersonModelView.SKILLS_KEY, ValidationTestHelper
                 .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH));
-        formData.put(PersonModelView.ORG_PARENT_KEY, "thisworks");
-        formData.put(PersonModelView.RELATED_ORG_KEY, relatedOrgShortNames);
 
         final ServiceActionContext currentContext = new ServiceActionContext(formData, principalMock);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(orgMapperMock).fetchUniqueResult("thisworks");
-                oneOf(orgMapperMock).fetchUniqueResult("shortname1");
-                oneOf(orgMapperMock).fetchUniqueResult("shortname2");
-            }
-        });
 
         sut.validate(currentContext);
     }
@@ -146,8 +119,6 @@ public class UpdatePersonValidationTest
         formData.put(PersonModelView.FAX_KEY, "");
         formData.put(PersonModelView.EMAIL_KEY, "");
         formData.put(PersonModelView.SKILLS_KEY, "");
-        formData.put(PersonModelView.ORG_PARENT_KEY, "");
-        formData.put(PersonModelView.RELATED_ORG_KEY, null);
 
         final ServiceActionContext currentContext = new ServiceActionContext(formData, principalMock);
         try
@@ -157,8 +128,7 @@ public class UpdatePersonValidationTest
         }
         catch (ValidationException e)
         {
-            assertEquals(4, e.getErrors().size());
-            assertTrue(e.getErrors().containsKey(PersonModelView.ORG_PARENT_KEY));
+            assertEquals(3, e.getErrors().size());
             assertTrue(e.getErrors().containsKey(PersonModelView.TITILE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.PREFERREDNAME_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.EMAIL_KEY));
@@ -173,7 +143,7 @@ public class UpdatePersonValidationTest
     public void testbadvalidationNofieldsSent()
     {
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
-        final int errorSize = 10;
+        final int errorSize = 8;
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);
         try
         {
@@ -209,8 +179,6 @@ public class UpdatePersonValidationTest
         formdata.put(PersonModelView.EMAIL_KEY, "notanemail");
         formdata.put(PersonModelView.SKILLS_KEY, ValidationTestHelper
                 .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
-        formdata.put(PersonModelView.ORG_PARENT_KEY, "");
-        formdata.put(PersonModelView.RELATED_ORG_KEY, null);
 
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);
 
@@ -222,7 +190,7 @@ public class UpdatePersonValidationTest
         catch (ValidationException e)
         {
             context.assertIsSatisfied();
-            assertEquals(9, e.getErrors().size());
+            assertEquals(8, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(Person.EMAIL_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
@@ -231,7 +199,6 @@ public class UpdatePersonValidationTest
             assertTrue(e.getErrors().containsKey(PersonModelView.WORKPHONE_KEY));
             assertTrue(e.getErrors().containsValue(Person.FAX_NUMBER_MESSAGE));
             assertTrue(e.getErrors().containsValue(PersonModelView.SKILLS_MESSAGE));
-            assertTrue(e.getErrors().containsKey(PersonModelView.ORG_PARENT_KEY));
 
             throw e;
         }
@@ -268,15 +235,13 @@ public class UpdatePersonValidationTest
         catch (ValidationException e)
         {
             context.assertIsSatisfied();
-            assertEquals(9, e.getErrors().size());
+            assertEquals(7, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.JOB_DESCRIPTION_MESSAGE));
             assertTrue(e.getErrors().containsKey(PersonModelView.CELLPHONE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.WORKPHONE_KEY));
             assertTrue(e.getErrors().containsValue(Person.FAX_NUMBER_MESSAGE));
-            assertTrue(e.getErrors().containsKey(PersonModelView.ORG_PARENT_KEY));
-            assertTrue(e.getErrors().containsKey(PersonModelView.RELATED_ORG_KEY));
 
             throw e;
         }

@@ -18,17 +18,13 @@ package org.eurekastreams.server.action.execution;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.BackgroundMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -60,11 +56,6 @@ public class UpdatePersonExecutionTest
     };
 
     /**
-     * Mocked instance of the {@link OrganizationMapper}.
-     */
-    private final OrganizationMapper orgMapperMock = context.mock(OrganizationMapper.class);
-
-    /**
      * Mocked instance of the {@link BackgroundMapper}.
      */
     private final BackgroundMapper backgroundMapperMock = context.mock(BackgroundMapper.class);
@@ -78,11 +69,6 @@ public class UpdatePersonExecutionTest
      * Mocked instance of the {@link PersistResourceExecution}.
      */
     private final PersistResourceExecution persistResourceExecutionMock = context.mock(PersistResourceExecution.class);
-
-    /**
-     * Mocked instance of the {@link Organization}.
-     */
-    private final Organization orgMock = context.mock(Organization.class);
 
     /**
      * Mocked instance of the {@link Person}.
@@ -121,8 +107,8 @@ public class UpdatePersonExecutionTest
     @Before
     public void setup()
     {
-        sut = new UpdatePersonExecution(orgMapperMock, personMapperMock, persistResourceExecutionMock,
-                backgroundMapperMock, orgTraverserBuilder);
+        sut = new UpdatePersonExecution(personMapperMock, persistResourceExecutionMock, backgroundMapperMock,
+                orgTraverserBuilder);
         fields = new HashMap<String, Serializable>();
         fields.put("skills", "stuff, things");
         fields.put(PersonModelView.ORG_PARENT_KEY, "orgShortName");
@@ -147,23 +133,12 @@ public class UpdatePersonExecutionTest
                 oneOf(principalActionContextMock).getParams();
                 will(returnValue(fields));
 
-                allowing(orgMapperMock).findByShortName(with(any(String.class)));
-                will(returnValue(orgMock));
-
                 oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personMock));
 
                 oneOf(personMock).getOpenSocialId();
                 will(returnValue("53"));
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
-
-                oneOf(personMock).getParentOrganization();
-                will(returnValue(orgMock));
-
-                oneOf(orgMock).getShortName();
-                will(returnValue("orgShortName"));
-
-                oneOf(personMock).setRelatedOrganizations(with(any(List.class)));
 
                 oneOf(personMapperMock).flush();
             }
@@ -190,23 +165,12 @@ public class UpdatePersonExecutionTest
                 oneOf(principalActionContextMock).getParams();
                 will(returnValue(fields));
 
-                allowing(orgMapperMock).findByShortName(with(any(String.class)));
-                will(returnValue(orgMock));
-
                 oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personMock));
 
                 oneOf(personMock).getOpenSocialId();
                 will(returnValue("53"));
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
-
-                oneOf(personMock).getParentOrganization();
-                will(returnValue(orgMock));
-
-                oneOf(orgMock).getShortName();
-                will(returnValue("orgShortName"));
-
-                oneOf(personMock).setRelatedOrganizations(with(any(List.class)));
 
                 oneOf(personMapperMock).flush();
             }
@@ -234,62 +198,14 @@ public class UpdatePersonExecutionTest
                 oneOf(principalActionContextMock).getParams();
                 will(returnValue(fields));
 
-                allowing(orgMapperMock).findByShortName(with(any(String.class)));
-                will(returnValue(orgMock));
-
                 oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personMock));
 
                 oneOf(personMock).getOpenSocialId();
                 will(returnValue("53"));
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
-
-                oneOf(personMock).getParentOrganization();
-                will(returnValue(orgMock));
-
-                oneOf(orgMock).getShortName();
-                will(returnValue("orgShortName"));
-
-                oneOf(personMock).setRelatedOrganizations(with(any(List.class)));
 
                 oneOf(personMapperMock).flush();
-            }
-        });
-
-        sut.execute(taskHandlerActionContextMock);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Perform failure test of execute.
-     */
-    @Test(expected = ValidationException.class)
-    public void testExecuteFailure()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(taskHandlerActionContextMock).getActionContext();
-                will(returnValue(principalActionContextMock));
-
-                oneOf(principalActionContextMock).getParams();
-                will(returnValue(fields));
-
-                allowing(orgMapperMock).findByShortName(with(any(String.class)));
-                will(returnValue(null));
-
-                oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
-                will(returnValue(personMock));
-
-                oneOf(personMock).getOpenSocialId();
-                will(returnValue("53"));
-                oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
-
-                oneOf(personMock).getParentOrganization();
-                will(returnValue(orgMock));
-
-                oneOf(orgMock).getShortName();
-                will(returnValue("newOrgShortName"));
             }
         });
 

@@ -26,7 +26,6 @@ import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
-import org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper;
 
 /**
  * Strategy to retrieve a person from the database by their id.
@@ -50,11 +49,6 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
     private final PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
 
     /**
-     * Mapper to populate a person's related orgs with skeleton organizations from cache.
-     */
-    private final PopulatePeopleWithSkeletonRelatedOrgsCacheMapper skeletonRelatedOrgsMapper;
-
-    /**
      * Strategy to retrieve the banner id if it is not directly configured.
      */
     private final GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
@@ -64,21 +58,17 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
      * 
      * @param inMapper
      *            - instance of PersonMapper
-     * @param inSkeletonRelatedOrgsMapper
-     *            mapper to populate a person with skeleton related parent organizations
      * @param inSkeletonParentOrgPopulator
      *            mapper to populate parent org of people with a skeleton org
      * @param inGetBannerIdStrategy
      *            instance of the {@link GetBannerIdByParentOrganizationStrategy}.
      */
     public GetPersonExecution(final PersonMapper inMapper,
-            final PopulatePeopleWithSkeletonRelatedOrgsCacheMapper inSkeletonRelatedOrgsMapper,
             final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inSkeletonParentOrgPopulator,
             final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy)
     {
 
         mapper = inMapper;
-        skeletonRelatedOrgsMapper = inSkeletonRelatedOrgsMapper;
         skeletonParentOrgPopulator = inSkeletonParentOrgPopulator;
         getBannerIdStrategy = inGetBannerIdStrategy;
     }
@@ -127,12 +117,6 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
 
         if (result != null)
         {
-            if (log.isTraceEnabled())
-            {
-                log.trace("Attempting to populate skeleton Related Organizations for Person " + result.toString());
-            }
-            skeletonRelatedOrgsMapper.execute(result);
-
             if (log.isTraceEnabled())
             {
                 log.trace("Attempting to populate skeleton Organizations for Person " + result.toString());

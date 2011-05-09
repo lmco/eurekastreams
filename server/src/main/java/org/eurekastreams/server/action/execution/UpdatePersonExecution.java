@@ -24,16 +24,12 @@ import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.Background;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.BackgroundItemType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.BackgroundMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -44,11 +40,6 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
-
-    /**
-     * Organization mapper.
-     */
-    private final OrganizationMapper orgMapper;
 
     /**
      * Person mapper.
@@ -74,8 +65,6 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
     /**
      * Constructor.
      * 
-     * @param inOrgMapper
-     *            - instance of {@link OrganizationMapper} for this execution strategy.
      * @param inPersonMapper
      *            - instance of {@link PersonMapper} for this execution strategy.
      * @param inPersonPersister
@@ -85,11 +74,10 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
      * @param inOrgTraverserBuilder
      *            {@link OrganizationHierarchyTraverserBuilder}.
      */
-    public UpdatePersonExecution(final OrganizationMapper inOrgMapper, final PersonMapper inPersonMapper,
+    public UpdatePersonExecution(final PersonMapper inPersonMapper,
             final TaskHandlerExecutionStrategy inPersonPersister, final BackgroundMapper inBackgroundMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
     {
-        orgMapper = inOrgMapper;
         personMapper = inPersonMapper;
         personPersister = inPersonPersister;
         backgroundMapper = inBackgroundMapper;
@@ -110,22 +98,7 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
     {
         Map<String, Serializable> fields = (Map<String, Serializable>) inActionContext.getActionContext().getParams();
 
-        String newParentOrgName = (String) fields.get(PersonModelView.ORG_PARENT_KEY);
-
-        List<String> relatedOrgShortNames = (List<String>) fields.get(PersonModelView.RELATED_ORG_KEY);
-        List<Organization> relatedOrgs = new ArrayList<Organization>();
-
-        for (String orgName : relatedOrgShortNames)
-        {
-            relatedOrgs.add(orgMapper.findByShortName(orgName));
-        }
-
-        fields.remove(PersonModelView.ORG_PARENT_KEY);
-        fields.remove(PersonModelView.RELATED_ORG_KEY);
-
         Person person = (Person) personPersister.execute(inActionContext);
-
-        String origParentOrgName = person.getParentOrganization().getShortName();
 
         List<BackgroundItem> skills = convertStringToBackgroundItems((String) fields.get(PersonModelView.SKILLS_KEY),
                 BackgroundItemType.SKILL);
@@ -133,41 +106,9 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
         Background background = backgroundMapper.findOrCreatePersonBackground(person.getOpenSocialId());
         background.setBackgroundItems(skills, BackgroundItemType.SKILL);
 
-        // if parent org has changed, update person and update stats for both original and new orgs.
-        if (origParentOrgName.compareToIgnoreCase(newParentOrgName) != 0)
-        {
-            Organization newParentOrg = orgMapper.findByShortName(newParentOrgName);
-            Organization origParentOrg = orgMapper.findByShortName(origParentOrgName);
-
-            if (null == newParentOrg)
-            {
-                // Parent org cannot be null.
-                throw new ValidationException();
-            }
-
-            person.setParentOrganization(newParentOrg);
-            updateOrgStatistics(newParentOrg);
-            updateOrgStatistics(origParentOrg);
-        }
-
-        person.setRelatedOrganizations(relatedOrgs);
-
         personMapper.flush();
 
         return person;
-    }
-
-    /**
-     * Update an organization's stats.
-     * 
-     * @param inOrganizaiton
-     *            the org to update.
-     */
-    private void updateOrgStatistics(final Organization inOrganizaiton)
-    {
-        OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
-        orgTraverser.traverseHierarchy(inOrganizaiton);
-        orgMapper.updateOrganizationStatistics(orgTraverser);
     }
 
     /**

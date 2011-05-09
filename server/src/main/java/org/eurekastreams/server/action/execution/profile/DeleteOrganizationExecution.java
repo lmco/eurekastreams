@@ -42,7 +42,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 /**
  * Delete an organization. This assumes that the organization has no orgs or groups underneath it. People reporting to
  * org will be moved to deleted org's parent org, org will be removed from people's related orgs collection.
- *
+ * 
  */
 public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -51,11 +51,6 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      * Mapper to move People out of organization.
      */
     private DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> movePeopleMapper;
-
-    /**
-     * Mapper to get person ids for those that have given org as related org.
-     */
-    private DomainMapper<Long, Set<Long>> relatedOrgPersonIdsMapper;
 
     /**
      * Mapper for getting organization DTOs.
@@ -69,7 +64,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
     private FindByIdMapper<Organization> orgByIdMapper;
 
     /**
-     * Mapper to delete org and related objects.
+     * Mapper to delete org.
      */
     private DomainMapper<Long, Boolean> deleteOrgMapper;
 
@@ -87,7 +82,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Constructor.
-     *
+     * 
      * @param inMovePeopleMapper
      *            Mapper to move People out of organization.
      * @param inOrgDTOByIdMapper
@@ -95,9 +90,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      * @param inOrgByIdMapper
      *            {@link FindByIdMapper}.
      * @param inDeleteOrgMapper
-     *            Mapper to delete org and related objects.
-     * @param inRelatedOrgPersonIdsMapper
-     *            Mapper to get person ids for all users that have deleted org as related org.
+     *            Mapper to delete org .
      * @param inOrganizationMapper
      *            {@link OrganizationMapper}. This is used for updating org stats only.
      * @param inOrgTraverserBuilder
@@ -107,7 +100,6 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
             final DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> inMovePeopleMapper,
             final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgDTOByIdMapper,
             final FindByIdMapper<Organization> inOrgByIdMapper, final DomainMapper<Long, Boolean> inDeleteOrgMapper,
-            final DomainMapper<Long, Set<Long>> inRelatedOrgPersonIdsMapper,
             final OrganizationMapper inOrganizationMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
     {
@@ -115,14 +107,13 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         orgDTOByIdMapper = inOrgDTOByIdMapper;
         orgByIdMapper = inOrgByIdMapper;
         deleteOrgMapper = inDeleteOrgMapper;
-        relatedOrgPersonIdsMapper = inRelatedOrgPersonIdsMapper;
         organizationMapper = inOrganizationMapper;
         orgTraverserBuilder = inOrgTraverserBuilder;
     }
 
     /**
      * Delete Organization and directly associated entities.
-     *
+     * 
      * @param inActionContext
      *            The action context.
      * @return parent org short name;
@@ -148,9 +139,6 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         Set<Long> movedPeopleIds = movePeopleResponse.getMovedPersonIds();
         Set<Long> movedActivityIds = movePeopleResponse.getMovedActivityIds();
 
-        // get ids of people that have org as related org.
-        Set<Long> relatedOrgPersonIds = relatedOrgPersonIdsMapper.execute(orgId);
-
         // delete the org.
         deleteOrgMapper.execute(orgId);
 
@@ -172,7 +160,6 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
 
         // re-cache both moved people and people that had org as related org.
         Set<Long> personCacheKeysToModify = new HashSet<Long>(movedPeopleIds);
-        personCacheKeysToModify.addAll(relatedOrgPersonIds);
         for (Long personId : personCacheKeysToModify)
         {
             cacheKeysToRemove.add(CacheKeys.PERSON_BY_ID + personId);
