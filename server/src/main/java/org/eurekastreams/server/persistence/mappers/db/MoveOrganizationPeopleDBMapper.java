@@ -24,16 +24,14 @@ import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeo
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
 
 /**
- * Mapper to update all employees with given source organization to the destination organization. Note: This does NOT
- * modify the person's relatedOrganization collection.
+ * Mapper to update all employees with given source organization to the destination organization.
  */
 public class MoveOrganizationPeopleDBMapper extends
         BaseArgDomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse>
 {
 
     /**
-     * update all people with given source organization to the destination organization. Note: This does NOT modify the
-     * person's relatedOrganization collection.
+     * update all people with given source organization to the destination organization.
      * 
      * @param inRequest
      *            the {@link MoveOrganizationEmployeesRequest}.

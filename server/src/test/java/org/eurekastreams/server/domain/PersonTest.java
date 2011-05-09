@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -91,8 +90,6 @@ public class PersonTest
     public final void setup()
     {
         final Organization org = new Organization("orgName", "shortOrgName");
-        final List<Organization> relatedOrganizations = new ArrayList<Organization>();
-        relatedOrganizations.add(org);
         final HashSet<Long> optoutvideos = new HashSet<Long>();
         optoutvideos.add(5L);
 

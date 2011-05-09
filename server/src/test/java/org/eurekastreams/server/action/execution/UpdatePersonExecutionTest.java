@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.context.Principal;
@@ -112,10 +111,6 @@ public class UpdatePersonExecutionTest
         fields = new HashMap<String, Serializable>();
         fields.put("skills", "stuff, things");
         fields.put(PersonModelView.ORG_PARENT_KEY, "orgShortName");
-
-        ArrayList<String> relatedOrgShortnames = new ArrayList<String>();
-        relatedOrgShortnames.add("testshortname");
-        fields.put("relatedOrganizations", relatedOrgShortnames);
     }
 
     /**
