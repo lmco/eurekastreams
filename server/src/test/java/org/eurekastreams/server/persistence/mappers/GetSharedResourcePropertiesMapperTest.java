@@ -17,7 +17,6 @@ package org.eurekastreams.server.persistence.mappers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +66,6 @@ public class GetSharedResourcePropertiesMapperTest
             DomainMapper.class, "getPeopleThatLikedResourceMapper");
 
     /**
-     * Mapper to get person model views by ids.
-     */
-    private GetPeopleByIdsFake getPeopleModelViewsByIdsMapper = new GetPeopleByIdsFake();
-
-    /**
      * System under test.
      */
     private GetSharedResourcePropertiesMapper sut;
@@ -83,8 +77,7 @@ public class GetSharedResourcePropertiesMapperTest
     public void setup()
     {
         sut = new GetSharedResourcePropertiesMapper(getResourceStreamScopeByKeyMapper,
-                getPeopleThatSharedResourceMapper, getPeopleThatLikedResourceMapper, getPeopleModelViewsByIdsMapper);
-        getPeopleModelViewsByIdsMapper.setCannedResponse(null);
+                getPeopleThatSharedResourceMapper, getPeopleThatLikedResourceMapper);
     }
 
     /**
@@ -109,8 +102,8 @@ public class GetSharedResourcePropertiesMapperTest
         assertNull(result.getStreamScopeId());
         assertEquals(0, result.getLikeCount());
         assertEquals(0, result.getShareCount());
-        assertEquals(0, result.getLikersSample().size());
-        assertEquals(0, result.getSharersSample().size());
+        assertNull(result.getLikersSample());
+        assertNull(result.getSharersSample());
         assertEquals(uniqueKey, result.getKey());
 
         context.assertIsSatisfied();
@@ -155,8 +148,6 @@ public class GetSharedResourcePropertiesMapperTest
         likerIds.add(7L); // will be included
         likerIds.add(8L);
 
-        getPeopleModelViewsByIdsMapper.setCannedResponse(people);
-
         context.checking(new Expectations()
         {
             {
@@ -183,59 +174,15 @@ public class GetSharedResourcePropertiesMapperTest
         // make sure the request was updated with the shared resource id
         assertEquals(sharedResourceId, request.getSharedResourceId());
 
-        // make sure the people mapper was given the right list of people
-        assertEquals(7, getPeopleModelViewsByIdsMapper.getStoredRequest().size());
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(1L));
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(2L));
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(3L));
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(4L));
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(5L));
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(6L));
-        assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(7L));
-
         // make sure the top-level properties look right
         assertEquals(streamScopeId, result.getStreamScopeId());
         assertEquals(5, result.getLikeCount());
         assertEquals(6, result.getShareCount());
-        assertEquals(4, result.getLikersSample().size());
-        assertEquals(4, result.getSharersSample().size());
+        assertNull(result.getLikersSample());
+        assertNull(result.getSharersSample());
         assertEquals(uniqueKey, result.getKey());
 
-        // make sure each person is in the right list
-        checkForPersonModelView(result.getSharersSample(), 1L);
-        checkForPersonModelView(result.getSharersSample(), 2L);
-        checkForPersonModelView(result.getSharersSample(), 3L);
-        checkForPersonModelView(result.getSharersSample(), 4L);
-
-        checkForPersonModelView(result.getSharersSample(), 4L);
-        checkForPersonModelView(result.getSharersSample(), 5L);
-        checkForPersonModelView(result.getSharersSample(), 6L);
-        checkForPersonModelView(result.getSharersSample(), 7L);
-
         context.assertIsSatisfied();
-    }
-
-    /**
-     * Make sure a person modelview is in the input list, correctly trimmed.
-     * 
-     * @param inPeople
-     *            the list to search
-     * @param id
-     *            the id to search for
-     */
-    private void checkForPersonModelView(final List<PersonModelView> inPeople, final long id)
-    {
-        for (PersonModelView p : inPeople)
-        {
-            if (p.getEntityId() == id)
-            {
-                assertEquals("accountid" + id, p.getAccountId());
-                assertEquals("display" + id, p.getDisplayName());
-                assertEquals("avatar" + id, p.getAvatarId());
-                assertEquals(id, p.getId());
-                return;
-            }
-        }
     }
 
     /**

@@ -67,9 +67,9 @@ public class GetStreamScopeForScopeTypeByUniqueKey extends BaseArgDomainMapper<S
         // short circuit here as IN clause with emtpy list causes syntax error.
         if (inUniqueKey != null && !inUniqueKey.isEmpty())
         {
-            List<StreamScope> results = getEntityManager()
-                    .createQuery("FROM StreamScope WHERE scopeType = :scopeType AND uniqueKey = :uniqueKey")
-                    .setParameter("scopeType", scopeType).setMaxResults(1).setParameter("uniqueKey", inUniqueKey)
+            List<StreamScope> results = getEntityManager().createQuery(
+                    "FROM StreamScope WHERE scopeType = :scopeType AND uniqueKey = :uniqueKey").setParameter(
+                    "scopeType", scopeType).setMaxResults(1).setParameter("uniqueKey", inUniqueKey.toLowerCase())
                     .getResultList();
             if (results != null && results.size() == 1)
             {

@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- *
+ * 
  */
 public final class CacheKeys
 {
@@ -228,4 +228,9 @@ public final class CacheKeys
      * Key for theme css hash by theme uuid.
      */
     public static final String THEME_HASH_BY_UUID = "ThemeHashByUuid:";
+
+    /**
+     * Key for getting a SharedResource by unique key (lower-cased).
+     */
+    public static final String SHARED_RESOURCE_BY_UNIQUE_KEY = "SRBUK:";
 }

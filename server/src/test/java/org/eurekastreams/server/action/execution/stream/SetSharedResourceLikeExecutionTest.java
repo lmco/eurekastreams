@@ -19,13 +19,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.action.request.stream.SetSharedResourceLikeRequest;
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.SetSharedResourceLikeMapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -67,12 +74,17 @@ public class SetSharedResourceLikeExecutionTest
     new SharedResourceRequestMapperFake();
 
     /**
+     * Cache.
+     */
+    private final Cache cache = context.mock(Cache.class);
+
+    /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new SetSharedResourceLikeExecution(setLikedResourceStatusMapper, findOrInsertSharedResourceMapper);
+        sut = new SetSharedResourceLikeExecution(setLikedResourceStatusMapper, findOrInsertSharedResourceMapper, cache);
     }
 
     /**
@@ -87,9 +99,11 @@ public class SetSharedResourceLikeExecutionTest
         final PrincipalActionContext principalActionContext = context.mock(PrincipalActionContext.class);
         final Principal principal = context.mock(Principal.class);
         final SetSharedResourceLikeRequest actionRequest = new SetSharedResourceLikeRequest("http://foo.com", true);
-        final SharedResource sharedResourceFoundOrInserted = new SharedResource("http://foo.com");
+        final SharedResource sharedResourceFoundOrInserted = new SharedResource("http://fOO.com");
         findOrInsertSharedResourceMapper.setReturnedResource(sharedResourceFoundOrInserted);
 
+        final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
+        final String expectedCacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + "http://foo.com";
         context.checking(new Expectations()
         {
             {
@@ -104,6 +118,12 @@ public class SetSharedResourceLikeExecutionTest
 
                 allowing(principal).getId();
                 will(returnValue(personId));
+
+                // make sure the cache key is deleted now
+                oneOf(cache).delete(expectedCacheKey);
+
+                allowing(taskContext).getUserActionRequests();
+                will(returnValue(requests));
             }
         });
 
@@ -115,14 +135,23 @@ public class SetSharedResourceLikeExecutionTest
         assertTrue(setLikedResourceStatusMapper.getRequest().getLikedStatus());
         assertSame(sharedResourceFoundOrInserted, setLikedResourceStatusMapper.getRequest().getSharedResource());
 
+        // make sure the cache key is queued up for task handler to cleanup
+        assertEquals(1, requests.size());
+        assertEquals("deleteCacheKeysAction", requests.get(0).getActionKey());
+        Set<String> params = (Set<String>) requests.get(0).getParams();
+        assertEquals(1, params.size());
+        for (String p : params)
+        {
+            assertEquals(expectedCacheKey, p);
+        }
+
         context.assertIsSatisfied();
     }
 
     /**
      * Fake mapper to store the request so the tests can verify it was made properly.
      */
-    private class SetLikedResourceStatusMapperFake implements
-            DomainMapper<SetSharedResourceLikeMapperRequest, Boolean>
+    private class SetLikedResourceStatusMapperFake implements DomainMapper<SetSharedResourceLikeMapperRequest, Boolean>
     {
         /**
          * The request last passed into excecute.
@@ -131,7 +160,7 @@ public class SetSharedResourceLikeExecutionTest
 
         /**
          * execute.
-         *
+         * 
          * @param inRequest
          *            the request made - store it
          * @return true
@@ -178,7 +207,7 @@ public class SetSharedResourceLikeExecutionTest
 
         /**
          * execute.
-         *
+         * 
          * @param inRequest
          *            the request made - store it
          * @return true

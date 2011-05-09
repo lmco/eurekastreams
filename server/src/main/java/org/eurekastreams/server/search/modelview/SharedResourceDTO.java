@@ -35,22 +35,22 @@ public class SharedResourceDTO implements Serializable
     private String key = "NOT SET";
 
     /**
-     * The number of people that like the resource.
+     * List of all of the people ids that liked this.
      */
-    private int likeCount = -1;
+    private List<Long> likerPersonIds;
 
     /**
-     * The number of people that are sharing the resource.
+     * List of all of the person ids that shared this.
      */
-    private int shareCount = -1;
+    private List<Long> sharerPersonIds;
 
     /**
-     * A sample of 4 likers - check the like count to see how many there are.
+     * A sample of 4 likers - check the like count to see how many there are. -- THIS ISN'T CACHED --
      */
     private List<PersonModelView> likersSample;
 
     /**
-     * A sample of 4 sharers - chekc the shareCount to see how many there are.
+     * A sample of 4 sharers - chekc the shareCount to see how many there are. -- THIS ISN'T CACHED --
      */
     private List<PersonModelView> sharersSample;
 
@@ -60,7 +60,7 @@ public class SharedResourceDTO implements Serializable
     private Long streamScopeId = null;
 
     /**
-     * if the current user liked this resource.
+     * if the current user liked this resource. -- THIS ISN'T CACHED --
      */
     private boolean isLiked;
 
@@ -69,16 +69,11 @@ public class SharedResourceDTO implements Serializable
      */
     public int getLikeCount()
     {
-        return likeCount;
-    }
-
-    /**
-     * @param inLikeCount
-     *            the likeCount to set
-     */
-    public void setLikeCount(final int inLikeCount)
-    {
-        likeCount = inLikeCount;
+        if (likerPersonIds == null)
+        {
+            return 0;
+        }
+        return likerPersonIds.size();
     }
 
     /**
@@ -86,16 +81,11 @@ public class SharedResourceDTO implements Serializable
      */
     public int getShareCount()
     {
-        return shareCount;
-    }
-
-    /**
-     * @param inShareCount
-     *            the shareCount to set
-     */
-    public void setShareCount(final int inShareCount)
-    {
-        shareCount = inShareCount;
+        if (sharerPersonIds == null)
+        {
+            return 0;
+        }
+        return sharerPersonIds.size();
     }
 
     /**
@@ -185,4 +175,37 @@ public class SharedResourceDTO implements Serializable
         return isLiked;
     }
 
+    /**
+     * @return the likerPersonIds
+     */
+    public List<Long> getLikerPersonIds()
+    {
+        return likerPersonIds;
+    }
+
+    /**
+     * @param inLikerPersonIds
+     *            the likerPersonIds to set
+     */
+    public void setLikerPersonIds(final List<Long> inLikerPersonIds)
+    {
+        likerPersonIds = inLikerPersonIds;
+    }
+
+    /**
+     * @return the sharerPersonIds
+     */
+    public List<Long> getSharerPersonIds()
+    {
+        return sharerPersonIds;
+    }
+
+    /**
+     * @param inSharerPersonIds
+     *            the sharerPersonIds to set
+     */
+    public void setSharerPersonIds(final List<Long> inSharerPersonIds)
+    {
+        sharerPersonIds = inSharerPersonIds;
+    }
 }

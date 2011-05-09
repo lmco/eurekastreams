@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 
 /**
  * A panel for determining where a post gets posted to.
- *
+ * 
  */
 public class PostToPanel extends FlowPanel
 {
@@ -74,7 +74,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param postScope
      *            the scope of the current user.
      */
@@ -85,7 +85,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param postScope
      *            the scope of the current user.
      * @param alwaysShow
@@ -123,12 +123,13 @@ public class PostToPanel extends FlowPanel
             {
                 public void itemSelected(final JavaScriptObject obj)
                 {
-                    if (!getEntityType(obj.toString()).equals("NOTSET"))
+                    String[] results = obj.toString().split(",", 4);
+                    if (!results[0].equals("NOTSET"))
                     {
-                        String displayName = getDisplayName(obj.toString());
-                        ScopeType entityType = ScopeType.valueOf(getEntityType(obj.toString()));
-                        String uniqueId = getUniqueId(obj.toString());
-                        long streamScopeId = Long.parseLong(getStreamScopeId(obj.toString()));
+                        String displayName = results[3];
+                        ScopeType entityType = ScopeType.valueOf(results[0]);
+                        String uniqueId = results[1];
+                        long streamScopeId = Long.parseLong(results[2]);
 
                         typedInScope = new StreamScope(displayName, entityType, uniqueId, streamScopeId);
 
@@ -224,7 +225,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * If necessary, removes an existing StreamScopePanel in the indicated PostToPanel.
-     *
+     * 
      * @param postToPanel
      *            the panel to search for a StreamScopePanel.
      */
@@ -248,44 +249,8 @@ public class PostToPanel extends FlowPanel
     }
 
     /**
-     * Gets the entity type of the JSON object.
-     *
-     * @param jsObj
-     *            the JSON object.
-     * @return the entity type.
-     */
-    private native String getEntityType(final String jsObj) /*-{ return jsObj.split(",")[1]; }-*/;
-
-    /**
-     * Gets the unique id of the JSON object.
-     *
-     * @param jsObj
-     *            the JSON object.
-     * @return the unique id.
-     */
-    private native String getUniqueId(final String jsObj) /*-{ return jsObj.split(",")[2]; }-*/;
-
-    /**
-     * Gets the display name of the JSON object.
-     *
-     * @param jsObj
-     *            the JSON object.
-     * @return the display name.
-     */
-    private native String getDisplayName(final String jsObj) /*-{ return jsObj.split(",")[0]; }-*/;
-
-    /**
-     * Gets the StreamScope id of the JSON object.
-     *
-     * @param jsObj
-     *            the JSON object.
-     * @return the StreamScope id.
-     */
-    private native String getStreamScopeId(final String jsObj) /*-{ return jsObj.split(",")[3]; }-*/;
-
-    /**
      * Gets the post scope.
-     *
+     * 
      * @return the scope.
      */
     public StreamScope getPostScope()
@@ -306,7 +271,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Sets the post scope.
-     *
+     * 
      * @param inScope
      *            the scope.
      */

@@ -38,7 +38,7 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * This class provides the Following Strategy for a Person object.
- *
+ * 
  */
 public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -69,7 +69,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
     /**
      * Constructor for the FollowingPersonStrategy.
-     *
+     * 
      * @param inMapper
      *            - instance of the PersonMapper for this class.
      * @param inGetPersonIdByAccountIdMapper
@@ -92,7 +92,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * This method performs the concrete implementation for the setting the Following status of a person following
      * another person.
      */

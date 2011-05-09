@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 
 /**
@@ -52,11 +51,6 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     private DomainMapper<SharedResourceRequest, List<Long>> getPeopleThatLikedResourceMapper;
 
     /**
-     * Mapper to get person model views by ids.
-     */
-    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleModelViewsByIdsMapper;
-
-    /**
      * Constructor.
      * 
      * @param inGetResourceStreamScopeByKeyMapper
@@ -65,19 +59,15 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
      *            Mapper that gets the ids of people that liked a shared resource.
      * @param inGetPeopleThatLikedResourceMapper
      *            Mapper that gets the ids of people that shared a shared resource.
-     * @param inGetPeopleModelViewsByIdsMapper
-     *            mapper to get person model views
      */
     public GetSharedResourcePropertiesMapper(
             final DomainMapper<String, StreamScope> inGetResourceStreamScopeByKeyMapper,
             final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatSharedResourceMapper,
-            final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatLikedResourceMapper,
-            final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleModelViewsByIdsMapper)
+            final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatLikedResourceMapper)
     {
         getResourceStreamScopeByKeyMapper = inGetResourceStreamScopeByKeyMapper;
         getPeopleThatSharedResourceMapper = inGetPeopleThatSharedResourceMapper;
         getPeopleThatLikedResourceMapper = inGetPeopleThatLikedResourceMapper;
-        getPeopleModelViewsByIdsMapper = inGetPeopleModelViewsByIdsMapper;
     }
 
     /**
@@ -92,8 +82,8 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     {
         SharedResourceDTO dto = new SharedResourceDTO();
         dto.setKey(inRequest.getUniqueKey());
-        dto.setSharersSample(new ArrayList<PersonModelView>());
-        dto.setLikersSample(new ArrayList<PersonModelView>());
+
+        log.info("Looking for the stream scope for shared resource with uniqueKey " + inRequest.getUniqueKey());
 
         // either null or a stream scope id
         StreamScope sharedResourceStreamScope = getResourceStreamScopeByKeyMapper.execute(inRequest.getUniqueKey());
@@ -103,10 +93,11 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         {
             // not found - if the shared resource existed, it would have a stream scope, so we can stop looking through
             // the other tables now
+            log.info("Couldn't find the stream scope for shared resource with unique key " + inRequest.getUniqueKey()
+                    + " - must not exist.  Cache as such.");
+
             dto.setStreamScopeId(null);
             dto.setIsLiked(false);
-            dto.setLikeCount(0);
-            dto.setShareCount(0);
             return dto;
         }
         dto.setStreamScopeId(sharedResourceStreamScope.getId());
@@ -114,79 +105,23 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         // since we know the destination SharedResource id, we can get the likers and sharers much quicker
         inRequest.setSharedResourceId(sharedResourceStreamScope.getDestinationEntityId());
 
+        log.info("Found the shared resource for unique key " + inRequest.getUniqueKey()
+                + " - looking for lists of people ids that liked and shared it.");
+
         List<Long> sharedPersonIds = getPeopleThatSharedResourceMapper.execute(inRequest);
         List<Long> likedPersonIds = getPeopleThatLikedResourceMapper.execute(inRequest);
 
-        // need to check if the current user liked this before trimming the list
-        dto.setIsLiked(likedPersonIds.contains(inRequest.getPersonId()));
-        dto.setLikeCount(likedPersonIds.size());
-        dto.setShareCount(sharedPersonIds.size());
-
-        log.info("Getting shared and liked people lists for shared resource with key: " + inRequest.getUniqueKey());
-
-        if (sharedPersonIds.size() > 4)
+        if (sharedPersonIds == null)
         {
-            sharedPersonIds = sharedPersonIds.subList(0, 4);
+            sharedPersonIds = new ArrayList<Long>();
         }
-        if (likedPersonIds.size() > 4)
-        {
-            likedPersonIds = likedPersonIds.subList(0, 4);
-        }
+        dto.setLikerPersonIds(likedPersonIds);
 
-        // get the people
-        List<Long> personIds = new ArrayList<Long>();
-        personIds.addAll(sharedPersonIds);
-        for (long id : likedPersonIds)
+        if (likedPersonIds == null)
         {
-            if (!personIds.contains(id))
-            {
-                personIds.add(id);
-            }
+            likedPersonIds = new ArrayList<Long>();
         }
-
-        if (personIds.size() > 0)
-        {
-            List<PersonModelView> people = getPeopleModelViewsByIdsMapper.execute(personIds);
-            PersonModelView foundPerson;
-            for (long personId : personIds)
-            {
-                foundPerson = findPersonInList(people, personId);
-                if (foundPerson != null)
-                {
-                    // add the DTO to the people collections
-                    if (likedPersonIds.contains(personId))
-                    {
-                        dto.getLikersSample().add(foundPerson);
-                    }
-                    if (sharedPersonIds.contains(personId))
-                    {
-                        dto.getSharersSample().add(foundPerson);
-                    }
-                }
-            }
-        }
-
+        dto.setSharerPersonIds(sharedPersonIds);
         return dto;
-    }
-
-    /**
-     * Get a person by id from a list of PersonModelViews.
-     * 
-     * @param inPeople
-     *            the people to look through
-     * @param personId
-     *            the person id we're looking for
-     * @return the person with the input id in the list of person model views
-     */
-    private PersonModelView findPersonInList(final List<PersonModelView> inPeople, final Long personId)
-    {
-        for (PersonModelView p : inPeople)
-        {
-            if (p.getId() == personId)
-            {
-                return p;
-            }
-        }
-        return null;
     }
 }
