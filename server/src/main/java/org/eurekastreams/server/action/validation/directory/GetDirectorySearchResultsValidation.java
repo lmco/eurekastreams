@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.server.action.validation.directory;
 
-import java.util.regex.Pattern;
-
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
@@ -24,13 +22,12 @@ import org.eurekastreams.server.action.request.directory.GetDirectorySearchResul
 
 /**
  * Validation strategy for GetDirectorySearchResults action requests.
- *
+ * 
  * This ensures that the orgShortName is valid
- *
- * Note: This does not actually test the datastore for a valid orgShortname because that is not
- * provided by the user and the search query would just return no results for the search of
- * a non-existent org.  This is a deliberate sanity check only on the existence and format of the
- * parameter passed in.
+ * 
+ * Note: This does not actually test the datastore for a valid orgShortname because that is not provided by the user and
+ * the search query would just return no results for the search of a non-existent org. This is a deliberate sanity check
+ * only on the existence and format of the parameter passed in.
  */
 public class GetDirectorySearchResultsValidation implements ValidationStrategy<ServiceActionContext>
 {
@@ -39,10 +36,6 @@ public class GetDirectorySearchResultsValidation implements ValidationStrategy<S
     {
         GetDirectorySearchResultsRequest currentRequest = (GetDirectorySearchResultsRequest) inActionContext
                 .getParams();
-        if (currentRequest.getOrgShortName().length() > 0
-                && !Pattern.matches("^[a-zA-Z0-9]+$", currentRequest.getOrgShortName()))
-        {
-            throw new ValidationException("Invalid org short name.");
-        }
+
     }
 }

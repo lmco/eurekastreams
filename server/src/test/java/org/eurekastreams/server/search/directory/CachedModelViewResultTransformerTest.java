@@ -25,11 +25,9 @@ import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -61,12 +59,6 @@ public class CachedModelViewResultTransformerTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    /**
-     * The mapper to get the organizations by ids.
-     */
-    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapperMock = context
-            .mock(DomainMapper.class);
 
     /**
      * The mapper to get the domain groups by ids.
@@ -107,34 +99,16 @@ public class CachedModelViewResultTransformerTest
     {
         // create the input list:
         List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
-        maps.add(buildMap(Organization.class, 9L));
         maps.add(buildMap(Person.class, 3L));
-        maps.add(buildMap(Organization.class, 8L));
         maps.add(buildMap(DomainGroup.class, 9L));
         maps.add(buildMap(Person.class, 1L));
-        maps.add(buildMap(Organization.class, 3L));
         maps.add(buildMap(DomainGroup.class, 1L));
 
         // ModelViews that the mocked mappers will return - numbers describe their order
-        final ModelView org1 = buildModelView(new OrganizationModelView(), 9L);
         final ModelView person2 = buildModelView(new PersonModelView(), 3L);
-        final ModelView org3 = buildModelView(new OrganizationModelView(), 8L);
         final ModelView group4 = buildModelView(new DomainGroupModelView(), 9L);
         final ModelView person5 = buildModelView(new PersonModelView(), 1L);
-        final ModelView org6 = buildModelView(new OrganizationModelView(), 3L);
         final ModelView group7 = buildModelView(new DomainGroupModelView(), 1L);
-
-        // the list of Org IDs we expect to be sent to the org mapper
-        final List<Long> expectedOrgIdsList = new ArrayList<Long>();
-        expectedOrgIdsList.add(9L);
-        expectedOrgIdsList.add(8L);
-        expectedOrgIdsList.add(3L);
-
-        // the org ModelViews returned by org mapper
-        final List<ModelView> returnedOrgModelViews = new ArrayList<ModelView>();
-        returnedOrgModelViews.add(org3);
-        returnedOrgModelViews.add(org6);
-        returnedOrgModelViews.add(org1);
 
         // the list of Group IDs we expect to be sent to the group mapper
         final List<Long> expectedGroupIdList = new ArrayList<Long>();
@@ -160,9 +134,6 @@ public class CachedModelViewResultTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getOrgsByIdsMapperMock).execute(expectedOrgIdsList);
-                will(returnValue(returnedOrgModelViews));
-
                 oneOf(getDomainGroupsByIdsMapperMock).execute(expectedGroupIdList);
                 will(returnValue(returnedGroupModelViews));
 
@@ -173,7 +144,6 @@ public class CachedModelViewResultTransformerTest
 
         // wire up the SUT with the mocked mappers
         CachedModelViewResultTransformer sut = new CachedModelViewResultTransformer();
-        sut.setGetOrgsByIdsMapper(getOrgsByIdsMapperMock);
         sut.setGetDomainGroupsByIdsMapper(getDomainGroupsByIdsMapperMock);
         sut.setGetPeopleByIdsMapper(getPeopleByIdsMapperMock);
 
@@ -184,13 +154,10 @@ public class CachedModelViewResultTransformerTest
         assertEquals(maps.size(), results.size());
 
         // make sure the SUT wired the model views in the same order as the input map
-        assertSame(org1, results.get(0));
-        assertSame(person2, results.get(1));
-        assertSame(org3, results.get(2));
-        assertSame(group4, results.get(3));
-        assertSame(person5, results.get(4));
-        assertSame(org6, results.get(5));
-        assertSame(group7, results.get(6));
+        assertSame(person2, results.get(0));
+        assertSame(group4, results.get(1));
+        assertSame(person5, results.get(2));
+        assertSame(group7, results.get(3));
 
         // make sure the mappers were called with the expected lists
         context.assertIsSatisfied();

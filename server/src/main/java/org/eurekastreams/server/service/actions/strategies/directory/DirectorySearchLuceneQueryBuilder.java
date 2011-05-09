@@ -38,48 +38,37 @@ public class DirectorySearchLuceneQueryBuilder
     private int fieldBoostFactor;
 
     /**
-     * Org id getter - don't use the interface - the query terms added only make sense for ID, not shortName.
-     */
-    private OrganizationIdGetter orgIdGetter;
-
-    /**
      * Constructor.
-     *
+     * 
      * @param inSearchFormatMask
      *            the search format mask.
      * @param inFieldBooster
      *            the field booster.
      * @param inFieldBoostFactor
      *            the boost factor (recommend 50).
-     * @param inOrgIdGetter
-     *            the strategy to use to get the organization identifier - either the id or the shortName
      */
     public DirectorySearchLuceneQueryBuilder(final String inSearchFormatMask, final LuceneFieldBooster inFieldBooster,
-            final int inFieldBoostFactor, final OrganizationIdGetter inOrgIdGetter)
+            final int inFieldBoostFactor)
     {
         searchFormatMask = inSearchFormatMask;
         fieldBooster = inFieldBooster;
         fieldBoostFactor = inFieldBoostFactor;
-        orgIdGetter = inOrgIdGetter;
     }
 
     /**
      * Modify the input search string mask, boosting a field if requested, scoping the search to a parent organization
      * id if requested, and passing in a userId clause that will add the ability to fetch private groups that the
      * current user is a follower or coordinator for.
-     *
+     * 
      * @param searchText
      *            the search term the user entered, already escaped to prevent query-injection
      * @param weightedField
      *            the field to boost
-     * @param orgShortName
-     *            the organization short name to scope the query to (optional, can be empty)
      * @param userId
      *            the current user's Person Id - extends ExtendedUserDetails if logged in
      * @return a native lucene query
      */
-    public String buildNativeQuery(final String searchText, final String weightedField, final String orgShortName,
-            final long userId)
+    public String buildNativeQuery(final String searchText, final String weightedField, final long userId)
     {
         String queryMask = searchFormatMask;
 
@@ -87,20 +76,6 @@ public class DirectorySearchLuceneQueryBuilder
         if (weightedField.length() > 0)
         {
             queryMask = fieldBooster.boostField(queryMask, weightedField, fieldBoostFactor);
-        }
-
-        // only search under a certain org if requested - get the identifier the query is expecting
-        if (orgShortName.length() > 0)
-        {
-            String orgIdentifier = orgIdGetter.getIdentifier(orgShortName);
-            if (queryMask.length() == 0)
-            {
-                queryMask = String.format("+parentOrganizationIdHierarchy:(%s)", orgIdentifier);
-            }
-            else
-            {
-                queryMask = String.format("+(%s) +parentOrganizationIdHierarchy:(%s)", queryMask, orgIdentifier);
-            }
         }
 
         // the query mask expects two terms - the search term, then an additional permission clause - optional, only

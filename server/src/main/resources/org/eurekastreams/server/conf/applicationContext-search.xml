@@ -23,18 +23,6 @@
 	</bean>
 
 	<!--
-		Search result types of Organization - singleton for reuse
-	-->
-	<bean id="searchResultTypesOrganization" class="java.util.ArrayList"
-		scope="singleton">
-		<constructor-arg>
-			<list>
-				<value>org.eurekastreams.server.domain.Organization</value>
-			</list>
-		</constructor-arg>
-	</bean>
-
-	<!--
 		Search result types of Person - singleton for reuse
 	-->
 	<bean id="searchResultTypesPeople" class="java.util.ArrayList"
@@ -70,19 +58,5 @@
 			</list>
 		</constructor-arg>
 	</bean>
-
-	<!--
-		Search result types of Person/Group/Organization
-	-->
-	<bean id="searchResultTypesOrgsGroupsPeople" class="java.util.ArrayList"
-		scope="singleton">
-		<constructor-arg>
-			<list>
-				<value>org.eurekastreams.server.domain.Person</value>
-				<value>org.eurekastreams.server.domain.DomainGroup</value>
-				<value>org.eurekastreams.server.domain.Organization</value>
-			</list>
-		</constructor-arg>
-	</bean>
-
+	
 </beans>

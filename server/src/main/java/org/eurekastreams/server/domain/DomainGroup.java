@@ -47,15 +47,12 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge;
-import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
-import org.eurekastreams.server.search.bridge.OrganizationToShortNameFieldBridge;
 import org.hibernate.annotations.Formula;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Resolution;
@@ -100,8 +97,8 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /** Used for validation. */
     @Transient
-    public static final String SHORT_NAME_LENGTH_MESSAGE =
-            "Group Web Address supports up to " + MAX_SHORT_NAME_LENGTH + " characters.";
+    public static final String SHORT_NAME_LENGTH_MESSAGE = "Group Web Address supports up to " + MAX_SHORT_NAME_LENGTH
+            + " characters.";
 
     /** Used for validation. */
     @Transient
@@ -121,8 +118,8 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /** Used for validation. */
     @Transient
-    public static final String DESCRIPTION_LENGTH_MESSAGE =
-            "Description supports up to " + MAX_DESCRIPTION_LENGTH + " characters.";
+    public static final String DESCRIPTION_LENGTH_MESSAGE = "Description supports up to " + MAX_DESCRIPTION_LENGTH
+            + " characters.";
 
     /** Used for validation. */
     @Transient
@@ -130,8 +127,8 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /** Used for validation. */
     @Transient
-    public static final String SHORT_NAME_CHARACTERS =
-            "A short name can only contain alphanumeric characters and no spaces.";
+    public static final String SHORT_NAME_CHARACTERS = "A short name can only contain "
+            + "alphanumeric characters and no spaces.";
 
     /**
      * The name of the group.
@@ -329,7 +326,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * Retrieve the name of the DomainEntity. This is to allow for the super class to identify the table within
      * hibernate.
-     *
+     * 
      * @return The name of the domain entity.
      */
     public static String getDomainEntityName()
@@ -347,7 +344,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * set the id - useful for unit testing.
-     *
+     * 
      * @param newId
      *            the new id
      */
@@ -359,7 +356,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Override equality to be based on the group's id.
-     *
+     * 
      * @param rhs
      *            target object
      * @return true if equal, false otherwise.
@@ -372,7 +369,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * HashCode override.
-     *
+     * 
      * @see java.lang.Object#hashCode()
      * @return hashcode for object.
      */
@@ -391,19 +388,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentOrganizationId")
-    @Fields(value = {
-    // "parentOrganizationShortName"
-            @Field(name = "parentOrganizationShortName", index = Index.UN_TOKENIZED, store = Store.NO,
-            // field bridge
-            bridge = @FieldBridge(impl = OrganizationToShortNameFieldBridge.class)),
-
-            // "parentOrganizationIdHierarchy" - a space-separated list of all org ids (inclusive) up the tree
-            @Field(name = "parentOrganizationIdHierarchy", index = Index.TOKENIZED, store = Store.NO,
-            // WhitespaceAnalyzer to split on spaces, not lowercase, and not use stop words - necessary to mention
-            // since we're tokenizing
-            analyzer = @Analyzer(impl = WhitespaceAnalyzer.class),
-            // field bridge
-            bridge = @FieldBridge(impl = OrgIdHierarchyFieldBridge.class)) })
     private Organization parentOrganization;
 
     /**
@@ -427,7 +411,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Constructor. This should have every non-null parameter included.
-     *
+     * 
      * @param inName
      *            - Full name of group.
      * @param inShortName
@@ -444,7 +428,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Add coordinator to group.
-     *
+     * 
      * @param person
      *            The Person to add.
      */
@@ -459,7 +443,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter for list of coordinators.
-     *
+     * 
      * @return list of coordinators.
      */
     @Override
@@ -470,7 +454,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for list of coordinators.
-     *
+     * 
      * @param inCoordinators
      *            list of coordinators.
      */
@@ -509,7 +493,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for group name.
-     *
+     * 
      * @param inName
      *            new name
      */
@@ -521,7 +505,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter for group short name.
-     *
+     * 
      * @return the shortName
      */
     @Override
@@ -532,7 +516,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for group short name.
-     *
+     * 
      * @param inShortName
      *            the shortName to set.
      */
@@ -543,7 +527,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter.
-     *
+     * 
      * @return the overview
      */
     @Override
@@ -554,7 +538,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter.
-     *
+     * 
      * @param inOverview
      *            the overview to set
      */
@@ -603,7 +587,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * check to see if the specified account id is a coordinator for this group.
-     *
+     * 
      * @param account
      *            to check.
      * @return if they're a coordinator.
@@ -659,7 +643,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get avatar x coord.
-     *
+     * 
      * @return avatar x coord.
      */
     @Override
@@ -670,7 +654,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set avatar x coord.
-     *
+     * 
      * @param value
      *            x coord.
      */
@@ -682,7 +666,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get avatar y coord.
-     *
+     * 
      * @return avatar y coord.
      */
     @Override
@@ -693,7 +677,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set avatar y coord.
-     *
+     * 
      * @param value
      *            y coord.
      */
@@ -705,7 +689,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get avatar crop size.
-     *
+     * 
      * @return avatar crop size.
      */
     @Override
@@ -716,7 +700,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set avatar crop size.
-     *
+     * 
      * @param value
      *            crop size.
      */
@@ -784,7 +768,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get the number of updates for this group.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -794,7 +778,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set the number of updates for this group.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -805,7 +789,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set the date the group was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -816,7 +800,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get the date the group was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -835,7 +819,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * Sets if the group is pending. Note: Name is awkward, but follows the bean spec. (setIsPending would go with
      * getIsPending; setIsPending is NOT a match for isPending and thus the field doesn't serialize)
-     *
+     * 
      * @param inIsPending
      *            the status to set
      */
@@ -931,7 +915,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for the static PersonUpdater.
-     *
+     * 
      * @param inEntityCacheUpdater
      *            the PersonUpdater to set
      */
@@ -962,7 +946,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter for the domain short name as implementation for Followable.
-     *
+     * 
      * @return - UniqueId of the Group - shortname.
      */
     @Override
@@ -973,7 +957,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get the parent org id without loading the parent organization.
-     *
+     * 
      * @return the parent org id without loading the parent organization
      */
     @Override
@@ -984,7 +968,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set the parent org id.
-     *
+     * 
      * @param inParentOrgId
      *            the parent org id
      */

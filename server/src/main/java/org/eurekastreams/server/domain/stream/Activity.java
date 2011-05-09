@@ -48,12 +48,10 @@ import org.eurekastreams.server.search.bridge.ActivityLikesClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge;
 import org.eurekastreams.server.search.bridge.ActivitySourceClassBridge;
 import org.eurekastreams.server.search.bridge.IsActivityPublicClassBridge;
-import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
@@ -184,9 +182,6 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipientParentOrgId", nullable = false)
-    @Field(name = "recipientParentOrgId", bridge
-    // line break
-    = @FieldBridge(impl = OrgIdHierarchyFieldBridge.class), store = Store.NO, index = Index.TOKENIZED)
     private Organization recipientParentOrg;
 
     /**

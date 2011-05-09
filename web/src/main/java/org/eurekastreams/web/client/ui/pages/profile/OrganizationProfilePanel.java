@@ -15,20 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.ResourceSortCriteria;
-import org.eurekastreams.server.domain.ResourceSortCriterion;
-import org.eurekastreams.server.domain.ResourceSortCriterion.SortDirection;
-import org.eurekastreams.server.domain.ResourceSortCriterion.SortField;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -43,29 +36,20 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationEmployeesResponseEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationGroupsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationSubOrgsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPendingGroupsResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedActivityFlagResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedReviewPendingGroupResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.FlaggedActivityModel;
-import org.eurekastreams.web.client.model.OrganizationEmployeesModel;
-import org.eurekastreams.web.client.model.OrganizationGroupsModel;
 import org.eurekastreams.web.client.model.OrganizationModel;
-import org.eurekastreams.web.client.model.OrganizationSubOrgsModel;
 import org.eurekastreams.web.client.model.PendingGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
 import org.eurekastreams.web.client.ui.common.Pager;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
-import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
-import org.eurekastreams.web.client.ui.common.pagedlist.OrganizationRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PendingGroupRenderer;
-import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
@@ -246,7 +230,6 @@ public class OrganizationProfilePanel extends FlowPanel
 
         portalPage = new TabContainerPanel();
         portalPage.addTab(new SimpleTab("Stream", streamContent));
-        portalPage.addTab(buildConnectionsTab());
 
         Session.getInstance().getEventBus().addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
                 new Observer<AuthorizeUpdateOrganizationResponseEvent>()
@@ -310,78 +293,6 @@ public class OrganizationProfilePanel extends FlowPanel
                         new SwitchToFilterOnPagedFilterPanelEvent("admin", adminFilter, "", true));
             }
         }
-    }
-
-    /**
-     * Builds the connections tab.
-     * 
-     * @return The tab.
-     */
-    private SimpleTab buildConnectionsTab()
-    {
-        // Connection Tab
-        List<ResourceSortCriterion> critsForDataAdded = new ArrayList<ResourceSortCriterion>();
-        critsForDataAdded.add(new ResourceSortCriterion(SortField.DATE_ADDED, SortDirection.DESCENDING));
-
-        List<ResourceSortCriterion> critsForFollowers = new ArrayList<ResourceSortCriterion>();
-        critsForFollowers.add(new ResourceSortCriterion(SortField.FOLLOWERS_COUNT, SortDirection.DESCENDING));
-
-        final PagedListPanel connectionTabContent = new PagedListPanel("connections", StaticResourceBundle.INSTANCE
-                .coreCss().tab(), "Connections");
-
-        Session.getInstance().getEventBus().addObserver(GotOrganizationEmployeesResponseEvent.class,
-                new Observer<GotOrganizationEmployeesResponseEvent>()
-                {
-                    public void update(final GotOrganizationEmployeesResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(), "No people are in this organization.");
-                    }
-                });
-
-        Session.getInstance().getEventBus().addObserver(GotOrganizationGroupsResponseEvent.class,
-                new Observer<GotOrganizationGroupsResponseEvent>()
-                {
-                    public void update(final GotOrganizationGroupsResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(), "No groups are in this organization.");
-                    }
-                });
-
-        Session.getInstance().getEventBus().addObserver(GotOrganizationSubOrgsResponseEvent.class,
-                new Observer<GotOrganizationSubOrgsResponseEvent>()
-                {
-                    public void update(final GotOrganizationSubOrgsResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(),
-                                "No sub organizations are in this organization.");
-                    }
-                });
-
-        connectionTabContent.addSet("Employees", OrganizationEmployeesModel.getInstance(), new PersonRenderer(false),
-                new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
-                        critsForDataAdded)), "Recently Added");
-
-        connectionTabContent.addSet("Employees", OrganizationEmployeesModel.getInstance(), new PersonRenderer(false),
-                new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
-                        critsForFollowers)), "Followers");
-
-        connectionTabContent.addSet("Groups", OrganizationGroupsModel.getInstance(), new GroupRenderer(),
-                new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
-                        critsForDataAdded)), "Recently Added");
-
-        connectionTabContent.addSet("Groups", OrganizationGroupsModel.getInstance(), new GroupRenderer(),
-                new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
-                        critsForFollowers)), "Followers");
-
-        connectionTabContent.addSet("Sub Orgs", OrganizationSubOrgsModel.getInstance(), new OrganizationRenderer(),
-                new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
-                        critsForDataAdded)));
-
-        SimpleTab connTab = new SimpleTab("Connections", connectionTabContent);
-        connTab.setParamsToClear(PagedListPanel.URL_PARAM_LIST_ID, PagedListPanel.URL_PARAM_FILTER,
-                PagedListPanel.URL_PARAM_SORT, Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
-
-        return connTab;
     }
 
     /**

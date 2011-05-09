@@ -42,7 +42,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.search.analysis.HtmlStemmerAnalyzer;
 import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
@@ -51,8 +50,6 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundStringBridge;
 import org.eurekastreams.server.search.bridge.EducationListStringBridge;
 import org.eurekastreams.server.search.bridge.JobsListStringBridge;
-import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
-import org.eurekastreams.server.search.bridge.OrganizationToShortNameFieldBridge;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.IndexColumn;
@@ -60,7 +57,6 @@ import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Resolution;
@@ -332,19 +328,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentOrganizationId")
-    @Fields(value = {
-    // "parentOrganizationShortName"
-            @Field(name = "parentOrganizationShortName", index = Index.UN_TOKENIZED, store = Store.NO,
-            // field bridge
-            bridge = @FieldBridge(impl = OrganizationToShortNameFieldBridge.class)),
-
-            // "parentOrganizationShortNameHierarchy" - a space-separated list of all short names up the tree
-            @Field(name = "parentOrganizationIdHierarchy", index = Index.TOKENIZED, store = Store.NO,
-            // WhitespaceAnalyzer to split on spaces, not lowercase, and not use stop words - necessary to mention
-            // since we're tokenizing
-            analyzer = @Analyzer(impl = WhitespaceAnalyzer.class),
-            // field bridge
-            bridge = @FieldBridge(impl = OrgIdHierarchyFieldBridge.class)) })
     private Organization parentOrganization;
 
     /**

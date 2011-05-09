@@ -17,7 +17,6 @@ package org.eurekastreams.server.action.validation.directory;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
-import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -26,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetDirectorySearchResultsValidation} class.
- *
+ * 
  */
 public class GetDirectorySearchResultsValidationTest
 {
@@ -66,60 +65,12 @@ public class GetDirectorySearchResultsValidationTest
     private static final int TO = 9;
 
     /**
-     * The org short name.
-     */
-    private static final String SHORT_NAME = "orgshortname";
-
-    /**
-     * Test that org shortname is regexed.
-     */
-    @Test(expected = ValidationException.class)
-    public void validateParamsWithSpaceInOrgShortName()
-    {
-        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, " " + SHORT_NAME,
-                "", FROM, TO);
-
-        ServiceActionContext currentContext = new ServiceActionContext(params, principalMock);
-
-        sut.validate(currentContext);
-    }
-
-    /**
-     * Test that org shortname is regexed.
-     */
-    @Test(expected = ValidationException.class)
-    public void validateParamsWithParensInOrgShortName()
-    {
-        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, ")foo", "", FROM,
-                TO);
-
-        ServiceActionContext currentContext = new ServiceActionContext(params, principalMock);
-
-        sut.validate(currentContext);
-    }
-
-    /**
-     * Test that org shortname is regexed.
-     */
-    @Test(expected = ValidationException.class)
-    public void validateParamsWithQuotesInOrgShortName()
-    {
-        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, "\"foo", "", FROM,
-                TO);
-
-        ServiceActionContext currentContext = new ServiceActionContext(params, principalMock);
-
-        sut.validate(currentContext);
-    }
-
-    /**
      * Check that good parameters pass validation.
      */
     @Test
     public void validateParamsWithGoodParams()
     {
-        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, SHORT_NAME, "",
-                FROM, TO);
+        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, "", FROM, TO);
 
         ServiceActionContext currentContext = new ServiceActionContext(params, principalMock);
 
@@ -132,8 +83,7 @@ public class GetDirectorySearchResultsValidationTest
     @Test
     public void validateParamsWithEmptyShortName()
     {
-        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, "", "",
-                FROM, TO);
+        GetDirectorySearchResultsRequest params = new GetDirectorySearchResultsRequest(SEARCH_TEXT, "", FROM, TO);
 
         ServiceActionContext currentContext = new ServiceActionContext(params, principalMock);
 
