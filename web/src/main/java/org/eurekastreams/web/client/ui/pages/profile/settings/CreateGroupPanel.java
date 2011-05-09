@@ -42,6 +42,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -175,6 +176,8 @@ public class CreateGroupPanel extends SettingsPanel
         form.addFormElement(shortName);
 
         form.addFormDivider();
+
+        form.addFormElement(new ValueOnlyFormElement(DomainGroupModelView.ORG_PARENT_KEY, parentOrg.getShortName()));
 
         form.addFormElement(new BasicTextAreaFormElement(DomainGroup.MAX_DESCRIPTION_LENGTH, "Description",
                 DomainGroupModelView.DESCRIPTION_KEY, "",

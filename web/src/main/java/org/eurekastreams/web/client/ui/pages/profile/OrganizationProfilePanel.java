@@ -111,10 +111,7 @@ public class OrganizationProfilePanel extends FlowPanel
      * Link to go to the profile settings page.
      */
     private final Hyperlink profileSettingsLink;
-    /**
-     * Link to add a new sub org.
-     */
-    private final Hyperlink addSubOrgLink;
+
     /**
      * Panel that holds the tabbed portion of the profile display.
      */
@@ -167,7 +164,7 @@ public class OrganizationProfilePanel extends FlowPanel
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().profile());
 
         profileSettingsLink = new Hyperlink("Configure", "");
-        addSubOrgLink = new Hyperlink("", "");
+
         final Hyperlink addGroupLink = new Hyperlink("", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.NEW_GROUP, accountId)));
 
@@ -177,14 +174,11 @@ public class OrganizationProfilePanel extends FlowPanel
         portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePageContainer());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-        addSubOrgLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAddSubOrg());
-        addSubOrgLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         addGroupLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAddGroup());
         leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
         breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
         this.add(breadCrumbPanel);
-        this.add(addSubOrgLink);
         this.add(addGroupLink);
         this.add(profileSettingsLink);
         leftBarContainer.add(leftBarPanel);
@@ -265,7 +259,6 @@ public class OrganizationProfilePanel extends FlowPanel
                                     new CreateUrlRequest(Page.ORG_SETTINGS, org.getShortName())));
 
                             profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-                            addSubOrgLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                             RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
 
                             final SimpleTab adminTab = buildAdminTab();
