@@ -158,7 +158,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -209,7 +209,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inOrg
      *            the person whose profile is being displayed
      */
@@ -263,8 +263,6 @@ public class OrganizationProfilePanel extends FlowPanel
                         {
                             profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.ORG_SETTINGS, org.getShortName())));
-                            addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                    new CreateUrlRequest(Page.NEW_ORG, org.getShortName())));
 
                             profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                             addSubOrgLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
@@ -323,7 +321,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab.
-     *
+     * 
      * @return The tab.
      */
     private SimpleTab buildConnectionsTab()
@@ -395,7 +393,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     *
+     * 
      * @return The tab.
      */
     private SimpleTab buildAdminTab()

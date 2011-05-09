@@ -1484,17 +1484,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-
-    <bean id="getOrganizationTree" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-        	<bean parent="baseParamExecuteDomainMapperExecution">
-                <constructor-arg ref="getOrganizationTreeDTOMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
     
     <bean id="httpDocumentFetcher" class="org.eurekastreams.server.service.utility.http.HttpDocumentFetcherImpl" />
     

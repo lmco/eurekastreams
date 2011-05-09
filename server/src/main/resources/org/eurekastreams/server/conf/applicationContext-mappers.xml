@@ -501,45 +501,6 @@
 			</bean>
 		</constructor-arg>
 	</bean>
-	
-	<!-- Mapper to get the org tree -->
-	<bean id="getOrganizationTreeDTOMapper"
-		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-		
-		<!-- Cache mapper -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_TREE_DTO" />
-						<constructor-arg ref="ignoredCacheKeySuffixTransformer" />
-						<property name="cache" ref="memcachedCache" />
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		
-		<!-- Fall-back mapper -->
-		<constructor-arg>
-			<!-- Org tree builder - uses other decorated partial response domain mappers -->
-			<bean class="org.eurekastreams.server.persistence.mappers.GetOrganizationTreeDTO">
-				<constructor-arg ref="getAllOrganizationIdsDbMapper" />
-				<constructor-arg ref="getOrganizationsByIdsMapper" />
-			</bean>
-		</constructor-arg>
-		
-		<!-- Results combiner:  return whichever is not null -->
-		<constructor-arg ref="nonNullResultsCombiner" />
-				
-		<!-- Store the DTO back in cache -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_TREE_DTO" />
-				<constructor-arg ref="ignoredCacheKeySuffixTransformer" />
-				<property name="cache" ref="memcachedCache" />
-			</bean>
-		</constructor-arg>
-	</bean>
 
     <!-- Mapper to get people ids by account ids -->
     <bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">

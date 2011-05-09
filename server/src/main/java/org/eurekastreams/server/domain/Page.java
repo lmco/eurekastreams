@@ -81,10 +81,6 @@ public enum Page implements Serializable
      */
     NEW_GROUP("newgroup"),
     /**
-     * New org page.
-     */
-    NEW_ORG("neworg"),
-    /**
      * Help page.
      */
     HELP("help"),
