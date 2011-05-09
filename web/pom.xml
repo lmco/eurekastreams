@@ -368,32 +368,22 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <id>chmodder</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>chmod</executable>
-                            <arguments>
-                                <argument>-R</argument>
-                                <argument>755</argument>
-                                <argument>${project.build.directory}/classes/db/scripts</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.6</version>
                 <executions>
+                    <execution>
+                        <id>set db script permissions</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                        	<target>
+								<chmod dir="${project.build.directory}/classes/db/scripts" includes="**/*" perm="755" />
+                        	</target>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>create lib folder</id>
                         <phase>prepare-package</phase>
@@ -683,7 +673,6 @@
                             <port>8080</port>
                             <hostedWebapp>ROOT</hostedWebapp>
                             <style>${build.gwt.compile.style}</style>
-                            <localWorkers>1</localWorkers>
                        </configuration>
                         <executions>
                             <execution>

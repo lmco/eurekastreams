@@ -19,24 +19,33 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.logging.client.LogConfiguration;
 
 /**
  * The Event Bus.
- * 
+ *
  */
 public class EventBus
 {
-
     /**
      * The singleton.
      */
     private static EventBus singleton = null;
 
+    /** Logger. */
+    private Logger log;
+
+    /** Tracks ID to use for logging event notifications. */
+    private static int lastNotifyRunId;
+
     /**
      * Last fired events.
      */
     @SuppressWarnings("unchecked")
-    private HashMap<Class, Object> lastFiredEvent = new HashMap<Class, Object>();
+    private final HashMap<Class, Object> lastFiredEvent = new HashMap<Class, Object>();
     /**
      * Stores the observers.
      */
@@ -51,7 +60,7 @@ public class EventBus
 
     /**
      * Gets an instance of the event bus.
-     * 
+     *
      * @return the event bus.
      */
     public static EventBus getInstance()
@@ -65,8 +74,31 @@ public class EventBus
     }
 
     /**
+     * Constructor.
+     */
+    public EventBus()
+    {
+        // This setup is to handle unit testing. GWT Logging uses GWT.Create to set up the logging implementation,
+        // however GWT.Create is not available when running unit tests. (It returns null if GWTMockUtilities.disarm is
+        // called or throws an exception if not. Thus during unit tests calling LogConfiguration.loggingIsEnabled throws
+        // a NullPointerException.
+        try
+        {
+            if (LogConfiguration.loggingIsEnabled())
+            {
+                log = Logger.getLogger("org.eurekastreams.web.client.events.EventBus");
+            }
+        }
+        catch (NullPointerException ex)
+        {
+            // redundant, but keeps checkstyle happy
+            log = null;
+        }
+    }
+
+    /**
      * Adds an observer.
-     * 
+     *
      * @param event
      *            the event.
      * @param observer
@@ -97,7 +129,7 @@ public class EventBus
      * Clones an event map. Cannot use Map.clone() since it is a shallow copy and does not clone the lists, thus using
      * the same list objects in the clone as in the original, resulting in observers added after the buffering to be
      * retained after the restore.
-     * 
+     *
      * @param map
      *            Event map to clone.
      * @return Cloned map.
@@ -117,7 +149,7 @@ public class EventBus
 
     /**
      * Adds an observer.
-     * 
+     *
      * @param event
      *            the event class.
      * @param observer
@@ -138,7 +170,7 @@ public class EventBus
 
     /**
      * Fire the last event.
-     * 
+     *
      * @param event
      *            the event type.
      * @param observer
@@ -157,7 +189,7 @@ public class EventBus
 
     /**
      * Adds an observer to many events.
-     * 
+     *
      * @param events
      *            the event classes
      * @param observer
@@ -173,7 +205,7 @@ public class EventBus
 
     /**
      * Adds an observer.
-     * 
+     *
      * @param event
      *            the event class.
      * @param observer
@@ -192,7 +224,7 @@ public class EventBus
 
     /**
      * Removes an observer.
-     * 
+     *
      * @param event
      *            the event for which to remove the observer.
      * @param observer
@@ -205,7 +237,7 @@ public class EventBus
 
     /**
      * Removes an observer.
-     * 
+     *
      * @param event
      *            the event class.
      * @param observer
@@ -230,22 +262,51 @@ public class EventBus
 
     /**
      * Notifies the observers that subscribe to an event.
-     * 
+     *
      * @param event
      *            the event.
      */
     @SuppressWarnings("unchecked")
     public void notifyObservers(final Object event)
     {
+        int thisRunId = ++lastNotifyRunId;
+        boolean shouldLog = log != null && log.isLoggable(Level.FINE);
+
         lastFiredEvent.put(event.getClass(), event);
         List<Observer< ? >> observers = observerHandlers.get(event.getClass());
-        if (observers != null)
+
+        if (observers == null || observers.isEmpty())
         {
+            if (shouldLog)
+            {
+                log.fine("[" + thisRunId + "] Notify with event " + event.getClass().getName() + "  " + event
+                        + " for no observers.");
+            }
+        }
+        else
+        {
+            if (shouldLog)
+            {
+                log.fine("[" + thisRunId + "] Starting notify with event " + event.getClass().getName() + "  " + event
+                        + " for " + observers.size() + " observers.");
+            }
+
             for (Observer observer : observers)
             {
+                if (shouldLog)
+                {
+                    log.fine("[" + thisRunId + "] Notifying observer " + observer.getClass().getName() + "  "
+                            + observer);
+                }
+
                 // TODO: Should catch here and do something with it so that an exception in one observer doesn't cause
                 // the others to not run
                 observer.update(event);
+            }
+
+            if (shouldLog)
+            {
+                log.fine("[" + thisRunId + "] Finishing notify");
             }
         }
     }
