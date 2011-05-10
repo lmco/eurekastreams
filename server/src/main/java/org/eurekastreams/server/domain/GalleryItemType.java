@@ -23,69 +23,74 @@ import java.util.HashMap;
  * 
  * in an enum, name() and valueOf() are bidirectional
  * 
- * For our purposes, constructor/toEnum and toString are bidirectional. 
+ * For our purposes, constructor/toEnum and toString are bidirectional.
  */
-public enum GalleryItemType  implements Serializable
-{ 
-    /** Uninitialized value.  */
+public enum GalleryItemType implements Serializable
+{
+    /** Uninitialized value. */
     NOT_SET("Not Initialized"),
-    
-    /**  A gadget. */
-    GADGET("Gadget"), 
-    
-    /**  A themen.   */
+
+    /** A gadget. */
+    GADGET("Gadget"),
+
+    /** A theme. */
     THEME("Theme"),
 
-    /**  A plugin. */
-    PLUGIN("Plugin"); 
-    
-    /** 
+    /** A plugin. */
+    PLUGIN("Plugin"),
+
+    /** A tab. */
+    TAB("Tab");
+
+    /**
      * human-readable name (ie, "Business Development" as opposed to enum.BD).
      */
     private final String displayableName;
-    
+
     /**
      * for string-enum conversion.
      */
     private static HashMap<String, GalleryItemType> map = new HashMap<String, GalleryItemType>();
-    
-    static 
+
+    static
     {
         GalleryItemType[] types = GalleryItemType.values();
         for (GalleryItemType type : types)
         {
             map.put(type.toString(), type);
         }
-        
+
     }
-    
+
     /**
      * constructor for this enum.
      * 
-     * @param name a displayable name.
+     * @param name
+     *            a displayable name.
      */
     private GalleryItemType(final String name)
     {
         displayableName = name;
     }
-    
+
     /**
      * 
-     * @param displayableName to convert.
+     * @param displayableName
+     *            to convert.
      * @return the enum corresponding to that string.
      */
-    public static GalleryItemType toEnum(final String displayableName) 
+    public static GalleryItemType toEnum(final String displayableName)
     {
         return map.get(displayableName);
     }
-    
+
     /**
      * @return the displayable name that was passed into the constructor.
      */
     @Override
-    public String toString() 
-    { 
-        return displayableName; 
+    public String toString()
+    {
+        return displayableName;
     }
 
 }
