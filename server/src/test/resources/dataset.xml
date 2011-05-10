@@ -191,7 +191,8 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="1" streamScopeId="1"
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="true"/>
 	<Person id="142" version="1117" accountId="fordp2" firstName="Ford"
 		middleName="X" lastName="Prefect" preferredName="Volgon-Vwatter"
 		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
@@ -201,7 +202,8 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1142" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
 		commentable="true" streamPostable="false" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="true"/>
 		
 		
 	<Person_Stream personid="42" streamid="2" streamIndex="0" />
@@ -403,7 +405,8 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b4507" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="3" 
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="false"/>
 		
 	<Person_RelatedOrganization personId="4507" organizationId="7" />
 
@@ -416,7 +419,8 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a98" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="87433" 
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="6;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="6;"
+        isAdministrator="false"/>
 
 	<Person id="99" version="5" accountId="mrburns" firstName="Monty"
 		middleName="Mr." lastName="Burns" preferredName="Mr.Burns" email="mrburns@gmail.com"
@@ -427,7 +431,8 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a99" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="4" 
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="false"/>
 
     <NotificationFilterPreference version="1" personId="99" notifierType="email" notificationCategory="COMMENT" />
 

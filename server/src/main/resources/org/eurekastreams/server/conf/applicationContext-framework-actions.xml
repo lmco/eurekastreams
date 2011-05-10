@@ -20,6 +20,11 @@
         applicationContext-servletcontextaware-framework-actions.xml file.
     --> 
     
+    <!-- Authorization strategy for ensuring the current user is a system admin -->
+    <bean id="isSystemAdminAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserIsSystemAdministratorAuthorization">
+        <constructor-arg ref="getSystemAdministratorIds" />
+    </bean>
+    
     <!-- ************************* -->
     <!-- TaskHandler configuration -->
     <!-- ************************* -->
@@ -2219,17 +2224,7 @@
     
     <bean id="getPendingGroupsAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <!-- Authorization -->
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.GetPendingGroupsRequestToOrganizationIdRequestTransformer">
-                        <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.profile.GetPendingGroupsExecutionStrategy">
@@ -2871,15 +2866,7 @@
 
     <bean id="getFlaggedActivitiesForOrganization" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <!-- Authorization -->
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.HasOrganizationIdToOrganizationIdRequestTransformer" />
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.GetFlaggedActivitiesForOrganizationExecution">
@@ -2909,16 +2896,7 @@
     <bean id="unflagActivity" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Action's parameter: ActivityID -->
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.ActivityIdToRecipientParentOrgIdRequestTransformer">
-                        <constructor-arg ref="bulkActivitiesMapper" />
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.UpdateActivityFlagExecution">
@@ -3543,19 +3521,7 @@
                 <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
             </bean>   
         </constructor-arg>
-        <constructor-arg>
-            <!-- Authorization -->
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.OrganizationShortNameToIdRequestTransformer">
-                        <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
-                        <constructor-arg value="orgParent" />
-                        <property name="returnValueAsString" value="true"/>
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
            <!-- Execution -->
            <bean class="org.eurekastreams.server.action.execution.profile.PersistResourceWrapperExecution">
@@ -3580,17 +3546,7 @@
         <constructor-arg>
              <bean class="org.eurekastreams.server.action.validation.UpdateOrganizationValidation" />
         </constructor-arg>
-        <constructor-arg>
-            <!-- Authorization -->
-            <bean id="updateOrgAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.HashMapValueRequestTransformer">
-                        <constructor-arg value="id" />
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>          
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
            <!-- Execution -->
            <bean class="org.eurekastreams.server.action.execution.profile.PersistResourceWrapperExecution">
@@ -4630,16 +4586,7 @@
     
     <bean id="resizeOrgAvatar" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.EntityIdFromResizeAvatarRequestTransformer" >
-                        <property name="returnValueAsString" value="true"/>
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg ref="resizeOrgAvatarExecution" />
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
@@ -4647,14 +4594,7 @@
         
     <bean id="deleteOrgAvatar" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.ToStringTransformer"/>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.DeleteAvatarExecution">
                 <constructor-arg ref="jpaOrganizationMapper"/>
@@ -4668,16 +4608,7 @@
     
     <bean id="saveOrgAvatar" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.EntityIdFromSaveImageRequestTransformer" >
-                        <property name="returnValueAsString" value="true"/>
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.SaveAvatarExecution">
                 <constructor-arg ref="jpaOrganizationMapper"/>
@@ -4773,7 +4704,8 @@
                                 <!-- Get the shared resource dto from cache/database -->
                                 <constructor-arg ref="getSharedResourceByKeyMapper" />
                                 
-                                <!-- Transform the shared resource dto to a list of people ids that liked it -->
+                                <!-- Transform the shared resource dto to a list of people ids that liked it
+-->
                                 <constructor-arg>
                                     <bean class="org.eurekastreams.server.service.actions.strategies.SharedResourceDTOToLikerPeopleIdsTransformer" />
                                 </constructor-arg>
@@ -4809,7 +4741,8 @@
                                 <!-- Get the shared resource dto from cache/database -->
                                 <constructor-arg ref="getSharedResourceByKeyMapper" />
                                 
-                                <!-- Transform the shared resource dto to a list of people ids that liked it -->
+                                <!-- Transform the shared resource dto to a list of people ids that liked it
+-->
                                 <constructor-arg>
                                     <bean class="org.eurekastreams.server.service.actions.strategies.SharedResourceDTOToSharerPeopleIdsTransformer" />
                                 </constructor-arg>
@@ -4826,7 +4759,8 @@
         <constructor-arg value="true" />
     </bean>
     
-    <!-- Execution strategy to generate a daily usage summary record for the previous day - takes no input -->
+    <!-- Execution strategy to generate a daily usage summary record for the previous day - takes no input
+-->
     <bean id="generateDailyUsageSummaryExecution" class="org.eurekastreams.server.action.execution.GenerateDailyUsageSummaryExecution">
         <constructor-arg ref="getDateFromDaysAgoStrategy"/>
         <constructor-arg ref="getDailyUsageSummaryByDateDbMapper" />

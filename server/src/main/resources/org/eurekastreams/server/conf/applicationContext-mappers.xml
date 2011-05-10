@@ -2635,4 +2635,37 @@
         <constructor-arg value="false" />
     </bean>
     
+    <bean id="getSystemAdministratorIds" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+		                <constructor-arg>
+	                       <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.SYSTEM_ADMINISTRATOR_IDS" />
+	                    </constructor-arg>
+		                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+		                <property name="cache" ref="memcachedCache" />
+		            </bean>
+		        </constructor-arg>
+		    </bean>
+        </constructor-arg>
+        <!-- Database mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
+        </constructor-arg>
+         <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache refresher -->
+        <constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+	           <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.SYSTEM_ADMINISTRATOR_IDS" />
+                </constructor-arg>
+		        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+		        <property name="cache" ref="memcachedCache" />
+		    </bean>
+		</constructor-arg>       
+    </bean>
+    
 </beans>

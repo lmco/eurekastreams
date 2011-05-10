@@ -15,11 +15,14 @@
  */
 package org.eurekastreams.server.action.authorization;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
-import org.eurekastreams.server.action.request.transformer.RequestTransformer;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -27,10 +30,10 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for CurrentUserOrgCoordinatorRecursivelyAuthorization class.
+ * Test fixture for CurrentUserIsSystemAdministratorAuthorization.
  * 
  */
-public class CurrentUserOrgCoordinatorRecursivelyAuthorizationTest
+public class CurrentUserIsSystemAdministratorAuthorizationTest
 {
     /**
      * Context for building mock objects.
@@ -43,14 +46,9 @@ public class CurrentUserOrgCoordinatorRecursivelyAuthorizationTest
     };
 
     /**
-     * Transform the request.
+     * Mapper to get system administrators.
      */
-    private RequestTransformer orgIdtransformer = context.mock(RequestTransformer.class);
-
-    /**
-     * Mapper to get all the coordinators of an org, traversing up the tree.
-     */
-    private GetRecursiveOrgCoordinators orgPermissionsChecker = context.mock(GetRecursiveOrgCoordinators.class);
+    private DomainMapper<Serializable, List<Long>> systemAdministratorMapper = context.mock(DomainMapper.class);
 
     /**
      * {@link PrincipalActionContext}.
@@ -70,8 +68,8 @@ public class CurrentUserOrgCoordinatorRecursivelyAuthorizationTest
     /**
      * System under test.
      */
-    private CurrentUserOrgCoordinatorRecursivelyAuthorization sut = // \n
-    new CurrentUserOrgCoordinatorRecursivelyAuthorization(orgIdtransformer, orgPermissionsChecker);
+    private CurrentUserIsSystemAdministratorAuthorization sut = new CurrentUserIsSystemAdministratorAuthorization(
+            systemAdministratorMapper);
 
     /**
      * Test.
@@ -79,20 +77,20 @@ public class CurrentUserOrgCoordinatorRecursivelyAuthorizationTest
     @Test
     public void authorizePass()
     {
+        final List<Long> admins = new ArrayList<Long>();
+        admins.add(6L);
+
         context.checking(new Expectations()
         {
             {
-                allowing(orgIdtransformer).transform(actionContext);
-                will(returnValue("5"));
-
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
                 allowing(principal).getId();
                 will(returnValue(userId));
 
-                allowing(orgPermissionsChecker).isOrgCoordinatorRecursively(userId, 5L);
-                will(returnValue(true));
+                oneOf(systemAdministratorMapper).execute(null);
+                will(returnValue(admins));
             }
         });
 
@@ -106,20 +104,20 @@ public class CurrentUserOrgCoordinatorRecursivelyAuthorizationTest
     @Test(expected = AuthorizationException.class)
     public void authorizeFail()
     {
+        final List<Long> admins = new ArrayList<Long>();
+        admins.add(5L);
+
         context.checking(new Expectations()
         {
             {
-                allowing(orgIdtransformer).transform(actionContext);
-                will(returnValue("5"));
-
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
                 allowing(principal).getId();
                 will(returnValue(userId));
 
-                allowing(orgPermissionsChecker).isOrgCoordinatorRecursively(userId, 5L);
-                will(returnValue(false));
+                oneOf(systemAdministratorMapper).execute(null);
+                will(returnValue(admins));
             }
         });
 
