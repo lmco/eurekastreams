@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetDirectorySearchResultsExecution} class.
- *
+ * 
  */
 public class GetDirectorySearchResultsExecutionTest
 {
@@ -80,11 +80,6 @@ public class GetDirectorySearchResultsExecutionTest
     private static final int TO = 9;
 
     /**
-     * The org short name.
-     */
-    private static final String SHORT_NAME = "orgshortname";
-
-    /**
      * The search request builder to pass into the SUT.
      */
     private ProjectionSearchRequestBuilder searchRequestBuilder;
@@ -112,7 +107,7 @@ public class GetDirectorySearchResultsExecutionTest
 
     /**
      * Test performAction() with a user that's logged in.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -135,7 +130,7 @@ public class GetDirectorySearchResultsExecutionTest
                 one(principalMock).getId();
                 will(returnValue(personId));
 
-                one(queryBuilder).buildNativeQuery(escapedSearchText, "background", SHORT_NAME, personId);
+                one(queryBuilder).buildNativeQuery(escapedSearchText, "background", personId);
                 will(returnValue(nativeLuceneQuery));
 
                 one(searchRequestBuilder).buildQueryFromNativeSearchString(nativeLuceneQuery);
@@ -154,7 +149,7 @@ public class GetDirectorySearchResultsExecutionTest
         });
 
         // invoke
-        GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT, SHORT_NAME,
+        GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT,
                 "background", FROM, TO);
 
         ServiceActionContext currentActionContext = new ServiceActionContext(currentRequest, principalMock);
@@ -173,7 +168,7 @@ public class GetDirectorySearchResultsExecutionTest
 
     /**
      * Test performAction() with a user that's not logged in.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -196,7 +191,7 @@ public class GetDirectorySearchResultsExecutionTest
                 one(principalMock).getId();
                 will(returnValue(personId));
 
-                one(queryBuilder).buildNativeQuery(escapedSearchText, "background", SHORT_NAME, personId);
+                one(queryBuilder).buildNativeQuery(escapedSearchText, "background", personId);
                 will(returnValue(nativeLuceneQuery));
 
                 one(searchRequestBuilder).buildQueryFromNativeSearchString(nativeLuceneQuery);
@@ -215,7 +210,7 @@ public class GetDirectorySearchResultsExecutionTest
         });
 
         // invoke
-        GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT, SHORT_NAME,
+        GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT,
                 "background", FROM, TO);
 
         ServiceActionContext currentActionContext = new ServiceActionContext(currentRequest, principalMock);

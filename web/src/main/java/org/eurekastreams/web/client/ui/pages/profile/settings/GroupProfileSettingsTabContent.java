@@ -23,7 +23,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -43,7 +42,6 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGroupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.RichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
@@ -65,7 +63,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The basic group settings.
- *
+ * 
  */
 public class GroupProfileSettingsTabContent extends FlowPanel
 {
@@ -99,7 +97,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param groupName
      *            the group name.
      */
@@ -134,7 +132,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Setter.
-     *
+     * 
      * @param entity
      *            the group whose settings will be changed
      */
@@ -208,18 +206,6 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         form.addFormElement(new BasicTextBoxFormElement("Website URL", "url", entity.getUrl(),
                 "If your group has a website, you can enter the URL above", false));
-        form.addFormDivider();
-
-        // create OrgModelView from groupParentOrg
-        OrganizationModelView parentOrgModelView = null;
-        parentOrgModelView = new OrganizationModelView();
-        parentOrgModelView.setName(entity.getParentOrganizationName());
-        parentOrgModelView.setShortName(entity.getParentOrganizationShortName());
-        parentOrgModelView.setEntityId(entity.getParentOrganizationId());
-
-        form.addFormElement(new OrgLookupFormElement("Parent Organization", "",
-                "Please use the lookup to select the organization that this group is associated with.",
-                DomainGroupModelView.ORG_PARENT_KEY, "", true, parentOrgModelView, false));
         form.addFormDivider();
 
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "

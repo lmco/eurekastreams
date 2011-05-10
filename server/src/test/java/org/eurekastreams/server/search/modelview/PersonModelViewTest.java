@@ -15,21 +15,16 @@
  */
 package org.eurekastreams.server.search.modelview;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -131,21 +126,6 @@ public class PersonModelViewTest
      */
     private final AuthenticationType authenticationType = AuthenticationType.FORM;
 
-    /**
-     * IDs of related organizations.
-     */
-    private List<Long> relatedOrganizationIds;
-
-    /**
-     * One of two related org ids for relatedOrganizationIds.
-     */
-    private final Long relatedOrgId1 = 847L;
-
-    /**
-     * One of two related org ids for relatedOrganizationIds.
-     */
-    private final Long relatedOrgId2 = 999L;
-
     /** Test data: email address. */
     private static final String EMAIL = "somebody@somewhere.com";
 
@@ -153,17 +133,6 @@ public class PersonModelViewTest
      * The date the user last accepted terms of service.
      */
     private static Date lastAcceptedTermsOfService = new Date();
-
-    /**
-     * Setup method.
-     */
-    @Before
-    public void setup()
-    {
-        relatedOrganizationIds = new ArrayList<Long>();
-        relatedOrganizationIds.add(relatedOrgId1);
-        relatedOrganizationIds.add(relatedOrgId2);
-    }
 
     /**
      * Test getEntityName().
@@ -204,7 +173,6 @@ public class PersonModelViewTest
         sut.setEmail(EMAIL);
         sut.setCommentable(commentable);
         sut.setStreamPostable(streamPostable);
-        sut.setRelatedOrganizationIds(relatedOrganizationIds);
         sut.setLastAcceptedTermsOfService(lastAcceptedTermsOfService);
         sut.setAccountLocked(true);
 
@@ -252,7 +220,6 @@ public class PersonModelViewTest
         p.put("email", EMAIL);
         p.put("commentable", commentable);
         p.put("streamPostable", streamPostable);
-        p.put("relatedOrganizationIds", relatedOrganizationIds);
         p.put("lastAcceptedTermsOfService", lastAcceptedTermsOfService);
         p.put("accountLocked", Boolean.TRUE);
 
@@ -303,7 +270,6 @@ public class PersonModelViewTest
         assertEquals(null, sut.getEmail());
         assertEquals(true, sut.isCommentable());
         assertEquals(true, sut.isStreamPostable());
-        assertNull(sut.getRelatedOrganizationIds());
         assertFalse(sut.isAccountLocked());
     }
 
@@ -334,7 +300,6 @@ public class PersonModelViewTest
         assertEquals(commentable, sut.isCommentable());
         assertEquals(streamPostable, sut.isStreamPostable());
         assertEquals(lastAcceptedTermsOfService, sut.getLastAcceptedTermsOfService());
-        assertArrayEquals(relatedOrganizationIds.toArray(), sut.getRelatedOrganizationIds().toArray());
 
         assertEquals(sut.getEntityId(), sut.getId());
         assertEquals(sut.getAccountId(), sut.getUniqueId());

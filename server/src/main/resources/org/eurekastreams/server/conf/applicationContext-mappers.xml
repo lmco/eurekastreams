@@ -501,45 +501,6 @@
 			</bean>
 		</constructor-arg>
 	</bean>
-	
-	<!-- Mapper to get the org tree -->
-	<bean id="getOrganizationTreeDTOMapper"
-		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-		
-		<!-- Cache mapper -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_TREE_DTO" />
-						<constructor-arg ref="ignoredCacheKeySuffixTransformer" />
-						<property name="cache" ref="memcachedCache" />
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		
-		<!-- Fall-back mapper -->
-		<constructor-arg>
-			<!-- Org tree builder - uses other decorated partial response domain mappers -->
-			<bean class="org.eurekastreams.server.persistence.mappers.GetOrganizationTreeDTO">
-				<constructor-arg ref="getAllOrganizationIdsDbMapper" />
-				<constructor-arg ref="getOrganizationsByIdsMapper" />
-			</bean>
-		</constructor-arg>
-		
-		<!-- Results combiner:  return whichever is not null -->
-		<constructor-arg ref="nonNullResultsCombiner" />
-				
-		<!-- Store the DTO back in cache -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_TREE_DTO" />
-				<constructor-arg ref="ignoredCacheKeySuffixTransformer" />
-				<property name="cache" ref="memcachedCache" />
-			</bean>
-		</constructor-arg>
-	</bean>
 
     <!-- Mapper to get people ids by account ids -->
     <bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
@@ -2295,12 +2256,6 @@
 		<constructor-arg ref="getOrganizationsByIdsMapper" />
 	</bean>
 
-	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper"
-		class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
-		<constructor-arg ref="getOrganizationsByIdsMapper" />
-		<constructor-arg ref="getPersonsByIdsMapper" />
-	</bean>
-
 	<bean id="deleteGroupActivity"
 		class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
 
@@ -2321,9 +2276,6 @@
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
 		<constructor-arg ref="getOrgShortNamesByIdsMapper" />
 	</bean>
-
-	<bean id="getRelatedOrganizationIdsByPersonId"
-		class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
 
 	<bean id="updateActivityFlagMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.UpdateActivityFlag" />
@@ -2503,8 +2455,6 @@
     
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
-        <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-        <constructor-arg ref="getOrganizationsByIdsMapper" />
         <constructor-arg ref="getPeopleSkillsByPeopleIdsDbMapper" />
     </bean>  
     
@@ -2547,15 +2497,11 @@
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
-	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
-	
 	<bean id="getListsContainingActivities" class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities">
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
         <constructor-arg ref="getOrgShortNamesByIdsMapper" />
 	</bean>
-	
-	<bean id="getPeopleIdsWithRelatedOrg" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsWithRelatedOrg" />
-	
+
 	<bean id="syncParentOrgForGroupActivities" class="org.eurekastreams.server.persistence.mappers.db.SyncParentOrgForGroupActivities" />
 	
 	<bean id="getActivityIdsPostedToStreamByUniqueKeyAndScopeType" 

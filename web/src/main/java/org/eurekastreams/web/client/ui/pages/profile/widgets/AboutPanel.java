@@ -15,21 +15,14 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
-import java.util.HashMap;
-import java.util.List;
-
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -71,8 +64,6 @@ public class AboutPanel extends FlowPanel
         String nameStr = "";
         String titleStr = "";
 
-        List<OrganizationModelView> relatedOrgs = null;
-
         String jobDescriptionStr = "";
         if (null != person)
         {
@@ -80,7 +71,6 @@ public class AboutPanel extends FlowPanel
             titleStr = person.getTitle();
 
             jobDescriptionStr = person.getJobDescription();
-            relatedOrgs = person.getRelatedOrganizations();
         }
 
         AvatarWidget photo = new AvatarWidget(person, EntityType.PERSON, Size.Normal);
@@ -106,24 +96,5 @@ public class AboutPanel extends FlowPanel
             jobDescription.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileQuote());
             this.add(jobDescription);
         }
-
-        if (null != relatedOrgs && relatedOrgs.size() > 0)
-        {
-            Label orgLabel = new Label("Also supporting");
-            orgLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().alsoSupportingOrg());
-            this.add(orgLabel);
-
-            for (OrganizationModelView relatedOrg : relatedOrgs)
-            {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("tab", "Stream");
-
-                Hyperlink orgLink = new Hyperlink(relatedOrg.getName(), Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.ORGANIZATIONS, relatedOrg.getShortName(), params)));
-                orgLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileOrg());
-                this.add(orgLink);
-            }
-        }
-
     }
 }

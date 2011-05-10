@@ -29,7 +29,6 @@
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-mappers.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
-	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorybrowsing.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-ldap.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-actions.xml" />

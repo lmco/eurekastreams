@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -61,20 +60,11 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
      * 
      * @param inPersonQueryStrategy
      *            the person query strategy to set.
-     * @param inGetRelatedOrganizationIdsByPersonIdMapper
-     *            mapper to get related org ids for people
      */
-    public PersonCacheLoader(final PersonQueryStrategy inPersonQueryStrategy,
-            final GetRelatedOrganizationIdsByPersonId inGetRelatedOrganizationIdsByPersonIdMapper)
+    public PersonCacheLoader(final PersonQueryStrategy inPersonQueryStrategy)
     {
         personQueryStrategy = inPersonQueryStrategy;
-        getRelatedOrganizationIdsByPersonIdMapper = inGetRelatedOrganizationIdsByPersonIdMapper;
     }
-
-    /**
-     * Mapper to get related org ids by person id.
-     */
-    private GetRelatedOrganizationIdsByPersonId getRelatedOrganizationIdsByPersonIdMapper;
 
     /**
      * Initialize the Person cache - intended to run on system start-up.
@@ -122,7 +112,6 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
             }
 
             PersonModelView result = (PersonModelView) scroll.get(0);
-            result.setRelatedOrganizationIds(getRelatedOrganizationIdsByPersonIdMapper.execute(result.getEntityId()));
 
             getCache().set(CacheKeys.PERSON_BY_ID + result.getEntityId(), result);
             getCache().set(CacheKeys.PERSON_BY_ACCOUNT_ID + result.getAccountId(), result.getEntityId());

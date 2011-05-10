@@ -381,26 +381,6 @@
         <constructor-arg value="false" />        
     </bean> 
     
-    <bean id="deleteOrganizationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" /> 
-        <constructor-arg>                
-            <bean class="org.eurekastreams.server.action.execution.profile.DeleteOrganizationExecution">
-                <constructor-arg ref="moveOrganizationPeopleMapper" />
-                <constructor-arg ref="getOrganizationsByIdsMapper" />
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="deleteOrganizationMapper" />
-                <constructor-arg ref="getPeopleIdsWithRelatedOrg" />   
-                <constructor-arg ref="jpaOrganizationMapper" />  
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
-                </constructor-arg>                              
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="false" />        
-    </bean> 
-    
     <bean id="deleteCacheKeysAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -1485,17 +1465,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-
-    <bean id="getOrganizationTree" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-        	<bean parent="baseParamExecuteDomainMapperExecution">
-                <constructor-arg ref="getOrganizationTreeDTOMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
     
     <bean id="httpDocumentFetcher" class="org.eurekastreams.server.service.utility.http.HttpDocumentFetcherImpl" />
     
@@ -2502,20 +2471,6 @@
         class="org.eurekastreams.server.action.validation.directory.GetDirectorySearchResultsValidation">
     </bean>
 
-    <bean id="getDirectorySearchResultsOrgs" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.directory.GetDirectorySearchResultsExecution">
-                <constructor-arg ref="directorySearchLuceneQueryBuilderForOrgs" />
-                <constructor-arg ref="organizationSearchRequestBuilder" />
-                <constructor-arg ref="searchResultAdditionalPropertyPopulator" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
     <bean id="getDirectorySearchResultsPeople" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="getDirectorySearchResultsValidation" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -2550,9 +2505,8 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.directory.GetDirectorySearchResultsExecution">
-                <constructor-arg
-                    ref="directorySearchLuceneQueryBuilderForOrgsPeopleGroups" />
-                <constructor-arg ref="orgGroupPersonSearchRequestBuilder" />
+                <constructor-arg ref="directorySearchLuceneQueryBuilderForPeopleGroups" />
+                <constructor-arg ref="groupPersonSearchRequestBuilder" />
                 <constructor-arg ref="searchResultAdditionalPropertyPopulator" />
             </bean>
         </constructor-arg>
@@ -2650,113 +2604,6 @@
                 <constructor-arg>
                     <ref bean="jpaThemeMapper" />
                 </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="getChildOrganizations" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.GetOrganizationChildrenExecution">
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
-                <constructor-arg>
-
-                    <!-- Build the OrgChildrenGetter strategy for Organizations -->
-                    <bean factory-bean="orgChildrenGetterFactory" factory-method="buildOrgChildrenGetter">
-                        <constructor-arg value="ORGANIZATION" />
-                        <constructor-arg ref="directoryBrowsingLuceneQueryBuilderForOrgs" />
-                        <constructor-arg ref="childOrganizationsSearchRequestBuilder" />
-                        <constructor-arg>
-                            <bean
-                                class="org.eurekastreams.server.service.actions.strategies.directory.SortFieldBuilder">
-
-                                <!-- Override whatever the client sends in and just sort by Name -->
-                                <property name="overridingSortCriteria">
-                                    <bean class="org.eurekastreams.server.domain.ResourceSortCriteria">
-                                        <constructor-arg>
-
-                                            <!-- List of individual sort criterion -->
-                                            <bean id="searchResultTypesOrganization" class="java.util.ArrayList"
-                                                scope="singleton">
-                                                <constructor-arg>
-                                                    <list>
-                                                        <bean
-                                                            class="org.eurekastreams.server.domain.ResourceSortCriterion">
-                                                            <constructor-arg value="NAME" />
-                                                            <constructor-arg value="ASCENDING" />
-                                                        </bean>
-                                                    </list>
-                                                </constructor-arg>
-                                            </bean>
-
-                                        </constructor-arg>
-                                    </bean>
-                                </property>
-                            </bean>
-                        </constructor-arg>
-                        <constructor-arg value="false" />
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="searchResultAdditionalPropertyPopulator" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="getEmployeesForOrg" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.GetOrganizationChildrenExecution">
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
-                <constructor-arg>
-
-                    <!-- Build the OrgChildrenGetter strategy for People -->
-                    <bean factory-bean="orgChildrenGetterFactory" factory-method="buildOrgChildrenGetter">
-                        <constructor-arg value="PERSON" />
-                        <constructor-arg ref="directoryBrowsingLuceneQueryBuilderForPeople" />
-                        <constructor-arg ref="recursiveOrgEmployeesSearchRequestBuilder" />
-                        <constructor-arg>
-                            <bean
-                                class="org.eurekastreams.server.service.actions.strategies.directory.SortFieldBuilder" />
-                        </constructor-arg>
-                        <constructor-arg value="true" />
-                    </bean>
-
-                </constructor-arg>
-                <constructor-arg ref="searchResultAdditionalPropertyPopulator" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="getGroupsForOrg" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.GetOrganizationChildrenExecution">
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
-                <constructor-arg>
-
-                    <!-- Build the OrgChildrenGetter strategy for Groups -->
-                    <bean factory-bean="orgChildrenGetterFactory" factory-method="buildOrgChildrenGetter">
-                        <constructor-arg value="GROUP" />
-                        <constructor-arg ref="directoryBrowsingLuceneQueryBuilderForGroups" />
-                        <constructor-arg ref="recursiveOrgGroupsSearchRequestBuilder" />
-                        <constructor-arg>
-                            <bean
-                                class="org.eurekastreams.server.service.actions.strategies.directory.SortFieldBuilder" />
-                        </constructor-arg>
-                        <constructor-arg value="true" />
-                    </bean>
-
-                </constructor-arg>
-                <constructor-arg ref="searchResultAdditionalPropertyPopulator" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -3658,7 +3505,6 @@
                         <constructor-arg value="${eureka.profile.emailregexerror}" />
                      </bean>
                 </constructor-arg>
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
             </bean>
         </constructor-arg>
         <constructor-arg>
@@ -3670,7 +3516,6 @@
         <constructor-arg>
             <!-- Execution -->
             <bean class="org.eurekastreams.server.action.execution.UpdatePersonExecution">
-                <constructor-arg ref="jpaOrganizationMapper"/>
                 <constructor-arg ref="jpaPersonMapper"/>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
@@ -4349,7 +4194,6 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetPersonExecution">
                 <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="populatePeopleWithSkeletonRelatedOrgsCacheMapper" />
                 <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper"/>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
@@ -5010,11 +4854,6 @@
         DIRECTORY BROWSING
         ****************************************************************************************
     -->
-
-    <!-- Factory for building OrgChildGetters -->
-    <bean id="orgChildrenGetterFactory"
-        class="org.eurekastreams.server.service.actions.strategies.directory.OrgChildrenGetterFactory" />
-
     <!-- Strategy to populate additional fields after a search request -->
     <bean id="searchResultAdditionalPropertyPopulator"
         class="org.eurekastreams.server.service.actions.strategies.directory.SearchResultAdditionalPropertyPopulator">

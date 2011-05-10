@@ -21,7 +21,6 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotSearchResultsResponseEvent;
 import org.eurekastreams.web.client.model.SearchResultsGroupModel;
 import org.eurekastreams.web.client.model.SearchResultsModel;
-import org.eurekastreams.web.client.model.SearchResultsOrgModel;
 import org.eurekastreams.web.client.model.SearchResultsPeopleModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
@@ -71,8 +70,8 @@ public class SearchContent extends FlowPanel
         // IMPORTANT: Wire up URL change event first, so we see it before the PagedList does. This way we can change the
         // search term in the search requests before PagedList sees the event. Otherwise PagedList may see the change in
         // the page range and send out a search request using the old search term.
-        Session.getInstance().getEventBus()
-                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
@@ -100,8 +99,8 @@ public class SearchContent extends FlowPanel
         contentPanel.add(searchResultsPanel);
 
         // When the search results come back, render the results.
-        Session.getInstance().getEventBus()
-                .addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotSearchResultsResponseEvent.class,
+                new Observer<GotSearchResultsResponseEvent>()
                 {
                     public void update(final GotSearchResultsResponseEvent arg1)
                     {
@@ -112,7 +111,7 @@ public class SearchContent extends FlowPanel
 
     /**
      * When the history changes, update the query and reset the pager, triggering a re-search.
-     *
+     * 
      * @param event
      *            Event containing URL parameters.
      */
@@ -130,14 +129,13 @@ public class SearchContent extends FlowPanel
         }
         queryText.setText(query);
 
-        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, "", boost, 0, 0);
+        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, boost, 0, 0);
 
         if (!initialized)
         {
             searchResultsPanel.addSet("All", SearchResultsModel.getInstance(), renderer, request);
             searchResultsPanel.addSet("Employees", SearchResultsPeopleModel.getInstance(), renderer, request);
             searchResultsPanel.addSet("Groups", SearchResultsGroupModel.getInstance(), renderer, request);
-            searchResultsPanel.addSet("Organizations", SearchResultsOrgModel.getInstance(), renderer, request);
             initialized = true;
         }
         else if (!boost.equals(currentBoost) || !query.equals(currentQuery))
@@ -145,7 +143,6 @@ public class SearchContent extends FlowPanel
             searchResultsPanel.updateSetRequest("All", request);
             searchResultsPanel.updateSetRequest("Employees", request);
             searchResultsPanel.updateSetRequest("Groups", request);
-            searchResultsPanel.updateSetRequest("Organizations", request);
 
             // Invalidate searchResultsPanel so that it will reload when it gets the event.
             // Ways NOT to implement this:

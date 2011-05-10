@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper;
@@ -82,13 +81,6 @@ public class AddCachedPersonFollowerTest extends MapperTest
     private static final Long TEST_PERSON_ID_4 = new Long(42L);
 
     /**
-     * Mapper to get related org ids for people.
-     */
-    private GetRelatedOrganizationIdsByPersonId
-    // line break
-    getRelatedOrganizationIdsByPersonIdMapper = new GetRelatedOrganizationIdsByPersonId();
-
-    /**
      * Setup method.
      */
     @Before
@@ -96,10 +88,8 @@ public class AddCachedPersonFollowerTest extends MapperTest
     {
         cache = new SimpleMemoryCache();
 
-        getRelatedOrganizationIdsByPersonIdMapper.setEntityManager(getEntityManager());
-
         // Setup the cache loader to get dataset data into the cache.
-        personCacheLoader = new PersonCacheLoader(new PersonQueryStrategy(), getRelatedOrganizationIdsByPersonIdMapper);
+        personCacheLoader = new PersonCacheLoader(new PersonQueryStrategy());
         personCacheLoader.setCache(cache);
         personCacheLoader.setEntityManager(getEntityManager());
         personCacheLoader.initialize();

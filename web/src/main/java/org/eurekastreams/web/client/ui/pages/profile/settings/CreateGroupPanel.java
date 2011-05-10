@@ -25,7 +25,6 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.SaveSelectedOrgEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
@@ -41,9 +40,9 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonForm
 import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGroupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -103,7 +102,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param parentOrgShortName
      *            parent org shortname.
      */
@@ -125,7 +124,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Set the parent org.
-     *
+     * 
      * @param parentOrg
      *            parent org.
      */
@@ -138,36 +137,23 @@ public class CreateGroupPanel extends SettingsPanel
 
         final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.INSERT);
 
-        eventBus.addObserver(SaveSelectedOrgEvent.class, new Observer<SaveSelectedOrgEvent>()
+        eventBus.addObserver(InsertedGroupResponseEvent.class, new Observer<InsertedGroupResponseEvent>()
         {
-            public void update(final SaveSelectedOrgEvent event)
+            public void update(final InsertedGroupResponseEvent ev)
             {
-                eventBus.addObserver(InsertedGroupResponseEvent.class, new Observer<InsertedGroupResponseEvent>()
-                {
-                    public void update(final InsertedGroupResponseEvent ev)
-                    {
-                        DomainGroupModelView group = ev.getResponse();
+                DomainGroupModelView group = ev.getResponse();
 
-                        // destination depends on whether org allows immediate creation of groups
-                        CreateUrlRequest urlRqst = !group.isPending() ? new CreateUrlRequest(Page.GROUPS, group
-                                .getShortName()) : new CreateUrlRequest(Page.ORGANIZATIONS, group
-                                .getParentOrganizationShortName());
-                        eventBus.notifyObservers(new UpdateHistoryEvent(urlRqst));
+                // destination depends on whether org allows immediate creation of groups
+                CreateUrlRequest urlRqst = !group.isPending() ? new CreateUrlRequest(Page.GROUPS, group.getShortName())
+                        : new CreateUrlRequest(Page.ORGANIZATIONS, group.getParentOrganizationShortName());
+                eventBus.notifyObservers(new UpdateHistoryEvent(urlRqst));
 
-                        // tell the user what just happened
-                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(group.isPending() ? // \n
-                        "Your group has been submitted to an organization coordinator for approval"
-                                : "Your group has been successfully created")));
-                    }
-                });
+                // tell the user what just happened
+                eventBus.notifyObservers(new ShowNotificationEvent(new Notification(group.isPending() ? // \n
+                "Your group has been submitted to an organization coordinator for approval"
+                        : "Your group has been successfully created")));
             }
         });
-
-        OrgLookupFormElement parentOrgLookup = new OrgLookupFormElement("Parent Organization", "", "",
-                DomainGroupModelView.ORG_PARENT_KEY, "Parent Organization", false, parentOrg, true);
-        form.addFormElement(parentOrgLookup);
-
-        form.addFormDivider();
 
         final BasicTextBoxFormElement groupName = new BasicTextBoxFormElement(50, false, "Group Name",
                 DomainGroupModelView.NAME_KEY, "", "", true);
@@ -190,6 +176,8 @@ public class CreateGroupPanel extends SettingsPanel
         form.addFormElement(shortName);
 
         form.addFormDivider();
+
+        form.addFormElement(new ValueOnlyFormElement(DomainGroupModelView.ORG_PARENT_KEY, parentOrg.getShortName()));
 
         form.addFormElement(new BasicTextAreaFormElement(DomainGroup.MAX_DESCRIPTION_LENGTH, "Description",
                 DomainGroupModelView.DESCRIPTION_KEY, "",

@@ -24,11 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.transform.ResultTransformer;
 
@@ -59,11 +57,6 @@ public class CachedModelViewResultTransformer implements ResultTransformer
     private static final String HIBERNATE_ID_PROPERTY_NAME = "__HSearch_id";
 
     /**
-     * The mapper to get the organizations by ids.
-     */
-    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapper;
-
-    /**
      * The mapper to get the domain groups by ids.
      */
     private DomainMapper<List<Long>, List<DomainGroupModelView>> getDomainGroupsByIdsMapper;
@@ -90,7 +83,6 @@ public class CachedModelViewResultTransformer implements ResultTransformer
         Map<String, Integer> positionList = new HashMap<String, Integer>();
 
         // group the different types to consolidate the fetches
-        List<Long> orgIds = new ArrayList<Long>();
         List<Long> groupIds = new ArrayList<Long>();
         List<Long> peopleIds = new ArrayList<Long>();
 
@@ -100,13 +92,7 @@ public class CachedModelViewResultTransformer implements ResultTransformer
             Map<String, Object> map = (Map<String, Object>) mapObj;
             Class< ? > clazz = (Class< ? >) map.get(HIBERNATE_CLASS_PROPERTY_NAME);
             Long entityId = (Long) map.get(HIBERNATE_ID_PROPERTY_NAME);
-            if (clazz == Organization.class)
-            {
-                orgIds.add(entityId);
-                positionList.put("O" + entityId, listPos);
-                listPos++;
-            }
-            else if (clazz == DomainGroup.class)
+            if (clazz == DomainGroup.class)
             {
                 groupIds.add(entityId);
                 positionList.put("G" + entityId, listPos);
@@ -121,19 +107,6 @@ public class CachedModelViewResultTransformer implements ResultTransformer
         }
 
         ModelView[] results = new ModelView[inCollection.size()];
-
-        // make the requests to get the entities in bulk by type, then put them back in order
-        if (orgIds.size() > 0)
-        {
-            if (log.isDebugEnabled())
-            {
-                log.debug("Checking cache/db for Orgs:" + orgIds.toString());
-            }
-            for (ModelView org : getOrgsByIdsMapper.execute(orgIds))
-            {
-                results[positionList.get("O" + org.getEntityId())] = org;
-            }
-        }
 
         if (groupIds.size() > 0)
         {
@@ -217,17 +190,6 @@ public class CachedModelViewResultTransformer implements ResultTransformer
             result.put(aliases[i], tuple[i]);
         }
         return result;
-    }
-
-    /**
-     * Set the GetOrganizationsByIds mapper.
-     * 
-     * @param inGetOrgsByIdsMapper
-     *            the getOrgsByIdsMapper to set
-     */
-    public void setGetOrgsByIdsMapper(final DomainMapper<List<Long>, List<OrganizationModelView>> inGetOrgsByIdsMapper)
-    {
-        this.getOrgsByIdsMapper = inGetOrgsByIdsMapper;
     }
 
     /**

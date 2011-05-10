@@ -83,11 +83,6 @@ public class DirectorySearchLuceneQueryBuilderTest
     private final long userPersonId = 38281L;
 
     /**
-     * The organization short name to use.
-     */
-    private final String orgShortName = "heynow42";
-
-    /**
      * The organization id for the above org short name.
      */
     private final String orgId = "958302";
@@ -98,7 +93,7 @@ public class DirectorySearchLuceneQueryBuilderTest
     @Before
     public void setup()
     {
-        sut = new DirectorySearchLuceneQueryBuilder(allEntitiesSearch, fieldBooster, fieldBoostFactor, orgIdGetter);
+        sut = new DirectorySearchLuceneQueryBuilder(allEntitiesSearch, fieldBooster, fieldBoostFactor);
     }
 
     /**
@@ -110,7 +105,7 @@ public class DirectorySearchLuceneQueryBuilderTest
         String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
-        assertEquals(expected, sut.buildNativeQuery(searchText, "", "", 0));
+        assertEquals(expected, sut.buildNativeQuery(searchText, "", 0));
 
         context.assertIsSatisfied();
     }
@@ -124,53 +119,7 @@ public class DirectorySearchLuceneQueryBuilderTest
         String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
-        assertEquals(expected, sut.buildNativeQuery(searchText, "", "", userPersonId));
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test buildNativeQuery with no weighted field, for a specific org, and for a user that's not logged in.
-     */
-    @Test
-    public void testBuildNativeQueryNoWeightedFieldSpecificOrgNoUser()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                one(orgIdGetter).getIdentifier(orgShortName);
-                will(returnValue(orgId));
-            }
-        });
-
-        String expected = "+(+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
-                + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))) "
-                + "+parentOrganizationIdHierarchy:(" + orgId + ")";
-
-        assertEquals(expected, sut.buildNativeQuery(searchText, "", orgShortName, 0));
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test buildNativeQuery with no weighted field, for a specific org and logged-in user.
-     */
-    @Test
-    public void testBuildNativeQueryNoWeightedFieldSpecificOrgWithUser()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                one(orgIdGetter).getIdentifier(orgShortName);
-                will(returnValue(orgId));
-            }
-        });
-
-        String expected = "+(+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
-                + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))) "
-                + "+parentOrganizationIdHierarchy:(" + orgId + ")";
-
-        assertEquals(expected, sut.buildNativeQuery(searchText, "", orgShortName, userPersonId));
-
+        assertEquals(expected, sut.buildNativeQuery(searchText, "", userPersonId));
         context.assertIsSatisfied();
     }
 
@@ -191,7 +140,7 @@ public class DirectorySearchLuceneQueryBuilderTest
         String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar)^500 education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
-        assertEquals(expected, sut.buildNativeQuery(searchText, "background", "", 0));
+        assertEquals(expected, sut.buildNativeQuery(searchText, "background", 0));
 
         context.assertIsSatisfied();
     }
@@ -213,81 +162,7 @@ public class DirectorySearchLuceneQueryBuilderTest
         String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar)^500 education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
-        assertEquals(expected, sut.buildNativeQuery(searchText, "background", "", userPersonId));
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test buildNativeQuery.
-     */
-    @Test
-    public void testBuildNativeQueryWithWeightedFieldSpecificOrgNoUser()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                one(orgIdGetter).getIdentifier(orgShortName);
-                will(returnValue(orgId));
-
-                one(fieldBooster).boostField(allEntitiesSearch, "background", fieldBoostFactor);
-                will(returnValue(boostedFieldQueryMask));
-            }
-        });
-
-        String expected = "+(+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
-                + "jobs:(foo bar) background:(foo bar)^500 education:(foo bar) title:(foo bar) "
-                + "capabilities:(foo bar))) +parentOrganizationIdHierarchy:(" + orgId + ")";
-
-        assertEquals(expected, sut.buildNativeQuery(searchText, "background", orgShortName, 0));
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test buildNativeQuery.
-     */
-    @Test
-    public void testBuildNativeQueryWithWeightedFieldSpecificOrgWithUser()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                one(orgIdGetter).getIdentifier(orgShortName);
-                will(returnValue(orgId));
-
-                one(fieldBooster).boostField(allEntitiesSearch, "background", fieldBoostFactor);
-                will(returnValue(boostedFieldQueryMask));
-            }
-        });
-
-        String expected = "+(+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
-                + "jobs:(foo bar) background:(foo bar)^500 education:(foo bar) title:(foo bar) "
-                + "capabilities:(foo bar))) +parentOrganizationIdHierarchy:(" + orgId + ")";
-
-        assertEquals(expected, sut.buildNativeQuery(searchText, "background", orgShortName, userPersonId));
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test buildNativeQuery with no query string mask - for just a parent org filter.
-     */
-    @Test
-    public void testBuildNativeQueryWithEmptyQueryString()
-    {
-        sut = new DirectorySearchLuceneQueryBuilder("", fieldBooster, fieldBoostFactor, orgIdGetter);
-        context.checking(new Expectations()
-        {
-            {
-                one(orgIdGetter).getIdentifier(orgShortName);
-                will(returnValue(orgId));
-            }
-        });
-
-        String expected = "+parentOrganizationIdHierarchy:(" + orgId + ")";
-
-        assertEquals(expected, sut.buildNativeQuery(searchText, "", orgShortName, userPersonId));
+        assertEquals(expected, sut.buildNativeQuery(searchText, "background", userPersonId));
 
         context.assertIsSatisfied();
     }

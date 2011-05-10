@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.ResourceSortCriteria;
 
 /**
  * This class carries the request information for a call to the GetDirectorSearchResults action.
- *
+ * 
  */
 public class GetDirectorySearchResultsRequest implements Serializable, PageableRequest
 {
@@ -35,11 +35,6 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      * Local instance of the search term for this request.
      */
     private String searchTerm;
-
-    /**
-     * Loca instance of the Org short name for this request.
-     */
-    private String orgShortName;
 
     /**
      * Local instance of the Weighted field for this request.
@@ -71,11 +66,9 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSearchTerm
      *            - instance of the search term for this request.
-     * @param inOrgShortName
-     *            - instance of the org shortname for this request.
      * @param inWeightedField
      *            - instance of the weighted field for this request.
      * @param inPagingFrom
@@ -83,11 +76,10 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      * @param inPagingTo
      *            - instance of the count to end with for paging on this request.
      */
-    public GetDirectorySearchResultsRequest(final String inSearchTerm, final String inOrgShortName,
-            final String inWeightedField, final int inPagingFrom, final int inPagingTo)
+    public GetDirectorySearchResultsRequest(final String inSearchTerm, final String inWeightedField,
+            final int inPagingFrom, final int inPagingTo)
     {
         searchTerm = inSearchTerm;
-        orgShortName = inOrgShortName;
         weightedField = inWeightedField;
         pagingFrom = inPagingFrom;
         pagingTo = inPagingTo;
@@ -95,9 +87,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
 
     /**
      * Constructor.
-     *
-     * @param inOrgShortName
-     *            Organization short name
+     * 
      * @param inPagingFrom
      *            Instance of the count to start with for paging on this request.
      * @param inPagingTo
@@ -105,10 +95,9 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      * @param inSortCriteria
      *            {@link ResourceSortCriteria}.
      */
-    public GetDirectorySearchResultsRequest(final String inOrgShortName, final int inPagingFrom, final int inPagingTo,
+    public GetDirectorySearchResultsRequest(final int inPagingFrom, final int inPagingTo,
             final ResourceSortCriteria inSortCriteria)
     {
-        orgShortName = inOrgShortName;
         pagingFrom = inPagingFrom;
         pagingTo = inPagingTo;
         sortCriteria = inSortCriteria;
@@ -129,23 +118,6 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
     public void setSearchTerm(final String inSearchTerm)
     {
         this.searchTerm = inSearchTerm;
-    }
-
-    /**
-     * @return the orgShortName.
-     */
-    public String getOrgShortName()
-    {
-        return orgShortName;
-    }
-
-    /**
-     * @param inOrgShortName
-     *            the orgShortName to set.
-     */
-    public void setOrgShortName(final String inOrgShortName)
-    {
-        this.orgShortName = inOrgShortName;
     }
 
     /**

@@ -54,7 +54,6 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-webroot-initialization.xml" />
 
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
-    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorybrowsing.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />    
 
     <import resource="applicationContext-taskqueuebeanregistration.xml" />    

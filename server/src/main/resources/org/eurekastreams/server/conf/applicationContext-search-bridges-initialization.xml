@@ -25,20 +25,6 @@
 	</bean>
 	
 	
-	<!-- Give the OrgIdHierarchyFieldBridge the org cache -->
-	<bean
-		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetClass"
-			value="org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge" />
-		<property name="targetMethod" value="setOrganizationHierarchyCache" />
-		<property name="arguments">
-			<list>
-				<ref bean="organizationHierarchyCache" />
-			</list>
-		</property>
-	</bean>
-	
-	
 	<!--
 		Inject the ActivityRecipientClassBridge with the person cache
 	-->
