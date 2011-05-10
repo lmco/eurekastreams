@@ -520,8 +520,6 @@
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
-	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
-	
 	<bean id="syncParentOrgForGroupActivities" class="org.eurekastreams.server.persistence.mappers.db.SyncParentOrgForGroupActivities" />
 	
 	<bean id="updateNotificationsOnNameChangeMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />

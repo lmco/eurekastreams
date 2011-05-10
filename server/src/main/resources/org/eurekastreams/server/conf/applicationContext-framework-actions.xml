@@ -381,25 +381,6 @@
         <constructor-arg value="false" />        
     </bean> 
     
-    <bean id="deleteOrganizationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" /> 
-        <constructor-arg>                
-            <bean class="org.eurekastreams.server.action.execution.profile.DeleteOrganizationExecution">
-                <constructor-arg ref="moveOrganizationPeopleMapper" />
-                <constructor-arg ref="getOrganizationsByIdsMapper" />
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="deleteOrganizationMapper" />   
-                <constructor-arg ref="jpaOrganizationMapper" />  
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
-                </constructor-arg>                              
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="false" />        
-    </bean> 
-    
     <bean id="deleteCacheKeysAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>

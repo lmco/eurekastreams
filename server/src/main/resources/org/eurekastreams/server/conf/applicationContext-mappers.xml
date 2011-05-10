@@ -2497,8 +2497,6 @@
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
-	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
-	
 	<bean id="getListsContainingActivities" class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities">
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
         <constructor-arg ref="getOrgShortNamesByIdsMapper" />
