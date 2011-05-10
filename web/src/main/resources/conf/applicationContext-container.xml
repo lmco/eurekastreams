@@ -50,7 +50,6 @@
 	<alias alias="taskHandler" name="inlineTaskHandler" />
 	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
-	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorybrowsing.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />
 	
     <!-- memcached client bean -->

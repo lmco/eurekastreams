@@ -2525,7 +2525,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.directory.GetDirectorySearchResultsExecution">
                 <constructor-arg ref="directorySearchLuceneQueryBuilderForPeopleGroups" />
-                <constructor-arg ref="orgGroupPersonSearchRequestBuilder" />
+                <constructor-arg ref="groupPersonSearchRequestBuilder" />
                 <constructor-arg ref="searchResultAdditionalPropertyPopulator" />
             </bean>
         </constructor-arg>
