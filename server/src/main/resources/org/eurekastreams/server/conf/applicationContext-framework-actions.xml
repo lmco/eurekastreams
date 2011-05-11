@@ -4240,6 +4240,21 @@
              </list>
          </constructor-arg>
     </bean>
+    
+    <bean id="createGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="galleryAuthorizer"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="jpaGalleryItemCategoryMapper" />
+                <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+		        </constructor-arg>                
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>    
         
     <bean id="addTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- fields: param map - "url", "category"  -->
