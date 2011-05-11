@@ -4255,6 +4255,17 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>    
+    
+    <bean id="deleteGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="galleryAuthorizer" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="deleteGalleryTabTemplateByIdDbMapper" />           
+            </bean>            
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>    
         
     <bean id="addTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- fields: param map - "url", "category"  -->

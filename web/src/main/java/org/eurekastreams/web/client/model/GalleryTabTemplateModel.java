@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import org.eurekastreams.web.client.events.data.DeletedGalleryTabTemplateResponse;
 import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -25,7 +26,8 @@ import org.eurekastreams.web.client.ui.Session;
  * GalleryTabTemplate model.
  * 
  */
-public class GalleryTabTemplateModel extends BaseModel implements Insertable<HashMap<String, Serializable>>
+public class GalleryTabTemplateModel extends BaseModel implements Insertable<HashMap<String, Serializable>>,
+        Deletable<Long>
 
 {
 
@@ -57,7 +59,20 @@ public class GalleryTabTemplateModel extends BaseModel implements Insertable<Has
                         new InsertedGalleryTabTempalateResponseEvent(response));
             }
         });
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void delete(final Long request)
+    {
+        super.callWriteAction("deleteGalleryTabTemplate", request, new OnSuccessCommand<Boolean>()
+        {
+            public void onSuccess(final Boolean response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new DeletedGalleryTabTemplateResponse(request));
+            }
+        });
     }
 
 }
