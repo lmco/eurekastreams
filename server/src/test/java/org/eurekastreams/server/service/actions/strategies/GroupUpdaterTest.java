@@ -33,8 +33,6 @@ import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatus
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
@@ -136,17 +134,6 @@ public class GroupUpdaterTest
             .mock(SetFollowingGroupStatusExecution.class);
 
     /**
-     * The organization hierarchy traverser builder.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder = context
-            .mock(OrganizationHierarchyTraverserBuilder.class);
-
-    /**
-     * {@link OrganizationHierarchyTraverser}.
-     */
-    private OrganizationHierarchyTraverser orgTraverser = context.mock(OrganizationHierarchyTraverser.class);
-
-    /**
      * The subject under test.
      */
     private GroupUpdater sut;
@@ -158,7 +145,7 @@ public class GroupUpdaterTest
     public void setup()
     {
         sut = new GroupUpdater(groupMapperMock, orgMapperMock, accessCheckerMapper, activityStreamSearchClearer,
-                followStrategyMock, orgTraverserBuilder);
+                followStrategyMock);
 
         userActionRequests = new ArrayList<UserActionRequest>();
 
@@ -321,14 +308,6 @@ public class GroupUpdaterTest
 
                 allowing(orgMapperMock).findByShortName(origOrgShortName);
                 will(returnValue(origParentOrg));
-
-                allowing(orgTraverserBuilder).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverser));
-
-                allowing(orgTraverser).traverseHierarchy(with(any(Organization.class)));
-
-                allowing(orgMapperMock).updateOrganizationStatistics(with(any(OrganizationHierarchyTraverser.class)));
-
             }
         });
 

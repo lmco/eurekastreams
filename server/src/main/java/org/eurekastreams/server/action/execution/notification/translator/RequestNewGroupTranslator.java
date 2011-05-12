@@ -15,17 +15,17 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 
 /**
@@ -38,21 +38,21 @@ public class RequestNewGroupTranslator implements NotificationTranslator
     private FindByIdMapper<DomainGroup> groupMapper;
 
     /** For getting the org coordinators. */
-    private GetOrgCoordinators orgCoordMapper;
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            For getting the group.
-     * @param inOrgCoordMapper
-     *            For getting the org coordinators.
+     * @param inSystemAdminIdsMapper
+     *            Mapper for getting system admin ids
      */
     public RequestNewGroupTranslator(final FindByIdMapper<DomainGroup> inGroupMapper,
-            final GetOrgCoordinators inOrgCoordMapper)
+            final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper)
     {
         groupMapper = inGroupMapper;
-        orgCoordMapper = inOrgCoordMapper;
+        systemAdminIdsMapper = inSystemAdminIdsMapper;
     }
 
     /**
@@ -66,11 +66,10 @@ public class RequestNewGroupTranslator implements NotificationTranslator
         // Should refactor notifications for more flexible parameters.
         DomainGroup group = groupMapper.execute(new FindByIdRequest("DomainGroup", inActivityId));
 
-        Set<Long> coordinators = orgCoordMapper.execute(inDestinationId);
+        List<Long> admins = systemAdminIdsMapper.execute(null);
 
-        NotificationDTO notif =
-                new NotificationDTO(new ArrayList<Long>(coordinators), NotificationType.REQUEST_NEW_GROUP, inActorId,
-                        inDestinationId, EntityType.ORGANIZATION, 0L);
+        NotificationDTO notif = new NotificationDTO(admins, NotificationType.REQUEST_NEW_GROUP, inActorId,
+                inDestinationId, EntityType.ORGANIZATION, 0L);
         notif.setAuxiliary(EntityType.GROUP, group.getShortName(), group.getName());
         return Collections.singletonList(notif);
     }

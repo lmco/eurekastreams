@@ -68,12 +68,6 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
             .mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
 
     /**
-     * Strategy to retrieve the banner id if it is not directly configured.
-     */
-    private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy = context
-            .mock(GetBannerIdByParentOrganizationStrategy.class);
-
-    /**
      * Mapper to get followers for a group.
      */
     private DomainMapper<Long, List<Long>> groupFollowerIdsMapper = context.mock(DomainMapper.class);
@@ -131,7 +125,7 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
      */
     private GetDomainGroupModelViewByShortNameExectution sut = new GetDomainGroupModelViewByShortNameExectution(
             groupByShortNameMapper, populateOrgChildWithSkeletonParentOrgsCacheMapper, groupCoordinatorIdsDAO,
-            getBannerIdStrategy, groupFollowerIdsMapper, groupCoordinatorIdsByGroupIdMapper, //
+            groupFollowerIdsMapper, groupCoordinatorIdsByGroupIdMapper, //
             personModelViewsByIdMapper, groupEntityMapper);
 
     // TODO: Minimal pass testing. Beef this up a bit for non public and restricted groups.
@@ -160,9 +154,6 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
                 will(returnValue(groupId));
 
                 oneOf(dgmv).setBannerEntityId(groupId);
-
-                oneOf(dgmv).getBannerId();
-                will(returnValue("bannerId"));
 
                 oneOf(dgmv).isPublic();
                 will(returnValue(true));

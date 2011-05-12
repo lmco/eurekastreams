@@ -24,7 +24,6 @@ import java.util.List;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -69,23 +68,11 @@ public class GetListsContainingActivitiesTest extends MapperTest
         final List<Long> parentOrgIds = new ArrayList<Long>();
         parentOrgIds.add(5L);
 
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(parentOrgIdsMapper).execute(6L);
-                will(returnValue(parentOrgIds));
-
-                oneOf(parentOrgIdsMapper).execute(7L);
-                will(returnValue(parentOrgIds));
-            }
-        });
-
-        GetListsContainingActivities sut = new GetListsContainingActivities(parentOrgIdsMapper,
-                orgShortNamesFromIdsMapper);
+        GetListsContainingActivities sut = new GetListsContainingActivities();
         sut.setEntityManager(getEntityManager());
 
         // everyone list, 4 followers, two destination streams, everyone list, the org streams 5, 6, 7
-        final int keySize = 10;
+        final int keySize = 7;
 
         final int author1 = 98;
         final int author2 = 42;
@@ -100,12 +87,6 @@ public class GetListsContainingActivitiesTest extends MapperTest
 
         List<String> keys = sut.execute(activityIds);
         assertEquals(keySize, keys.size());
-
-        // org streams
-        assertTrue(keys.contains(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "tstorgname"));
-        assertTrue(keys.contains(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "child1orgname"));
-        assertTrue(keys.contains(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "child2orgname"));
-
         // stream views
         assertTrue(keys.contains(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + "87433"));
         assertTrue(keys.contains(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + "2"));

@@ -15,35 +15,28 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import static org.junit.Assert.assertEquals;
+import java.io.Serializable;
+import java.util.List;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
 /**
- * Test fixture for GetOrgIdsDirectlyCoordinatedByPerson.
+ * Mapper to get all private group ids.
  */
-public class GetOrgIdsDirectlyCoordinatedByPersonTest extends MapperTest
+public class GetAllPrivateGroupIdsDbMapper extends ReadMapper<Serializable, List<Long>>
 {
     /**
-     * The system under test.
+     * Return all private group ids.
+     * 
+     * @param ignored
+     *            ignored
+     * @return a list of all private group ids
      */
-    @Autowired
-    private GetOrgIdsDirectlyCoordinatedByPerson sut;
-
-    /**
-     * Test execute.
-     */
-    @Test
-    public void testExecute()
+    @Override
+    public List<Long> execute(final Serializable ignored)
     {
-        final Long userId = 142L;
-        final Set<Long> expected = new HashSet<Long>();
-        expected.add(5L);
-        assertEquals(expected, sut.execute(userId));
+        return getEntityManager().createQuery("SELECT id FROM DomainGroup g WHERE g.publicGroup = false")
+                .getResultList();
     }
+
 }

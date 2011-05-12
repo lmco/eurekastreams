@@ -15,28 +15,24 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-
 import static org.junit.Assert.assertEquals;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
-
 
 /**
  * Tests the flagged activty event translator.
@@ -53,10 +49,11 @@ public class FlagTranslatorTest
     };
 
     /** Fixture: mapper. */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class);
 
     /** Fixture: mapper. */
-    private GetOrgCoordinators coordinatorMapper = context.mock(GetOrgCoordinators.class);
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
+            "systemAdminIdsMapper");
 
     /** SUT. */
     private FlagTranslator sut;
@@ -67,7 +64,7 @@ public class FlagTranslatorTest
     @Before
     public void setUp()
     {
-        sut = new FlagTranslator(activitiesMapper, coordinatorMapper);
+        sut = new FlagTranslator(activitiesMapper, systemAdminIdsMapper);
     }
 
     /**
@@ -83,15 +80,15 @@ public class FlagTranslatorTest
         activity.setRecipientParentOrgId(2L);
         activity.setDestinationStream(stream);
 
-        final Set<Long> recipients = new HashSet<Long>();
-        recipients.add(5L);
+        final List<Long> admins = new ArrayList<Long>();
+        admins.add(5L);
         context.checking(new Expectations()
         {
             {
                 allowing(activitiesMapper).execute(Arrays.asList(3L));
                 will(returnValue(Arrays.asList(activity)));
-                allowing(coordinatorMapper).execute(2L);
-                will(returnValue(recipients));
+                allowing(systemAdminIdsMapper).execute(null);
+                will(returnValue(admins));
             }
         });
 
@@ -100,6 +97,6 @@ public class FlagTranslatorTest
 
         assertEquals(1, results.size());
         NotificationDTO notif = results.iterator().next();
-        assertEquals((Long) 5L, (Long) notif.getRecipientIds().get(0));
+        assertEquals((Long) 5L, notif.getRecipientIds().get(0));
     }
 }

@@ -38,9 +38,7 @@ public class GetAllOrganizationIdsDbMapperTest extends MapperTest
         sut.setEntityManager(getEntityManager());
 
         List<Long> results = sut.execute(null);
-        assertEquals(3, results.size());
+        assertEquals(1, results.size());
         assertTrue(results.contains(5L));
-        assertTrue(results.contains(6L));
-        assertTrue(results.contains(7L));
     }
 }

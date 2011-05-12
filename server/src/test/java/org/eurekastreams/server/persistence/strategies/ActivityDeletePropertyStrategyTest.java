@@ -15,12 +15,15 @@
  */
 package org.eurekastreams.server.persistence.strategies;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -31,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test for ActivityDeletePropertyStrategy class.
- *
+ * 
  */
 public class ActivityDeletePropertyStrategyTest
 {
@@ -57,9 +60,10 @@ public class ActivityDeletePropertyStrategyTest
     private GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
-     * DAO for getting org coordinators.
+     * Mapper for getting system administrator ids.
      */
-    private GetRecursiveOrgCoordinators orgCoordinatorDAO = context.mock(GetRecursiveOrgCoordinators.class);
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
+            "systemAdminIdsMapper");
 
     /**
      * Destination stream StreamEntityDTO.
@@ -123,8 +127,7 @@ public class ActivityDeletePropertyStrategyTest
     @Before
     public void setup()
     {
-        sut = new ActivityDeletePropertyStrategy(getPersonModelViewByAccountIdMapper, groupByShortNameDAO,
-                groupAccessMapper, orgCoordinatorDAO);
+        sut = new ActivityDeletePropertyStrategy(groupByShortNameDAO, groupAccessMapper, systemAdminIdsMapper);
     }
 
     /**
@@ -253,8 +256,11 @@ public class ActivityDeletePropertyStrategyTest
      * Test execute with user as destination stream group Coordinator.
      */
     @Test
-    public void testExecuteUserActivityPersonalStreamParentOrgCoordinatorRole()
+    public void testExecuteUserActivityPersonalStreamSystemAdmin()
     {
+        final List<Long> systemAdminIds = new ArrayList<Long>();
+        systemAdminIds.add(userPersonId);
+
         context.checking(new Expectations()
         {
             {
@@ -278,21 +284,8 @@ public class ActivityDeletePropertyStrategyTest
                 oneOf(activityDestinationStream).getType();
                 will(returnValue(EntityType.NOTSET));
 
-                // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(activityDestinationStream).getType();
-                will(returnValue(EntityType.PERSON));
-
-                oneOf(activityDestinationStream).getUniqueIdentifier();
-                will(returnValue(activityDestinationStreamAcctId));
-
-                oneOf(getPersonModelViewByAccountIdMapper).execute(activityDestinationStreamAcctId);
-                will(returnValue(activityDestinationPersonModelView));
-
-                oneOf(activityDestinationPersonModelView).getParentOrganizationId();
-                will(returnValue(1L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(userPersonId, 1L);
-                will(returnValue(true));
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(systemAdminIds));
 
                 oneOf(activity).setDeletable(true);
             }
@@ -308,6 +301,8 @@ public class ActivityDeletePropertyStrategyTest
     @Test
     public void testExecuteUserIsNobody()
     {
+        final List<Long> systemAdminIds = new ArrayList<Long>();
+
         context.checking(new Expectations()
         {
             {
@@ -326,19 +321,12 @@ public class ActivityDeletePropertyStrategyTest
                 allowing(activity).getDestinationStream();
                 will(returnValue(activityDestinationStream));
 
-                oneOf(activityDestinationStream).getType();
-                will(returnValue(EntityType.PERSON));
-
-                oneOf(activityDestinationStream).getUniqueIdentifier();
-                will(returnValue("notSmithers"));
-                // end stream owner check skip
-
-                // rest is check if user has group coordinator access
-                oneOf(activityDestinationStream).getType();
+                allowing(activityDestinationStream).getType();
                 will(returnValue(EntityType.GROUP));
 
-                oneOf(activityDestinationStream).getUniqueIdentifier();
+                allowing(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue(groupShortName));
+                // end stream owner check skip
 
                 oneOf(groupByShortNameDAO).fetchId(groupShortName);
                 will(returnValue(groupId));
@@ -346,8 +334,8 @@ public class ActivityDeletePropertyStrategyTest
                 oneOf(groupAccessMapper).hasGroupCoordinatorAccessRecursively(userPersonId, groupId);
                 will(returnValue(false));
 
-                oneOf(activityDestinationStream).getType();
-                will(returnValue(EntityType.GROUP));
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(systemAdminIds));
 
                 oneOf(activity).setDeletable(false);
             }

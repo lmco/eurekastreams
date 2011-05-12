@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.strategies;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -23,10 +24,8 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.CommentDTO;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Strategy for setting Deletable property on comments for a given activity and user.
@@ -36,11 +35,6 @@ public class CommentDeletePropertyStrategy
 {
     /** logger instance. */
     private static Log log = LogFactory.getLog(CommentDeletePropertyStrategy.class);
-
-    /**
-     * Mapper to get a PersonModelView by account id.
-     */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Mapper to get a person's id by their account id.
@@ -58,36 +52,31 @@ public class CommentDeletePropertyStrategy
     private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupAccessMapper;
 
     /**
-     * Mapper to get all coordinators of an org.
+     * Mapper to get ids of all system administrators.
      */
-    private GetRecursiveOrgCoordinators orgCoordinatorDAO;
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
 
     /**
      * Constructor.
      * 
-     * @param inGetPersonModelViewByAccountIdMapper
-     *            Mapper to get a PersonModelView by account id.
      * @param inGetPersonIdByAccountIdMapper
      *            Mapper to get a person's id by their account id.
      * @param inGroupByShortNameDAO
      *            DAO for looking up group by short name.
      * @param inGroupAccessMapper
      *            Mapper to check if the user has coordinator access to a group.
-     * @param inOrgCoordinatorDAO
-     *            Mapper for determining org coordinators.
+     * @param inSystemAdminIdsMapper
+     *            Mapper to get the ids of all system administrators
      */
-    public CommentDeletePropertyStrategy(
-            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
-            final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
+    public CommentDeletePropertyStrategy(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
             final GetDomainGroupsByShortNames inGroupByShortNameDAO,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupAccessMapper,
-            final GetRecursiveOrgCoordinators inOrgCoordinatorDAO)
+            final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper)
     {
-        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         groupByShortNameDAO = inGroupByShortNameDAO;
         groupAccessMapper = inGroupAccessMapper;
-        orgCoordinatorDAO = inOrgCoordinatorDAO;
+        systemAdminIdsMapper = inSystemAdminIdsMapper;
     }
 
     /**
@@ -143,16 +132,13 @@ public class CommentDeletePropertyStrategy
             return;
         }
 
-        // if activity is on personal stream, and current user is org coordinator of personal
-        // stream's parent org (or up tree recursively), allow delete.
-        if (inParentActivity.getDestinationStream().getType() == EntityType.PERSON
-                && orgCoordinatorDAO.isOrgCoordinatorRecursively(userPersonId, getPersonModelViewByAccountIdMapper
-                        .execute(inParentActivity.getDestinationStream().getUniqueIdentifier())
-                        .getParentOrganizationId()))
+        List<Long> administratorIds = systemAdminIdsMapper.execute(null);
+
+        // if activity is on personal stream, and current user is a system administrator, allow delete.
+        if (administratorIds.contains(userPersonId))
         {
             setAll(inComments, true);
             return;
-
         }
 
         // No bulk settings apply. If user is author of comment, allow delete

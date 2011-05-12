@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -64,23 +63,6 @@ public class PostCachedActivityTest
             DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
-     * mapper to get all parent org ids for an org id.
-     */
-    private DomainMapper<Long, List<Long>> parentOrgIdsMapper = context.mock(DomainMapper.class);
-
-    /**
-     * Local instance of the {@link GetDomainGroupsByShortNames} mapper.
-     */
-    private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper = context
-            .mock(GetDomainGroupsByShortNames.class);
-
-    /**
-     * Mapper to get the short names from org ids.
-     */
-    private final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper = context
-            .mock(GetOrgShortNamesByIdsMapper.class);
-
-    /**
      * Cache.
      */
     private final Cache cache = context.mock(Cache.class);
@@ -103,8 +85,6 @@ public class PostCachedActivityTest
         followerIds.add(follower1Id);
         followerIds.add(follower2Id);
 
-        final List<Long> parentOrgIds = context.mock(List.class);
-
         final ArrayList<String> peopleAccountIds = new ArrayList<String>();
         peopleAccountIds.add(personAccountId);
 
@@ -116,8 +96,7 @@ public class PostCachedActivityTest
         orgShortNames.add(orgShortName2);
         orgShortNames.add(orgShortName3);
 
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
-                parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
 
         final Activity act = context.mock(Activity.class);
@@ -132,9 +111,6 @@ public class PostCachedActivityTest
                 allowing(person).getEntityId();
                 will(returnValue(personId));
 
-                oneOf(person).getParentOrganizationId();
-                will(returnValue(recipientParentOrgId));
-
                 oneOf(personFollowersMapper).execute(personId);
                 will(returnValue(followerIds));
 
@@ -144,21 +120,6 @@ public class PostCachedActivityTest
 
                 // everyone list gets the activity id
                 oneOf(cache).addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
-
-                oneOf(parentOrgIdsMapper).execute(recipientParentOrgId);
-                will(returnValue(parentOrgIds));
-
-                oneOf(parentOrgIds).add(recipientParentOrgId);
-
-                oneOf(orgShortNamesFromIdsMapper).execute(parentOrgIds);
-                will(returnValue(orgShortNames));
-
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName1,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName2,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
-                        activityId);
 
                 // -----
                 // build the activity that we're passing in
@@ -204,8 +165,6 @@ public class PostCachedActivityTest
 
         final List<Long> followerIds = new ArrayList<Long>();
 
-        final List<Long> parentOrgIds = context.mock(List.class);
-
         final ArrayList<String> peopleAccountIds = new ArrayList<String>();
         peopleAccountIds.add(personAccountId);
 
@@ -217,8 +176,7 @@ public class PostCachedActivityTest
         orgShortNames.add(orgShortName2);
         orgShortNames.add(orgShortName3);
 
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
-                parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
 
         final Activity act = context.mock(Activity.class);
@@ -233,29 +191,11 @@ public class PostCachedActivityTest
                 allowing(person).getEntityId();
                 will(returnValue(personId));
 
-                oneOf(person).getParentOrganizationId();
-                will(returnValue(recipientParentOrgId));
-
                 oneOf(personFollowersMapper).execute(personId);
                 will(returnValue(followerIds));
 
                 // everyone list gets the activity id
                 oneOf(cache).addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
-
-                oneOf(parentOrgIdsMapper).execute(recipientParentOrgId);
-                will(returnValue(parentOrgIds));
-
-                oneOf(parentOrgIds).add(recipientParentOrgId);
-
-                oneOf(orgShortNamesFromIdsMapper).execute(parentOrgIds);
-                will(returnValue(orgShortNames));
-
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName1,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName2,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
-                        activityId);
 
                 // -----
                 // build the activity that we're passing in
@@ -293,8 +233,7 @@ public class PostCachedActivityTest
     public void testExecuteGroupActivity()
     {
         final long activityId = 884872L;
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
-                parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
         final long recipientParentOrgId = 877777L;
 
@@ -302,8 +241,6 @@ public class PostCachedActivityTest
         group.setParentOrganizationId(recipientParentOrgId);
         final List<DomainGroupModelView> groups = new ArrayList<DomainGroupModelView>();
         groups.add(group);
-
-        final List<Long> parentOrgIds = context.mock(List.class);
 
         final List<String> orgShortNames = new ArrayList<String>();
         final String orgShortName1 = "abcdefg";
@@ -319,26 +256,8 @@ public class PostCachedActivityTest
         context.checking(new Expectations()
         {
             {
-                oneOf(bulkDomainGroupsByShortNameMapper).execute(with(any(List.class)));
-                will(returnValue(groups));
-
                 // everyone list gets the activity id
                 oneOf(cache).addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
-
-                oneOf(parentOrgIdsMapper).execute(recipientParentOrgId);
-                will(returnValue(parentOrgIds));
-
-                oneOf(parentOrgIds).add(recipientParentOrgId);
-
-                oneOf(orgShortNamesFromIdsMapper).execute(parentOrgIds);
-                will(returnValue(orgShortNames));
-
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName1,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName2,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
-                        activityId);
 
                 // -----
                 // build the activity that we're passing in
@@ -375,8 +294,7 @@ public class PostCachedActivityTest
     public void testExecuteGroupActivityWithSharedLink()
     {
         final long activityId = 884872L;
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
-                parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
         final long recipientParentOrgId = 877777L;
         final long sharedResourceScopeId = 3838L;
@@ -385,8 +303,6 @@ public class PostCachedActivityTest
         group.setParentOrganizationId(recipientParentOrgId);
         final List<DomainGroupModelView> groups = new ArrayList<DomainGroupModelView>();
         groups.add(group);
-
-        final List<Long> parentOrgIds = context.mock(List.class);
 
         final List<String> orgShortNames = new ArrayList<String>();
         final String orgShortName1 = "abcdefg";
@@ -405,26 +321,8 @@ public class PostCachedActivityTest
         context.checking(new Expectations()
         {
             {
-                oneOf(bulkDomainGroupsByShortNameMapper).execute(with(any(List.class)));
-                will(returnValue(groups));
-
                 // everyone list gets the activity id
                 oneOf(cache).addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
-
-                oneOf(parentOrgIdsMapper).execute(recipientParentOrgId);
-                will(returnValue(parentOrgIds));
-
-                oneOf(parentOrgIds).add(recipientParentOrgId);
-
-                oneOf(orgShortNamesFromIdsMapper).execute(parentOrgIds);
-                will(returnValue(orgShortNames));
-
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName1,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName2,
-                        activityId);
-                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
-                        activityId);
 
                 // -----
                 // build the activity that we're passing in
@@ -468,8 +366,7 @@ public class PostCachedActivityTest
     @Test
     public void testExecuteInvalidDestinationType()
     {
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
-                parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
 
         final Activity act = context.mock(Activity.class);

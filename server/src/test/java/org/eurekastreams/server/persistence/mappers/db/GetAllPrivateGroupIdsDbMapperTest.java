@@ -15,35 +15,33 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
-import java.util.HashSet;
-import java.util.Set;
+import junit.framework.Assert;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test fixture for GetOrgIdsDirectlyCoordinatedByPerson.
+ * Test fixture for GetAllPrivateGroupIdsDbMapper.
  */
-public class GetOrgIdsDirectlyCoordinatedByPersonTest extends MapperTest
+public class GetAllPrivateGroupIdsDbMapperTest extends MapperTest
 {
-    /**
-     * The system under test.
-     */
-    @Autowired
-    private GetOrgIdsDirectlyCoordinatedByPerson sut;
-
     /**
      * Test execute.
      */
     @Test
     public void testExecute()
     {
-        final Long userId = 142L;
-        final Set<Long> expected = new HashSet<Long>();
-        expected.add(5L);
-        assertEquals(expected, sut.execute(userId));
+        getEntityManager().createQuery("UPDATE DomainGroup SET publicgroup = false WHERE id=4 OR id=5").executeUpdate();
+
+        GetAllPrivateGroupIdsDbMapper sut = new GetAllPrivateGroupIdsDbMapper();
+        sut.setEntityManager(getEntityManager());
+
+        List<Long> domainGroupIds = sut.execute(null);
+
+        Assert.assertEquals(2, domainGroupIds.size());
+        Assert.assertTrue(domainGroupIds.contains(4L));
+        Assert.assertTrue(domainGroupIds.contains(5L));
     }
 }

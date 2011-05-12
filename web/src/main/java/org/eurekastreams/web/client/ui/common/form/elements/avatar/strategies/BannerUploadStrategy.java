@@ -19,18 +19,14 @@ import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeleteGroupBannerResponseEvent;
-import org.eurekastreams.web.client.events.data.DeleteOrganizationBannerResponseEvent;
 import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.GroupBannerModel;
-import org.eurekastreams.web.client.model.OrganizationBannerModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -79,12 +75,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
         entity = inEntity;
         entityId = inEntityId;
 
-        if (entity.getClass() == Organization.class || entity.getClass() == OrganizationModelView.class)
-        {
-            entityType = EntityType.ORGANIZATION;
-            deleteAction = OrganizationBannerModel.getInstance();
-        }
-        else if (entity.getClass() == DomainGroup.class || entity.getClass() == DomainGroupModelView.class)
+        if (entity.getClass() == DomainGroup.class || entity.getClass() == DomainGroupModelView.class)
         {
             entityType = EntityType.GROUP;
             deleteAction = GroupBannerModel.getInstance();
@@ -97,7 +88,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
                 Session.getInstance().getEventBus().notifyObservers(
                         new ClearUploadedImageEvent(entityType, ImageType.BANNER, arg1.getResponse()));
             }
-        }, DeleteGroupBannerResponseEvent.class, DeleteOrganizationBannerResponseEvent.class);
+        }, DeleteGroupBannerResponseEvent.class, DeleteGroupBannerResponseEvent.class);
     }
 
     /**

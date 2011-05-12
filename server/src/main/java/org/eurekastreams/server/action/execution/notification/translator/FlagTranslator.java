@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
 
 /**
  * Translates the event of someone flagging an activity to appropriate notifications.
@@ -37,22 +36,24 @@ public class FlagTranslator implements NotificationTranslator
     /** For getting activity details. */
     private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
-    /** For getting org coordinators. */
-    private GetOrgCoordinators coordinatorMapper;
+    /**
+     * Mapper to get a list of system admin ids.
+     */
+    private DomainMapper<Serializable, List<Long>> systemAdminMapper;
 
     /**
      * Constructor.
      * 
      * @param inActivitiesMapper
      *            For getting activity details.
-     * @param inCoordinatorMapper
-     *            For getting org coordinators.
+     * @param inSystemAdminMapper
+     *            mapper to get all the system admin ids
      */
     public FlagTranslator(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
-            final GetOrgCoordinators inCoordinatorMapper)
+            final DomainMapper<Serializable, List<Long>> inSystemAdminMapper)
     {
         activitiesMapper = inActivitiesMapper;
-        coordinatorMapper = inCoordinatorMapper;
+        systemAdminMapper = inSystemAdminMapper;
     }
 
     /**
@@ -71,11 +72,10 @@ public class FlagTranslator implements NotificationTranslator
         NotificationType type = EntityType.PERSON == stream.getType() ? NotificationType.FLAG_PERSONAL_ACTIVITY
                 : NotificationType.FLAG_GROUP_ACTIVITY;
 
-        // Get the list of coordinators for the org which owns the entity (person/group) in whose stream the activity
-        // was posted
-        List<Long> coordinatorIds = new ArrayList<Long>(coordinatorMapper.execute(activity.getRecipientParentOrgId()));
+        // Get the list of admins
+        List<Long> adminIds = systemAdminMapper.execute(null);
 
-        NotificationDTO notif = new NotificationDTO(coordinatorIds, type, inActorId);
+        NotificationDTO notif = new NotificationDTO(adminIds, type, inActorId);
         notif.setDestination(activity.getRecipientParentOrgId(), EntityType.ORGANIZATION);
         notif.setActivity(inActivityId, activity.getBaseObjectType());
 

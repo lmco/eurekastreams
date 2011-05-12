@@ -87,18 +87,12 @@ public class GetPersonExecutionTest
     private GetPersonExecution sut = null;
 
     /**
-     * Mocked mapper for retrieving the banner id.
-     */
-    private GetBannerIdByParentOrganizationStrategy getBannerIdMapperMock = context
-            .mock(GetBannerIdByParentOrganizationStrategy.class);
-
-    /**
      * Setup the test.
      */
     @Before
     public final void setup()
     {
-        sut = new GetPersonExecution(mapper, peopleParentOrgSkeletonPopulatorMock, getBannerIdMapperMock);
+        sut = new GetPersonExecution(mapper, peopleParentOrgSkeletonPopulatorMock);
     }
 
     /**
@@ -128,11 +122,6 @@ public class GetPersonExecutionTest
                 will(returnValue(bg));
 
                 oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
-
-                oneOf(testPerson).getParentOrgId();
-                will(returnValue(1L));
-
-                oneOf(getBannerIdMapperMock).getBannerId(1L, testPerson);
             }
         });
 
@@ -170,11 +159,6 @@ public class GetPersonExecutionTest
                 oneOf(testPerson).getTabs(TabGroupType.START);
 
                 oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
-
-                oneOf(testPerson).getParentOrgId();
-                will(returnValue(1L));
-
-                oneOf(getBannerIdMapperMock).getBannerId(1L, testPerson);
             }
         });
 

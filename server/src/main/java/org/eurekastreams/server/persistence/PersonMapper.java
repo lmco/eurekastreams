@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 
 /**
  * This class provides the mapper functionality for Person entities.
@@ -50,36 +49,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     public PersonMapper(final QueryOptimizer inQueryOptimizer)
     {
         super(inQueryOptimizer);
-    }
-
-    /**
-     * The descendant organization strategy.
-     */
-    private DescendantOrganizationStrategy descendantOrgStrategy;
-
-    /**
-     * Set the DescendantOrgStrategy.
-     * 
-     * @param inDescendantOrgStrategy
-     *            the descendantOrgStrategy to set
-     */
-    public void setDescendantOrgStrategy(final DescendantOrganizationStrategy inDescendantOrgStrategy)
-    {
-        descendantOrgStrategy = inDescendantOrgStrategy;
-    }
-
-    /**
-     * Get the descendant organization strategy.
-     * 
-     * @return the descendantOrgStrategy the descendant org strategy
-     */
-    protected DescendantOrganizationStrategy getDescendantOrgStrategy()
-    {
-        if (descendantOrgStrategy == null)
-        {
-            throw new NullPointerException("descendantOrgStrategy is null - make sure to set it on JpaPersonMapper.");
-        }
-        return descendantOrgStrategy;
     }
 
     /**

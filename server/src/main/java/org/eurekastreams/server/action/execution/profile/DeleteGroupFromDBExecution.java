@@ -228,9 +228,6 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
                 : deleteActivityResponse.getActivityIds();
 
         startSize = endSize;
-        // create tasks for removing activities from group's stream from all parent orgs.
-        generateRemoveIdsFromListTasks(createKeys(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE,
-                deleteGroupResponse.getParentOrganizationShortNames()), cachedActivityIds, inActionContext);
 
         if (log.isDebugEnabled())
         {

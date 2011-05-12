@@ -180,7 +180,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
     {
         final long id = 4231L;
 
-        Organization org = jpaOrganizationMapper.findById(6L);
+        Organization org = jpaOrganizationMapper.findById(5L);
         TabGroup tg = jpaTabGroupMapper.findById(id);
 
         Person p = new Person("ndtyson", "Neil", "d", "deGrasse Tyson", "Dr. To You");
@@ -204,7 +204,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
     {
         final long id = 4231L;
 
-        Organization org = jpaOrganizationMapper.findById(6L);
+        Organization org = jpaOrganizationMapper.findById(5L);
         TabGroup tg = jpaTabGroupMapper.findById(id);
 
         Person p = new Person("yoyojoe", "Joe", "hey", "Yoyo", "Call Me Joe");
@@ -590,16 +590,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
     }
 
     /**
-     * Test that calling getDescendantOrgStrategy() when not set throws NullPointerException.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testGetDescendantOrgStrategyWhenNotSet()
-    {
-        PersonMapper personMapper = new PersonMapper(queryOptimizer);
-        personMapper.getDescendantOrgStrategy();
-    }
-
-    /**
      * Test the profile properties.
      */
     @Test
@@ -652,7 +642,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
 
         final long id = 4231L;
 
-        Organization org = jpaOrganizationMapper.findById(6L);
+        Organization org = jpaOrganizationMapper.findById(5L);
         TabGroup tg = jpaTabGroupMapper.findById(id);
 
         Person p = new Person("ndtyson", "Neil", "d", "deGrasse Tyson", "Dr. To You");

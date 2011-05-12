@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,13 +40,11 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -110,8 +107,8 @@ public class GroupCreatorTest
     /**
      * task handler action context.
      */
-    private TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext =
-            context.mock(TaskHandlerActionContext.class);
+    private TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = context
+            .mock(TaskHandlerActionContext.class);
 
     /**
      * Action context.
@@ -129,26 +126,16 @@ public class GroupCreatorTest
     private Principal userPrincipal = context.mock(Principal.class);
 
     /**
-     * The mock of the organization hierachy traverser.
-     */
-    private OrganizationHierarchyTraverser orgTraverserMock = context.mock(OrganizationHierarchyTraverser.class);
-
-    /**
-     * The mock of the organization hierachy traverser builder.
-     */
-    private OrganizationHierarchyTraverserBuilder orgTraverserBuilderMock =
-            context.mock(OrganizationHierarchyTraverserBuilder.class);
-
-    /**
-     * Organization cache mock to look up parent orgs.
-     */
-    private final OrganizationHierarchyCache orgHierarchyCacheMock = context.mock(OrganizationHierarchyCache.class);
-
-    /**
      * Mocked following group strategy to add new group followers.
      */
-    private final SetFollowingGroupStatusExecution followStrategyMock =
-            context.mock(SetFollowingGroupStatusExecution.class);
+    private final SetFollowingGroupStatusExecution followStrategyMock = context
+            .mock(SetFollowingGroupStatusExecution.class);
+
+    /**
+     * Mapper to get the system admin ids.
+     */
+    private final DomainMapper<Serializable, List<Long>> getSystemAdminIdsMapper = context.mock(DomainMapper.class,
+            "getSystemAdminIdsMapper");
 
     /**
      * The Mock for the person object. Used for created By person.
@@ -194,7 +181,7 @@ public class GroupCreatorTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -211,16 +198,15 @@ public class GroupCreatorTest
             }
         });
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         Assert.assertNotNull(sut.get(taskHandlerActionContext, formData));
         context.assertIsSatisfied();
     }
 
     /**
      * Build an organization when the org is not supplied.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -230,9 +216,8 @@ public class GroupCreatorTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put("orgParent", "");
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         DomainGroup newGroup = sut.get(taskHandlerActionContext, formData);
         Assert.assertNotNull(newGroup);
         Assert.assertNull(newGroup.getParentOrganization());
@@ -243,13 +228,14 @@ public class GroupCreatorTest
     /**
      * Build an organization based on the input form being fully filled out with valid data. Group will be put into
      * pending because the org requires approval.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
     @Test
     public void persistSuccessButPending() throws Exception
     {
+        final List<Long> adminIds = new ArrayList<Long>();
         final List<Person> coordinators = new ArrayList<Person>();
         coordinators.add(new Person("id2", "Homer", "Jay", "Simpson", "Homey"));
         coordinators.add(new Person("id3", "Max", "X", "Power", "Homer"));
@@ -257,7 +243,6 @@ public class GroupCreatorTest
         personMock = context.mock(Person.class);
         orgMock = context.mock(Organization.class);
         final StreamScope streamScope = context.mock(StreamScope.class);
-        
 
         final long id = 1L;
         final String newName = "NEW org name here";
@@ -269,6 +254,9 @@ public class GroupCreatorTest
         context.checking(new Expectations()
         {
             {
+                oneOf(getSystemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
+
                 oneOf(groupMock).getShortName();
                 will(returnValue("blah"));
 
@@ -276,7 +264,7 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
-                
+
                 allowing(orgMock).getCapabilities();
                 will(returnValue(new ArrayList<BackgroundItem>()));
 
@@ -285,18 +273,9 @@ public class GroupCreatorTest
 
                 oneOf(orgMock).getAllUsersCanCreateGroups();
                 will(returnValue(false));
-                oneOf(orgMock).isCoordinator(with(any(String.class)));
-                will(returnValue(false));
 
                 allowing(orgMock).getId();
                 will(returnValue(ORG_ID));
-
-                oneOf(orgHierarchyCacheMock).getParentOrganizations(with(any(Long.class)));
-                will(returnValue(Arrays.asList(id)));
-                oneOf(orgMapperMock).findById(id);
-                will(returnValue(orgMock));
-                oneOf(orgMock).isCoordinator(accountId);
-                will(returnValue(false));
 
                 oneOf(groupMock).setPending(true);
                 oneOf(personMapperMock).findByAccountId(accountId);
@@ -304,20 +283,16 @@ public class GroupCreatorTest
                 oneOf(groupMock).setCreatedBy(personMock);
 
                 oneOf(groupMapperMock).insert(groupMock);
-                oneOf(orgTraverserBuilderMock).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverserMock));
-                oneOf(orgTraverserMock).traverseHierarchy(groupMock);
-                oneOf(orgMapperMock).updateOrganizationStatistics(orgTraverserMock);
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
-                
+
                 oneOf(groupMock).getName();
                 will(returnValue(newName));
-                
+
                 oneOf(groupMock).getStreamScope();
                 will(returnValue(streamScope));
-                
+
                 oneOf(streamScope).setDestinationEntityId(id);
 
                 // TODO: consider making a fake so we can make sure the right
@@ -338,9 +313,8 @@ public class GroupCreatorTest
 
         assertEquals(0, userActionRequests.size());
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         sut.persist(taskHandlerActionContext, formData, groupMock);
         context.assertIsSatisfied();
 
@@ -348,22 +322,24 @@ public class GroupCreatorTest
 
         assertEquals("Second request has wrong key", "createNotificationsAction", userActionRequests.get(1)
                 .getActionKey());
-        CreateNotificationsRequest request2 =
-                new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP, personId, ORG_ID, id);
+        CreateNotificationsRequest request2 = new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP, personId,
+                ORG_ID, id);
         assertTrue("Second request has wrong content", IsEqualInternally.areEqualInternally(request2,
                 userActionRequests.get(1).getParams()));
     }
 
     /**
      * Build an group based on the input form being fully filled out with valid data. group should be automatically
-     * approved if user is a org coordinator.
-     *
+     * approved if user is an admin.
+     * 
      * @throws Exception
      *             not expected
      */
     @Test
-    public void persistSuccessPendingButOrgCoordinator() throws Exception
+    public void persistSuccessPendingButSystemAdmin() throws Exception
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(personId);
         final List<Person> coordinators = new ArrayList<Person>();
         coordinators.add(new Person("id2", "Homer", "Jay", "Simpson", "Homey"));
         coordinators.add(new Person("id3", "Max", "X", "Power", "Homer"));
@@ -382,6 +358,9 @@ public class GroupCreatorTest
         context.checking(new Expectations()
         {
             {
+                oneOf(getSystemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
+
                 oneOf(groupMock).getShortName();
                 will(returnValue("blah"));
 
@@ -392,17 +371,12 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
-                
+
                 allowing(orgMock).getCapabilities();
                 will(returnValue(new ArrayList<BackgroundItem>()));
-                
+
                 oneOf(orgMock).getAllUsersCanCreateGroups();
                 will(returnValue(false));
-                oneOf(orgMock).isCoordinator(with(any(String.class)));
-                will(returnValue(true));
-                oneOf(orgMock).getId();
-                oneOf(orgHierarchyCacheMock).getParentOrganizations(with(any(Long.class)));
-                will(returnValue(Arrays.asList(id)));
 
                 oneOf(groupMock).setPending(false);
                 oneOf(personMapperMock).findByAccountId(accountId);
@@ -410,14 +384,10 @@ public class GroupCreatorTest
                 oneOf(groupMock).setCreatedBy(personMock);
 
                 oneOf(groupMapperMock).insert(groupMock);
-                oneOf(orgTraverserBuilderMock).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverserMock));
-                oneOf(orgTraverserMock).traverseHierarchy(groupMock);
-                oneOf(orgMapperMock).updateOrganizationStatistics(orgTraverserMock);
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
-                
+
                 oneOf(groupMock).getName();
                 will(returnValue(newName));
 
@@ -434,19 +404,18 @@ public class GroupCreatorTest
                 will(returnValue(1L));
 
                 oneOf(followStrategyMock).execute(with(any(TaskHandlerActionContext.class)));
-                
+
                 oneOf(groupMock).getStreamScope();
                 will(returnValue(streamScope));
-                
+
                 oneOf(streamScope).setDestinationEntityId(id);
             }
         });
 
         assertEquals(0, userActionRequests.size());
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         sut.persist(taskHandlerActionContext, formData, groupMock);
         context.assertIsSatisfied();
 
@@ -457,7 +426,7 @@ public class GroupCreatorTest
     /**
      * Build an group based on the input form being fully filled out with valid data. Group should be automatically
      * approved because the org does not require approval.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -492,7 +461,7 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
-                
+
                 allowing(orgMock).getCapabilities();
                 will(returnValue(new ArrayList<BackgroundItem>()));
 
@@ -505,14 +474,10 @@ public class GroupCreatorTest
                 oneOf(groupMock).setCreatedBy(personMock);
 
                 oneOf(groupMapperMock).insert(groupMock);
-                oneOf(orgTraverserBuilderMock).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverserMock));
-                oneOf(orgTraverserMock).traverseHierarchy(groupMock);
-                oneOf(orgMapperMock).updateOrganizationStatistics(orgTraverserMock);
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
-                
+
                 oneOf(groupMock).getName();
                 will(returnValue(newName));
                 //
@@ -529,19 +494,18 @@ public class GroupCreatorTest
                 will(returnValue(1L));
 
                 oneOf(followStrategyMock).execute(with(any(TaskHandlerActionContext.class)));
-                
+
                 oneOf(groupMock).getStreamScope();
                 will(returnValue(streamScope));
-                
+
                 oneOf(streamScope).setDestinationEntityId(id);
             }
         });
 
         assertEquals(0, userActionRequests.size());
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         sut.persist(taskHandlerActionContext, formData, groupMock);
         context.assertIsSatisfied();
 
@@ -550,7 +514,7 @@ public class GroupCreatorTest
 
     /**
      * Test persist when no org was provided. valid data.
-     *
+     * 
      * @throws Exception
      *             Validation error.
      */
@@ -573,8 +537,7 @@ public class GroupCreatorTest
             {
                 oneOf(groupMock).getParentOrganization();
                 will(returnValue(null));
-                oneOf(orgTraverserBuilderMock).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverserMock));
+
                 oneOf(groupMock).getShortName();
                 will(returnValue("group1"));
 
@@ -589,9 +552,8 @@ public class GroupCreatorTest
 
         assertEquals(0, userActionRequests.size());
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         sut.persist(taskHandlerActionContext, formData, groupMock);
 
         assertEquals(0, userActionRequests.size());
@@ -599,7 +561,7 @@ public class GroupCreatorTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -622,8 +584,6 @@ public class GroupCreatorTest
             {
                 oneOf(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
-                oneOf(orgTraverserBuilderMock).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverserMock));
                 oneOf(groupMock).getShortName();
                 will(returnValue("group1"));
 
@@ -638,9 +598,8 @@ public class GroupCreatorTest
 
         assertEquals(0, userActionRequests.size());
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         sut.persist(taskHandlerActionContext, formData, groupMock);
 
         assertEquals(0, userActionRequests.size());
@@ -648,7 +607,7 @@ public class GroupCreatorTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -672,8 +631,6 @@ public class GroupCreatorTest
             {
                 oneOf(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
-                oneOf(orgTraverserBuilderMock).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverserMock));
                 oneOf(groupMock).getShortName();
                 will(returnValue("group1"));
 
@@ -687,9 +644,8 @@ public class GroupCreatorTest
 
         assertEquals(0, userActionRequests.size());
 
-        GroupCreator sut =
-                new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, orgTraverserBuilderMock,
-                        orgHierarchyCacheMock, followStrategyMock);
+        GroupCreator sut = new GroupCreator(groupMapperMock, orgMapperMock, personMapperMock, getSystemAdminIdsMapper,
+                followStrategyMock);
         sut.persist(taskHandlerActionContext, formData, groupMock);
 
         assertEquals(0, userActionRequests.size());

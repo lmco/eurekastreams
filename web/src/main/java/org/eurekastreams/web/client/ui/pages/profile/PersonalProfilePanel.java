@@ -59,7 +59,6 @@ import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.tabs.PersonalProfileAboutTabPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.AboutPanel;
-import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ChecklistProgressBarPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ContactInfoPanel;
@@ -95,11 +94,6 @@ public class PersonalProfilePanel extends FlowPanel
      * Holds the PortalPage section of the profile display.
      */
     private TabContainerPanel portalPage = null;
-
-    /**
-     * Panel that shows the bread crumb navigation.
-     */
-    private final BreadcrumbPanel breadCrumbPanel;
 
     /**
      * Link to go to the profile settings page.
@@ -152,7 +146,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -169,9 +163,7 @@ public class PersonalProfilePanel extends FlowPanel
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
-        breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
-        this.add(breadCrumbPanel);
         this.add(profileSettingsLink);
         leftBarContainer.add(leftBarPanel);
         this.add(leftBarContainer);
@@ -201,7 +193,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -227,8 +219,6 @@ public class PersonalProfilePanel extends FlowPanel
             profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
             RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
         }
-
-        breadCrumbPanel.setPerson(personModelView);
 
         followers = personModelView.getFollowersCount();
 
@@ -322,7 +312,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Generates a panel to use as the message when a user is locked out of the system.
-     *
+     * 
      * @return the Panel content containing the locked message.
      */
     private Panel generateLockedUserMessage()
@@ -386,7 +376,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     *
+     * 
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -477,7 +467,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     *
+     * 
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

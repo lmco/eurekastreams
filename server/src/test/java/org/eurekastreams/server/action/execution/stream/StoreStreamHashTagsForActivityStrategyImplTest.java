@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.strategies.HashTagExtractor;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
@@ -28,7 +27,6 @@ import org.eurekastreams.server.domain.stream.HashTag;
 import org.eurekastreams.server.domain.stream.StreamHashTag;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -75,18 +73,6 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
      * Mapper to insert stream hashtags.
      */
     private final InsertMapper<StreamHashTag> streamHashTagInsertMapper = context.mock(InsertMapper.class);
-
-    /**
-     * mapper to get all parent org ids for an org id.
-     */
-    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIds = context.mock(DomainMapper.class,
-            "getRecursiveParentOrgIds");
-
-    /**
-     * Get organizations by ids mapper.
-     */
-    private final DomainMapper<List<Long>, List<OrganizationModelView>> organizationsByIdsMapper = context.mock(
-            DomainMapper.class, "organizationsByIdsMapper");
 
     /**
      * Mock activity.
@@ -219,9 +205,6 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
                 oneOf(hashTagExtractor).extractAll(content);
                 will(returnValue(hashTagContents));
 
-                allowing(activity).getIsDestinationStreamPublic();
-                will(returnValue(false));
-
                 oneOf(hashTagMapper).execute(hashTagContents);
                 will(returnValue(hashTags));
 
@@ -251,11 +234,6 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
         final List<HashTag> hashTags = new ArrayList<HashTag>();
         hashTags.add(new HashTag("#there"));
         hashTags.add(new HashTag("#potato"));
-
-        final Organization activityParentOrg = context.mock(Organization.class);
-
-        final Long orgId = 823L;
-        final List<Long> parentOrgIds = new ArrayList<Long>();
 
         final List<OrganizationModelView> orgModelViews = new ArrayList<OrganizationModelView>();
         OrganizationModelView org1 = new OrganizationModelView();
@@ -301,26 +279,11 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
                 oneOf(hashTagExtractor).extractAll(content);
                 will(returnValue(hashTagContents));
 
-                allowing(activity).getIsDestinationStreamPublic();
-                will(returnValue(true));
-
                 oneOf(hashTagMapper).execute(hashTagContents);
                 will(returnValue(hashTags));
 
-                oneOf(activity).getRecipientParentOrg();
-                will(returnValue(activityParentOrg));
-
-                oneOf(activityParentOrg).getId();
-                will(returnValue(orgId));
-
-                oneOf(getRecursiveParentOrgIds).execute(orgId);
-                will(returnValue(parentOrgIds));
-
-                oneOf(organizationsByIdsMapper).execute(parentOrgIds);
-                will(returnValue(orgModelViews));
-
-                // 10 hashtag inserts - two for hashtags, 4*2 for the 4 parent orgs and two hashtags
-                exactly(5 + 5).of(streamHashTagInsertMapper).execute(with(any(PersistenceRequest.class)));
+                // 2 hashtag inserts - two for hashtags
+                exactly(2).of(streamHashTagInsertMapper).execute(with(any(PersistenceRequest.class)));
             }
         });
 
@@ -331,12 +294,12 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
 
     /**
      * Build the system under test.
-     *
+     * 
      * @return the system under test
      */
     private StoreStreamHashTagsForActivityStrategy buildSut()
     {
         return new StoreStreamHashTagsForActivityStrategyImpl(hashTagExtractor, contentExtractor, hashTagMapper,
-                streamHashTagInsertMapper, getRecursiveParentOrgIds, organizationsByIdsMapper);
+                streamHashTagInsertMapper);
     }
 }

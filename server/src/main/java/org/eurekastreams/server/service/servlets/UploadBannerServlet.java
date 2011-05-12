@@ -23,18 +23,15 @@ import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * This class uploads an avatar.
- *
+ * 
  */
 
 @SuppressWarnings("serial")
@@ -45,11 +42,9 @@ public class UploadBannerServlet extends UploadImageServlet<DomainEntity>
      */
     private Log log = LogFactory.getLog(UploadBannerServlet.class);
 
-
-
     /**
      * Gets the domain entity.
-     *
+     * 
      * @param inName
      *            the name used to find the domain entity
      * @param request
@@ -72,39 +67,15 @@ public class UploadBannerServlet extends UploadImageServlet<DomainEntity>
 
         String type = request.getParameter("type");
 
-        GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorMapper =
-            (GetAllPersonIdsWhoHaveGroupCoordinatorAccess) getSpringContext()
-                .getBean("getAllPersonIdsWhoHaveGroupCoordinatorAccess");
-
-        GetRecursiveOrgCoordinators orgCoordinatorMapper = (GetRecursiveOrgCoordinators) getSpringContext().getBean(
-                "getRecursiveOrgCoordinators");
-
-        OrganizationMapper orgMapper = (OrganizationMapper) getSpringContext().getBean("jpaOrganizationMapper");
+        GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorMapper = //
+        (GetAllPersonIdsWhoHaveGroupCoordinatorAccess) getSpringContext().getBean(
+                "getAllPersonIdsWhoHaveGroupCoordinatorAccess");
 
         DomainGroupMapper groupMapper = (DomainGroupMapper) getSpringContext().getBean("jpaGroupMapper");
 
         String entityName = request.getParameter("entityName");
 
-        if (type.equals("Organization"))
-        {
-
-            Organization org = orgMapper.findByShortName(entityName);
-
-            if (org == null)
-            {
-                throw new ServletException("Group:  " + entityName + " not found");
-            }
-
-            if (orgCoordinatorMapper.isOrgCoordinatorRecursively(inName, org.getId()))
-            {
-                transMgr.commit(transStatus);
-                return org;
-            }
-
-            throw new ServletException("User " + inName + " is not a coordinator of organization:  " + org.getName());
-
-        }
-        else if (type.equals("DomainGroup"))
+        if (type.equals("DomainGroup"))
         {
             DomainGroup group = groupMapper.findByShortName(entityName);
 
@@ -132,7 +103,7 @@ public class UploadBannerServlet extends UploadImageServlet<DomainEntity>
 
     /**
      * Gets the file path string.
-     *
+     * 
      * @param inImageId
      *            the domain entity id
      * @return the file path string
@@ -143,10 +114,11 @@ public class UploadBannerServlet extends UploadImageServlet<DomainEntity>
         return "n" + inImageId;
     }
 
-
     /**
      * Gets the action.
-     * @param request the request.
+     * 
+     * @param request
+     *            the request.
      * @return the action
      */
     @Override
@@ -158,7 +130,7 @@ public class UploadBannerServlet extends UploadImageServlet<DomainEntity>
 
     /**
      * Gets the response string.
-     *
+     * 
      * @param inDomainEntity
      *            the entity.
      * @return the response string.

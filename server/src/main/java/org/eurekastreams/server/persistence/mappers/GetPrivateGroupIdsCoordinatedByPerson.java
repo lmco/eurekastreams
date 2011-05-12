@@ -22,28 +22,23 @@ import javax.persistence.Query;
 /**
  * Get a list of the private group ids that a person is a direct coordinator of.
  */
-public class GetPrivateGroupIdsCoordinatedByPerson extends
-        BaseArgDomainMapper<Long, List<Long>>
+public class GetPrivateGroupIdsCoordinatedByPerson extends BaseArgDomainMapper<Long, List<Long>>
 {
     /**
-     * Get a list of the group ids that the person with the input id is a direct
-     * coordinator of.
+     * Get a list of the group ids that the person with the input id is a direct coordinator of.
      * 
      * @param inPersonId
      *            the person id to check for groups coordinated
-     * @return a list of all group ids that the person with the input id is a
-     *         direct coordinator of
+     * @return a list of all group ids that the person with the input id is a direct coordinator of
      */
     @SuppressWarnings("unchecked")
     @Override
     public List<Long> execute(final Long inPersonId)
     {
-        Query query = getEntityManager()
-                .createQuery(
-                        "SELECT g.id FROM DomainGroup g, Person p "
-                                + "WHERE g.publicGroup=false AND p.id=:personId AND "
-                                + "(p member of g.coordinators)");
+        Query query = getEntityManager().createQuery(
+                "SELECT g.id FROM DomainGroup g, Person p " + "WHERE g.publicGroup=false AND p.id=:personId AND "
+                        + "(p member of g.coordinators)");
         query.setParameter("personId", inPersonId);
-        return (List<Long>) query.getResultList();
+        return query.getResultList();
     }
 }

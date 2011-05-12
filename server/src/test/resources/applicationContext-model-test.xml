@@ -13,15 +13,6 @@
 		<property name="password" value="" />
 	</bean>
 
-	<!-- Cache of organization hierarchies by id -->
-	<bean id="organizationHierarchyCache"
-		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache">
-		<property name="cache" ref="testCache" />
-		<property name="getOrganizationsByShortNames" ref="bulkOrganizationsByShortNameMapper" />
-		<property name="getRecursiveChildOrgIdsMapper" ref="getChildOrgIdsRecursiveByOrgIdDbMapper" />
-		<property name="getRecursiveParentOrgIdsMapper" ref="getRecursiveParentOrgIdsMapper" />
-		<property name="getOrganizationsByShortNamesMapper" ref="bulkOrganizationsByShortNameMapper" />
-	</bean>
 
 	<bean id="queryOptimizer" class="org.eurekastreams.commons.hibernate.QueryOptimizer" />
 
@@ -61,21 +52,14 @@
 		</property>
 	</bean>
 
-	<bean id="descendantOrgStrategy"
-		class="org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy">
-	</bean>
-
 	<bean id="jpaGroupMapper" class="org.eurekastreams.server.persistence.DomainGroupMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaOrganizationMapper" class="org.eurekastreams.server.persistence.OrganizationMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaPersonMapper" class="org.eurekastreams.server.persistence.PersonMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaPluginDefinitionMapper" class="org.eurekastreams.server.persistence.PluginDefinitionMapper">
         <constructor-arg ref="queryOptimizer" />

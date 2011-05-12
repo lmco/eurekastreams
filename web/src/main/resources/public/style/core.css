@@ -5188,37 +5188,6 @@ div.stream-container div.layout-container {
 	text-decoration: none;
 }
 
-.breadcrumb {
-	font-family: Verdana;
-	font-size: 13px;
-	color: #333333;
-	text-align: left;
-	margin: 20px 20px 5px;
-	position: relative;
-	z-index: 100;
-}
-
-.breadcrumb div {
-	display: inline;
-}
-
-.breadcrumb a {
-	font-family: Verdana;
-	font-size: 12px;
-	color: #333333;
-	text-decoration: underline;
-}
-
-.breadcrumb-separator {
-	display: inline;
-	margin-left: 5px;
-	margin-right: 5px;
-}
-
-.breadcrumb-label {
-	font-weight: bold;
-}
-
 .portal-boundary {
 	clear: none;
 }

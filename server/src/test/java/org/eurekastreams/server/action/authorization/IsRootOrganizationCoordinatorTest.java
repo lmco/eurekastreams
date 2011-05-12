@@ -15,14 +15,15 @@
  */
 package org.eurekastreams.server.action.authorization;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
+import junit.framework.Assert;
+
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,7 +33,6 @@ import org.junit.Test;
 
 /**
  * Test for IsRootOrganizationCoordinatorStrategy class.
- * 
  */
 public class IsRootOrganizationCoordinatorTest
 {
@@ -47,14 +47,9 @@ public class IsRootOrganizationCoordinatorTest
     };
 
     /**
-     * Root org id DAO.
+     * Mapper to get the system admin ids.
      */
-    private GetRootOrganizationIdAndShortName rootOrgIdDAO = context.mock(GetRootOrganizationIdAndShortName.class);
-
-    /**
-     * Org coordinator ids DAO.
-     */
-    private GetOrgCoordinators orgCoordinatorIdsDAO = context.mock(GetOrgCoordinators.class);
+    final DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -67,17 +62,12 @@ public class IsRootOrganizationCoordinatorTest
     private Long userId = 1L;
 
     /**
-     * RootOrgId id.
-     */
-    private Long rootOrgId = 2L;
-
-    /**
      * Pre-test setup.
      */
     @Before
     public void setUp()
     {
-        sut = new IsRootOrganizationCoordinator(rootOrgIdDAO, orgCoordinatorIdsDAO);
+        sut = new IsRootOrganizationCoordinator(systemAdminIdsMapper);
     }
 
     /**
@@ -86,17 +76,14 @@ public class IsRootOrganizationCoordinatorTest
     @Test
     public void testTrue()
     {
-        final Set<Long> coordIds = new HashSet<Long>(2);
-        coordIds.add(userId);
-        coordIds.add(9L);
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(userId);
+        adminIds.add(9L);
         context.checking(new Expectations()
         {
             {
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(rootOrgId));
-
-                allowing(orgCoordinatorIdsDAO).execute(rootOrgId);
-                will(returnValue(coordIds));
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 
@@ -110,21 +97,18 @@ public class IsRootOrganizationCoordinatorTest
     @Test
     public void testFalse()
     {
-        final Set<Long> coordIds = new HashSet<Long>(2);
-        coordIds.add(8L);
-        coordIds.add(9L);
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(8L);
+        adminIds.add(9L);
         context.checking(new Expectations()
         {
             {
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(rootOrgId));
-
-                allowing(orgCoordinatorIdsDAO).execute(rootOrgId);
-                will(returnValue(coordIds));
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 
-        assertFalse(sut.isRootOrganizationCoordinator(userId));
+        Assert.assertFalse(sut.isRootOrganizationCoordinator(userId));
         context.assertIsSatisfied();
     }
 }

@@ -51,13 +51,13 @@
         <entry key="FLAG_ACTIVITY">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.FlagTranslator">
                 <constructor-arg ref="bulkActivitiesMapper"/>
-                <constructor-arg ref="getOrgCoordinators" />
+                <constructor-arg ref="getSystemAdministratorIds" />
             </bean>
         </entry>
         <entry key="REQUEST_NEW_GROUP">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestNewGroupTranslator">
                 <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="getOrgCoordinators" />
+                <constructor-arg ref="getSystemAdministratorIds" />
             </bean>
         </entry>
         <entry key="REQUEST_GROUP_ACCESS">

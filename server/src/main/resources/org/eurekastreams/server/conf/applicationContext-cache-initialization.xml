@@ -15,8 +15,7 @@
                     <list>
                         <value>queuePersonCacheWarmingTasks</value> 
                         <value>queueThemeCacheWarmingTasks</value>                       
-                        <value>queueGroupCacheWarmingTasks</value>
-                        <value>queueOrganizationCacheWarmingTasks</value>                                                                                           
+                        <value>queueGroupCacheWarmingTasks</value>                                                                                           
                     </list>
                 </constructor-arg>
             </bean>
@@ -63,24 +62,6 @@
         <constructor-arg value="true" />
     </bean>
     
-    <bean id="queueOrganizationCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
-                <constructor-arg>
-                    <list>
-                        <value>cacheOrganization</value>
-                        <value>cacheRecursiveChildrenForOrganizationList</value>
-                        <value>cacheRecursiveParentsForOrganizationList</value>
-                    </list>
-                </constructor-arg>
-                <constructor-arg ref="getOrganizationIds" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean>  
-    
     <bean id="queueThemeCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -96,16 +77,6 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>
-    
-    <bean id="cacheOrganization" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean parent="baseParamListExecuteDomainMapperExecution">
-                <constructor-arg ref="getOrganizationsByIdsMapper_FORCE_REFRESH" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>      
     
     <bean id="cacheGroup" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -186,26 +157,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>   
-    
-    <bean id="cacheRecursiveChildrenForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean parent="baseParamExecuteDomainMapperExecution">
-                <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-    
-    <bean id="cacheRecursiveParentsForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean parent="baseParamExecuteDomainMapperExecution">
-                <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean> 
     
     <bean id="cacheThemeCss" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />

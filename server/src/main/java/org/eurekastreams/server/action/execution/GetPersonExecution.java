@@ -49,28 +49,18 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
     private final PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
 
     /**
-     * Strategy to retrieve the banner id if it is not directly configured.
-     */
-    private final GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
-
-    /**
      * Constructor that sets up the mapper.
      * 
      * @param inMapper
      *            - instance of PersonMapper
      * @param inSkeletonParentOrgPopulator
      *            mapper to populate parent org of people with a skeleton org
-     * @param inGetBannerIdStrategy
-     *            instance of the {@link GetBannerIdByParentOrganizationStrategy}.
      */
     public GetPersonExecution(final PersonMapper inMapper,
-            final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inSkeletonParentOrgPopulator,
-            final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy)
+            final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inSkeletonParentOrgPopulator)
     {
-
         mapper = inMapper;
         skeletonParentOrgPopulator = inSkeletonParentOrgPopulator;
-        getBannerIdStrategy = inGetBannerIdStrategy;
     }
 
     /**
@@ -124,15 +114,6 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
 
             skeletonParentOrgPopulator.populateParentOrgSkeleton(result);
         }
-
-        // Set the transient banner id on the person with the first parent org that
-        // has a banner id configured starting with the direct parent and walking up
-        // the tree.
-        if (result != null)
-        {
-            getBannerIdStrategy.getBannerId(result.getParentOrgId(), result);
-        }
-
         return result;
     }
 

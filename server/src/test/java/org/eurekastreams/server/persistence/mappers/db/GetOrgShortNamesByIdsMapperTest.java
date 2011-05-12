@@ -52,15 +52,13 @@ public class GetOrgShortNamesByIdsMapperTest extends MapperTest
     {
         List<Long> orgIds = new ArrayList<Long>();
         orgIds.add(5L);
-        orgIds.add(6L);
         orgIds.add(1L); // dne
 
         GetOrgShortNamesByIdsMapper sut = new GetOrgShortNamesByIdsMapper();
         sut.setEntityManager(getEntityManager());
         List<String> shortNames = sut.execute(orgIds);
 
-        assertEquals(2, shortNames.size());
+        assertEquals(1, shortNames.size());
         assertTrue(shortNames.contains("tstorgname"));
-        assertTrue(shortNames.contains("child1orgname"));
     }
 }

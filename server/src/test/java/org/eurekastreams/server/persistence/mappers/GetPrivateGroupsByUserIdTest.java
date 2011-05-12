@@ -13,30 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.composite;
+package org.eurekastreams.server.persistence.mappers;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson;
-import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
+import org.eurekastreams.server.persistence.mappers.db.GetAllPrivateGroupIdsDbMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetOrgIdsDirectlyCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class tests the GetPrivateGroupsByUserId mapper.
- *
+ * 
  */
 public class GetPrivateGroupsByUserIdTest extends MapperTest
 {
+
+    /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
     /**
      * Mapper to retrieve the private group ids that the supplied user is a follower or coordinator for.
      */
@@ -50,10 +66,9 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
     private GetOrgIdsDirectlyCoordinatedByPerson orgCoordMapper;
 
     /**
-     * Mapper to retrieve recursive child orgs under a give org.
+     * Mapper to get all private groups.
      */
-    @Autowired
-    private OrganizationHierarchyCache orgHierarchyCacheMapper;
+    private final GetAllPrivateGroupIdsDbMapper getAllPrivateGroupIdsMapper = new GetAllPrivateGroupIdsDbMapper();
 
     /**
      * Mapper to retrieve the private group ids under an org.
@@ -82,6 +97,11 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
     private static final Long TEST_PRIVATE_GROUP_ID = 1L;
 
     /**
+     * Mapper to get the admin ids.
+     */
+    private DomainMapper<Serializable, List<Long>> adminIdsMapper = context.mock(DomainMapper.class, "AdminIdsMapper");
+
+    /**
      * System under test.
      */
     private GetPrivateGroupsByUserId sut;
@@ -92,8 +112,8 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetPrivateGroupsByUserId(privateGroupIdsMapper, orgCoordMapper, orgHierarchyCacheMapper,
-                orgPrivateGroupIdsMapper);
+        getAllPrivateGroupIdsMapper.setEntityManager(getEntityManager());
+        sut = new GetPrivateGroupsByUserId(privateGroupIdsMapper, getAllPrivateGroupIdsMapper, adminIdsMapper);
         sut.setEntityManager(getEntityManager());
 
         Query updateGroupToPrivate = getEntityManager().createQuery(
@@ -105,10 +125,18 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
     /**
      * Method to test the execution when I have a coordinator of a private group.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecuteWithDirectGroupCoordinator()
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(adminIds));
+            }
+        });
+
         Set<Long> results = sut.execute(TEST_GROUP_COORDINATOR_USER_ID);
 
         assertNotNull(results);
@@ -116,12 +144,21 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
     }
 
     /**
-     * Method to test the execution when I have a coordinator of an org of a private group.
+     * Method to test the execution when I have a system admin.
      */
-    @SuppressWarnings("unchecked")
     @Test
-    public void testExecuteWithParentOrgCoordinator()
+    public void testExecuteWithSystemAdmin()
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(TEST_PARENT_ORG_COORDINATOR_USER_ID);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(adminIds));
+            }
+        });
+
         Set<Long> results = sut.execute(TEST_PARENT_ORG_COORDINATOR_USER_ID);
 
         assertNotNull(results);
@@ -131,10 +168,19 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
     /**
      * Method to test the execution when I have a coordinator of an org of a private group.
      */
-    @SuppressWarnings("unchecked")
     @Test
-    public void testExecuteWithOrgCoordinatorInTree()
+    public void testExecuteWithSystemAdmin2()
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(TEST_ORG_COORDINATOR_USER_ID);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(adminIds));
+            }
+        });
+
         Set<Long> results = sut.execute(TEST_ORG_COORDINATOR_USER_ID);
 
         assertNotNull(results);

@@ -20,7 +20,6 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy;
 import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.persistence.mappers.BannerableMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateCachedBannerMapperRequest;
@@ -29,7 +28,7 @@ import org.eurekastreams.server.service.actions.strategies.ImageWriter;
 
 /**
  * Action to remove the banner id for a group or org.
- *
+ * 
  */
 public class DeleteBannerExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -54,39 +53,31 @@ public class DeleteBannerExecution implements ExecutionStrategy<PrincipalActionC
     private ImageWriter imageWriter;
 
     /**
-     * The strategy for retrieving a parent org's banner.
-     */
-    private GetBannerIdByParentOrganizationStrategy recursiveParentOrgBannerStrategy;
-
-    /**
      * Constructor for action.
-     *
+     * 
      * @param inMapper
      *            the bannerableEntity mapper.
      * @param inUpdateCachedBannerMapper
      *            the cache mapper to update the domain group or org.
      * @param inImageWriter
-     *            the image writer.
-     * @param inRecursiveParentOrgBannerStrategy - instance of the banner retrieval strategy for an org.
+     *            image writer
      */
     public DeleteBannerExecution(final BannerableMapper inMapper,
             final BaseArgCachedDomainMapper<UpdateCachedBannerMapperRequest, Object> inUpdateCachedBannerMapper,
-            final ImageWriter inImageWriter,
-            final GetBannerIdByParentOrganizationStrategy inRecursiveParentOrgBannerStrategy)
+            final ImageWriter inImageWriter)
     {
         imageWriter = inImageWriter;
         mapper = inMapper;
         updateCachedBannerMapper = inUpdateCachedBannerMapper;
-        recursiveParentOrgBannerStrategy = inRecursiveParentOrgBannerStrategy;
     }
 
     /**
      * Returns true or false if the banner was removed for the group or org.
-     *
+     * 
      * @param inActionContext
      *            the action context.
      * @return true if the banner was removed for the group or org.
-     *
+     * 
      * @throws ExecutionException
      *             upon exception.
      */
@@ -107,10 +98,7 @@ public class DeleteBannerExecution implements ExecutionStrategy<PrincipalActionC
             // Update the db.
             boolean result = mapper.updateBannerId(entityId, null);
             // Update the cache.
-            updateCachedBannerMapper.execute(
-                    new UpdateCachedBannerMapperRequest(null, entityId));
-
-            recursiveParentOrgBannerStrategy.getBannerId(bannerObject, entityId);
+            updateCachedBannerMapper.execute(new UpdateCachedBannerMapperRequest(null, entityId));
 
             return bannerObject;
         }

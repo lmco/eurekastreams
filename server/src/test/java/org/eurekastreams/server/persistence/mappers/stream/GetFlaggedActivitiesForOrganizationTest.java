@@ -51,7 +51,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     /**
      * Bulk activities mapper.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -74,7 +74,6 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     @Test
     public void testExecute()
     {
-        final long orgId = 7L;
         final int startIndex = 0;
         final int endIndex = 9;
         final long flaggedActivityId = 6789L;
@@ -93,7 +92,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
             }
         });
 
-        GetFlaggedActivitiesByOrgRequest request = new GetFlaggedActivitiesByOrgRequest(orgId, startIndex, endIndex);
+        GetFlaggedActivitiesByOrgRequest request = new GetFlaggedActivitiesByOrgRequest(startIndex, endIndex);
         request.setRequestingUserAccountId(userName);
 
         // perform SUT
@@ -107,37 +106,12 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     }
 
     /**
-     * Test getting activities for an org that has flagged activities.
-     */
-    @Test
-    public void testExecuteWithNoFlaggedActivities()
-    {
-        final long orgId = 5L;
-        final int startIndex = 0;
-        final int endIndex = 9;
-        final String userName = "sdkjfsdlkfjs";
-
-        GetFlaggedActivitiesByOrgRequest request = new GetFlaggedActivitiesByOrgRequest(orgId, startIndex, endIndex);
-        request.setRequestingUserAccountId(userName);
-
-        // perform SUT
-        PagedSet<ActivityDTO> flaggedActivities = sut.execute(request);
-
-        // verify
-        assertEquals(0, flaggedActivities.getPagedSet().size());
-        assertEquals(startIndex, flaggedActivities.getFromIndex());
-        assertEquals(endIndex, flaggedActivities.getToIndex());
-        assertEquals(0, flaggedActivities.getTotal());
-    }
-
-    /**
      * Test getting activities without a user account.
      */
     @Test(expected = RuntimeException.class)
     public void testExecuteWithoutUserAccountId()
     {
-        final long orgId = 7L;
-        PagedSet<ActivityDTO> flaggedActivities = sut.execute(new GetFlaggedActivitiesByOrgRequest(orgId, 0, 9));
+        PagedSet<ActivityDTO> flaggedActivities = sut.execute(new GetFlaggedActivitiesByOrgRequest(0, 9));
         assertEquals(1, flaggedActivities.getPagedSet().size());
     }
 }

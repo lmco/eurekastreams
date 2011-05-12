@@ -15,15 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.List;
-
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.Organization;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
@@ -39,54 +32,18 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
     private FindByIdMapper<DomainGroup> groupMapper;
 
     /**
-     * {@link OrganizationMapper}.
-     */
-    private OrganizationMapper organizationMapper;
-
-    /**
-     * mapper to get all parent org ids for an org id.
-     */
-    private DomainMapper<Long, List<Long>> parentOrgIdMapper;
-
-    /**
-     * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
-     * OrganizationHierarchyTraversers.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
-
-    /**
-     * {@link GetOrgShortNamesByIdsMapper} needed to translate org ids into shortnames.
-     */
-    private GetOrgShortNamesByIdsMapper getOrgShortNamesByIdsMapper;
-
-    /**
      * Constructor.
      * 
      * @param inGroupMapper
      *            {@link FindByIdMapper}.
-     * @param inOrganizationMapper
-     *            {@link OrganizationMapper}.
-     * @param inOrgTraverserBuilder
-     *            {@link OrganizationHierarchyTraverserBuilder}.
-     * @param inParentOrgIdMapper
-     *            mapper to get all parent org ids for an org
-     * @param inGetOrgShortNamesByIdsMapper
-     *            {link GetOrgShortNamesByIdsMapper}.
      */
-    public DeleteGroup(final FindByIdMapper<DomainGroup> inGroupMapper, final OrganizationMapper inOrganizationMapper,
-            final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
-            final DomainMapper<Long, List<Long>> inParentOrgIdMapper,
-            final GetOrgShortNamesByIdsMapper inGetOrgShortNamesByIdsMapper)
+    public DeleteGroup(final FindByIdMapper<DomainGroup> inGroupMapper)
     {
         groupMapper = inGroupMapper;
-        organizationMapper = inOrganizationMapper;
-        orgTraverserBuilder = inOrgTraverserBuilder;
-        parentOrgIdMapper = inParentOrgIdMapper;
-        getOrgShortNamesByIdsMapper = inGetOrgShortNamesByIdsMapper;
     }
 
     /**
-     * Deletes a group and adjusts denormalized organization statistics accordingly.
+     * Deletes a group.
      * 
      * @param inRequest
      *            group id.
@@ -98,15 +55,9 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
     {
         DomainGroup group = groupMapper.execute(new FindByIdRequest("DomainGroup", inRequest));
         Long groupId = group.getId();
-        Organization parentOrg = group.getParentOrganization();
-        Long parentOrgId = group.getParentOrgId();
-
-        // get list of parentOrg shortnames
-        List<Long> parentOrgIds = parentOrgIdMapper.execute(parentOrgId);
-        parentOrgIds.add(parentOrgId);
 
         DeleteGroupResponse response = new DeleteGroupResponse(groupId, group.getShortName(), new Long(group
-                .getStreamScope().getId()), getOrgShortNamesByIdsMapper.execute(parentOrgIds));
+                .getStreamScope().getId()));
 
         // delete the group hibernate should take care of following since we are deleting via entity manager.
         // Hibernate: delete from Group_Capability where domainGroupId=?
@@ -117,10 +68,6 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
         // Hibernate: delete from DomainGroup where id=? and version=?
         // Hibernate: delete from StreamView where id=? and version=?
         getEntityManager().remove(group);
-
-        OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
-        orgTraverser.traverseHierarchy(parentOrg);
-        organizationMapper.updateOrganizationStatistics(orgTraverser);
 
         return response;
 

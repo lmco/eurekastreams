@@ -38,8 +38,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
@@ -85,12 +83,6 @@ public class GroupUpdater extends GroupPersister
     private ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate clearActivityStreamSearchStringForUsersMapper;
 
     /**
-     * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
-     * OrganizationHierarchyTraversers.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
-
-    /**
      * Constructor.
      * 
      * @param inGroupMapper
@@ -103,20 +95,15 @@ public class GroupUpdater extends GroupPersister
      *            the mapper to clear out activity search strings for users
      * @param inFollowStrategy
      *            used to automatically add coordinators as group followers/members.
-     * @param inOrgTraverserBuilder
-     *            {@link OrganizationHierarchyTraverserBuilder}.
      */
-    public GroupUpdater(final DomainGroupMapper inGroupMapper,
-            final OrganizationMapper inOrgMapper,
+    public GroupUpdater(final DomainGroupMapper inGroupMapper, final OrganizationMapper inOrgMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inAccessCheckerMapper,
             final ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate // \n
-            inClearActivityStreamSearchStringForUsersMapper, final TaskHandlerExecutionStrategy inFollowStrategy,
-            final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
+            inClearActivityStreamSearchStringForUsersMapper, final TaskHandlerExecutionStrategy inFollowStrategy)
     {
         super(inGroupMapper, inOrgMapper);
         clearActivityStreamSearchStringForUsersMapper = inClearActivityStreamSearchStringForUsersMapper;
         followStrategy = inFollowStrategy;
-        orgTraverserBuilder = inOrgTraverserBuilder;
     }
 
     /**
@@ -191,8 +178,6 @@ public class GroupUpdater extends GroupPersister
                 }
 
                 inGroup.setParentOrganization(newParentOrg);
-                updateOrgStatistics(newParentOrg);
-                updateOrgStatistics(origParentOrg);
 
                 // queue action to update parent org for group activities, reindex activities, and sync activity cache
                 // lists for new/old orgs up the tree.
@@ -268,16 +253,4 @@ public class GroupUpdater extends GroupPersister
         }
     }
 
-    /**
-     * Update an organization's stats.
-     * 
-     * @param inOrganizaiton
-     *            the org to update.
-     */
-    private void updateOrgStatistics(final Organization inOrganizaiton)
-    {
-        OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
-        orgTraverser.traverseHierarchy(inOrganizaiton);
-        getOrgMapper().updateOrganizationStatistics(orgTraverser);
-    }
 }

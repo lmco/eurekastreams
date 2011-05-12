@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -24,8 +27,6 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
@@ -44,19 +45,9 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     private Log log = LogFactory.make();
 
     /**
-     * Mapper to get the root org.
+     * Mapper to get the system admin ids.
      */
-    private GetRootOrganizationIdAndShortName rootOrgMapper;
-
-    /**
-     * The mapper to get back all the coordinators of the root org and below.
-     */
-    private GetRecursiveOrgCoordinators recursiveOrgMapperDownTree;
-
-    /**
-     * The mapper to get back all the coordinators of the root org and below.
-     */
-    private GetRecursiveOrgCoordinators recursiveOrgMapperUpTree;
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
 
     /**
      * Person Mapper used to retrieve PersonModelView from accountId.
@@ -67,11 +58,6 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
      * Terms of service acceptance strategy.
      */
     private TermsOfServiceAcceptanceStrategy toSAcceptanceStrategy;
-
-    /**
-     * Strategy to retrieve the banner id if it is not directly configured.
-     */
-    private final GetBannerIdByParentOrganizationStrategy<Person> getBannerIdStrategy;
 
     /**
      * {@link ActionController}.
@@ -86,37 +72,25 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     /**
      * Constructor that sets up the mapper.
      * 
-     * @param inRecursiveOrgMapperDownTree
-     *            recursive org mapper.
-     * @param inRecursiveOrgMapperUpTree
-     *            recursive org mapper.
-     * @param inRootOrgMapper
-     *            root org mapper.
+     * @param inSystemAdminIdsMapper
+     *            mapper to get the system administrator ids
      * @param inGetPersonModelViewByAccountIdMapper
      *            - mapper to get a PersonModelView by account id
      * @param inTosAcceptanceStrategy
      *            the strategy to check if the user's terms of service acceptance is current
-     * @param inGetBannerIdStrategy
-     *            strategy to get the banner id for the person
      * @param inServiceActionController
      *            {@link ActionController}.
      * @param inCreateUserfromLdapAction
      *            Action to create user from LDAP.
      */
-    public GetPersonModelViewExecution(final GetRecursiveOrgCoordinators inRecursiveOrgMapperDownTree,
-            final GetRecursiveOrgCoordinators inRecursiveOrgMapperUpTree,
-            final GetRootOrganizationIdAndShortName inRootOrgMapper,
+    public GetPersonModelViewExecution(final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final TermsOfServiceAcceptanceStrategy inTosAcceptanceStrategy,
-            final GetBannerIdByParentOrganizationStrategy<Person> inGetBannerIdStrategy,
             final ActionController inServiceActionController, final TaskHandlerServiceAction inCreateUserfromLdapAction)
     {
-        rootOrgMapper = inRootOrgMapper;
-        recursiveOrgMapperDownTree = inRecursiveOrgMapperDownTree;
-        recursiveOrgMapperUpTree = inRecursiveOrgMapperUpTree;
+        systemAdminIdsMapper = inSystemAdminIdsMapper;
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         toSAcceptanceStrategy = inTosAcceptanceStrategy;
-        getBannerIdStrategy = inGetBannerIdStrategy;
         serviceActionController = inServiceActionController;
         createUserfromLdapAction = inCreateUserfromLdapAction;
     }
@@ -170,17 +144,12 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
             return null;
         }
 
-        // TODO: fill out other roles here as necessary
-        if (recursiveOrgMapperDownTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
-                .getRootOrganizationId()))
+        List<Long> systemAdminIds = systemAdminIdsMapper.execute(null);
+
+        if (systemAdminIds.contains(person.getEntityId()))
         {
             log.debug("user " + accountId + " is a root org coordinator.");
             person.getRoles().add((Role.ORG_COORDINATOR));
-        }
-        if (recursiveOrgMapperUpTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
-                .getRootOrganizationId()))
-        {
-            log.debug("user " + accountId + " is a root org coordinator.");
             person.getRoles().add((Role.ROOT_ORG_COORDINATOR));
         }
 
@@ -189,11 +158,6 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
         person.setTosAcceptance(toSAcceptanceStrategy.isValidTermsOfServiceAcceptanceDate(person
                 .getLastAcceptedTermsOfService()));
         person.setAuthenticationType(userDetails.getAuthenticationType());
-
-        // Set the transient banner id on the person with the first parent org that
-        // has a banner id configured starting with the direct parent and walking up
-        // the tree.
-        getBannerIdStrategy.getBannerId(person.getParentOrganizationId(), person);
 
         log.debug("Found banner for " + accountId + " - " + person.getBannerId());
 
