@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.db.notification;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * This mapper deletes all application alert rows older than a given date.
  */
-public class DeleteApplicationAlertsByDate extends BaseDomainMapper
+public class DeleteInAppNotificationsByDate extends BaseArgDomainMapper<Date, Serializable>
 {
     /**
      * Deletes alerts older than startDate.
      * 
      * @param startDate
      *            Alerts with dates older than or equal to this will be removed.
+     * @return Nothing.
      */
-    public void execute(final Date startDate)
+    @Override
+    public Serializable execute(final Date startDate)
     {
-        String q = "delete from ApplicationAlertNotification where notificationDate <= :startDate";
+        String q = "delete from InAppNotification where notificationDate <= :startDate";
         Query query = getEntityManager().createQuery(q).setParameter("startDate", startDate);
         query.executeUpdate();
+
+        return null;
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerAction;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -37,28 +37,28 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * This class provides the business logic that controls the execution of a {@link ServiceAction}.
- * 
+ *
  * Transaction management, and Validation, Authorization, and Execution strategy sequences are also controlled in here.
- * 
+ *
  * In the case of a {@link TaskHandlerAction}, the List of UserActionRequest objects are collected and submitted through
  * the action. This is necessary, because UserActionRequest submissions to the queue through JMS is currently not
  * covered under the configured transaction strategy. When distributed transactions are available within EurekaStreams
  * this behavior will change.
- * 
+ *
  * The order of execution for the strategies contained within the {@link ServiceAction} is controlled by this class and
  * executed in the following order:
- * 
+ *
  * ValidationStrategy AuthorizationStrategy ExecutionStrategy
- * 
+ *
  * Optionally:
- * 
+ *
  * submitAsyncRequests will be called in the case of a {@link TaskHandlerAction}.
- * 
+ *
  * Exception handling also occurs within this controller. - {@link GeneralException} will be thrown when an unwrapped
  * exception is encountered. - {@link ValidationException} will be logged and passed to the client when encountered. -
  * {@link AuthorizationException} will be logged and passed to the client when encountered. - {@link ExecutionException}
  * will be logged and passed to the client when encountered.
- * 
+ *
  */
 public class ServiceActionController implements ActionController
 {
@@ -74,7 +74,7 @@ public class ServiceActionController implements ActionController
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTransMgr
      *            - instance of the {@link PlatformTransactionManager} configured for this controller.
      */
@@ -84,19 +84,20 @@ public class ServiceActionController implements ActionController
     }
 
     /**
-     * Execute the supplied {@link ServiceAction} with the given {@link ServiceActionContext}.
-     * 
+     * Execute the supplied {@link ServiceAction} with the given {@link PrincipalActionContext}.
+     *
      * @param inServiceActionContext
-     *            - instance of the {@link ServiceActionContext} with which to execution the {@link ServiceAction}.
+     *            - instance of the {@link PrincipalActionContext} with which to execution the {@link ServiceAction}.
      * @param inServiceAction
      *            - instance of the {@link ServiceAction} to execute.
      * @return - results from the execution of the ServiceAction.
-     * 
+     *
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - AuthorizationException - when an {@link AuthorizationException}
      *         occurs. - ExecutionException - when an {@link ExecutionException} occurs.
      */
-    public Serializable execute(final ServiceActionContext inServiceActionContext, final ServiceAction inServiceAction)
+    public Serializable execute(final PrincipalActionContext inServiceActionContext,
+            final ServiceAction inServiceAction)
     {
         Serializable results = null;
         DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
@@ -143,19 +144,19 @@ public class ServiceActionController implements ActionController
     }
 
     /**
-     * This method executes a {@link TaskHandlerAction} with the supplied {@link ServiceActionContext}.
-     * 
+     * This method executes a {@link TaskHandlerAction} with the supplied {@link PrincipalActionContext}.
+     *
      * @param inServiceActionContext
-     *            - instance of the {@link ServiceActionContext} associated with this request.
+     *            - instance of the {@link PrincipalActionContext} associated with this request.
      * @param inTaskHandlerAction
      *            - instance of the {@link TaskHandlerAction}.
      * @return - results of the execution.
-     * 
+     *
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - AuthorizationException - when an {@link AuthorizationException}
      *         occurs. - ExecutionException - when an {@link ExecutionException} occurs.
      */
-    public Serializable execute(final ServiceActionContext inServiceActionContext,
+    public Serializable execute(final PrincipalActionContext inServiceActionContext,
             final TaskHandlerAction inTaskHandlerAction)
     {
         Serializable results = null;
@@ -163,8 +164,9 @@ public class ServiceActionController implements ActionController
         transDef.setName(inTaskHandlerAction.toString());
         transDef.setReadOnly(inTaskHandlerAction.isReadOnly());
         TransactionStatus transStatus = transMgr.getTransaction(transDef);
-        TaskHandlerActionContext<ServiceActionContext> taskHandlerContext = // \n
-        new TaskHandlerActionContext<ServiceActionContext>(inServiceActionContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> taskHandlerContext = // \n
+        new TaskHandlerActionContext<PrincipalActionContext>(inServiceActionContext,
+                new ArrayList<UserActionRequest>());
         try
         {
             inTaskHandlerAction.getValidationStrategy().validate(inServiceActionContext);
@@ -221,7 +223,7 @@ public class ServiceActionController implements ActionController
 
     /**
      * Helper class that encapsulates transaction rollback when an exception is encountered.
-     * 
+     *
      * @param inTransStatus
      *            - instance of the {@link TransactionStatus} to go along with the currect block.
      */

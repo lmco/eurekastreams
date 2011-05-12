@@ -223,10 +223,15 @@
 	<util:list id="principalExtractorsRequest">
 		<ref bean="oAuthRequestToPrincipalTransformer" />                
 	</util:list>
+	
+	<util:list id="clientExtractors">
+		<bean class="org.eurekastreams.server.action.principal.SpringSecurityContextOAuthClientExtractor" />
+	</util:list>
 
     <bean name="actionResourceFull" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
         <constructor-arg ref="serviceActionController" />
         <constructor-arg ref="${build.web.fullapiprincipalextractors}" />
+        <constructor-arg ref="clientExtractors" />
         <constructor-arg>
             <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
         </constructor-arg>
@@ -237,6 +242,7 @@
     <bean name="actionResourceReadOnly" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
         <constructor-arg ref="serviceActionController" />
         <constructor-arg ref="principalExtractorsContextAndRequest" />
+        <constructor-arg ref="clientExtractors" />
         <constructor-arg>
             <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
         </constructor-arg>

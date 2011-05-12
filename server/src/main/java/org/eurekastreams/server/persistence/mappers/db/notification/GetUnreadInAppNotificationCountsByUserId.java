@@ -17,12 +17,13 @@ package org.eurekastreams.server.persistence.mappers.db.notification;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
 /**
  * This mapper queries for the current count of unread notifications for a user.
  */
-public class GetUnreadApplicationAlertCountByUserId extends ReadMapper<Long, Integer>
+public class GetUnreadInAppNotificationCountsByUserId extends ReadMapper<Long, UnreadInAppNotificationCountDTO>
 {
     /**
      * Makes the database call to get notification count and sets it in cache.
@@ -32,12 +33,16 @@ public class GetUnreadApplicationAlertCountByUserId extends ReadMapper<Long, Int
      * @return the count of notifications for this user.
      */
     @Override
-    public Integer execute(final Long userId)
+    public UnreadInAppNotificationCountDTO execute(final Long userId)
     {
-        String q = "select count(id) from ApplicationAlertNotification "
-                + "where recipient.id = :userId and isRead = false";
-        Query query = getEntityManager().createQuery(q).setParameter("userId", userId);
-        Integer count = ((Long) query.getSingleResult()).intValue();
-        return count;
+        String q = "select count(id) from InAppNotification "
+                + "where recipient.id = :userId and isRead = false and highPriority = :priority";
+        Query query = getEntityManager().createQuery(q).setParameter("userId", userId).setParameter("priority", false);
+        int normalCount = ((Long) query.getSingleResult()).intValue();
+
+        query = getEntityManager().createQuery(q).setParameter("userId", userId).setParameter("priority", true);
+        int highCount = ((Long) query.getSingleResult()).intValue();
+
+        return new UnreadInAppNotificationCountDTO(highCount, normalCount);
     }
 }

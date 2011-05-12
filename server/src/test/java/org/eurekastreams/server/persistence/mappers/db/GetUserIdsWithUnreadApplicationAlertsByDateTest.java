@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.db.notification.GetUserIdsWithUnreadInAppNotificationsByDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,7 +37,7 @@ public class GetUserIdsWithUnreadApplicationAlertsByDateTest extends MapperTest
      * System under test.
      */
     @Autowired
-    private GetUserIdsWithUnreadApplicationAlertsByDate sut;
+    private GetUserIdsWithUnreadInAppNotificationsByDate sut;
 
     /**
      * Test execute method.

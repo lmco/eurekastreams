@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate;
-import org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate;
+import org.eurekastreams.server.persistence.mappers.db.notification.DeleteInAppNotificationsByDate;
+import org.eurekastreams.server.persistence.mappers.db.notification.GetUserIdsWithUnreadInAppNotificationsByDate;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -48,18 +48,18 @@ public class DeleteOldApplicationAlertsExecutionTest
     /**
      * System under test.
      */
-    private DeleteOldApplicationAlertsExecution sut;
+    private DeleteOldInAppNotificationsExecution sut;
 
     /**
      * Alert mapper mock.
      */
-    private final DeleteApplicationAlertsByDate deleteMapper = context.mock(DeleteApplicationAlertsByDate.class);
+    private final DeleteInAppNotificationsByDate deleteMapper = context.mock(DeleteInAppNotificationsByDate.class);
 
     /**
      * Unread user ids mapper mock.
      */
-    private final GetUserIdsWithUnreadApplicationAlertsByDate unreadMapper = context
-            .mock(GetUserIdsWithUnreadApplicationAlertsByDate.class);
+    private final GetUserIdsWithUnreadInAppNotificationsByDate unreadMapper = context
+            .mock(GetUserIdsWithUnreadInAppNotificationsByDate.class);
 
     /**
      * Sync mapper mock.
@@ -82,7 +82,7 @@ public class DeleteOldApplicationAlertsExecutionTest
     @Before
     public final void setUp()
     {
-        sut = new DeleteOldApplicationAlertsExecution(deleteMapper, unreadMapper, syncMapper, COUNT);
+        sut = new DeleteOldInAppNotificationsExecution(deleteMapper, unreadMapper, syncMapper, COUNT);
     }
 
     /**

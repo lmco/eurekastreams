@@ -25,13 +25,13 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate;
-import org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate;
+import org.eurekastreams.server.persistence.mappers.db.notification.DeleteInAppNotificationsByDate;
+import org.eurekastreams.server.persistence.mappers.db.notification.GetUserIdsWithUnreadInAppNotificationsByDate;
 
 /**
  * Deletes application that are older (in days) than the configured ageInDays value.
  */
-public class DeleteOldApplicationAlertsExecution implements ExecutionStrategy<ActionContext>
+public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<ActionContext>
 {
     /**
      * Logger.
@@ -41,12 +41,12 @@ public class DeleteOldApplicationAlertsExecution implements ExecutionStrategy<Ac
     /**
      * Mapper to delete alerts.
      */
-    private final DeleteApplicationAlertsByDate deleteMapper;
+    private final DeleteInAppNotificationsByDate deleteMapper;
 
     /**
      * Mapper to find user ids with old unread alerts.
      */
-    private final GetUserIdsWithUnreadApplicationAlertsByDate unreadMapper;
+    private final GetUserIdsWithUnreadInAppNotificationsByDate unreadMapper;
 
     /**
      * Mapper to sync database and cache unread alert count.
@@ -70,8 +70,8 @@ public class DeleteOldApplicationAlertsExecution implements ExecutionStrategy<Ac
      * @param inAgeInDays
      *            The age in days when an alert is considered "old".
      */
-    public DeleteOldApplicationAlertsExecution(final DeleteApplicationAlertsByDate inDeleteMapper,
-            final GetUserIdsWithUnreadApplicationAlertsByDate inUnreadMapper,
+    public DeleteOldInAppNotificationsExecution(final DeleteInAppNotificationsByDate inDeleteMapper,
+            final GetUserIdsWithUnreadInAppNotificationsByDate inUnreadMapper,
             final DomainMapper<Long, Integer> inSyncMapper, final int inAgeInDays)
     {
         deleteMapper = inDeleteMapper;

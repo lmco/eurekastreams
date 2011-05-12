@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.db.notification.DeleteInAppNotificationsByDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +38,7 @@ public class DeleteApplicationAlertsByDateTest extends MapperTest
      * System under test.
      */
     @Autowired
-    private DeleteApplicationAlertsByDate sut;
+    private DeleteInAppNotificationsByDate sut;
 
     /**
      * Test execute method.

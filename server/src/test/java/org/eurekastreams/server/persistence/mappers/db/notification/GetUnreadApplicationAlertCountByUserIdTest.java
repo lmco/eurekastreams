@@ -30,7 +30,7 @@ public class GetUnreadApplicationAlertCountByUserIdTest extends MapperTest
      * System under test.
      */
     @Autowired
-    private GetUnreadApplicationAlertCountByUserId sut;
+    private GetUnreadInAppNotificationCountsByUserId sut;
 
     /**
      * Tests execute method.
