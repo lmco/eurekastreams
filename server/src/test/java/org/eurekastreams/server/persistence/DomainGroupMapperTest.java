@@ -20,14 +20,12 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.Followable;
@@ -36,7 +34,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
-import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -142,7 +139,7 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     public void testParentOrgId()
     {
         DomainGroup group = jpaGroupMapper.findByShortName("group1");
-        assertEquals(new Long(7L), group.getParentOrgId());
+        assertEquals(new Long(5L), group.getParentOrgId());
     }
 
     /**
@@ -300,28 +297,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
         followers = jpaGroupMapper.getFollowers("group1", 0, maxFollowers);
 
         assertEquals(5, followers.getTotal());
-    }
-
-    /**
-     * Test that calling getDescendantOrgStrategy() when not set throws NullPointerException.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testGetDescendantOrgStrategyWhenNotSet()
-    {
-        DomainGroupMapper domainGroupMapper = new DomainGroupMapper(new QueryOptimizer());
-        domainGroupMapper.getDescendantOrgStrategy();
-    }
-
-    /**
-     * Test getDescendantOrgStrategy when set.
-     */
-    @Test
-    public void testGetDescendantOrgStrategyWhenSet()
-    {
-        DescendantOrganizationStrategy strategy = new DescendantOrganizationStrategy();
-        DomainGroupMapper domainGroupMapper = new DomainGroupMapper(new QueryOptimizer());
-        domainGroupMapper.setDescendantOrgStrategy(strategy);
-        assertSame(strategy, domainGroupMapper.getDescendantOrgStrategy());
     }
 
     /**

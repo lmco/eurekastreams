@@ -18,20 +18,14 @@ package org.eurekastreams.server.action.request.stream;
 import java.io.Serializable;
 
 import org.eurekastreams.server.action.request.BasePageableRequest;
-import org.eurekastreams.server.domain.HasOrganizationId;
 
 /**
  * Request a page of flagged activities for an org.
  */
-public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implements Serializable, HasOrganizationId
+public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implements Serializable
 {
     /** Fingerprint. */
     private static final long serialVersionUID = 377907186485656173L;
-
-    /**
-     * The organization ID.
-     */
-    private long organizationId;
 
     /**
      * The requesting user account id.
@@ -47,43 +41,20 @@ public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implem
 
     /**
      * Constructor.
-     *
-     * @param inOrganizationId
-     *            The organization ID.
+     * 
      * @param inStartIndex
      *            The start index for items to return.
      * @param inEndIndex
      *            The end index for items to return.
      */
-    public GetFlaggedActivitiesByOrgRequest(final long inOrganizationId, final int inStartIndex, final int inEndIndex)
+    public GetFlaggedActivitiesByOrgRequest(final int inStartIndex, final int inEndIndex)
     {
         super(inStartIndex, inEndIndex);
-        organizationId = inOrganizationId;
-    }
-
-    /**
-     * @return the organizationId
-     */
-    public long getOrganizationId()
-    {
-        return organizationId;
-    }
-
-    /**
-     * Setter for serialization.
-     *
-     * @param inOrganizationId
-     *            the organizationId to set
-     */
-    @SuppressWarnings("unused")
-    private void setOrganizationId(final long inOrganizationId)
-    {
-        organizationId = inOrganizationId;
     }
 
     /**
      * Set the requesting user account id.
-     *
+     * 
      * @param inRequestingUserAccountId
      *            the request user account id
      */
@@ -94,7 +65,7 @@ public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implem
 
     /**
      * Get the requesting user account id.
-     *
+     * 
      * @return the requesting user account id
      */
     public String getRequestingUserAccountId()

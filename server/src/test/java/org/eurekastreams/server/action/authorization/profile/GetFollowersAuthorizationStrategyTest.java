@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.authorization.profile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,6 @@ import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
@@ -66,8 +66,10 @@ public class GetFollowersAuthorizationStrategyTest
      */
     private GetDomainGroupsByShortNames groupMapper = context.mock(GetDomainGroupsByShortNames.class);
 
-    /** Fixture: org permission checker. */
-    private GetRecursiveOrgCoordinators orgPermChecker = context.mock(GetRecursiveOrgCoordinators.class);
+    /**
+     * mapper to get the admin ids.
+     */
+    private DomainMapper<Serializable, List<Long>> adminIdsMapper = context.mock(DomainMapper.class, "adminIdsMapper");
 
     /**
      * Mocked PrincipalActionContext.
@@ -126,7 +128,7 @@ public class GetFollowersAuthorizationStrategyTest
     @Before
     public void setup()
     {
-        sut = new GetFollowersAuthorizationStrategy(coordMapper, groupFollowerIdsMapper, groupMapper, orgPermChecker);
+        sut = new GetFollowersAuthorizationStrategy(coordMapper, groupFollowerIdsMapper, groupMapper, adminIdsMapper);
 
         context.checking(new Expectations()
         {
@@ -269,14 +271,17 @@ public class GetFollowersAuthorizationStrategyTest
 
     /**
      * Perform the action security test given the entity type of group as access granted. Not a public group. Is a
-     * coordinator.
+     * system admin.
      * 
      * @throws Exception
      *             shouldn't happen.
      */
     @Test
-    public final void performSecurityTestGroupEntityIsOrgCoordinator() throws Exception
+    public final void performSecurityTestGroupEntityIsOrgAdmin() throws Exception
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(CURRENT_USER_ID);
+
         setupCommonGroupExpectations();
         context.checking(new Expectations()
         {
@@ -293,8 +298,8 @@ public class GetFollowersAuthorizationStrategyTest
                 oneOf(groupFollowerIdsMapper).execute(GROUP_ID);
                 will(returnValue(new ArrayList<Long>()));
 
-                oneOf(orgPermChecker).isOrgCoordinatorRecursively(CURRENT_USER_ID, PARENT_ORG_ID);
-                will(returnValue(true));
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 
@@ -312,6 +317,7 @@ public class GetFollowersAuthorizationStrategyTest
     @Test(expected = AuthorizationException.class)
     public final void performSecurityTestFail() throws Exception
     {
+        final List<Long> adminIds = new ArrayList<Long>();
         setupCommonGroupExpectations();
         context.checking(new Expectations()
         {
@@ -328,8 +334,8 @@ public class GetFollowersAuthorizationStrategyTest
                 allowing(groupMock).getParentOrganizationId();
                 will(returnValue(PARENT_ORG_ID));
 
-                oneOf(orgPermChecker).isOrgCoordinatorRecursively(CURRENT_USER_ID, PARENT_ORG_ID);
-                will(returnValue(false));
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 

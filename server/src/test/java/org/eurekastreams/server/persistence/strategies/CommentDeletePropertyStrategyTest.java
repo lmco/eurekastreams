@@ -15,14 +15,15 @@
  */
 package org.eurekastreams.server.persistence.strategies;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -50,12 +51,6 @@ public class CommentDeletePropertyStrategyTest
     };
 
     /**
-     * Mapper to get a PersonModelView by account id.
-     */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
-            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
-
-    /**
      * Mapper to get a person's id by their account id.
      */
     private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
@@ -67,9 +62,9 @@ public class CommentDeletePropertyStrategyTest
     private GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
-     * DAO for getting org coordinators.
+     * mapper to get the system admin ids.
      */
-    private GetRecursiveOrgCoordinators orgCoordinatorDAO = context.mock(GetRecursiveOrgCoordinators.class);
+    private DomainMapper<Serializable, List<Long>> adminIdsMapper = context.mock(DomainMapper.class, "adminIdsMapper");
 
     /**
      * StreamEntityDTO.
@@ -138,8 +133,8 @@ public class CommentDeletePropertyStrategyTest
     @Before
     public void setup()
     {
-        sut = new CommentDeletePropertyStrategy(getPersonModelViewByAccountIdMapper, getPersonIdByAccountIdMapper,
-                groupByShortNameDAO, groupAccessMapper, orgCoordinatorDAO);
+        sut = new CommentDeletePropertyStrategy(getPersonIdByAccountIdMapper, groupByShortNameDAO, groupAccessMapper,
+                adminIdsMapper);
     }
 
     /**
@@ -235,6 +230,8 @@ public class CommentDeletePropertyStrategyTest
     @Test
     public void testExecuteUserIsCommentAuthorOnly()
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+
         context.checking(new Expectations()
         {
             {
@@ -247,17 +244,10 @@ public class CommentDeletePropertyStrategyTest
                 allowing(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue("notSmithers"));
 
-                // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(getPersonModelViewByAccountIdMapper).execute("notSmithers");
-                will(returnValue(activityDestinationPersonModelView));
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(adminIds));
 
-                oneOf(activityDestinationPersonModelView).getParentOrganizationId();
-                will(returnValue(5L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(userPersonId, 5L);
-                will(returnValue(false));
-
-                // user is not the comment author
+                // user is the comment author
                 allowing(getPersonIdByAccountIdMapper).execute(userAcctId);
                 will(returnValue(userPersonId));
 
@@ -276,11 +266,13 @@ public class CommentDeletePropertyStrategyTest
     }
 
     /**
-     * Test execute with user as comment author.
+     * Test execute with user as system admin.
      */
     @Test
     public void testExecuteUserIsParentOrgCoord()
     {
+        final List<Long> admins = new ArrayList<Long>();
+        admins.add(userPersonId);
         context.checking(new Expectations()
         {
             {
@@ -293,15 +285,8 @@ public class CommentDeletePropertyStrategyTest
                 allowing(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue("notSmithers"));
 
-                // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(getPersonModelViewByAccountIdMapper).execute("notSmithers");
-                will(returnValue(activityDestinationPersonModelView));
-
-                oneOf(activityDestinationPersonModelView).getParentOrganizationId();
-                will(returnValue(5L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(userPersonId, 5L);
-                will(returnValue(true));
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(admins));
 
                 allowing(getPersonIdByAccountIdMapper).execute(userAcctId);
                 will(returnValue(userPersonId));
@@ -323,6 +308,7 @@ public class CommentDeletePropertyStrategyTest
     @Test
     public void testExecuteUserIsNobody()
     {
+        final List<Long> admins = new ArrayList<Long>();
         context.checking(new Expectations()
         {
             {
@@ -335,15 +321,8 @@ public class CommentDeletePropertyStrategyTest
                 allowing(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue("notSmithers"));
 
-                // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(getPersonModelViewByAccountIdMapper).execute("notSmithers");
-                will(returnValue(activityDestinationPersonModelView));
-
-                oneOf(activityDestinationPersonModelView).getParentOrganizationId();
-                will(returnValue(5L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(userPersonId, 5L);
-                will(returnValue(false));
+                oneOf(adminIdsMapper).execute(null);
+                will(returnValue(admins));
 
                 // user is not the comment author
                 allowing(getPersonIdByAccountIdMapper).execute(userAcctId);

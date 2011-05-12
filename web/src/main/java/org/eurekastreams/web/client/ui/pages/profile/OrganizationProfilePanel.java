@@ -58,7 +58,6 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItem
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
-import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.OrgAboutPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.PeopleListPanel;
@@ -85,11 +84,6 @@ public class OrganizationProfilePanel extends FlowPanel
      * Holds the PortalPage section of the profile display.
      */
     private TabContainerPanel portalPage = null;
-
-    /**
-     * Panel that shows the bread crumb navigation.
-     */
-    private final BreadcrumbPanel breadCrumbPanel;
 
     /**
      * Link to go to the profile settings page.
@@ -160,9 +154,7 @@ public class OrganizationProfilePanel extends FlowPanel
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         addGroupLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAddGroup());
         leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
-        breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
-        this.add(breadCrumbPanel);
         this.add(addGroupLink);
         this.add(profileSettingsLink);
         leftBarContainer.add(leftBarPanel);
@@ -200,8 +192,6 @@ public class OrganizationProfilePanel extends FlowPanel
 
         // Set the banner.
         Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent(org));
-
-        breadCrumbPanel.setOrganization(org);
 
         // Update the Profile summary
         leftBarPanel.clear();
@@ -347,7 +337,7 @@ public class OrganizationProfilePanel extends FlowPanel
         // We need the counts for both of the lists, but at most one list will perform an initial data load, we need to
         // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
         // visible lists.)
-        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(org.getEntityId(), 0, 1), false);
+        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(0, 1), false);
         PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(org.getShortName(), 0, 1), false);
 
         // wire up events to refresh the list when something is removed
@@ -392,7 +382,7 @@ public class OrganizationProfilePanel extends FlowPanel
         activityLinkBuilder.addExtraParameter("manageFlagged", "true");
         flaggedRenderer.setActivityLinkBuilder(activityLinkBuilder);
         adminTabContent.addSet(flaggedActivitiesFilterName, FlaggedActivityModel.getInstance(), flaggedRenderer,
-                new GetFlaggedActivitiesByOrgRequest(org.getEntityId(), 0, 0));
+                new GetFlaggedActivitiesByOrgRequest(0, 0));
         // pending groups StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
                 new GetPendingGroupsRequest(org.getShortName(), 0, 0));

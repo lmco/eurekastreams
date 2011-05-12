@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.Set;
 import org.eurekastreams.server.action.authorization.CoordinatorAccessAuthorizer;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
  * Mapper to get a Set of IDs of all of the organizations recursively above the input org id, loading from cache if
@@ -40,20 +40,21 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
      *            group mapper
      * @param inOrgMapper
      *            org mapper
-     * @param inOrgCoordinators
-     *            org coordinator mapper
+     * @param inSystemAdminIdsMapper
+     *            mapper to get the ids of all of the system administrators
      * @param inGetPersonIdFromAccountIdMapper
      *            mapper to get a person's id from account id
      */
     public GetAllPersonIdsWhoHaveGroupCoordinatorAccess(final DomainMapper<Long, List<Long>> inGroupCoordMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
-            final GetOrganizationsByShortNames inOrgMapper, final GetRecursiveOrgCoordinators inOrgCoordinators,
+            final GetOrganizationsByShortNames inOrgMapper,
+            final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper,
             final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper)
     {
         groupCoordMapper = inGroupCoordMapper;
         groupMapper = inGroupMapper;
         orgMapper = inOrgMapper;
-        orgCoordinators = inOrgCoordinators;
+        systemAdminIdsMapper = inSystemAdminIdsMapper;
         getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
     }
 
@@ -78,9 +79,9 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
     private GetOrganizationsByShortNames orgMapper;
 
     /**
-     * org coordinator mapper.
+     * mapper to get a list of all system administrators ids.
      */
-    private GetRecursiveOrgCoordinators orgCoordinators;
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
 
     /**
      * Gets all people Ids that have coordinator access to a group.
@@ -92,9 +93,6 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
     @SuppressWarnings("unchecked")
     public Set<Long> execute(final Long inGroupId)
     {
-
-        DomainGroupModelView thisGroup;
-
         // get group from mapper so we can find the parent org id.
         List<Long> groupId = new LinkedList();
         groupId.add(inGroupId);
@@ -108,23 +106,14 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
             return new HashSet<Long>();
         }
 
-        thisGroup = groupReturn.get(0);
-
         // get the groups coordinators from mappers.
         Set<Long> groupCoordinatorIds = new HashSet(groupCoordMapper.execute(inGroupId));
 
-        // get org so we can get id.
-        List<String> orgName = new LinkedList();
-        orgName.add(thisGroup.getParentOrganizationShortName());
-        // If you have a group then you will have a Org no need to try catch
-        // this.
-        OrganizationModelView pOrg = orgMapper.execute(orgName).get(0);
-
-        // finally use the org ID to get recursive org coordinators.
-        Set<Long> orgCoordinatorIds = orgCoordinators.execute(pOrg.getEntityId());
+        // add in all of the system administrators
+        List<Long> adminIds = systemAdminIdsMapper.execute(null);
 
         // add the groups together
-        groupCoordinatorIds.addAll(orgCoordinatorIds);
+        groupCoordinatorIds.addAll(adminIds);
         return groupCoordinatorIds;
     }
 

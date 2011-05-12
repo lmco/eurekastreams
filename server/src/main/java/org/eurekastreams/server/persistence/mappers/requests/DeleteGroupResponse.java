@@ -15,11 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.requests;
 
-import java.util.List;
 
 /**
  * Respose object for DeleteGroup mapper.
- *
+ * 
  */
 public class DeleteGroupResponse
 {
@@ -39,30 +38,21 @@ public class DeleteGroupResponse
     private Long streamScopeId;
 
     /**
-     * List of parent organization short names.
-     */
-    private List<String> parentOrganizationShortNames;
-
-    /**
      * Constructor.
-     *
+     * 
      * @param inGroupId
      *            Group id.
      * @param inGroupShortName
      *            Group short name.
      * @param inStreamScopeId
      *            Group streamScope id.
-     * @param inParentOrganizationShortNames
-     *            List of parent organization short names.
      */
-    public DeleteGroupResponse(final Long inGroupId, final String inGroupShortName, final Long inStreamScopeId,
-            final List<String> inParentOrganizationShortNames)
+    public DeleteGroupResponse(final Long inGroupId, final String inGroupShortName, final Long inStreamScopeId)
     {
 
         groupId = inGroupId;
         groupShortName = inGroupShortName;
         streamScopeId = inStreamScopeId;
-        parentOrganizationShortNames = inParentOrganizationShortNames;
     }
 
     /**
@@ -87,14 +77,6 @@ public class DeleteGroupResponse
     public Long getStreamScopeId()
     {
         return streamScopeId;
-    }
-
-    /**
-     * @return the parentOrganizationShortNames
-     */
-    public List<String> getParentOrganizationShortNames()
-    {
-        return parentOrganizationShortNames;
     }
 
 }

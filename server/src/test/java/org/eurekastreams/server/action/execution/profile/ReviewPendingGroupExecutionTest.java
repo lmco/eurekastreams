@@ -39,8 +39,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
@@ -141,17 +139,6 @@ public class ReviewPendingGroupExecutionTest
      */
     private final Organization orgMock = context.mock(Organization.class);
 
-    /**
-     * The organization hierarchy traverser builder.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder = context
-            .mock(OrganizationHierarchyTraverserBuilder.class);
-
-    /**
-     * Org traverser built by the org traverser builder.
-     */
-    private final OrganizationHierarchyTraverser orgTraverser = context.mock(OrganizationHierarchyTraverser.class);
-
     /** Fixture: Execution strategy for deleting a group. */
     private DeleteGroupFromDBExecution deleteGroupExecution = context.mock(DeleteGroupFromDBExecution.class);
 
@@ -165,7 +152,7 @@ public class ReviewPendingGroupExecutionTest
     public void setup() throws MalformedURLException
     {
         sut = new ReviewPendingGroupExecution(groupMapper, emailNotifier, addPrivateGroupIdToCachedListMock,
-                orgMapperMock, orgTraverserBuilder, deleteGroupExecution);
+                orgMapperMock, deleteGroupExecution);
     }
 
     /**
@@ -174,7 +161,6 @@ public class ReviewPendingGroupExecutionTest
      * @throws Exception
      *             not expected
      */
-    @SuppressWarnings("deprecation")
     @Test
     public void performActionApprovePublicGroupTest() throws Exception
     {
@@ -193,13 +179,6 @@ public class ReviewPendingGroupExecutionTest
 
                 allowing(group).getParentOrganization();
                 will(returnValue(orgMock));
-
-                one(orgTraverserBuilder).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverser));
-
-                one(orgTraverser).traverseHierarchy(orgMock);
-
-                allowing(orgMapperMock).updateOrganizationStatistics(orgTraverser);
             }
         });
 
@@ -236,13 +215,6 @@ public class ReviewPendingGroupExecutionTest
 
                 allowing(group).getParentOrganization();
                 will(returnValue(orgMock));
-
-                one(orgTraverserBuilder).getOrganizationHierarchyTraverser();
-                will(returnValue(orgTraverser));
-
-                one(orgTraverser).traverseHierarchy(orgMock);
-
-                allowing(orgMapperMock).updateOrganizationStatistics(orgTraverser);
 
             }
         });

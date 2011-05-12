@@ -17,8 +17,6 @@ package org.eurekastreams.server.action.execution.profile;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy;
-import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.BannerableDTO;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.persistence.mappers.BannerableMapper;
@@ -80,12 +78,6 @@ public class DeleteBannerExecutionTest
     private ImageWriter imageWriter = context.mock(ImageWriter.class);
 
     /**
-     * Mocked instance of the {@link GetBannerIdByParentOrganizationStrategy}.
-     */
-    private GetBannerIdByParentOrganizationStrategy recursiveBannerIdMock =
-        context.mock(GetBannerIdByParentOrganizationStrategy.class);
-
-    /**
      * Subject under test.
      */
     private DeleteBannerExecution sut = null;
@@ -111,12 +103,12 @@ public class DeleteBannerExecutionTest
     @Before
     public final void setUp()
     {
-        sut = new DeleteBannerExecution(bannerableMapper, cachedBannerMapperMock, imageWriter, recursiveBannerIdMock);
+        sut = new DeleteBannerExecution(bannerableMapper, cachedBannerMapperMock, imageWriter);
     }
 
     /**
      * Testing the delete action.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -146,8 +138,6 @@ public class DeleteBannerExecutionTest
                 will(returnValue(true));
 
                 oneOf(cachedBannerMapperMock).execute(with(any(UpdateCachedBannerMapperRequest.class)));
-
-                oneOf(recursiveBannerIdMock).getBannerId(with(any(Bannerable.class)), with(any(Long.class)));
             }
         });
 
@@ -157,7 +147,7 @@ public class DeleteBannerExecutionTest
 
     /**
      * Test case with a null banner id.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -183,7 +173,6 @@ public class DeleteBannerExecutionTest
 
                 oneOf(cachedBannerMapperMock).execute(with(any(UpdateCachedBannerMapperRequest.class)));
 
-                oneOf(recursiveBannerIdMock).getBannerId(with(any(Bannerable.class)), with(any(Long.class)));
             }
         });
 

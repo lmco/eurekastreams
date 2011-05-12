@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.GroupFollower;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 
 /**
  * This class provides the mapper functionality for DomainGroup entities.
@@ -45,36 +44,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
     public DomainGroupMapper(final QueryOptimizer inQueryOptimizer)
     {
         super(inQueryOptimizer);
-    }
-
-    /**
-     * The descendant organization strategy.
-     */
-    private DescendantOrganizationStrategy descendantOrgStrategy;
-
-    /**
-     * Set the DescendantOrgStrategy.
-     * 
-     * @param inDescendantOrgStrategy
-     *            the descendantOrgStrategy to set
-     */
-    public void setDescendantOrgStrategy(final DescendantOrganizationStrategy inDescendantOrgStrategy)
-    {
-        descendantOrgStrategy = inDescendantOrgStrategy;
-    }
-
-    /**
-     * Get the descendant organization strategy.
-     * 
-     * @return the descendantOrgStrategy the descendant org strategy
-     */
-    protected DescendantOrganizationStrategy getDescendantOrgStrategy()
-    {
-        if (descendantOrgStrategy == null)
-        {
-            throw new NullPointerException("descendantOrgStrategy is null - make sure to set it on JpaPersonMapper.");
-        }
-        return descendantOrgStrategy;
     }
 
     /**

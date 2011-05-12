@@ -89,12 +89,6 @@ public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionSt
             log.info("scoping the request for flagged activities with the requesting user account: " + userName);
         }
         request.setRequestingUserAccountId(userName);
-
-        if (log.isInfoEnabled())
-        {
-            log.info("Getting flagged activities directly under org with id: " + request.getOrganizationId());
-        }
-
         PagedSet<ActivityDTO> activities = mapper.execute(request);
 
         activityDeletabilityFilter.filter(activities.getPagedSet(), getPersonModelViewByAccountIdMapper

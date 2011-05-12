@@ -16,15 +16,12 @@
 package org.eurekastreams.server.persistence.mappers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
 import org.eurekastreams.server.search.factories.DomainGroupModelViewFactory;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -43,29 +40,13 @@ public class GetPendingDomainGroupsForOrg extends
         BaseArgDomainMapper<GetPendingDomainGroupsForOrgRequest, PagedSet<DomainGroupModelView>>
 {
     /**
-     *The org cache to find the nested orgs from.
-     */
-    private final OrganizationHierarchyCache orgCache;
-
-    /**
      * Mapper to get people by IDs, using cache.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>>getPeopleByIdsMapper;
-
-    /**
-     * Constructor.
-     *
-     * @param inOrgCache
-     *            the org cache from spring.
-     */
-    public GetPendingDomainGroupsForOrg(final OrganizationHierarchyCache inOrgCache)
-    {
-        orgCache = inOrgCache;
-    }
+    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper;
 
     /**
      * Execute getting the groups pending for an org.
-     *
+     * 
      * @param inRequest
      *            the request for the data.
      * @return A pageset of Groups pending for the Org in the request.
@@ -74,8 +55,6 @@ public class GetPendingDomainGroupsForOrg extends
     @Override
     public PagedSet<DomainGroupModelView> execute(final GetPendingDomainGroupsForOrgRequest inRequest)
     {
-        Set<Long> organizationIds = getOrganizationIds(inRequest.getOrgShortName());
-
         // create our query
         Criteria criteria = getHibernateSession().createCriteria(DomainGroup.class);
 
@@ -99,9 +78,6 @@ public class GetPendingDomainGroupsForOrg extends
         // pending groups
         criteria.add(Restrictions.eq("isPending", true));
 
-        // under our input organization id
-        criteria.add(Restrictions.in("parentOrganization.id", organizationIds));
-
         // set the sort order
         criteria.addOrder(Order.asc("dateAdded"));
 
@@ -124,8 +100,6 @@ public class GetPendingDomainGroupsForOrg extends
         Criteria rowCountCriteria = getHibernateSession().createCriteria(DomainGroup.class);
         rowCountCriteria.setProjection(Projections.rowCount());
         rowCountCriteria.add(Restrictions.eq("isPending", true));
-        // under our input organization id
-        rowCountCriteria.add(Restrictions.in("parentOrganization.id", organizationIds));
 
         // Create Page Set
         PagedSet<DomainGroupModelView> pagedSet = new PagedSet<DomainGroupModelView>();
@@ -140,7 +114,7 @@ public class GetPendingDomainGroupsForOrg extends
 
     /**
      * Populate the rest of the model view object with data from the cache.
-     *
+     * 
      * @param inResults
      *            The groups to populate with extra data.
      */
@@ -178,22 +152,10 @@ public class GetPendingDomainGroupsForOrg extends
     }
 
     /**
-     * Get the IDs of the organizations for which to retrieve pending groups.
-     *
-     * @param inOrgShortName
-     *            The parent org's short name.
-     * @return A String of IDs for the orgs.
-     */
-    private Set<Long> getOrganizationIds(final String inOrgShortName)
-    {
-        return Collections.singleton(orgCache.getOrganizationIdFromShortName(inOrgShortName));
-    }
-
-    /**
      * @param inGetPeopleByIdsMapper
      *            the getPeopleByIdsMapper to set
      */
-    public void setGetPeopleByIdsMapper(final DomainMapper<List<Long>, List<PersonModelView>>inGetPeopleByIdsMapper)
+    public void setGetPeopleByIdsMapper(final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleByIdsMapper)
     {
         getPeopleByIdsMapper = inGetPeopleByIdsMapper;
     }

@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.Background;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -57,12 +56,6 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
     private final TaskHandlerExecutionStrategy personPersister;
 
     /**
-     * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
-     * OrganizationHierarchyTraversers.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
-
-    /**
      * Constructor.
      * 
      * @param inPersonMapper
@@ -71,17 +64,13 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
      *            - instance of {@link PersistResourceExecution} for a Person.
      * @param inBackgroundMapper
      *            - instance of {@link BackgroundMapper} for this execution strategy.
-     * @param inOrgTraverserBuilder
-     *            {@link OrganizationHierarchyTraverserBuilder}.
      */
     public UpdatePersonExecution(final PersonMapper inPersonMapper,
-            final TaskHandlerExecutionStrategy inPersonPersister, final BackgroundMapper inBackgroundMapper,
-            final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
+            final TaskHandlerExecutionStrategy inPersonPersister, final BackgroundMapper inBackgroundMapper)
     {
         personMapper = inPersonMapper;
         personPersister = inPersonPersister;
         backgroundMapper = inBackgroundMapper;
-        orgTraverserBuilder = inOrgTraverserBuilder;
     }
 
     /**

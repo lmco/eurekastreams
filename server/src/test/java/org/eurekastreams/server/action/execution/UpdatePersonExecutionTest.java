@@ -22,7 +22,6 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -90,12 +89,6 @@ public class UpdatePersonExecutionTest
     private final TaskHandlerActionContext taskHandlerActionContextMock = context.mock(TaskHandlerActionContext.class);
 
     /**
-     * The organization hierarchy traverser builder.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder = context
-            .mock(OrganizationHierarchyTraverserBuilder.class);
-
-    /**
      * Test fields to use in this suite.
      */
     private HashMap<String, Serializable> fields;
@@ -106,8 +99,7 @@ public class UpdatePersonExecutionTest
     @Before
     public void setup()
     {
-        sut = new UpdatePersonExecution(personMapperMock, persistResourceExecutionMock, backgroundMapperMock,
-                orgTraverserBuilder);
+        sut = new UpdatePersonExecution(personMapperMock, persistResourceExecutionMock, backgroundMapperMock);
         fields = new HashMap<String, Serializable>();
         fields.put("skills", "stuff, things");
         fields.put(PersonModelView.ORG_PARENT_KEY, "orgShortName");

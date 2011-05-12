@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.action.request.profile.OrganizationCacheUpdaterRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner;
 import org.eurekastreams.server.persistence.mappers.cache.SaveOrganizationCoordinatorIdsToCache;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -63,12 +62,6 @@ public class OrganizationCacheUpdaterExecutionTest
             DomainMapper.class, "privateGroupIdsCacheRefreshMapperMock");
 
     /**
-     * Mapper to clean the cache of recursive org ids up the tree.
-     */
-    private final OrgParentHierarchyCacheCleaner orgParentHierarchyCacheCleaner = context
-            .mock(OrgParentHierarchyCacheCleaner.class);
-
-    /**
      * {@link ActionContext}.
      */
     private final ActionContext actionContext = context.mock(ActionContext.class);
@@ -77,11 +70,11 @@ public class OrganizationCacheUpdaterExecutionTest
      * System under test.
      */
     private final OrganizationCacheUpdaterExecution sut = new OrganizationCacheUpdaterExecution(
-            privateGroupIdsCacheRefreshMapperMock, orgCoordCacheUpdater, orgParentHierarchyCacheCleaner);
+            privateGroupIdsCacheRefreshMapperMock, orgCoordCacheUpdater);
 
     /**
      * Test execute.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -121,7 +114,6 @@ public class OrganizationCacheUpdaterExecutionTest
                 allowing(request).getOrganizationId();
                 will(returnValue(groupId));
 
-                allowing(orgParentHierarchyCacheCleaner).execute(groupId);
             }
         });
 

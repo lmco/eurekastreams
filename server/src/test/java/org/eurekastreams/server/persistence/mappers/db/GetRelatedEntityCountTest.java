@@ -42,25 +42,20 @@ public class GetRelatedEntityCountTest extends MapperTest
     {
         // verify with some values from dataset.xml
 
-        // Get count of DomainGroups with parent org of 7
-        assertEquals(2, sut.execute(new GetRelatedEntityCountRequest("DomainGroup", "parentOrganization", 7L))
+        // Get count of DomainGroups with parent org of 5
+        assertEquals(8, sut.execute(new GetRelatedEntityCountRequest("DomainGroup", "parentOrganization", 5L))
                 .longValue());
 
-        // Get count of activities with recipient parent org of 7
-        assertEquals(2, //
-                sut.execute(new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 7L)).longValue());
+        // Get count of activities with recipient parent org of 5
+        assertEquals(5, //
+                sut.execute(new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 5L)).longValue());
 
-        assertEquals(2, sut.execute(
-                new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 7L,
+        assertEquals(4, sut.execute(
+                new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 5L,
                         "AND recipientStreamScope.scopeType = 'PERSON'")).longValue());
 
-        assertEquals(0, sut.execute(
-                new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 7L,
+        assertEquals(1, sut.execute(
+                new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 5L,
                         "AND recipientStreamScope.scopeType = 'GROUP'")).longValue());
-
-        // Get count of orgs with parent org id 5
-        assertEquals(3, sut.execute(new GetRelatedEntityCountRequest("Organization", "parentOrganization", 5L))
-                .longValue());
-
     }
 }

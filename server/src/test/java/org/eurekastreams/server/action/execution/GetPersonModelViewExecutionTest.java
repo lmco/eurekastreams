@@ -18,8 +18,11 @@ package org.eurekastreams.server.action.execution;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -28,8 +31,6 @@ import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
@@ -99,31 +100,16 @@ public class GetPersonModelViewExecutionTest
             DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
-     * {@link GetRootOrganizationIdAndShortName} mock.
+     * Mapper to get the system admin ids.
      */
-    private GetRootOrganizationIdAndShortName rootOrgDAO = context.mock(GetRootOrganizationIdAndShortName.class);
-
-    /**
-     * {@link GetRecursiveOrgCoordinators} mock.
-     */
-    private GetRecursiveOrgCoordinators orgCoordinatorDAO = context.mock(GetRecursiveOrgCoordinators.class);
-
-    /**
-     * {@link GetRecursiveOrgCoordinators} mock.
-     */
-    private GetRecursiveOrgCoordinators orgCoordinatorDAOUp = context.mock(GetRecursiveOrgCoordinators.class, "up");
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
+            "systemAdminIdsMapper");
 
     /**
      * Terms of service acceptance strategy.
      */
     private TermsOfServiceAcceptanceStrategy toSAcceptanceStrategy = context
             .mock(TermsOfServiceAcceptanceStrategy.class);
-
-    /**
-     * Banner getter for person.
-     */
-    private GetBannerIdByParentOrganizationStrategy<Person> getBannerIdStrategy = // 
-    context.mock(GetBannerIdByParentOrganizationStrategy.class);
 
     /**
      * User account id for tests.
@@ -145,9 +131,9 @@ public class GetPersonModelViewExecutionTest
     /**
      * System under test.
      */
-    private GetPersonModelViewExecution sut = new GetPersonModelViewExecution(orgCoordinatorDAO, orgCoordinatorDAOUp,
-            rootOrgDAO, getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy, getBannerIdStrategy,
-            serviceActionController, createUserfromLdapAction);
+    private GetPersonModelViewExecution sut = new GetPersonModelViewExecution(systemAdminIdsMapper,
+            getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy, serviceActionController,
+            createUserfromLdapAction);
 
     /**
      * Pre-test setup.
@@ -169,17 +155,20 @@ public class GetPersonModelViewExecutionTest
     }
 
     /**
-     * Perform Action as an org coordinator test.
+     * Perform Action as a SystemAdmin.
      * 
      * @throws Exception
      *             the exception.
      */
     @Test
-    public void performActionAsOrgCoordinator() throws Exception
+    public void performActionAsSystemAdmin() throws Exception
     {
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setEntityId(4L);
         retPerson.setRoles(new HashSet<Role>());
+
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(4L);
 
         final Date personLastAcceptedTOSDate = new Date();
         retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
@@ -212,16 +201,8 @@ public class GetPersonModelViewExecutionTest
                 oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
                 will(returnValue(true));
 
-                allowing(rootOrgDAO).getRootOrganizationId();
-                will(returnValue(0L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(4L, 0L);
-                will(returnValue(true));
-
-                oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
-                will(returnValue(true));
-
-                oneOf(getBannerIdStrategy).getBannerId(9L, retPerson);
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 
@@ -244,6 +225,9 @@ public class GetPersonModelViewExecutionTest
     @Test
     public void performActionNotAsOrgCoordinator() throws Exception
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(5L);
+
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setRoles(new HashSet<Role>());
         retPerson.setEntityId(4L);
@@ -278,16 +262,8 @@ public class GetPersonModelViewExecutionTest
                 oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
                 will(returnValue(false));
 
-                allowing(rootOrgDAO).getRootOrganizationId();
-                will(returnValue(0L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(4L, 0L);
-                will(returnValue(false));
-
-                oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
-                will(returnValue(false));
-
-                oneOf(getBannerIdStrategy).getBannerId(9L, retPerson);
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 
@@ -310,6 +286,9 @@ public class GetPersonModelViewExecutionTest
     @Test
     public void performActionFromLdap() throws Exception
     {
+        final List<Long> adminIds = new ArrayList<Long>();
+        adminIds.add(5L);
+
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setRoles(new HashSet<Role>());
         retPerson.setEntityId(4L);
@@ -353,16 +332,8 @@ public class GetPersonModelViewExecutionTest
                 oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
                 will(returnValue(false));
 
-                allowing(rootOrgDAO).getRootOrganizationId();
-                will(returnValue(0L));
-
-                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(4L, 0L);
-                will(returnValue(false));
-
-                oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
-                will(returnValue(false));
-
-                oneOf(getBannerIdStrategy).getBannerId(9L, retPerson);
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(adminIds));
             }
         });
 

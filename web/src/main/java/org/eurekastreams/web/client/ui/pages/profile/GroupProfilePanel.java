@@ -26,7 +26,6 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -68,7 +67,6 @@ import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.tabs.GroupProfileAboutTabPanel;
-import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ChecklistProgressBarPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.GroupAboutPanel;
@@ -105,11 +103,6 @@ public class GroupProfilePanel extends FlowPanel
      * Holds the PortalPage section of the profile display.
      */
     private TabContainerPanel portalPage = null;
-
-    /**
-     * Panel that shows the bread crumb navigation.
-     */
-    private final BreadcrumbPanel breadCrumbPanel;
 
     /**
      * Link to go to the profile settings page.
@@ -164,7 +157,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -183,9 +176,7 @@ public class GroupProfilePanel extends FlowPanel
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
-        breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
-        this.add(breadCrumbPanel);
         this.add(profileSettingsLink);
         leftBarContainer.add(leftBarPanel);
         this.add(leftBarContainer);
@@ -203,17 +194,6 @@ public class GroupProfilePanel extends FlowPanel
                     }
                 });
 
-        EventBus.getInstance().addObserver(ChangeActivityModeEvent.class, new Observer<ChangeActivityModeEvent>()
-        {
-            public void update(final ChangeActivityModeEvent event)
-            {
-                if (groupEntity != null)
-                {
-                    breadCrumbPanel.setGroup(groupEntity, event.isSingleMode());
-                }
-            }
-        });
-
         inProcessor.setQueueRequests(true);
         GroupModel.getInstance().fetch(accountId, false);
         AllPopularHashTagsModel.getInstance().fetch(null, true);
@@ -223,7 +203,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * We have the Group, so set up the Profile summary.
-     *
+     * 
      * @param inGroup
      *            the group whose profile is being displayed
      */
@@ -246,8 +226,6 @@ public class GroupProfilePanel extends FlowPanel
         // Set the banner.
         final EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.notifyObservers(new SetBannerEvent(inGroup));
-
-        breadCrumbPanel.setGroup(inGroup, false);
 
         if (inGroup.isRestricted())
         {
@@ -377,7 +355,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab content.
-     *
+     * 
      * @return The tab.
      */
     private Widget buildConnectionsTabContent()
@@ -451,7 +429,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     *
+     * 
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -504,7 +482,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is restricted.
-     *
+     * 
      * @param inGroup
      *            the restricted access group
      */
@@ -548,7 +526,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is pending approval.
-     *
+     * 
      */
     private void showPendingGroupMessage()
     {
@@ -568,7 +546,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     *
+     * 
      * @return The tab.
      */
     @SuppressWarnings("unchecked")

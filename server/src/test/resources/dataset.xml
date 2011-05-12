@@ -30,6 +30,14 @@
 
     <GalleryItemCategory id="1234" name="All"
         version="3471" galleryItemType="PLUGIN" />
+        
+         
+    <GalleryItemCategory id="1235" name="tc1"
+        version="3471" galleryItemType="TAB" />
+        
+    <GalleryItemCategory id="1236" name="tc2"
+        version="3471" galleryItemType="TAB" />                      
+
 
     <!-- PLUGIN  -->
     <PluginDefinition id="1" version="1" updateFrequency="9" showInGallery="true" url="http://www.google1.com"
@@ -152,32 +160,6 @@
 		childOrganizationCount="2" descendantGroupCount="5"
 		descendantEmployeeCount="2" employeeFollowerCount="0" bannerId="Foo"
 		updatesCount="6" streamScopeId="837433" />
-	<Organization id="6" version="1" description="Child 1 Mission Statement"
-		name="Child 1 Organization Name" allUsersCanCreateGroups="false"
-		shortName="child1orgname" url="http://www.Child_1_OrganizationName.com"
-		parentOrganizationId="5" 
-		childOrganizationCount="0" descendantGroupCount="0"
-		descendantEmployeeCount="0" employeeFollowerCount="2" bannerId="Bar"
-		updatesCount="61" streamScopeId="8374533" />
-	<Organization id="7" version="1" description="Child_2_Mission Statement"
-		name="Child 2 Organization Name" allUsersCanCreateGroups="true"
-		shortName="child2orgname" url="http://www.Child_2_OrganizationName.com"
-		parentOrganizationId="5" 
-		childOrganizationCount="0" descendantGroupCount="2"
-		descendantEmployeeCount="0" employeeFollowerCount="0"
-		updatesCount="51" streamScopeId="9374533" />
-	<!--
-		I want to set up orgs so that getChildOrganizations() returns a
-		different result from getDescendantOrganizations(), but when I set Org
-		id=8's parentOrganizationId to 6 or 7, I get a data integrity error.
-		It's fine if I set it to 5.
-	-->
-	<!--
-		<Organization id="8" version="1" description="Child_3_Mission
-		Statement" name="Child 3 Organization Name" shortName="Child3OrgName"
-		url="http://www.Child_3_OrganizationName.com" themeId="102"
-		parentOrganizationId="5" />
-	-->
 
 
 	<!-- **************************************** -->
@@ -191,17 +173,19 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="1" streamScopeId="1"
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="true"/>
 	<Person id="142" version="1117" accountId="fordp2" firstName="Ford"
 		middleName="X" lastName="Prefect" preferredName="Volgon-Vwatter"
 		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
 		jobDescription="skljk klsdjlsdlsj lkj" location="99999" followersCount="0"
-		followingCount="0" groupsCount="0" parentOrganizationId="6" themeId="102"
+		followingCount="0" groupsCount="0" parentOrganizationId="5" themeId="102"
 		startTabGroupId="4231" avatarId="sdfsd"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1142" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
 		commentable="true" streamPostable="false" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="true"/>
 		
 		
 	<Person_Stream personid="42" streamid="2" streamIndex="0" />
@@ -218,15 +202,9 @@
 	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP" requestorId="42" />
 	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP" requestorId="42" />
 
-	<Person_RelatedOrganization personId="42"
-		organizationId="5" />
-	<Person_RelatedOrganization personId="42"
-		organizationId="6" />
+	<Person_RelatedOrganization personId="42" organizationId="5" />
 
-	<Person_RelatedOrganization personId="142"
-		organizationId="6" />
-	<Person_RelatedOrganization personId="142"
-		organizationId="5" />
+	<Person_RelatedOrganization personId="142" organizationId="5" />
 
 	<Theme id="103" version="1134" cssFile="generated1.css"
 		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf7" themeUrl="http://www.eurekastreams.org/theme1.xml"
@@ -298,7 +276,7 @@
     <Background_Skills Background_Id="1099" skillsIndex="0" BackgroundItem_Id="999923" />
     <Background_Skills Background_Id="1099" skillsIndex="1" BackgroundItem_Id="122" />
         
-	<Organization_Capability OrganizationId="6" capabilityId="130" />
+	<Organization_Capability OrganizationId="5" capabilityId="130" />
 
 	<Job id="2042" personId="42" version="1117" companyName="Example"
 		industry="Aerospace" title="Engineer" datefrom="2008-01-01 12:00:00.000"
@@ -320,28 +298,6 @@
 		BackgroundItem_Id="136" activitiesIndex="0" />
 	<Enrollment_AreasOfStudy Enrollment_id="2042"
 		BackgroundItem_Id="135" areasOfStudyIndex="0" />
-
-	<Organization_Leaders Organization_id="5"
-		leaders_id="42" />
-	<Organization_Leaders Organization_id="5"
-		leaders_id="142" />
-
-	<Organization_Coordinators Organization_id="5"
-		coordinators_id="42" />
-	<Organization_Coordinators Organization_id="5"
-		coordinators_id="99" />
-
-	<Organization_Coordinators Organization_id="6"
-		coordinators_id="99" />
-	<Organization_Coordinators Organization_id="6"
-		coordinators_id="142" />
-
-	<Organization_Coordinators Organization_id="7"
-		coordinators_id="99" />
-	<Organization_Coordinators Organization_id="7"
-		coordinators_id="142" />
-
-
 
 	<!-- Three Gadgets in Ford's 1st tab - two in zone 1, 1 in zone 3 -->
 	<!-- * mix up the IDs to test sort * -->
@@ -398,36 +354,39 @@
 		middleName="winslow" lastName="Sagan" preferredName="B-and-B" email="csagan@gmail.com"
 		workPhone="6105551212" title="billionth" location="99999"
 		overview="skljk klsdjlsdlsj lkj2" followersCount="0" followingCount="0"
-		groupsCount="1" parentOrganizationId="7" themeId="102"
+		groupsCount="1" parentOrganizationId="5" themeId="102"
 		startTabGroupId="5393" avatarId="abcdefg"
 		openSocialId="2d359911-0977-418a-9490-57e8252b4507" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="3" 
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="false"/>
 		
-	<Person_RelatedOrganization personId="4507" organizationId="7" />
+	<Person_RelatedOrganization personId="4507" organizationId="5" />
 
 	<Person id="98" version="4" accountId="smithers" firstName="W"
 		middleName="Mr" lastName="Smithers" preferredName="Smithers" email="smithers@gmail.com"
 		workPhone="6105551212" title="lickspittle" location="99999"
 		jobDescription="skljk klsdjlsdlsj lkj5" followersCount="0" followingCount="1"
-		groupsCount="1" parentOrganizationId="7" themeId="102"
+		groupsCount="1" parentOrganizationId="5" themeId="102"
 		startTabGroupId="4231" avatarId="heynow"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a98" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="87433" 
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="6;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="6;"
+        isAdministrator="false"/>
 
 	<Person id="99" version="5" accountId="mrburns" firstName="Monty"
 		middleName="Mr." lastName="Burns" preferredName="Mr.Burns" email="mrburns@gmail.com"
 		workPhone="6105551212" title="Master of All" location="99999"
 		jobDescription="skljk klsdjlsdlsj lkj" followersCount="1" followingCount="0"
-		groupsCount="1" parentOrganizationId="7" themeId="102"
+		groupsCount="1" parentOrganizationId="5" themeId="102"
 		startTabGroupId="4231" avatarId="foofoo"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a99" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="4" 
 		commentable="true" streamPostable="true" accountlocked="false"
-		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
+        isAdministrator="false"/>
 
     <NotificationFilterPreference version="1" personId="99" notifierType="email" notificationCategory="COMMENT" />
 
@@ -435,21 +394,13 @@
 		SMithers has three related organizations including the parent
 		organization
 	-->
-	<Person_RelatedOrganization personId="98"
-		organizationId="5" />
-	<Person_RelatedOrganization personId="98"
-		organizationId="6" />
-	<Person_RelatedOrganization personId="98"
-		organizationId="7" />
+	<Person_RelatedOrganization personId="98" organizationId="5" />
 
 	<!--
 		MrBurnes has two related organizations but not the parent
 		organizations; an orphaned person
 	-->
-	<Person_RelatedOrganization personId="99"
-		organizationId="6" />
-	<Person_RelatedOrganization personId="99"
-		organizationId="5" />
+	<Person_RelatedOrganization personId="99" organizationId="5" />
 
     <!--
        All people follow themselves first
@@ -506,28 +457,28 @@
 
 	<DomainGroup id="1" version="1" description="Group_1_Mission Statement"
 		updatesCount="5" name="E Group 1 Name" shortName="group1" publicgroup="true"
-		followersCount="3" parentOrganizationId="7"
+		followersCount="3" parentOrganizationId="5"
 		dateAdded="2009-02-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="874" commentable="true" streamPostable="true"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="2" version="1" description="Group_2_Mission Statement"
 		updatesCount="5" name="D Group 1 Name" shortName="group2" publicgroup="true"
-		followersCount="1" parentOrganizationId="7" 
+		followersCount="1" parentOrganizationId="5" 
 		dateAdded="2009-01-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="875" commentable="true" streamPostable="true"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="3" version="1" description="Group_3_Mission Statement"
 		updatesCount="8" name="C Group 1 Name" shortName="group3" publicgroup="true"
-		followersCount="10" parentOrganizationId="6" 
+		followersCount="10" parentOrganizationId="5" 
 		dateAdded="2009-04-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="876" commentable="true" streamPostable="true"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="4" version="1" description="Group_4_Mission Statement"
 		updatesCount="8" name="BGroup 1 Name" shortName="group4" publicgroup="true"
-		followersCount="1" parentOrganizationId="6" 
+		followersCount="1" parentOrganizationId="5" 
 		dateAdded="2009-05-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="877" commentable="true" streamPostable="true"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
@@ -548,7 +499,7 @@
 		
 	<DomainGroup id="7" version="1" description="Group_7_Mission Statement"
 		updatesCount="8" name="Pending Group 2" shortName="pendinggroup2" publicgroup="true"
-		followersCount="0" parentOrganizationId="6" 
+		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:55" isPending="true" 
 		createdById="42" streamScopeId="880" commentable="true" streamPostable="true"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
@@ -614,17 +565,17 @@
 		
 	<Activity id="6789" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE" 
 		openSocialId="123" postedTime="2009-10-27 06:54:00" updated="2009-10-27 06:55:00"
-		verb="POST" recipientParentOrgId="7" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
+		verb="POST" recipientParentOrgId="5" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
 		originalActorType="PERSON" flagged="true" showInStream="true" />
 	
 	<Activity id="6790" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
 		openSocialId="456" postedTime="2009-10-27 06:55:00" updated="2009-10-27 06:56:00"
-		verb="POST" recipientParentOrgId="7" streamScopeId="87433" isDestinationStreamPublic="true" 
+		verb="POST" recipientParentOrgId="5" streamScopeId="87433" isDestinationStreamPublic="true" 
 		flagged="false" showInStream="true"/>
 		
     <Activity id="6791" version="1" actorId="fordp" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="789" postedTime="2009-10-27 06:56:00" updated="2009-10-27 06:56:00"
-        verb="POST" recipientParentOrgId="6" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
+        verb="POST" recipientParentOrgId="5" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
 		originalActorType="PERSON" flagged="false" showInStream="true"/>
     
     <Activity id="6792" version="1" actorId="fordp2" actorType="PERSON" baseObject="" baseObjectType="NOTE"
@@ -840,5 +791,10 @@
         streamviewcount="7777" streamviewercount="77777" uniquevisitorcount="777777" usagedate="2011-04-09" avgactivityresponsetime="7" 
         isWeekday="true"
         />
+        
+    <GalleryTabTemplate id="1"  version="0" created="2009-01-01 12:00:00.000" description="GalleryTabTemplate1" title="Welcome"
+        categoryid="1235" tabtemplateid="5555" />         
+    <GalleryTabTemplate id="2"  version="0" created="2009-02-02 12:00:00.000" description="GalleryTabTemplate2" title="Welcome"
+        categoryid="1236" tabtemplateid="5555"/>        
     
 </dataset>

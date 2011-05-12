@@ -155,6 +155,11 @@ public final class CacheKeys
     public static final String ORGANIZATION_COORDINATORS_BY_ORG_ID = "OrgCoord:";
 
     /**
+     * Key for getting the IDs of the system administrators.
+     */
+    public static final String SYSTEM_ADMINISTRATOR_IDS = "Admins:";
+
+    /**
      * Key for the list of an Organization's leaders.
      */
     public static final String ORGANIZATION_LEADERS_BY_ORG_ID = "OrgLead:";

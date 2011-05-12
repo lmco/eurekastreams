@@ -47,6 +47,7 @@ import org.eurekastreams.web.client.jsni.GadgetMetaDataFetcher;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GadgetDefinitionCategoriesModel;
 import org.eurekastreams.web.client.model.GadgetDefinitionModel;
+import org.eurekastreams.web.client.model.GalleryTabTemplateCategoriesModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.ThemeDefinitionCategoriesModel;
 import org.eurekastreams.web.client.model.ThemeModel;
@@ -110,6 +111,11 @@ public class GalleryContent extends SettingsPanel
     private PagedListPanel themeTab = null;
 
     /**
+     * tabTemplate tab.
+     */
+    private PagedListPanel tabTemplateTab = null;
+
+    /**
      * Gadget from index.
      */
     private int gadgetsFrom = 0;
@@ -133,6 +139,12 @@ public class GalleryContent extends SettingsPanel
      */
     private Hyperlink addTheme = new Hyperlink("Add Theme", Session.getInstance().generateUrl(
             new CreateUrlRequest("action", "newTheme", false)));
+
+    /**
+     * Add tabTemplate button.
+     */
+    private Hyperlink addTab = new Hyperlink("Add Tab", Session.getInstance().generateUrl(
+            new CreateUrlRequest("action", "newTab", false)));
 
     /**
      * Container for the gallery tabs.
@@ -159,6 +171,8 @@ public class GalleryContent extends SettingsPanel
         addGadget.setVisible(false);
         addTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTheme());
         addTheme.setVisible(false);
+        // addTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTab());
+        addTab.setVisible(false);
 
         panel.add(galleryPortalContainer);
         panel.add(galleryAddOrEditContainer);
@@ -167,10 +181,12 @@ public class GalleryContent extends SettingsPanel
         {
             galleryPortalContainer.add(addGadget);
             galleryPortalContainer.add(addTheme);
+            galleryPortalContainer.add(addTab);
         }
 
         gadgetTab = new PagedListPanel("gadgets", new SingleColumnPagedListRenderer());
         themeTab = new PagedListPanel("themes", new SingleColumnPagedListRenderer());
+        tabTemplateTab = new PagedListPanel("tabs", new SingleColumnPagedListRenderer());
 
         portalPage = new TabContainerPanel("galleryTab");
 
@@ -194,6 +210,16 @@ public class GalleryContent extends SettingsPanel
         themeSimpleTab.setParamsToClear(Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
         portalPage.addTab(themeSimpleTab);
 
+        // setup the params to set when the tab is activated
+        Map<String, String> tabTemplateTabParams = new HashMap<String, String>();
+        tabTemplateTabParams.put(PagedListPanel.URL_PARAM_LIST_ID, "tabs");
+        tabTemplateTabParams.put(Pager.URL_PARAM_START_INDEX, "0");
+
+        SimpleTab tabSimpleTab = new SimpleTab("Tabs", tabTemplateTab);
+        tabSimpleTab.setParamsToSet(tabTemplateTabParams);
+        tabSimpleTab.setParamsToClear(Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
+        portalPage.addTab(tabSimpleTab);
+
         galleryPortalContainer.add(portalPage);
         portalPage.init();
 
@@ -202,6 +228,7 @@ public class GalleryContent extends SettingsPanel
         StartTabsModel.getInstance().fetch(null, true);
         GadgetDefinitionCategoriesModel.getInstance().fetch(null, true);
         ThemeDefinitionCategoriesModel.getInstance().fetch(null, true);
+        GalleryTabTemplateCategoriesModel.getInstance().fetch(null, true);
     }
 
     /**

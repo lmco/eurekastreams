@@ -15,10 +15,10 @@
  */
 package org.eurekastreams.server.action.authorization;
 
-import java.util.Set;
+import java.io.Serializable;
+import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Strategy for determining if user is root organizaiton coordinator.
@@ -27,28 +27,19 @@ import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShor
 public class IsRootOrganizationCoordinator
 {
     /**
-     * Root org id DAO.
+     * Mapper to get the ids of the system admins.
      */
-    private GetRootOrganizationIdAndShortName rootOrgIdDAO;
-
-    /**
-     * Org coordinator ids DAO.
-     */
-    private GetOrgCoordinators orgCoordinatorIdsDAO;
+    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
 
     /**
      * Constructor.
      * 
-     * @param inRootOrgIdDAO
-     *            Root org id DAO.
-     * @param inOrgCoordinatorIdsDAO
-     *            Org coordinator ids DAO.
+     * @param inSystemAdminIdsMapper
+     *            mapper to get a list of the ids of the system admins
      */
-    public IsRootOrganizationCoordinator(final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
-            final GetOrgCoordinators inOrgCoordinatorIdsDAO)
+    public IsRootOrganizationCoordinator(final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper)
     {
-        rootOrgIdDAO = inRootOrgIdDAO;
-        orgCoordinatorIdsDAO = inOrgCoordinatorIdsDAO;
+        systemAdminIdsMapper = inSystemAdminIdsMapper;
     }
 
     /**
@@ -60,8 +51,7 @@ public class IsRootOrganizationCoordinator
      */
     public Boolean isRootOrganizationCoordinator(final Long inUserEntityId)
     {
-        Set<Long> coordinatorIds = orgCoordinatorIdsDAO.execute(rootOrgIdDAO.getRootOrganizationId());
-        return coordinatorIds.contains(inUserEntityId);
+        return systemAdminIdsMapper.execute(null).contains(inUserEntityId);
     }
 
 }

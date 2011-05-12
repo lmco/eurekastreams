@@ -52,14 +52,7 @@ public class OrganizationModel extends BaseModel implements Fetchable<String>,
      */
     public void authorize(final String request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("authorizeUpdateOrganization", request, new OnSuccessCommand<Boolean>()
-        {
-            public void onSuccess(final Boolean response)
-            {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new AuthorizeUpdateOrganizationResponseEvent(response));
-            }
-        }, useClientCacheIfAvailable);
+        Session.getInstance().getEventBus().notifyObservers(new AuthorizeUpdateOrganizationResponseEvent(true));
     }
 
     /**

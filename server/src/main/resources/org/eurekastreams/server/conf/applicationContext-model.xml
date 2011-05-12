@@ -16,19 +16,6 @@
 
 	<bean id="queryOptimizer" class="org.eurekastreams.commons.hibernate.QueryOptimizer" />
 	
-	<!-- Cache of organization hierarchies by id -->
-	<bean id="organizationHierarchyCache"
-		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache">
-		<property name="cache" ref="memcachedCache" />
-		<property name="getOrganizationsByShortNames" ref="bulkOrganizationsByShortNameMapper" />
-		<property name="getRecursiveChildOrgIdsMapper" ref="getChildOrgIdsRecursiveByOrgIdMapper" />
-		<property name="getRecursiveParentOrgIdsMapper" ref="getParentOrgIdsRecursiveByOrgIdMapper" />
-		<property name="getOrganizationsByShortNamesMapper" ref="bulkOrganizationsByShortNameMapper" />
-	</bean>
-
-	<bean id="descendantOrgStrategy"
-		class="org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy" />
-
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -44,15 +31,12 @@
 
 	<bean id="jpaGroupMapper" class="org.eurekastreams.server.persistence.DomainGroupMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaOrganizationMapper" class="org.eurekastreams.server.persistence.OrganizationMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaPersonMapper" class="org.eurekastreams.server.persistence.PersonMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaBackgroundMapper" class="org.eurekastreams.server.persistence.BackgroundMapper">
 		<constructor-arg ref="queryOptimizer" />

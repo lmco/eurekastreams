@@ -52,9 +52,6 @@ public class GetFlaggedActivitiesForOrganizationExecutionTest
         }
     };
 
-    /** Test data. */
-    private static final long ORG_ID = 1245L;
-
     /** Fixture: mapper. */
     private GetFlaggedActivitiesForOrganization mapper = context.mock(GetFlaggedActivitiesForOrganization.class);
 
@@ -103,7 +100,7 @@ public class GetFlaggedActivitiesForOrganizationExecutionTest
     public void testExecute()
     {
         final String accountId = "sldfjkds";
-        final GetFlaggedActivitiesByOrgRequest rqst = new GetFlaggedActivitiesByOrgRequest(ORG_ID, 3, 5);
+        final GetFlaggedActivitiesByOrgRequest rqst = new GetFlaggedActivitiesByOrgRequest(3, 5);
         final PagedSet<ActivityDTO> pagedSet = context.mock(PagedSet.class);
         final List<ActivityDTO> activities = new ArrayList<ActivityDTO>();
 

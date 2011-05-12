@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.persistence.mappers.stream;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -25,7 +24,6 @@ import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -49,45 +47,18 @@ public class PostCachedActivity extends CachedDomainMapper
     private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
-     * mapper to get all parent org ids for an org id.
-     */
-    private DomainMapper<Long, List<Long>> parentOrgIdsMapper;
-
-    /**
-     * Local instance of the {@link GetDomainGroupsByShortNames} mapper.
-     */
-    private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
-
-    /**
-     * Mapper to get the short names from org ids.
-     */
-    private final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper;
-
-    /**
      * Constructor.
      * 
      * @param inPersonFollowersMapper
      *            person follower mapper.
      * @param inGetPersonModelViewByAccountIdMapper
      *            Mapper to get personmodelview from an accountid.
-     * @param inParentOrgIdsMapper
-     *            ids for parent orgs mapper.
-     * @param inBulkDomainGroupsByShortNameMapper
-     *            groups by short names mapper.
-     * @param inOrgShortNamesFromIdsMapper
-     *            mapper to get org shortnames from ids
      */
     public PostCachedActivity(final DomainMapper<Long, List<Long>> inPersonFollowersMapper,
-            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
-            final DomainMapper<Long, List<Long>> inParentOrgIdsMapper,
-            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
-            final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
-        parentOrgIdsMapper = inParentOrgIdsMapper;
-        bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
-        orgShortNamesFromIdsMapper = inOrgShortNamesFromIdsMapper;
     }
 
     /**
@@ -103,30 +74,25 @@ public class PostCachedActivity extends CachedDomainMapper
         String recipientUniqueKey = activity.getRecipientStreamScope().getUniqueKey();
         long activityId = activity.getId();
 
-        Long parentOrgId = null;
-
         if (type == ScopeType.PERSON)
         {
             PersonModelView person = getPersonModelViewByAccountIdMapper.execute(recipientUniqueKey);
-            parentOrgId = person.getParentOrganizationId();
 
             updateActivitiesByFollowingCacheLists(person.getEntityId(), activityId);
 
-        }
-        else if (type == ScopeType.GROUP)
-        {
-            parentOrgId = bulkDomainGroupsByShortNameMapper.execute(Arrays.asList(recipientUniqueKey)).get(0)
-                    .getParentOrganizationId();
         }
         else if (type == ScopeType.RESOURCE && activity.getActorType() == EntityType.PERSON)
         {
             if (activity.getShowInStream())
             {
                 PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActorId());
-                parentOrgId = person.getParentOrganizationId();
-
                 updateActivitiesByFollowingCacheLists(person.getEntityId(), activityId);
             }
+        }
+        else if (type == ScopeType.GROUP)
+        {
+            // no-op
+            int donothing = 1;
         }
         else
         {
@@ -149,14 +115,6 @@ public class PostCachedActivity extends CachedDomainMapper
             // add to everyone list
             log.trace("Adding activity id " + activityId + " into everyone activity list.");
             getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
-
-            // climb up the tree, adding activity to each org
-            for (String orgShortName : getAllParentOrgShortNames(parentOrgId))
-            {
-                log.trace("Adding activity id " + activityId + " to organization cache list " + orgShortName);
-                getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
-                        activityId);
-            }
         }
     }
 
@@ -176,21 +134,5 @@ public class PostCachedActivity extends CachedDomainMapper
         {
             getCache().addToTopOfList(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower, inActivityId);
         }
-    }
-
-    /**
-     * Returns all parent org short names up the tree.
-     * 
-     * @param inOrgId
-     *            The id of the org.
-     * @return all parent org ids up the tree
-     */
-    private List<String> getAllParentOrgShortNames(final Long inOrgId)
-    {
-        // gets the org ids of all org parents of the activity's parent org
-        List<Long> parentIds = parentOrgIdsMapper.execute(inOrgId);
-        parentIds.add(inOrgId);
-
-        return orgShortNamesFromIdsMapper.execute(parentIds);
     }
 }

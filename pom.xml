@@ -122,6 +122,7 @@
         <build.gadget.container.name>eureka</build.gadget.container.name>
         <build.gadget.container.protocol>http://</build.gadget.container.protocol>
         <build.gadget.shindig.version>2.0.1.3</build.gadget.shindig.version>
+		<build.gadget.request.authtype>NONE</build.gadget.request.authtype>
         <build.analytics.hostname>http://analytics.example.com</build.analytics.hostname>
         <build.analytics.siteid>-1</build.analytics.siteid>
         <build.email.smtphost>smtp.example.com</build.email.smtphost>

@@ -17,6 +17,7 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -36,14 +37,12 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Organization Creator.
@@ -70,17 +69,6 @@ public class GroupCreator extends GroupPersister
     private static final String PARENT_ORG_KEY = "orgParent";
 
     /**
-     * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
-     * OrganizationHierarchyTraversers.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
-
-    /**
-     * Organization cache to look up parent orgs.
-     */
-    private final OrganizationHierarchyCache orgHierarchyCache;
-
-    /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
     private TaskHandlerExecutionStrategy followStrategy;
@@ -91,6 +79,11 @@ public class GroupCreator extends GroupPersister
     private final PersonMapper personMapper;
 
     /**
+     * Mapper to get all the system administrator ids.
+     */
+    private DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsMapper;
+
+    /**
      * Constructor.
      * 
      * @param inGroupMapper
@@ -99,24 +92,21 @@ public class GroupCreator extends GroupPersister
      *            The org mapper
      * @param inPersonMapper
      *            used to lookup person creating the group.
-     * @param inOrgTraverserBuilder
-     *            used to update the Org statistics.
-     * @param inOrganizationHierarchyCache
-     *            used to get the parent orgs.
+     * @param inGetSystemAdministratorIdsMapper
+     *            mapper to get system administrator ids
      * @param inFollowStrategy
      *            used to automatically add coordinators as group followers/members.
      */
     public GroupCreator(final DomainGroupMapper inGroupMapper, final OrganizationMapper inOrgMapper,
-            final PersonMapper inPersonMapper, final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
-            final OrganizationHierarchyCache inOrganizationHierarchyCache,
+            final PersonMapper inPersonMapper,
+            final DomainMapper<Serializable, List<Long>> inGetSystemAdministratorIdsMapper,
             final TaskHandlerExecutionStrategy inFollowStrategy)
     {
         super(inGroupMapper, inOrgMapper);
 
         personMapper = inPersonMapper;
-        orgTraverserBuilder = inOrgTraverserBuilder;
-        orgHierarchyCache = inOrganizationHierarchyCache;
         followStrategy = inFollowStrategy;
+        getSystemAdministratorIdsMapper = inGetSystemAdministratorIdsMapper;
     }
 
     /**
@@ -172,6 +162,7 @@ public class GroupCreator extends GroupPersister
     {
         ValidationException ve = new ValidationException();
         String creatorUserName = inActionContext.getActionContext().getPrincipal().getAccountId();
+        Long creatorPersonId = inActionContext.getActionContext().getPrincipal().getId();
 
         // verify group has a parent org
         Organization parentOrg = inGroup.getParentOrganization();
@@ -199,7 +190,12 @@ public class GroupCreator extends GroupPersister
 
         // if the groups parent organization requires approval to create groups,
         // set the pending state to true.
-        boolean isPending = !(parentOrg.getAllUsersCanCreateGroups() || isACoordinator(parentOrg, creatorUserName));
+        boolean isPending = true;
+        if (parentOrg.getAllUsersCanCreateGroups()
+                || getSystemAdministratorIdsMapper.execute(null).contains(creatorPersonId))
+        {
+            isPending = false;
+        }
         inGroup.setPending(isPending);
 
         // Set the current user to the createdby person.
@@ -214,10 +210,6 @@ public class GroupCreator extends GroupPersister
 
         // sets the destination entity id for the group's stream scope
         inGroup.getStreamScope().setDestinationEntityId(inGroup.getId());
-
-        OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
-        orgTraverser.traverseHierarchy(inGroup);
-        getOrgMapper().updateOrganizationStatistics(orgTraverser);
 
         queueAsyncAction(inActionContext, inGroup, false);
 
@@ -245,32 +237,5 @@ public class GroupCreator extends GroupPersister
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("createNotificationsAction", null, request));
         }
-    }
-
-    // TODO remove this if we refactor to change the domains org object's
-    // isCoordinator method to recursively look.
-    /**
-     * Get whiter the user is a coordinator for this org or it's sub orgs.
-     * 
-     * @param org
-     *            The org object you are currently on.
-     * @param accountId
-     *            The account ID of the person you want to check.
-     * @return a boolean is the account ID is a coordinator of this org or any of it's parents.
-     */
-    public boolean isACoordinator(final Organization org, final String accountId)
-    {
-        boolean isCoordinator = org.isCoordinator(accountId);
-
-        for (Long subOrgId : orgHierarchyCache.getParentOrganizations(org.getId()))
-        {
-            if (isCoordinator)
-            {
-                break;
-            }
-            isCoordinator = getOrgMapper().findById(subOrgId).isCoordinator(accountId);
-        }
-
-        return isCoordinator;
     }
 }

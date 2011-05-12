@@ -19,25 +19,23 @@ import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-
-
 
 /**
  * Tests the new group request translator.
@@ -65,18 +63,18 @@ public class RequestNewGroupTranslatorTest
         final long orgId = 3000L;
         final long actorId = 4000L;
 
-        // prep data
-
-        final Set<Long> coordinators = new HashSet<Long>();
-        coordinators.add(coord1id);
-        coordinators.add(coord2id);
+        final List<Long> admins = new ArrayList<Long>();
+        admins.add(coord1id);
+        admins.add(coord2id);
 
         final DomainGroup group = new DomainGroup();
         group.setName(groupName);
 
+        final DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
+                "SystemAdminIdsMapper");
+
         // expectations
         final FindByIdMapper<DomainGroup> groupMapper = context.mock(FindByIdMapper.class);
-        final GetOrgCoordinators orgCoordMapper = context.mock(GetOrgCoordinators.class);
         final FindByIdRequest request = new FindByIdRequest("DomainGroup", groupId);
         context.checking(new Expectations()
         {
@@ -84,14 +82,14 @@ public class RequestNewGroupTranslatorTest
                 allowing(groupMapper).execute(with(equalInternally(request)));
                 will(returnValue(group));
 
-                allowing(orgCoordMapper).execute(orgId);
-                will(returnValue(coordinators));
+                oneOf(systemAdminIdsMapper).execute(null);
+                will(returnValue(admins));
             }
         });
 
         // run
 
-        RequestNewGroupTranslator sut = new RequestNewGroupTranslator(groupMapper, orgCoordMapper);
+        RequestNewGroupTranslator sut = new RequestNewGroupTranslator(groupMapper, systemAdminIdsMapper);
         Collection<NotificationDTO> list = sut.translate(actorId, orgId, groupId);
 
         // verify
@@ -107,6 +105,5 @@ public class RequestNewGroupTranslatorTest
         assertEquals(2, recipients.size());
         assertTrue(Matchers.hasItems(coord1id, coord2id).matches(recipients));
     }
-
 
 }

@@ -34,10 +34,7 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
@@ -72,12 +69,6 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
      */
     private final OrganizationMapper orgMapper;
 
-    /**
-     * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
-     * OrganizationHierarchyTraversers.
-     */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
-
     /** Execution strategy for deleting a group. */
     private TaskHandlerExecutionStrategy deleteGroupExecution;
 
@@ -92,21 +83,17 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
      *            mapper to update cache when a private group is approved
      * @param inOrgMapper
      *            - {@link OrganizationMapper}.
-     * @param inOrgTraverserBuilder
-     *            {@link OrganizationHierarchyTraverserBuilder}.
      * @param inDeleteGroupExecution
      *            Execution strategy for deleting a group.
      */
     public ReviewPendingGroupExecution(final DomainGroupMapper inGroupMapper, final Notifier inEmailNotifier,
             final AddPrivateGroupIdToCachedCoordinatorAccessList inAddPrivateGroupIdToCachedListMapper,
-            final OrganizationMapper inOrgMapper, final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
-            final TaskHandlerExecutionStrategy inDeleteGroupExecution)
+            final OrganizationMapper inOrgMapper, final TaskHandlerExecutionStrategy inDeleteGroupExecution)
     {
         groupMapper = inGroupMapper;
         addPrivateGroupIdToCachedListMapper = inAddPrivateGroupIdToCachedListMapper;
         emailNotifier = inEmailNotifier;
         orgMapper = inOrgMapper;
-        orgTraverserBuilder = inOrgTraverserBuilder;
         deleteGroupExecution = inDeleteGroupExecution;
     }
 
@@ -143,8 +130,6 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
                 {
                     addPrivateGroupIdToCachedListMapper.execute(groupId);
                 }
-
-                updateOrgStatistics(group.getParentOrganization());
             }
             else
             {
@@ -217,18 +202,5 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
         {
             inActionContext.getUserActionRequests().add(asyncAction);
         }
-    }
-
-    /**
-     * Update an organization's stats.
-     * 
-     * @param inOrganizaiton
-     *            the org to update.
-     */
-    private void updateOrgStatistics(final Organization inOrganizaiton)
-    {
-        OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
-        orgTraverser.traverseHierarchy(inOrganizaiton);
-        orgMapper.updateOrganizationStatistics(orgTraverser);
     }
 }

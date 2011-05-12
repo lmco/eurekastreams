@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -25,12 +24,10 @@ import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.HashTag;
 import org.eurekastreams.server.domain.stream.StreamHashTag;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
  * Parse an Activity's content, find any hashtags, then store the hashtags in each stream that the activity falls under,
@@ -64,18 +61,8 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
     private final InsertMapper<StreamHashTag> streamHashTagInsertMapper;
 
     /**
-     * mapper to get all parent org ids for an org id.
-     */
-    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIds;
-
-    /**
-     * Get organizations by ids mapper.
-     */
-    private final DomainMapper<List<Long>, List<OrganizationModelView>> organizationsByIdsMapper;
-
-    /**
      * Constructor for the PostActivityAsyncExecutionStrategy class.
-     *
+     * 
      * @param inContentExtractor
      *            the activity content extractor
      * @param inHashTagExtractor
@@ -84,29 +71,21 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
      *            mapper to get hashtags from the database
      * @param inStreamHashTagInsertMapper
      *            mapper to insert stream hashtags
-     * @param inGetRecursiveParentOrgIds
-     *            mapper to get all org ids up a parent tree
-     * @param inOrganizationsByIdsMapper
-     *            mapper to get organization modelviews from ids
      */
     public StoreStreamHashTagsForActivityStrategyImpl(final HashTagExtractor inHashTagExtractor,
             final ActivityContentExtractor inContentExtractor,
             final DecoratedPartialResponseDomainMapper<List<String>, List<HashTag>> inHashTagMapper,
-            final InsertMapper<StreamHashTag> inStreamHashTagInsertMapper,
-            final DomainMapper<Long, List<Long>> inGetRecursiveParentOrgIds,
-            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrganizationsByIdsMapper)
+            final InsertMapper<StreamHashTag> inStreamHashTagInsertMapper)
     {
         hashTagExtractor = inHashTagExtractor;
         contentExtractor = inContentExtractor;
         hashTagMapper = inHashTagMapper;
         streamHashTagInsertMapper = inStreamHashTagInsertMapper;
-        getRecursiveParentOrgIds = inGetRecursiveParentOrgIds;
-        organizationsByIdsMapper = inOrganizationsByIdsMapper;
     }
 
     /**
      * Parse and insert any necessary StreamHashTags for the input activity.
-     *
+     * 
      * @param inActivity
      *            the activity to parse for stream hashtags
      */
@@ -122,7 +101,6 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
         }
 
         String recipientStreamKey = inActivity.getRecipientStreamScope().getUniqueKey();
-        List<String> orgHierarchyShortNames = null;
 
         // create stream hashtag entries for each of the tags being applied
         StreamHashTag streamHashTag;
@@ -144,34 +122,12 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
 
             streamHashTag = new StreamHashTag(hashTag, inActivity, recipientStreamKey, scopeType);
             streamHashTagInsertMapper.execute(new PersistenceRequest<StreamHashTag>(streamHashTag));
-
-            if (inActivity.getIsDestinationStreamPublic())
-            {
-                // for public streams, bubble the hashtag up the org tree
-                if (orgHierarchyShortNames == null)
-                {
-                    orgHierarchyShortNames = getAllOrgShortNamesInHierarchy(inActivity.getRecipientParentOrg().getId());
-                }
-
-                for (String orgShortName : orgHierarchyShortNames)
-                {
-                    if (log.isDebugEnabled())
-                    {
-                        log.debug("Adding StreamHashTag " + hashTag.getContent() + " for public " + scopeType
-                                + " stream's parent org tree, organization " + orgShortName + ", activity id: #"
-                                + inActivity.getId());
-                    }
-
-                    streamHashTag = new StreamHashTag(hashTag, inActivity, orgShortName, ScopeType.ORGANIZATION);
-                    streamHashTagInsertMapper.execute(new PersistenceRequest<StreamHashTag>(streamHashTag));
-                }
-            }
         }
     }
 
     /**
      * Get a set of all of the hashtags for a the input activity, based on its content.
-     *
+     * 
      * @param inActivity
      *            the activity to look for hashtags for
      * @return the collection of hashtags
@@ -180,35 +136,5 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
     {
         String content = contentExtractor.extractContent(inActivity.getBaseObjectType(), inActivity.getBaseObject());
         return hashTagExtractor.extractAll(content);
-    }
-
-    /**
-     * Get all of the short names of all organizations up the hierarchy from and including the input org id.
-     *
-     * @param orgId
-     *            the org id to start with (and include in the results)
-     * @return all of the short names of all organizations up the hierarchy from and including the input org id
-     */
-    private List<String> getAllOrgShortNamesInHierarchy(final Long orgId)
-    {
-        List<String> shortNames = new ArrayList<String>();
-        List<Long> parentOrgIds = getRecursiveParentOrgIds.execute(orgId);
-        parentOrgIds.add(orgId);
-
-        if (log.isTraceEnabled())
-        {
-            log.trace("Fetching organization modelviews for all of the parent orgs of activity with parent org id "
-                    + parentOrgIds.toString());
-        }
-
-        for (OrganizationModelView org : organizationsByIdsMapper.execute(parentOrgIds))
-        {
-            shortNames.add(org.getShortName());
-        }
-        if (log.isTraceEnabled())
-        {
-            log.trace("Found org short names: " + shortNames.toString());
-        }
-        return shortNames;
     }
 }

@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse;
@@ -25,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for DeleteGroup mapper.
- *
+ * 
  */
 public class DeleteGroupTest extends MapperTest
 {
@@ -55,10 +54,6 @@ public class DeleteGroupTest extends MapperTest
         assertEquals(1, getEntityManager().createQuery("FROM DomainGroup WHERE id = 2").getResultList().size());
         assertEquals(1, getEntityManager().createQuery("FROM StreamScope WHERE id = 875").getResultList().size());
 
-        // get a parent org group count to compare with after delete.
-        int descendantGroupCount = (Integer) getEntityManager().createQuery(
-                "SELECT descendantGroupCount FROM Organization WHERE id = 7").getSingleResult();
-
         DeleteGroupResponse response = sut.execute(groupId);
 
         getEntityManager().flush();
@@ -68,18 +63,10 @@ public class DeleteGroupTest extends MapperTest
         assertEquals(2, response.getGroupId().longValue());
         assertEquals("group2", response.getGroupShortName());
         assertEquals(groupStreamScopeId, response.getStreamScopeId().longValue());
-        assertEquals(2, response.getParentOrganizationShortNames().size());
-        assertTrue(response.getParentOrganizationShortNames().contains("tstorgname"));
-        assertTrue(response.getParentOrganizationShortNames().contains("child2orgname"));
 
         // verify associated items are gone as expected.
         // TODO: This could be filled out with more related entities to ensure cascading doesn't change for DomainGroup.
         assertEquals(0, getEntityManager().createQuery("FROM DomainGroup WHERE id = 2").getResultList().size());
         assertEquals(0, getEntityManager().createQuery("FROM StreamScope WHERE id = 875").getResultList().size());
-
-        // verify organization stats were updated.
-        assertEquals(descendantGroupCount - 1, ((Integer) getEntityManager().createQuery(
-                "SELECT descendantGroupCount FROM Organization WHERE id = 7").getSingleResult()).intValue());
-
     }
 }

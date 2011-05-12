@@ -54,8 +54,7 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
     public void testExecuteWithOrgsHavingAllPublicGroups()
     {
         final Long rootOrgId = 5L;
-        final Set<Long> groupIds = sut.execute((Set<Long>) Collections
-                .singleton(rootOrgId));
+        final Set<Long> groupIds = sut.execute(Collections.singleton(rootOrgId));
         assertEquals(0, groupIds.size());
     }
 
@@ -65,14 +64,11 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
     @Test
     public void testExecuteSingleOrgAndMixedPublicPrivateGroups()
     {
-        getEntityManager().createQuery(
-                "UPDATE DomainGroup set publicGroup=false WHERE id=5")
-                .executeUpdate();
+        getEntityManager().createQuery("UPDATE DomainGroup set publicGroup=false WHERE id=5").executeUpdate();
 
         final Long rootOrgId = 5L;
         final Long privateGroupId = 5L;
-        final Set<Long> groupIds = sut.execute((Set<Long>) Collections
-                .singleton(rootOrgId));
+        final Set<Long> groupIds = sut.execute(Collections.singleton(rootOrgId));
         assertEquals(Collections.singleton(privateGroupId), groupIds);
     }
 
@@ -83,9 +79,7 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
     public void testExecuteAllOrgsAndMixedPublicPrivateGroups()
     {
         // set group ids 3, 5, 7 private
-        getEntityManager().createQuery(
-                "UPDATE DomainGroup set publicGroup=false WHERE id IN(3,5,7)")
-                .executeUpdate();
+        getEntityManager().createQuery("UPDATE DomainGroup set publicGroup=false WHERE id IN(3,5,7)").executeUpdate();
 
         // search across all orgs
         final Set<Long> orgIds = new HashSet<Long>();
@@ -110,20 +104,18 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
     public void testExecuteManyOrgsWhenAllDomainGroupsPrivate()
     {
         // update all groups to be private
-        getEntityManager().createQuery(
-                "UPDATE DomainGroup set publicGroup=false")
-                .executeUpdate();
+        getEntityManager().createQuery("UPDATE DomainGroup set publicGroup=false").executeUpdate();
 
-        // search across orgs 5 & 6
+        // search across orgs 5
         final Set<Long> orgIds = new HashSet<Long>();
         orgIds.add(5L);
-        orgIds.add(6L);
 
         // execute sut
         final Set<Long> groupIds = sut.execute(orgIds);
 
-        // assert we got back 3,5,7
-        assertEquals(6, groupIds.size());
+        assertEquals(8, groupIds.size());
+        assertTrue(groupIds.contains(1L));
+        assertTrue(groupIds.contains(2L));
         assertTrue(groupIds.contains(3L));
         assertTrue(groupIds.contains(4L));
         assertTrue(groupIds.contains(5L));

@@ -55,12 +55,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
     private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorIdsDAO;
 
     /**
-     * Strategy to retrieve the banner id if it is not directly configured.
-     */
-    @SuppressWarnings("unchecked")
-    private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
-
-    /**
      * Mapper to get followers for a group.
      */
     private DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
@@ -89,8 +83,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      *            mapper to populate parent orgs with skeleton
      * @param inGroupCoordinatorIdsDAO
      *            Mapper to get all person ids that have group coordinator access for a given group.
-     * @param inGetBannerIdStrategy
-     *            Instance of the {@link GetBannerIdByParentOrganizationStrategy}.
      * @param inGroupFollowerIdsMapper
      *            Instance of the {@link GetGroupFollowerIds}.
      * @param inGroupCoordinatorIdsByGroupIdMapper
@@ -105,7 +97,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
             final GetDomainGroupsByShortNames inGroupByShortNameMapper,
             final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inPopulateOrgChildWithSkeletonParentOrgsCacheMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinatorIdsDAO,
-            final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy,
             final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
             final DomainMapper<Long, List<Long>> inGroupCoordinatorIdsByGroupIdMapper,
             final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsByIdMapper,
@@ -114,7 +105,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         groupByShortNameMapper = inGroupByShortNameMapper;
         populateOrgChildWithSkeletonParentOrgsCacheMapper = inPopulateOrgChildWithSkeletonParentOrgsCacheMapper;
         groupCoordinatorIdsDAO = inGroupCoordinatorIdsDAO;
-        getBannerIdStrategy = inGetBannerIdStrategy;
         groupFollowerIdsMapper = inGroupFollowerIdsMapper;
         groupCoordinatorIdsByGroupIdMapper = inGroupCoordinatorIdsByGroupIdMapper;
         personModelViewsByIdMapper = inPersonModelViewsByIdMapper;
@@ -131,10 +121,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         {
             // set banner for group.
             result.setBannerEntityId(result.getId());
-            if (result.getBannerId() == null)
-            {
-                getBannerIdStrategy.getBannerId(result.getParentOrganizationId(), result);
-            }
 
             // short circuit here if restricted for user.
             if (!isAccessPermitted(inActionContext.getPrincipal(), result))

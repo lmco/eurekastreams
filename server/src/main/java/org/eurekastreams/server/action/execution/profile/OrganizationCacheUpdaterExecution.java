@@ -24,12 +24,11 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.OrganizationCacheUpdaterRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner;
 import org.eurekastreams.server.persistence.mappers.cache.SaveOrganizationCoordinatorIdsToCache;
 
 /**
  * Execution to perform async tasks after an organization has been updated. This currently includes:
- *
+ * 
  * 1. updating the activity search string for all people that are coordinators of the organization 2. save updated list
  * of coordinators to cache. 3. Conditionally clear the Recursive Org Children ID cache for every Org up the tree from
  * input org (only done on create).
@@ -53,35 +52,25 @@ public class OrganizationCacheUpdaterExecution implements ExecutionStrategy<Acti
     private final SaveOrganizationCoordinatorIdsToCache saveOrgCoordinatorIdsToCacheDAO;
 
     /**
-     * Mapper to clean the cache of recursive org ids up the tree.
-     */
-    private final OrgParentHierarchyCacheCleaner orgParentHierarchyCacheCleaner;
-
-    /**
      * Constructor.
-     *
+     * 
      * @param inPrivateGroupIdsCacheRefreshMapper
      *            mapper to retrieve the private group ids that a user has access to view activities through a org/group
      *            coord role.
      * @param inOrgCoordinatorCacheManager
      *            {@link SaveOrganizationCoordinatorIdsToCache}.
-     * @param inOrgParentHierarchyCacheCleaner
-     *            {@link OrgParentHierarchyCacheCleaner}.
-     *
      */
     public OrganizationCacheUpdaterExecution(final DomainMapper<Long, Set<Long>> inPrivateGroupIdsCacheRefreshMapper,
-            final SaveOrganizationCoordinatorIdsToCache inOrgCoordinatorCacheManager,
-            final OrgParentHierarchyCacheCleaner inOrgParentHierarchyCacheCleaner)
+            final SaveOrganizationCoordinatorIdsToCache inOrgCoordinatorCacheManager)
     {
         privateGroupIdsCacheRefreshMapper = inPrivateGroupIdsCacheRefreshMapper;
         saveOrgCoordinatorIdsToCacheDAO = inOrgCoordinatorCacheManager;
-        orgParentHierarchyCacheCleaner = inOrgParentHierarchyCacheCleaner;
     }
 
     /**
      * Perform the action, updating the coordinator cache list for a Domain Group and rebuilding the security-scoped
      * activity search strings for all coordinators of a Domain Group.
-     *
+     * 
      * @param inActionContext
      *            the action context with the org id to update cache for
      * @return null
@@ -103,13 +92,6 @@ public class OrganizationCacheUpdaterExecution implements ExecutionStrategy<Acti
         }
 
         saveOrgCoordinatorIdsToCacheDAO.execute(request);
-
-        if (request.getClearRecursiveOrgChildernUpTree())
-        {
-            log.info("Organization just peristed - now cleaning the recursive child cache up the tree for org #"
-                    + request.getOrganizationId());
-            orgParentHierarchyCacheCleaner.execute(request.getOrganizationId());
-        }
 
         log.info("Action complete");
         return null;

@@ -630,6 +630,11 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private String companyName;
 
     /**
+     * Whether this user is a system administrator.
+     */
+    private boolean isAdministrator;
+
+    /**
      * TODO: This is a patch until we stop sending entities over the line
      * 
      * Construct a person from a person model view.
@@ -1868,4 +1873,22 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         companyName = inCompanyName;
     }
+
+    /**
+     * @return the isAdministrator
+     */
+    public boolean isAdministrator()
+    {
+        return isAdministrator;
+    }
+
+    /**
+     * @param inIsAdministrator
+     *            the isAdministrator to set
+     */
+    public void setAdministrator(final boolean inIsAdministrator)
+    {
+        isAdministrator = inIsAdministrator;
+    }
+
 }

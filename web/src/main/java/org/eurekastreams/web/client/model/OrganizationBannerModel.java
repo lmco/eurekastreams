@@ -15,13 +15,10 @@
  */
 package org.eurekastreams.web.client.model;
 
-import org.eurekastreams.server.domain.Bannerable;
-import org.eurekastreams.web.client.events.data.DeleteOrganizationBannerResponseEvent;
-import org.eurekastreams.web.client.ui.Session;
 
 /**
  * client model for GroupBannerModel.
- *
+ * 
  */
 public class OrganizationBannerModel extends BaseModel implements Deletable<Long>
 {
@@ -32,7 +29,7 @@ public class OrganizationBannerModel extends BaseModel implements Deletable<Long
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static OrganizationBannerModel getInstance()
@@ -42,21 +39,13 @@ public class OrganizationBannerModel extends BaseModel implements Deletable<Long
 
     /**
      * Delete method.
-     *
+     * 
      * @param request
      *            the request.
-     *
+     * 
      */
     public void delete(final Long request)
     {
-        super.callWriteAction("deleteOrganizationBanner", request, new OnSuccessCommand<Bannerable>()
-        {
-            public void onSuccess(final Bannerable response)
-            {
-                Session.getInstance().getEventBus()
-                        .notifyObservers(new DeleteOrganizationBannerResponseEvent(response));
-            }
-        });
 
     }
 

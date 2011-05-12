@@ -155,14 +155,6 @@ public interface CoreCss extends CssResource
     @ClassName("box-wrapper")
     String boxWrapper();
 
-    String breadcrumb();
-
-    @ClassName("breadcrumb-label")
-    String breadcrumbLabel();
-
-    @ClassName("breadcrumb-separator")
-    String breadcrumbSeparator();
-
     @ClassName("break")
     String breakClass();
 

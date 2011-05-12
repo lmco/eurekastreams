@@ -42,22 +42,22 @@ public class GetFlaggedActivitiesForOrganization extends
     /**
      * Bulk activities mapper.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActivitiesMapper
      *            the activities mapper
      */
-    public GetFlaggedActivitiesForOrganization(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesMapper)
+    public GetFlaggedActivitiesForOrganization(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
         activitiesMapper = inActivitiesMapper;
     }
 
     /**
      * Get all flagged activities posted directly under an organization.
-     *
+     * 
      * @param inRequest
      *            the request containing the organization and requesting user
      * @return a paged set of ActivityDTOs
@@ -73,7 +73,7 @@ public class GetFlaggedActivitiesForOrganization extends
         }
 
         // get the total number of flagged activities
-        Long flaggedActivityCount = (Long) buildQuery("count(*)", inRequest.getOrganizationId()).getSingleResult();
+        Long flaggedActivityCount = (Long) buildQuery("count(*)").getSingleResult();
 
         List<ActivityDTO> activities;
         if (flaggedActivityCount > 0)
@@ -81,7 +81,7 @@ public class GetFlaggedActivitiesForOrganization extends
             log.info("Found " + flaggedActivityCount
                     + " flagged activity ids - passing them to the bulk activity mapper for ActivityDTOs.");
 
-            Query q = buildQuery("id", inRequest.getOrganizationId());
+            Query q = buildQuery("id");
             q.setFirstResult(inRequest.getStartIndex());
             q.setMaxResults(inRequest.getEndIndex() - inRequest.getStartIndex() + 1);
             List<Long> activityIds = q.getResultList();
@@ -99,18 +99,14 @@ public class GetFlaggedActivitiesForOrganization extends
 
     /**
      * Build a query for selecting field(s) from flagged activities.
-     *
+     * 
      * @param fieldsString
      *            a comma-separated string listing the fields to select
-     * @param organizationId
-     *            the organization id to get activities for
      * @return a Query object
      */
-    private Query buildQuery(final String fieldsString, final Long organizationId)
+    private Query buildQuery(final String fieldsString)
     {
-        return getEntityManager().createQuery(
-                "SELECT " + fieldsString
-                        + " FROM Activity WHERE recipientParentOrgId = :recipientParentOrgId AND flagged = :isFlagged")
-                .setParameter("recipientParentOrgId", organizationId).setParameter("isFlagged", true);
+        return getEntityManager().createQuery("SELECT " + fieldsString + " FROM Activity WHERE flagged = :isFlagged")
+                .setParameter("isFlagged", true);
     }
 }

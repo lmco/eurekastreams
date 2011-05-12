@@ -25,13 +25,12 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * This mapper finds all cache keys that could contain a reference to one of the activities passed as input. Lists of
  * starred activities are not included, nor are the streams that the activities were posted to .
- *
+ * 
  * NOTE: This is probably incomplete. This is used for deleting activities. Rather than maintain these lists, we're
  * looking into ignoring deleted activity ids in lists and removing those ids as they're found.
  */
@@ -43,34 +42,9 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
     private final Log logger = LogFactory.make();
 
     /**
-     * mapper to get all parent org ids for an org id.
-     */
-    private DomainMapper<Long, List<Long>> parentOrgIdsMapper;
-
-    /**
-     * Mapper to get the short names from org ids.
-     */
-    private final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper;
-
-    /**
-     * Constructor.
-     *
-     * @param inParentOrgIdsMapper
-     *            parent org mapper
-     * @param inOrgShortNamesFromIdsMapper
-     *            org short names from ids mapper
-     */
-    public GetListsContainingActivities(final DomainMapper<Long, List<Long>> inParentOrgIdsMapper,
-            final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
-    {
-        parentOrgIdsMapper = inParentOrgIdsMapper;
-        orgShortNamesFromIdsMapper = inOrgShortNamesFromIdsMapper;
-    }
-
-    /**
      * Execute database queries to find which cached lists of activity ids could contain a reference to a given list of
      * activity ids.
-     *
+     * 
      * @param activityIds
      *            the list of activity ids.
      * @return the list of cache keys that could contain a reference to the input activities.
@@ -80,7 +54,6 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
     {
         Set<String> lists = new HashSet<String>();
         Set<String> authorAccountIds = new HashSet<String>();
-        Set<Long> parentOrgIds = new HashSet<Long>();
 
         if (logger.isTraceEnabled())
         {
@@ -109,15 +82,6 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
             {
                 authorAccountIds.add(activity.getActorId());
             }
-            parentOrgIds.add(activity.getRecipientParentOrg().getId());
-        }
-
-        // add all the org streams
-        List<String> parentOrgShortNames = getAllParentOrgShortNames(parentOrgIds);
-        for (String orgShortName : parentOrgShortNames)
-        {
-            logger.trace("Found org containing one of our activities: " + orgShortName);
-            lists.add(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName.toLowerCase());
         }
 
         if (logger.isTraceEnabled())
@@ -158,26 +122,4 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
         return new ArrayList(lists);
     }
 
-    /**
-     * Returns all parent org short names up the tree.
-     *
-     * @param inOrgIds
-     *            The id of the org.
-     * @return all parent org ids up the tree
-     */
-    private List<String> getAllParentOrgShortNames(final Set<Long> inOrgIds)
-    {
-        Set<Long> parentIds = new HashSet<Long>();
-        for (Long orgId : inOrgIds)
-        {
-            if (!parentIds.contains(orgId))
-            {
-                logger.trace("Looking for parent orgs of " + orgId);
-                parentIds.addAll(parentOrgIdsMapper.execute(orgId));
-            }
-            // now add the looped org id - we have all orgs up the tree for this one, so don't look for it again
-            parentIds.add(orgId);
-        }
-        return orgShortNamesFromIdsMapper.execute(new ArrayList<Long>(parentIds));
-    }
 }
