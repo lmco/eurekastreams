@@ -57,6 +57,14 @@ public class GalleryTabTemplateDTO implements Serializable
 
     /**
      * Constructor.
+     */
+    public GalleryTabTemplateDTO()
+    {
+
+    }
+
+    /**
+     * Constructor.
      * 
      * @param inId
      *            Id.
