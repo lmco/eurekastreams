@@ -96,9 +96,6 @@
     <bean id="getImageByIdentifier"
         class="org.eurekastreams.server.persistence.mappers.db.GetImageByIdentifier" />
 		
-	<bean id="getRootOrganizationIdAndShortNameMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
-	
 	<bean id="getPersonIdsWithStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -370,12 +367,6 @@
 	<bean id="followedActivityIdsLoader" class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
     
     <bean id="updaterStrategy" class="org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater"/>
-    
-    <bean id="isRootOrgCoordinatorStrategy" class="org.eurekastreams.server.action.authorization.IsRootOrganizationCoordinator">
-        <constructor-arg>
-              <bean class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
-        </constructor-arg>
-    </bean>
     
     <bean id="insertMapper" class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
 

@@ -149,8 +149,7 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
         if (systemAdminIds.contains(person.getEntityId()))
         {
             log.debug("user " + accountId + " is a root org coordinator.");
-            person.getRoles().add((Role.ORG_COORDINATOR));
-            person.getRoles().add((Role.ROOT_ORG_COORDINATOR));
+            person.getRoles().add((Role.SYSTEM_ADMIN));
         }
 
         ExtendedUserDetails userDetails = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication()

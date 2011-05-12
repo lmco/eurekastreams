@@ -23,7 +23,6 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.CreatePersonRequest;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.springframework.util.Assert;
 
@@ -39,11 +38,6 @@ public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrate
     private PersonLookupStrategy ldapPersonMapper;
 
     /**
-     * {@link GetRootOrganizationIdAndShortName}.
-     */
-    private GetRootOrganizationIdAndShortName rootOrgIdDAO;
-
-    /**
      * Create person strategy.
      */
     private TaskHandlerExecutionStrategy<ActionContext> createPersonStrategy;
@@ -53,20 +47,15 @@ public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrate
      * 
      * @param inLdapPersonMapper
      *            {@link PersonLookupStrategy}.
-     * @param inRootOrgIdDAO
-     *            {@link GetRootOrganizationIdAndShortName}.
      * @param inCreatePersonStrategy
      *            Create person strategy.
      */
     public CreatePersonFromLdapExecution(final PersonLookupStrategy inLdapPersonMapper,
-            final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
             final TaskHandlerExecutionStrategy<ActionContext> inCreatePersonStrategy)
     {
         ldapPersonMapper = inLdapPersonMapper;
-        rootOrgIdDAO = inRootOrgIdDAO;
         createPersonStrategy = inCreatePersonStrategy;
         Assert.notNull(ldapPersonMapper);
-        Assert.notNull(rootOrgIdDAO);
         Assert.notNull(createPersonStrategy);
     }
 
@@ -97,8 +86,8 @@ public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrate
         person.setAccountLocked(true);
 
         return (Person) createPersonStrategy.execute(new TaskHandlerActionContext<ActionContext>(
-                new ServiceActionContext(new CreatePersonRequest(person, rootOrgIdDAO.getRootOrganizationId(), false),
-                        null), inActionContext.getUserActionRequests()));
+                new ServiceActionContext(new CreatePersonRequest(person, false), null), inActionContext
+                        .getUserActionRequests()));
     }
 
 }

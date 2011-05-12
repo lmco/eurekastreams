@@ -208,8 +208,7 @@ public class GetPersonModelViewExecutionTest
 
         PersonModelView result = sut.execute(actionContext);
 
-        assertEquals(true, result.getRoles().contains(Role.ORG_COORDINATOR));
-        assertEquals(true, result.getRoles().contains(Role.ROOT_ORG_COORDINATOR));
+        assertEquals(true, result.getRoles().contains(Role.SYSTEM_ADMIN));
         assertEquals(true, result.getTosAcceptance());
         assertEquals(AuthenticationType.NOTSET, result.getAuthenticationType());
 
@@ -269,8 +268,7 @@ public class GetPersonModelViewExecutionTest
 
         PersonModelView result = sut.execute(actionContext);
 
-        assertEquals(false, result.getRoles().contains(Role.ORG_COORDINATOR));
-        assertEquals(false, result.getRoles().contains(Role.ROOT_ORG_COORDINATOR));
+        assertEquals(false, result.getRoles().contains(Role.SYSTEM_ADMIN));
         assertEquals(false, result.getTosAcceptance());
         assertEquals(AuthenticationType.FORM, result.getAuthenticationType());
 

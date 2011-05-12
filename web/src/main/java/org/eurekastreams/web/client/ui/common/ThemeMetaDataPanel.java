@@ -84,7 +84,7 @@ public class ThemeMetaDataPanel extends FlowPanel
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMetaData());
 
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             EditPanel editControls = new EditPanel(this, Mode.EDIT_AND_DELETE);
 

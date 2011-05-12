@@ -105,7 +105,7 @@ public class GadgetMetaDataPanel extends FlowPanel
         tabId = inTabId;
         final FlowPanel thisBuffered = this;
 
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             EditPanel editControls = new EditPanel(this, Mode.EDIT_AND_DELETE);
 

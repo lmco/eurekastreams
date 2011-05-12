@@ -187,7 +187,6 @@
                 <constructor-arg value="setPersonLockedStatusAction"/>
                 <constructor-arg value="refreshPersonAction"/>
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
                 <constructor-arg ref="findSystemSettings" />              
             </bean>
         </constructor-arg>
@@ -210,8 +209,7 @@
                 <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
                 <constructor-arg value=""/>
                 <constructor-arg value="refreshPersonAction"/>
-                <constructor-arg ref="getPersonIdsByLockedStatus"/>
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
+                <constructor-arg ref="getPersonIdsByLockedStatus"/>  
                 <constructor-arg ref="findSystemSettings" />              
             </bean>
         </constructor-arg>
@@ -225,7 +223,6 @@
         <constructor-arg>                
             <bean class="org.eurekastreams.server.action.execution.CreatePersonFromLdapExecution">
                 <constructor-arg ref="ldapPersonLookupViaAccountIdAttribute" />
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
                 <constructor-arg ref="createPersonExecution" />                
             </bean>
         </constructor-arg>
@@ -1046,18 +1043,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
-    <bean id="getOrganizationModelView" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.GetOrganizationModelViewByShortNameExecution">
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />   
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>    
     
     <bean id="getGroupModelView" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1959,23 +1944,6 @@
         <constructor-arg value="true" />
     </bean>
     
-    <bean id="getIsRootOrgCoordinator" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.IsRootOrgCoordinatorExecution">
-                <constructor-arg ref="isRootOrgCoordinatorStrategy" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="isRootOrgCoordinatorStrategy"
-        class="org.eurekastreams.server.action.authorization.IsRootOrganizationCoordinator">
-        <constructor-arg ref="getSystemAdministratorIds" />
-    </bean>
-
     <bean id="postActivityValidationStrategy"
         class="org.eurekastreams.server.action.validation.stream.PostActivityValidationStrategy">
         <constructor-arg ref="verbValidators" />
@@ -2035,8 +2003,6 @@
         <constructor-arg ref="bulkActivitiesMapper" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.service.actions.strategies.ResourceRecipientRetriever">
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
-                <constructor-arg ref="findByIdMapper" />
                 <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
             </bean>
         </constructor-arg>

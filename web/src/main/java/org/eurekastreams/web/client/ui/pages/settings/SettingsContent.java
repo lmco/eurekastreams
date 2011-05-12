@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.pages.settings;
 
-
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.ui.Session;
@@ -60,7 +59,7 @@ public class SettingsContent extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inProcessor
      *            for contacting the server.
      */
@@ -79,7 +78,7 @@ public class SettingsContent extends Composite
 
         tabContainer = new TabContainerPanel();
 
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.ROOT_ORG_COORDINATOR))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             tabContainer.addTab(new SimpleTab("System", systemPanel));
             tabContainer.addTab(new SimpleTab("Plugins", new StreamPluginsPanel()));

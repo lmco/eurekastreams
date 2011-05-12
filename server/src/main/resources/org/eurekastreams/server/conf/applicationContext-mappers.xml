@@ -1876,9 +1876,6 @@
 		class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetUserPrefMapper">
 	</bean>
 	
-	<bean id="getRootOrganizationIdAndShortNameMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
-
 	<bean id="getPrivateGroupIdsCoordinatedByPersonMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson" />
 

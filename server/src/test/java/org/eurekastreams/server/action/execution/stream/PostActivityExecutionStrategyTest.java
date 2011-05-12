@@ -172,8 +172,6 @@ public class PostActivityExecutionStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(recipientRetrieverMock).getParentOrganization(with(currentActivity));
-
                 oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
 
                 oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
@@ -222,8 +220,6 @@ public class PostActivityExecutionStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(recipientRetrieverMock).getParentOrganization(with(currentActivity));
-
                 oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
 
                 oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
@@ -305,8 +301,6 @@ public class PostActivityExecutionStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(recipientRetrieverMock).getParentOrganization(with(currentActivity));
-
                 oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
 
                 oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);

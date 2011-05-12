@@ -163,7 +163,7 @@ public class GalleryContent extends SettingsPanel
         panel.add(galleryPortalContainer);
         panel.add(galleryAddOrEditContainer);
 
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             galleryPortalContainer.add(addGadget);
             galleryPortalContainer.add(addTheme);
@@ -459,7 +459,7 @@ public class GalleryContent extends SettingsPanel
                         if (event.getParameters().get("action").equals("newTheme")
                                 || event.getParameters().get("action").equals("editTheme"))
                         {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 galleryPortalContainer.setVisible(false);
                                 galleryAddOrEditContainer.setVisible(true);
@@ -471,7 +471,7 @@ public class GalleryContent extends SettingsPanel
                         else if (event.getParameters().get("action").equals("editApp")
                                 || event.getParameters().get("action").equals("newApp"))
                         {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 galleryPortalContainer.setVisible(false);
                                 galleryAddOrEditContainer.setVisible(true);
@@ -490,7 +490,7 @@ public class GalleryContent extends SettingsPanel
                             Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
                             setPageTitle("Configure");
 
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 addGadget.setVisible(Session.getInstance().getParameterValue("galleryTab").equals(
                                         "Apps"));

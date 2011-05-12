@@ -134,7 +134,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         {
             {
                 oneOf(tabMapperMock).getTabTemplate(TabType.WELCOME);
-                oneOf(organizationMapperMock).getRootOrganization();
             }
         });
 
@@ -202,7 +201,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("", p.getMiddleName());
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
-        assertEquals(orgMock, p.getParentOrganization());
 
         // test stream order
         // IDs: 1, 5, 4, 3
@@ -262,7 +260,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
         sut = new PersonCreator(personMapper, tabMapper, organizationMapper, readonlyStreamsMapper, streamNames,
                 startPageTabTypes);
-        final Organization org = organizationMapper.getRootOrganization();
 
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 
@@ -272,11 +269,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         inFields.put("middleName", "s");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Neddiddly");
-        inFields.put("organization", org); 
 
-        HashMap<String, String> props = new HashMap<String, String>(); 
-        props.put("somekey", "somevalue"); 
-        inFields.put("additionalProperties", props); 
+        HashMap<String, String> props = new HashMap<String, String>();
+        props.put("somekey", "somevalue");
+        inFields.put("additionalProperties", props);
 
         final Person testPerson = sut.get(null, inFields);
 

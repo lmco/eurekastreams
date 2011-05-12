@@ -67,19 +67,4 @@ public class OrganizationMapper extends DomainEntityMapper<Organization>
 
         return (results.size() == 0) ? null : (Organization) results.get(0);
     }
-
-    /**
-     * Return the root of the organization tree, this is indicated by an org that has itself as it's parent.
-     * 
-     * @return The root of the organization tree.
-     */
-    @SuppressWarnings("unchecked")
-    public Organization getRootOrganization()
-    {
-        Query q = getEntityManager().createQuery("FROM Organization o where o.parentOrganization.id=o.id");
-        List results = q.getResultList();
-
-        return (results.size() == 0) ? null : (Organization) results.get(0);
-    }
-
 }

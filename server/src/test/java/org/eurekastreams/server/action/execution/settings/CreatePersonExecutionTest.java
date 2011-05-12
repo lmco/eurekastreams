@@ -123,9 +123,6 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -177,9 +174,6 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -228,9 +222,6 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -278,9 +269,6 @@ public class CreatePersonExecutionTest
 
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
-
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
 
                 allowing(createRequest).getPerson();
                 will(returnValue(person));

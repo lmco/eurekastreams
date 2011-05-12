@@ -278,7 +278,6 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         currentActivity.setMood(inActivityDTO.getMood());
         currentActivity.setOriginalActorId(inActivityDTO.getOriginalActor().getUniqueIdentifier());
         currentActivity.setOriginalActorType(inActivityDTO.getOriginalActor().getType());
-        currentActivity.setRecipientParentOrg(recipientRetriever.getParentOrganization(inActivityDTO));
         currentActivity.setRecipientStreamScope(recipientRetriever.getStreamScope(inActivityDTO));
         currentActivity.setVerb(inActivityDTO.getVerb());
         currentActivity.setIsDestinationStreamPublic(recipientRetriever.isDestinationStreamPublic(inActivityDTO));

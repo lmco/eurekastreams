@@ -97,15 +97,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         /**
          * Represents *any* group coordinator.
          */
-        GROUP_COORDINATOR,
-        /**
-         * Represents *any* org coordinator.
-         */
-        ORG_COORDINATOR,
-        /**
-         * Represents the root org coordinator.
-         */
-        ROOT_ORG_COORDINATOR
+        GROUP_COORDINATOR, SYSTEM_ADMIN
     }
 
     /**

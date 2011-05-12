@@ -393,33 +393,4 @@ public class OrganizationTest
         assertEquals("property should be set", avatar, sut.getAvatarId());
     }
 
-    /**
-     * Test root org predicate.
-     */
-    @Test
-    public void testIsRootOrg()
-    {
-        Organization org1 = new Organization(ORG_NAME, SHORT_ORG_NAME);
-        org1.setId(1L);
-        Organization org7 = new Organization(ORG_NAME, SHORT_ORG_NAME);
-        org7.setId(7L);
-
-        sut.setId(7L);
-
-        // no parent set
-        assertFalse("Should be false if parent org is not set (hence unknown).", sut.isRootOrganization());
-
-        // set to self
-        sut.setParentOrganization(sut);
-        assertTrue("Should be true if parent org is set to self.", sut.isRootOrganization());
-
-        // set to another with same id
-        sut.setParentOrganization(org7);
-        assertTrue("Should be true if parent org has same id.", sut.isRootOrganization());
-
-        // set to another with different id
-        sut.setParentOrganization(org1);
-        assertFalse("Should be false if parent org has different id.", sut.isRootOrganization());
-    }
-
 }

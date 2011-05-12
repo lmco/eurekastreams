@@ -50,16 +50,6 @@
 
 	<!-- =============== FILTERS =============== -->
 
-	<!-- Invoke setup app if not yet done -->
-	<filter>
-		<filter-name>rootOrgCheckFilter</filter-name>
-		<filter-class>org.eurekastreams.server.service.filters.RootOrgCheckFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>rootOrgCheckFilter</filter-name>
-		<url-pattern>/</url-pattern>
-	</filter-mapping>
-
 	<!-- Shindig authentication -->
 	<filter>
 		<filter-name>authFilter</filter-name>
