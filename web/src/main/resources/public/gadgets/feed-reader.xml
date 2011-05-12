@@ -22,6 +22,7 @@
     <UserPref name="feed_banner" datatype="hidden" default_value="" />
     <UserPref name="feed_banner_link" datatype="hidden" default_value="" />
     <UserPref name="feed_url" display_name="Feed URL:" datatype="text" default_value="" />
+	<UserPref name="featured_feed_url" datatype="hidden" default_value="" />
     <Content type="html" view="default, canvas">
     <![CDATA[
         <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" " http://www.w3.org/ TR/html4/strict.dtd">
@@ -130,9 +131,19 @@
         <script type="text/javascript">
             var prefs_ = new gadgets.Prefs();
             var feedUrl = prefs_.getString("feed_url");
+			var featuredFeedUrl = prefs_.getString("featured_feed_url");
             var bannerUrl = prefs_.getString("feed_banner");
             var bannerLink = prefs_.getString("feed_banner_link");
 
+			var fetchFeedParams = {};
+            fetchFeedParams[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+            fetchFeedParams[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.FEED;
+            fetchFeedParams[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.${build.gadget.request.authtype};
+            fetchFeedParams[gadgets.io.RequestParameters.GET_SUMMARIES] = true;
+            fetchFeedParams[gadgets.io.RequestParameters.NUM_ENTRIES] = 1;
+            fetchFeedParams[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
+
+			
             function init()
             {
                 if (feedUrl != "")
@@ -160,68 +171,79 @@
     <Content type="html" view="default">
     <![CDATA[
         <a target='_NEW' style='cursor: pointer;' class='feed-banner-link' href='#'><div class="feed-banner">Feed Banner</div></a>
-        <div id="feedheadline"></div>
+        <div id="feedheadline" style="display: none;">
+			<div class="headline-text">
+				<a target="_blank"></a>
+			</div>
+			<div class="headline-summary">
+				<span></span> &gt; <a target="_blank">Full Story</a>
+			</div>
+		</div>
         <div id="isgscomm"></div>
         <script type="text/javascript">
-        
+			
+			function renderHeadline(entry)
+			{
+				// extract info from feed entry
+				var summary = jQuery('<div>' + entry.Summary + '</div>');
+				var summaryText = summary.text();
+				if (summaryText.length > 250)
+					summaryText = summaryText.substring(0, summaryText.indexOf(' ', 200)) + '...';
+				var firstImage = summary.find('img[src]:first');
+
+				// insert info into page
+				var feedHeadline = jQuery("#feedheadline");
+
+				var headlineTextLink = feedHeadline.find('.headline-text a');
+				headlineTextLink.attr('href',entry.Link).text(entry.Title);
+				
+				var headlineSummary = feedHeadline.children('.headline-summary');
+				headlineSummary.children('span').text(summaryText);
+				headlineSummary.children('a').attr('href', entry.Link);
+			
+				// insert image if applicable
+				var imageSrc = firstImage.attr('src');
+				if (imageSrc)
+				{
+					var img = new Image();
+					img.onload = function()
+					{
+						if (img.width > 20 && img.height > 20)
+						{
+							var imageBlock = jQuery('<div><a target="_blank"><img class="headline-image" /></a></div>');
+							imageBlock.find('a').attr('href', entry.Link);
+							imageBlock.find('img').attr('src', imageSrc);
+							feedHeadline.children('.headline-text').after(imageBlock);
+						}
+					};
+					img.src = imageSrc;					
+				}
+
+				feedHeadline.show();
+			}
+		
             function render()
             {
                 //fetch feed
-                var params={};
-                params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
-                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.FEED;
-                params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
-                params[gadgets.io.RequestParameters.GET_SUMMARIES] = true;
-                params[gadgets.io.RequestParameters.NUM_ENTRIES] = 1;
-                params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
                 gadgets.io.makeRequest(feedUrl,
                     function(results)
                     {
                         if(!results.errors || results.errors.length == 0)
                         {
                             var feed = results.data;
+								
                             if(feed.Entry)
                             {
-                                //Retrieve the first image from the feed
-                                var imgString = 'http://communications.isgs.lmco.com/wp-content/themes/communications/images/headline_default.jpg';
-                                var imgMatch = feed.Entry[0].Summary.match("<img.*src=.*\/\>");
-                                var headlineSource = "<div class=\"headline-text\"><a target=\"_blank\" href=\"" + feed.Entry[0].Link + "\">" + feed.Entry[0].Title + "</a></div>";
-                                headlineSource += "<div><a target=\"_blank\" href=\"" + feed.Entry[0].Link + "\"><img style=\"display: none;\" class=\"headline-image\" src=\"" + imgString + "\"/></a></div>";
+								gadgets.window.setTitle(feed.Title);
 
-                                var summary = jQuery(feed.Entry[0].Summary).text();
-                                if (summary.length > 250)
-                                {
-                                    summary = summary.substring(0, summary.indexOf(' ', 200));
-                                    summary += "...";
-                                }
-
-                                headlineSource += "<div class=\"headline-summary\">" + summary + " &gt; <a target='_blank' href='" + feed.Entry[0].Link + "'>Full Story</a></div>";
-                                jQuery("#feedheadline").html(headlineSource);
-                                    
+								if (!featuredFeedUrl)
+									renderHeadline(feed.Entry[0]);
+								
                                 Eureka.Container.init("isgscomm", false);
                                 var ex = new Eureka.ExpandableSectionContainer();
-                                var newsFeedListView = 
-                                        new Eureka.FeedListView(feedUrl, false, feed.Title);
-
-                                gadgets.window.setTitle(feed.Title);
+                                var newsFeedListView = new Eureka.FeedListView(feedUrl, false, feed.Title);
                                 ex.addSection(feed.Title, newsFeedListView.getContainer(), true);
                                 Eureka.Container.switchView(ex.getContainer());
-
-                                if (imgMatch != null && imgMatch.length > 0)
-                                {
-                                        imgString = imgMatch[0];
-                                        var srcIndex = imgString.indexOf("src=");
-                                        imgString = imgString.substr(srcIndex+5, (imgString.indexOf("\"", srcIndex+5)-(srcIndex+5)));
-                                        var img = new Image();
-                                        img.onload = function()
-                                        {
-                                            if (img.width > 20 && img.height > 20)
-                                            {
-                                                jQuery('.headline-image').attr('src', imgString).show();
-                                            }
-                                        };
-                                        img.src = imgString;
-                                }
                             }
 
                             if (bannerUrl != "")
@@ -239,7 +261,28 @@
                         {
                             showError("Error occurred retrieving feed.");
                         }
-                    }, params);
+                    }, fetchFeedParams);
+
+				if (featuredFeedUrl)
+				{
+					gadgets.io.makeRequest(featuredFeedUrl,
+						function(results)
+						{
+							if(!results.errors || results.errors.length == 0)
+							{
+								var feed = results.data;
+								if(feed.Entry)
+								{
+									renderHeadline(feed.Entry[0]);
+									Eureka.resize();
+								}
+							}
+							else
+							{
+								showError("Error occurred retrieving featured feed.");
+							}
+						}, fetchFeedParams);
+				}
             }
             
         </script>
@@ -251,13 +294,6 @@
         function render()
         {
             //fetch feed
-            var params={};
-            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
-            params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.FEED;
-            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
-            params[gadgets.io.RequestParameters.GET_SUMMARIES] = true;
-            params[gadgets.io.RequestParameters.NUM_ENTRIES] = 1;
-            params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
             gadgets.io.makeRequest(feedUrl,
                 function(results)
                 {
@@ -288,8 +324,7 @@
                     {
                         showError("Error occurred retrieving feed.");
                     }
-                }, params
-            );
+                }, fetchFeedParams);
         }
             
         </script>
