@@ -18,7 +18,11 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import org.eurekastreams.server.action.request.gallery.GetGalleryItemsRequest;
+import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.eurekastreams.web.client.events.data.DeletedGalleryTabTemplateResponse;
+import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateDTOResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -27,7 +31,7 @@ import org.eurekastreams.web.client.ui.Session;
  * 
  */
 public class GalleryTabTemplateModel extends BaseModel implements Insertable<HashMap<String, Serializable>>,
-        Deletable<Long>
+        Deletable<Long>, Fetchable<GetGalleryItemsRequest>
 
 {
 
@@ -73,6 +77,23 @@ public class GalleryTabTemplateModel extends BaseModel implements Insertable<Has
                 Session.getInstance().getEventBus().notifyObservers(new DeletedGalleryTabTemplateResponse(request));
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fetch(final GetGalleryItemsRequest request, final boolean useClientCacheIfAvailable)
+    {
+        super.callReadAction("getSortedGalleryTabTemplateDTOs", request,
+                new OnSuccessCommand<PagedSet<GalleryTabTemplateDTO>>()
+                {
+                    public void onSuccess(final PagedSet<GalleryTabTemplateDTO> response)
+                    {
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new GotGalleryTabTemplateDTOResponseEvent(response));
+                    }
+                }, useClientCacheIfAvailable);
+
     }
 
 }

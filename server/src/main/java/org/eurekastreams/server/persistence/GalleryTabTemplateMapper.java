@@ -15,18 +15,19 @@
  */
 package org.eurekastreams.server.persistence;
 
+import java.util.HashMap;
+
 import org.eurekastreams.commons.hibernate.QueryOptimizer;
-import org.eurekastreams.server.domain.GalleryTabTemplate;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 
 /**
  * GalleryTabTemplate Mapper.
  * 
  */
-public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTemplate> implements
-        GalleryItemMapper<GalleryTabTemplate>
+public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTemplateDTO> implements
+        GalleryItemMapper<GalleryTabTemplateDTO>
 {
-
     /**
      * Constructor.
      * 
@@ -36,70 +37,79 @@ public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTempl
     public GalleryTabTemplateMapper(final QueryOptimizer inQueryOptimizer)
     {
         super(inQueryOptimizer);
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getDomainEntityName()
     {
-        return "GalleryTabTemplate";
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void delete(final GalleryTabTemplate inGalleryItem)
+    public void delete(final GalleryTabTemplateDTO inGalleryItem)
     {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public GalleryTabTemplate findByUrl(final String inGalleryItemUrl)
+    public GalleryTabTemplateDTO findByUrl(final String inGalleryItemUrl)
     {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PagedSet<GalleryTabTemplate> findForCategorySortedByPopularity(final String inCategory, final int inStart,
+    public PagedSet<GalleryTabTemplateDTO> findForCategorySortedByPopularity(final String inCategory,
+            final int inStart, final int inEnd)
+    {
+        return findForCategorySortedByRecent(inCategory, inStart, inEnd);
+    }
+
+    @Override
+    public PagedSet<GalleryTabTemplateDTO> findForCategorySortedByRecent(final String inCategory, final int inStart,
             final int inEnd)
     {
-        throw new UnsupportedOperationException();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("category", inCategory);
+
+        String q = "SELECT NEW org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO "
+                + "(id, created, description, title, category.id, category.galleryItemType, category.name) "
+                + "FROM GalleryTabTemplate WHERE category.name = :category ORDER BY created";
+
+        return getPagedResults(inStart, inEnd, q, parameters);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PagedSet<GalleryTabTemplate> findForCategorySortedByRecent(final String inCategory, final int inStart,
-            final int inEnd)
+    public PagedSet<GalleryTabTemplateDTO> findSortedByPopularity(final int inStart, final int inEnd)
+    {
+        return findSortedByRecent(inStart, inEnd);
+    }
+
+    @Override
+    public PagedSet<GalleryTabTemplateDTO> findSortedByRecent(final int inStart, final int inEnd)
+    {
+        String q = "SELECT NEW org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO "
+                + "(id, created, description, title, category.id, category.galleryItemType, category.name) "
+                + "FROM GalleryTabTemplate ORDER BY created";
+
+        return getPagedResults(inStart, inEnd, q, new HashMap<String, Object>());
+    }
+
+    @Override
+    public void insert(final GalleryTabTemplateDTO inDomainEntity)
     {
         throw new UnsupportedOperationException();
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PagedSet<GalleryTabTemplate> findSortedByPopularity(final int inStart, final int inEnd)
+    public void refresh(final GalleryTabTemplateDTO inGalleryItem)
     {
         throw new UnsupportedOperationException();
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PagedSet<GalleryTabTemplate> findSortedByRecent(final int inStart, final int inEnd)
+    public GalleryTabTemplateDTO findById(final Long inGalleryItemId)
     {
         throw new UnsupportedOperationException();
     }

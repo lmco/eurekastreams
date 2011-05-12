@@ -4266,6 +4266,23 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>    
+    
+    <bean id="getSortedGalleryTabTemplateDTOs" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.validation.gallery.GetGalleryItemsValidation" />
+        </constructor-arg>
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.gallery.GetGalleryItemsExecution">
+                <constructor-arg>
+                    <ref bean="galleryTabTemplateDTODBMapper" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>    
         
     <bean id="addTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- fields: param map - "url", "category"  -->
