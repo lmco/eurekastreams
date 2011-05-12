@@ -15,6 +15,11 @@
  */
 package org.eurekastreams.server.persistence;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +41,52 @@ public class GalleryTabTemplateMapperTest extends DomainEntityMapperTest
     public void setup()
     {
         sut.setEntityManager(getEntityManager());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testFindSortedByRecent()
+    {
+        List<GalleryTabTemplateDTO> result = sut.findSortedByRecent(0, 5).getPagedSet();
+        assertEquals(2, result.size());
+        assertEquals("2", result.get(0).getId().toString());
+        assertEquals("1", result.get(1).getId().toString());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testFindForCategorySortedByRecent()
+    {
+        List<GalleryTabTemplateDTO> result = sut.findForCategorySortedByRecent("tc1", 0, 5).getPagedSet();
+        assertEquals(1, result.size());
+        assertEquals("1", result.get(0).getId().toString());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testFindSortedByPopular()
+    {
+        List<GalleryTabTemplateDTO> result = sut.findSortedByPopularity(0, 5).getPagedSet();
+        assertEquals(2, result.size());
+        assertEquals("2", result.get(0).getId().toString());
+        assertEquals("1", result.get(1).getId().toString());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testFindForCategorySortedByPopular()
+    {
+        List<GalleryTabTemplateDTO> result = sut.findForCategorySortedByPopularity("tc1", 0, 5).getPagedSet();
+        assertEquals(1, result.size());
+        assertEquals("1", result.get(0).getId().toString());
     }
 
     /**

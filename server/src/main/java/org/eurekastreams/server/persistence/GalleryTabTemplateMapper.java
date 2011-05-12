@@ -73,7 +73,7 @@ public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTempl
 
         String q = "SELECT NEW org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO "
                 + "(id, created, description, title, category.id, category.galleryItemType, category.name) "
-                + "FROM GalleryTabTemplate WHERE category.name = :category ORDER BY created";
+                + "FROM GalleryTabTemplate WHERE category.name = :category ORDER BY created DESC";
 
         return getPagedResults(inStart, inEnd, q, parameters);
     }
@@ -89,7 +89,7 @@ public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTempl
     {
         String q = "SELECT NEW org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO "
                 + "(id, created, description, title, category.id, category.galleryItemType, category.name) "
-                + "FROM GalleryTabTemplate ORDER BY created";
+                + "FROM GalleryTabTemplate ORDER BY created DESC";
 
         return getPagedResults(inStart, inEnd, q, new HashMap<String, Object>());
     }
