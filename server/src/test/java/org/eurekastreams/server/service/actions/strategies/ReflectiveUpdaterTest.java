@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Organization;
@@ -39,7 +40,7 @@ public class ReflectiveUpdaterTest
 {
     /**
      * Test updating a list of data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -63,7 +64,7 @@ public class ReflectiveUpdaterTest
 
     /**
      * Test updating a String.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */
@@ -95,7 +96,7 @@ public class ReflectiveUpdaterTest
 
     /**
      * Test updating a Set.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */
@@ -105,14 +106,13 @@ public class ReflectiveUpdaterTest
 
         String message = "sets should be set appropriately";
 
-        final Organization org = new Organization("MyOrg", "myorg");
+        final DomainGroup group = new DomainGroup();
         final Person person = new Person("jschmoe", "Joe", "X", "Schmoe", "Joey");
         person.setEmail("joe@schmoe.com");
         person.setWorkPhone("1234567890");
         person.setTitle("Better than you!");
         person.setLocation("19406");
         person.setJobDescription("ahhh, snuts!");
-        person.setParentOrganization(org);
 
         HashSet<Person> coords = new HashSet<Person>();
         coords.add(person);
@@ -121,15 +121,15 @@ public class ReflectiveUpdaterTest
         map.put("coordinators", coords);
 
         ReflectiveUpdater reflector = new ReflectiveUpdater();
-        reflector.setProperties(org, map);
+        reflector.setProperties(group, map);
 
-        assertEquals(message, coords, org.getCoordinators());
+        assertEquals(message, coords, group.getCoordinators());
 
     }
 
     /**
      * Test updating a Set.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */
@@ -152,36 +152,36 @@ public class ReflectiveUpdaterTest
 
     }
 
-    //TODO: Determine if this is needed anymore, activity no longer has a float.
-//    /**
-//     * Test updating a float.
-//     *
-//     * @throws Exception
-//     *             not expected.
-//     */
-//    @Test
-//    public final void testUpdateFloat() throws Exception
-//    {
-//
-//        final Activity activity = new Activity();
-//
-//        HashSet<Activity> coords = new HashSet<Activity>();
-//        coords.add(activity);
-//
-//        float priority = 1F;
-//        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-//        map.put("priority", priority);
-//
-//        ReflectiveUpdater reflector = new ReflectiveUpdater();
-//        reflector.setProperties(activity, map);
-//
-//        assertEquals(priority, activity.getPriority(), 0);
-//
-//    }
+    // TODO: Determine if this is needed anymore, activity no longer has a float.
+    // /**
+    // * Test updating a float.
+    // *
+    // * @throws Exception
+    // * not expected.
+    // */
+    // @Test
+    // public final void testUpdateFloat() throws Exception
+    // {
+    //
+    // final Activity activity = new Activity();
+    //
+    // HashSet<Activity> coords = new HashSet<Activity>();
+    // coords.add(activity);
+    //
+    // float priority = 1F;
+    // HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+    // map.put("priority", priority);
+    //
+    // ReflectiveUpdater reflector = new ReflectiveUpdater();
+    // reflector.setProperties(activity, map);
+    //
+    // assertEquals(priority, activity.getPriority(), 0);
+    //
+    // }
 
     /**
      * Test updating a boolean.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */
@@ -204,7 +204,7 @@ public class ReflectiveUpdaterTest
 
     /**
      * Test updating a date.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */
@@ -232,7 +232,7 @@ public class ReflectiveUpdaterTest
 
     /**
      * Test updating a date.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */

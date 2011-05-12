@@ -26,7 +26,7 @@ import org.eurekastreams.server.domain.Organization;
  * This class provides the mapper functionality for Organization entities.
  */
 @Deprecated
-public class OrganizationMapper extends DomainEntityMapper<Organization> implements CompositeEntityMapper
+public class OrganizationMapper extends DomainEntityMapper<Organization>
 {
     /**
      * Constructor.

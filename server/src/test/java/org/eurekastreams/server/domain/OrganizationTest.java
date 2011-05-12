@@ -22,8 +22,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -37,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Organization test class.
- *
+ * 
  */
 public class OrganizationTest
 {
@@ -267,7 +265,7 @@ public class OrganizationTest
         ClassValidator<Organization> validator = new ClassValidator<Organization>(Organization.class);
         InvalidValue[] invalidValues = validator.getInvalidValues(sut);
         assertEquals("incorrect # of validation errors.", 1, invalidValues.length);
-        assertEquals("incorrect url message.", Organization.WEBSITE_MESSAGE, invalidValues[0].getMessage());
+        assertEquals("incorrect url message.", CompositeEntity.WEBSITE_MESSAGE, invalidValues[0].getMessage());
     }
 
     /**
@@ -280,19 +278,6 @@ public class OrganizationTest
         ClassValidator<Organization> validator = new ClassValidator<Organization>(Organization.class);
         InvalidValue[] invalidValues = validator.getInvalidValues(sut);
         assertEquals("incorrect # of validation errors.", 0, invalidValues.length);
-    }
-
-    /**
-     * test isCoordinator.
-     */
-    @Test
-    public void testCoordinators()
-    {
-        Person a = new Person("a", "a", "a", "a", "a");
-        Person b = new Person("b", "b", "b", "b", "b");
-        sut.addCoordinator(a);
-        assertTrue(sut.isCoordinator(a.getAccountId()));
-        assertFalse(sut.isCoordinator(b.getAccountId()));
     }
 
     /**
@@ -327,34 +312,6 @@ public class OrganizationTest
         sut.setOverview(OVERVIEW);
 
         assertEquals("Overview does not match", OVERVIEW, sut.getOverview());
-    }
-
-    /**
-     * Test theme getter & setter.
-     */
-    @Test
-    public void testValidateMinCoordinators()
-    {
-
-        String message = "validation on coordinator properties";
-        sut = new Organization("org", "org");
-        sut.setDescription("statement");
-        Set<Person> coordinators = new TreeSet<Person>();
-        sut.setCoordinators(coordinators);
-        ClassValidator<Organization> validator = new ClassValidator<Organization>(Organization.class);
-        InvalidValue[] invalidValues = validator.getInvalidValues(sut);
-
-        // should be invalid when empty
-        assertEquals(message, 0, sut.getCoordinators().size());
-        assertEquals(message, 1, invalidValues.length);
-        assertEquals(message, Organization.MIN_COORDINATORS_MESSAGE, invalidValues[0].getMessage());
-
-        // should be valid when not empty
-        coordinators.add(new Person("a", "b", "c", "d", "e"));
-        assertEquals(message, 1, sut.getCoordinators().size());
-        invalidValues = validator.getInvalidValues(sut);
-        assertEquals(message, 0, invalidValues.length);
-
     }
 
     /**
