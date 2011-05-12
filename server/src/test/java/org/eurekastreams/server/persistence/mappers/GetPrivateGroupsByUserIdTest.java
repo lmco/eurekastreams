@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.db.GetAllPrivateGroupIdsDbMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetOrgIdsDirectlyCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -58,12 +57,6 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
      */
     @Autowired
     private GetPrivateGroupIdsCoordinatedByPerson privateGroupIdsMapper;
-
-    /**
-     * Mapper to retrieve the org ids from the db that the user is a coord of.
-     */
-    @Autowired
-    private GetOrgIdsDirectlyCoordinatedByPerson orgCoordMapper;
 
     /**
      * Mapper to get all private groups.

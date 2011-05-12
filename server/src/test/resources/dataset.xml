@@ -299,17 +299,6 @@
 	<Enrollment_AreasOfStudy Enrollment_id="2042"
 		BackgroundItem_Id="135" areasOfStudyIndex="0" />
 
-	<Organization_Leaders Organization_id="5"
-		leaders_id="42" />
-	<Organization_Leaders Organization_id="5"
-		leaders_id="142" />
-
-	<Organization_Coordinators Organization_id="5"
-		coordinators_id="42" />
-	<Organization_Coordinators Organization_id="5"
-		coordinators_id="142" />
-
-
 	<!-- Three Gadgets in Ford's 1st tab - two in zone 1, 1 in zone 3 -->
 	<!-- * mix up the IDs to test sort * -->
 

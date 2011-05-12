@@ -18,7 +18,6 @@ package org.eurekastreams.server.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -41,19 +40,16 @@ import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.Pattern;
-import org.hibernate.validator.Size;
 
 /**
  * Represents an organization, which holds people.
  */
 @SuppressWarnings("serial")
 @Entity
-public class Organization extends DomainEntity implements OrganizationChild, AvatarEntity, CompositeEntity, Bannerable
+public class Organization extends DomainEntity implements OrganizationChild, AvatarEntity, Bannerable
 {
     /** Used for validation. */
     public static final int MAX_NAME_LENGTH = 50;
@@ -80,9 +76,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /** Used for validation. */
     @Transient
     public static final String SHORTNAME_REQUIRED = "Organization Web Address is required.";
-
-    /** Used for validation. */
-    public static final String MIN_COORDINATORS_MESSAGE = "Organizations must have at least one coordinator.";
 
     /** Used for validation. */
     public static final String DESCRIPTION_LENGTH_MESSAGE = "Description supports up to " + MAX_DESCRIPTION_LENGTH
@@ -143,7 +136,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * The url of the organization.
      */
     @Basic
-    @Pattern(regex = URL_REGEX_PATTERN, message = WEBSITE_MESSAGE)
+    @Pattern(regex = CompositeEntity.URL_REGEX_PATTERN, message = CompositeEntity.WEBSITE_MESSAGE)
     private String url;
 
     /**
@@ -182,19 +175,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     @Basic
     @Length(min = 1, max = MAX_DESCRIPTION_LENGTH, message = DESCRIPTION_LENGTH_MESSAGE)
     private String description;
-
-    /**
-     * List of coordinators for this organization.
-     */
-    @Size(min = 1, message = MIN_COORDINATORS_MESSAGE)
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
-    // LazyCollectionOption.EXTRA is only being used here as a workaround for
-    // hibernate bug where lazy collection collide with validators. This should
-    // NOT be used in any other situation without understanding full ramifications
-    // as it does potentially involve extra queries.
-    @LazyCollection(LazyCollectionOption.EXTRA)
-    @JoinTable(name = "Organization_Coordinators")
-    private Set<Person> coordinators;
 
     /**
      * Get the parent org id w/o loading the org.
@@ -344,13 +324,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     }
 
     /**
-     * List of leaders for this organization.
-     */
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Organization_Leaders")
-    private Set<Person> leaders;
-
-    /**
      * Parent organization - note: this is indexed as a class-level bridge.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -369,112 +342,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     {
         name = inName;
         setShortName(inShortName);
-    }
-
-    /**
-     * Add coordinator to org.
-     * 
-     * @param person
-     *            The Person to add.
-     */
-    public void addCoordinator(final Person person)
-    {
-        if (coordinators == null)
-        {
-            // doesn't *need* to be TreeSet, I just picked it.
-            coordinators = new TreeSet<Person>();
-        }
-        coordinators.add(person);
-    }
-
-    /**
-     * Remove coordinator from org.
-     * 
-     * @param person
-     *            The Person to remove.
-     */
-    public void removeCoordinator(final Person person)
-    {
-        for (Person p : coordinators)
-        {
-            if (person.getId() == p.getId())
-            {
-                coordinators.remove(p);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Getter for list of coordinators.
-     * 
-     * @return list of coordinators.
-     */
-    @Override
-    public Set<Person> getCoordinators()
-    {
-        return coordinators;
-    }
-
-    /**
-     * Setter for list of coordinators.
-     * 
-     * @param inCoordinators
-     *            list of coordinators.
-     */
-    public void setCoordinators(final Set<Person> inCoordinators)
-    {
-        coordinators = inCoordinators;
-    }
-
-    /**
-     * Add leaders to org.
-     * 
-     * @param person
-     *            The Person to add.
-     */
-    public void addLeader(final Person person)
-    {
-        leaders.add(person);
-    }
-
-    /**
-     * Remove leader from org.
-     * 
-     * @param person
-     *            The Person to remove.
-     */
-    public void removeLeader(final Person person)
-    {
-        for (Person p : leaders)
-        {
-            if (person.getId() == p.getId())
-            {
-                leaders.remove(p);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Getter for list of leaders.
-     * 
-     * @return list of leaders.
-     */
-    public Set<Person> getLeaders()
-    {
-        return leaders;
-    }
-
-    /**
-     * Setter for list of leaders.
-     * 
-     * @param inLeaders
-     *            list of coordinators.
-     */
-    public void setLeaders(final Set<Person> inLeaders)
-    {
-        leaders = inLeaders;
     }
 
     /**
@@ -584,31 +451,10 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     }
 
     /**
-     * check to see if the specified account id is a coordinator for this Organization.
-     * 
-     * @param account
-     *            to check.
-     * @return if they're a coordinator.
-     */
-    public boolean isCoordinator(final String account)
-    {
-        for (Person p : coordinators)
-        {
-            if (p.getAccountId().equals(account))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Getter.
      * 
      * @return the overview
      */
-    @Override
     public String getOverview()
     {
         return overview;
@@ -620,7 +466,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inOverview
      *            the overview to set
      */
-    @Override
     public void setOverview(final String inOverview)
     {
         overview = inOverview;
@@ -629,7 +474,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /**
      * @return the capabilities
      */
-    @Override
     public List<BackgroundItem> getCapabilities()
     {
         return (capabilities == null) ? new ArrayList<BackgroundItem>(0) : capabilities;
@@ -639,7 +483,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inCapabilities
      *            the capabilities to set
      */
-    @Override
     public void setCapabilities(final List<BackgroundItem> inCapabilities)
     {
         capabilities = inCapabilities;
