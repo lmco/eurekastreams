@@ -2363,6 +2363,21 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="getGalleryTabTemplateGalleryItemCategories" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.gallery.GetGalleryItemCategoriesExecution">
+                <constructor-arg>
+                    <ref bean="jpaGalleryItemCategoryMapper" />
+                </constructor-arg>
+                <constructor-arg value="TAB" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>    
 
     <bean id="getSortedGadgetGalleryItems" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
