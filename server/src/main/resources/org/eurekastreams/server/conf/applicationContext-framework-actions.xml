@@ -3925,7 +3925,7 @@
     
     <bean id="createGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="galleryAuthorizer"/>
+        <constructor-arg ref="isSystemAdminAuthorization"/>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
                 <constructor-arg ref="findByIdMapper" />
@@ -3940,7 +3940,7 @@
     
     <bean id="deleteGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="galleryAuthorizer" />
+        <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="deleteGalleryTabTemplateByIdDbMapper" />           
