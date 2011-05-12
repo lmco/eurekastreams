@@ -30,6 +30,14 @@
 
     <GalleryItemCategory id="1234" name="All"
         version="3471" galleryItemType="PLUGIN" />
+        
+         
+    <GalleryItemCategory id="1235" name="tc1"
+        version="3471" galleryItemType="TAB" />
+        
+    <GalleryItemCategory id="1236" name="tc2"
+        version="3471" galleryItemType="TAB" />                      
+
 
     <!-- PLUGIN  -->
     <PluginDefinition id="1" version="1" updateFrequency="9" showInGallery="true" url="http://www.google1.com"
@@ -794,5 +802,10 @@
         streamviewcount="7777" streamviewercount="77777" uniquevisitorcount="777777" usagedate="2011-04-09" avgactivityresponsetime="7" 
         isWeekday="true"
         />
+        
+    <GalleryTabTemplate id="1"  version="0" created="2009-01-01 12:00:00.000" description="GalleryTabTemplate1" title="Welcome"
+        categoryid="1235" tabtemplateid="5555" />         
+    <GalleryTabTemplate id="2"  version="0" created="2009-02-02 12:00:00.000" description="GalleryTabTemplate2" title="Welcome"
+        categoryid="1236" tabtemplateid="5555"/>        
     
 </dataset>

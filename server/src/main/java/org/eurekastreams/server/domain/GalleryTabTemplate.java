@@ -18,6 +18,7 @@ package org.eurekastreams.server.domain;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -83,7 +84,7 @@ public class GalleryTabTemplate extends DomainEntity
     /**
      * TabTemplate the GalleryTabTemplate is based on.
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "tabTemplateId")
     @Basic(optional = false)
     private TabTemplate tabTemplate;
@@ -94,6 +95,25 @@ public class GalleryTabTemplate extends DomainEntity
     public GalleryTabTemplate()
     {
         // no-op;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inDescription
+     *            Description.
+     * @param inCategory
+     *            Category.
+     * @param inTabTemplate
+     *            TabTemplate.
+     */
+    public GalleryTabTemplate(final String inDescription, final GalleryItemCategory inCategory,
+            final TabTemplate inTabTemplate)
+    {
+        description = inDescription;
+        category = inCategory;
+        tabTemplate = inTabTemplate;
+        title = tabTemplate.getTabName();
     }
 
     /**
