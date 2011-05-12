@@ -41,6 +41,14 @@ public class GalleryItemCategoryDTO implements Serializable
     private String name;
 
     /**
+     * Constructor.
+     */
+    public GalleryItemCategoryDTO()
+    {
+
+    }
+
+    /**
      * @param inId
      *            Id.
      * @param inType
