@@ -1050,7 +1050,6 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetDomainGroupModelViewByShortNameExectution">
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
@@ -1661,8 +1660,6 @@
                     <bean
                         class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
                         <constructor-arg ref="personLookupStrategy" />
-                        <constructor-arg
-                            ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
                     </bean>
                 </constructor-arg>
             </bean>
@@ -1692,8 +1689,6 @@
                     <bean
                         class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
                         <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
-                        <constructor-arg
-                            ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
                     </bean>
                 </constructor-arg>
             </bean>
@@ -1711,8 +1706,6 @@
                     <bean
                         class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
                         <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
-                        <constructor-arg
-                            ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
                     </bean>
                 </constructor-arg>
             </bean>
@@ -1889,13 +1882,7 @@
                                     <constructor-arg ref="getPeopleIdsByAccountIdsMapper" />   
                                     <constructor-arg value="likedBy" />   
                                 </bean>
-                            </entry>                            
-                            <entry key="parentOrg">
-                                <bean 
-                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.ParentOrgPersistenceRequestTransformer">
-                                    <constructor-arg ref="getPersonByAccountIdMapper" />   
-                                </bean>
-                            </entry>                            
+                            </entry>                                     
                         </map>                  
                     </constructor-arg>
                     <constructor-arg>
@@ -3705,7 +3692,6 @@
             <bean class="org.eurekastreams.server.action.execution.stream.GetCurrentUsersStreamsExecution">
                 <constructor-arg ref="getUserStreamsMapper" />
                 <constructor-arg ref="findByIdMapper" />
-                <constructor-arg value="EUREKA:PARENT_ORG_TAG" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -3865,7 +3851,6 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetPersonExecution">
                 <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

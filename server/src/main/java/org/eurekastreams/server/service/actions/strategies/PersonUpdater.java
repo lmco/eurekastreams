@@ -86,9 +86,6 @@ public class PersonUpdater implements ResourcePersistenceStrategy<Person>
         // store the original display name between get and persist to see if we need to kick off a cache update
         inFields.put(ORIGINAL_DISPLAY_NAME_KEY, p.getDisplayName());
 
-        // store original parent org name.
-        inFields.put(ORIGINAL_PARENT_ORG_KEY, p.getParentOrganization().getShortName());
-
         return p;
     }
 

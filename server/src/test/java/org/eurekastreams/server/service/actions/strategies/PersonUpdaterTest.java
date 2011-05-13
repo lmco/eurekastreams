@@ -122,9 +122,6 @@ public class PersonUpdaterTest
                 allowing(testPerson).getDisplayName();
                 will(returnValue("displayName"));
 
-                oneOf(testPerson).getParentOrganization();
-                will(returnValue(orgMock));
-
                 oneOf(orgMock).getShortName();
                 will(returnValue("orgShortName"));
             }

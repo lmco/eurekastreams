@@ -48,11 +48,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public static final String TITILE_KEY = "title";
 
     /**
-     * Key for Parent org.
-     */
-    public static final String ORG_PARENT_KEY = "parentOrganization";
-
-    /**
      * The key for the nick name/preferred name.
      */
     public static final String PREFERREDNAME_KEY = "preferredName";
@@ -124,21 +119,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * The person's title.
      */
     private String title = null;
-
-    /**
-     * The parent organization's id.
-     */
-    private long parentOrganizationId = -1;
-
-    /**
-     * The parent organization's short name.
-     */
-    private String parentOrganizationShortName = null;
-
-    /**
-     * The parent organization's full name.
-     */
-    private String parentOrganizationName = null;
 
     /**
      * The person's description.
@@ -405,18 +385,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             setTitle((String) properties.get("title"));
         }
-        if (properties.containsKey("parentOrganizationShortName"))
-        {
-            setParentOrganizationShortName((String) properties.get("parentOrganizationShortName"));
-        }
-        if (properties.containsKey("parentOrganizationId"))
-        {
-            setParentOrganizationId((Long) properties.get("parentOrganizationId"));
-        }
-        if (properties.containsKey("parentOrganizationName"))
-        {
-            setParentOrganizationName((String) properties.get("parentOrganizationName"));
-        }
         if (properties.containsKey("jobDescription"))
         {
             setDescription((String) properties.get("jobDescription"));
@@ -593,71 +561,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setTitle(final String inTitle)
     {
         title = inTitle;
-    }
-
-    /**
-     * Get the person's parent organization's id.
-     * 
-     * @return the parentOrganizationId
-     */
-    public long getParentOrganizationId()
-    {
-        return parentOrganizationId;
-    }
-
-    /**
-     * Set the person's parent organization's id.
-     * 
-     * @param inParentOrganizationId
-     *            the parentOrganizationId to set
-     */
-    public void setParentOrganizationId(final long inParentOrganizationId)
-    {
-        parentOrganizationId = inParentOrganizationId;
-    }
-
-    /**
-     * Get the person's parent organization's short name.
-     * 
-     * @return the parentOrganizationShortName
-     */
-    @Override
-    public String getParentOrganizationShortName()
-    {
-        return parentOrganizationShortName;
-    }
-
-    /**
-     * Set the person's parent organization's short name.
-     * 
-     * @param inParentOrganizationShortName
-     *            the parentOrganizationShortName to set
-     */
-    public void setParentOrganizationShortName(final String inParentOrganizationShortName)
-    {
-        parentOrganizationShortName = inParentOrganizationShortName;
-    }
-
-    /**
-     * Get the person's parent organization's name.
-     * 
-     * @return the parentOrganizationName
-     */
-    @Override
-    public String getParentOrganizationName()
-    {
-        return parentOrganizationName;
-    }
-
-    /**
-     * Set the person's parent organization's name.
-     * 
-     * @param inParentOrganizationName
-     *            the parentOrganizationName to set
-     */
-    public void setParentOrganizationName(final String inParentOrganizationName)
-    {
-        parentOrganizationName = inParentOrganizationName;
     }
 
     /**

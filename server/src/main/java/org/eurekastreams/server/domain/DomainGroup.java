@@ -386,7 +386,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * Parent organization.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "parentOrganizationId")
     private Organization parentOrganization;
 
@@ -993,24 +993,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public void setBannerEntityId(final Long inBannerEntityId)
     {
         bannerEntityId = inBannerEntityId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getParentOrganizationName()
-    {
-        return parentOrganization.getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getParentOrganizationShortName()
-    {
-        return parentOrganization.getShortName();
     }
 
     /**

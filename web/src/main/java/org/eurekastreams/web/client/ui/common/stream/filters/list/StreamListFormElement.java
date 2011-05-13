@@ -69,7 +69,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      * Maximum name length.
      */
     private static final int MAX_NAME = 50;
-    
+
     /**
      * Max number of items to be able to select.
      */
@@ -84,8 +84,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
     public StreamListFormElement(final JSONObject json)
     {
         scopes = new StreamScopeFormElement("scopes", new LinkedList<StreamScope>(), "",
-                "Enter the name of an employee or group.", false, true, "/resources/autocomplete/entities/",
-                MAX_NAME, MAX_ITEMS);
+                "Enter the name of an employee or group.", false, true, "/resources/autocomplete/entities/", MAX_NAME,
+                MAX_ITEMS);
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamLists());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
@@ -95,8 +95,6 @@ public class StreamListFormElement extends FlowPanel implements FormElement
 
         streamOptions.addItem("Everyone", "");
         streamOptions.addItem("Following", StreamJsonRequestFactory.FOLLOWED_BY_KEY);
-        streamOptions.addItem(Session.getInstance().getCurrentPerson().getParentOrganizationName(),
-                StreamJsonRequestFactory.PARENT_ORG_KEY);
         streamOptions.addItem("Saved", StreamJsonRequestFactory.SAVED_KEY);
         streamOptions.addItem("Groups I've Joined", StreamJsonRequestFactory.JOINED_GROUPS_KEY);
         streamOptions.addItem("Posted To", StreamJsonRequestFactory.RECIPIENT_KEY);
@@ -259,7 +257,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      *            the person.
      * @return the person.
      */
-    private String getEntityDisplayName(final EntityType type, final String accountId, 
+    private String getEntityDisplayName(final EntityType type, final String accountId, //
             final List<Serializable> entities)
     {
         for (Serializable entity : entities)

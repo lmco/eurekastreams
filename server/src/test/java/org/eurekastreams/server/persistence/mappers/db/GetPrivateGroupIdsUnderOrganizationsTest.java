@@ -81,14 +81,8 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
         // set group ids 3, 5, 7 private
         getEntityManager().createQuery("UPDATE DomainGroup set publicGroup=false WHERE id IN(3,5,7)").executeUpdate();
 
-        // search across all orgs
-        final Set<Long> orgIds = new HashSet<Long>();
-        orgIds.add(5L);
-        orgIds.add(6L);
-        orgIds.add(7L);
-
         // execute sut
-        final Set<Long> groupIds = sut.execute(orgIds);
+        final Set<Long> groupIds = sut.execute(new HashSet<Long>());
 
         // assert we got back 3,5,7
         assertEquals(3, groupIds.size());
@@ -106,12 +100,8 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
         // update all groups to be private
         getEntityManager().createQuery("UPDATE DomainGroup set publicGroup=false").executeUpdate();
 
-        // search across orgs 5
-        final Set<Long> orgIds = new HashSet<Long>();
-        orgIds.add(5L);
-
         // execute sut
-        final Set<Long> groupIds = sut.execute(orgIds);
+        final Set<Long> groupIds = sut.execute(new HashSet<Long>());
 
         assertEquals(8, groupIds.size());
         assertTrue(groupIds.contains(1L));

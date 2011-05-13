@@ -95,7 +95,6 @@ public class GetPersonIdsFollowingActivityDestinationStreamMapperTest
         testActivity.setDestinationStream(testDestinationStream);
 
         PersonModelView testPersonModelView = new PersonModelView();
-        testPersonModelView.setParentOrganizationShortName("orgShortName");
         testPersonModelView.setEntityId(TEST_PERSON_ID);
 
         final Long fordpId = 42L;

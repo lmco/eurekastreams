@@ -31,16 +31,6 @@ public interface Followable
     String getUniqueId();
 
     /**
-     * @return the parent organization's name
-     */
-    String getParentOrganizationName();
-
-    /**
-     * @return the parent organization's short name
-     */
-    String getParentOrganizationShortName();
-
-    /**
      * @return the followersCount
      */
     int getFollowersCount();

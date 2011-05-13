@@ -21,13 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.OrganizationChild;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -57,12 +55,6 @@ public class PersonLookupUtilityStrategyTest
     private PersonLookupStrategy lookupStrategy = context.mock(PersonLookupStrategy.class);
 
     /**
-     * {@link PopulateOrgChildWithSkeletonParentOrgsCacheMapper} mock.
-     */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper populateParentOrgDAO = context
-            .mock(PopulateOrgChildWithSkeletonParentOrgsCacheMapper.class);
-
-    /**
      * The maximum number of Person results to ask for.
      */
     private static final int MAX_RESULTS = 100;
@@ -71,15 +63,6 @@ public class PersonLookupUtilityStrategyTest
      * Query string used for tests.
      */
     private static final String QUERY_STRING = "queryString";
-
-    /**
-     * Setup.
-     */
-    @Before
-    public final void setUp()
-    {
-        sut = new PersonLookupUtilityStrategy(lookupStrategy, populateParentOrgDAO);
-    }
 
     /**
      * Test performing the action.
@@ -95,11 +78,9 @@ public class PersonLookupUtilityStrategyTest
             {
                 oneOf(lookupStrategy).findPeople(QUERY_STRING, MAX_RESULTS);
                 will(returnValue(people));
-
-                oneOf(populateParentOrgDAO).populateParentOrgSkeletons(people);
             }
         });
-
+        sut = new PersonLookupUtilityStrategy(lookupStrategy);
         assertEquals(people, sut.getPeople(QUERY_STRING, MAX_RESULTS));
         context.assertIsSatisfied();
     }

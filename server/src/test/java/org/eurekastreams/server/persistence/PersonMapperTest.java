@@ -120,16 +120,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
     }
 
     /**
-     * Test we can get the parent org id without loading the org.
-     */
-    @Test
-    public void testParentOrgId()
-    {
-        Person ford = jpaPersonMapper.findByAccountId("fordp");
-        assertEquals(new Long(5L), ford.getParentOrgId());
-    }
-
-    /**
      * Test the DBUnit XML Dataset - person.
      */
     @Test
@@ -189,7 +179,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setEmail("foo.blah@example.com");
         p.setLocation("19406");
         p.setJobDescription("some description!");
-        p.setParentOrganization(org);
         p.setStartTabGroup(tg);
         jpaPersonMapper.insert(p);
         assertTrue("Inserting a Person did not get a positive id.",
@@ -214,7 +203,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setLocation("19406");
         p.setJobDescription("some description!");
         p.setAvatarId("avatar");
-        p.setParentOrganization(org);
         p.setStartTabGroup(tg);
 
         // phone types not set should return null.
@@ -651,7 +639,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setEmail("foo.blah@example.com");
         p.setLocation("19406");
         p.setJobDescription("some description!");
-        p.setParentOrganization(org);
         p.setStartTabGroup(tg);
 
         // make sure nothing's happened yet

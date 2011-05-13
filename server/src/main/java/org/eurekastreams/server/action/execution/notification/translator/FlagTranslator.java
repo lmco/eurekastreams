@@ -76,7 +76,6 @@ public class FlagTranslator implements NotificationTranslator
         List<Long> adminIds = systemAdminMapper.execute(null);
 
         NotificationDTO notif = new NotificationDTO(adminIds, type, inActorId);
-        notif.setDestination(activity.getRecipientParentOrgId(), EntityType.ORGANIZATION);
         notif.setActivity(inActivityId, activity.getBaseObjectType());
 
         return Collections.singletonList(notif);

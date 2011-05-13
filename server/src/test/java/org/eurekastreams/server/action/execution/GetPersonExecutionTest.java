@@ -26,7 +26,6 @@ import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -76,12 +75,6 @@ public class GetPersonExecutionTest
     private Person testPerson = context.mock(Person.class);
 
     /**
-     * Mocked mapper to populate a person's parent organization with a skeleton org.
-     */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper peopleParentOrgSkeletonPopulatorMock = context
-            .mock(PopulateOrgChildWithSkeletonParentOrgsCacheMapper.class);
-
-    /**
      * System under test.
      */
     private GetPersonExecution sut = null;
@@ -92,7 +85,7 @@ public class GetPersonExecutionTest
     @Before
     public final void setup()
     {
-        sut = new GetPersonExecution(mapper, peopleParentOrgSkeletonPopulatorMock);
+        sut = new GetPersonExecution(mapper);
     }
 
     /**
@@ -120,8 +113,6 @@ public class GetPersonExecutionTest
 
                 allowing(testPerson).getBackground();
                 will(returnValue(bg));
-
-                oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
             }
         });
 
@@ -157,8 +148,6 @@ public class GetPersonExecutionTest
                 will(returnValue(testPerson));
 
                 oneOf(testPerson).getTabs(TabGroupType.START);
-
-                oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
             }
         });
 

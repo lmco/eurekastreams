@@ -109,7 +109,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
 
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("Everyone", "My saved items",
-                "EUREKA:PARENT_ORG_TAG", "Following"));
+                "Following"));
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
@@ -149,12 +149,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("Ned-diddly", p.getPreferredName());
 
         // test stream order
-        // IDs: 1, 5, 4, 3
-        assertEquals(4, p.getStreams().size());
+        // IDs: 1, 5, 3
+        assertEquals(3, p.getStreams().size());
         assertEquals(1, p.getStreams().get(0).getId());
         assertEquals(5, p.getStreams().get(1).getId());
-        assertEquals(4, p.getStreams().get(2).getId());
-        assertEquals(3, p.getStreams().get(3).getId());
+        assertEquals(3, p.getStreams().get(2).getId());
     }
 
     /**
@@ -183,8 +182,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         // new SUT to test different stream order
         GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
-        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
-                "EUREKA:PARENT_ORG_TAG"));
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
@@ -203,11 +201,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("Ned-diddly", p.getPreferredName());
 
         // test stream order
-        // IDs: 1, 5, 4, 3
-        assertEquals(3, p.getStreams().size());
+        // IDs: 1, 5,
+        assertEquals(2, p.getStreams().size());
         assertEquals(5, p.getStreams().get(0).getId());
         assertEquals(1, p.getStreams().get(1).getId());
-        assertEquals(4, p.getStreams().get(2).getId());
     }
 
     /**
@@ -253,8 +250,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     {
         GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
-        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
-                "EUREKA:PARENT_ORG_TAG"));
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 

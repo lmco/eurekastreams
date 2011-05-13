@@ -226,7 +226,6 @@
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
 		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper"/>
 		<constructor-arg ref="getGroupsByIdsDbMapper"/>
-		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg>
 		      <bean class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
 		</constructor-arg>
@@ -349,11 +348,6 @@
 	   <property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="updateCachedOrganizationName"
-		class="org.eurekastreams.server.persistence.UpdateCachedOrganizationName">
-		<property name="cache" ref="testCache"/>
-	</bean>
-
 	<!--
 		Domain Group Cache Loader - will be injected into actions/mappers that
 		need to update the cache
@@ -463,8 +457,6 @@
     
     <bean id="getFollowedPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper" />
     
-    <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
-	
 	<bean id="updateNotificationsOnNameChangeMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
 	
 	<bean id="updatePersonMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />

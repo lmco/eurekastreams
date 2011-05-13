@@ -173,7 +173,7 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
             if (verfiedCoordinator == null)
             {
 
-                final HashMap<String, Serializable> personData = requestedPerson.getProperties(Boolean.FALSE);
+                final HashMap<String, Serializable> personData = requestedPerson.getProperties();
 
                 // to avoid a circular dependency, must get a new person creator from the factory rather than
                 // have it injected by spring

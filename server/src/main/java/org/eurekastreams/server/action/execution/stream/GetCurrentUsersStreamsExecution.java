@@ -44,26 +44,18 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
     private FindByIdMapper<Person> personMapper;
 
     /**
-     * Parent org placeholder string.
-     */
-    private String parentOrgPlaceHolder;
-
-    /**
      * Constructor.
      * 
      * @param inGetUserStreamsMapper
      *            stream mapper.
      * @param inPersonMapper
      *            person mapper.
-     * @param inParentOrgPlaceHolder
-     *            parent org placeholder string.
      */
     public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper,
-            final FindByIdMapper<Person> inPersonMapper, final String inParentOrgPlaceHolder)
+            final FindByIdMapper<Person> inPersonMapper)
     {
         getUserStreamsMapper = inGetUserStreamsMapper;
         personMapper = inPersonMapper;
-        parentOrgPlaceHolder = inParentOrgPlaceHolder;
     }
 
     /**
@@ -80,15 +72,6 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
         Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
 
         final List<StreamFilter> streams = getUserStreamsMapper.execute(inActionContext.getPrincipal().getId());
-
-        for (StreamFilter stream : streams)
-        {
-            if (stream.getName().equals(parentOrgPlaceHolder))
-            {
-                stream.setName(person.getParentOrganizationName());
-            }
-        }
-
         return new GetCurrentUserStreamFiltersResponse(person.getStreamViewHiddenLineIndex(), streams);
     }
 }

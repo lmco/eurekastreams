@@ -184,11 +184,6 @@ public class ActivityDTO extends ModelView implements Serializable
     private Integer likeCount = 0;
 
     /**
-     * ID of organization "owning" the entity whose stream the activity is posted to.
-     */
-    private long recipientParentOrgId = UNINITIALIZED_LONG_VALUE;
-
-    /**
      * List of people who have liked the activity.
      */
     private List<PersonModelView> likers;
@@ -207,7 +202,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -336,10 +331,6 @@ public class ActivityDTO extends ModelView implements Serializable
         if (properties.containsKey("appSource"))
         {
             setAppSource((String) properties.get("appSource"));
-        }
-        if (properties.containsKey("recipientParentOrgId"))
-        {
-            setRecipientParentOrgId((Long) properties.get("recipientParentOrgId"));
         }
         if (properties.containsKey("likeCount"))
         {
@@ -541,7 +532,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Gets the name of the entity backing this model view.
-     *
+     * 
      * @return the entity name;
      */
     @Override
@@ -705,7 +696,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get whether the destination stream is a public.
-     *
+     * 
      * @return whether the destination stream is public.
      */
     public Boolean getIsDestinationStreamPublic()
@@ -715,7 +706,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set whether the destination stream is public.
-     *
+     * 
      * @param inIsDestinationStreamPublic
      *            whether the destination stream is public
      */
@@ -793,23 +784,6 @@ public class ActivityDTO extends ModelView implements Serializable
     }
 
     /**
-     * @return ID of organization "owning" the entity whose stream the activity is posted to.
-     */
-    public long getRecipientParentOrgId()
-    {
-        return recipientParentOrgId;
-    }
-
-    /**
-     * @param inRecipientParentOrgId
-     *            ID of organization "owning" the entity whose stream the activity is posted to.
-     */
-    public void setRecipientParentOrgId(final long inRecipientParentOrgId)
-    {
-        recipientParentOrgId = inRecipientParentOrgId;
-    }
-
-    /**
      * @param isLiked
      *            the activity as liked.
      */
@@ -845,7 +819,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set the likers.
-     *
+     * 
      * @param inLikers
      *            the likers.
      */
@@ -856,7 +830,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get the likers.
-     *
+     * 
      * @return the likers.
      */
     public List<PersonModelView> getLikers()

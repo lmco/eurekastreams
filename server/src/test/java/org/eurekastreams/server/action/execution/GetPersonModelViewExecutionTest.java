@@ -172,7 +172,6 @@ public class GetPersonModelViewExecutionTest
 
         final Date personLastAcceptedTOSDate = new Date();
         retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
-        retPerson.setParentOrganizationId(9);
 
         context.checking(new Expectations()
         {
@@ -230,7 +229,6 @@ public class GetPersonModelViewExecutionTest
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setRoles(new HashSet<Role>());
         retPerson.setEntityId(4L);
-        retPerson.setParentOrganizationId(9L);
         final Date personLastAcceptedTOSDate = new Date();
         retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
 
@@ -290,7 +288,6 @@ public class GetPersonModelViewExecutionTest
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setRoles(new HashSet<Role>());
         retPerson.setEntityId(4L);
-        retPerson.setParentOrganizationId(9L);
         final Date personLastAcceptedTOSDate = new Date();
         retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
 

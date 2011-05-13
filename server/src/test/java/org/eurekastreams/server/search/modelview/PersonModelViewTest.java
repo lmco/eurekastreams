@@ -158,8 +158,6 @@ public class PersonModelViewTest
         sut.setDateAdded(dateAdded);
         sut.setAccountId(accountId);
         sut.setTitle(title);
-        sut.setParentOrganizationName(parentOrganizationName);
-        sut.setParentOrganizationShortName(parentOrganizationShortName);
         sut.setDescription(jobDescription);
         sut.setFollowersCount(followersCount);
         sut.setLastName(LAST_NAME);
@@ -253,8 +251,6 @@ public class PersonModelViewTest
         assertEquals(null, sut.getDateAdded());
         assertEquals(null, sut.getAccountId());
         assertEquals(null, sut.getTitle());
-        assertEquals(null, sut.getParentOrganizationName());
-        assertEquals(null, sut.getParentOrganizationShortName());
         assertEquals(null, sut.getDescription());
         assertEquals(-1, sut.getFollowersCount());
         assertEquals(ModelView.UNINITIALIZED_FLOAT_VALUE, sut.getSearchIndexScore(), 0);
@@ -284,8 +280,6 @@ public class PersonModelViewTest
         assertEquals(dateAdded, sut.getDateAdded());
         assertEquals(accountId, sut.getAccountId());
         assertEquals(title, sut.getTitle());
-        assertEquals(parentOrganizationName, sut.getParentOrganizationName());
-        assertEquals(parentOrganizationShortName, sut.getParentOrganizationShortName());
         assertEquals(jobDescription, sut.getDescription());
         assertEquals(followersCount, sut.getFollowersCount());
         assertEquals(LAST_NAME, sut.getLastName());

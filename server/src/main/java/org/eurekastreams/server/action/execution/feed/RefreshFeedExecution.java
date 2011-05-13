@@ -345,7 +345,6 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                     Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
                                             .getEntityId()));
                                     activityForIndividual.setActorId(person.getAccountId());
-                                    activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
                                     activityForIndividual.setRecipientStreamScope(person.getStreamScope());
                                     activityForIndividual.setIsDestinationStreamPublic(true);
                                 }

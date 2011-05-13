@@ -17,7 +17,6 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -50,33 +49,17 @@ public class PersonRecipientRetriever implements RecipientRetriever
     }
 
     /**
-     * Retrieves parent org for person specified in ActivityDTO.
-     * 
-     * @param inActivity
-     *            The ActivityDTO object.
-     * @return The parent organization of activity recipient.
-     */
-    public Organization getParentOrganization(final ActivityDTO inActivity)
-    {
-        // TODO This could probably be faster with specialized query.
-        return personMapper.findByAccountId(
-                inActivity.getDestinationStream().getUniqueIdentifier())
-                .getParentOrganization();
-    }
-
-    /**
      * Retrieve the StreamScope for a Person recipient stream. {@inheritDoc}
      */
     public StreamScope getStreamScope(final ActivityDTO inActivityDTO)
     {
-        return personMapper.findByAccountId(
-                inActivityDTO.getDestinationStream().getUniqueIdentifier())
+        return personMapper.findByAccountId(inActivityDTO.getDestinationStream().getUniqueIdentifier())
                 .getStreamScope();
     }
 
     /**
-     * Get whether the destination stream of the input activity is public.
-     * People streams are always public, so return true.
+     * Get whether the destination stream of the input activity is public. People streams are always public, so return
+     * true.
      * 
      * @param inActivityDTO
      *            the activity dto to check

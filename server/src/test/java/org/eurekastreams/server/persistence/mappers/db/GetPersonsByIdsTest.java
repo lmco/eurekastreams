@@ -85,9 +85,6 @@ public class GetPersonsByIdsTest extends MapperTest
     private void assertSmithers(final PersonModelView person)
     {
         assertEquals("smithers", person.getAccountId());
-        assertEquals("tstorgname", person.getParentOrganizationShortName());
-        assertEquals(5, person.getParentOrganizationId());
-        assertEquals(0, person.getCompositeStreamHiddenLineIndex());
         assertEquals("smithers@gmail.com", person.getEmail());
         assertEquals("skljk klsdjlsdlsj lkj5", person.getDescription());
     }

@@ -1652,7 +1652,6 @@
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
 		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
 		<constructor-arg ref="getGroupsByIdsMapper" />
-		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="getSystemAdministratorIds" />
 		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 	</bean>
@@ -1867,11 +1866,6 @@
         <property name="cache" ref="memcachedCache" />
     </bean>
 
-	<bean id="updateCachedOrganizationNameMapper"
-		class="org.eurekastreams.server.persistence.UpdateCachedOrganizationName">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="gadgetUserPrefMapper"
 		class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetUserPrefMapper">
 	</bean>
@@ -1997,11 +1991,6 @@
 	    </constructor-arg>       
 	</bean>
 	
-	<bean id="populateOrgChildWithSkeletonParentOrgsCacheMapper"
-		class="org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper">
-		<constructor-arg ref="getOrganizationsByIdsMapper" />
-	</bean>
-
 	<bean id="deleteGroupActivity"
 		class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
 
@@ -2234,9 +2223,7 @@
     
     <bean id="getFollowedPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper" />      
     
-    <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
-	
-	<bean id="getListsContainingActivities" class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities" />
+    <bean id="getListsContainingActivities" class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities" />
 	
 	<bean id="getActivityIdsPostedToStreamByUniqueKeyAndScopeType" 
 	    class="org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType" />                

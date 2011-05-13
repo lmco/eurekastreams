@@ -40,13 +40,13 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Activity detail panel.
- *
+ * 
  */
 public class ActivityDetailPanel extends FlowPanel
 {
     /**
      * Default constructor.
-     *
+     * 
      * @param activity
      *            activity.
      * @param showRecipient
@@ -86,6 +86,7 @@ public class ActivityDetailPanel extends FlowPanel
         linkPanel.add(new InlineHyperlink("View all activities", Session.getInstance().generateUrl(
                 new CreateUrlRequest(params, false))));
 
+        // TODO: change this to goto the new admin page
         if (manageFlagged && activity != null)
         {
             bus.addObserver(GotOrganizationModelViewResponseEvent.class,
@@ -98,15 +99,13 @@ public class ActivityDetailPanel extends FlowPanel
                             linkPanel.add(new InlineLabel("|"));
 
                             OrganizationModelView org = ev.getResponse();
-                            String url =
-                                    Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName(), "tab",
-                                                    "Admin"));
+                            String url = Session.getInstance().generateUrl(
+                                    new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName(), "tab", "Admin"));
                             linkPanel.add(new InlineHyperlink("Manage flagged content for organization "
                                     + org.getName(), url));
                         }
                     });
-            OrganizationModelViewModel.getInstance().fetch(activity.getRecipientParentOrgId(), true);
+            OrganizationModelViewModel.getInstance().fetch(0L, true);
         }
     }
 

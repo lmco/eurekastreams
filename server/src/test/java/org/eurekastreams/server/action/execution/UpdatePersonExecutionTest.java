@@ -24,7 +24,6 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -102,7 +101,6 @@ public class UpdatePersonExecutionTest
         sut = new UpdatePersonExecution(personMapperMock, persistResourceExecutionMock, backgroundMapperMock);
         fields = new HashMap<String, Serializable>();
         fields.put("skills", "stuff, things");
-        fields.put(PersonModelView.ORG_PARENT_KEY, "orgShortName");
     }
 
     /**

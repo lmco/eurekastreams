@@ -61,14 +61,10 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("streamPostable"));
         fields.add(getColumn("suppressPostNotifToMember"));
         fields.add(getColumn("suppressPostNotifToCoordinator"));
-        fields.add(Projections.property("po.name").as("parentOrganizationName"));
-        fields.add(Projections.property("po.shortName").as("parentOrganizationShortName"));
-        fields.add(Projections.property("po.id").as("parentOrganizationId"));
         fields.add(Projections.property("cb.accountId").as("personCreatedByAccountId"));
         fields.add(Projections.property("cb.displayName").as("personCreatedByDisplayName"));
         fields.add(Projections.property("stream.id").as("streamId"));
         criteria.setProjection(fields);
-        criteria.createAlias("parentOrganization", "po");
         criteria.createAlias("createdBy", "cb");
         criteria.createAlias("streamScope", "stream");
 

@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 
 /**
  * Strategy to retrieve a person from the database by their id.
@@ -44,23 +43,14 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
     private PersonMapper mapper = null;
 
     /**
-     * Mapper to add skeleton parent organizations onto Person objects.
-     */
-    private final PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
-
-    /**
      * Constructor that sets up the mapper.
      * 
      * @param inMapper
      *            - instance of PersonMapper
-     * @param inSkeletonParentOrgPopulator
-     *            mapper to populate parent org of people with a skeleton org
      */
-    public GetPersonExecution(final PersonMapper inMapper,
-            final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inSkeletonParentOrgPopulator)
+    public GetPersonExecution(final PersonMapper inMapper)
     {
         mapper = inMapper;
-        skeletonParentOrgPopulator = inSkeletonParentOrgPopulator;
     }
 
     /**
@@ -112,7 +102,6 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
                 log.trace("Attempting to populate skeleton Organizations for Person " + result.toString());
             }
 
-            skeletonParentOrgPopulator.populateParentOrgSkeleton(result);
         }
         return result;
     }

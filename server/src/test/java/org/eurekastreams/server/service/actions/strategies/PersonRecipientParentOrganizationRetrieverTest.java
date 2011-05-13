@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
@@ -69,29 +68,6 @@ public class PersonRecipientParentOrganizationRetrieverTest
     public void setup()
     {
         sut = new PersonRecipientRetriever(mapper);
-    }
-
-    /**
-     * Test getParentOrganization.
-     */
-    @Test
-    public void testGetParentOrganization()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(activityDTOMock).getDestinationStream();
-                will(returnValue(streamDTOMock));
-
-                oneOf(streamDTOMock).getUniqueIdentifier();
-                will(returnValue("accountId"));
-
-                oneOf(mapper).findByAccountId("accountId");
-            }
-        });
-
-        sut.getParentOrganization(activityDTOMock);
-        context.assertIsSatisfied();
     }
 
     /**

@@ -266,17 +266,4 @@ public class DomainGroupTest
         sut.setDateAdded(date);
         assertSame(date, sut.getDateAdded());
     }
-
-    /**
-     * Tests organization properties.
-     */
-    @Test
-    public void testParentOrganizationAccessors()
-    {
-        sut.setParentOrganization(new Organization("orgName", "shortOrgName"));
-
-        assertEquals("orgName", sut.getParentOrganizationName());
-        assertEquals("shortorgname", sut.getParentOrganizationShortName());
-    }
-
 }

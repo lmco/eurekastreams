@@ -17,7 +17,6 @@ package org.eurekastreams.server.domain;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -100,7 +99,6 @@ public class PersonTest
         sut.setWorkPhone("6105551212");
         sut.setEmail("homer@gmail.com");
         sut.setLocation("90210");
-        sut.setParentOrganization(org);
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         message = null;
     }
@@ -176,8 +174,6 @@ public class PersonTest
         assertEquals("user@domain.com", mv.getEmail());
         assertEquals(aDate, mv.getDateAdded());
         // TODO: assertEquals(, mv.getParentOrganizationId());
-        assertEquals("orgName", mv.getParentOrganizationName());
-        assertEquals("shortorgname", mv.getParentOrganizationShortName());
 
         assertEquals(1, mv.getOptOutVideos().size());
         assertEquals((Long) 5L, mv.getOptOutVideos().iterator().next());
@@ -267,7 +263,6 @@ public class PersonTest
         sut.setAvatarCropX(avatarCropX);
         sut.setAvatarCropY(avatarCropY);
         sut.setAvatarCropSize(avatarCropSize);
-        sut.setParentOrganization(organization);
         sut.setBiography(biography);
         sut.setOverview(overview);
         sut.setDateAdded(dateAdded);
@@ -275,7 +270,6 @@ public class PersonTest
         sut.setGroupCount(3);
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         sut.setStreamScope(streamScopeMock);
-        sut.setParentOrgId(parentOrgId);
 
         assertTrue(0 == sut.getStreamViewHiddenLineIndex());
         assertTrue(0 == sut.getGroupStreamHiddenLineIndex());
@@ -294,7 +288,6 @@ public class PersonTest
         assertEquals("cellPhone" + message, cellPhone, sut.getCellPhone());
         assertEquals("faxNumber" + message, faxNumber, sut.getFax());
         assertEquals("avatar" + message, avatar, sut.getAvatarId());
-        assertEquals("org" + message, organization.getShortName(), sut.getParentOrganization().getShortName());
         assertEquals(0, sut.getFollowersCount());
         assertEquals(0, sut.getFollowingCount());
         assertEquals(avatarCropX, sut.getAvatarCropX());
@@ -306,10 +299,9 @@ public class PersonTest
         assertEquals(updatesCount, sut.getUpdatesCount());
         assertEquals(3, sut.getGroupCount());
         assertEquals(lastAcceptedTos, sut.getLastAcceptedTermsOfService());
-        assertEquals(parentOrgId, sut.getParentOrgId());
 
         // verify getProperties() method.
-        HashMap<String, Serializable> props = sut.getProperties(Boolean.TRUE);
+        HashMap<String, Serializable> props = sut.getProperties();
         assertEquals("homers", (String) props.get("accountId"));
         assertEquals("homer", (String) props.get("firstName"));
         assertEquals("jay", (String) props.get("middleName"));
@@ -322,21 +314,16 @@ public class PersonTest
         assertEquals(jobDescription, (String) props.get("jobDescription"));
         assertEquals(title, (String) props.get("title"));
         assertEquals(location, (String) props.get("location"));
-        assertNotNull(props.get("organization"));
         assertEquals(streamScopeMock, sut.getStreamScope());
-
-        // verify that org is dropped.
-        props = sut.getProperties(Boolean.FALSE);
-        assertNull(props.get("organization"));
 
         // verify that null values are dropped.
         sut.setTitle(null);
-        props = sut.getProperties(Boolean.FALSE);
+        props = sut.getProperties();
         assertFalse(props.containsKey("title"));
 
         // verify that empty strings are dropped.
         sut.setJobDescription("");
-        props = sut.getProperties(Boolean.FALSE);
+        props = sut.getProperties();
         assertFalse(props.containsKey("jobDescription"));
 
         sut.setStreamPostable(false);
@@ -553,15 +540,5 @@ public class PersonTest
         assertNull(p.getBackground());
         assertNull(p.getJobs());
         assertNull(p.getSchoolEnrollments());
-    }
-
-    /**
-     * Tests organization properties.
-     */
-    @Test
-    public void testParentOrganizationAccessors()
-    {
-        assertEquals("orgName", sut.getParentOrganizationName());
-        assertEquals("shortorgname", sut.getParentOrganizationShortName());
     }
 }

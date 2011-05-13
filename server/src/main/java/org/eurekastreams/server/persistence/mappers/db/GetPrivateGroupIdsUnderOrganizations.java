@@ -17,7 +17,6 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Query;
@@ -27,12 +26,10 @@ import org.eurekastreams.server.persistence.mappers.ReadMapper;
 /**
  * Get a list of all private group ids under a collection of organizations.
  */
-public class GetPrivateGroupIdsUnderOrganizations extends
-        ReadMapper<Collection<Long>, Set<Long>>
+public class GetPrivateGroupIdsUnderOrganizations extends ReadMapper<Collection<Long>, Set<Long>>
 {
     /**
-     * Get a set of the ids of private Domain Groups directly under any of the
-     * orgs in the input collection of organization ids.
+     * Get all private group ids - ignore the input.
      * 
      * @param inOrgIds
      *            the org ids to look for private groups under
@@ -43,26 +40,8 @@ public class GetPrivateGroupIdsUnderOrganizations extends
     public Set<Long> execute(final Collection<Long> inOrgIds)
     {
         HashSet<Long> groupIds = new HashSet<Long>();
-
-        if (inOrgIds.size() > 0)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (Long orgId : inOrgIds)
-            {
-                if (sb.length() > 0)
-                {
-                    sb.append(",");
-                }
-                sb.append(orgId);
-            }
-
-            Query q = getEntityManager().createQuery(
-                    "SELECT g.id FROM DomainGroup g, Organization o "
-                            + "WHERE o.id IN(" + sb.toString() + ") "
-                            + "AND g.parentOrganization = o "
-                            + "AND g.publicGroup = false");
-            groupIds.addAll((List<Long>) q.getResultList());
-        }
+        Query q = getEntityManager().createQuery("SELECT id FROM DomainGroup WHERE publicGroup = false");
+        groupIds.addAll(q.getResultList());
         return groupIds;
     }
 }

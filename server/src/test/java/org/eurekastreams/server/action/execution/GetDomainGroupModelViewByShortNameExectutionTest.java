@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -54,12 +53,6 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
      * Mapper used to look up the group.
      */
     private GetDomainGroupsByShortNames groupByShortNameMapper = context.mock(GetDomainGroupsByShortNames.class);
-
-    /**
-     * Mapper to populate the parent org of people with skeleton orgs from cache.
-     */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper populateOrgChildWithSkeletonParentOrgsCacheMapper //
-    = context.mock(PopulateOrgChildWithSkeletonParentOrgsCacheMapper.class);
 
     /**
      * Mapper to get all person ids that have group coordinator access for a given group.
@@ -124,9 +117,8 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
      * System under test.
      */
     private GetDomainGroupModelViewByShortNameExectution sut = new GetDomainGroupModelViewByShortNameExectution(
-            groupByShortNameMapper, populateOrgChildWithSkeletonParentOrgsCacheMapper, groupCoordinatorIdsDAO,
-            groupFollowerIdsMapper, groupCoordinatorIdsByGroupIdMapper, //
-            personModelViewsByIdMapper, groupEntityMapper);
+            groupByShortNameMapper, groupCoordinatorIdsDAO, groupFollowerIdsMapper, //
+            groupCoordinatorIdsByGroupIdMapper, personModelViewsByIdMapper, groupEntityMapper);
 
     // TODO: Minimal pass testing. Beef this up a bit for non public and restricted groups.
     /**

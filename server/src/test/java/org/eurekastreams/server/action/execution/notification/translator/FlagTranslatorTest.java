@@ -77,7 +77,6 @@ public class FlagTranslatorTest
         stream.setType(EntityType.PERSON);
         stream.setDestinationEntityId(4L);
         final ActivityDTO activity = new ActivityDTO();
-        activity.setRecipientParentOrgId(2L);
         activity.setDestinationStream(stream);
 
         final List<Long> admins = new ArrayList<Long>();

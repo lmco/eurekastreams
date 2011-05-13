@@ -18,7 +18,6 @@ package org.eurekastreams.server.action.execution.profile;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
@@ -27,7 +26,6 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -67,12 +65,6 @@ public class GetFollowersExecutionTest
     private DomainGroupMapper groupMapper = context.mock(DomainGroupMapper.class);
 
     /**
-     * Mapper to populate OrganizationChildren's parentOrganization with skeleton orgs from cache.
-     */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper orgChildrenSkeletonParentOrgPopulatorCacheMapper = context
-            .mock(PopulateOrgChildWithSkeletonParentOrgsCacheMapper.class);
-
-    /**
      * Mocked request object.
      */
     private GetFollowersFollowingRequest getFollowersFollowingRequest = context
@@ -109,7 +101,7 @@ public class GetFollowersExecutionTest
     @Before
     public void setup()
     {
-        sut = new GetFollowersExecution(personMapper, groupMapper, orgChildrenSkeletonParentOrgPopulatorCacheMapper);
+        sut = new GetFollowersExecution(personMapper, groupMapper);
     }
 
     /**
@@ -151,13 +143,10 @@ public class GetFollowersExecutionTest
 
                 oneOf(personMapper).getFollowers(TARGET_USER, START_VALUE, END_VALUE);
                 will(returnValue(connections));
-
-                oneOf(orgChildrenSkeletonParentOrgPopulatorCacheMapper).populateParentOrgSkeletons(
-                        with(any(Collection.class)));
             }
         });
 
-        assertEquals((PagedSet<Person>) sut.execute(actionContext), connections);
+        assertEquals(sut.execute(actionContext), connections);
         context.assertIsSatisfied();
     }
 
@@ -200,13 +189,10 @@ public class GetFollowersExecutionTest
 
                 oneOf(groupMapper).getFollowers(TARGET_GROUP, START_VALUE, END_VALUE);
                 will(returnValue(connections));
-
-                oneOf(orgChildrenSkeletonParentOrgPopulatorCacheMapper).populateParentOrgSkeletons(
-                        with(any(Collection.class)));
             }
         });
 
-        assertEquals((PagedSet<Person>) sut.execute(actionContext), connections);
+        assertEquals(sut.execute(actionContext), connections);
         context.assertIsSatisfied();
     }
 
@@ -249,7 +235,7 @@ public class GetFollowersExecutionTest
             }
         });
 
-        assertEquals((PagedSet<Person>) sut.execute(actionContext), connections);
+        assertEquals(sut.execute(actionContext), connections);
         context.assertIsSatisfied();
     }
 

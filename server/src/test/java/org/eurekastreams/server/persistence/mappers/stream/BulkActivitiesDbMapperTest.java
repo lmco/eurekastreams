@@ -71,7 +71,6 @@ public class BulkActivitiesDbMapperTest extends MapperTest
         assertEquals(DESTINATION_STREAM, activity.getDestinationStream().getId());
         assertEquals("smithers", activity.getDestinationStream().getUniqueIdentifier());
         assertEquals("Smithers Smithers", activity.getActor().getDisplayName());
-        assertEquals(5L, activity.getRecipientParentOrgId());
 
         // Assert first and last comments and comment count were set correctly.
         assertEquals(1, activity.getFirstComment().getId());

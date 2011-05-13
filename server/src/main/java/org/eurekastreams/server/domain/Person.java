@@ -71,8 +71,7 @@ import org.hibernate.validator.NotEmpty;
  */
 @Entity
 @Indexed
-public class Person extends DomainEntity implements Serializable, AvatarEntity, Followable, OrganizationChild,
-        HasEmail, Bannerable
+public class Person extends DomainEntity implements Serializable, AvatarEntity, Followable, HasEmail, Bannerable
 {
     /**
      * Serial version uid.
@@ -322,13 +321,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     //
     analyzer = @Analyzer(impl = TextStemmerAnalyzer.class), store = Store.NO)
     private String title;
-
-    /**
-     * Parent organization.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentOrganizationId")
-    private Organization parentOrganization;
 
     /**
      * Job description for person.
@@ -612,12 +604,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private String displayName;
 
     /**
-     * Get the parent org id w/o loading the org.
-     */
-    @Formula("parentOrganizationId")
-    private Long parentOrgId;
-
-    /**
      * Optional map of additional properties.
      */
     @Basic(optional = true)
@@ -654,8 +640,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         title = personModelView.getTitle();
         email = personModelView.getEmail();
         dateAdded = personModelView.getDateAdded();
-        parentOrganization = new Organization(personModelView.getParentOrganizationName(), personModelView
-                .getParentOrganizationShortName());
         additionalProperties = personModelView.getAdditionalProperties();
         lastName = personModelView.getLastName();
         preferredName = personModelView.getPreferredName();
@@ -1273,32 +1257,11 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * @return the parentOrganization
-     */
-    @Override
-    public Organization getParentOrganization()
-    {
-        return parentOrganization;
-    }
-
-    /**
-     * @param inOrganization
-     *            the parentOrganization to set
-     */
-    @Override
-    public void setParentOrganization(final Organization inOrganization)
-    {
-        parentOrganization = inOrganization;
-    }
-
-    /**
      * Returns properties of person, this is NOT an all inclusive list, this is used by create and update functionality.
      * 
-     * @param includeOrganization
-     *            Flag to include organization in properties or not.
      * @return properties of person.
      */
-    public HashMap<String, Serializable> getProperties(final Boolean includeOrganization)
+    public HashMap<String, Serializable> getProperties()
     {
         HashMap<String, Serializable> personData = new HashMap<String, Serializable>();
         addNonNullProperty("accountId", getAccountId(), personData);
@@ -1319,10 +1282,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         if (getAdditionalProperties() != null)
         {
             personData.put("additionalProperties", getAdditionalProperties());
-        }
-        if (includeOrganization)
-        {
-            addNonNullProperty("organization", getParentOrganization(), personData);
         }
         return personData;
     }
@@ -1685,28 +1644,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Get the parent org id without loading the parent organization.
-     * 
-     * @return the parent org id without loading the parent organization
-     */
-    @Override
-    public Long getParentOrgId()
-    {
-        return parentOrgId;
-    }
-
-    /**
-     * Set the parent org id.
-     * 
-     * @param inParentOrgId
-     *            the parent org id
-     */
-    protected void setParentOrgId(final Long inParentOrgId)
-    {
-        parentOrgId = inParentOrgId;
-    }
-
-    /**
      * {@inheritDoc}.
      */
     @Override
@@ -1740,24 +1677,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public void setBannerEntityId(final Long inBannerEntityId)
     {
         bannerEntityId = inBannerEntityId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getParentOrganizationName()
-    {
-        return parentOrganization.getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getParentOrganizationShortName()
-    {
-        return parentOrganization.getShortName();
     }
 
     /**
@@ -1824,9 +1743,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setTitle(title);
         p.setEmail(email);
         p.setDateAdded(dateAdded);
-        p.setParentOrganizationId(parentOrganization.getId());
-        p.setParentOrganizationName(parentOrganization.getName());
-        p.setParentOrganizationShortName(parentOrganization.getShortName());
         p.setAdditionalProperties(getAdditionalProperties());
         p.setLastName(lastName);
         p.setPreferredName(preferredName);

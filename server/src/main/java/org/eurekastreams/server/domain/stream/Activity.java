@@ -181,7 +181,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
      * The recipient's parent organization.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipientParentOrgId", nullable = false)
+    @JoinColumn(name = "recipientParentOrgId", nullable = true)
     private Organization recipientParentOrg;
 
     /**

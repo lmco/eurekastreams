@@ -113,7 +113,7 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
                 new ReflectiveUpdater());
 
         log.debug("Adding to database: " + inPerson.getAccountId());
-        final HashMap<String, Serializable> personData = inPerson.getProperties(Boolean.FALSE);
+        final HashMap<String, Serializable> personData = inPerson.getProperties();
 
         Person person = (Person) persistResourceExecution.execute(new TaskHandlerActionContext<PrincipalActionContext>(
                 new PrincipalActionContext()
