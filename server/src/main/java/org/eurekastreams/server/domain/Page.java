@@ -111,7 +111,11 @@ public enum Page implements Serializable
     /**
      * Widget displaying basic user profile information.
      */
-    WIDGET_PROFILE_BADGE("widget-profilebadge");
+    WIDGET_PROFILE_BADGE("widget-profilebadge"), 
+    /**
+     * XXX - New Activity page.
+     */
+    ACTIVITY_NEW("activity-new");
 
     /**
      * human-readable name (ie, "Business Development" as opposed to enum.BD).

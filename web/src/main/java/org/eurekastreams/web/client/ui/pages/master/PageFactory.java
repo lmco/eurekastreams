@@ -20,6 +20,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.ui.ActionExecutorPanel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.activity.ActivityContent;
 import org.eurekastreams.web.client.ui.pages.help.HelpContent;
 import org.eurekastreams.web.client.ui.pages.metrics.MetricsSummaryContent;
 import org.eurekastreams.web.client.ui.pages.oauth.OAuthAuthorizeContent;
@@ -78,6 +79,8 @@ public class PageFactory
             return new GalleryContent();
         case ACTIVITY:
             return new StreamContent();
+        case ACTIVITY_NEW:
+            return new ActivityContent();
         case PEOPLE:
             return new PersonalProfilePanel(view);
         case PERSONAL_SETTINGS:
