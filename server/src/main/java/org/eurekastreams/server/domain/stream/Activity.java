@@ -38,7 +38,6 @@ import javax.persistence.TemporalType;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.search.analysis.HashTagTextStemmerIndexingAnalyzer;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.bridge.ActivityAuthorClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityContentClassBridge;
@@ -176,13 +175,6 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
      */
     @Basic(optional = false)
     private Boolean isDestinationStreamPublic;
-
-    /**
-     * The recipient's parent organization.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipientParentOrgId", nullable = true)
-    private Organization recipientParentOrg;
 
     /**
      * The updated date.
@@ -480,23 +472,6 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     }
 
     /**
-     * @return the recipientParentOrg
-     */
-    public Organization getRecipientParentOrg()
-    {
-        return recipientParentOrg;
-    }
-
-    /**
-     * @param inRecipientParentOrg
-     *            the recipientParentOrg to set
-     */
-    public void setRecipientParentOrg(final Organization inRecipientParentOrg)
-    {
-        this.recipientParentOrg = inRecipientParentOrg;
-    }
-
-    /**
      * @return the verb
      */
     public ActivityVerb getVerb()
@@ -641,7 +616,6 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
         clone.originalActorId = this.originalActorId;
         clone.originalActorType = this.originalActorType;
         clone.postedTime = this.postedTime;
-        clone.recipientParentOrg = this.recipientParentOrg;
         clone.recipientStreamScope = this.recipientStreamScope;
         clone.updated = this.updated;
         clone.usersWhoStarred = this.usersWhoStarred;

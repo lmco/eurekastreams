@@ -545,28 +545,28 @@
 		
 	<Activity id="6789" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE" 
 		openSocialId="123" postedTime="2009-10-27 06:54:00" updated="2009-10-27 06:55:00"
-		verb="POST" recipientParentOrgId="5" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
+		verb="POST" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
 		originalActorType="PERSON" flagged="true" showInStream="true" />
 	
 	<Activity id="6790" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
 		openSocialId="456" postedTime="2009-10-27 06:55:00" updated="2009-10-27 06:56:00"
-		verb="POST" recipientParentOrgId="5" streamScopeId="87433" isDestinationStreamPublic="true" 
+		verb="POST" streamScopeId="87433" isDestinationStreamPublic="true" 
 		flagged="false" showInStream="true"/>
 		
     <Activity id="6791" version="1" actorId="fordp" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="789" postedTime="2009-10-27 06:56:00" updated="2009-10-27 06:56:00"
-        verb="POST" recipientParentOrgId="5" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
+        verb="POST" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
 		originalActorType="PERSON" flagged="false" showInStream="true"/>
     
     <Activity id="6792" version="1" actorId="fordp2" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="012" postedTime="2009-10-27 06:57:00" updated="2009-10-27 06:56:00"
-        verb="POST" recipientParentOrgId="5" streamScopeId="1" isDestinationStreamPublic="true" originalActorId="csagan" 
+        verb="POST" streamScopeId="1" isDestinationStreamPublic="true" originalActorId="csagan" 
 		originalActorType="PERSON" flagged="false" showInStream="true"/>
         
     <!-- smithers posts a note to group1 stream -->
     <Activity id="6793" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="234" postedTime="2010-01-27 06:58:00" updated="2010-01-27 06:58:00"
-        verb="POST" recipientParentOrgId="5" streamScopeId="874" isDestinationStreamPublic="true" originalActorId="smithers" 
+        verb="POST" streamScopeId="874" isDestinationStreamPublic="true" originalActorId="smithers" 
         originalActorType="PERSON" flagged="false" showInStream="true"/>
         
     

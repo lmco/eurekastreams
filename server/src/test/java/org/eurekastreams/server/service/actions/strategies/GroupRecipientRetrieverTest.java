@@ -31,7 +31,7 @@ import org.junit.Test;
  * Test for GroupRecipientRetriever class.
  * 
  */
-public class GroupRecipientParentOrganizationRetrieverTest
+public class GroupRecipientRetrieverTest
 {
 
     /**

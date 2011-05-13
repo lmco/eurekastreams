@@ -18,7 +18,6 @@ package org.eurekastreams.server.service.actions.strategies;
 import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -29,7 +28,7 @@ import org.junit.Test;
  * Test for PersonRecipientRetriever class.
  * 
  */
-public class PersonRecipientParentOrganizationRetrieverTest
+public class PersonRecipientRetrieverTest
 {
     /**
      * Mocking context.
@@ -50,16 +49,6 @@ public class PersonRecipientParentOrganizationRetrieverTest
      * mapper.
      */
     private PersonMapper mapper = context.mock(PersonMapper.class);
-
-    /**
-     * ActivityDTO.
-     */
-    private ActivityDTO activityDTOMock = context.mock(ActivityDTO.class);
-
-    /**
-     * StreamEntityDTO.
-     */
-    private StreamEntityDTO streamDTOMock = context.mock(StreamEntityDTO.class);
 
     /**
      * Pre-test setup.
