@@ -573,7 +573,7 @@ public class GalleryContent extends SettingsPanel
                         else if (event.getParameters().get("action").equals("editTab")
                                 || event.getParameters().get("action").equals("newTab"))
                         {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 galleryPortalContainer.setVisible(false);
                                 galleryAddOrEditContainer.setVisible(true);
