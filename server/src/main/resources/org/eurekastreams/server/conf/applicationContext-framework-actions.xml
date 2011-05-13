@@ -3872,7 +3872,32 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
         </constructor-arg>
-    </bean>
+    </bean>        
+    
+    <bean id="galleryTabTemplateValidator"
+        class="org.eurekastreams.server.action.validation.MapParameterDecoratorValidation">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                <constructor-arg value="description" />
+                <constructor-arg value="java.lang.String" />
+                <constructor-arg value="Description is required." />  
+                <property name="mapParameterValidatorDecorator">
+                        <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                            <constructor-arg value="category" />
+                            <constructor-arg value="java.lang.String" />
+                            <constructor-arg value="Category is required" />
+                            <property name="mapParameterValidatorDecorator">
+                                <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                                    <constructor-arg value="tab" />
+                                    <constructor-arg value="java.lang.String" />
+                                    <constructor-arg value="Source tab is required." />
+                                </bean>
+                            </property>
+                        </bean>
+                </property>              
+            </bean>
+        </constructor-arg>
+    </bean>    
     
     <!-- GALLERY ITEMPOPULATORS -->
     <bean id="themePopulator"
@@ -3890,7 +3915,7 @@
     </bean>
     
     <bean id="createGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="galleryTabTemplateValidator" />
         <constructor-arg ref="isSystemAdminAuthorization"/>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
