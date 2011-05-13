@@ -91,8 +91,8 @@ public class AnonymousClassInterceptor<T> implements Action
         int zeroBasedIndex = parameterIndex >= 0 ? parameterIndex : paramCount + parameterIndex;
         if (zeroBasedIndex < 0 || zeroBasedIndex >= paramCount)
         {
-            throw new Exception("Desired parameter index (" + parameterIndex
-                    + ") is out of bounds for the call (with " + paramCount + " parameters).");
+            throw new Exception("Desired parameter index (" + parameterIndex + ") is out of bounds for the call (with "
+                    + paramCount + " parameters).");
         }
 
         anonObject = (T) invocation.getParameter(zeroBasedIndex);

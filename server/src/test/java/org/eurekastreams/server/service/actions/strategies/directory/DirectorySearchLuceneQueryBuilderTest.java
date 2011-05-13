@@ -51,11 +51,6 @@ public class DirectorySearchLuceneQueryBuilderTest
     private final int fieldBoostFactor = 500;
 
     /**
-     * Org id getter.
-     */
-    private OrganizationIdGetter orgIdGetter = context.mock(OrganizationIdGetter.class);
-
-    /**
      * System under test.
      */
     private DirectorySearchLuceneQueryBuilder sut;

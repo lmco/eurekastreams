@@ -34,7 +34,6 @@ import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -53,11 +52,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      * The tab mapper.
      */
     private final TabMapper tabMapper;
-
-    /**
-     * The Organization mapper.
-     */
-    private final OrganizationMapper organizationMapper;
 
     /**
      * Mapper to get the readonly streams.
@@ -81,8 +75,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            person mapper.
      * @param inTabMapper
      *            tab mapper.
-     * @param inOrganizationMapper
-     *            org mapper
      * @param inReadonlyStreamsMapper
      *            mapper to get the readonly streams
      * @param inReadOnlyStreamsNameList
@@ -91,13 +83,11 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            - list of tabs to be created on the start page.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
-            final OrganizationMapper inOrganizationMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
             final List<String> inReadOnlyStreamsNameList, final List<String> inStartPageTabs)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
-        organizationMapper = inOrganizationMapper;
         readonlyStreamsMapper = inReadonlyStreamsMapper;
         readOnlyStreamsNameList = inReadOnlyStreamsNameList;
         startPageTabs = inStartPageTabs;

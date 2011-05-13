@@ -68,8 +68,6 @@
     
 	<bean id="domainGroupBannerMapper" class="org.eurekastreams.server.persistence.mappers.DomainGroupBannerMapper"/>
 
-	<bean id="organizationBannerMapper" class="org.eurekastreams.server.persistence.mappers.OrganizationBannerMapper"/>
-
 	<bean id="getRefreshableFeedsMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetRefreshableFeedsMapper" />
 
@@ -265,17 +263,6 @@
         </property>
 	</bean>
 
-	<bean id="bulkOrganizationsByShortNameMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
-		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
-		<property name="idsByStringsMapper">
-            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
-                <constructor-arg value="shortName" />
-                <constructor-arg value="org.eurekastreams.server.domain.Organization" />
-            </bean>
-        </property>
-	</bean>
-
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsDbMapper" />
@@ -418,7 +405,7 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="getFlaggedActivitiesForOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivitiesForOrganization">
+	<bean id="getFlaggedActivitiesForOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivities">
 		<constructor-arg ref="bulkActivitiesMapper"/>
 	</bean>
 	
@@ -445,8 +432,6 @@
     
     <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
         
-    <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
-    
     <bean id="getGroupCoordinatorIdsByGroupIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupCoordinatorIdsByGroupIdDbMapper" />
     
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />

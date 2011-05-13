@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.model;
 
-import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
+import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
@@ -26,7 +26,7 @@ import org.eurekastreams.web.client.ui.Session;
 /**
  * Model for dealing with flagged (inappropriate) activities.
  */
-public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlaggedActivitiesByOrgRequest>,
+public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlaggedActivitiesRequest>,
         Updateable<UpdateActivityFlagRequest>
 {
     /**
@@ -36,7 +36,7 @@ public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlag
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static FlaggedActivityModel getInstance()
@@ -46,13 +46,13 @@ public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlag
 
     /**
      * Retrieves a list of flagged activities for the org.
-     *
+     * 
      * @param inRequest
      *            Request.
      * @param inUseClientCacheIfAvailable
      *            If ok to return cached results.
      */
-    public void fetch(final GetFlaggedActivitiesByOrgRequest inRequest, final boolean inUseClientCacheIfAvailable)
+    public void fetch(final GetFlaggedActivitiesRequest inRequest, final boolean inUseClientCacheIfAvailable)
     {
         super.callReadAction("getFlaggedActivitiesForOrganization", inRequest,
                 new OnSuccessCommand<PagedSet<ActivityDTO>>()
@@ -67,7 +67,7 @@ public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlag
 
     /**
      * Marks the activity as flagged or not.
-     *
+     * 
      * @param inRequest
      *            Request.
      */

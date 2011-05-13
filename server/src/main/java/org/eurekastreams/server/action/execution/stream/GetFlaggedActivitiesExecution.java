@@ -21,18 +21,18 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
+import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivitiesForOrganization;
+import org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivities;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 
 /**
- * Returns the flagged activities for a given organization.
+ * Returns the flagged activities.
  */
-public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetFlaggedActivitiesExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Logger.
@@ -40,7 +40,7 @@ public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionSt
     private Log log = LogFactory.make();
 
     /** Mapper. */
-    private GetFlaggedActivitiesForOrganization mapper;
+    private GetFlaggedActivities mapper;
 
     /**
      * ActivityFilter.
@@ -62,7 +62,7 @@ public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionSt
      * @param inActivityDeletabilityFilter
      *            ActivityFilter.
      */
-    public GetFlaggedActivitiesForOrganizationExecution(final GetFlaggedActivitiesForOrganization inMapper,
+    public GetFlaggedActivitiesExecution(final GetFlaggedActivities inMapper,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final ActivityFilter inActivityDeletabilityFilter)
     {
@@ -82,7 +82,7 @@ public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionSt
     public Serializable execute(final PrincipalActionContext inActionContext)
     {
         String userName = inActionContext.getPrincipal().getAccountId();
-        GetFlaggedActivitiesByOrgRequest request = (GetFlaggedActivitiesByOrgRequest) inActionContext.getParams();
+        GetFlaggedActivitiesRequest request = (GetFlaggedActivitiesRequest) inActionContext.getParams();
 
         if (log.isInfoEnabled())
         {

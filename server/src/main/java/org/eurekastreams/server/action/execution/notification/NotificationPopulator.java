@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -39,9 +38,6 @@ public class NotificationPopulator
     /** For getting group info. */
     private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper;
 
-    /** For getting org info. */
-    private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper;
-
     /** For getting activity info. */
     private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
@@ -52,19 +48,15 @@ public class NotificationPopulator
      *            For getting person info.
      * @param inGroupMapper
      *            For getting group info.
-     * @param inOrgMapper
-     *            For getting org info.
      * @param inActivitiesMapper
      *            For getting activity info.
      */
     public NotificationPopulator(final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
-            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
         peopleMapper = inPeopleMapper;
         groupMapper = inGroupMapper;
-        orgMapper = inOrgMapper;
         activitiesMapper = inActivitiesMapper;
     }
 
@@ -108,13 +100,6 @@ public class NotificationPopulator
             else if (EntityType.GROUP.equals(notif.getDestinationType()))
             {
                 DomainGroupModelView dest = groupMapper.execute(Collections.singletonList(notif.getDestinationId()))
-                        .get(0);
-                notif.setDestinationUniqueId(dest.getShortName());
-                notif.setDestinationName(dest.getName());
-            }
-            else if (EntityType.ORGANIZATION.equals(notif.getDestinationType()))
-            {
-                OrganizationModelView dest = orgMapper.execute(Collections.singletonList(notif.getDestinationId()))
                         .get(0);
                 notif.setDestinationUniqueId(dest.getShortName());
                 notif.setDestinationName(dest.getName());

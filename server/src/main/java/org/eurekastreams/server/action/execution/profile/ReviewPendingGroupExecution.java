@@ -36,7 +36,6 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
 
 /**
@@ -64,11 +63,6 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
      */
     private final AddPrivateGroupIdToCachedCoordinatorAccessList addPrivateGroupIdToCachedListMapper;
 
-    /**
-     * Organization mapper.
-     */
-    private final OrganizationMapper orgMapper;
-
     /** Execution strategy for deleting a group. */
     private TaskHandlerExecutionStrategy deleteGroupExecution;
 
@@ -81,19 +75,16 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
      *            Email notifier.
      * @param inAddPrivateGroupIdToCachedListMapper
      *            mapper to update cache when a private group is approved
-     * @param inOrgMapper
-     *            - {@link OrganizationMapper}.
      * @param inDeleteGroupExecution
      *            Execution strategy for deleting a group.
      */
     public ReviewPendingGroupExecution(final DomainGroupMapper inGroupMapper, final Notifier inEmailNotifier,
             final AddPrivateGroupIdToCachedCoordinatorAccessList inAddPrivateGroupIdToCachedListMapper,
-            final OrganizationMapper inOrgMapper, final TaskHandlerExecutionStrategy inDeleteGroupExecution)
+            final TaskHandlerExecutionStrategy inDeleteGroupExecution)
     {
         groupMapper = inGroupMapper;
         addPrivateGroupIdToCachedListMapper = inAddPrivateGroupIdToCachedListMapper;
         emailNotifier = inEmailNotifier;
-        orgMapper = inOrgMapper;
         deleteGroupExecution = inDeleteGroupExecution;
     }
 

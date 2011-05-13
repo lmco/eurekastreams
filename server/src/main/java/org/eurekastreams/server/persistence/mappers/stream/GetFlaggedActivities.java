@@ -22,7 +22,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
+import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
@@ -31,8 +31,8 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 /**
  * Mapper that gets the flagged activities pertaining to an org.
  */
-public class GetFlaggedActivitiesForOrganization extends
-        BaseArgDomainMapper<GetFlaggedActivitiesByOrgRequest, PagedSet<ActivityDTO>>
+public class GetFlaggedActivities extends
+        BaseArgDomainMapper<GetFlaggedActivitiesRequest, PagedSet<ActivityDTO>>
 {
     /**
      * Log.
@@ -50,7 +50,7 @@ public class GetFlaggedActivitiesForOrganization extends
      * @param inActivitiesMapper
      *            the activities mapper
      */
-    public GetFlaggedActivitiesForOrganization(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
+    public GetFlaggedActivities(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
         activitiesMapper = inActivitiesMapper;
     }
@@ -64,7 +64,7 @@ public class GetFlaggedActivitiesForOrganization extends
      */
     @Override
     @SuppressWarnings("unchecked")
-    public PagedSet<ActivityDTO> execute(final GetFlaggedActivitiesByOrgRequest inRequest)
+    public PagedSet<ActivityDTO> execute(final GetFlaggedActivitiesRequest inRequest)
     {
         if (inRequest.getRequestingUserAccountId() == null)
         {

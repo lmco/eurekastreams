@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.ui.pages.profile;
 import java.util.HashMap;
 
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
-import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
+import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
@@ -285,7 +285,7 @@ public class OrganizationProfilePanel extends FlowPanel
         // We need the counts for both of the lists, but at most one list will perform an initial data load, we need to
         // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
         // visible lists.)
-        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(0, 1), false);
+        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesRequest(0, 1), false);
         PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest("", 0, 1), false);
 
         // wire up events to refresh the list when something is removed
@@ -330,7 +330,7 @@ public class OrganizationProfilePanel extends FlowPanel
         activityLinkBuilder.addExtraParameter("manageFlagged", "true");
         flaggedRenderer.setActivityLinkBuilder(activityLinkBuilder);
         adminTabContent.addSet(flaggedActivitiesFilterName, FlaggedActivityModel.getInstance(), flaggedRenderer,
-                new GetFlaggedActivitiesByOrgRequest(0, 0));
+                new GetFlaggedActivitiesRequest(0, 0));
         // pending groups StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
                 new GetPendingGroupsRequest("", 0, 0));

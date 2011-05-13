@@ -40,7 +40,6 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
@@ -130,11 +129,6 @@ public class ReviewPendingGroupExecutionTest
     private UserActionRequest notifAsyncRequest = context.mock(UserActionRequest.class);
 
     /**
-     * Mocked instance of the {@link OrganizationMapper}.
-     */
-    private final OrganizationMapper orgMapperMock = context.mock(OrganizationMapper.class);
-
-    /**
      * Mocked instance of the {@link Organization}.
      */
     private final Organization orgMock = context.mock(Organization.class);
@@ -152,7 +146,7 @@ public class ReviewPendingGroupExecutionTest
     public void setup() throws MalformedURLException
     {
         sut = new ReviewPendingGroupExecution(groupMapper, emailNotifier, addPrivateGroupIdToCachedListMock,
-                orgMapperMock, deleteGroupExecution);
+                deleteGroupExecution);
     }
 
     /**

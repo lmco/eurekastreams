@@ -20,9 +20,9 @@ import java.io.Serializable;
 import org.eurekastreams.server.action.request.BasePageableRequest;
 
 /**
- * Request a page of flagged activities for an org.
+ * Request a page of flagged activities.
  */
-public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implements Serializable
+public class GetFlaggedActivitiesRequest extends BasePageableRequest implements Serializable
 {
     /** Fingerprint. */
     private static final long serialVersionUID = 377907186485656173L;
@@ -35,7 +35,7 @@ public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implem
     /**
      * Constructor for serialization.
      */
-    public GetFlaggedActivitiesByOrgRequest()
+    public GetFlaggedActivitiesRequest()
     {
     }
 
@@ -47,7 +47,7 @@ public class GetFlaggedActivitiesByOrgRequest extends BasePageableRequest implem
      * @param inEndIndex
      *            The end index for items to return.
      */
-    public GetFlaggedActivitiesByOrgRequest(final int inStartIndex, final int inEndIndex)
+    public GetFlaggedActivitiesRequest(final int inStartIndex, final int inEndIndex)
     {
         super(inStartIndex, inEndIndex);
     }

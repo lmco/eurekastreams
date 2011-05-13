@@ -27,11 +27,9 @@ import java.util.List;
 
 import javax.persistence.PersistenceException;
 
-import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.domain.Layout;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
@@ -72,19 +70,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
      * JpaOrganizationMapper.
      */
     @Autowired
-    private OrganizationMapper jpaOrganizationMapper;
-
-    /**
-     * JpaOrganizationMapper.
-     */
-    @Autowired
     private TabGroupMapper jpaTabGroupMapper;
-
-    /**
-     * Autowired QueryOptimizer.
-     */
-    @Autowired
-    private QueryOptimizer queryOptimizer;
 
     /**
      * PersonId for Ford Prefect.
@@ -169,8 +155,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
     public void testInsert()
     {
         final long id = 4231L;
-
-        Organization org = jpaOrganizationMapper.findById(5L);
         TabGroup tg = jpaTabGroupMapper.findById(id);
 
         Person p = new Person("ndtyson", "Neil", "d", "deGrasse Tyson", "Dr. To You");
@@ -192,8 +176,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
     public void testInsertWithProfileProperties()
     {
         final long id = 4231L;
-
-        Organization org = jpaOrganizationMapper.findById(5L);
         TabGroup tg = jpaTabGroupMapper.findById(id);
 
         Person p = new Person("yoyojoe", "Joe", "hey", "Yoyo", "Call Me Joe");
@@ -630,7 +612,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
 
         final long id = 4231L;
 
-        Organization org = jpaOrganizationMapper.findById(5L);
         TabGroup tg = jpaTabGroupMapper.findById(id);
 
         Person p = new Person("ndtyson", "Neil", "d", "deGrasse Tyson", "Dr. To You");
