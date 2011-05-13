@@ -179,11 +179,14 @@ public class OrganizationProfilePanel extends FlowPanel
         profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
 
-        final SimpleTab adminTab = buildAdminTab();
-        portalPage.addTab(adminTab);
+        if (Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            final SimpleTab adminTab = buildAdminTab();
+            portalPage.addTab(adminTab);
 
-        // if heading for admin tab on initial entry to the org profile page, then do it
-        switchToAdminTabFilterIfRequested();
+            // if heading for admin tab on initial entry to the org profile page, then do it
+            switchToAdminTabFilterIfRequested();
+        }
 
         // listen for history change event so that notifications can later send user to admin
         // tab
