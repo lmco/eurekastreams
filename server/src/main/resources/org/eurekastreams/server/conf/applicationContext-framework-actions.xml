@@ -3191,7 +3191,6 @@
           <constructor-arg>
               <bean class="org.eurekastreams.server.action.validation.CreateGroupValidation">
                   <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
-                  <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
               </bean>   
           </constructor-arg>
         <!-- Authorization - done inside execution (for now) -->
@@ -3218,9 +3217,7 @@
     <bean id="updateGroup" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg>
-             <bean class="org.eurekastreams.server.action.validation.UpdateGroupValidation">
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
-             </bean>
+             <bean class="org.eurekastreams.server.action.validation.UpdateGroupValidation" />
         </constructor-arg>
         <constructor-arg>
             <!-- Authorization -->
@@ -3341,16 +3338,15 @@
     <bean id="groupCreator"
         class="org.eurekastreams.server.service.actions.strategies.GroupCreator">
         <constructor-arg ref="jpaGroupMapper" />
-        <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="getSystemAdministratorIds" />
         <constructor-arg ref="setFollowingGroupStatusExecution" />
+        <constructor-arg ref="findSystemSettings" />
     </bean>
 
     <bean id="groupUpdater"
         class="org.eurekastreams.server.service.actions.strategies.GroupUpdater">
         <constructor-arg ref="jpaGroupMapper" />
-        <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
         <constructor-arg ref="clearActivityStreamSearchStringCacheOnGroupUpdate" />
         <constructor-arg ref="setFollowingGroupStatusExecution" />

@@ -16,7 +16,6 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,10 +30,8 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -96,16 +93,6 @@ public class GroupUpdaterTest
     private static final long USER_PERSON_ID = 3892872L;
 
     /**
-     * Org short name.
-     */
-    private String origOrgShortName = "origOrgShortName";
-
-    /**
-     * Parent org mock.
-     */
-    private Organization origParentOrg = context.mock(Organization.class, "origParentOrg");
-
-    /**
      * The mock group mapper to be used by the action.
      */
     private DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
@@ -115,11 +102,6 @@ public class GroupUpdaterTest
      */
     private GetAllPersonIdsWhoHaveGroupCoordinatorAccess accessCheckerMapper = context
             .mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
-
-    /**
-     * The mock org mapper to be used by the action.
-     */
-    private OrganizationMapper orgMapperMock = context.mock(OrganizationMapper.class);
 
     /**
      * mocked mapper to clear user search strings.
@@ -144,8 +126,7 @@ public class GroupUpdaterTest
     @Before
     public void setup()
     {
-        sut = new GroupUpdater(groupMapperMock, orgMapperMock, accessCheckerMapper, activityStreamSearchClearer,
-                followStrategyMock);
+        sut = new GroupUpdater(groupMapperMock, accessCheckerMapper, activityStreamSearchClearer, followStrategyMock);
 
         userActionRequests = new ArrayList<UserActionRequest>();
 
@@ -184,7 +165,7 @@ public class GroupUpdaterTest
         final Person testPerson = new Person();
         formData.put(DomainGroupModelView.ID_KEY, Long.toString(id));
         final DomainGroup expectedGroup = new DomainGroup("newOrg", "newOrg", testPerson);
-        expectedGroup.setParentOrganization(origParentOrg);
+
         final String accessingUser = "jschmoe";
         expectedGroup.addCoordinator(new Person(accessingUser, "b", "c", "d", "e"));
 
@@ -193,9 +174,6 @@ public class GroupUpdaterTest
             {
                 oneOf(groupMapperMock).findById(with(any(Long.class)));
                 will(returnValue(expectedGroup));
-
-                allowing(origParentOrg).getShortName();
-                will(returnValue(origOrgShortName));
 
                 oneOf(activityStreamSearchClearer).execute(with(any(Long.class)));
             }
@@ -225,17 +203,12 @@ public class GroupUpdaterTest
         group.setCoordinators(new HashSet(attribMembers));
 
         final long id = 1L;
-        String newName = "NEW org name here";
-        final String orgName = "TheParentOrgName";
-        final Organization org = context.mock(Organization.class);
-        group.setParentOrganization(org);
+        String newName = "NEW group name here";
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put(DomainGroupModelView.ID_KEY, Long.toString(id));
         formData.put(DomainGroupModelView.NAME_KEY, newName);
         formData.put(DomainGroupModelView.KEYWORDS_KEY, "good,idea");
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, orgName);
-        formData.put("__KEY_ORIGINAL_PARENT_ORG_KEY", orgName);
         formData.put("__KEY_ORIGINAL_GROUP_NAME_KEY", "Group Name");
         formData.put("__KEY_ORIGINAL_GROUP_COORDINATORS_KEY", (Serializable) group.getCoordinators());
 
@@ -253,7 +226,6 @@ public class GroupUpdaterTest
         sut.persist(taskHandlerActionContext, formData, group);
         context.assertIsSatisfied();
         assertEquals("Group Name", group.getName());
-        assertSame(org, group.getParentOrganization());
 
         // TODO Could be more thorough - a list compare utility would help
         assertEquals(2, group.getCapabilities().size());
@@ -285,16 +257,11 @@ public class GroupUpdaterTest
 
         final long id = 1L;
         String newName = "NEW name here";
-        final String orgName = "TheParentOrgName";
-        final Organization org = context.mock(Organization.class);
-        group.setParentOrganization(org);
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put(DomainGroupModelView.ID_KEY, Long.toString(id));
         formData.put(DomainGroupModelView.NAME_KEY, newName);
         formData.put(DomainGroupModelView.KEYWORDS_KEY, "good,idea");
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, orgName);
-        formData.put("__KEY_ORIGINAL_PARENT_ORG_KEY", origOrgShortName);
         formData.put("__KEY_ORIGINAL_GROUP_NAME_KEY", "Group Name");
         formData.put("__KEY_ORIGINAL_GROUP_COORDINATORS_KEY", (Serializable) group.getCoordinators());
 
@@ -302,25 +269,18 @@ public class GroupUpdaterTest
         {
             {
                 oneOf(groupMapperMock).flush();
-
-                allowing(orgMapperMock).findByShortName(orgName);
-                will(returnValue(org));
-
-                allowing(orgMapperMock).findByShortName(origOrgShortName);
-                will(returnValue(origParentOrg));
             }
         });
 
         sut.persist(taskHandlerActionContext, formData, group);
         context.assertIsSatisfied();
         assertEquals("Group Name", group.getName());
-        assertSame(org, group.getParentOrganization());
 
         // TODO Could be more thorough - a list compare utility would help
         assertEquals(2, group.getCapabilities().size());
 
-        // make sure the only queued tasks are the domain group cache update and activity parent org sync.
-        assertEquals(2, taskHandlerActionContext.getUserActionRequests().size());
+        // make sure the only queued task is the domain group cache update
+        assertEquals(1, taskHandlerActionContext.getUserActionRequests().size());
     }
 
     /**
@@ -342,17 +302,12 @@ public class GroupUpdaterTest
         newGroup.setCoordinators(new HashSet(attribMembers));
 
         final long id = 1L;
-        String newName = "NEW org name here";
-        final String orgName = "TheParentOrgName";
-        final Organization org = context.mock(Organization.class);
-        newGroup.setParentOrganization(org);
+        String newName = "NEW group name here";
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put(DomainGroupModelView.ID_KEY, Long.toString(id));
         formData.put(DomainGroupModelView.NAME_KEY, newName);
         formData.put(DomainGroupModelView.KEYWORDS_KEY, "good,idea");
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, orgName);
-        formData.put("__KEY_ORIGINAL_PARENT_ORG_KEY", orgName);
         formData.put("__KEY_ORIGINAL_GROUP_NAME_KEY", "Group Name Musta Changed");
         formData.put("__KEY_ORIGINAL_GROUP_COORDINATORS_KEY", (Serializable) newGroup.getCoordinators());
 
@@ -371,7 +326,6 @@ public class GroupUpdaterTest
         sut.persist(taskHandlerActionContext, formData, newGroup);
         context.assertIsSatisfied();
         assertEquals("Group Name", newGroup.getName());
-        assertSame(org, newGroup.getParentOrganization());
 
         // TODO Could be more thorough - a list compare utility would help
         assertEquals(2, newGroup.getCapabilities().size());
@@ -407,17 +361,12 @@ public class GroupUpdaterTest
         group.getCoordinators().add(new Person("id3", "A", "New", "Member", "Guy"));
 
         final long id = 1L;
-        String newName = "NEW org name here";
-        final String orgName = "TheParentOrgName";
-        final Organization org = context.mock(Organization.class);
-        group.setParentOrganization(org);
+        String newName = "NEW group name here";
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put(DomainGroupModelView.ID_KEY, Long.toString(id));
         formData.put(DomainGroupModelView.NAME_KEY, newName);
         formData.put(DomainGroupModelView.KEYWORDS_KEY, "good,idea");
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, orgName);
-        formData.put("__KEY_ORIGINAL_PARENT_ORG_KEY", orgName);
         formData.put(DomainGroupModelView.COORDINATORS_KEY, (Serializable) group.getCoordinators());
         formData.put("__KEY_ORIGINAL_GROUP_NAME_KEY", "Group Name");
         formData.put("__KEY_ORIGINAL_GROUP_COORDINATORS_KEY", (Serializable) attribMembers);
@@ -448,7 +397,6 @@ public class GroupUpdaterTest
         sut.persist(taskHandlerActionContext, formData, group);
         context.assertIsSatisfied();
         assertEquals("Group Name", group.getName());
-        assertSame(org, group.getParentOrganization());
 
         // TODO Could be more thorough - a list compare utility would help
         assertEquals(2, group.getCapabilities().size());

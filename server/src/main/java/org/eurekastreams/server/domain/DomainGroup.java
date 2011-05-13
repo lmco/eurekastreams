@@ -47,7 +47,6 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge;
-import org.hibernate.annotations.Formula;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.DateBridge;
@@ -69,8 +68,7 @@ import org.hibernate.validator.Size;
 @ClassBridge(name = "followerAndCoordinatorIds", index = Index.TOKENIZED, store = Store.NO,
 // whitespace analyzer and custom class bridge to use JPA to get the ids rather than load extra objects
 analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class)
-public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, OrganizationChild,
-        DomainGroupEntity, CompositeEntity
+public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, DomainGroupEntity, CompositeEntity
 {
     /**
      * Serial version uid.
@@ -384,19 +382,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     }
 
     /**
-     * Parent organization.
-     */
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "parentOrganizationId")
-    private Organization parentOrganization;
-
-    /**
-     * Get the parent org id w/o loading the org.
-     */
-    @Formula("parentOrganizationId")
-    private Long parentOrgId;
-
-    /**
      * People who are requesting membership to the group. Only used if the group is private. Field is private with no
      * getters/setters since it is used only for table/key creation.
      */
@@ -564,25 +549,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public void setDescription(final String inDescription)
     {
         description = inDescription;
-    }
-
-    /**
-     * @return the group's parent organization
-     */
-    @Override
-    public Organization getParentOrganization()
-    {
-        return parentOrganization;
-    }
-
-    /**
-     * @param inParentOrganization
-     *            the parentOrganization to set
-     */
-    @Override
-    public void setParentOrganization(final Organization inParentOrganization)
-    {
-        parentOrganization = inParentOrganization;
     }
 
     /**
@@ -953,28 +919,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public String getUniqueId()
     {
         return getShortName();
-    }
-
-    /**
-     * Get the parent org id without loading the parent organization.
-     * 
-     * @return the parent org id without loading the parent organization
-     */
-    @Override
-    public Long getParentOrgId()
-    {
-        return parentOrgId;
-    }
-
-    /**
-     * Set the parent org id.
-     * 
-     * @param inParentOrgId
-     *            the parent org id
-     */
-    protected void setParentOrgId(final Long inParentOrgId)
-    {
-        parentOrgId = inParentOrgId;
     }
 
     /**

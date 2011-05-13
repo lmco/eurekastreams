@@ -35,14 +35,14 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroup
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Organization Creator.
@@ -84,29 +84,35 @@ public class GroupCreator extends GroupPersister
     private DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsMapper;
 
     /**
+     * Mapper to get system settings.
+     */
+    private DomainMapper<MapperRequest, SystemSettings> getSystemSettingsMapper;
+
+    /**
      * Constructor.
      * 
      * @param inGroupMapper
      *            The Group Mapper
-     * @param inOrgMapper
-     *            The org mapper
      * @param inPersonMapper
      *            used to lookup person creating the group.
      * @param inGetSystemAdministratorIdsMapper
      *            mapper to get system administrator ids
      * @param inFollowStrategy
      *            used to automatically add coordinators as group followers/members.
+     * @param inGetSystemSettingsMapper
+     *            mapper to get the system settings
      */
-    public GroupCreator(final DomainGroupMapper inGroupMapper, final OrganizationMapper inOrgMapper,
-            final PersonMapper inPersonMapper,
+    public GroupCreator(final DomainGroupMapper inGroupMapper, final PersonMapper inPersonMapper,
             final DomainMapper<Serializable, List<Long>> inGetSystemAdministratorIdsMapper,
-            final TaskHandlerExecutionStrategy inFollowStrategy)
+            final TaskHandlerExecutionStrategy inFollowStrategy,
+            final DomainMapper<MapperRequest, SystemSettings> inGetSystemSettingsMapper)
     {
-        super(inGroupMapper, inOrgMapper);
+        super(inGroupMapper);
 
         personMapper = inPersonMapper;
         followStrategy = inFollowStrategy;
         getSystemAdministratorIdsMapper = inGetSystemAdministratorIdsMapper;
+        getSystemSettingsMapper = inGetSystemSettingsMapper;
     }
 
     /**
@@ -122,18 +128,8 @@ public class GroupCreator extends GroupPersister
     public DomainGroup get(final TaskHandlerActionContext<PrincipalActionContext> inActionContext,
             final Map<String, Serializable> inFields)
     {
-        String parentOrgShortName;
-
         // create the group
         DomainGroup group = new DomainGroup();
-
-        // set the parent org if specified (persist will catch as an error if not specified)
-        parentOrgShortName = inFields.get(PARENT_ORG_KEY).toString();
-        if (parentOrgShortName != null && !parentOrgShortName.isEmpty())
-        {
-            Organization parentOrg = getOrgMapper().findByShortName(parentOrgShortName);
-            group.setParentOrganization(parentOrg);
-        }
 
         StreamScope groupScope = new StreamScope(ScopeType.GROUP, (String) inFields.get("shortName"));
         group.setStreamScope(groupScope);
@@ -163,13 +159,7 @@ public class GroupCreator extends GroupPersister
         ValidationException ve = new ValidationException();
         String creatorUserName = inActionContext.getActionContext().getPrincipal().getAccountId();
         Long creatorPersonId = inActionContext.getActionContext().getPrincipal().getId();
-
-        // verify group has a parent org
-        Organization parentOrg = inGroup.getParentOrganization();
-        if (parentOrg == null)
-        {
-            ve.addError(PARENT_ORG_KEY, "Group must have a parent organization.");
-        }
+        SystemSettings settings = getSystemSettingsMapper.execute(null);
 
         // Verify that group with given short name doesn't already exist.
         if (getGroupMapper().findByShortName(inGroup.getShortName()) != null)
@@ -188,10 +178,9 @@ public class GroupCreator extends GroupPersister
             throw ve;
         }
 
-        // if the groups parent organization requires approval to create groups,
-        // set the pending state to true.
+        // if the system requires approval to create groups, set the pending state to true.
         boolean isPending = true;
-        if (parentOrg.getAllUsersCanCreateGroups()
+        if (settings.getAllUsersCanCreateGroups()
                 || getSystemAdministratorIdsMapper.execute(null).contains(creatorPersonId))
         {
             isPending = false;
@@ -202,11 +191,6 @@ public class GroupCreator extends GroupPersister
         inGroup.setCreatedBy(personMapper.findByAccountId(creatorUserName));
 
         getGroupMapper().insert(inGroup);
-
-        if (inGroup.getParentOrganization().getCapabilities() != null)
-        {
-            inGroup.getParentOrganization().getCapabilities().size();
-        }
 
         // sets the destination entity id for the group's stream scope
         inGroup.getStreamScope().setDestinationEntityId(inGroup.getId());
@@ -233,7 +217,7 @@ public class GroupCreator extends GroupPersister
         if (isPending)
         {
             CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP,
-                    inActionContext.getActionContext().getPrincipal().getId(), parentOrg.getId(), inGroup.getId());
+                    inActionContext.getActionContext().getPrincipal().getId(), 0, inGroup.getId());
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("createNotificationsAction", null, request));
         }

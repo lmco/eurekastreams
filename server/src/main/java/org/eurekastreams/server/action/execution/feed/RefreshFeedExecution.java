@@ -354,7 +354,6 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                             feedSubscriber.getEntityId()));
 
                                     activityForIndividual.setActorId(group.getShortName());
-                                    activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
                                     activityForIndividual.setRecipientStreamScope(group.getStreamScope());
                                     activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
                                 }

@@ -40,25 +40,13 @@ public interface DomainGroupEntity extends Serializable, Bannerable
     void setName(final String inName);
 
     /**
-     * @return the parentOrganization
-     */
-    Organization getParentOrganization();
-
-    /**
-     * @param inParentOrganization
-     *            the parentOrganization to set
-     */
-    void setParentOrganization(final Organization inParentOrganization);
-
-
-    /**
      * @return whether this group is public
      */
     boolean isPublicGroup();
 
     /**
      * check to see if the specified account id is a coordinator for this group.
-     *
+     * 
      * @param account
      *            to check.
      * @return if they're a coordinator.
@@ -67,7 +55,7 @@ public interface DomainGroupEntity extends Serializable, Bannerable
 
     /**
      * Getter for group short name.
-     *
+     * 
      * @return the shortName
      */
     String getShortName();
@@ -79,14 +67,14 @@ public interface DomainGroupEntity extends Serializable, Bannerable
 
     /**
      * Get avatar x coord.
-     *
+     * 
      * @return avatar x coord.
      */
     Integer getAvatarCropX();
 
     /**
      * Set avatar x coord.
-     *
+     * 
      * @param value
      *            x coord.
      */
@@ -94,14 +82,14 @@ public interface DomainGroupEntity extends Serializable, Bannerable
 
     /**
      * Get avatar y coord.
-     *
+     * 
      * @return avatar y coord.
      */
     Integer getAvatarCropY();
 
     /**
      * Set avatar y coord.
-     *
+     * 
      * @param value
      *            y coord.
      */
@@ -109,14 +97,14 @@ public interface DomainGroupEntity extends Serializable, Bannerable
 
     /**
      * Get avatar crop size.
-     *
+     * 
      * @return avatar crop size.
      */
     Integer getAvatarCropSize();
 
     /**
      * Set avatar crop size.
-     *
+     * 
      * @param value
      *            crop size.
      */
@@ -135,7 +123,7 @@ public interface DomainGroupEntity extends Serializable, Bannerable
 
     /**
      * Get the mission statement of the group.
-     *
+     * 
      * @return the mission statement
      */
     String getDescription();

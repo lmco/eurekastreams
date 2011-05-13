@@ -176,9 +176,6 @@ public class ReviewPendingGroupExecutionTest
 
                 oneOf(group).isPublicGroup();
                 will(returnValue(true));
-
-                allowing(group).getParentOrganization();
-                will(returnValue(orgMock));
             }
         });
 
@@ -212,10 +209,6 @@ public class ReviewPendingGroupExecutionTest
                 will(returnValue(false));
 
                 oneOf(addPrivateGroupIdToCachedListMock).execute(GROUP_ID);
-
-                allowing(group).getParentOrganization();
-                will(returnValue(orgMock));
-
             }
         });
 

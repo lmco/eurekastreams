@@ -62,8 +62,7 @@ public class GroupRecipientParentOrganizationRetrieverTest
     /**
      * StreamEntityDTO.
      */
-    private StreamEntityDTO streamEntityDTOMock = context
-            .mock(StreamEntityDTO.class);
+    private StreamEntityDTO streamEntityDTOMock = context.mock(StreamEntityDTO.class);
 
     /**
      * Mocked domain group.
@@ -77,29 +76,6 @@ public class GroupRecipientParentOrganizationRetrieverTest
     public void setup()
     {
         sut = new GroupRecipientRetriever(mapper);
-    }
-
-    /**
-     * Test getParentOrganization.
-     */
-    @Test
-    public void testGetParentOrganization()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(activityDTOMock).getDestinationStream();
-                will(returnValue(streamEntityDTOMock));
-
-                oneOf(streamEntityDTOMock).getUniqueIdentifier();
-                will(returnValue("groupShortName"));
-
-                oneOf(mapper).findByShortName("groupShortName");
-            }
-        });
-
-        sut.getParentOrganization(activityDTOMock);
-        context.assertIsSatisfied();
     }
 
     /**
