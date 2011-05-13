@@ -35,6 +35,8 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
 import org.eurekastreams.web.client.events.data.GotGadgetDefinitionCategoriesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGadgetDefinitionsResponseEvent;
+import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateCategoriesResponseEvent;
+import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateDTOResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotThemeDefinitionCategoriesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotThemeDefinitionsResponseEvent;
@@ -48,6 +50,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GadgetDefinitionCategoriesModel;
 import org.eurekastreams.web.client.model.GadgetDefinitionModel;
 import org.eurekastreams.web.client.model.GalleryTabTemplateCategoriesModel;
+import org.eurekastreams.web.client.model.GalleryTabTemplateModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.ThemeDefinitionCategoriesModel;
 import org.eurekastreams.web.client.model.ThemeModel;
@@ -62,6 +65,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.notifier.UINotifier;
 import org.eurekastreams.web.client.ui.common.pagedlist.GadgetMetaDataRenderer;
+import org.eurekastreams.web.client.ui.common.pagedlist.GalleryTabTemplateDTORenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.ThemeRenderer;
@@ -70,6 +74,7 @@ import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.MasterComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -381,6 +386,8 @@ public class GalleryContent extends SettingsPanel
             }
         });
 
+        setupGalleryTabTemplateEvents();
+
         Session.getInstance().getEventBus().addObserver(UserLoggedInEvent.class, new Observer<UserLoggedInEvent>()
         {
             public void update(final UserLoggedInEvent event)
@@ -460,6 +467,62 @@ public class GalleryContent extends SettingsPanel
     }
 
     /**
+     * More event setup.
+     */
+    private void setupGalleryTabTemplateEvents()
+    {
+        Session.getInstance().getEventBus().addObserver(GotGalleryTabTemplateDTOResponseEvent.class,
+                new Observer<GotGalleryTabTemplateDTOResponseEvent>()
+                {
+                    public void update(final GotGalleryTabTemplateDTOResponseEvent event)
+                    {
+                        tabTemplateTab.render(event.getResponse(), "There are no tabs in this category.");
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(GotGalleryTabTemplateCategoriesResponseEvent.class,
+                new Observer<GotGalleryTabTemplateCategoriesResponseEvent>()
+                {
+                    public void update(final GotGalleryTabTemplateCategoriesResponseEvent event)
+                    {
+                        tabTemplateTab.addSet("All", GalleryTabTemplateModel.getInstance(),
+                                new GalleryTabTemplateDTORenderer(), new GetGalleryItemsRequest("recent", "", 0, 0),
+                                "Recent");
+                        tabTemplateTab.addSet("All", GalleryTabTemplateModel.getInstance(),
+                                new GalleryTabTemplateDTORenderer(),
+                                new GetGalleryItemsRequest("popularity", "", 0, 0), "Popular");
+
+                        for (String category : event.getResponse())
+                        {
+                            tabTemplateTab.addSet(category, GalleryTabTemplateModel.getInstance(),
+                                    new GalleryTabTemplateDTORenderer(), new GetGalleryItemsRequest("recent", category,
+                                            0, 0), "Recent");
+                            tabTemplateTab.addSet(category, GalleryTabTemplateModel.getInstance(),
+                                    new GalleryTabTemplateDTORenderer(), new GetGalleryItemsRequest("popularity",
+                                            category, 0, 0), "Popular");
+                        }
+
+                        Session.getInstance().getEventBus().removeObserver(
+                                GotGalleryTabTemplateCategoriesResponseEvent.class, this);
+
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(GotGalleryTabTemplateCategoriesResponseEvent.class,
+                new Observer<GotGalleryTabTemplateCategoriesResponseEvent>()
+                {
+                    public void update(final GotGalleryTabTemplateCategoriesResponseEvent event)
+                    {
+                        if (Session.getInstance().getParameterValue("action").equals("newTab")
+                                || Session.getInstance().getParameterValue("action").equals("editTab"))
+                        {
+                            Window.alert("render add or edit now."); // renderCreateOrEditTheme(event.getResponse())
+                        }
+                    }
+                });
+    }
+
+    /**
      * What happens after we get the start tabs (for the theme).
      * 
      * @param event
@@ -507,6 +570,18 @@ public class GalleryContent extends SettingsPanel
                                 GadgetDefinitionCategoriesModel.getInstance().fetch(null, true);
                             }
                         }
+                        else if (event.getParameters().get("action").equals("editTab")
+                                || event.getParameters().get("action").equals("newTab"))
+                        {
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            {
+                                galleryPortalContainer.setVisible(false);
+                                galleryAddOrEditContainer.setVisible(true);
+                                galleryAddOrEditContainer.clear();
+
+                                GalleryTabTemplateCategoriesModel.getInstance().fetch(null, true);
+                            }
+                        }
                         else
                         {
                             galleryAddOrEditContainer.setVisible(false);
@@ -523,6 +598,7 @@ public class GalleryContent extends SettingsPanel
                                         "Apps"));
                                 addTheme.setVisible(Session.getInstance().getParameterValue("galleryTab").equals(
                                         "Themes"));
+                                addTab.setVisible(Session.getInstance().getParameterValue("galleryTab").equals("Tabs"));
                             }
                         }
                     }
