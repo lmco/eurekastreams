@@ -21,6 +21,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -34,6 +35,7 @@ import org.eurekastreams.commons.model.DomainEntity;
 /**
  * A notification for display within the application.
  */
+@Entity(name = "InAppNotification")
 public class InAppNotificationEntity extends DomainEntity implements Serializable
 {
     /** Fingerprint. */
@@ -62,7 +64,7 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
 
     /** If high priority. */
     @Basic(optional = false)
-    private boolean priority;
+    private boolean highPriority;
 
     /** If read. */
     @Basic(optional = false)
@@ -90,9 +92,6 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     @Basic(optional = true)
     private String avatarOwnerUniqueId;
 
-    // /** ID of the avatar to display. */
-    // @Basic(optional = true)
-    // private String avatarId;
 
     /**
      * @return the notificationType
@@ -161,17 +160,17 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     /**
      * @return the priority
      */
-    public boolean isPriority()
+    public boolean isHighPriority()
     {
-        return priority;
+        return highPriority;
     }
 
     /**
      * @param inPriority the priority to set
      */
-    public void setPriority(final boolean inPriority)
+    public void setHighPriority(final boolean inPriority)
     {
-        priority = inPriority;
+        highPriority = inPriority;
     }
 
     /**

@@ -738,33 +738,47 @@
 	<MembershipCriteria id="11" version="2" criteria="testCriterion1" systemSettingsId="1001" />
 	<MembershipCriteria id="12" version="2" criteria="testCriterion2" systemSettingsId="1001" />
 	
-	<ApplicationAlertNotification id="1" version="1" notificationDate="2009-12-12 10:54:06.000" isRead="false" 
-		recipientId="99" notificationtype="POST_TO_PERSONAL_STREAM" 
-		actorName="Ford Prefect" actorAccountId="fordp"
-		activityId="1" activityType="NOTE" 
-		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
-		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
-
-	<ApplicationAlertNotification id="2" version="1" notificationDate="2010-01-03 15:23:19.000" isRead="true" 
-		recipientId="99" notificationtype="POST_TO_PERSONAL_STREAM"
-		actorName="Mr Smithers" actorAccountId="smithers"
-		activityId="2" activityType="NOTE" 
-		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
-		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
-
-	<ApplicationAlertNotification id="3" version="1" notificationDate="2010-02-21 12:07:17.000" isRead="false"
-		recipientId="99" notificationtype="FOLLOW_PERSON"
-		actorName="Ford Prefect" actorAccountId="fordp"
-		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
-		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
-
-	<ApplicationAlertNotification id="4" version="1" notificationDate="2010-02-23 11:06:29.000" isRead="false"
-		recipientId="98" notificationtype="POST_TO_PERSONAL_STREAM"
-		actorName="Mr. Burns" actorAccountId="burns"
-		activityId="4" activityType="NOTE" 
-		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
-		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
-		
+	<InAppNotification id="1" recipientId="42" highPriority="true" isRead="true" notificationDate="2010-01-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />
+	<InAppNotification id="2" recipientId="42" highPriority="false" isRead="false" notificationDate="2010-01-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="3" recipientId="98" highPriority="false" isRead="false" notificationDate="2010-01-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="4" recipientId="99" highPriority="true" isRead="true" notificationDate="2010-01-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="5" recipientId="42" highPriority="false" isRead="true" notificationDate="2010-02-02 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="6" recipientId="42" highPriority="true" isRead="false" notificationDate="2010-02-03 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="7" recipientId="42" highPriority="true" isRead="false" notificationDate="2010-03-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="8" recipientId="42" highPriority="false" isRead="true" notificationDate="2010-03-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="9" recipientId="99" highPriority="true" isRead="false" notificationDate="2010-03-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	<InAppNotification id="10" recipientId="142" highPriority="false" isRead="true" notificationDate="2010-03-01 00:00:00.000"
+		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
+		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
+	
 	<TutorialVideo id="1" version="1" dialogtitle="Dialog Title 1" innercontent="Inner Content 1" 
 	   innercontenttitle="Inner Content Title 1" page="START" videoheight="600" videourl="http://google.com"
 	   videowidth="200" /> 

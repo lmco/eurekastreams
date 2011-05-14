@@ -26,8 +26,8 @@ import org.eurekastreams.server.persistence.mappers.ReadMapper;
 public class GetUnreadInAppNotificationCountsByUserId extends ReadMapper<Long, UnreadInAppNotificationCountDTO>
 {
     /**
-     * Makes the database call to get notification count and sets it in cache.
-     *
+     * Makes the database call to get unread in-app notification counts.
+     * 
      * @param userId
      *            user to get notification count.
      * @return the count of notifications for this user.

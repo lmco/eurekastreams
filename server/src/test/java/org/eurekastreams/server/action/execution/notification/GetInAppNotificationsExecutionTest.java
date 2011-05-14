@@ -115,7 +115,7 @@ public class GetInAppNotificationsExecutionTest
                 oneOf(alertMapper).execute(USER_ID);
                 will(returnValue(Arrays.asList(notif1, notif2, notif3, notif4, notif5)));
 
-                oneOf(personsMapper).execute(with(Matchers.hasItems("knownperson", "unknownperson")));
+                oneOf(personsMapper).execute((List<String>) with(Matchers.hasItems("knownperson", "unknownperson")));
                 will(returnValue(Collections.singletonList(person)));
 
                 oneOf(groupsMapper).execute((List<String>) with(Matchers.hasItems("knowngroup", "avatarlessgroup")));

@@ -42,7 +42,7 @@ public class InAppNotificationDTO implements Serializable
     private String url;
 
     /** If high priority. */
-    private boolean priority;
+    private boolean highPriority;
 
     /** If read. */
     private boolean isRead;
@@ -85,7 +85,7 @@ public class InAppNotificationDTO implements Serializable
      *            Text message.
      * @param inUrl
      *            URL to link to.
-     * @param inPriority
+     * @param inHighPriority
      *            High or normal.
      * @param inIsRead
      *            If read.
@@ -101,7 +101,7 @@ public class InAppNotificationDTO implements Serializable
      *            String ID of entity for avatar.
      */
     public InAppNotificationDTO(final long inId, final NotificationType inNotificationType,
-            final Date inNotificationDate, final String inMessage, final String inUrl, final boolean inPriority,
+            final Date inNotificationDate, final String inMessage, final String inUrl, final boolean inHighPriority,
             final boolean inIsRead, final EntityType inSourceType, final String inSourceUniqueId,
             final String inSourceName, final EntityType inAvatarOwnerType, final String inAvatarOwnerUniqueId)
     {
@@ -110,7 +110,7 @@ public class InAppNotificationDTO implements Serializable
         notificationDate = inNotificationDate;
         message = inMessage;
         url = inUrl;
-        priority = inPriority;
+        highPriority = inHighPriority;
         isRead = inIsRead;
         sourceType = inSourceType;
         sourceUniqueId = inSourceUniqueId;
@@ -186,17 +186,17 @@ public class InAppNotificationDTO implements Serializable
     /**
      * @return the priority
      */
-    public boolean isPriority()
+    public boolean isHighPriority()
     {
-        return priority;
+        return highPriority;
     }
 
     /**
      * @param inPriority the priority to set
      */
-    public void setPriority(final boolean inPriority)
+    public void setHighPriority(final boolean inPriority)
     {
-        priority = inPriority;
+        highPriority = inPriority;
     }
 
     /**

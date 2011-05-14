@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package org.eurekastreams.server.service.security.ldap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.springframework.security.GrantedAuthority;
 
 /**
  * Tests for DummyLdapAuthoritiesPopulator class.
- *
  */
 public class DummyLdapAuthoritiesPopulatorTest
 {    

@@ -17,20 +17,30 @@ package org.eurekastreams.server.persistence.mappers.db.notification;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Tests mapper to get unread alert counts.
  */
-public class GetUnreadApplicationAlertCountByUserIdTest extends MapperTest
+public class GetUnreadInAppNotificationCountsByUserIdTest extends MapperTest
 {
     /**
      * System under test.
      */
-    @Autowired
     private GetUnreadInAppNotificationCountsByUserId sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new GetUnreadInAppNotificationCountsByUserId();
+        sut.setEntityManager(getEntityManager());
+    }
 
     /**
      * Tests execute method.
@@ -38,8 +48,9 @@ public class GetUnreadApplicationAlertCountByUserIdTest extends MapperTest
     @Test
     public void testExecute()
     {
-        final long userId = 99L;
-        int result = sut.execute(userId);
-        assertEquals(2, result);
+        final long id42 = 42L;
+        UnreadInAppNotificationCountDTO result = sut.execute(id42);
+        assertEquals("Wrong count for normal priority", 1, result.getNormalPriority());
+        assertEquals("Wrong count for high priority", 2, result.getHighPriority());
     }
 }

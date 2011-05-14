@@ -54,10 +54,10 @@ public class GetInAppNotificationsByUserId extends BaseArgDomainMapper<Long, Lis
     @Override
     public List<InAppNotificationDTO> execute(final Long userId)
     {
-        String q = "select new org.eurekastreams.server.domain.InAppNotificationDTO (recipient.id,notificationType,"
-                + "notificationDate,message,url,priority,isRead,sourceType,sourceUniqueId,sourceName,avatarOwnerType,"
-                + "avatarOwnerUniqueId) from InAppNotification where recipient.id = :userId order by priority desc,"
-                + " notificationDate desc";
+        String q = "select new org.eurekastreams.server.domain.InAppNotificationDTO (id,notificationType,"
+                + "notificationDate,message,url,highPriority,isRead,sourceType,sourceUniqueId,sourceName,"
+                + "avatarOwnerType,avatarOwnerUniqueId) from InAppNotification where recipient.id = :userId "
+                + "order by highPriority desc, notificationDate desc";
         Query query = getEntityManager().createQuery(q).setParameter("userId", userId);
         query.setMaxResults(count);
         return query.getResultList();

@@ -392,23 +392,6 @@
     <bean id="getNotificationFilterPreferencesByPeopleIds" 
     	class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
 	
-	<bean id="setAllApplicationAlertsAsReadByUserId"
-		class="org.eurekastreams.server.persistence.mappers.db.SetAllApplicationAlertsAsReadByUserId" />
-	
-	<bean id="getApplicationAlertsByUserId"
-		class="org.eurekastreams.server.persistence.mappers.db.GetApplicationAlertsByUserId" />
-	
-	<bean id="deleteApplicationAlertsByDate"
-		class="org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate" />
-	
-	<bean id="getUserIdsWithUnreadApplicationAlertsByDate"
-		class="org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate" />
-	
-	<bean id="getUnreadApplicationAlertCountByUserId" 
-		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadApplicationAlertCountByUserId">
-		<property name="queryOptimizer" ref="queryOptimizer" />
-	</bean>
-	
 	<bean id="deleteGroupActivity" class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
 	
 	<bean id="deleteActivities" class="org.eurekastreams.server.persistence.mappers.db.DeleteActivities" />

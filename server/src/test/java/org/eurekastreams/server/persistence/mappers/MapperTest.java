@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public abstract class MapperTest
 
     /**
      * Getter for EntityManager.
-     * 
+     *
      * @return the EntityManager instance.
      */
     protected EntityManager getEntityManager()
@@ -52,25 +52,25 @@ public abstract class MapperTest
 
     /**
      * Set the entity manager - used for low-level ORM hits like flush & clear.
-     * 
+     *
      * @param inEntityManager
      *            the EntityManager to inject
      */
     @PersistenceContext
     public void setEntityManager(final EntityManager inEntityManager)
     {
-        this.entityManager = inEntityManager;
+        entityManager = inEntityManager;
     }
 
     /**
      * Load the DBUnit XML for the all tests in this suite. Override this in the subclass if you want it to load a
      * different dataset file.
-     * 
+     *
      * @throws Exception
      *             If error occurs during setup.
      */
     @BeforeClass
-    public static void setUp() throws Exception
+    public static void setUpOnce() throws Exception
     {
         // Load up the DBUnit data set
         DBUnitFixtureSetup.loadDataSet("/dataset.xml");
