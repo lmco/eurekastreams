@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
@@ -42,27 +41,11 @@ public class GroupRecipientRetriever implements RecipientRetriever
     }
 
     /**
-     * Retrieves parent org for group specified in PostMessageRequest.
-     * 
-     * @param inActivity
-     *            The ActivityDTO object.
-     * @return The parent organization of message recipient.
-     */
-    public Organization getParentOrganization(final ActivityDTO inActivity)
-    {
-        // TODO This could probably be faster with specialized query.
-        return groupMapper.findByShortName(
-                inActivity.getDestinationStream().getUniqueIdentifier()).getParentOrganization();
-    }
-
-    /**
-     * Retrieve streamscope of a group recipient stream.
-     * {@inheritDoc}
+     * Retrieve streamscope of a group recipient stream. {@inheritDoc}
      */
     public StreamScope getStreamScope(final ActivityDTO inActivityDTO)
     {
-        return groupMapper.findByShortName(
-                inActivityDTO.getDestinationStream().getUniqueIdentifier()).getStreamScope();
+        return groupMapper.findByShortName(inActivityDTO.getDestinationStream().getUniqueIdentifier()).getStreamScope();
     }
 
     /**
@@ -75,7 +58,6 @@ public class GroupRecipientRetriever implements RecipientRetriever
     @Override
     public Boolean isDestinationStreamPublic(final ActivityDTO inActivityDTO)
     {
-        return groupMapper.findByShortName(
-                inActivityDTO.getDestinationStream().getUniqueIdentifier()).isPublicGroup();
+        return groupMapper.findByShortName(inActivityDTO.getDestinationStream().getUniqueIdentifier()).isPublicGroup();
     }
 }

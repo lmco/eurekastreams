@@ -20,11 +20,9 @@ import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
-import org.eurekastreams.web.client.ui.common.pagedlist.OrganizationRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -48,19 +46,13 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
     private ItemRenderer<DomainGroupModelView> groupRenderer = new GroupRenderer();
 
     /**
-     * renders an org.
-     */
-    private ItemRenderer<OrganizationModelView> orgRenderer = new OrganizationRenderer();
-
-    /**
      * Readable metadata keys.
      */
     private Map<String, String> humanReadableMetadataKeys = new HashMap<String, String>();
 
-
     /**
      * Constructor.
-     *
+     * 
      */
     public SearchResultItemRenderer()
     {
@@ -75,7 +67,7 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
     /**
      * @param result
      *            the result to render.
-     *
+     * 
      * @return the result as a widget.
      */
     public Panel render(final ModelView result)
@@ -90,10 +82,6 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
         {
             resultWidget = groupRenderer.render((DomainGroupModelView) result);
         }
-        else if (result instanceof OrganizationModelView)
-        {
-            resultWidget = orgRenderer.render((OrganizationModelView) result);
-        }
         else
         {
             resultWidget = new FlowPanel();
@@ -106,7 +94,7 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
 
         if (resultArr.length > 0)
         {
-            Label resultsLbl =  new Label("Matches found in: ");
+            Label resultsLbl = new Label("Matches found in: ");
             matchedWidget.add(resultsLbl);
             matchedWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchMetadata());
             resultWidget.add(matchedWidget);

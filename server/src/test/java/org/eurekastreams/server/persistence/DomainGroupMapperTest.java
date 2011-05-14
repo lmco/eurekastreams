@@ -133,16 +133,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     }
 
     /**
-     * Test the parent org id formula field.
-     */
-    @Test
-    public void testParentOrgId()
-    {
-        DomainGroup group = jpaGroupMapper.findByShortName("group1");
-        assertEquals(new Long(5L), group.getParentOrgId());
-    }
-
-    /**
      * Test a simple getter.
      */
     @Test

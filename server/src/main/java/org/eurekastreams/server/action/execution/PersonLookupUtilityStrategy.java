@@ -15,12 +15,9 @@
  */
 package org.eurekastreams.server.action.execution;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.domain.OrganizationChild;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 
 /**
@@ -35,23 +32,14 @@ public class PersonLookupUtilityStrategy
     private PersonLookupStrategy lookupStrategy;
 
     /**
-     * Mapper to populate people parent orgs with skeleton org.
-     */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper populateParentOrgSkeletonMapper;
-
-    /**
      * Constructor.
      * 
      * @param inLookupStrategy
      *            lookup strategy.
-     * @param inPopulateParentOrgSkeletonMapper
-     *            mapper that populates person's parent org with a skeleton org
      */
-    public PersonLookupUtilityStrategy(final PersonLookupStrategy inLookupStrategy,
-            final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inPopulateParentOrgSkeletonMapper)
+    public PersonLookupUtilityStrategy(final PersonLookupStrategy inLookupStrategy)
     {
         lookupStrategy = inLookupStrategy;
-        populateParentOrgSkeletonMapper = inPopulateParentOrgSkeletonMapper;
     }
 
     /**
@@ -65,14 +53,7 @@ public class PersonLookupUtilityStrategy
      */
     public List<Person> getPeople(final String inQueryString, final int inMaxResults)
     {
-        List<Person> people = lookupStrategy.findPeople(inQueryString, inMaxResults);
-
-        // populate the people's parent orgs skeletons from cache
-        List<OrganizationChild> orgChildren = new ArrayList<OrganizationChild>();
-        orgChildren.addAll(people);
-        populateParentOrgSkeletonMapper.populateParentOrgSkeletons(orgChildren);
-
-        return people;
+        return lookupStrategy.findPeople(inQueryString, inMaxResults);
     }
 
 }

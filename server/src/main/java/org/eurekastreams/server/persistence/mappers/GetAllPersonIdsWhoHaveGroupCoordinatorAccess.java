@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.action.authorization.CoordinatorAccessAuthorizer;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
@@ -38,8 +37,6 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
      *            group coordinator mapper
      * @param inGroupMapper
      *            group mapper
-     * @param inOrgMapper
-     *            org mapper
      * @param inSystemAdminIdsMapper
      *            mapper to get the ids of all of the system administrators
      * @param inGetPersonIdFromAccountIdMapper
@@ -47,13 +44,11 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
      */
     public GetAllPersonIdsWhoHaveGroupCoordinatorAccess(final DomainMapper<Long, List<Long>> inGroupCoordMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
-            final GetOrganizationsByShortNames inOrgMapper,
             final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper,
             final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper)
     {
         groupCoordMapper = inGroupCoordMapper;
         groupMapper = inGroupMapper;
-        orgMapper = inOrgMapper;
         systemAdminIdsMapper = inSystemAdminIdsMapper;
         getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
     }
@@ -72,11 +67,6 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements Coordinator
      * group mapper.
      */
     private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper;
-
-    /**
-     * org mapper.
-     */
-    private GetOrganizationsByShortNames orgMapper;
 
     /**
      * mapper to get a list of all system administrators ids.

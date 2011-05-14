@@ -21,7 +21,7 @@ import static org.junit.Assert.assertSame;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
+import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -34,9 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test fixture for GetFlaggedActivitiesForOrganization.
+ * Test fixture for GetFlaggedActivities.
  */
-public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
+public class GetFlaggedActivitiesTest extends MapperTest
 {
     /**
      * Context for building mock objects.
@@ -56,7 +56,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     /**
      * System under test.
      */
-    private GetFlaggedActivitiesForOrganization sut;
+    private GetFlaggedActivities sut;
 
     /**
      * Setup.
@@ -64,7 +64,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetFlaggedActivitiesForOrganization(bulkActivitiesMapper);
+        sut = new GetFlaggedActivities(bulkActivitiesMapper);
         sut.setEntityManager(getEntityManager());
     }
 
@@ -92,7 +92,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
             }
         });
 
-        GetFlaggedActivitiesByOrgRequest request = new GetFlaggedActivitiesByOrgRequest(startIndex, endIndex);
+        GetFlaggedActivitiesRequest request = new GetFlaggedActivitiesRequest(startIndex, endIndex);
         request.setRequestingUserAccountId(userName);
 
         // perform SUT
@@ -111,7 +111,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     @Test(expected = RuntimeException.class)
     public void testExecuteWithoutUserAccountId()
     {
-        PagedSet<ActivityDTO> flaggedActivities = sut.execute(new GetFlaggedActivitiesByOrgRequest(0, 9));
+        PagedSet<ActivityDTO> flaggedActivities = sut.execute(new GetFlaggedActivitiesRequest(0, 9));
         assertEquals(1, flaggedActivities.getPagedSet().size());
     }
 }

@@ -39,24 +39,21 @@ public class GetReadOnlyStreamsDbMapperTest extends MapperTest
         sut.setEntityManager(getEntityManager());
 
         List<Stream> streams = sut.execute(4L);
-        assertEquals(4, streams.size());
+        assertEquals(3, streams.size());
 
         boolean followingFound = false;
         boolean everyoneFound = false;
-        boolean parentOrgFound = false;
         boolean savedFound = false;
 
-        for(Stream s : streams)
+        for (Stream s : streams)
         {
             followingFound = followingFound || s.getName().equals("Following");
-            everyoneFound = everyoneFound || s.getName().equals("EUREKA:PARENT_ORG_TAG");
-            parentOrgFound = everyoneFound || s.getName().equals("Everyone");
+            everyoneFound = everyoneFound || s.getName().equals("Everyone");
             savedFound = everyoneFound || s.getName().equals("My saved items");
         }
 
         assertTrue(followingFound);
         assertTrue(everyoneFound);
-        assertTrue(parentOrgFound);
         assertTrue(savedFound);
     }
 }

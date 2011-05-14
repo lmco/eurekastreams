@@ -26,7 +26,6 @@ import org.eurekastreams.web.client.events.data.DeletedOrganizationAvatarRespons
 import org.eurekastreams.web.client.events.data.DeletedPersonAvatarResponseEvent;
 import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.GroupAvatarModel;
-import org.eurekastreams.web.client.model.OrganizationAvatarModel;
 import org.eurekastreams.web.client.model.PersonAvatarModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
@@ -84,9 +83,6 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
             break;
         case GROUP:
             deleteKey = GroupAvatarModel.getInstance();
-            break;
-        case ORGANIZATION:
-            deleteKey = OrganizationAvatarModel.getInstance();
             break;
         default:
             throw new ExecutionException("Entity type key invalid.");

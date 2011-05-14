@@ -112,7 +112,6 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         fields.add(Projections.property("recipStreamScope.id").as("destinationStreamScopeId"));
         fields.add(Projections.property("recipStreamScope.scopeType").as("destinationStreamScopeType"));
         fields.add(Projections.property("recipStreamScope.uniqueKey").as("destinationStreamUniqueKey"));
-        fields.add(Projections.property("recipientParentOrg.id").as("recipientParentOrgId"));
         fields.add(getColumn("isDestinationStreamPublic"));
         fields.add(getColumn("actorType"));
         fields.add(getColumn("originalActorType"));

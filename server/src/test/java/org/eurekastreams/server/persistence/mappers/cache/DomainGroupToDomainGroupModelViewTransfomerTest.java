@@ -63,9 +63,6 @@ public class DomainGroupToDomainGroupModelViewTransfomerTest
                 oneOf(originalObject).getShortName();
                 will(returnValue("gsn"));
 
-                oneOf(originalObject).getParentOrganizationShortName();
-                will(returnValue("posn"));
-
                 oneOf(originalObject).isPending();
                 will(returnValue(false));
             }
@@ -74,7 +71,6 @@ public class DomainGroupToDomainGroupModelViewTransfomerTest
         DomainGroupModelView dgmv = sut.transform(originalObject);
 
         assertEquals("gsn", dgmv.getShortName());
-        assertEquals("posn", dgmv.getParentOrganizationShortName());
         assertEquals(false, dgmv.isPending());
 
         context.assertIsSatisfied();

@@ -24,7 +24,6 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -53,11 +52,6 @@ public class CreatePersonFromLdapExecutionTest
      * {@link PersonLookupStrategy}.
      */
     private PersonLookupStrategy ldapPersonMapper = context.mock(PersonLookupStrategy.class);
-
-    /**
-     * {@link GetRootOrganizationIdAndShortName}.
-     */
-    private GetRootOrganizationIdAndShortName rootOrgIdDAO = context.mock(GetRootOrganizationIdAndShortName.class);
 
     /**
      * Create person strategy.
@@ -92,7 +86,7 @@ public class CreatePersonFromLdapExecutionTest
     @Before
     public void setup()
     {
-        sut = new CreatePersonFromLdapExecution(ldapPersonMapper, rootOrgIdDAO, createPersonStrategy);
+        sut = new CreatePersonFromLdapExecution(ldapPersonMapper, createPersonStrategy);
     }
 
     /**

@@ -83,30 +83,23 @@ public class PersonPanel extends FlowPanel
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
 
         Widget name;
-        Widget org;
         if (makeLinkable)
         {
-                        String nameUrl = Session.getInstance().generateUrl(
-                    new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
-            String orgUrl = Session.getInstance().generateUrl(
-                    new CreateUrlRequest(Page.ORGANIZATIONS, person.getParentOrganizationShortName()));
+            String nameUrl = Session.getInstance()
+                    .generateUrl(new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
             name = new Hyperlink(person.getDisplayName(), nameUrl);
-            org = new Hyperlink(person.getParentOrganizationName(), orgUrl);
         }
         else
         {
             name = new Label(person.getDisplayName());
-            org = new Label(person.getParentOrganizationName());
         }
         name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
-        org.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemOrganization());
 
         Label title = new Label(person.getTitle());
         title.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemTitle());
 
         infoPanel.add(name);
         infoPanel.add(title);
-        infoPanel.add(org);
 
         if (showDescription)
         {

@@ -41,24 +41,16 @@ public class CreatePersonRequest implements Serializable
     private Boolean sendEmail;
 
     /**
-     * Organization id to add new user to.
-     */
-    private Long organizationId;
-
-    /**
      * Constructor.
      * 
      * @param inPerson
      *            Person to add to system.
-     * @param inOrganizationId
-     *            Organization id to add new user to.
      * @param inSendEmail
      *            Flag if email should be sent.
      */
-    public CreatePersonRequest(final Person inPerson, final Long inOrganizationId, final Boolean inSendEmail)
+    public CreatePersonRequest(final Person inPerson, final Boolean inSendEmail)
     {
         person = inPerson;
-        organizationId = inOrganizationId;
         sendEmail = inSendEmail;
     }
 
@@ -77,13 +69,4 @@ public class CreatePersonRequest implements Serializable
     {
         return sendEmail;
     }
-
-    /**
-     * @return the organization
-     */
-    public Long getOrganizationId()
-    {
-        return organizationId;
-    }
-
 }

@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -37,11 +36,6 @@ public class CreatePersonActionFactory
     private TabMapper tabMapper;
 
     /**
-     * OrganizationMapper.
-     */
-    private OrganizationMapper organizationMapper;
-
-    /**
      * Mapper to get the readonly streams.
      */
     private DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
@@ -55,14 +49,12 @@ public class CreatePersonActionFactory
      * List of Strings describing the start pages to be added to a new user.
      */
     private final List<String> startPageTabs;
-    
+
     /**
      * Constructor.
-     *
+     * 
      * @param inTabMapper
      *            TabMapper.
-     * @param inOrganizationMapper
-     *            OrganizationMapper.
      * @param inReadonlyStreamsMapper
      *            mapper to get back all readonly streams
      * @param inReadOnlyStreamsNameList
@@ -70,13 +62,11 @@ public class CreatePersonActionFactory
      * @param inStartPageTabs
      *            list of tabs to be added to the start page.
      */
-    public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper,
+    public CreatePersonActionFactory(final TabMapper inTabMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
-            final List<String> inReadOnlyStreamsNameList,
-            final List<String> inStartPageTabs)
+            final List<String> inReadOnlyStreamsNameList, final List<String> inStartPageTabs)
     {
         tabMapper = inTabMapper;
-        organizationMapper = inOrganizationMapper;
         readonlyStreamsMapper = inReadonlyStreamsMapper;
         readOnlyStreamsNameList = inReadOnlyStreamsNameList;
         startPageTabs = inStartPageTabs;
@@ -84,7 +74,7 @@ public class CreatePersonActionFactory
 
     /**
      * Get a PersistResourceAction set up for Person.
-     *
+     * 
      * @param inPersonMapper
      *            the person mapper to be injected into the action
      * @param inUpdater
@@ -95,6 +85,6 @@ public class CreatePersonActionFactory
             final UpdaterStrategy inUpdater)
     {
         return new PersistResourceExecution<Person>(inPersonMapper, this, inUpdater, new PersonCreator(inPersonMapper,
-                tabMapper, organizationMapper, readonlyStreamsMapper, readOnlyStreamsNameList, startPageTabs));
+                tabMapper, readonlyStreamsMapper, readOnlyStreamsNameList, startPageTabs));
     }
 }

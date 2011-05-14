@@ -26,7 +26,6 @@ import java.util.HashSet;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Layout;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroup;
@@ -82,7 +81,6 @@ public class ReflectiveUpdaterTest
         person.setTitle("Better than you!");
         person.setLocation("19406");
         person.setJobDescription("ahhh, snuts!");
-        person.setParentOrganization(new Organization("name", "shortName"));
 
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();
         map.put("email", newEmail);
@@ -228,34 +226,5 @@ public class ReflectiveUpdaterTest
 
         assertEquals(message, date, activity.getUpdated());
 
-    }
-
-    /**
-     * Test updating a date.
-     * 
-     * @throws Exception
-     *             not expected.
-     */
-    @Test
-    public final void testUpdateOrganization() throws Exception
-    {
-        String message = "sets should be set appropriately";
-
-        final Organization org = new Organization("MyOrg", "myorg");
-        final Person person = new Person("jschmoe", "Joe", "X", "Schmoe", "Joey");
-        final String email = "joe@schmoe.com";
-        person.setEmail(email);
-        person.setWorkPhone("1234567890");
-        person.setTitle("Better than you!");
-        person.setLocation("19406");
-        person.setJobDescription("ahhh, snuts!");
-
-        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-        map.put("parentOrganization", org);
-
-        ReflectiveUpdater reflector = new ReflectiveUpdater();
-        reflector.setProperties(person, map);
-
-        assertEquals(message, org, person.getParentOrganization());
     }
 }

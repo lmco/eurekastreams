@@ -32,9 +32,6 @@
 	<bean id="jpaGroupMapper" class="org.eurekastreams.server.persistence.DomainGroupMapper">
 		<constructor-arg ref="queryOptimizer" />
 	</bean>
-	<bean id="jpaOrganizationMapper" class="org.eurekastreams.server.persistence.OrganizationMapper">
-		<constructor-arg ref="queryOptimizer" />
-	</bean>
 	<bean id="jpaPersonMapper" class="org.eurekastreams.server.persistence.PersonMapper">
 		<constructor-arg ref="queryOptimizer" />
 	</bean>

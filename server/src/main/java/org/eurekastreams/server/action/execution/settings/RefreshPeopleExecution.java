@@ -26,18 +26,16 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.CreatePersonRequest;
-import org.eurekastreams.server.action.request.IncreaseOrgEmployeeCountRequest;
 import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Use {@link PersonSource} to create/lock/unlock user accounts.
- *
+ * 
  */
 public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -72,18 +70,13 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
     private GetPersonIdsByLockedStatus personIdsByLockedStatusDAO;
 
     /**
-     * {@link GetRootOrganizationIdAndShortName}.
-     */
-    private GetRootOrganizationIdAndShortName rootOrgIdDAO;
-
-    /**
      * The settings mapper.
      */
     private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSource
      *            {@link PersonSource}.
      * @param inCreatePersonActionKey
@@ -94,15 +87,12 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
      *            action key for refresh action.
      * @param inGetPersonIdsByLockedStatus
      *            {@link GetPersonIdsByLockedStatus}.
-     * @param inRootOrgIdDAO
-     *            {@link GetRootOrganizationIdAndShortName}.
      * @param inSettingsMapper
      *            {@link FindSystemSettings}.
      */
     public RefreshPeopleExecution(final PersonSource inSource, final String inCreatePersonActionKey,
-            final String inLockPersonAccountActionKey, final String inRefreshPersonActionKey, 
+            final String inLockPersonAccountActionKey, final String inRefreshPersonActionKey,
             final GetPersonIdsByLockedStatus inGetPersonIdsByLockedStatus,
-            final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
             final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         source = inSource;
@@ -110,13 +100,12 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
         lockPersonActionKey = inLockPersonAccountActionKey;
         refreshPersonActionKey = inRefreshPersonActionKey;
         personIdsByLockedStatusDAO = inGetPersonIdsByLockedStatus;
-        rootOrgIdDAO = inRootOrgIdDAO;
         settingsMapper = inSettingsMapper;
     }
 
     /**
      * Get updated info for all users of system and generate UserActionRequests to refresh them.
-     *
+     * 
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return null.
@@ -153,9 +142,6 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
         int toUnlock = 0;
         int toCreate = 0;
 
-        // get rootOrgId.
-        Long rootOrgId = rootOrgIdDAO.getRootOrganizationId();
-
         for (Person p : people)
         {
             String acctId = p.getAccountId();
@@ -177,9 +163,8 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
             else if (unLockedUserAccountIds.contains(acctId))
             {
                 // Queue action to refresh user info from AD
-                inActionContext.getUserActionRequests().add(
-                        new UserActionRequest(refreshPersonActionKey, null, p));
-                
+                inActionContext.getUserActionRequests().add(new UserActionRequest(refreshPersonActionKey, null, p));
+
                 // remove from unlocked list, when done looping remaining ids will be locked.
                 unLockedUserAccountIds.remove(acctId);
             }
@@ -192,7 +177,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
                 if (queueCreatePerson)
                 {
                     inActionContext.getUserActionRequests().add(
-                            new UserActionRequest(createPersonActionKey, null, new CreatePersonRequest(p, rootOrgId,
+                            new UserActionRequest(createPersonActionKey, null, new CreatePersonRequest(p,
                                     shouldSendEmail)));
                 }
                 toCreate++;
@@ -214,14 +199,6 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
                 inActionContext.getUserActionRequests().add(
                         new UserActionRequest(lockPersonActionKey, null, new SetPersonLockedStatusRequest(id, true)));
             }
-        }
-
-        // if creating users, increment org count.
-        if (queueCreatePerson && (toCreate > 0))
-        {
-            inActionContext.getUserActionRequests().add(
-                    new UserActionRequest("increaseOrgEmployeeCountAction", null, new IncreaseOrgEmployeeCountRequest(
-                            rootOrgId, toCreate)));
         }
 
         log.info("Summary: Lock: " + toLock + " unlock: " + toUnlock + " Create: " + toCreate

@@ -443,14 +443,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     }
 
     /**
-     * @return If this organization is known to be the root org.
-     */
-    public boolean isRootOrganization()
-    {
-        return parentOrganization != null && parentOrganization.getId() == getId();
-    }
-
-    /**
      * Getter.
      * 
      * @return the overview

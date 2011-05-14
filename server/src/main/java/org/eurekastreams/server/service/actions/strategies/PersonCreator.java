@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.Gadget;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroup;
@@ -35,7 +34,6 @@ import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -56,11 +54,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     private final TabMapper tabMapper;
 
     /**
-     * The Organization mapper.
-     */
-    private final OrganizationMapper organizationMapper;
-
-    /**
      * Mapper to get the readonly streams.
      */
     private final DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
@@ -77,13 +70,11 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            person mapper.
      * @param inTabMapper
      *            tab mapper.
-     * @param inOrganizationMapper
-     *            org mapper
      * @param inReadonlyStreamsMapper
      *            mapper to get the readonly streams
      * @param inReadOnlyStreamsNameList
@@ -92,13 +83,11 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            - list of tabs to be created on the start page.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
-            final OrganizationMapper inOrganizationMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
             final List<String> inReadOnlyStreamsNameList, final List<String> inStartPageTabs)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
-        organizationMapper = inOrganizationMapper;
         readonlyStreamsMapper = inReadonlyStreamsMapper;
         readOnlyStreamsNameList = inReadOnlyStreamsNameList;
         startPageTabs = inStartPageTabs;
@@ -106,7 +95,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
     /**
      * Gets a new person.
-     *
+     * 
      * @param inActionContext
      *            the action context
      * @param inFields
@@ -119,8 +108,8 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     {
         // create the person
         Person person = new Person((String) inFields.get("accountId"), (String) inFields.get("firstName"),
-                (String) inFields.get("middleName"), (String) inFields.get("lastName"),
-                (String) inFields.get("preferredName"));
+                (String) inFields.get("middleName"), (String) inFields.get("lastName"), (String) inFields
+                        .get("preferredName"));
         person.setEmail((String) inFields.get("email"));
         person.setOpenSocialId(UUID.randomUUID().toString());
         person.setCompanyName((String) inFields.get("companyName"));
@@ -155,17 +144,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         person.setStreamViewHiddenLineIndex(streams.size() - 1);
         person.setGroupStreamHiddenLineIndex(3);
 
-        // if organization is not supplied, get root from Org mapper
-        if (inFields.containsKey("organization"))
-        {
-            Organization org = (Organization) inFields.get("organization");
-            person.setParentOrganization(org);
-        }
-        else
-        {
-            person.setParentOrganization(organizationMapper.getRootOrganization());
-        }
-
         if (inFields.containsKey("additionalProperties"))
         {
             HashMap<String, String> additionalProperties = (HashMap<String, String>) inFields
@@ -183,7 +161,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
     /**
      * Persists a new person and make them follow themselves.
-     *
+     * 
      * @param inActionContext
      *            the action context
      * @param inFields
@@ -208,7 +186,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
     /**
      * Get the ordered list of streams for the new person.
-     *
+     * 
      * @return the ordered list of streams for the new person
      */
     private List<Stream> getStreamsForPerson()

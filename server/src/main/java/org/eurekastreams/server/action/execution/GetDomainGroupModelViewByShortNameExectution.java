@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -43,11 +42,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      * Mapper used to look up the group.
      */
     private GetDomainGroupsByShortNames groupByShortNameMapper;
-
-    /**
-     * Mapper to populate the parent org of people with skeleton orgs from cache.
-     */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper populateOrgChildWithSkeletonParentOrgsCacheMapper;
 
     /**
      * Mapper to get all person ids that have group coordinator access for a given group.
@@ -79,8 +73,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      * 
      * @param inGroupByShortNameMapper
      *            injecting the mapper.
-     * @param inPopulateOrgChildWithSkeletonParentOrgsCacheMapper
-     *            mapper to populate parent orgs with skeleton
      * @param inGroupCoordinatorIdsDAO
      *            Mapper to get all person ids that have group coordinator access for a given group.
      * @param inGroupFollowerIdsMapper
@@ -93,9 +85,7 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      *            Mapper for getting group entity.
      */
     @SuppressWarnings("unchecked")
-    public GetDomainGroupModelViewByShortNameExectution(
-            final GetDomainGroupsByShortNames inGroupByShortNameMapper,
-            final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inPopulateOrgChildWithSkeletonParentOrgsCacheMapper,
+    public GetDomainGroupModelViewByShortNameExectution(final GetDomainGroupsByShortNames inGroupByShortNameMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinatorIdsDAO,
             final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
             final DomainMapper<Long, List<Long>> inGroupCoordinatorIdsByGroupIdMapper,
@@ -103,7 +93,6 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
             final DomainMapper<FindByIdRequest, DomainGroup> inGroupEntityMapper)
     {
         groupByShortNameMapper = inGroupByShortNameMapper;
-        populateOrgChildWithSkeletonParentOrgsCacheMapper = inPopulateOrgChildWithSkeletonParentOrgsCacheMapper;
         groupCoordinatorIdsDAO = inGroupCoordinatorIdsDAO;
         groupFollowerIdsMapper = inGroupFollowerIdsMapper;
         groupCoordinatorIdsByGroupIdMapper = inGroupCoordinatorIdsByGroupIdMapper;

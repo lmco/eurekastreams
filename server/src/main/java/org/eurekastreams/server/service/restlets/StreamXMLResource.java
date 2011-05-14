@@ -199,8 +199,7 @@ public class StreamXMLResource extends SmpResource
             {
                 Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
 
-                String feedTitle = ("Eureka Streams: " + stream.getName()).replace("EUREKA:PARENT_ORG_TAG",
-                        "Parent Organization");
+                String feedTitle = ("Eureka Streams: " + stream.getName());
 
                 feed.setTitle(feedTitle);
                 feed.setLink(baseUrl);

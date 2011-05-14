@@ -15,11 +15,12 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -27,11 +28,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for PersonRecipientRetriever class.
+ * Test for GroupRecipientRetriever class.
  * 
  */
-public class PersonRecipientParentOrganizationRetrieverTest
+public class GroupRecipientRetrieverTest
 {
+
     /**
      * Mocking context.
      */
@@ -45,12 +47,12 @@ public class PersonRecipientParentOrganizationRetrieverTest
     /**
      * System under test.
      */
-    private PersonRecipientRetriever sut;
+    private GroupRecipientRetriever sut;
 
     /**
      * mapper.
      */
-    private PersonMapper mapper = context.mock(PersonMapper.class);
+    private DomainGroupMapper mapper = context.mock(DomainGroupMapper.class);
 
     /**
      * ActivityDTO.
@@ -60,7 +62,12 @@ public class PersonRecipientParentOrganizationRetrieverTest
     /**
      * StreamEntityDTO.
      */
-    private StreamEntityDTO streamDTOMock = context.mock(StreamEntityDTO.class);
+    private StreamEntityDTO streamEntityDTOMock = context.mock(StreamEntityDTO.class);
+
+    /**
+     * Mocked domain group.
+     */
+    private DomainGroup domainGroupMock = context.mock(DomainGroup.class);
 
     /**
      * Pre-test setup.
@@ -68,39 +75,53 @@ public class PersonRecipientParentOrganizationRetrieverTest
     @Before
     public void setup()
     {
-        sut = new PersonRecipientRetriever(mapper);
+        sut = new GroupRecipientRetriever(mapper);
     }
 
     /**
-     * Test getParentOrganization.
+     * Test isDestinationStreamPublic() on true.
      */
     @Test
-    public void testGetParentOrganization()
+    public void testIsDestinationStreamPublicOnTrue()
+    {
+        testIsDestinationStreamPublic(true);
+    }
+
+    /**
+     * Test isDestinationStreamPublic() on false.
+     */
+    @Test
+    public void testIsDestinationStreamPublicOnFalse()
+    {
+        testIsDestinationStreamPublic(false);
+    }
+
+    /**
+     * Helper method to test isDestinationStreamPublic for a canned response.
+     * 
+     * @param inIsIt
+     *            whether or not the group is public
+     */
+    private void testIsDestinationStreamPublic(final boolean inIsIt)
     {
         context.checking(new Expectations()
         {
             {
                 oneOf(activityDTOMock).getDestinationStream();
-                will(returnValue(streamDTOMock));
+                will(returnValue(streamEntityDTOMock));
 
-                oneOf(streamDTOMock).getUniqueIdentifier();
-                will(returnValue("accountId"));
+                oneOf(streamEntityDTOMock).getUniqueIdentifier();
+                will(returnValue("groupShortName"));
 
-                oneOf(mapper).findByAccountId("accountId");
+                oneOf(mapper).findByShortName("groupShortName");
+                will(returnValue(domainGroupMock));
+
+                oneOf(domainGroupMock).isPublicGroup();
+                will(returnValue(inIsIt));
             }
         });
 
-        sut.getParentOrganization(activityDTOMock);
+        assertEquals(inIsIt, sut.isDestinationStreamPublic(activityDTOMock));
         context.assertIsSatisfied();
     }
-
-    /**
-     * Test isDestinationStreamPublic().
-     */
-    @Test
-    public void testIsDestinationStreamPublic()
-    {
-        assertTrue(sut.isDestinationStreamPublic(new ActivityDTO()));
-    }
-
 }

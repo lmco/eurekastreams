@@ -17,11 +17,14 @@ package org.eurekastreams.web.client.ui.pages.start.gallery;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.eurekastreams.server.action.request.gallery.GetGalleryItemsRequest;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Tab;
+import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.GalleryPageLoadedEvent;
@@ -41,6 +44,7 @@ import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotThemeDefinitionCategoriesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotThemeDefinitionsResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGadgetDefinitionResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedThemeResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedGadgetDefinitionResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedThemeResponseEvent;
@@ -74,7 +78,6 @@ import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.MasterComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -161,6 +164,11 @@ public class GalleryContent extends SettingsPanel
     private FlowPanel galleryAddOrEditContainer = new FlowPanel();
 
     /**
+     * Start page tabs.
+     */
+    private Map<String, String> startPageTabsDropDownValues = new HashMap<String, String>();;
+
+    /**
      * Default constructor.
      * 
      */
@@ -182,7 +190,7 @@ public class GalleryContent extends SettingsPanel
         panel.add(galleryPortalContainer);
         panel.add(galleryAddOrEditContainer);
 
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             galleryPortalContainer.add(addGadget);
             galleryPortalContainer.add(addTheme);
@@ -516,8 +524,25 @@ public class GalleryContent extends SettingsPanel
                         if (Session.getInstance().getParameterValue("action").equals("newTab")
                                 || Session.getInstance().getParameterValue("action").equals("editTab"))
                         {
-                            Window.alert("render add or edit now."); // renderCreateOrEditTheme(event.getResponse())
+                            renderCreateOrEditGalleryTabTemplate(event.getResponse());
                         }
+                    }
+                });
+
+        final HashMap<String, String> tabParams = new HashMap<String, String>();
+        tabParams.put("tab", Session.getInstance().getParameterValue("tab"));
+        tabParams.put("galleryTab", "Tabs");
+
+        Session.getInstance().getEventBus().addObserver(InsertedGalleryTabTempalateResponseEvent.class,
+                new Observer<InsertedGalleryTabTempalateResponseEvent>()
+                {
+                    public void update(final InsertedGalleryTabTempalateResponseEvent arg1)
+                    {
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, tabParams)));
+                        tabTemplateTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your tab has been successfully added")));
                     }
                 });
     }
@@ -530,6 +555,8 @@ public class GalleryContent extends SettingsPanel
      */
     private void onGotStartTabs(final GotStartPageTabsResponseEvent event)
     {
+        setStartTabDropdownValues(event.getResponse().getTabs(TabGroupType.START));
+
         // Apply the theme.
         if (event.getResponse().getTheme() != null)
         {
@@ -549,7 +576,7 @@ public class GalleryContent extends SettingsPanel
                         if (event.getParameters().get("action").equals("newTheme")
                                 || event.getParameters().get("action").equals("editTheme"))
                         {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 galleryPortalContainer.setVisible(false);
                                 galleryAddOrEditContainer.setVisible(true);
@@ -561,7 +588,7 @@ public class GalleryContent extends SettingsPanel
                         else if (event.getParameters().get("action").equals("editApp")
                                 || event.getParameters().get("action").equals("newApp"))
                         {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 galleryPortalContainer.setVisible(false);
                                 galleryAddOrEditContainer.setVisible(true);
@@ -573,7 +600,7 @@ public class GalleryContent extends SettingsPanel
                         else if (event.getParameters().get("action").equals("editTab")
                                 || event.getParameters().get("action").equals("newTab"))
                         {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 galleryPortalContainer.setVisible(false);
                                 galleryAddOrEditContainer.setVisible(true);
@@ -592,7 +619,7 @@ public class GalleryContent extends SettingsPanel
                             Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
                             setPageTitle("Configure");
 
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
                                 addGadget.setVisible(Session.getInstance().getParameterValue("galleryTab").equals(
                                         "Apps"));
@@ -604,6 +631,67 @@ public class GalleryContent extends SettingsPanel
                     }
 
                 }, true);
+    }
+
+    /**
+     * Render the create or edit screen for a theme.
+     * 
+     * @param categories
+     *            the params from the history token.
+     */
+    private void renderCreateOrEditGalleryTabTemplate(final LinkedList<String> categories)
+    {
+        String defaultCategory = null;
+        String id = "";
+
+        Map<String, String> urlParams = new HashMap<String, String>();
+        urlParams.put("tab", Session.getInstance().getParameterValue("tab"));
+        urlParams.put("galleryTab", "Tabs");
+
+        this.setPreviousPage(new CreateUrlRequest(Page.GALLERY, urlParams), "< Return to Configure Page");
+
+        String title = "Add Tab";
+        FormBuilder.Method method = Method.INSERT;
+
+        if (Session.getInstance().getParameterValue("action").equals("editTab"))
+        {
+            title = "Edit Tab";
+            method = Method.UPDATE;
+
+            defaultCategory = Session.getInstance().getParameterValue("category");
+            id = Session.getInstance().getParameterValue("id");
+        }
+
+        this.setPageTitle(title);
+        FormBuilder form = new FormBuilder("", GalleryTabTemplateModel.getInstance(), method);
+
+        if (method.equals(Method.UPDATE))
+        {
+            form.setSubmitButtonClass("form-update-button");
+        }
+
+        form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
+        form.addFormElement(new ValueOnlyFormElement("id", id));
+        form.addWidget(new HTML("<em class='gallery-upload-note'><strong>Please Note:</strong><br />"
+                + "When users add your tab from the gallery they will be making a copy of the tab. "
+                + "Updates you make to the tab will not be reflected for users who have previously add it."));
+        form.addFormDivider();
+
+        form.addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, null, "", true));
+
+        form.addFormDivider();
+
+        form
+                .addFormElement(new BasicDropDownFormElement("Category", "category", categories, defaultCategory, "",
+                        true));
+
+        form.addFormDivider();
+
+        form.addFormElement(new BasicTextBoxFormElement("Description:", "description", "", "", true));
+
+        form.addFormDivider();
+
+        galleryAddOrEditContainer.add(form);
     }
 
     /**
@@ -725,6 +813,22 @@ public class GalleryContent extends SettingsPanel
         form.addFormDivider();
 
         galleryAddOrEditContainer.add(form);
+    }
+
+    /**
+     * Set the values for start page tab drop down.
+     * 
+     * @param inStartPageTabs
+     *            List of start page tabs.
+     */
+    private void setStartTabDropdownValues(final List<Tab> inStartPageTabs)
+    {
+        startPageTabsDropDownValues.clear();
+
+        for (Tab t : inStartPageTabs)
+        {
+            startPageTabsDropDownValues.put(String.valueOf(t.getId()), t.getTabName());
+        }
     }
 
 }

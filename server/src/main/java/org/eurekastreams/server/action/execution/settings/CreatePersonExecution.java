@@ -35,7 +35,6 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
 
 /**
@@ -109,15 +108,12 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
     {
         CreatePersonRequest createRequest = (CreatePersonRequest) inActionContext.getActionContext().getParams();
         Person inPerson = createRequest.getPerson();
-        Organization org = findByIdMapper
-                .execute(new FindByIdRequest("Organization", createRequest.getOrganizationId()));
 
         persistResourceExecution = createPersonActionFactory.getCreatePersonAction(personMapper,
                 new ReflectiveUpdater());
 
         log.debug("Adding to database: " + inPerson.getAccountId());
-        final HashMap<String, Serializable> personData = inPerson.getProperties(Boolean.FALSE);
-        personData.put("organization", org);
+        final HashMap<String, Serializable> personData = inPerson.getProperties();
 
         Person person = (Person) persistResourceExecution.execute(new TaskHandlerActionContext<PrincipalActionContext>(
                 new PrincipalActionContext()

@@ -29,7 +29,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -69,10 +68,6 @@ public class NotificationPopulatorTest
     private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper = context.mock(DomainMapper.class,
             "groupMapper");
 
-    /** For getting org details. */
-    private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper = context.mock(DomainMapper.class,
-            "orgMapper");
-
     /** Fixture: For getting activity info. */
     private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper = context.mock(DomainMapper.class,
             "activityMapper");
@@ -101,7 +96,7 @@ public class NotificationPopulatorTest
     @Before
     public void setUp()
     {
-        sut = new NotificationPopulator(personMapper, groupMapper, orgMapper, activityMapper);
+        sut = new NotificationPopulator(personMapper, groupMapper, activityMapper);
         notification = new NotificationDTO(Collections.EMPTY_LIST, NotificationType.COMMENT_TO_COMMENTED_POST, 0L);
     }
 
@@ -204,36 +199,6 @@ public class NotificationPopulatorTest
         context.assertIsSatisfied();
         assertEquals("mygroup", notification.getDestinationUniqueId());
         assertEquals("My Group", notification.getDestinationName());
-    }
-
-    /**
-     * Tests populating destination.
-     */
-    @Test
-    public void testPopulateDestinationOrg()
-    {
-        notification.setDestination(DESTINATION_ID, EntityType.ORGANIZATION);
-
-        OrganizationModelView org = new OrganizationModelView();
-        org.setShortName("myorg");
-        org.setName("My Org");
-
-        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
-        orgs.add(org);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(orgMapper).execute(Collections.singletonList(DESTINATION_ID));
-                will(returnValue(orgs));
-            }
-        });
-
-        sut.populate(notification);
-
-        context.assertIsSatisfied();
-        assertEquals("myorg", notification.getDestinationUniqueId());
-        assertEquals("My Org", notification.getDestinationName());
     }
 
     /**

@@ -29,7 +29,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainEntityMapperTest;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper;
@@ -77,21 +76,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     private final TabMapper tabMapperMock = context.mock(TabMapper.class);
 
     /**
-     * Person Mapper Mock.
-     */
-    private final OrganizationMapper organizationMapperMock = context.mock(OrganizationMapper.class);
-
-    /**
      * actual person mapper.
      */
     @Autowired
     private PersonMapper personMapper;
-
-    /**
-     * actual org mapper.
-     */
-    @Autowired
-    private OrganizationMapper organizationMapper;
 
     /**
      * Actual Tab Mapper.
@@ -109,12 +97,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
 
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("Everyone", "My saved items",
-                "EUREKA:PARENT_ORG_TAG", "Following"));
+                "Following"));
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
-        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, readonlyStreamsMapper,
-                streamNames, startPageTabTypes);
+        sut = new PersonCreator(personMapperMock, tabMapperMock, readonlyStreamsMapper, streamNames, startPageTabTypes);
     }
 
     /**
@@ -134,7 +121,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         {
             {
                 oneOf(tabMapperMock).getTabTemplate(TabType.WELCOME);
-                oneOf(organizationMapperMock).getRootOrganization();
             }
         });
 
@@ -150,12 +136,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("Ned-diddly", p.getPreferredName());
 
         // test stream order
-        // IDs: 1, 5, 4, 3
-        assertEquals(4, p.getStreams().size());
+        // IDs: 1, 5, 3
+        assertEquals(3, p.getStreams().size());
         assertEquals(1, p.getStreams().get(0).getId());
         assertEquals(5, p.getStreams().get(1).getId());
-        assertEquals(4, p.getStreams().get(2).getId());
-        assertEquals(3, p.getStreams().get(3).getId());
+        assertEquals(3, p.getStreams().get(2).getId());
     }
 
     /**
@@ -184,13 +169,12 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         // new SUT to test different stream order
         GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
-        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
-                "EUREKA:PARENT_ORG_TAG"));
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
-        PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock,
-                readonlyStreamsMapper, streamNames, startPageTabTypes);
+        PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, readonlyStreamsMapper, streamNames,
+                startPageTabTypes);
 
         Person p = localSut.get(null, inFields);
         context.assertIsSatisfied();
@@ -202,14 +186,12 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("", p.getMiddleName());
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
-        assertEquals(orgMock, p.getParentOrganization());
 
         // test stream order
-        // IDs: 1, 5, 4, 3
-        assertEquals(3, p.getStreams().size());
+        // IDs: 1, 5,
+        assertEquals(2, p.getStreams().size());
         assertEquals(5, p.getStreams().get(0).getId());
         assertEquals(1, p.getStreams().get(1).getId());
-        assertEquals(4, p.getStreams().get(2).getId());
     }
 
     /**
@@ -255,14 +237,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     {
         GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
-        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
-                "EUREKA:PARENT_ORG_TAG"));
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
-        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, readonlyStreamsMapper, streamNames,
-                startPageTabTypes);
-        final Organization org = organizationMapper.getRootOrganization();
+        sut = new PersonCreator(personMapper, tabMapper, readonlyStreamsMapper, streamNames, startPageTabTypes);
 
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 
@@ -272,11 +251,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         inFields.put("middleName", "s");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Neddiddly");
-        inFields.put("organization", org); 
 
-        HashMap<String, String> props = new HashMap<String, String>(); 
-        props.put("somekey", "somevalue"); 
-        inFields.put("additionalProperties", props); 
+        HashMap<String, String> props = new HashMap<String, String>();
+        props.put("somekey", "somevalue");
+        inFields.put("additionalProperties", props);
 
         final Person testPerson = sut.get(null, inFields);
 

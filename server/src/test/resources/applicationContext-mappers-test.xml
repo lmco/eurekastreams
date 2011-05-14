@@ -68,8 +68,6 @@
     
 	<bean id="domainGroupBannerMapper" class="org.eurekastreams.server.persistence.mappers.DomainGroupBannerMapper"/>
 
-	<bean id="organizationBannerMapper" class="org.eurekastreams.server.persistence.mappers.OrganizationBannerMapper"/>
-
 	<bean id="getRefreshableFeedsMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetRefreshableFeedsMapper" />
 
@@ -96,9 +94,6 @@
     <bean id="getImageByIdentifier"
         class="org.eurekastreams.server.persistence.mappers.db.GetImageByIdentifier" />
 		
-	<bean id="getRootOrganizationIdAndShortNameMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
-	
 	<bean id="getPersonIdsWithStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -229,7 +224,6 @@
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
 		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper"/>
 		<constructor-arg ref="getGroupsByIdsDbMapper"/>
-		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg>
 		      <bean class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
 		</constructor-arg>
@@ -265,17 +259,6 @@
             <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
                 <constructor-arg value="openSocialId" />
                 <constructor-arg value="org.eurekastreams.server.domain.Person" />
-            </bean>
-        </property>
-	</bean>
-
-	<bean id="bulkOrganizationsByShortNameMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
-		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
-		<property name="idsByStringsMapper">
-            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
-                <constructor-arg value="shortName" />
-                <constructor-arg value="org.eurekastreams.server.domain.Organization" />
             </bean>
         </property>
 	</bean>
@@ -352,11 +335,6 @@
 	   <property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="updateCachedOrganizationName"
-		class="org.eurekastreams.server.persistence.UpdateCachedOrganizationName">
-		<property name="cache" ref="testCache"/>
-	</bean>
-
 	<!--
 		Domain Group Cache Loader - will be injected into actions/mappers that
 		need to update the cache
@@ -370,12 +348,6 @@
 	<bean id="followedActivityIdsLoader" class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
     
     <bean id="updaterStrategy" class="org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater"/>
-    
-    <bean id="isRootOrgCoordinatorStrategy" class="org.eurekastreams.server.action.authorization.IsRootOrganizationCoordinator">
-        <constructor-arg>
-              <bean class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
-        </constructor-arg>
-    </bean>
     
     <bean id="insertMapper" class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
 
@@ -416,7 +388,7 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="getFlaggedActivitiesForOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivitiesForOrganization">
+	<bean id="getFlaggedActivitiesForOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivities">
 		<constructor-arg ref="bulkActivitiesMapper"/>
 	</bean>
 	
@@ -443,8 +415,6 @@
     
     <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
         
-    <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
-    
     <bean id="getGroupCoordinatorIdsByGroupIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupCoordinatorIdsByGroupIdDbMapper" />
     
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />
@@ -455,8 +425,6 @@
     
     <bean id="getFollowedPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper" />
     
-    <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
-	
 	<bean id="updateNotificationsOnNameChangeMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
 	
 	<bean id="updatePersonMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />

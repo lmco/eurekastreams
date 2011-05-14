@@ -31,7 +31,6 @@ import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
@@ -41,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test for RefreshPeopleExecution.
- *
+ * 
  */
 public class RefreshPeopleExecutionTest
 {
@@ -72,11 +71,6 @@ public class RefreshPeopleExecutionTest
      * {@link GetNonLockedPersonIds}.
      */
     private GetPersonIdsByLockedStatus personIdsByLockedStatusDAO = context.mock(GetPersonIdsByLockedStatus.class);
-
-    /**
-     * {@link GetRootOrganizationIdAndShortName}.
-     */
-    private GetRootOrganizationIdAndShortName rootOrgIdDAO = context.mock(GetRootOrganizationIdAndShortName.class);
 
     /**
      * The settings mapper.
@@ -112,7 +106,7 @@ public class RefreshPeopleExecutionTest
      * System under test.
      */
     private RefreshPeopleExecution sut = new RefreshPeopleExecution(source, "create", "lock", "refresh",
-            personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
+            personIdsByLockedStatusDAO, settingsMapper);
 
     /**
      * Test.
@@ -145,9 +139,6 @@ public class RefreshPeopleExecutionTest
                 allowing(settings).getSendWelcomeEmails();
                 will(returnValue(false));
 
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(1L));
-
                 allowing(person3).getAccountId();
                 will(returnValue("p3"));
 
@@ -173,10 +164,9 @@ public class RefreshPeopleExecutionTest
 
         sut.execute(actionContext);
 
-        // should be 3 creates and a action to adjust org count.
-        assertEquals(4, list.size());
+        // should be 3 creates
+        assertEquals(3, list.size());
         assertEquals("create", list.get(0).getActionKey());
-        assertEquals("increaseOrgEmployeeCountAction", list.get(3).getActionKey());
 
         context.assertIsSatisfied();
     }
@@ -187,8 +177,8 @@ public class RefreshPeopleExecutionTest
     @Test
     public void testCreateWithCreateDisabled()
     {
-        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "", "lock", "refresh", 
-                personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "", "lock", "refresh",
+                personIdsByLockedStatusDAO, settingsMapper);
 
         final Set<Person> people = new HashSet<Person>();
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
@@ -214,9 +204,6 @@ public class RefreshPeopleExecutionTest
 
                 allowing(settings).getSendWelcomeEmails();
                 will(returnValue(false));
-
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(1L));
 
                 allowing(person3).getAccountId();
                 will(returnValue("p3"));
@@ -281,9 +268,6 @@ public class RefreshPeopleExecutionTest
                 allowing(settings).getSendWelcomeEmails();
                 will(returnValue(false));
 
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(1L));
-
                 allowing(person3).getAccountId();
                 will(returnValue("p3"));
 
@@ -310,16 +294,16 @@ public class RefreshPeopleExecutionTest
         sut.execute(actionContext);
 
         assertEquals(3, list.size());
-        
+
         HashMap<String, UserActionRequest> listOfRequests = new HashMap<String, UserActionRequest>();
         listOfRequests.put(list.get(0).getActionKey(), list.get(0));
         listOfRequests.put(list.get(1).getActionKey(), list.get(1));
         listOfRequests.put(list.get(2).getActionKey(), list.get(2));
         assertTrue(listOfRequests.containsKey("lock"));
         assertTrue(listOfRequests.containsKey("refresh"));
-        
+
         SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) listOfRequests.get("lock").getParams();
-        
+
         assertEquals(false, splsr.getLockedStatus());
 
         context.assertIsSatisfied();
@@ -332,7 +316,7 @@ public class RefreshPeopleExecutionTest
     public void testUnlockWithUnlockDisabled()
     {
         RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", "refresh",
-                personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
+                personIdsByLockedStatusDAO, settingsMapper);
 
         final Set<Person> people = new HashSet<Person>();
         final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2"));
@@ -360,9 +344,6 @@ public class RefreshPeopleExecutionTest
 
                 allowing(settings).getSendWelcomeEmails();
                 will(returnValue(false));
-
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(1L));
 
                 allowing(person3).getAccountId();
                 will(returnValue("p3"));
@@ -426,9 +407,6 @@ public class RefreshPeopleExecutionTest
                 allowing(settings).getSendWelcomeEmails();
                 will(returnValue(false));
 
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(1L));
-
                 allowing(person3).getAccountId();
                 will(returnValue("p3"));
 
@@ -455,17 +433,17 @@ public class RefreshPeopleExecutionTest
         sut.execute(actionContext);
 
         assertEquals(3, list.size());
-        boolean found = false; 
-        for (UserActionRequest uar : list) 
-        { 
-            if (uar.getActionKey() == "lock") 
-            { 
-                SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams(); 
-                assertEquals(true, splsr.getLockedStatus()); 
-                found = true; 
-            } 
-        } 
-        assertTrue(found); 
+        boolean found = false;
+        for (UserActionRequest uar : list)
+        {
+            if (uar.getActionKey() == "lock")
+            {
+                SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
+                assertEquals(true, splsr.getLockedStatus());
+                found = true;
+            }
+        }
+        assertTrue(found);
         context.assertIsSatisfied();
     }
 
@@ -475,8 +453,8 @@ public class RefreshPeopleExecutionTest
     @Test
     public void testLockWithLockDisabled()
     {
-        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", "refresh", 
-                personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", "refresh",
+                personIdsByLockedStatusDAO, settingsMapper);
 
         final Set<Person> people = new HashSet<Person>();
         final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2", "p3"));
@@ -503,9 +481,6 @@ public class RefreshPeopleExecutionTest
 
                 allowing(settings).getSendWelcomeEmails();
                 will(returnValue(false));
-
-                allowing(rootOrgIdDAO).getRootOrganizationId();
-                will(returnValue(1L));
 
                 allowing(person3).getAccountId();
                 will(returnValue("p3"));
@@ -537,4 +512,3 @@ public class RefreshPeopleExecutionTest
         context.assertIsSatisfied();
     }
 }
-

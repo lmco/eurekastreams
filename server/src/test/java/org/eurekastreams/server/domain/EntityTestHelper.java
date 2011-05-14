@@ -41,16 +41,4 @@ public final class EntityTestHelper
         inPerson.setId(id);
     }
 
-    /**
-     * Set the parent organization id of the input person.
-     * 
-     * @param inPerson
-     *            the person to set the parent org id
-     * @param inParentOrgId
-     *            the org id to set as the parent org id
-     */
-    public static void setPersonParentOrgId(final Person inPerson, final Long inParentOrgId)
-    {
-        inPerson.setParentOrgId(inParentOrgId);
-    }
 }

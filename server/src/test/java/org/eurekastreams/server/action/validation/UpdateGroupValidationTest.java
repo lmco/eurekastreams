@@ -27,7 +27,6 @@ import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -50,19 +49,14 @@ public class UpdateGroupValidationTest
     };
 
     /**
-     * {@link ActionContext}.
+     * principal action context.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
-     * {@Link GetOrganizationsByShortNames}.
-     */
-    private GetOrganizationsByShortNames orgMapperMock = context.mock(GetOrganizationsByShortNames.class);
-    
-    /**
      * {@link UpdateGroupValidation} system under test.
      */
-    private UpdateGroupValidation sut = new UpdateGroupValidation(orgMapperMock);
+    private UpdateGroupValidation sut = new UpdateGroupValidation();
 
     /**
      * Test validateParams() with valid inputs.
@@ -85,7 +79,6 @@ public class UpdateGroupValidationTest
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
         formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, "isgs");
         formData.put(DomainGroupModelView.OVERVIEW_KEY, "this is unlimited length");
         formData.put(DomainGroupModelView.STREAM_COMMENTABLE_KEY, true);
         formData.put(DomainGroupModelView.STREAM_POSTABLE_KEY, true);
@@ -100,7 +93,6 @@ public class UpdateGroupValidationTest
             {
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
-                oneOf(orgMapperMock).fetchUniqueResult("isgs");
             }
         });
 
@@ -129,7 +121,6 @@ public class UpdateGroupValidationTest
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
         formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, "isgs");
         formData.put(DomainGroupModelView.OVERVIEW_KEY, "this is unlimited length");
         formData.put(DomainGroupModelView.STREAM_COMMENTABLE_KEY, true);
         formData.put(DomainGroupModelView.STREAM_POSTABLE_KEY, true);
@@ -146,7 +137,6 @@ public class UpdateGroupValidationTest
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
                 allowing(actionContext).getPrincipal().getAccountId();
-                oneOf(orgMapperMock).fetchUniqueResult("isgs");
 
             }
         });
@@ -173,7 +163,6 @@ public class UpdateGroupValidationTest
                 .generateString(DomainGroup.MAX_NAME_LENGTH + 1));
         formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, null);
         formData.put(DomainGroupModelView.KEYWORDS_KEY, ValidationTestHelper
                 .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH)
                 + "," + ValidationTestHelper.generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
@@ -197,9 +186,8 @@ public class UpdateGroupValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertEquals(6, ve.getErrors().size());
+            assertEquals(5, ve.getErrors().size());
             assertTrue(ve.getErrors().containsValue(DomainGroup.WEBSITE_MESSAGE));
-            assertTrue(ve.getErrors().containsValue(UpdateGroupValidation.MUST_HAVE_PARENT_ORG_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.MIN_COORDINATORS_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroupModelView.KEYWORD_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.DESCRIPTION_LENGTH_MESSAGE));
@@ -208,64 +196,7 @@ public class UpdateGroupValidationTest
         }
         context.assertIsSatisfied();
     }
-    
-    /**
-     * Test validateParams() with bad items this one spesifically for a org that no longer exist.
-     */
-    @Test(expected = ValidationException.class)
-    public void validateParamsWithInvalidOrgThatDoesntExist()
-    {
-        HashSet<Person> coordinators = new HashSet<Person>();
 
-        final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
-
-        formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "www.google.com");
-        formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH + 1));
-        formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_NAME_LENGTH + 1));
-        formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
-        formData.put(DomainGroupModelView.ORG_PARENT_KEY, "noSuchParentOrg");
-        formData.put(DomainGroupModelView.KEYWORDS_KEY, ValidationTestHelper
-                .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH)
-                + "," + ValidationTestHelper.generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
-        formData.put(DomainGroupModelView.COORDINATORS_KEY, coordinators);
-        formData.put(DomainGroupModelView.OVERVIEW_KEY, "this is unlimited length");
-        formData.put(DomainGroupModelView.STREAM_COMMENTABLE_KEY, true);
-        formData.put(DomainGroupModelView.STREAM_POSTABLE_KEY, true);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(actionContext).getParams();
-                will(returnValue(formData));
-                oneOf(orgMapperMock).fetchUniqueResult("noSuchParentOrg");
-                will(returnValue(null));
-                
-            }
-        });
-
-        try
-        {
-            sut.validate(actionContext);
-        }
-        catch (ValidationException ve)
-        {
-            context.assertIsSatisfied();
-            assertEquals(6, ve.getErrors().size());
-            assertTrue(ve.getErrors().containsValue(DomainGroup.WEBSITE_MESSAGE));
-            assertTrue(ve.getErrors().containsValue(UpdateGroupValidation.NO_SUCH_PARENT_ORG));
-            assertTrue(ve.getErrors().containsValue(DomainGroup.MIN_COORDINATORS_MESSAGE));
-            assertTrue(ve.getErrors().containsValue(DomainGroupModelView.KEYWORD_MESSAGE));
-            assertTrue(ve.getErrors().containsValue(DomainGroup.DESCRIPTION_LENGTH_MESSAGE));
-            assertTrue(ve.getErrors().containsValue(DomainGroup.NAME_LENGTH_MESSAGE));
-            throw ve;
-        }
-        context.assertIsSatisfied();
-    }
-    
     /**
      * Test validateParams() no required field provided.
      */
@@ -289,7 +220,7 @@ public class UpdateGroupValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertEquals(7, ve.getErrors().size());
+            assertEquals(6, ve.getErrors().size());
             throw ve;
         }
         context.assertIsSatisfied();

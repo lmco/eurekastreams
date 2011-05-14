@@ -61,12 +61,9 @@ public class CacheInitializerTest
     public void testWireUpdaters()
     {
         final DomainGroupCacheLoader domainGroupCacheLoader = context.mock(DomainGroupCacheLoader.class);
-        final OrganizationEntityCacheUpdater orgHierarchyCacheLoader = context
-                .mock(OrganizationEntityCacheUpdater.class);
         final PersonEntityCacheUpdater personEntityCacheLoader = context.mock(PersonEntityCacheUpdater.class);
 
-        new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, orgHierarchyCacheLoader,
-                personEntityCacheLoader);
+        new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, personEntityCacheLoader);
 
         // can't really test b/c there's no getter - oh well.
     }

@@ -15,13 +15,11 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 
 /**
- * Interface for different implementations to retrieve parent organization of
- * activity recipient.
+ * Interface for different implementations to retrieve parent organization of activity recipient.
  */
 // TODO: each of these methods probably hits the database once, so if we need
 // all three, we're running three SQL queries when we need one. We should
@@ -30,15 +28,6 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 // which properties to fetch.
 public interface RecipientRetriever
 {
-    /**
-     * Retrieve parent organization of activity recipient.
-     * 
-     * @param inActivityDTO
-     *            ActivityDTO instance.
-     * @return parent organization of activity recipient.
-     */
-    Organization getParentOrganization(ActivityDTO inActivityDTO);
-
     /**
      * Retrieve stream scope for recipient stream scope.
      * 

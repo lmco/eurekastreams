@@ -24,13 +24,12 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- *
+ * 
  * Validates values entered for a Group.
- *
+ * 
  */
 public class CreateGroupValidation implements ValidationStrategy<ActionContext>
 {
@@ -41,21 +40,12 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
     private final GetDomainGroupsByShortNames groupMapper;
 
     /**
-     * {@link GetOrganizationsByShortNames}.
-     */
-    private final GetOrganizationsByShortNames orgMapper;
-
-    /**
      * @param inGroupMapper
      *            the mapper to use to get groups.
-     * @param inOrgMapper
-     *            the mapper used to get orgs.
      */
-    public CreateGroupValidation(final GetDomainGroupsByShortNames inGroupMapper,
-            final GetOrganizationsByShortNames inOrgMapper)
+    public CreateGroupValidation(final GetDomainGroupsByShortNames inGroupMapper)
     {
         groupMapper = inGroupMapper;
-        orgMapper = inOrgMapper;
     }
 
     /**
@@ -67,16 +57,6 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
      * Message to display if name is taken.
      */
     static final String SHORTNAME_TAKEN_MESSAGE = "A group with this web address already exist.";
-
-    /**
-     * message if no such parent org exist.
-     */
-    static final String NO_SUCH_PARENT_ORG = "The selected parent organization does not exist.";
-
-    /**
-     * message if no parent org is selected.
-     */
-    static final String MUST_HAVE_PARENT_ORG_MESSAGE = "Please select a parent organization.";
 
     /**
      *
@@ -95,8 +75,8 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
         ValidationException ve = new ValidationException();
         ValidationHelper vHelper = new ValidationHelper();
 
-        String groupName = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true,
-                ve);
+        String groupName = (String) vHelper
+                .getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true, ve);
         if (groupName == null || groupName.isEmpty())
         {
             ve.addError(DomainGroupModelView.NAME_KEY, DomainGroup.NAME_REQUIRED);
@@ -136,17 +116,6 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
             vHelper.stringMeetsRequirments(DomainGroupModelView.DESCRIPTION_KEY, groupDesc, ve,
                     DomainGroup.DESCRIPTION_LENGTH_MESSAGE, DomainGroup.MAX_DESCRIPTION_LENGTH,
                     DomainGroup.DESCRIPTION_LENGTH_MESSAGE, null, null);
-        }
-
-        String orgShortName = (String) vHelper.getAndCheckStringFieldExist(fields,
-                DomainGroupModelView.ORG_PARENT_KEY, true, ve);
-        if (vHelper.stringMeetsRequirments(DomainGroupModelView.ORG_PARENT_KEY, orgShortName, ve,
-                MUST_HAVE_PARENT_ORG_MESSAGE, null, null, null, null))
-        {
-            if (orgMapper.fetchUniqueResult(orgShortName) == null)
-            {
-                ve.addError(DomainGroupModelView.ORG_PARENT_KEY, NO_SUCH_PARENT_ORG);
-            }
         }
 
         Set coordinators = (Set) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.COORDINATORS_KEY,

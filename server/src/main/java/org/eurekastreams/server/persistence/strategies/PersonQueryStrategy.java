@@ -20,7 +20,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.factories.PersonModelViewFactory;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
@@ -42,7 +41,6 @@ public class PersonQueryStrategy
     {
         Criteria criteria = hibernateSession.createCriteria(Person.class);
         ProjectionList fields = Projections.projectionList();
-        criteria.setFetchMode("parentOrganization", FetchMode.JOIN);
         fields.add(getColumn("id"));
         fields.add(getColumn("dateAdded"));
         fields.add(getColumn("accountId"));
@@ -74,12 +72,8 @@ public class PersonQueryStrategy
         fields.add(getColumn("fax"));
         fields.add(getColumn("biography"));
         fields.add(Projections.property("streamViewHiddenLineIndex").as("compositeStreamHiddenLineIndex"));
-        fields.add(Projections.property("po.id").as("parentOrganizationId"));
-        fields.add(Projections.property("po.name").as("parentOrganizationName"));
-        fields.add(Projections.property("po.shortName").as("parentOrganizationShortName"));
         fields.add(Projections.property("stream.id").as("streamId"));
         criteria.setProjection(fields);
-        criteria.createAlias("parentOrganization", "po");
         criteria.createAlias("streamScope", "stream");
 
         ModelViewResultTransformer<PersonModelView> resultTransformer = new ModelViewResultTransformer<PersonModelView>(

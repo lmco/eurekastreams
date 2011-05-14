@@ -20,13 +20,9 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationModelViewResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.model.OrganizationModelViewModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
@@ -40,13 +36,13 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Activity detail panel.
- *
+ * 
  */
 public class ActivityDetailPanel extends FlowPanel
 {
     /**
      * Default constructor.
-     *
+     * 
      * @param activity
      *            activity.
      * @param showRecipient
@@ -86,27 +82,14 @@ public class ActivityDetailPanel extends FlowPanel
         linkPanel.add(new InlineHyperlink("View all activities", Session.getInstance().generateUrl(
                 new CreateUrlRequest(params, false))));
 
+        // TODO: change this to goto the new admin page
         if (manageFlagged && activity != null)
         {
-            bus.addObserver(GotOrganizationModelViewResponseEvent.class,
-                    new Observer<GotOrganizationModelViewResponseEvent>()
-                    {
-                        public void update(final GotOrganizationModelViewResponseEvent ev)
-                        {
-                            bus.removeObserver(ev, this);
+            linkPanel.add(new InlineLabel("|"));
 
-                            linkPanel.add(new InlineLabel("|"));
-
-                            OrganizationModelView org = ev.getResponse();
-                            String url =
-                                    Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName(), "tab",
-                                                    "Admin"));
-                            linkPanel.add(new InlineHyperlink("Manage flagged content for organization "
-                                    + org.getName(), url));
-                        }
-                    });
-            OrganizationModelViewModel.getInstance().fetch(activity.getRecipientParentOrgId(), true);
+            String url = Session.getInstance()
+                    .generateUrl(new CreateUrlRequest(Page.ORGANIZATIONS, "", "tab", "Admin"));
+            linkPanel.add(new InlineHyperlink("Manage flagged content", url));
         }
     }
 

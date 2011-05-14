@@ -123,15 +123,12 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
                 allowing(person).getAccountId();
 
-                allowing(person).getProperties(false);
+                allowing(person).getProperties();
 
                 allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
@@ -177,15 +174,12 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
                 allowing(person).getAccountId();
 
-                allowing(person).getProperties(false);
+                allowing(person).getProperties();
 
                 allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
@@ -228,15 +222,12 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
                 allowing(person).getAccountId();
 
-                allowing(person).getProperties(false);
+                allowing(person).getProperties();
 
                 allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
@@ -279,15 +270,12 @@ public class CreatePersonExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(createRequest));
 
-                allowing(createRequest).getOrganizationId();
-                will(returnValue(orgId));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
                 allowing(person).getAccountId();
 
-                allowing(person).getProperties(false);
+                allowing(person).getProperties();
 
                 allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
