@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.db.GetAllPrivateGroupIdsDbMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -62,12 +61,6 @@ public class GetPrivateGroupsByUserIdTest extends MapperTest
      * Mapper to get all private groups.
      */
     private final GetAllPrivateGroupIdsDbMapper getAllPrivateGroupIdsMapper = new GetAllPrivateGroupIdsDbMapper();
-
-    /**
-     * Mapper to retrieve the private group ids under an org.
-     */
-    @Autowired
-    private GetPrivateGroupIdsUnderOrganizations orgPrivateGroupIdsMapper;
 
     /**
      * Test user id that is a coordinator of the test group.

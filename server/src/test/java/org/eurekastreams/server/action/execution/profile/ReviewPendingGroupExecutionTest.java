@@ -37,7 +37,6 @@ import org.eurekastreams.server.action.execution.notification.Notifier;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationDTO;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
@@ -127,11 +126,6 @@ public class ReviewPendingGroupExecutionTest
 
     /** Fixture: async request to send notification. */
     private UserActionRequest notifAsyncRequest = context.mock(UserActionRequest.class);
-
-    /**
-     * Mocked instance of the {@link Organization}.
-     */
-    private final Organization orgMock = context.mock(Organization.class);
 
     /** Fixture: Execution strategy for deleting a group. */
     private DeleteGroupFromDBExecution deleteGroupExecution = context.mock(DeleteGroupFromDBExecution.class);

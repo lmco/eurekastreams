@@ -286,7 +286,7 @@ public class OrganizationProfilePanel extends FlowPanel
         // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
         // visible lists.)
         FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesRequest(0, 1), false);
-        PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest("", 0, 1), false);
+        PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(0, 1), false);
 
         // wire up events to refresh the list when something is removed
         eventBus.addObserver(UpdatedActivityFlagResponseEvent.class, new Observer<UpdatedActivityFlagResponseEvent>()
@@ -333,7 +333,7 @@ public class OrganizationProfilePanel extends FlowPanel
                 new GetFlaggedActivitiesRequest(0, 0));
         // pending groups StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
-                new GetPendingGroupsRequest("", 0, 0));
+                new GetPendingGroupsRequest(0, 0));
 
         return adminTab;
     }

@@ -31,10 +31,8 @@ import org.eurekastreams.server.action.execution.CreatePersonActionFactory;
 import org.eurekastreams.server.action.execution.PersistResourceExecution;
 import org.eurekastreams.server.action.request.CreatePersonRequest;
 import org.eurekastreams.server.action.request.SendWelcomeEmailRequest;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
 
 /**
@@ -69,11 +67,6 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
     private PersonMapper personMapper;
 
     /**
-     * Mapper to find orgs by id.
-     */
-    private FindByIdMapper<Organization> findByIdMapper;
-
-    /**
      * Constructor.
      * 
      * @param inCreatePersonActionFactory
@@ -82,17 +75,13 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
      *            mapper to get people.
      * @param inSendWelcomeEmailAction
      *            Send welcome email action key.
-     * @param inFindByIdMapper
-     *            Mapper to get orgs by id
      */
     public CreatePersonExecution(final CreatePersonActionFactory inCreatePersonActionFactory,
-            final PersonMapper inPersonMapper, final String inSendWelcomeEmailAction,
-            final FindByIdMapper<Organization> inFindByIdMapper)
+            final PersonMapper inPersonMapper, final String inSendWelcomeEmailAction)
     {
         createPersonActionFactory = inCreatePersonActionFactory;
         personMapper = inPersonMapper;
         sendWelcomeEmailAction = inSendWelcomeEmailAction;
-        findByIdMapper = inFindByIdMapper;
     }
 
     /**

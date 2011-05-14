@@ -65,11 +65,6 @@ public class GroupUpdater extends GroupPersister
     private static final String ORIGINAL_GROUP_COORDINATORS_KEY = "__KEY_ORIGINAL_GROUP_COORDINATORS_KEY";
 
     /**
-     * Key used to store original parent org between get and Persist.
-     */
-    private static final String ORIGINAL_PARENT_ORG_KEY = "__KEY_ORIGINAL_PARENT_ORG_KEY";
-
-    /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
     private TaskHandlerExecutionStrategy followStrategy;

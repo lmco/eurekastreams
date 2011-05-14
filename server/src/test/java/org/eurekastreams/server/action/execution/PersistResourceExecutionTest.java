@@ -15,18 +15,19 @@
  */
 package org.eurekastreams.server.action.execution;
 
-import static org.junit.Assert.fail;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import junit.framework.Assert;
+
+import org.apache.shindig.social.opensocial.model.Organization;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.service.actions.strategies.ResourcePersistenceStrategy;
@@ -115,7 +116,7 @@ public class PersistResourceExecutionTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -126,7 +127,7 @@ public class PersistResourceExecutionTest
         final String name = "org name here";
         final long id = 1L;
         String newName = "NEW org name here";
-        final Organization newOrg = new Organization(name, name);
+        final DomainGroup newGroup = new DomainGroup();
         final Person coordinatorMock = context.mock(Person.class);
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
@@ -148,11 +149,11 @@ public class PersistResourceExecutionTest
                 will(returnValue(coordinatorMock));
 
                 oneOf(persistStrategyMock).get(with(taskHandlerActionContext), with(any(HashMap.class)));
-                will(returnValue(newOrg));
+                will(returnValue(newGroup));
 
                 oneOf(persistStrategyMock).persist(with(taskHandlerActionContext), with(any(HashMap.class)),
                         with(any(Organization.class)));
-                oneOf(updaterMock).setProperties(with(newOrg), with(any(HashMap.class)));
+                oneOf(updaterMock).setProperties(with(newGroup), with(any(HashMap.class)));
 
             }
 
@@ -165,14 +166,14 @@ public class PersistResourceExecutionTest
         }
         catch (Exception e)
         {
-            fail(e + ": something bad happened while setting properties");
+            Assert.fail(e + ": something bad happened while setting properties");
         }
 
     }
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -182,7 +183,7 @@ public class PersistResourceExecutionTest
         final String name = "org name here";
         final long id = 1L;
         String newName = "NEW org name here";
-        final Organization newOrg = new Organization(name, name);
+        final DomainGroup newGroup = new DomainGroup();
         final Person coordinatorMock = context.mock(Person.class);
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
@@ -210,7 +211,7 @@ public class PersistResourceExecutionTest
                 will(returnValue(personCreatorMock));
 
                 oneOf(persistStrategyMock).get(with(taskHandlerActionContext), with(any(HashMap.class)));
-                will(returnValue(newOrg));
+                will(returnValue(newGroup));
 
                 oneOf(personCreatorMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(coordinatorMock));
@@ -228,7 +229,7 @@ public class PersistResourceExecutionTest
         }
         catch (Exception e)
         {
-            fail(e + ": something bad happened while setting properties");
+            Assert.fail(e + ": something bad happened while setting properties");
         }
 
     }

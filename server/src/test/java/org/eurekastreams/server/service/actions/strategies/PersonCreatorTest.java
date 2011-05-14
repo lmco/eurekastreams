@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.domain.stream.StreamScope;
@@ -151,13 +150,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     {
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 
-        final Organization orgMock = context.mock(Organization.class);
         inFields.put("accountId", "nflanders");
         inFields.put("firstName", "Ned");
         inFields.put("middleName", "");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Ned-diddly");
-        inFields.put("organization", orgMock);
 
         context.checking(new Expectations()
         {

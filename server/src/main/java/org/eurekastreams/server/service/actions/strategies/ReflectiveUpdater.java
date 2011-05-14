@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.domain.Organization;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 
@@ -137,11 +136,6 @@ public class ReflectiveUpdater implements UpdaterStrategy
                 if (property.getPropertyType().equals(Set.class))
                 {
                     setter.invoke(instance, (Set) valueObj);
-                    continue;
-                }
-                if (property.getPropertyType().equals(Organization.class))
-                {
-                    setter.invoke(instance, (Organization) valueObj);
                     continue;
                 }
                 if (property.getPropertyType().equals(boolean.class)

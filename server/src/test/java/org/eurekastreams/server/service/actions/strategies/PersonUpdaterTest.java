@@ -30,7 +30,6 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.profile.UpdatePersonDisplayNameCaches;
 import org.eurekastreams.server.domain.EntityTestHelper;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.jmock.Expectations;
@@ -82,11 +81,6 @@ public class PersonUpdaterTest
     private PersonMapper personMapperMock = context.mock(PersonMapper.class);
 
     /**
-     * {@link Organization}.
-     */
-    private Organization orgMock = context.mock(Organization.class);
-
-    /**
      * Class to get the task actions for queue updates when display name changes.
      */
     private UpdatePersonDisplayNameCaches updatePersonCachesMock = context.mock(UpdatePersonDisplayNameCaches.class);
@@ -122,8 +116,6 @@ public class PersonUpdaterTest
                 allowing(testPerson).getDisplayName();
                 will(returnValue("displayName"));
 
-                oneOf(orgMock).getShortName();
-                will(returnValue("orgShortName"));
             }
         });
 

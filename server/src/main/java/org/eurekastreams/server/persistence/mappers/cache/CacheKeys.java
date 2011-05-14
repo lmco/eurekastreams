@@ -90,16 +90,6 @@ public final class CacheKeys
     public static final String GROUP_BY_ID = "Grp:";
 
     /**
-     * Pointer key for organization group by short name.
-     */
-    public static final String ORGANIZATION_BY_SHORT_NAME = "OrgShort:";
-
-    /**
-     * Key for organization by id.
-     */
-    public static final String ORGANIZATION_BY_ID = "Org:";
-
-    /**
      * Key for followers of a person including said person.
      */
     public static final String FOLLOWERS_BY_PERSON = "Fwr:";
@@ -135,34 +125,9 @@ public final class CacheKeys
     public static final String ACTIVITIES_BY_FOLLOWING = "CmpFwg:";
 
     /**
-     * Key for the list of an Organization's parent ids recursively up the tree.
-     */
-    public static final String ORGANIZATION_PARENTS_RECURSIVE = "OrgParents:";
-
-    /**
-     * Key for the list of an Organization's children, recursively.
-     */
-    public static final String ORGANIZATION_RECURSIVE_CHILDREN = "OrgChldRec:";
-
-    /**
-     * Key for the OrganizationTreeDTO.
-     */
-    public static final String ORGANIZATION_TREE_DTO = "OrgTree";
-
-    /**
-     * Key for the list of an Organization's coordinators.
-     */
-    public static final String ORGANIZATION_COORDINATORS_BY_ORG_ID = "OrgCoord:";
-
-    /**
      * Key for getting the IDs of the system administrators.
      */
     public static final String SYSTEM_ADMINISTRATOR_IDS = "Admins:";
-
-    /**
-     * Key for the list of an Organization's leaders.
-     */
-    public static final String ORGANIZATION_LEADERS_BY_ORG_ID = "OrgLead:";
 
     /**
      * Key for the set of ids of private groups that a user has view access to as a coordinator (org/group).
@@ -203,11 +168,6 @@ public final class CacheKeys
      * List of activity ids for an entity's activity stream.
      */
     public static final String ENTITY_STREAM_BY_SCOPE_ID = "EntStr:";
-
-    /**
-     * Cache key prefix for all activity ids for an organization (recursive) by short name.
-     */
-    public static final String ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE = "OrgActIds:";
 
     /**
      * Key for PersonPageProperties by id.
