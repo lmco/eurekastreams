@@ -20,7 +20,6 @@ import java.util.HashMap;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -146,18 +145,15 @@ public class OrganizationProfilePanel extends FlowPanel
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
-        setEntity(null);
+        setEntity();
 
         OrganizationModel.getInstance().fetch(accountId, false);
     }
 
     /**
      * We have the org, so set up the Profile summary.
-     * 
-     * @param inOrg
-     *            the org whose profile is being displayed
      */
-    public void setEntity(final OrganizationModelView inOrg)
+    public void setEntity()
     {
         final EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.notifyObservers(new SetBannerEvent(null));
