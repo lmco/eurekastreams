@@ -20,7 +20,6 @@ import java.util.HashMap;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -146,18 +145,15 @@ public class OrganizationProfilePanel extends FlowPanel
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
-        setEntity(null);
+        setEntity();
 
         OrganizationModel.getInstance().fetch(accountId, false);
     }
 
     /**
      * We have the org, so set up the Profile summary.
-     * 
-     * @param inOrg
-     *            the org whose profile is being displayed
      */
-    public void setEntity(final OrganizationModelView inOrg)
+    public void setEntity()
     {
         final EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.notifyObservers(new SetBannerEvent(null));
@@ -286,7 +282,7 @@ public class OrganizationProfilePanel extends FlowPanel
         // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
         // visible lists.)
         FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesRequest(0, 1), false);
-        PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest("", 0, 1), false);
+        PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(0, 1), false);
 
         // wire up events to refresh the list when something is removed
         eventBus.addObserver(UpdatedActivityFlagResponseEvent.class, new Observer<UpdatedActivityFlagResponseEvent>()
@@ -333,7 +329,7 @@ public class OrganizationProfilePanel extends FlowPanel
                 new GetFlaggedActivitiesRequest(0, 0));
         // pending groups StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
-                new GetPendingGroupsRequest("", 0, 0));
+                new GetPendingGroupsRequest(0, 0));
 
         return adminTab;
     }

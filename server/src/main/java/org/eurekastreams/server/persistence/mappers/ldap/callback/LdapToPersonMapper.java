@@ -23,7 +23,6 @@ import javax.naming.directory.Attributes;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.springframework.ldap.core.AttributesMapper;
 
@@ -119,7 +118,6 @@ public class LdapToPersonMapper implements AttributesMapper
                     : "";
 
             String orgName = (null != attrs.get(orgAttrib)) ? attrs.get(orgAttrib).get().toString() : "";
-            Organization orgObject = new Organization(orgName, orgName);
 
             String companyName = (null != attrs.get(companyAttrib)) ? attrs.get(companyAttrib).get().toString() : "";
 

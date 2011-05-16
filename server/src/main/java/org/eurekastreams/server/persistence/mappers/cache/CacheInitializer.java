@@ -48,7 +48,7 @@ public class CacheInitializer
         // set the updaters
         if (logger.isInfoEnabled())
         {
-            logger.info("Wiring up cache updaters for Person, DomainGroup, Organization.");
+            logger.info("Wiring up cache updaters for Person, DomainGroup.");
         }
 
         DomainGroup.setEntityCacheUpdater(inDomainGroupEntityCacheUpdater);

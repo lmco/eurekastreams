@@ -65,7 +65,6 @@ public class GetPendingGroupsExecutionStrategyTest
     @Test
     public void testExecute()
     {
-        final String orgShortName = "abcdefg";
         final Integer startIndex = 324;
         final Integer endIndex = 898;
 
@@ -75,8 +74,8 @@ public class GetPendingGroupsExecutionStrategyTest
         {
             {
                 oneOf(actionMapper).execute(
-                        with(IsEqualInternally.equalInternally(new GetPendingDomainGroupsForOrgRequest(orgShortName,
-                                startIndex, endIndex))));
+                        with(IsEqualInternally.equalInternally(new GetPendingDomainGroupsForOrgRequest(startIndex,
+                                endIndex))));
                 will(returnValue(expectedReturnValue));
             }
         });
@@ -96,7 +95,7 @@ public class GetPendingGroupsExecutionStrategyTest
             @Override
             public GetPendingGroupsRequest getParams()
             {
-                return new GetPendingGroupsRequest(orgShortName, startIndex, endIndex);
+                return new GetPendingGroupsRequest(startIndex, endIndex);
             }
 
             /**

@@ -281,8 +281,7 @@
          <constructor-arg ref="createPersonActionFactory" />
          <constructor-arg ref="jpaPersonMapper" />
          <!-- email action ref -->
-         <constructor-arg value="sendWelcomeEmail"/> 
-         <constructor-arg ref="findByIdMapper"/>            
+         <constructor-arg value="sendWelcomeEmail"/>             
     </bean>    
     
     <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
@@ -355,16 +354,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>    
-    
-    <bean id="increaseOrgEmployeeCountAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.IncreaseOrgEmployeeCountExecution">
-                <constructor-arg ref="increaseOrgEmployeeCount" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
     
     <bean id="sendWelcomeEmail" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />

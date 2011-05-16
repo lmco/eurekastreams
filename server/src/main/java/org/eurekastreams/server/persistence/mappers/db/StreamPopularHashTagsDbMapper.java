@@ -50,7 +50,7 @@ public class StreamPopularHashTagsDbMapper extends
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPopularHashTagWindowInHours
      *            number of hours to look for popular hashtags
      * @param inMaxNumberOfPopularHashTags
@@ -64,8 +64,8 @@ public class StreamPopularHashTagsDbMapper extends
     }
 
     /**
-     * Get the popular hashtags for the input Group/Person/Organization stream.
-     *
+     * Get the popular hashtags for the input Group/Person stream.
+     * 
      * @param inRequest
      *            type of stream and unique key of the entity stream to fetch hashtags for
      * @return the list of popular hashtags

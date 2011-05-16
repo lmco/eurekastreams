@@ -31,7 +31,6 @@ import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -234,20 +233,6 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
         final List<HashTag> hashTags = new ArrayList<HashTag>();
         hashTags.add(new HashTag("#there"));
         hashTags.add(new HashTag("#potato"));
-
-        final List<OrganizationModelView> orgModelViews = new ArrayList<OrganizationModelView>();
-        OrganizationModelView org1 = new OrganizationModelView();
-        OrganizationModelView org2 = new OrganizationModelView();
-        OrganizationModelView org3 = new OrganizationModelView();
-        OrganizationModelView org4 = new OrganizationModelView();
-        orgModelViews.add(org1);
-        orgModelViews.add(org2);
-        orgModelViews.add(org3);
-        orgModelViews.add(org4);
-        org1.setShortName("foo");
-        org2.setShortName("bar");
-        org2.setShortName("potato");
-        org2.setShortName("carrot");
 
         context.checking(new Expectations()
         {

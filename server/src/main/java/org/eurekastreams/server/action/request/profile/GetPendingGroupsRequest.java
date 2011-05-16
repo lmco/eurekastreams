@@ -30,17 +30,12 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
     private static final long serialVersionUID = -7937312321476475458L;
 
     /**
-     * The organization short name.
-     */
-    private String organizationShortName;
-
-    /**
-     * The start index for the pending groups in the organization.
+     * The start index for the pending groups.
      */
     private Integer startIndex;
 
     /**
-     * The end index for the pending groups in the organization.
+     * The end index for the pending groups.
      */
     private Integer endIndex;
 
@@ -53,47 +48,21 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
 
     /**
      * Constructor.
-     *
-     * @param inOrganizationShortName
-     *            the short name to get pending groups
+     * 
      * @param inStartIndex
      *            the starting index of the pending groups from the org
      * @param inEndIndex
      *            the ending index of the pending groups from the org
      */
-    public GetPendingGroupsRequest(final String inOrganizationShortName, final Integer inStartIndex,
-            final Integer inEndIndex)
+    public GetPendingGroupsRequest(final Integer inStartIndex, final Integer inEndIndex)
     {
-        super();
-        organizationShortName = inOrganizationShortName;
         startIndex = inStartIndex;
         endIndex = inEndIndex;
     }
 
     /**
-     * Get the organization short name.
-     *
-     * @return the organization short name to get pending groups for.
-     */
-    public String getOrganizationShortName()
-    {
-        return organizationShortName;
-    }
-
-    /**
-     * Set the organization short name.
-     *
-     * @param inOrganizationShortName
-     *            the short name of the org to fetch
-     */
-    public void setOrganizationShortName(final String inOrganizationShortName)
-    {
-        organizationShortName = inOrganizationShortName;
-    }
-
-    /**
      * Get the start index for the pending groups in the organization.
-     *
+     * 
      * @return the start index for the pending groups in the organization
      */
     public Integer getStartIndex()
@@ -103,7 +72,7 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
 
     /**
      * Set the start index for the pending groups in the organization.
-     *
+     * 
      * @param inStartIndex
      *            the start index for the pending groups in the organization.
      */
@@ -114,7 +83,7 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
 
     /**
      * Get the end index for the pending groups in the organization.
-     *
+     * 
      * @return the end index for the pending groups in the organization.
      */
     public Integer getEndIndex()
@@ -124,7 +93,7 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
 
     /**
      * Set the end index for the pending groups in the organization.
-     *
+     * 
      * @param inEndIndex
      *            the end index for the pending groups in the organization.
      */

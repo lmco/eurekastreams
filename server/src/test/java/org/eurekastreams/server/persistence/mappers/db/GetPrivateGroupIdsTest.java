@@ -24,19 +24,28 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test fixture for GetPrivateGroupIdsUnderOrganizations.
+ * Test fixture for GetPrivateGroupIds.
  */
-public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
+public class GetPrivateGroupIdsTest extends MapperTest
 {
     /**
      * System under test.
      */
-    @Autowired
-    private GetPrivateGroupIdsUnderOrganizations sut;
+    private GetPrivateGroupIds sut;
+
+    /**
+     * Setup.
+     */
+    @Before
+    public void setup()
+    {
+        sut = new GetPrivateGroupIds();
+        sut.setEntityManager(getEntityManager());
+    }
 
     /**
      * Test execute() with no org ids.
@@ -54,7 +63,7 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
     public void testExecuteWithOrgsHavingAllPublicGroups()
     {
         final Long rootOrgId = 5L;
-        final Set<Long> groupIds = sut.execute(Collections.singleton(rootOrgId));
+        final Set<Long> groupIds = sut.execute(null);
         assertEquals(0, groupIds.size());
     }
 
@@ -68,7 +77,7 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
 
         final Long rootOrgId = 5L;
         final Long privateGroupId = 5L;
-        final Set<Long> groupIds = sut.execute(Collections.singleton(rootOrgId));
+        final Set<Long> groupIds = sut.execute(null);
         assertEquals(Collections.singleton(privateGroupId), groupIds);
     }
 
@@ -82,7 +91,7 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
         getEntityManager().createQuery("UPDATE DomainGroup set publicGroup=false WHERE id IN(3,5,7)").executeUpdate();
 
         // execute sut
-        final Set<Long> groupIds = sut.execute(new HashSet<Long>());
+        final Set<Long> groupIds = sut.execute(null);
 
         // assert we got back 3,5,7
         assertEquals(3, groupIds.size());

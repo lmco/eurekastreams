@@ -44,7 +44,7 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActionMapper
      *            injecting the ActionMapper.
      */
@@ -54,11 +54,11 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
     }
 
     /**
-     * Executor for getting pending groups for an organization.
-     *
+     * Executor for getting pending groups.
+     * 
      * @param inActionContext
      *            the action context
-     * @return the pending groups for the org short name
+     * @return the pending groups
      */
     @Override
     public Serializable execute(final ActionContext inActionContext)
@@ -66,14 +66,13 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
         GetPendingGroupsRequest actionRequest = (GetPendingGroupsRequest) inActionContext.getParams();
 
         GetPendingDomainGroupsForOrgRequest request = new GetPendingDomainGroupsForOrgRequest(actionRequest
-                .getOrganizationShortName(), actionRequest.getStartIndex(), actionRequest.getEndIndex());
+                .getStartIndex(), actionRequest.getEndIndex());
 
         PagedSet<DomainGroupModelView> pendingGroups = actionMapper.execute(request);
 
         if (log.isTraceEnabled())
         {
-            log.trace("Found " + pendingGroups.getTotal() + " Pending Groups for org "
-                    + actionRequest.getOrganizationShortName());
+            log.trace("Found " + pendingGroups.getTotal() + " Pending Groups.");
         }
 
         return pendingGroups;

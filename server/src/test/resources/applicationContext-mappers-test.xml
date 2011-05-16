@@ -6,8 +6,6 @@
       http://www.springframework.org/schema/tx
       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_PARENTS_RECURSIVE" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-
 	<bean id="getPrivateGroupIdsCoordinatedByPerson" 
 		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson"/>
 		
@@ -217,8 +215,8 @@
 	<bean id="getTutorialVideosDbMapper" 
         class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideosDbMapper"/>
         
-    <bean id="getPrivateGroupIdsUnderOrganizationsFromDB" 
-    	class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations"/>
+    <bean id="getPrivateGroupIdsFromDB" 
+    	class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIds"/>
        
 	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
@@ -435,11 +433,6 @@
 
 	<bean id="getRequestsForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup" />
 	
-	<bean id="increaseOrgEmployeeCount" class="org.eurekastreams.server.persistence.mappers.db.IncreaseOrgEmployeeCount" />
-	
 	<bean id="getGadgetsByGadgetDefAndConsumerKey" class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetsByGadgetDefAndConsumerKey" />
-
-	<bean id="getOrgShortNamesByIdsMapper"
-		class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
 
 </beans>

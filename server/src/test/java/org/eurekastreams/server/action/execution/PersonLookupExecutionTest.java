@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.PersonLookupRequest;
-import org.eurekastreams.server.domain.OrganizationChild;
+import org.eurekastreams.server.domain.Person;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -91,7 +91,7 @@ public class PersonLookupExecutionTest
     public final void testPerformAction()
     {
 
-        final List<OrganizationChild> people = new ArrayList<OrganizationChild>();
+        final List<Person> people = new ArrayList<Person>();
 
         context.checking(new Expectations()
         {

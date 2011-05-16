@@ -152,14 +152,6 @@
 	<StreamScope id="101" scopeType="RESOURCE" uniqueKey="http://foo.foo.com/foo.html" version="1" destinationEntityId="102" />
 	<StreamScope id="102" scopeType="RESOURCE" uniqueKey="http://foo.com/foo.html" version="1" destinationEntityId="101" />	
 	
-	<Organization id="5" version="1" description="Mission Statement"
-		name="Test Organization Name" allUsersCanCreateGroups="true"
-		shortName="tstorgname" url="http://www.TestOrganizationName.com"
-		childOrganizationCount="2" descendantGroupCount="5"
-		descendantEmployeeCount="2" employeeFollowerCount="0" bannerId="Foo"
-		updatesCount="6" streamScopeId="837433" />
-
-
 	<!-- **************************************** -->
 	<!-- Ford Prefect - Tab Group with three tabs -->
 	<Person id="42" version="1117" accountId="fordp" firstName="Ford"
@@ -270,8 +262,6 @@
     <Background_Skills Background_Id="1099" skillsIndex="0" BackgroundItem_Id="999923" />
     <Background_Skills Background_Id="1099" skillsIndex="1" BackgroundItem_Id="122" />
         
-	<Organization_Capability OrganizationId="5" capabilityId="130" />
-
 	<Job id="2042" personId="42" version="1117" companyName="Example"
 		industry="Aerospace" title="Engineer" datefrom="2008-01-01 12:00:00.000"
 		dateTo="2009-01-01 12:00:00.000" description="this that and the other thing" />

@@ -21,10 +21,6 @@ package org.eurekastreams.server.persistence.mappers.requests;
  */
 public class GetPendingDomainGroupsForOrgRequest
 {
-    /**
-     * org short name.
-     */
-    private String orgShortName;
 
     /**
      * page Start.
@@ -39,36 +35,15 @@ public class GetPendingDomainGroupsForOrgRequest
     /**
      * Constructor.
      * 
-     * @param inOrgShortName
-     *            Organization Short Name.
      * @param inPageStart
      *            Paging Start Number.
      * @param inMaxResults
      *            Max reults to return.
      */
-    public GetPendingDomainGroupsForOrgRequest(final String inOrgShortName, final int inPageStart,
-            final int inMaxResults)
+    public GetPendingDomainGroupsForOrgRequest(final int inPageStart, final int inMaxResults)
     {
-        orgShortName = inOrgShortName;
         pageStart = inPageStart;
         maxResults = inMaxResults;
-    }
-
-    /**
-     * @return the orgShortName
-     */
-    public String getOrgShortName()
-    {
-        return orgShortName;
-    }
-
-    /**
-     * @param inOrgShortName
-     *            the orgShortName to set
-     */
-    public void setOrgShortName(final String inOrgShortName)
-    {
-        orgShortName = inOrgShortName;
     }
 
     /**

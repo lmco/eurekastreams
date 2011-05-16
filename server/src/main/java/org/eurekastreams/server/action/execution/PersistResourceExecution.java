@@ -120,7 +120,7 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
                 }
             }
 
-            // get the organization to persist
+            // get the resource to persist
             T resource = persistenceStrategy.get(inActionContext, newFields);
 
             // set the properties on the resource

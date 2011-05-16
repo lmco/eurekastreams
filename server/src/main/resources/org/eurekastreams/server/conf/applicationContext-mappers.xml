@@ -36,6 +36,8 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	
+	<bean id="clearActivityStreamSearchStringCacheOnGroupUpdate" class="org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate" />
+	
 	<!-- ========== CACHE KEYS ========== -->
 	
 	<util:constant id="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
@@ -74,7 +76,7 @@
 	<!-- ****  **** -->
 
 	<!--
-		Wire up the entity updaters for person, domain group, organization -
+		Wire up the entity updaters for person, domain group -
 		handles onPostUpdate, onPostPersist
 	-->
 	<bean
@@ -163,10 +165,6 @@
 	</bean>
 
 	<bean
-		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_TREE_DTO" 
-		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-
-	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_SECURITY_BY_ID"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 		
@@ -203,26 +201,6 @@
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" /> 
         
     <bean
-        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_BY_ID"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />        
-        
-    <bean
-        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_BY_SHORT_NAME"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-        
-    <bean
-        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_PARENTS_RECURSIVE"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
-        
-    <bean
-        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />   
-                
-    <bean
-        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_COORDINATORS_BY_ORG_ID"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                            
-        
-    <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_GROUP"
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />    
                 
@@ -241,9 +219,6 @@
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
-	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE"
-		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-		
 	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.EVERYONE_ACTIVITY_IDS"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
@@ -1543,8 +1518,8 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="getPrivateGroupIdsUnderOrganizationsFromDB"
-		class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations" />
+	<bean id="getPrivateGroupIdsFromDB"
+		class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIds" />
 
 	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
@@ -1764,19 +1739,6 @@
 	
 	<bean id="getPrivateGroupIdsCoordinatedByPersonMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson" />
-
-	<!-- TODO: rename this bean -->
-	<bean id="clearActivityStreamSearchStringCacheOnGroupUpdate"
-		class="org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
-	<!-- TODO: rename this bean -->
-	<bean id="clearActivityStreamSearchStringCacheOnOrgUpdate"
-		class="org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate">
-		<constructor-arg ref="getSystemAdministratorIds" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
 
 	<bean id="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser">
@@ -2129,12 +2091,6 @@
 	<bean id="setPersonLockedStatus"
 		class="org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus" />
 
-	<bean id="increaseOrgEmployeeCount"
-		class="org.eurekastreams.server.persistence.mappers.db.IncreaseOrgEmployeeCount" />
-		
-	<bean id="getOrgShortNamesByIdsMapper"
-		class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
-		
 	<bean id="getReadOnlyStreamsDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper" />
     

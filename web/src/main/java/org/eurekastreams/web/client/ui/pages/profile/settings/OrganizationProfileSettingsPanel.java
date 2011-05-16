@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -81,7 +80,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
         Set<PersonModelView> coordinatorList = new HashSet<PersonModelView>(); // coordinators should be passed into
         // this set
         form.addFormElement(new PersonModelViewLookupFormElement("Organization Coordinators", "Add Coordinator",
-                coordinstructions, OrganizationModelView.COORDINATORS_KEY, coordinatorList, true));
+                coordinstructions, "macaroni salad", coordinatorList, true));
 
         form.addFormDivider();
 
@@ -98,7 +97,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
         // form.addFormDivider();
 
         BasicCheckBoxFormElement groupCreationPolicy = new BasicCheckBoxFormElement("New Group Moderation",
-                OrganizationModelView.ALLOW_GROUP_CREATION_KEY, "Enable Moderation.",
+                "potato salad", "Enable Moderation.",
                 "By enabling moderation, organization coordinators will be required to review new group requests.  "
                         + "Groups pending approval will be listed under the admin tab of your organization's profile.",
                 false, true);

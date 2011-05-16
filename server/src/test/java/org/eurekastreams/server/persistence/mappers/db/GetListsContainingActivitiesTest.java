@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.jmock.Mockery;
@@ -60,11 +59,6 @@ public class GetListsContainingActivitiesTest extends MapperTest
     @Test
     public void testExecute()
     {
-        final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper = new GetOrgShortNamesByIdsMapper();
-        orgShortNamesFromIdsMapper.setEntityManager(getEntityManager());
-
-        final DomainMapper<Long, List<Long>> parentOrgIdsMapper = context.mock(DomainMapper.class);
-
         final List<Long> parentOrgIds = new ArrayList<Long>();
         parentOrgIds.add(5L);
 

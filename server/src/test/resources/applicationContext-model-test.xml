@@ -104,8 +104,6 @@
 		<constructor-arg ref="queryOptimizer" />
 	</bean>
 	
-    <bean id="getOrganizationProxyById" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationProxyById" />
-    
     <bean id="getPersonIdsByLockedStatus" class="org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus" />
     
     <bean id="setPersonLockedStatus" class="org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus" />	

@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,22 +26,23 @@ import org.eurekastreams.server.persistence.mappers.ReadMapper;
 /**
  * Get a list of all private group ids under a collection of organizations.
  */
-public class GetPrivateGroupIdsUnderOrganizations extends ReadMapper<Collection<Long>, Set<Long>>
+public class GetPrivateGroupIds extends ReadMapper<Serializable, Set<Long>>
 {
     /**
-     * Get all private group ids - ignore the input.
+     * Get all private group ids.
      * 
-     * @param inOrgIds
-     *            the org ids to look for private groups under
-     * @return a set of group ids that directly report under
+     * @param ignored
+     *            ignored
+     * @return a set of group ids
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Set<Long> execute(final Collection<Long> inOrgIds)
+    public Set<Long> execute(final Serializable ignored)
     {
         HashSet<Long> groupIds = new HashSet<Long>();
         Query q = getEntityManager().createQuery("SELECT id FROM DomainGroup WHERE publicGroup = false");
         groupIds.addAll(q.getResultList());
         return groupIds;
     }
+
 }

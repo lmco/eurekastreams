@@ -20,17 +20,15 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shindig.social.opensocial.model.Organization;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.CreatePersonActionFactory;
 import org.eurekastreams.server.action.execution.PersistResourceExecution;
 import org.eurekastreams.server.action.request.CreatePersonRequest;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -67,11 +65,6 @@ public class CreatePersonExecutionTest
     private PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
-     * Mapper to find org by id.
-     */
-    private FindByIdMapper<Organization> findByIdMapper = context.mock(FindByIdMapper.class);
-
-    /**
      * {@link TaskHandlerActionContext}.
      */
     private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
@@ -104,8 +97,7 @@ public class CreatePersonExecutionTest
     /**
      * System under test.
      */
-    private CreatePersonExecution sut = new CreatePersonExecution(createPersonActionFactory, personMapper, "emailKey",
-            findByIdMapper);
+    private CreatePersonExecution sut = new CreatePersonExecution(createPersonActionFactory, personMapper, "emailKey");
 
     /**
      * Test.
@@ -129,9 +121,6 @@ public class CreatePersonExecutionTest
                 allowing(person).getAccountId();
 
                 allowing(person).getProperties();
-
-                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
                         with(any(UpdaterStrategy.class)));
@@ -181,9 +170,6 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties();
 
-                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(organization));
-
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
                         with(any(UpdaterStrategy.class)));
                 will(returnValue(persistResourceExecution));
@@ -209,8 +195,7 @@ public class CreatePersonExecutionTest
     @Test
     public void testNullEmailActionKey()
     {
-        CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, null,
-                findByIdMapper);
+        CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, null);
 
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
@@ -228,9 +213,6 @@ public class CreatePersonExecutionTest
                 allowing(person).getAccountId();
 
                 allowing(person).getProperties();
-
-                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
                         with(any(UpdaterStrategy.class)));
@@ -257,8 +239,7 @@ public class CreatePersonExecutionTest
     @Test
     public void testEmptyEmailActionKey()
     {
-        CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, "",
-                findByIdMapper);
+        CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, "");
 
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
@@ -276,9 +257,6 @@ public class CreatePersonExecutionTest
                 allowing(person).getAccountId();
 
                 allowing(person).getProperties();
-
-                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
                         with(any(UpdaterStrategy.class)));
