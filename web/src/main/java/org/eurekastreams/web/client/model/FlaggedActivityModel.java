@@ -54,15 +54,13 @@ public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlag
      */
     public void fetch(final GetFlaggedActivitiesRequest inRequest, final boolean inUseClientCacheIfAvailable)
     {
-        super.callReadAction("getFlaggedActivitiesForOrganization", inRequest,
-                new OnSuccessCommand<PagedSet<ActivityDTO>>()
-                {
-                    public void onSuccess(final PagedSet<ActivityDTO> response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotFlaggedActivitiesResponseEvent(response));
-                    }
-                }, inUseClientCacheIfAvailable);
+        super.callReadAction("getFlaggedActivities", inRequest, new OnSuccessCommand<PagedSet<ActivityDTO>>()
+        {
+            public void onSuccess(final PagedSet<ActivityDTO> response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotFlaggedActivitiesResponseEvent(response));
+            }
+        }, inUseClientCacheIfAvailable);
     }
 
     /**

@@ -73,7 +73,6 @@ public class UpdateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "http://www.google.com");
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
@@ -115,7 +114,6 @@ public class UpdateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "http://www.google.com");
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
@@ -156,7 +154,6 @@ public class UpdateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "www.google.com");
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH + 1));
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper

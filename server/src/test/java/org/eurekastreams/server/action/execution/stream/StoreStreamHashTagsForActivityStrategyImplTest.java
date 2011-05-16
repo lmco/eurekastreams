@@ -104,7 +104,7 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
                 will(returnValue(streamScope));
 
                 oneOf(streamScope).getScopeType();
-                will(returnValue(ScopeType.ORGANIZATION));
+                will(returnValue(ScopeType.ALL));
             }
         });
 

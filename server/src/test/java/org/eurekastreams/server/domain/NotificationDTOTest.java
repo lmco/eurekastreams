@@ -33,7 +33,7 @@ public class NotificationDTOTest
 {
     /**
      * Tests the copy constructor.
-     *
+     * 
      * @throws IllegalAccessException
      *             Possibly.
      * @throws IllegalArgumentException
@@ -44,13 +44,13 @@ public class NotificationDTOTest
     {
         // build fully non-null source
         NotificationDTO dto1 = new NotificationDTO(Collections.singletonList(8L),
-                NotificationType.COMMENT_TO_SAVED_POST, 7L, 6L, EntityType.ORGANIZATION, 5L);
+                NotificationType.COMMENT_TO_SAVED_POST, 7L, 6L, EntityType.GROUP, 5L);
         dto1.setActorAccountId("jdoe");
         dto1.setActorName("John Doe");
         dto1.setAuxiliary(EntityType.GROUP, "group1", "First Group");
         dto1.setActivityType(BaseObjectType.FILE);
-        dto1.setDestinationName("Organization");
-        dto1.setDestinationUniqueId("org");
+        dto1.setDestinationName("Group");
+        dto1.setDestinationUniqueId("group");
 
         // insure no fields are null, otherwise when we compare fields of the DTOs and found null == null, we wouldn't
         // know if it was copied or if that was just the default value of dto2.
@@ -59,8 +59,7 @@ public class NotificationDTOTest
             field.setAccessible(true);
             Object value = field.get(dto1);
             assertNotNull("Field " + field.getName()
-                    + " is null.  All fields of original DTO need to be non-null for the test to be meaningful.",
-                    value);
+                    + " is null.  All fields of original DTO need to be non-null for the test to be meaningful.", value);
         }
 
         // clone

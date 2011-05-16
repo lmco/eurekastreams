@@ -33,12 +33,8 @@ public class DomainConversionUtilityTest
     {
         assertEquals(EntityType.NOTSET, DomainConversionUtility.convertToEntityType(ScopeType.ALL));
         assertEquals(EntityType.PERSON, DomainConversionUtility.convertToEntityType(ScopeType.PERSON));
-        assertEquals(EntityType.ORGANIZATION, DomainConversionUtility.convertToEntityType(ScopeType.ORGANIZATION));
         assertEquals(EntityType.GROUP, DomainConversionUtility.convertToEntityType(ScopeType.GROUP));
-        assertEquals(EntityType.ORGANIZATION,
-                DomainConversionUtility.convertToEntityType(ScopeType.PERSONS_PARENT_ORGANIZATION));
-        assertEquals(EntityType.NOTSET,
-                DomainConversionUtility.convertToEntityType(ScopeType.PERSONS_FOLLOWED_STREAMS));
+        assertEquals(EntityType.NOTSET, DomainConversionUtility.convertToEntityType(ScopeType.PERSONS_FOLLOWED_STREAMS));
         assertEquals(EntityType.NOTSET, DomainConversionUtility.convertToEntityType(ScopeType.STARRED));
         assertEquals(EntityType.RESOURCE, DomainConversionUtility.convertToEntityType(ScopeType.RESOURCE));
     }

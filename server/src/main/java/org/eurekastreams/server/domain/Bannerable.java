@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  * Bannerable interface for Entities that want to support Banners.
- *
+ * 
  */
 public interface Bannerable extends Serializable
 {
@@ -37,18 +37,18 @@ public interface Bannerable extends Serializable
     void setBannerId(final String inBannerId);
 
     /**
-     * Set the EntityId associated with the current banner id.  Since the
-     * banner id can be owned by a parent organization, the entity id is
-     * needed to provide the context for the settings page.
-     * @param inBannerEntityId - long id of the entity that owns the currently
-     * set banner id.
+     * Set the EntityId associated with the current banner id. The entity id is needed to provide the context for the
+     * settings page.
+     * 
+     * @param inBannerEntityId
+     *            - long id of the entity that owns the currently set banner id.
      */
     void setBannerEntityId(final Long inBannerEntityId);
 
     /**
-     * Retrieve the EntityId associated with the current banner id. Since the
-     * banner id can be owned by a parent organization, the entity id is
-     * needed to provide the context for the settings page.
+     * Retrieve the EntityId associated with the current banner id. The entity id is needed to provide the context for
+     * the settings page.
+     * 
      * @return long id of the entity that owns the currently set banner id.
      */
     Long getBannerEntityId();

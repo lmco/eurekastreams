@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shindig.social.opensocial.model.Organization;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -83,11 +82,6 @@ public class CreatePersonExecutionTest
      * {@link Person}.
      */
     private Person person = context.mock(Person.class);
-
-    /**
-     * {@link Organization}.
-     */
-    private Organization organization = context.mock(Organization.class);
 
     /**
      * Org id used in test.

@@ -152,7 +152,7 @@ public class CanCommentFilterTest
                 will(returnValue(streamMock));
 
                 allowing(streamMock).getType();
-                will(returnValue(EntityType.ORGANIZATION));
+                will(returnValue(EntityType.APPLICATION));
             }
         });
 

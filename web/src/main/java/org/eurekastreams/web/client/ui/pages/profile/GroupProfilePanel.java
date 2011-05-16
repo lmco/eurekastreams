@@ -257,8 +257,7 @@ public class GroupProfilePanel extends FlowPanel
         members = group.getFollowersCount();
 
         // Update the Profile summary
-        about.setGroup(inGroup.getName(), inGroup.getId(), inGroup.getAvatarId(), inGroup.getUrl(), inGroup
-                .getDescription());
+        about.setGroup(inGroup.getName(), inGroup.getId(), inGroup.getAvatarId(), inGroup.getDescription());
         connectionsPanel = new ConnectionsPanel();
         connectionsPanel.addConnection("Members", null, group.getFollowersCount());
 

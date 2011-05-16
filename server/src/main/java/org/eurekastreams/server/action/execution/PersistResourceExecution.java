@@ -126,7 +126,7 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
             // set the properties on the resource
             updater.setProperties(resource, newFields);
 
-            // persist the organization
+            // persist
             persistenceStrategy.persist(inActionContext, newFields, resource);
 
             return (Serializable) resource;

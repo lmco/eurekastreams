@@ -31,8 +31,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 /**
  * Mapper that gets the flagged activities pertaining to an org.
  */
-public class GetFlaggedActivities extends
-        BaseArgDomainMapper<GetFlaggedActivitiesRequest, PagedSet<ActivityDTO>>
+public class GetFlaggedActivities extends BaseArgDomainMapper<GetFlaggedActivitiesRequest, PagedSet<ActivityDTO>>
 {
     /**
      * Log.
@@ -56,10 +55,10 @@ public class GetFlaggedActivities extends
     }
 
     /**
-     * Get all flagged activities posted directly under an organization.
+     * Get all flagged activities.
      * 
      * @param inRequest
-     *            the request containing the organization and requesting user
+     *            the request containing the start and end index
      * @return a paged set of ActivityDTOs
      */
     @Override

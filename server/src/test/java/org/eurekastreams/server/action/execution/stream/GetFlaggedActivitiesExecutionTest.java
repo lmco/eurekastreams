@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests GetFlaggedActivitiesForOrganizationExecution.
+ * Tests GetFlaggedActivitiesExecution.
  */
 public class GetFlaggedActivitiesExecutionTest
 {

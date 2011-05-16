@@ -25,8 +25,7 @@ import org.eurekastreams.server.action.authorization.CoordinatorAccessAuthorizer
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * Mapper to get a Set of IDs of all of the organizations recursively above the input org id, loading from cache if
- * possible, from DB if not, then populating the cache.
+ * Mapper to get a all person ids who have group coordinator access.
  */
 public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements CoordinatorAccessAuthorizer<Long, Long>
 {

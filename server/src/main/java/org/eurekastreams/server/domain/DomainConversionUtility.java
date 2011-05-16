@@ -42,9 +42,6 @@ public final class DomainConversionUtility
         {
         case PERSON:
             return EntityType.PERSON;
-        case PERSONS_PARENT_ORGANIZATION:
-        case ORGANIZATION:
-            return EntityType.ORGANIZATION;
         case GROUP:
             return EntityType.GROUP;
         case RESOURCE:

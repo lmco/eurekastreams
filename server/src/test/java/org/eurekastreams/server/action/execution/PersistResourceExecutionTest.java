@@ -23,7 +23,6 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.apache.shindig.social.opensocial.model.Organization;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -67,7 +66,7 @@ public class PersistResourceExecutionTest
     /**
      * The subject under test.
      */
-    private PersistResourceExecution<Organization> sut;
+    private PersistResourceExecution<DomainGroup> sut;
 
     /**
      * Mocked user information in the session.
@@ -88,7 +87,7 @@ public class PersistResourceExecutionTest
     /**
      * Mocked user information in the session.
      */
-    private ResourcePersistenceStrategy<Organization> persistStrategyMock = context
+    private ResourcePersistenceStrategy<DomainGroup> persistStrategyMock = context
             .mock(ResourcePersistenceStrategy.class);
 
     /**
@@ -102,8 +101,7 @@ public class PersistResourceExecutionTest
     @Before
     public void setup()
     {
-        sut = new PersistResourceExecution<Organization>(personMapperMock, factoryMock, updaterMock,
-                persistStrategyMock);
+        sut = new PersistResourceExecution<DomainGroup>(personMapperMock, factoryMock, updaterMock, persistStrategyMock);
 
         context.checking(new Expectations()
         {
@@ -115,7 +113,7 @@ public class PersistResourceExecutionTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build DomainGroup based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected
@@ -152,7 +150,7 @@ public class PersistResourceExecutionTest
                 will(returnValue(newGroup));
 
                 oneOf(persistStrategyMock).persist(with(taskHandlerActionContext), with(any(HashMap.class)),
-                        with(any(Organization.class)));
+                        with(any(DomainGroup.class)));
                 oneOf(updaterMock).setProperties(with(newGroup), with(any(HashMap.class)));
 
             }
@@ -172,7 +170,7 @@ public class PersistResourceExecutionTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build a group based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected
@@ -217,7 +215,7 @@ public class PersistResourceExecutionTest
                 will(returnValue(coordinatorMock));
 
                 oneOf(persistStrategyMock).persist(with(taskHandlerActionContext), with(any(HashMap.class)),
-                        with(any(Organization.class)));
+                        with(any(DomainGroup.class)));
                 oneOf(updaterMock).setProperties(with(any(Object.class)), with(any(HashMap.class)));
             }
         });

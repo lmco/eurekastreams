@@ -43,7 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for the CreateOrganizationAction.
+ * Test for the GroupUpdater.
  */
 public class GroupUpdaterTest
 {
@@ -152,7 +152,7 @@ public class GroupUpdaterTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build a group based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected
@@ -185,7 +185,7 @@ public class GroupUpdaterTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build a group based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected
@@ -284,7 +284,7 @@ public class GroupUpdaterTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build a group based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected

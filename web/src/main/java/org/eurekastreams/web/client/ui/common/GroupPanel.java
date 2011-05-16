@@ -72,26 +72,18 @@ public class GroupPanel extends FlowPanel
         }
 
         Widget name;
-        Widget org;
         if (makeLinkable)
         {
-            String nameUrl = Session.getInstance().generateUrl(
-                    new CreateUrlRequest(Page.GROUPS, group.getShortName()));
-            String orgUrl = Session.getInstance().generateUrl(
-                    new CreateUrlRequest(Page.ORGANIZATIONS, group.getParentOrganizationShortName()));
+            String nameUrl = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, group.getShortName()));
             name = new Hyperlink(group.getName(), nameUrl);
-            org = new Hyperlink(group.getParentOrganizationName(), orgUrl);
         }
         else
         {
             name = new Label(group.getName());
-            org = new Label(group.getParentOrganizationName());
         }
         name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
-        org.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemOrganization());
 
         infoPanel.add(name);
-        infoPanel.add(org);
 
         if (showDescription)
         {

@@ -56,9 +56,9 @@ public class DirectorySearchLuceneQueryBuilder
     }
 
     /**
-     * Modify the input search string mask, boosting a field if requested, scoping the search to a parent organization
-     * id if requested, and passing in a userId clause that will add the ability to fetch private groups that the
-     * current user is a follower or coordinator for.
+     * Modify the input search string mask, boosting a field if requested, scoping to id if requested, and passing in a
+     * userId clause that will add the ability to fetch private groups that the current user is a follower or
+     * coordinator for.
      * 
      * @param searchText
      *            the search term the user entered, already escaped to prevent query-injection

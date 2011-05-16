@@ -20,7 +20,7 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 
 /**
- * Retrieves parent organization of group.
+ * Gets stream scope and whether a destination stream is public.
  */
 public class GroupRecipientRetriever implements RecipientRetriever
 {

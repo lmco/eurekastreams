@@ -67,7 +67,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
     private PersonMapper jpaPersonMapper;
 
     /**
-     * JpaOrganizationMapper.
+     * JpaGroupMapper.
      */
     @Autowired
     private TabGroupMapper jpaTabGroupMapper;

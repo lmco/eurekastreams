@@ -72,11 +72,11 @@ public class GetFlaggedActivitiesExecution implements ExecutionStrategy<Principa
     }
 
     /**
-     * Get a paged set of flagged activities directly under an organization.
+     * Get a paged set of flagged activities.
      * 
      * @param inActionContext
      *            the action context having with GetFlaggedActivitiesByOrgRequest param
-     * @return a paged set of flagged activities directly under an organization.
+     * @return a paged set of flagged activities
      */
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext)

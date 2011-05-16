@@ -68,7 +68,7 @@ public class DeleteBannerExecutionTest
             .mock(BaseArgCachedDomainMapper.class);
 
     /**
-     * Mocked organization who will get the new tab.
+     * Mocked domain group who will get the new tab.
      */
     private DomainGroup group = context.mock(DomainGroup.class);
 

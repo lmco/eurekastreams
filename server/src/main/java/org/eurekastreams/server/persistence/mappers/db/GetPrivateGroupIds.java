@@ -24,7 +24,7 @@ import javax.persistence.Query;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
 /**
- * Get a list of all private group ids under a collection of organizations.
+ * Get a list of all private group ids.
  */
 public class GetPrivateGroupIds extends ReadMapper<Serializable, Set<Long>>
 {

@@ -107,25 +107,6 @@ public class StreamPopularHashTagsAuthorizationTest
      * Test authorize for a person stream.
      */
     @Test
-    public void testAuthorizeForOrganizationStream()
-    {
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(actionContext).getParams();
-                will(returnValue(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION, "shortname")));
-            }
-        });
-
-        sut.authorize(actionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test authorize for a person stream.
-     */
-    @Test
     public void testAuthorizeForPublicGroupStream()
     {
         context.checking(new Expectations()

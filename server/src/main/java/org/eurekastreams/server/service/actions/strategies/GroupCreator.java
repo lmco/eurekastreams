@@ -45,7 +45,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
- * Organization Creator.
+ * Group Creator.
  */
 public class GroupCreator extends GroupPersister
 {
@@ -56,17 +56,14 @@ public class GroupCreator extends GroupPersister
     private Log log = LogFactory.make();
 
     /**
-     * Key value for organization shortName.
+     * Key value for group shortName.
      */
     private static final String SHORTNAME_KEY = "shortName";
 
     /**
-     * Message for duplicate organization short name.
+     * Message for duplicate group short name.
      */
     private static final String DUP_SHORTNAME_MSG = "Group short name already present in system.";
-
-    /** Key value for parent organization field. */
-    private static final String PARENT_ORG_KEY = "orgParent";
 
     /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).

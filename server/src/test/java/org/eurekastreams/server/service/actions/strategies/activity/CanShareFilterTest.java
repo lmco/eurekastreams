@@ -223,7 +223,7 @@ public class CanShareFilterTest
                 will(returnValue(destinationStream));
 
                 allowing(destinationStream).getType();
-                will(returnValue(EntityType.ORGANIZATION));
+                will(returnValue(EntityType.APPLICATION));
             }
         });
 

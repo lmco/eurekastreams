@@ -379,7 +379,7 @@ public class PostCachedActivityTest
                 will(returnValue(recipStreamScope));
 
                 allowing(recipStreamScope).getScopeType();
-                will(returnValue(ScopeType.ORGANIZATION));
+                will(returnValue(ScopeType.ALL));
 
                 allowing(recipStreamScope).getUniqueKey();
                 will(returnValue("blah"));

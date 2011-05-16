@@ -48,7 +48,7 @@ import org.junit.Test;
 /**
  * Test fixture for ActivityAuthorizationStrategy.
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings( { "unchecked", "rawtypes" })
 public class ActivityAuthorizationStrategyTest
 {
     /**
@@ -82,8 +82,7 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Groups by shortName DAO.
      */
-    private final GetDomainGroupsByShortNames groupByShortNameDAO = mockContext
-            .mock(GetDomainGroupsByShortNames.class);
+    private final GetDomainGroupsByShortNames groupByShortNameDAO = mockContext.mock(GetDomainGroupsByShortNames.class);
 
     /**
      * Mapper to get the personmodelview by account id.
@@ -128,8 +127,7 @@ public class ActivityAuthorizationStrategyTest
     private final ActorRetrievalStrategy actorRetrievalStrat = mockContext.mock(ActorRetrievalStrategy.class);
 
     /** List of coordinators / members. */
-    private static final List<Long> PERSON_ID_LIST_WITH_ACTOR = Collections
-            .unmodifiableList(Arrays.asList(1L, 5L, 9L));
+    private static final List<Long> PERSON_ID_LIST_WITH_ACTOR = Collections.unmodifiableList(Arrays.asList(1L, 5L, 9L));
 
     /** List of coordinators / members. */
     private static final List<Long> PERSON_ID_LIST_WITHOUT_ACTOR = Collections.unmodifiableList(Arrays.asList(1L, 2L));
@@ -187,7 +185,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Common setup for person tests.
-     *
+     * 
      * @param activityInteractionType
      *            Type of action being taken (post, comment, etc.).
      * @throws Exception
@@ -219,7 +217,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to personal stream by owner.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -242,7 +240,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Common behavior of all personal stream by non-owner tests.
-     *
+     * 
      * @param activityInteractionType
      *            Type of action being performed.
      * @throws Exception
@@ -269,7 +267,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to personal stream by non-owner.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -289,7 +287,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to personal stream by non-owner.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -309,7 +307,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to personal stream by non-owner.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -329,7 +327,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to personal stream by non-owner.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -349,7 +347,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: view personal stream by non-owner.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -359,12 +357,11 @@ public class ActivityAuthorizationStrategyTest
         corePersonalNonOwnerTest(ActivityInteractionType.VIEW);
     }
 
-
     /* -------- Group stream tests -------- */
 
     /**
      * Common setup for group tests.
-     *
+     * 
      * @param activityInteractionType
      *            Type of action being taken (post, comment, etc.).
      * @throws Exception
@@ -407,7 +404,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Common behavior of all public group stream by non-coordinator tests.
-     *
+     * 
      * @param activityInteractionType
      *            Type of action being performed.
      * @throws Exception
@@ -434,7 +431,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to public group, user not coordinator.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -453,7 +450,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to public group, user not coordinator, not postable.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -472,7 +469,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to public group, user not coordinator.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -491,7 +488,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to public group, user not coordinator, not commentable.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -510,7 +507,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to public group, user not coordinator.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -522,7 +519,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: unspecified action to public group, user not coordinator.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -536,7 +533,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to public group, user is coordinator.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -568,7 +565,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Common behavior of all private group stream by member tests.
-     *
+     * 
      * @param activityInteractionType
      *            Type of action being performed.
      * @throws Exception
@@ -598,7 +595,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to private group, user member.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -617,7 +614,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: post to private group, user member, not postable.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -638,7 +635,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to private group, user member.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -658,7 +655,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to private group, user member, not commentable.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -678,7 +675,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to private group, user member.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -693,7 +690,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to private group, user coordinator.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
@@ -719,7 +716,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: comment to private group, user not member.
-     *
+     * 
      * @throws Exception
      *             Should.
      */
@@ -780,7 +777,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: error retrieving actor for personal stream posting.
-     *
+     * 
      * @throws Exception
      *             Should only throw AuthorizationException.
      */
@@ -815,7 +812,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: error retrieving group for group stream posting.
-     *
+     * 
      * @throws Exception
      *             Should only throw AuthorizationException.
      */
@@ -869,7 +866,6 @@ public class ActivityAuthorizationStrategyTest
         mockContext.assertIsSatisfied();
     }
 
-
     /**
      * Test: invalid stream type for activity.
      */
@@ -887,7 +883,7 @@ public class ActivityAuthorizationStrategyTest
                 will(returnValue(streamDTO));
 
                 oneOf(streamDTO).getType();
-                will(returnValue(EntityType.ORGANIZATION));
+                will(returnValue(EntityType.APPLICATION));
             }
         });
 
@@ -897,7 +893,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Test: invalid action type.
-     *
+     * 
      * @throws Exception
      *             Should only throw AuthorizationException.
      */

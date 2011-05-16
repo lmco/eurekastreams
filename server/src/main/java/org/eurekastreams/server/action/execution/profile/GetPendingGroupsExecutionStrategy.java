@@ -28,7 +28,7 @@ import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGro
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * Gets the Pending groups for an organization.
+ * Gets the Pending groups.
  */
 public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<ActionContext>
 {
@@ -65,8 +65,8 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
     {
         GetPendingGroupsRequest actionRequest = (GetPendingGroupsRequest) inActionContext.getParams();
 
-        GetPendingDomainGroupsRequest request = new GetPendingDomainGroupsRequest(actionRequest
-                .getStartIndex(), actionRequest.getEndIndex());
+        GetPendingDomainGroupsRequest request = new GetPendingDomainGroupsRequest(actionRequest.getStartIndex(),
+                actionRequest.getEndIndex());
 
         PagedSet<DomainGroupModelView> pendingGroups = actionMapper.execute(request);
 

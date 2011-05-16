@@ -153,7 +153,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
         // remove public settable properties already handled from map so updater
         // doesn't do them again.
-        inFields.remove("organization");
         inFields.remove("email");
 
         return person;

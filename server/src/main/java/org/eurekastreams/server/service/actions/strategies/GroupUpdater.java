@@ -149,8 +149,6 @@ public class GroupUpdater extends GroupPersister
 
             String creatorUserName = inActionContext.getActionContext().getPrincipal().getAccountId();
 
-            String newParentOrgName = (String) inFields.get(DomainGroupModelView.ORG_PARENT_KEY);
-
             Set<Person> oldCoordinators = (Set<Person>) inFields.get(ORIGINAL_GROUP_COORDINATORS_KEY);
 
             Set<Person> newCoordinators = new HashSet<Person>();

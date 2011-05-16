@@ -31,8 +31,8 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.transform.ResultTransformer;
 
 /**
- * Result transformer that transforms tuples of directory object (person, group, organization) property names and values
- * into ModelViews using cache/db mappers.
+ * Result transformer that transforms tuples of directory object (person, group) property names and values into
+ * ModelViews using cache/db mappers.
  */
 public class CachedModelViewResultTransformer implements ResultTransformer
 {

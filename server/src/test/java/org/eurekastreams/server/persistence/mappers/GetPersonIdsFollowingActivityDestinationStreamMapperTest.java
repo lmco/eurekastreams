@@ -135,7 +135,6 @@ public class GetPersonIdsFollowingActivityDestinationStreamMapperTest
         testActivity.setDestinationStream(testDestinationStream);
 
         DomainGroupModelView testGroupModelView = new DomainGroupModelView();
-        testGroupModelView.setParentOrganizationShortName("orgShortName");
         testGroupModelView.setEntityId(5L);
 
         final List<DomainGroupModelView> testGroupModelViewList = new ArrayList<DomainGroupModelView>();

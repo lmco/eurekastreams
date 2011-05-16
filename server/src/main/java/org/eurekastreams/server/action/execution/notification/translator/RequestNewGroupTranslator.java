@@ -69,7 +69,7 @@ public class RequestNewGroupTranslator implements NotificationTranslator
         List<Long> admins = systemAdminIdsMapper.execute(null);
 
         NotificationDTO notif = new NotificationDTO(admins, NotificationType.REQUEST_NEW_GROUP, inActorId,
-                inDestinationId, EntityType.ORGANIZATION, 0L);
+                inDestinationId, EntityType.NOTSET, 0L);
         notif.setAuxiliary(EntityType.GROUP, group.getShortName(), group.getName());
         return Collections.singletonList(notif);
     }

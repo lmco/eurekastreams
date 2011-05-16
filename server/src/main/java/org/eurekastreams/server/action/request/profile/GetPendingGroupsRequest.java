@@ -50,9 +50,9 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
      * Constructor.
      * 
      * @param inStartIndex
-     *            the starting index of the pending groups from the org
+     *            the starting index of the pending groups
      * @param inEndIndex
-     *            the ending index of the pending groups from the org
+     *            the ending index of the pending groups
      */
     public GetPendingGroupsRequest(final Integer inStartIndex, final Integer inEndIndex)
     {
@@ -61,9 +61,9 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
     }
 
     /**
-     * Get the start index for the pending groups in the organization.
+     * Get the start index for the pending groups.
      * 
-     * @return the start index for the pending groups in the organization
+     * @return the start index for the pending groups
      */
     public Integer getStartIndex()
     {
@@ -71,10 +71,10 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
     }
 
     /**
-     * Set the start index for the pending groups in the organization.
+     * Set the start index for the pending groups.
      * 
      * @param inStartIndex
-     *            the start index for the pending groups in the organization.
+     *            the start index for the pending groups.
      */
     public void setStartIndex(final Integer inStartIndex)
     {
@@ -82,9 +82,9 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
     }
 
     /**
-     * Get the end index for the pending groups in the organization.
+     * Get the end index for the pending groups.
      * 
-     * @return the end index for the pending groups in the organization.
+     * @return the end index for the pending groups.
      */
     public Integer getEndIndex()
     {
@@ -92,10 +92,10 @@ public class GetPendingGroupsRequest implements Serializable, PageableRequest
     }
 
     /**
-     * Set the end index for the pending groups in the organization.
+     * Set the end index for the pending groups.
      * 
      * @param inEndIndex
-     *            the end index for the pending groups in the organization.
+     *            the end index for the pending groups.
      */
     public void setEndIndex(final Integer inEndIndex)
     {
