@@ -216,13 +216,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     private boolean publicGroup;
 
     /**
-     * The url of the group.
-     */
-    @Basic(optional = true)
-    @Pattern(regex = URL_REGEX_PATTERN, message = WEBSITE_MESSAGE)
-    private String url;
-
-    /**
      * Whether the entity allows comments on their post.
      */
     @Basic(optional = false)
@@ -588,23 +581,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public void setPublicGroup(final boolean inPublicGroup)
     {
         publicGroup = inPublicGroup;
-    }
-
-    /**
-     * @return the url
-     */
-    public String getUrl()
-    {
-        return url;
-    }
-
-    /**
-     * @param inUrl
-     *            the url to set
-     */
-    public void setUrl(final String inUrl)
-    {
-        url = inUrl;
     }
 
     /**

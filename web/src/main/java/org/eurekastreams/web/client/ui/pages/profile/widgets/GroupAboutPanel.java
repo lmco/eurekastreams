@@ -55,7 +55,8 @@ public class GroupAboutPanel extends FlowPanel
      * @param inDescription
      *            description.
      */
-    public void setGroup(final String inName, final long inEntityId, final String inAvatarId, final String inDescription)
+    public void setGroup(final String inName, final long inEntityId, final String inAvatarId, // 
+            final String inDescription)
     {
         this.clear();
         AvatarWidget photo = new AvatarWidget(inEntityId, inAvatarId, EntityType.GROUP, //

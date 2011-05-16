@@ -55,7 +55,6 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("avatarCropX"));
         fields.add(getColumn("avatarCropY"));
         fields.add(getColumn("bannerId"));
-        fields.add(getColumn("url"));
         fields.add(getColumn("overview"));
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));

@@ -352,7 +352,7 @@ public class GetFollowersAuthorizationStrategyTest
                 will(returnValue(getFollowersRequest));
 
                 oneOf(getFollowersRequest).getEntityType();
-                will(returnValue(EntityType.GROUP));
+                will(returnValue(EntityType.APPLICATION));
             }
         });
 

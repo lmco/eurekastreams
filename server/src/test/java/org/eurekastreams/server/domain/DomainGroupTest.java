@@ -106,9 +106,6 @@ public class DomainGroupTest
         sut.setPublicGroup(true);
         assertTrue(sut.isPublicGroup());
 
-        sut.setUrl("http://facelift");
-        assertEquals("http://facelift", sut.getUrl());
-
         sut.setPending(true);
         assertTrue(sut.isPending());
 

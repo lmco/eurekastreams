@@ -48,7 +48,7 @@ import org.junit.Test;
 /**
  * Test fixture for ActivityAuthorizationStrategy.
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings( {"unchecked", "rawtypes"})
 public class ActivityAuthorizationStrategyTest
 {
     /**

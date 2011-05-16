@@ -58,8 +58,8 @@ public class NotificationDTOTest
         {
             field.setAccessible(true);
             Object value = field.get(dto1);
-            assertNotNull("Field " + field.getName()
-                    + " is null.  All fields of original DTO need to be non-null for the test to be meaningful.", value);
+            assertNotNull("Field " + field.getName() + " is null.  All fields of original DTO need to be non-null "
+                    + "for the test to be meaningful.", value);
         }
 
         // clone

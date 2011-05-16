@@ -183,8 +183,7 @@ public class UpdateGroupValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertEquals(5, ve.getErrors().size());
-            assertTrue(ve.getErrors().containsValue(DomainGroup.WEBSITE_MESSAGE));
+            assertEquals(4, ve.getErrors().size());
             assertTrue(ve.getErrors().containsValue(DomainGroup.MIN_COORDINATORS_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroupModelView.KEYWORD_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.DESCRIPTION_LENGTH_MESSAGE));

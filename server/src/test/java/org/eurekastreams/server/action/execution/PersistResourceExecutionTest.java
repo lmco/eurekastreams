@@ -101,7 +101,8 @@ public class PersistResourceExecutionTest
     @Before
     public void setup()
     {
-        sut = new PersistResourceExecution<DomainGroup>(personMapperMock, factoryMock, updaterMock, persistStrategyMock);
+        sut = new PersistResourceExecution<DomainGroup>(personMapperMock, // 
+                factoryMock, updaterMock, persistStrategyMock);
 
         context.checking(new Expectations()
         {
