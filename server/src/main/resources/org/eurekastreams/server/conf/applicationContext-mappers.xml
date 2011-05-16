@@ -145,8 +145,8 @@
 		<constructor-arg value="true" />
 	</bean>
 
-	<bean id="getPendingDomainGroupsForOrg"
-		class="org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsForOrg">
+	<bean id="getPendingDomainGroupsMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsMapper">
 		<property name="getPeopleByIdsMapper" ref="getPersonsByIdsMapper" />
 	</bean>
 

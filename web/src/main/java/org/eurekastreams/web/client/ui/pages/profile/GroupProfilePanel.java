@@ -48,7 +48,6 @@ import org.eurekastreams.web.client.model.GroupCoordinatorsModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.GroupModel;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.model.requests.GetGroupCoordinatorsRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
@@ -452,8 +451,6 @@ public class GroupProfilePanel extends FlowPanel
      */
     private void showInvalidGroupMessage()
     {
-        OrganizationModel.getInstance().fetch("", true);
-
         clear();
         Panel errorReport = addNewCenteredErrorBox();
 

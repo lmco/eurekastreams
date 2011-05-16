@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
+import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -34,10 +34,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test the get GetPendingDomainGroupsForOrgTest action mapper.
+ * Test the get GetPendingDomainGroupsTest action mapper.
  * 
  */
-public class GetPendingDomainGroupsForOrgTest extends MapperTest
+public class GetPendingDomainGroupsTest extends MapperTest
 {
 
     /**
@@ -58,13 +58,13 @@ public class GetPendingDomainGroupsForOrgTest extends MapperTest
     /**
      * System under test.
      */
-    private GetPendingDomainGroupsForOrg sut;
+    private GetPendingDomainGroupsMapper sut;
 
     /**
      * The mock of the request.
      */
-    private final GetPendingDomainGroupsForOrgRequest requestMock = context
-            .mock(GetPendingDomainGroupsForOrgRequest.class);
+    private final GetPendingDomainGroupsRequest requestMock = context
+            .mock(GetPendingDomainGroupsRequest.class);
 
     /**
      * Setup method - initialize the caches.
@@ -72,7 +72,7 @@ public class GetPendingDomainGroupsForOrgTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetPendingDomainGroupsForOrg();
+        sut = new GetPendingDomainGroupsMapper();
         sut.setEntityManager(getEntityManager());
         sut.setGetPeopleByIdsMapper(getPeopleByIdsMapperMock);
     }
@@ -88,7 +88,6 @@ public class GetPendingDomainGroupsForOrgTest extends MapperTest
         final String saganAccountId = "lksdkdkdkdkkdkkdkdkd";
         final String saganDisplayName = "kkkkkkkkkkkkkkkkkkkkkkkkkkk";
 
-        final String shortName = "sdflkjsdflksdjfdslsdjfsdfkl";
         final long fordpId = 42L;
         final long saganId = 4507L;
         final Set<Long> orgIds = new HashSet<Long>();

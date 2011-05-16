@@ -38,7 +38,6 @@ import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEv
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.model.PersonFollowingModel;
 import org.eurekastreams.web.client.model.PersonJoinedGroupsModel;
@@ -348,8 +347,6 @@ public class PersonalProfilePanel extends FlowPanel
      */
     private void showInvalidPersonMessage()
     {
-        OrganizationModel.getInstance().fetch("", true);
-
         clear();
         Panel errorReport = addNewCenteredErrorBox();
 

@@ -2028,7 +2028,7 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.profile.GetPendingGroupsExecutionStrategy">
-                <constructor-arg ref="getPendingDomainGroupsForOrg" />
+                <constructor-arg ref="getPendingDomainGroupsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

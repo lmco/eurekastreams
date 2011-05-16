@@ -19,7 +19,7 @@ package org.eurekastreams.server.persistence.mappers.requests;
  * MapperRequest for finding a DomainEntity by Id.
  * 
  */
-public class GetPendingDomainGroupsForOrgRequest
+public class GetPendingDomainGroupsRequest
 {
 
     /**
@@ -40,7 +40,7 @@ public class GetPendingDomainGroupsForOrgRequest
      * @param inMaxResults
      *            Max reults to return.
      */
-    public GetPendingDomainGroupsForOrgRequest(final int inPageStart, final int inMaxResults)
+    public GetPendingDomainGroupsRequest(final int inPageStart, final int inMaxResults)
     {
         pageStart = inPageStart;
         maxResults = inMaxResults;
