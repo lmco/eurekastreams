@@ -184,7 +184,7 @@ public class GalleryContent extends SettingsPanel
         addGadget.setVisible(false);
         addTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTheme());
         addTheme.setVisible(false);
-        // addTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTab());
+        addTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTab());
         addTab.setVisible(false);
 
         panel.add(galleryPortalContainer);
@@ -642,6 +642,7 @@ public class GalleryContent extends SettingsPanel
     private void renderCreateOrEditGalleryTabTemplate(final LinkedList<String> categories)
     {
         String defaultCategory = null;
+        String defaultDescription = null;
         String id = "";
 
         Map<String, String> urlParams = new HashMap<String, String>();
@@ -660,6 +661,7 @@ public class GalleryContent extends SettingsPanel
 
             defaultCategory = Session.getInstance().getParameterValue("category");
             id = Session.getInstance().getParameterValue("id");
+            defaultDescription = Session.getInstance().getParameterValue("description");
         }
 
         this.setPageTitle(title);
@@ -667,7 +669,7 @@ public class GalleryContent extends SettingsPanel
 
         if (method.equals(Method.UPDATE))
         {
-            form.setSubmitButtonClass("form-update-button");
+            form.setSubmitButtonClass(StaticResourceBundle.INSTANCE.coreCss().formUpdateButton());
         }
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
@@ -677,9 +679,13 @@ public class GalleryContent extends SettingsPanel
                 + "Updates you make to the tab will not be reflected for users who have previously add it."));
         form.addFormDivider();
 
-        form.addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, null, "", true));
-
-        form.addFormDivider();
+        if (method.equals(Method.INSERT))
+        {
+            form
+                    .addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, null, "",
+                            true));
+            form.addFormDivider();
+        }
 
         form
                 .addFormElement(new BasicDropDownFormElement("Category", "category", categories, defaultCategory, "",
@@ -687,7 +693,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Description:", "description", "", "", true));
+        form.addFormElement(new BasicTextBoxFormElement("Description:", "description", defaultDescription, "", true));
 
         form.addFormDivider();
 
@@ -730,7 +736,7 @@ public class GalleryContent extends SettingsPanel
 
         if (method.equals(Method.UPDATE))
         {
-            form.setSubmitButtonClass("form-update-button");
+            form.setSubmitButtonClass(StaticResourceBundle.INSTANCE.coreCss().formUpdateButton());
         }
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
