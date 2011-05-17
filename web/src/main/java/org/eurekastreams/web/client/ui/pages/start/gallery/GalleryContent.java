@@ -36,6 +36,7 @@ import org.eurekastreams.web.client.events.ThemeChangedEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
+import org.eurekastreams.web.client.events.data.AddTabFromGalleryTabTemplateResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGadgetDefinitionCategoriesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGadgetDefinitionsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateCategoriesResponseEvent;
@@ -557,6 +558,35 @@ public class GalleryContent extends SettingsPanel
                         tabTemplateTab.reload();
                         Session.getInstance().getEventBus().notifyObservers(
                                 new ShowNotificationEvent(new Notification("Your tab has been successfully saved")));
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(AddTabFromGalleryTabTemplateResponseEvent.class,
+                new Observer<AddTabFromGalleryTabTemplateResponseEvent>()
+                {
+                    public void update(final AddTabFromGalleryTabTemplateResponseEvent arg1)
+                    {
+                        String text = "Tab has been applied";
+
+                        // since a refresh happens in IE7 when navigating to the start page, show the notification
+                        // by passing in a notification url parameter
+                        if (MasterComposite.getUserAgent().contains("msie 7"))
+                        {
+                            Map<String, String> parameters = new HashMap<String, String>();
+                            parameters.put(UINotifier.NOTIFICATION_PARAM, text);
+
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new UpdateHistoryEvent(new CreateUrlRequest(Page.START, "", parameters)));
+                        }
+                        // otherwise, throw the notification event as normal
+                        else
+                        {
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
+
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new ShowNotificationEvent(new Notification(text)));
+                        }
                     }
                 });
     }

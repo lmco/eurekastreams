@@ -21,6 +21,7 @@ import java.util.HashMap;
 import org.eurekastreams.server.action.request.gallery.GetGalleryItemsRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
+import org.eurekastreams.web.client.events.data.AddTabFromGalleryTabTemplateResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedGalleryTabTemplateResponse;
 import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateDTOResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
@@ -110,6 +111,26 @@ public class GalleryTabTemplateModel extends BaseModel implements Insertable<Has
                         new UpdatedGalleryTabTemplateResponseEvent(response));
             }
         });
+    }
+
+    /**
+     * Add tab to start page based on GalleryTabTemplate.
+     * 
+     * @param inGalleryTabTemplateId
+     *            id.
+     */
+    public void set(final Long inGalleryTabTemplateId)
+    {
+        super.callWriteAction("addTabFromGalleryTabTemplate", inGalleryTabTemplateId, new OnSuccessCommand<Boolean>()
+        {
+            public void onSuccess(final Boolean response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new AddTabFromGalleryTabTemplateResponseEvent(response));
+            }
+        });
+
+        StartTabsModel.getInstance().clearCache();
     }
 
 }
