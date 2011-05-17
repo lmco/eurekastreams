@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.eurekastreams.server.persistence.mappers.requests;
  * MapperRequest for finding a DomainEntity by Id.
  * 
  */
-public class GetPendingDomainGroupsForOrgRequest
+public class GetPendingDomainGroupsRequest
 {
 
     /**
@@ -40,7 +40,7 @@ public class GetPendingDomainGroupsForOrgRequest
      * @param inMaxResults
      *            Max reults to return.
      */
-    public GetPendingDomainGroupsForOrgRequest(final int inPageStart, final int inMaxResults)
+    public GetPendingDomainGroupsRequest(final int inPageStart, final int inMaxResults)
     {
         pageStart = inPageStart;
         maxResults = inMaxResults;

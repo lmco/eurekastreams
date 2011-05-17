@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class DeleteBannerExecutionTest
             .mock(BaseArgCachedDomainMapper.class);
 
     /**
-     * Mocked organization who will get the new tab.
+     * Mocked domain group who will get the new tab.
      */
     private DomainGroup group = context.mock(DomainGroup.class);
 

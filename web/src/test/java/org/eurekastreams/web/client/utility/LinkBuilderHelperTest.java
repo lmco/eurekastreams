@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ public class LinkBuilderHelperTest
     {
         assertEquals(Page.PEOPLE, sut.getEntityProfilePage(EntityType.PERSON));
         assertEquals(Page.GROUPS, sut.getEntityProfilePage(EntityType.GROUP));
-        assertEquals(Page.ORGANIZATIONS, sut.getEntityProfilePage(EntityType.ORGANIZATION));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,15 +54,13 @@ public class FlaggedActivityModel extends BaseModel implements Fetchable<GetFlag
      */
     public void fetch(final GetFlaggedActivitiesRequest inRequest, final boolean inUseClientCacheIfAvailable)
     {
-        super.callReadAction("getFlaggedActivitiesForOrganization", inRequest,
-                new OnSuccessCommand<PagedSet<ActivityDTO>>()
-                {
-                    public void onSuccess(final PagedSet<ActivityDTO> response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotFlaggedActivitiesResponseEvent(response));
-                    }
-                }, inUseClientCacheIfAvailable);
+        super.callReadAction("getFlaggedActivities", inRequest, new OnSuccessCommand<PagedSet<ActivityDTO>>()
+        {
+            public void onSuccess(final PagedSet<ActivityDTO> response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotFlaggedActivitiesResponseEvent(response));
+            }
+        }, inUseClientCacheIfAvailable);
     }
 
     /**

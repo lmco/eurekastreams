@@ -7,12 +7,6 @@
 
 	<!-- Restlets -->
 
-	<bean name="orgOverviewResource" class="org.eurekastreams.server.service.restlets.CompositeEntityOverviewResource"
-		scope="prototype">
-		<property name="entityMapper" ref="jpaOrganizationMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
 	<bean name="groupOverviewResource" class="org.eurekastreams.server.service.restlets.CompositeEntityOverviewResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaGroupMapper" />
@@ -89,12 +83,6 @@
 		scope="prototype">
 		<property name="recommendationMapper" ref="jpaRecommendationMapper" />
         <property name="personMapper" ref="jpaPersonMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-	
-	<bean name="orgCapabilityResource" class="org.eurekastreams.server.service.restlets.CompositeEntityCapabilityResource"
-		scope="prototype">
-		<property name="entityMapper" ref="jpaOrganizationMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
 
@@ -179,7 +167,6 @@
                         <value>followedBy</value>
                         <value>sortBy</value>
                         <value>savedBy</value>
-                        <value>organization</value>
                         <value>parentOrg</value>
                     </list>
                 </constructor-arg>
@@ -275,19 +262,9 @@
 						<lookup-method name="createResource" bean="feedReaderCollectionResource" />
 					</bean>
 				</entry>
-				<entry key="/organizations/{shortName}/overview">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="orgOverviewResource" />
-					</bean>
-				</entry>
 				<entry key="/groups/{shortName}/overview">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="groupOverviewResource" />
-					</bean>
-				</entry>
-				<entry key="/organizations/{shortName}/capability">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="orgCapabilityResource" />
 					</bean>
 				</entry>
 				<entry key="/groups/{shortName}/capability">

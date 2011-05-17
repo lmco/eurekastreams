@@ -2028,7 +2028,7 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.profile.GetPendingGroupsExecutionStrategy">
-                <constructor-arg ref="getPendingDomainGroupsForOrg" />
+                <constructor-arg ref="getPendingDomainGroupsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -2617,21 +2617,7 @@
         <constructor-arg value="false" />
     </bean>
 
-    <bean id="setStreamOrder" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.stream.SetStreamOrderExecution">
-                <constructor-arg ref="getOrderedPersonStreamsByPersonIdDbMapper" />
-                <constructor-arg ref="reorderStreamsDbMapper" />
-                <constructor-arg ref="removeCachedPersonModelViewCacheMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="getFlaggedActivitiesForOrganization" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="getFlaggedActivities" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
@@ -2797,13 +2783,12 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
-                <constructor-arg ref="deleteAndReorderStreamsDbMapper" />
+                <constructor-arg ref="deleteStreamDbMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
 
-    
     <bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
             <bean
@@ -3864,6 +3849,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
                 <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="createGalleryTabTemplateMapper" />
                 <constructor-arg ref="jpaGalleryItemCategoryMapper" />
                 <constructor-arg>
 		            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
@@ -3872,6 +3858,32 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>    
+    
+    <bean id="editGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="isSystemAdminAuthorization"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="jpaGalleryItemCategoryMapper" />
+                <constructor-arg ref="flushMapper" />                                 
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean> 
+    
+    <bean id="addTabFromGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.AddTabFromGalleryTabTemplateIdExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="deleteCacheKeys" />                           
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
     
     <bean id="deleteGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />

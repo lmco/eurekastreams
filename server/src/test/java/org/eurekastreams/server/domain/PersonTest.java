@@ -172,7 +172,6 @@ public class PersonTest
         assertEquals("engineer", mv.getTitle());
         assertEquals("user@domain.com", mv.getEmail());
         assertEquals(aDate, mv.getDateAdded());
-        // TODO: assertEquals(, mv.getParentOrganizationId());
 
         assertEquals(1, mv.getOptOutVideos().size());
         assertEquals((Long) 5L, mv.getOptOutVideos().iterator().next());

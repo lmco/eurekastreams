@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.transform.ResultTransformer;
 
 /**
- * Result transformer that transforms tuples of directory object (person, group, organization) property names and values
- * into ModelViews using cache/db mappers.
+ * Result transformer that transforms tuples of directory object (person, group) property names and values into
+ * ModelViews using cache/db mappers.
  */
 public class CachedModelViewResultTransformer implements ResultTransformer
 {

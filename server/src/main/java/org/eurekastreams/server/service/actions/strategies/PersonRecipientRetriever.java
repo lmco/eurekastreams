@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.PersonMapper;
 
 /**
- * Retrieves parent organization of person.
+ * Gets stream scope and whether a person destination stream is public.
  * 
  */
 public class PersonRecipientRetriever implements RecipientRetriever

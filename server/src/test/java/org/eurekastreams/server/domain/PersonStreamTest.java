@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * Tests for PersonStream classe.
- *
+ * 
  */
 public class PersonStreamTest
 {
@@ -35,11 +35,11 @@ public class PersonStreamTest
     public void testConstructor()
     {
         PersonStream sut = new PersonStream(1L, 2L);
-        
+
         assertEquals("StreamId not expected value set in constructor.", 1, sut.getStreamId());
-        assertEquals("PersonId not expected value set in constructor.", 2, sut.getPersonId());        
+        assertEquals("PersonId not expected value set in constructor.", 2, sut.getPersonId());
     }
-    
+
     /**
      * Test the equals override for PersonStreamPk.
      */
@@ -48,11 +48,11 @@ public class PersonStreamTest
     {
         PersonStream.PersonStreamPk sut = new PersonStream.PersonStreamPk(1L, 2L);
         assertFalse(sut.equals(new Object()));
-        
+
         PersonStream.PersonStreamPk target = new PersonStream.PersonStreamPk(1L, 2L);
         assertTrue(sut.equals(target));
     }
-    
+
     /**
      * Test the hashcode override for PersonStreamPk.
      */
@@ -61,16 +61,5 @@ public class PersonStreamTest
     {
         PersonStream.PersonStreamPk sut = new PersonStream.PersonStreamPk(1L, 2L);
         assertNotNull(sut.hashCode());
-    }
-    
-    /**
-     * Test the getter/setter for group stream index.
-     */
-    @Test
-    public void testStreamIndex()
-    {
-        PersonStream sut = new PersonStream(1L, 2L);
-        sut.setStreamIndex(2);
-        assertEquals(2, sut.getStreamIndex());
     }
 }

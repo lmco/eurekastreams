@@ -98,7 +98,7 @@ public class RequestNewGroupTranslatorTest
         NotificationDTO notif = list.iterator().next();
         assertEquals(actorId, notif.getActorId());
         assertEquals(orgId, notif.getDestinationId());
-        assertEquals(EntityType.ORGANIZATION, notif.getDestinationType());
+        assertEquals(EntityType.NOTSET, notif.getDestinationType());
         assertEquals(NotificationType.REQUEST_NEW_GROUP, notif.getType());
         assertEquals(0L, notif.getActivityId());
         List<Long> recipients = notif.getRecipientIds();

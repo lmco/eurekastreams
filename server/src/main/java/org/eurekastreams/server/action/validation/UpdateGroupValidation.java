@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.Set;
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.domain.CompositeEntity;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
@@ -47,10 +46,6 @@ public class UpdateGroupValidation implements ValidationStrategy<PrincipalAction
 
         vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.ID_KEY, true, ve);
         vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.SHORT_NAME_KEY, true, ve);
-
-        String url = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.URL_KEY, false, ve);
-        vHelper.stringMeetsRequirments(DomainGroupModelView.URL_KEY, url, ve, null, null, null,
-                CompositeEntity.URL_REGEX_PATTERN, DomainGroup.WEBSITE_MESSAGE);
 
         if (fields.containsKey(DomainGroupModelView.PRIVACY_KEY))
         {

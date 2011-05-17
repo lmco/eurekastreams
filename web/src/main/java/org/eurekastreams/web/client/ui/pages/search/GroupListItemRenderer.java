@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,10 +66,6 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
         Hyperlink groupNameLink = new Hyperlink(group.getName(), url);
         groupNameLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         groupAbout.add(groupNameLink);
-
-        url = Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ORGANIZATIONS, group.getParentOrganizationShortName()));
-        groupAbout.add(new Hyperlink(group.getParentOrganizationName(), url));
 
         if (null != group.getDescription())
         {

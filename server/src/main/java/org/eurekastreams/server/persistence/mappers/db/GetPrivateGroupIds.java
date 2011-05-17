@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import javax.persistence.Query;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
 /**
- * Get a list of all private group ids under a collection of organizations.
+ * Get a list of all private group ids.
  */
 public class GetPrivateGroupIds extends ReadMapper<Serializable, Set<Long>>
 {

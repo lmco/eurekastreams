@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -277,7 +277,7 @@ public class GetFollowersAuthorizationStrategyTest
      *             shouldn't happen.
      */
     @Test
-    public final void performSecurityTestGroupEntityIsOrgAdmin() throws Exception
+    public final void performSecurityTestGroupEntityAdmin() throws Exception
     {
         final List<Long> adminIds = new ArrayList<Long>();
         adminIds.add(CURRENT_USER_ID);
@@ -291,9 +291,6 @@ public class GetFollowersAuthorizationStrategyTest
 
                 oneOf(coordMapper).execute(GROUP_ID);
                 will(returnValue(new ArrayList<Long>()));
-
-                allowing(groupMock).getParentOrganizationId();
-                will(returnValue(PARENT_ORG_ID));
 
                 oneOf(groupFollowerIdsMapper).execute(GROUP_ID);
                 will(returnValue(new ArrayList<Long>()));
@@ -331,9 +328,6 @@ public class GetFollowersAuthorizationStrategyTest
                 oneOf(groupFollowerIdsMapper).execute(GROUP_ID);
                 will(returnValue(new ArrayList<Long>()));
 
-                allowing(groupMock).getParentOrganizationId();
-                will(returnValue(PARENT_ORG_ID));
-
                 oneOf(adminIdsMapper).execute(null);
                 will(returnValue(adminIds));
             }
@@ -358,7 +352,7 @@ public class GetFollowersAuthorizationStrategyTest
                 will(returnValue(getFollowersRequest));
 
                 oneOf(getFollowersRequest).getEntityType();
-                will(returnValue(EntityType.ORGANIZATION));
+                will(returnValue(EntityType.APPLICATION));
             }
         });
 

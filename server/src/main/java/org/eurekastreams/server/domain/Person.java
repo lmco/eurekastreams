@@ -52,7 +52,7 @@ import org.eurekastreams.server.search.bridge.EducationListStringBridge;
 import org.eurekastreams.server.search.bridge.JobsListStringBridge;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
@@ -220,7 +220,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * List of Streams for this person.
      */
-    @IndexColumn(name = "streamIndex", base = 0)
+    @OrderBy(clause = "name")
     // Don't cascade on delete
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(name = "Person_Stream",

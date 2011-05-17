@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 
 /**
- * Lookup people in the database, returning People entities without parent Organizations.
+ * Lookup people in the database, returning People entities.
  */
 public class DomainPersonLookup implements PersonLookupStrategy
 {
@@ -65,10 +65,7 @@ public class DomainPersonLookup implements PersonLookupStrategy
         log.debug("DomainPersonLookup looking up " + searchString);
 
         List<Person> people = mapper.findPeopleByPrefix(prefix);
-        // NOTE: this mapper is not responsible for loading parent organization. If the caller wants it, let them use
-        // the PopulatePeopleWithSkeletonParentOrgsCacheMapper
         return people;
-
     }
 
 }

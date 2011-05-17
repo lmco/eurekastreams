@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 package org.eurekastreams.web.client.events.data;
 
 /**
- * Response event for deletion of avatar.
+ * Response event object.
  */
-public class DeletedOrganizationAvatarResponseEvent extends BaseDataResponseEvent<Boolean>
+public class UpdatedGalleryTabTemplateResponseEvent extends BaseDataResponseEvent<Boolean>
 {
     /**
-     * Constructor.
+     * Default constructor.
      * 
      * @param inResponse
-     *            the response.
+     *            response/
      */
-    public DeletedOrganizationAvatarResponseEvent(final Boolean inResponse)
+    public UpdatedGalleryTabTemplateResponseEvent(final Boolean inResponse)
     {
         super(inResponse);
     }

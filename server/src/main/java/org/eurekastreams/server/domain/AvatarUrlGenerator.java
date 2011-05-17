@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.eurekastreams.server.domain;
-
 
 /**
  * Generates URLs for images. Should be renamed to ImageUrlGenerator.
@@ -42,16 +41,6 @@ public class AvatarUrlGenerator
     private final String defaultGroupAvatarSmall = "/style/images/noPhoto50-group.png";
 
     /**
-     * Default avatar image.
-     */
-    private final String defaultOrgAvatar = "/style/images/noPhoto75-org.png";
-
-    /**
-     * Default small avatar image.
-     */
-    private final String defaultOrgAvatarSmall = "/style/images/noPhoto50-org.png";
-
-    /**
      * the default avatar for the specified type.
      */
     private String defaultAvatar;
@@ -73,7 +62,7 @@ public class AvatarUrlGenerator
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inEntityType
      *            the type of the entity whose avatar will be displayed
      */
@@ -86,11 +75,6 @@ public class AvatarUrlGenerator
             defaultAvatar = defaultGroupAvatar;
             defaultAvatarSmall = defaultGroupAvatarSmall;
         }
-        else if (entityType == EntityType.ORGANIZATION)
-        {
-            defaultAvatar = defaultOrgAvatar;
-            defaultAvatarSmall = defaultOrgAvatarSmall;
-        }
         else
         {
             // Using Person as the catch-all, just in case.
@@ -101,7 +85,7 @@ public class AvatarUrlGenerator
 
     /**
      * Generates a url.
-     *
+     * 
      * @param entityId
      *            the id of the entity.
      * @param avatarId
@@ -134,7 +118,7 @@ public class AvatarUrlGenerator
 
     /**
      * gets the image directory.
-     *
+     * 
      * @param id
      *            the entity id.
      * @return the image director.
@@ -149,7 +133,7 @@ public class AvatarUrlGenerator
 
     /**
      * Gets the original avatar url.
-     *
+     * 
      * @param entityId
      *            the entity id.
      * @param avatarId
@@ -163,7 +147,7 @@ public class AvatarUrlGenerator
 
     /**
      * Gets the normal avatar url.
-     *
+     * 
      * @param entityId
      *            the entity id.
      * @param avatarId
@@ -177,7 +161,7 @@ public class AvatarUrlGenerator
 
     /**
      * Gets the small avatar url.
-     *
+     * 
      * @param entityId
      *            the entity id.
      * @param avatarId
@@ -191,7 +175,7 @@ public class AvatarUrlGenerator
 
     /**
      * Gets the banner url.
-     *
+     * 
      * @param bannerId
      *            the banner id.
      * @return the banner url.
@@ -203,7 +187,7 @@ public class AvatarUrlGenerator
             return defaultBanner;
         }
 
-        //TODO: passing null in for the org id because it isn't needed anymore.  This signature needs to be cleaned up.
+        // TODO: passing null in for the org id because it isn't needed anymore. This signature needs to be cleaned up.
         return generateUrl(null, bannerId, "n");
     }
 }

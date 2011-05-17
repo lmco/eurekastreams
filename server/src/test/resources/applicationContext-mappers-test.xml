@@ -386,7 +386,7 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="getFlaggedActivitiesForOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivities">
+	<bean id="getFlaggedActivitiesMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivities">
 		<constructor-arg ref="bulkActivitiesMapper"/>
 	</bean>
 	

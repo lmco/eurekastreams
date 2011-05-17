@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,6 @@ public class StreamPopularHashTagsRequestCacheKeySuffixTransformerTest
     @Test
     public void testTransform()
     {
-        assertEquals("ORGANIZATION-foo",
-        // line break
-                sut.transform(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION, "foo")));
         assertEquals("GROUP-foo", sut.transform(new StreamPopularHashTagsRequest(ScopeType.GROUP, "foo")));
         assertEquals("PERSON-foo", sut.transform(new StreamPopularHashTagsRequest(ScopeType.PERSON, "foo")));
     }

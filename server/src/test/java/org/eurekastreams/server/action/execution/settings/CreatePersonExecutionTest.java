@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shindig.social.opensocial.model.Organization;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -83,11 +82,6 @@ public class CreatePersonExecutionTest
      * {@link Person}.
      */
     private Person person = context.mock(Person.class);
-
-    /**
-     * {@link Organization}.
-     */
-    private Organization organization = context.mock(Organization.class);
 
     /**
      * Org id used in test.

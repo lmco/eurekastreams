@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,8 +148,6 @@ public class GroupUpdater extends GroupPersister
                     .get(DomainGroupModelView.KEYWORDS_KEY)));
 
             String creatorUserName = inActionContext.getActionContext().getPrincipal().getAccountId();
-
-            String newParentOrgName = (String) inFields.get(DomainGroupModelView.ORG_PARENT_KEY);
 
             Set<Person> oldCoordinators = (Set<Person>) inFields.get(ORIGINAL_GROUP_COORDINATORS_KEY);
 

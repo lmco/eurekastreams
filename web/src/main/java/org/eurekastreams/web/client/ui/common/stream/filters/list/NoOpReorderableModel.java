@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.events.data;
+package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
-import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
+import org.eurekastreams.web.client.model.Reorderable;
 
 /**
- * Response event.
- *
+ * Reorderble model that does nothing.
  */
-public class GotOrganizationGroupsResponseEvent extends BaseDataResponseEvent<PagedSet<DomainGroupModelView>>
+public class NoOpReorderableModel implements Reorderable<SetStreamOrderRequest>
 {
     /**
-     * Default constructor.
-     *
-     * @param inResponse
-     *            response.
+     * Do nothing.
+     * 
+     * @param inRequest
+     *            the request, which I'll gladly ignore
      */
-    public GotOrganizationGroupsResponseEvent(final PagedSet<DomainGroupModelView> inResponse)
+    public void reorder(final SetStreamOrderRequest inRequest)
     {
-        super(inResponse);
+        // no-op
     }
 
 }

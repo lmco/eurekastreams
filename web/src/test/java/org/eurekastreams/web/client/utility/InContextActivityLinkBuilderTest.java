@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,8 @@ public class InContextActivityLinkBuilderTest
     @Test
     public void testBuildActivityPermalinkUrlRequestNoExtras()
     {
-        CreateUrlRequest result =
-                sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.PERSON, STREAM_UNIQUE_ID, null);
+        CreateUrlRequest result = sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.PERSON,
+                STREAM_UNIQUE_ID, null);
 
         assertEquals(Page.PEOPLE, result.getPage());
         assertTrue(result.getReplacePrevious());
@@ -74,9 +74,8 @@ public class InContextActivityLinkBuilderTest
     @Test
     public void testBuildActivityPermalinkUrlRequestEmptyExtras()
     {
-        CreateUrlRequest result =
-                sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.GROUP, STREAM_UNIQUE_ID,
-                        new HashMap<String, String>());
+        CreateUrlRequest result = sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.GROUP, STREAM_UNIQUE_ID,
+                new HashMap<String, String>());
 
         assertEquals(Page.GROUPS, result.getPage());
         assertTrue(result.getReplacePrevious());
@@ -95,10 +94,10 @@ public class InContextActivityLinkBuilderTest
         Map<String, String> parms = new HashMap<String, String>();
         parms.put("p1", "v1");
         parms.put("p2", "v2");
-        CreateUrlRequest result =
-                sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.ORGANIZATION, STREAM_UNIQUE_ID, parms);
+        CreateUrlRequest result = sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.GROUP, STREAM_UNIQUE_ID,
+                parms);
 
-        assertEquals(Page.ORGANIZATIONS, result.getPage());
+        assertEquals(Page.GROUPS, result.getPage());
         assertTrue(result.getReplacePrevious());
         assertEquals(1, result.getViews().size());
         assertEquals(STREAM_UNIQUE_ID, result.getViews().get(0));
@@ -114,8 +113,8 @@ public class InContextActivityLinkBuilderTest
     @Test
     public void testBuildActivityPermalinkUrlRequestUnknownStreamType()
     {
-        CreateUrlRequest result =
-                sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.APPLICATION, STREAM_UNIQUE_ID, null);
+        CreateUrlRequest result = sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.APPLICATION,
+                STREAM_UNIQUE_ID, null);
 
         assertEquals(Page.ACTIVITY, result.getPage());
         assertTrue(result.getReplacePrevious());
@@ -139,10 +138,8 @@ public class InContextActivityLinkBuilderTest
         extraParms.put("p3", "v3");
         extraParms.put("activityId", "overwriteMe");
 
-        CreateUrlRequest result =
-                sut
-                        .buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.APPLICATION, STREAM_UNIQUE_ID,
-                                extraParms);
+        CreateUrlRequest result = sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.APPLICATION,
+                STREAM_UNIQUE_ID, extraParms);
 
         assertEquals(Page.ACTIVITY, result.getPage());
         assertTrue(result.getReplacePrevious());

@@ -22,7 +22,6 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SettingsPanel;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
@@ -70,7 +69,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
      */
     public void setEntity()
     {
-        FormBuilder form = new FormBuilder("", OrganizationModel.getInstance(), Method.UPDATE);
+        FormBuilder form = new FormBuilder("", null, Method.UPDATE);
 
         form.addFormDivider();
 

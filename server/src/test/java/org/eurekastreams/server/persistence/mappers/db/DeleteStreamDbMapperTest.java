@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,34 +19,44 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.eurekastreams.server.domain.PersonStream;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.requests.DeleteStreamRequest;
 import org.junit.Test;
 
 /**
- * Test fixture for GetOrderedPersonStreamsByPersonIdDbMapper.
+ * Test for DeleteStreamDbMapper.
+ * 
  */
-public class GetOrderedPersonStreamsByPersonIdDbMapperTest extends MapperTest
+public class DeleteStreamDbMapperTest extends MapperTest
 {
     /**
-     * Test execute().
+     * Test user id.
      */
+    private static final long FORDP_ID = 42L;
+
+    /**
+     * Test execute method.
+     */
+    @SuppressWarnings("unchecked")
     @Test
     public void testExecute()
     {
-        final Long fordId = 42L;
-        final long firstStreamId = 2L;
-        final long secondStreamId = 1L;
-
-        GetOrderedPersonStreamsByPersonIdDbMapper sut = new GetOrderedPersonStreamsByPersonIdDbMapper();
+        DeleteStreamDbMapper sut = new DeleteStreamDbMapper();
         sut.setEntityManager(getEntityManager());
-        List<PersonStream> personStreams = sut.execute(fordId);
-        assertEquals(2, personStreams.size());
 
-        assertEquals(firstStreamId, personStreams.get(0).getStreamId());
-        assertEquals(0L, personStreams.get(0).getStreamIndex());
+        sut.execute(new DeleteStreamRequest(FORDP_ID, 2L));
 
-        assertEquals(secondStreamId, personStreams.get(1).getStreamId());
-        assertEquals(1L, personStreams.get(1).getStreamIndex());
+        getEntityManager().flush();
+        getEntityManager().clear();
+
+        String query = "from PersonStream where personId=:personId";
+        Query q = getEntityManager().createQuery(query).setParameter("personId", FORDP_ID);
+        List<PersonStream> result = q.getResultList();
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).getStreamId());
     }
+
 }

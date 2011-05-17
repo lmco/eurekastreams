@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.eurekastreams.web.client.events.ThemeChangedEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
+import org.eurekastreams.web.client.events.data.AddTabFromGalleryTabTemplateResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGadgetDefinitionCategoriesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGadgetDefinitionsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateCategoriesResponseEvent;
@@ -47,6 +48,7 @@ import org.eurekastreams.web.client.events.data.InsertedGadgetDefinitionResponse
 import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedThemeResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedGadgetDefinitionResponseEvent;
+import org.eurekastreams.web.client.events.data.UpdatedGalleryTabTemplateResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedThemeResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.GadgetMetaDataFetcher;
@@ -184,7 +186,7 @@ public class GalleryContent extends SettingsPanel
         addGadget.setVisible(false);
         addTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTheme());
         addTheme.setVisible(false);
-        // addTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTab());
+        addTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTab());
         addTab.setVisible(false);
 
         panel.add(galleryPortalContainer);
@@ -545,6 +547,48 @@ public class GalleryContent extends SettingsPanel
                                 new ShowNotificationEvent(new Notification("Your tab has been successfully added")));
                     }
                 });
+
+        Session.getInstance().getEventBus().addObserver(UpdatedGalleryTabTemplateResponseEvent.class,
+                new Observer<UpdatedGalleryTabTemplateResponseEvent>()
+                {
+                    public void update(final UpdatedGalleryTabTemplateResponseEvent arg1)
+                    {
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, tabParams)));
+                        tabTemplateTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your tab has been successfully saved")));
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(AddTabFromGalleryTabTemplateResponseEvent.class,
+                new Observer<AddTabFromGalleryTabTemplateResponseEvent>()
+                {
+                    public void update(final AddTabFromGalleryTabTemplateResponseEvent arg1)
+                    {
+                        String text = "Tab has been applied";
+
+                        // since a refresh happens in IE7 when navigating to the start page, show the notification
+                        // by passing in a notification url parameter
+                        if (MasterComposite.getUserAgent().contains("msie 7"))
+                        {
+                            Map<String, String> parameters = new HashMap<String, String>();
+                            parameters.put(UINotifier.NOTIFICATION_PARAM, text);
+
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new UpdateHistoryEvent(new CreateUrlRequest(Page.START, "", parameters)));
+                        }
+                        // otherwise, throw the notification event as normal
+                        else
+                        {
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
+
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new ShowNotificationEvent(new Notification(text)));
+                        }
+                    }
+                });
     }
 
     /**
@@ -642,6 +686,7 @@ public class GalleryContent extends SettingsPanel
     private void renderCreateOrEditGalleryTabTemplate(final LinkedList<String> categories)
     {
         String defaultCategory = null;
+        String defaultDescription = null;
         String id = "";
 
         Map<String, String> urlParams = new HashMap<String, String>();
@@ -660,6 +705,7 @@ public class GalleryContent extends SettingsPanel
 
             defaultCategory = Session.getInstance().getParameterValue("category");
             id = Session.getInstance().getParameterValue("id");
+            defaultDescription = Session.getInstance().getParameterValue("description");
         }
 
         this.setPageTitle(title);
@@ -667,7 +713,7 @@ public class GalleryContent extends SettingsPanel
 
         if (method.equals(Method.UPDATE))
         {
-            form.setSubmitButtonClass("form-update-button");
+            form.setSubmitButtonClass(StaticResourceBundle.INSTANCE.coreCss().formUpdateButton());
         }
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
@@ -677,9 +723,13 @@ public class GalleryContent extends SettingsPanel
                 + "Updates you make to the tab will not be reflected for users who have previously add it."));
         form.addFormDivider();
 
-        form.addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, null, "", true));
-
-        form.addFormDivider();
+        if (method.equals(Method.INSERT))
+        {
+            form
+                    .addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, null, "",
+                            true));
+            form.addFormDivider();
+        }
 
         form
                 .addFormElement(new BasicDropDownFormElement("Category", "category", categories, defaultCategory, "",
@@ -687,7 +737,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Description:", "description", "", "", true));
+        form.addFormElement(new BasicTextBoxFormElement("Description:", "description", defaultDescription, "", true));
 
         form.addFormDivider();
 
@@ -730,7 +780,7 @@ public class GalleryContent extends SettingsPanel
 
         if (method.equals(Method.UPDATE))
         {
-            form.setSubmitButtonClass("form-update-button");
+            form.setSubmitButtonClass(StaticResourceBundle.INSTANCE.coreCss().formUpdateButton());
         }
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));

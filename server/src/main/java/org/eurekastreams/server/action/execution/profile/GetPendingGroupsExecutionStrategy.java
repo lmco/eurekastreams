@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,12 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsForOrg;
-import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
+import org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsMapper;
+import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * Gets the Pending groups for an organization.
+ * Gets the Pending groups.
  */
 public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<ActionContext>
 {
@@ -40,7 +40,7 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
     /**
      * The action mapper the performs the lookup.
      */
-    private final GetPendingDomainGroupsForOrg actionMapper;
+    private final GetPendingDomainGroupsMapper actionMapper;
 
     /**
      * Constructor.
@@ -48,7 +48,7 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
      * @param inActionMapper
      *            injecting the ActionMapper.
      */
-    public GetPendingGroupsExecutionStrategy(final GetPendingDomainGroupsForOrg inActionMapper)
+    public GetPendingGroupsExecutionStrategy(final GetPendingDomainGroupsMapper inActionMapper)
     {
         actionMapper = inActionMapper;
     }
@@ -65,8 +65,8 @@ public class GetPendingGroupsExecutionStrategy implements ExecutionStrategy<Acti
     {
         GetPendingGroupsRequest actionRequest = (GetPendingGroupsRequest) inActionContext.getParams();
 
-        GetPendingDomainGroupsForOrgRequest request = new GetPendingDomainGroupsForOrgRequest(actionRequest
-                .getStartIndex(), actionRequest.getEndIndex());
+        GetPendingDomainGroupsRequest request = new GetPendingDomainGroupsRequest(actionRequest.getStartIndex(),
+                actionRequest.getEndIndex());
 
         PagedSet<DomainGroupModelView> pendingGroups = actionMapper.execute(request);
 

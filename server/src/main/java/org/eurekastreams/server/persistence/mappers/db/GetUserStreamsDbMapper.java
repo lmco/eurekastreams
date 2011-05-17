@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class GetUserStreamsDbMapper extends BaseArgDomainMapper<Long, List<Strea
     public List<StreamFilter> execute(final Long inUserEntityId)
     {
         List<Stream> streams = getEntityManager().createQuery(
-                "SELECT streams from Person p where p.id = :userId order by streamindex").setParameter("userId",
+                "SELECT streams from Person p where p.id = :userId order by name").setParameter("userId",
                 inUserEntityId).getResultList();
 
         List<StreamFilter> filters = new ArrayList<StreamFilter>();

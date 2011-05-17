@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.events.data;
+package org.eurekastreams.server.action.execution.gallery;
+
+import static org.junit.Assert.assertTrue;
+
+import org.eurekastreams.server.domain.GalleryTabTemplate;
+import org.junit.Test;
 
 /**
- * Response event for authorization of update group permissions.
+ * Test for GalleryTabTemplateFactoryTest.
+ * 
  */
-public class AuthorizeUpdateOrganizationResponseEvent extends BaseDataResponseEvent<Boolean>
+public class GalleryTabTemplateFactoryTest
 {
+    /**
+     * System under test.
+     */
+    private GalleryTabTemplateFactory sut;
 
     /**
-     * Default constructor.
-     * 
-     * @param inResponse
-     *            response.
+     * Test.
      */
-    public AuthorizeUpdateOrganizationResponseEvent(final Boolean inResponse)
+    @Test
+    public void test()
     {
-        super(inResponse);
-    }
+        sut = new GalleryTabTemplateFactory();
+        assertTrue(sut.execute(null) instanceof GalleryTabTemplate);
 
+    }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
+import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsRequest;
 import org.eurekastreams.server.search.factories.DomainGroupModelViewFactory;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -36,8 +36,8 @@ import org.hibernate.criterion.Restrictions;
  * The get pending groups action mapper - gets pending groups from the DB. Keep in mind that pending groups aren't
  * cached.
  */
-public class GetPendingDomainGroupsForOrg extends
-        BaseArgDomainMapper<GetPendingDomainGroupsForOrgRequest, PagedSet<DomainGroupModelView>>
+public class GetPendingDomainGroupsMapper extends
+        BaseArgDomainMapper<GetPendingDomainGroupsRequest, PagedSet<DomainGroupModelView>>
 {
     /**
      * Mapper to get people by IDs, using cache.
@@ -53,7 +53,7 @@ public class GetPendingDomainGroupsForOrg extends
      */
     @SuppressWarnings("unchecked")
     @Override
-    public PagedSet<DomainGroupModelView> execute(final GetPendingDomainGroupsForOrgRequest inRequest)
+    public PagedSet<DomainGroupModelView> execute(final GetPendingDomainGroupsRequest inRequest)
     {
         // create our query
         Criteria criteria = getHibernateSession().createCriteria(DomainGroup.class);

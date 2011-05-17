@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,19 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.search.modelview.PersonModelView;
-
 /**
- * Response event.
- *
+ * Response event for authorization of update group permissions.
  */
-public class GotOrganizationEmployeesResponseEvent extends BaseDataResponseEvent<PagedSet<PersonModelView>>
+public class AddTabFromGalleryTabTemplateResponseEvent extends BaseDataResponseEvent<Boolean>
 {
     /**
      * Default constructor.
-     * @param inResponse response.
+     * 
+     * @param inResponse
+     *            response.
      */
-    public GotOrganizationEmployeesResponseEvent(final PagedSet<PersonModelView> inResponse)
+    public AddTabFromGalleryTabTemplateResponseEvent(final Boolean inResponse)
     {
         super(inResponse);
     }
-
 }

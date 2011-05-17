@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,11 +72,11 @@ public class GetFlaggedActivitiesExecution implements ExecutionStrategy<Principa
     }
 
     /**
-     * Get a paged set of flagged activities directly under an organization.
+     * Get a paged set of flagged activities.
      * 
      * @param inActionContext
      *            the action context having with GetFlaggedActivitiesByOrgRequest param
-     * @return a paged set of flagged activities directly under an organization.
+     * @return a paged set of flagged activities
      */
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext)

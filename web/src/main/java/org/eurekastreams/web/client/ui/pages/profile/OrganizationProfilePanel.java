@@ -35,7 +35,6 @@ import org.eurekastreams.web.client.events.data.UpdatedActivityFlagResponseEvent
 import org.eurekastreams.web.client.events.data.UpdatedReviewPendingGroupResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.FlaggedActivityModel;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.model.PendingGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
@@ -146,8 +145,6 @@ public class OrganizationProfilePanel extends FlowPanel
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
         setEntity();
-
-        OrganizationModel.getInstance().fetch(accountId, false);
     }
 
     /**

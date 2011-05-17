@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,6 @@ public class UpdateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "http://www.google.com");
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
@@ -115,7 +114,6 @@ public class UpdateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "http://www.google.com");
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
@@ -156,7 +154,6 @@ public class UpdateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.ID_KEY, 2L);
-        formData.put(DomainGroupModelView.URL_KEY, "www.google.com");
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH + 1));
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper
@@ -186,8 +183,7 @@ public class UpdateGroupValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertEquals(5, ve.getErrors().size());
-            assertTrue(ve.getErrors().containsValue(DomainGroup.WEBSITE_MESSAGE));
+            assertEquals(4, ve.getErrors().size());
             assertTrue(ve.getErrors().containsValue(DomainGroup.MIN_COORDINATORS_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroupModelView.KEYWORD_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.DESCRIPTION_LENGTH_MESSAGE));

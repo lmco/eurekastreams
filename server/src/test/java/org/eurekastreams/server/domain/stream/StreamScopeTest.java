@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +61,8 @@ public class StreamScopeTest
         assertEquals("uniquekey", scope.getUniqueKey());
         assertEquals(ScopeType.GROUP, scope.getScopeType());
 
-        scope.setScopeType(ScopeType.ORGANIZATION);
-        assertEquals(ScopeType.ORGANIZATION, scope.getScopeType());
+        scope.setScopeType(ScopeType.GROUP);
+        assertEquals(ScopeType.GROUP, scope.getScopeType());
 
         scope.setScopeType(ScopeType.PERSON);
         assertEquals(ScopeType.PERSON, scope.getScopeType());
@@ -72,9 +72,6 @@ public class StreamScopeTest
 
         scope.setScopeType(ScopeType.PERSONS_FOLLOWED_STREAMS);
         assertEquals(ScopeType.PERSONS_FOLLOWED_STREAMS, scope.getScopeType());
-
-        scope.setScopeType(ScopeType.PERSONS_PARENT_ORGANIZATION);
-        assertEquals(ScopeType.PERSONS_PARENT_ORGANIZATION, scope.getScopeType());
 
         scope.setDisplayName("displayName");
         assertEquals("displayName", scope.getDisplayName());

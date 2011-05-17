@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -210,19 +210,9 @@ public class StreamScope extends DomainEntity implements Serializable
         PERSON,
 
         /**
-         * Scoped to a specific organization - messages posted to people and groups in an organization's hierarchy.
-         */
-        ORGANIZATION,
-
-        /**
          * Scoped to a specific group.
          */
         GROUP,
-
-        /**
-         * Scoped to a person's parent organization.
-         */
-        PERSONS_PARENT_ORGANIZATION,
 
         /**
          * Scoped to all streams followed by a person - key refers to the person's unique key.

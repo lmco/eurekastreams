@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.eurekastreams.server.service.actions.strategies.ImageWriter;
 
 /**
  * Saves the banner to the disk and updates the appropriate entity to be associated with the new banner.
- *
+ * 
  */
 public class UpdateBannerExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -56,11 +56,11 @@ public class UpdateBannerExecution implements ExecutionStrategy<PrincipalActionC
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inMapper
-     *            the organization mapper.
+     *            the banner mapper.
      * @param inCacheMapper
-     *            the organization cache mapper to update the banner id.
+     *            the cache mapper to update the banner id.
      * @param inImageWriter
      *            used to validate the image
      */
@@ -86,8 +86,8 @@ public class UpdateBannerExecution implements ExecutionStrategy<PrincipalActionC
             imageWriter.write(currentRequest.getFileItem(), "n" + currentRequest.getImageId());
             mapper.updateBannerId(currentRequest.getEntityId(), currentRequest.getImageId());
             mapper.flush();
-            cacheMapper.execute(
-                    new UpdateCachedBannerMapperRequest(currentRequest.getImageId(), currentRequest.getEntityId()));
+            cacheMapper.execute(new UpdateCachedBannerMapperRequest(currentRequest.getImageId(), currentRequest
+                    .getEntityId()));
         }
         catch (Exception ex)
         {

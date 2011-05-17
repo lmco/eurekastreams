@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.DeleteAndReorderStreamsRequest;
+import org.eurekastreams.server.persistence.mappers.requests.DeleteStreamRequest;
 
 /**
  * Delete a stream for the current user.
@@ -31,7 +31,7 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
     /**
      * Domain mapper for deleting person_stream entry.
      */
-    private final DomainMapper<DeleteAndReorderStreamsRequest, Boolean> deleteAndReorderStreamsMapper;
+    private final DomainMapper<DeleteStreamRequest, Boolean> deleteAndReorderStreamsMapper;
 
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
      *            Domain mapper for deleting person_stream entry.
      */
     public DeleteStreamForCurrentUserExecution(
-            final DomainMapper<DeleteAndReorderStreamsRequest, Boolean> inDeleteAndReorderStreamsDbMapper)
+            final DomainMapper<DeleteStreamRequest, Boolean> inDeleteAndReorderStreamsDbMapper)
     {
         deleteAndReorderStreamsMapper = inDeleteAndReorderStreamsDbMapper;
     }
@@ -56,7 +56,7 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        deleteAndReorderStreamsMapper.execute(new DeleteAndReorderStreamsRequest(
+        deleteAndReorderStreamsMapper.execute(new DeleteStreamRequest(
                 inActionContext.getPrincipal().getId(), (Long) inActionContext.getParams()));
 
         return inActionContext.getParams();

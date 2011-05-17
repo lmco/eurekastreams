@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     public static final int MAX_NAME_LENGTH = 50;
 
     /** Used for validation. */
-    public static final String NAME_LENGTH_MESSAGE = "Organization Name must supports up to " + MAX_NAME_LENGTH
-            + " characters.";
+    public static final String NAME_LENGTH_MESSAGE = "Name must supports up to " + MAX_NAME_LENGTH + " characters.";
 
     /**
      * The name of the view.

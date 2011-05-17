@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 
 /**
- * Deletes a group and adjusts denormalized organization statistics accordingly.
+ * Deletes a group and.
  */
 public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
 {
@@ -47,8 +47,7 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
      * 
      * @param inRequest
      *            group id.
-     * @return Set of organization ids representing parent orgs all the way up the tree, will need these to adjust
-     *         cache.
+     * @return DeleteGroupResponse
      */
     @Override
     public DeleteGroupResponse execute(final Long inRequest)

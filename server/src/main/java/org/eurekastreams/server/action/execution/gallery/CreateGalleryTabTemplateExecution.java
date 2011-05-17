@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.execution.gallery;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.domain.GalleryItemCategory;
@@ -52,9 +53,19 @@ public class CreateGalleryTabTemplateExecution implements ExecutionStrategy<Serv
     private static final String TAB_KEY = "tab";
 
     /**
+     * GalleryTabTemplate id key.
+     */
+    private static final String GALLERYTABTEMPLATE_ID_KEY = "id";
+
+    /**
      * Mapper to find tab by id.
      */
     private DomainMapper<FindByIdRequest, Tab> findTabByIdMapper;
+
+    /**
+     * Mapper to find GalleryTabTemplate by id.
+     */
+    private DomainMapper<FindByIdRequest, GalleryTabTemplate> getGalleryTabTemplateByIdMapper;
 
     /**
      * Mapper used to look up the theme category.
@@ -64,25 +75,29 @@ public class CreateGalleryTabTemplateExecution implements ExecutionStrategy<Serv
     /**
      * Mapper for persisting GalleryTabTemplate.
      */
-    private DomainMapper<PersistenceRequest, Boolean> insertMapper;
+    private DomainMapper<PersistenceRequest<GalleryTabTemplate>, Boolean> persistMapper;
 
     /**
      * Constructor.
      * 
      * @param inFindTabByIdMapper
      *            Mapper to find tab by id.
+     * @param inGetGalleryTabTemplateByIdMapper
+     *            Mapper to find gallery tab template by id.
      * @param inGalleryItemCategoryMapper
      *            Mapper used to look up the theme category.
-     * @param inInsertMapper
+     * @param inPersistMapper
      *            Mapper for persisting GalleryTabTemplate.
      */
     public CreateGalleryTabTemplateExecution(final DomainMapper<FindByIdRequest, Tab> inFindTabByIdMapper,
+            final DomainMapper<FindByIdRequest, GalleryTabTemplate> inGetGalleryTabTemplateByIdMapper,
             final GalleryItemCategoryMapper inGalleryItemCategoryMapper,
-            final DomainMapper<PersistenceRequest, Boolean> inInsertMapper)
+            final DomainMapper<PersistenceRequest<GalleryTabTemplate>, Boolean> inPersistMapper)
     {
         findTabByIdMapper = inFindTabByIdMapper;
+        getGalleryTabTemplateByIdMapper = inGetGalleryTabTemplateByIdMapper;
         galleryItemCategoryMapper = inGalleryItemCategoryMapper;
-        insertMapper = inInsertMapper;
+        persistMapper = inPersistMapper;
     }
 
     /**
@@ -102,22 +117,39 @@ public class CreateGalleryTabTemplateExecution implements ExecutionStrategy<Serv
         // grab param values.
         String category = (String) fields.get(CATEGORY_KEY);
         String description = (String) fields.get(DESCRIPTION_KEY);
-        Long tabId = Long.parseLong((String) fields.get(TAB_KEY));
 
-        // look up source tab by id.
-        Tab tab = findTabByIdMapper.execute(new FindByIdRequest("Tab", tabId));
+        String tabStringId = (String) fields.get(TAB_KEY);
+        Long tabId = StringUtils.isNotEmpty(tabStringId) ? Long.parseLong(tabStringId) : null;
 
-        // create new tabTemplate from source.
-        TabTemplate newTabTemplate = new TabTemplate(tab.getTemplate());
+        String galleryTabTemplateStringId = (String) fields.get(GALLERYTABTEMPLATE_ID_KEY);
+        Long galleryTabTemplateId = StringUtils.isNotEmpty(galleryTabTemplateStringId) ? Long
+                .parseLong(galleryTabTemplateStringId) : null;
 
-        // get the category
+        // find/create the GalleryTabTemplate.
+        GalleryTabTemplate gtt = getGalleryTabTemplateByIdMapper.execute(galleryTabTemplateId == null ? null
+                : new FindByIdRequest("GalleryTabTemplate", galleryTabTemplateId));
+
+        // if required set the tab template.
+        if (tabId != null)
+        {
+            // look up source tab by id.
+            Tab tab = findTabByIdMapper.execute(new FindByIdRequest("Tab", tabId));
+
+            // create new tabTemplate from source.
+            TabTemplate newTabTemplate = new TabTemplate(tab.getTemplate());
+
+            gtt.setTabTemplate(newTabTemplate);
+            gtt.setTitle(newTabTemplate.getTabName());
+        }
+
+        // get/create the category and set it.
         GalleryItemCategory galleryItemCategory = galleryItemCategoryMapper.findByName(GalleryItemType.TAB, category);
+        gtt.setCategory(galleryItemCategory);
 
-        // create the new GalleryTabTemplate.
-        GalleryTabTemplate gtt = new GalleryTabTemplate(description, galleryItemCategory, newTabTemplate);
+        // set the description
+        gtt.setDescription(description);
 
         // persist the new GalleryTabTemplate to datastore.
-        return insertMapper.execute(new PersistenceRequest<GalleryTabTemplate>(gtt));
+        return persistMapper.execute(new PersistenceRequest<GalleryTabTemplate>(gtt));
     }
-
 }

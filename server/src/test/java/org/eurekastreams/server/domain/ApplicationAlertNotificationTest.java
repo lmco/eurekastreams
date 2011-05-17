@@ -32,8 +32,6 @@ import org.junit.Test;
 
 import com.ibm.icu.util.Calendar;
 
-
-
 /**
  * Tests the ApplicationAlertNotification.
  */
@@ -109,8 +107,8 @@ public class ApplicationAlertNotificationTest
         sut.setAuxiliaryUniqueId("anorg");
         assertEquals("anorg", sut.getAuxiliaryUniqueId());
 
-        sut.setAuxiliaryType(EntityType.ORGANIZATION);
-        assertEquals(EntityType.ORGANIZATION, sut.getAuxiliaryType());
+        sut.setAuxiliaryType(EntityType.GROUP);
+        assertEquals(EntityType.GROUP, sut.getAuxiliaryType());
     }
 
     /**
@@ -129,7 +127,7 @@ public class ApplicationAlertNotificationTest
         dto.setDestinationUniqueId("groupshortname");
         dto.setAuxiliaryName("AnOrg");
         dto.setAuxiliaryUniqueId("anorg");
-        dto.setAuxiliaryType(EntityType.ORGANIZATION);
+        dto.setAuxiliaryType(EntityType.GROUP);
 
         Person recipient = context.mock(Person.class);
 
@@ -147,7 +145,7 @@ public class ApplicationAlertNotificationTest
         assertEquals("groupshortname", sut.getDestinationUniqueId());
         assertEquals("AnOrg", sut.getAuxiliaryName());
         assertEquals("anorg", sut.getAuxiliaryUniqueId());
-        assertEquals(EntityType.ORGANIZATION, sut.getAuxiliaryType());
+        assertEquals(EntityType.GROUP, sut.getAuxiliaryType());
     }
 
 }

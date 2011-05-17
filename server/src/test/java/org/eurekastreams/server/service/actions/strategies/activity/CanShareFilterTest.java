@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -223,7 +223,7 @@ public class CanShareFilterTest
                 will(returnValue(destinationStream));
 
                 allowing(destinationStream).getType();
-                will(returnValue(EntityType.ORGANIZATION));
+                will(returnValue(EntityType.APPLICATION));
             }
         });
 

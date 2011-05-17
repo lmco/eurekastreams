@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.eurekastreams.server.action.execution.stream;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.DeleteAndReorderStreamsRequest;
+import org.eurekastreams.server.persistence.mappers.requests.DeleteStreamRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -49,7 +49,7 @@ public class DeleteStreamForCurrentUserExecutionTest
     /**
      * Domain mapper for deleting person_stream entry.
      */
-    private static DomainMapper<DeleteAndReorderStreamsRequest, Boolean> deleteAndReorderStreamsMapper = CONTEXT
+    private static DomainMapper<DeleteStreamRequest, Boolean> deleteAndReorderStreamsMapper = CONTEXT
             .mock(DomainMapper.class);
 
     /**
@@ -96,7 +96,7 @@ public class DeleteStreamForCurrentUserExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(streamId));
 
-                oneOf(deleteAndReorderStreamsMapper).execute(with(any(DeleteAndReorderStreamsRequest.class)));
+                oneOf(deleteAndReorderStreamsMapper).execute(with(any(DeleteStreamRequest.class)));
                 will(returnValue(true));
             }
         });

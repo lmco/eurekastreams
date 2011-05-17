@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
  * Class to help test suites with building activity dto's.
- *
+ * 
  */
 public final class PostActivityTestHelpers
 {
@@ -35,54 +35,58 @@ public final class PostActivityTestHelpers
      */
     private PostActivityTestHelpers()
     {
-        //overriding the default constructor
+        // overriding the default constructor
     }
 
     /**
      * Helper method to build an ActivityDTO with a DestinationStream in various states.
-     * @param streamState - state of the DestinationStream to build into the ActivityDTO for testing.
-     * @param shareVerb - flag to set the verb in the ActivityDTO to Share for testing
-     *  as well as add the test comment.
-     * @param inTestComment - test comment to build the dto with.
-     * @param inDestinationId - id of the destination stream to build the action with.
+     * 
+     * @param streamState
+     *            - state of the DestinationStream to build into the ActivityDTO for testing.
+     * @param shareVerb
+     *            - flag to set the verb in the ActivityDTO to Share for testing as well as add the test comment.
+     * @param inTestComment
+     *            - test comment to build the dto with.
+     * @param inDestinationId
+     *            - id of the destination stream to build the action with.
      * @return ActivityDTO populated for test.
      */
-    public static ActivityDTO buildActivityDTO(final DestinationStreamTestState streamState,
-            final boolean shareVerb, final CommentDTO inTestComment, final Long inDestinationId)
+    public static ActivityDTO buildActivityDTO(final DestinationStreamTestState streamState, final boolean shareVerb,
+            final CommentDTO inTestComment, final Long inDestinationId)
     {
         ActivityDTO currentActivity = new ActivityDTO();
         StreamEntityDTO destinationStream;
-        switch(streamState)
+        switch (streamState)
         {
-            case NULLSTREAM:
-                currentActivity.setDestinationStream(null);
-                break;
-            case NULLIDENTIFIER:
-                destinationStream = new StreamEntityDTO();
-                currentActivity.setDestinationStream(destinationStream);
-                break;
-            case EMPTYIDENTIFIER:
-                destinationStream = new StreamEntityDTO();
-                destinationStream.setUniqueIdentifier("");
-                destinationStream.setType(EntityType.PERSON);
-                currentActivity.setDestinationStream(destinationStream);
-                break;
-            case INVALIDTYPE:
-                destinationStream = new StreamEntityDTO();
-                destinationStream.setUniqueIdentifier("destStream");
-                destinationStream.setType(EntityType.ORGANIZATION);
-                break;
-            default:
-                destinationStream = new StreamEntityDTO();
-                destinationStream.setUniqueIdentifier("destStream");
-                destinationStream.setType(EntityType.PERSON);
-                destinationStream.setDestinationEntityId(inDestinationId);
-                currentActivity.setDestinationStream(destinationStream);
-                break;
+        case NULLSTREAM:
+            currentActivity.setDestinationStream(null);
+            break;
+        case NULLIDENTIFIER:
+            destinationStream = new StreamEntityDTO();
+            currentActivity.setDestinationStream(destinationStream);
+            break;
+        case EMPTYIDENTIFIER:
+            destinationStream = new StreamEntityDTO();
+            destinationStream.setUniqueIdentifier("");
+            destinationStream.setType(EntityType.PERSON);
+            currentActivity.setDestinationStream(destinationStream);
+            break;
+        case INVALIDTYPE:
+            destinationStream = new StreamEntityDTO();
+            destinationStream.setUniqueIdentifier("destStream");
+            destinationStream.setType(EntityType.APPLICATION);
+            break;
+        default:
+            destinationStream = new StreamEntityDTO();
+            destinationStream.setUniqueIdentifier("destStream");
+            destinationStream.setType(EntityType.PERSON);
+            destinationStream.setDestinationEntityId(inDestinationId);
+            currentActivity.setDestinationStream(destinationStream);
+            break;
         }
         if (shareVerb)
         {
-            //Share is not in the verb validators dictionary and will cause an error to be thrown on validation.
+            // Share is not in the verb validators dictionary and will cause an error to be thrown on validation.
             currentActivity.setVerb(ActivityVerb.SHARE);
             currentActivity.setFirstComment(inTestComment);
         }
@@ -99,9 +103,8 @@ public final class PostActivityTestHelpers
     }
 
     /**
-     * Enum that describes the state of the DestinationStream to build into an ActivityDTO
-     * for test.
-     *
+     * Enum that describes the state of the DestinationStream to build into an ActivityDTO for test.
+     * 
      */
     public static enum DestinationStreamTestState
     {

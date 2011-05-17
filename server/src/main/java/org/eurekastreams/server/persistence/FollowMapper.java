@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 
 /**
- * Brings together methods that are used for following a Person, Group, or Organization. 
+ * Brings together methods that are used for following a Person, Group.
  */
 public interface FollowMapper
 {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,16 +55,6 @@ public class DomainGroupModelViewTest
     private final Date dateAdded = new Date();
 
     /**
-     * The short name of the parent organization.
-     */
-    private final String parentOrganizationShortName = "foobar";
-
-    /**
-     * The name of the parent organization.
-     */
-    private final String parentOrganizationName = "Foo Bar";
-
-    /**
      * The number of updates this group has.
      */
     private final int updatesCount = 382;
@@ -115,13 +105,8 @@ public class DomainGroupModelViewTest
     private boolean streamPostable = false;
 
     /**
-     * Parent org ID.
-     */
-    private final long parentOrganizationId = 888L;
-
-    /**
      * Test helper method to assert all properties.
-     *
+     * 
      * @param sut
      *            the SUT
      */
@@ -133,9 +118,6 @@ public class DomainGroupModelViewTest
         assertEquals(shortName, sut.getShortName());
         assertEquals(description, sut.getDescription());
         assertEquals(dateAdded, sut.getDateAdded());
-        assertEquals(parentOrganizationId, sut.getParentOrganizationId());
-        assertEquals(parentOrganizationShortName, sut.getParentOrganizationShortName());
-        assertEquals(parentOrganizationName, sut.getParentOrganizationName());
         assertEquals(updatesCount, sut.getUpdatesCount());
         assertEquals(avatarId, sut.getAvatarId());
         assertEquals(isPublic, sut.isPublic());
@@ -151,7 +133,7 @@ public class DomainGroupModelViewTest
 
     /**
      * Test helper method to assert the default values.
-     *
+     * 
      * @param sut
      *            the SUT
      */
@@ -162,9 +144,6 @@ public class DomainGroupModelViewTest
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getShortName());
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getDescription());
         assertEquals(ModelView.UNINITIALIZED_DATE_VALUE, sut.getDateAdded());
-        assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getParentOrganizationId());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getParentOrganizationShortName());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getParentOrganizationName());
         assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getUpdatesCount());
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getAvatarId());
         assertEquals(false, sut.isPublic());
@@ -186,9 +165,6 @@ public class DomainGroupModelViewTest
         sut.setShortName(shortName);
         sut.setDescription(description);
         sut.setDateAdded(dateAdded);
-        sut.setParentOrganizationId(parentOrganizationId);
-        sut.setParentOrganizationName(parentOrganizationName);
-        sut.setParentOrganizationShortName(parentOrganizationShortName);
         sut.setUpdatesCount(updatesCount);
         sut.setAvatarId(avatarId);
         sut.setIsPublic(isPublic);
@@ -245,9 +221,6 @@ public class DomainGroupModelViewTest
         p.put("shortName", shortName);
         p.put("description", description);
         p.put("dateAdded", dateAdded);
-        p.put("parentOrganizationId", parentOrganizationId);
-        p.put("parentOrganizationShortName", parentOrganizationShortName);
-        p.put("parentOrganizationName", parentOrganizationName);
         p.put("updatesCount", updatesCount);
         p.put("avatarId", avatarId);
         p.put("isPublic", isPublic);

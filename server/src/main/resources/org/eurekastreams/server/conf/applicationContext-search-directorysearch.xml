@@ -154,7 +154,7 @@
 
 	<!--
 		Strategy to build a Lucene query for searching the directory, changing
-		the query based on whether a root organization was passed in, whether
+		the query based on whether
 		the user is logged in, and whether a field should be boosted - for
 		Orgs, People, and Groups.
 	-->

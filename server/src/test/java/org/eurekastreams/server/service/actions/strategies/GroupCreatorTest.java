@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for the CreateOrganizationAction.
+ * Test for the GroupCreator.
  */
 public class GroupCreatorTest
 {
@@ -65,9 +65,6 @@ public class GroupCreatorTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    /** Test data. */
-    private static final long ORG_ID = 98765L;
 
     /**
      * The current user's account id.
@@ -193,8 +190,8 @@ public class GroupCreatorTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data. Group will be put into
-     * pending because the org requires approval.
+     * Build a group based on the input form being fully filled out with valid data. Group will be put into pending
+     * because the org requires approval.
      * 
      * @throws Exception
      *             not expected
@@ -467,7 +464,7 @@ public class GroupCreatorTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build a group based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected
@@ -517,7 +514,7 @@ public class GroupCreatorTest
     }
 
     /**
-     * Build an organization based on the input form being fully filled out with valid data.
+     * Build a group based on the input form being fully filled out with valid data.
      * 
      * @throws Exception
      *             not expected
