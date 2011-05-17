@@ -47,6 +47,7 @@ import org.eurekastreams.web.client.events.data.InsertedGadgetDefinitionResponse
 import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedThemeResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedGadgetDefinitionResponseEvent;
+import org.eurekastreams.web.client.events.data.UpdatedGalleryTabTemplateResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedThemeResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.GadgetMetaDataFetcher;
@@ -543,6 +544,19 @@ public class GalleryContent extends SettingsPanel
                         tabTemplateTab.reload();
                         Session.getInstance().getEventBus().notifyObservers(
                                 new ShowNotificationEvent(new Notification("Your tab has been successfully added")));
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(UpdatedGalleryTabTemplateResponseEvent.class,
+                new Observer<UpdatedGalleryTabTemplateResponseEvent>()
+                {
+                    public void update(final UpdatedGalleryTabTemplateResponseEvent arg1)
+                    {
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, tabParams)));
+                        tabTemplateTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your tab has been successfully saved")));
                     }
                 });
     }

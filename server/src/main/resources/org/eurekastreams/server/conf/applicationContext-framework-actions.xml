@@ -3875,6 +3875,20 @@
         <constructor-arg value="false" />
     </bean>    
     
+    <bean id="editGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="isSystemAdminAuthorization"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="jpaGalleryItemCategoryMapper" />
+                <constructor-arg ref="flushMapper" />                                 
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean> 
+    
     <bean id="deleteGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="isSystemAdminAuthorization" />

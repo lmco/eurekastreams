@@ -24,6 +24,7 @@ import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.eurekastreams.web.client.events.data.DeletedGalleryTabTemplateResponse;
 import org.eurekastreams.web.client.events.data.GotGalleryTabTemplateDTOResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGalleryTabTempalateResponseEvent;
+import org.eurekastreams.web.client.events.data.UpdatedGalleryTabTemplateResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
@@ -31,7 +32,7 @@ import org.eurekastreams.web.client.ui.Session;
  * 
  */
 public class GalleryTabTemplateModel extends BaseModel implements Insertable<HashMap<String, Serializable>>,
-        Deletable<Long>, Fetchable<GetGalleryItemsRequest>
+        Deletable<Long>, Fetchable<GetGalleryItemsRequest>, Updateable<HashMap<String, Serializable>>
 
 {
 
@@ -94,6 +95,21 @@ public class GalleryTabTemplateModel extends BaseModel implements Insertable<Has
                     }
                 }, useClientCacheIfAvailable);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void update(final HashMap<String, Serializable> request)
+    {
+        super.callWriteAction("editGalleryTabTemplate", request, new OnSuccessCommand<Boolean>()
+        {
+            public void onSuccess(final Boolean response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new UpdatedGalleryTabTemplateResponseEvent(response));
+            }
+        });
     }
 
 }
