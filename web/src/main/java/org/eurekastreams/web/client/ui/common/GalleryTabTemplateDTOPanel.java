@@ -43,6 +43,11 @@ import com.google.gwt.user.client.ui.Label;
 public class GalleryTabTemplateDTOPanel extends FlowPanel
 {
     /**
+     * The apply theme button.
+     */
+    private Label applyTab;
+
+    /**
      * Constructor.
      * 
      * @param inItem
@@ -108,9 +113,20 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
         Label title = new Label(inItem.getTitle());
         title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
 
+        applyTab = new Label("Apply");
+        applyTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyTheme());
+        applyTab.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                GalleryTabTemplateModel.getInstance().set(inItem.getId());
+            }
+        });
+
         add(new Label(inItem.getTitle()));
         add(new Label(inItem.getDescription()));
         add(new Label(inItem.getCategory().getName()));
         add(new Label(inItem.getCreated().toString()));
+        add(applyTab);
     }
 }
