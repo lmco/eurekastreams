@@ -178,8 +178,8 @@
         isAdministrator="true"/>
 		
 		
-	<Person_Stream personid="42" streamid="2" streamIndex="0" />
-	<Person_Stream personid="42" streamid="1" streamIndex="1" />
+	<Person_Stream personid="42" streamid="2" />
+	<Person_Stream personid="42" streamid="1" />
 
 	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON" requestorId="42" />
 	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON" requestorId="42" />

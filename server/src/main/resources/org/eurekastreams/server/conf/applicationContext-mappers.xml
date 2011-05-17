@@ -30,8 +30,6 @@
 	
 	<bean id="collectionCombiner" class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />	
 	
-	<bean id="getOrderedPersonStreamsByPersonIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedPersonStreamsByPersonIdDbMapper" />
-	
 	<bean id="removeCachedPersonModelViewCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonModelViewCacheMapper">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
@@ -1631,10 +1629,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="reorderStreamsDbMapper"
-		class="org.eurekastreams.server.persistence.mappers.db.ReorderStreamsDbMapper">
-	</bean>
-
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
 		<property name="cache" ref="memcachedCache" />
@@ -2047,7 +2041,7 @@
         <constructor-arg ref="queryOptimizer" />
     </bean>    
     
-    <bean id="deleteAndReorderStreamsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteAndReorderStreamsDbMapper"/>
+    <bean id="deleteStreamDbMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteStreamDbMapper"/>
         
     <bean id="getPeopleIdsUsingThemeByThemeId" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsUsingThemeByThemeId"/>
     

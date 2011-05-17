@@ -24,7 +24,6 @@ import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
@@ -34,13 +33,18 @@ import org.eurekastreams.web.client.ui.common.stream.filters.FilterRenderStrateg
 
 /**
  * Renderer for stream views.
- *
+ * 
  */
 public class CustomStreamRenderer implements FilterRenderStrategy
 {
     /**
+     * No-op reorderable model.
+     */
+    private NoOpReorderableModel reorderable = new NoOpReorderableModel();
+
+    /**
      * Gets the title of the list.
-     *
+     * 
      * @return the title.
      */
     public String getTitle()
@@ -49,18 +53,8 @@ public class CustomStreamRenderer implements FilterRenderStrategy
     }
 
     /**
-     * Gets the drag reorder action.
-     *
-     * @return the action key.
-     */
-    public Reorderable<SetStreamOrderRequest> getReorderableModel()
-    {
-        return CustomStreamModel.getInstance();
-    }
-
-    /**
      * Gets the filter panel.
-     *
+     * 
      * @param filter
      *            the filter.
      * @return the filter panel.
@@ -72,47 +66,50 @@ public class CustomStreamRenderer implements FilterRenderStrategy
 
     /**
      * Sets up the events on the bus.
-     *
+     * 
      * @param listPanel
      *            the panel to tie events to.
      */
     public void setUpEvents(final FilterListPanel listPanel)
     {
-        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.getEvent(), new Observer<CustomStreamCreatedEvent>()
-        {
-            public void update(final CustomStreamCreatedEvent arg1)
-            {
-                listPanel.addFilter(arg1.getStream());
-                EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
-                        new Notification("Your stream has been successfully saved")));
-            }
-        });
+        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.getEvent(),
+                new Observer<CustomStreamCreatedEvent>()
+                {
+                    public void update(final CustomStreamCreatedEvent arg1)
+                    {
+                        listPanel.addFilter(arg1.getStream());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your stream has been successfully saved")));
+                    }
+                });
 
-        EventBus.getInstance().addObserver(CustomStreamDeletedEvent.getEvent(), new Observer<CustomStreamDeletedEvent>()
-        {
-            public void update(final CustomStreamDeletedEvent arg1)
-            {
-                listPanel.removeFilter(arg1.getStream());
-                EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
-                        new Notification("The stream has been deleted")));
-            }
-        });
+        EventBus.getInstance().addObserver(CustomStreamDeletedEvent.getEvent(),
+                new Observer<CustomStreamDeletedEvent>()
+                {
+                    public void update(final CustomStreamDeletedEvent arg1)
+                    {
+                        listPanel.removeFilter(arg1.getStream());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification("The stream has been deleted")));
+                    }
+                });
 
-        EventBus.getInstance().addObserver(CustomStreamUpdatedEvent.getEvent(), new Observer<CustomStreamUpdatedEvent>()
-        {
-            public void update(final CustomStreamUpdatedEvent arg1)
-            {
-                listPanel.updateFilter(arg1.getStream());
-                EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
-                        new Notification("Your stream has been successfully saved")));
-            }
-        });
+        EventBus.getInstance().addObserver(CustomStreamUpdatedEvent.getEvent(),
+                new Observer<CustomStreamUpdatedEvent>()
+                {
+                    public void update(final CustomStreamUpdatedEvent arg1)
+                    {
+                        listPanel.updateFilter(arg1.getStream());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your stream has been successfully saved")));
+                    }
+                });
 
     }
 
     /**
      * Gets the create/edit dialog.
-     *
+     * 
      * @return the dialog.
      */
     public DialogContent getDialogContent()
@@ -122,12 +119,22 @@ public class CustomStreamRenderer implements FilterRenderStrategy
 
     /**
      * Look for viewId in the history token.
-     *
+     * 
      * @return the token.
      */
     public String getFilterHistoryToken()
     {
         return "streamId";
+    }
+
+    /**
+     * No reordering of custom streams.
+     * 
+     * @return a no-op reorderable
+     */
+    public Reorderable<SetStreamOrderRequest> getReorderableModel()
+    {
+        return reorderable;
     }
 
 }

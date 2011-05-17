@@ -16,10 +16,10 @@
 package org.eurekastreams.server.persistence.mappers.requests;
 
 /**
- * Request for DeleteAndReorderStreamsDbMapper.
+ * Request for DeleteStreamDbMapper.
  * 
  */
-public class DeleteAndReorderStreamsRequest
+public class DeleteStreamRequest
 {
     /**
      * Person id.
@@ -39,7 +39,7 @@ public class DeleteAndReorderStreamsRequest
      * @param inStreamId
      *            Stream id.
      */
-    public DeleteAndReorderStreamsRequest(final Long inPersonId, final Long inStreamId)
+    public DeleteStreamRequest(final Long inPersonId, final Long inStreamId)
     {
         personId = inPersonId;
         streamId = inStreamId;
