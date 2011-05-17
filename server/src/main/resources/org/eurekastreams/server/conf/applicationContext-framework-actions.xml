@@ -3865,6 +3865,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
                 <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="createGalleryTabTemplateMapper" />
                 <constructor-arg ref="jpaGalleryItemCategoryMapper" />
                 <constructor-arg>
 		            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />

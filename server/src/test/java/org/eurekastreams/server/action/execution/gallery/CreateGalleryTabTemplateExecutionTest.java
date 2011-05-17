@@ -16,11 +16,15 @@
 package org.eurekastreams.server.action.execution.gallery;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.GalleryItemCategory;
 import org.eurekastreams.server.domain.GalleryItemType;
+import org.eurekastreams.server.domain.GalleryTabTemplate;
+import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.persistence.GalleryItemCategoryMapper;
@@ -53,6 +57,12 @@ public class CreateGalleryTabTemplateExecutionTest
             .mock(DomainMapper.class, "findTabByIdMapper");
 
     /**
+     * Mapper to find GalleryTabTemplate by id.
+     */
+    private DomainMapper<FindByIdRequest, GalleryTabTemplate> getGalleryTabTemplateByIdMapper = context.mock(
+            DomainMapper.class, "getGalleryTabTemplateByIdMapper");
+
+    /**
      * Mapper used to look up the theme category.
      */
     private GalleryItemCategoryMapper galleryItemCategoryMapper = context.mock(GalleryItemCategoryMapper.class,
@@ -61,13 +71,14 @@ public class CreateGalleryTabTemplateExecutionTest
     /**
      * Mapper for persisting GalleryTabTemplate.
      */
-    private DomainMapper<PersistenceRequest, Boolean> insertMapper = context.mock(DomainMapper.class, "insertMapper");
+    private DomainMapper<PersistenceRequest<GalleryTabTemplate>, Boolean> insertMapper = context.mock(
+            DomainMapper.class, "insertMapper");
 
     /**
      * System under test.
      */
     private CreateGalleryTabTemplateExecution sut = new CreateGalleryTabTemplateExecution(findTabByIdMapper,
-            galleryItemCategoryMapper, insertMapper);
+            getGalleryTabTemplateByIdMapper, galleryItemCategoryMapper, insertMapper);
 
     /**
      * Mock tab.
@@ -78,6 +89,11 @@ public class CreateGalleryTabTemplateExecutionTest
      * Mock TabTemplate.
      */
     private TabTemplate mockTabTemplate = context.mock(TabTemplate.class);
+
+    /**
+     * Mock GalleryTabTemplate.
+     */
+    private GalleryTabTemplate mockGalleryTabTemplate = context.mock(GalleryTabTemplate.class);
 
     /**
      * Mock GalleryItemCategory.
@@ -106,16 +122,31 @@ public class CreateGalleryTabTemplateExecutionTest
                 oneOf(actionContext).getParams();
                 will(returnValue(formData));
 
+                oneOf(getGalleryTabTemplateByIdMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(mockGalleryTabTemplate));
+
                 oneOf(findTabByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(mockTab));
 
                 oneOf(mockTab).getTemplate();
                 will(returnValue(mockTabTemplate));
 
-                ignoring(mockTabTemplate);
+                allowing(mockTabTemplate).getTabName();
+                will(returnValue("tab name"));
+
+                oneOf(mockTabTemplate).getTabLayout();
+                will(returnValue(Layout.THREECOLUMN));
+
+                oneOf(mockTabTemplate).getGadgets();
+                will(returnValue(new ArrayList<Gadget>()));
 
                 oneOf(galleryItemCategoryMapper).findByName(GalleryItemType.TAB, "BLAH");
                 will(returnValue(mockGalleryItemCategory));
+
+                oneOf(mockGalleryTabTemplate).setCategory(mockGalleryItemCategory);
+                oneOf(mockGalleryTabTemplate).setDescription("description goes here");
+                oneOf(mockGalleryTabTemplate).setTabTemplate(with(any(TabTemplate.class)));
+                oneOf(mockGalleryTabTemplate).setTitle("tab name");
 
                 oneOf(insertMapper).execute(with(any(PersistenceRequest.class)));
                 will(returnValue(true));
