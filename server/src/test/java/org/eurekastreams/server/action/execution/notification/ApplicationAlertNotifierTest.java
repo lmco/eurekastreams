@@ -22,9 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.execution.notification.idle.ApplicationAlertNotifier;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;

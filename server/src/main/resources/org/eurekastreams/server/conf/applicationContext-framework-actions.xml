@@ -2041,7 +2041,6 @@
             <bean
                 class="org.eurekastreams.server.action.execution.profile.ReviewPendingGroupExecution">
                 <constructor-arg ref="jpaGroupMapper" />
-                <constructor-arg ref="emailNotifier" />
                 <constructor-arg ref="addPrivateGroupIdToCachedCoordinatorAccessList" />
                 <constructor-arg ref="deleteGroupExecution" />
             </bean>

@@ -24,9 +24,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;

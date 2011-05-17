@@ -25,8 +25,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
  * This mapper sets the specified alerts for the given user as read. (The user is provided so that someone cannot act on
  * other people's notifications.)
  */
-public class DeleteInAppNotifications extends
- BaseArgDomainMapper<InAppNotificationsByUserMapperRequest, Serializable>
+public class DeleteInAppNotifications extends BaseArgDomainMapper<InAppNotificationsByUserMapperRequest, Serializable>
 {
     /**
      * {@inheritDoc}

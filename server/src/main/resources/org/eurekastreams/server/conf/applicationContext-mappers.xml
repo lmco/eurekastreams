@@ -1310,8 +1310,9 @@
 	<bean id="getStreamScopeById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
 
-	<bean id="getStreamScopeProxyById"
-		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />		
+	<bean id="getStreamScopeProxyById" class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+		<constructor-arg value="org.eurekastreams.server.domain.stream.StreamScope" />
+	</bean>
 
 	<bean id="followedActivityIdsLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
@@ -1778,24 +1779,12 @@
 	<bean id="getNotificationFilterPreferencesByPeopleIds"
 		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
 
-	<bean id="setAllApplicationAlertsAsReadByUserId"
-		class="org.eurekastreams.server.persistence.mappers.db.SetAllApplicationAlertsAsReadByUserId" />
-
-	<bean id="getApplicationAlertsByUserId"
-		class="org.eurekastreams.server.persistence.mappers.db.GetApplicationAlertsByUserId" />
-
-	<bean id="deleteApplicationAlertsByDate"
-		class="org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate" />
-
-	<bean id="getUserIdsWithUnreadApplicationAlertsByDate"
-		class="org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate" />
-
-	<bean id="getUnreadApplicationAlertCountByUserId" 
-		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadApplicationAlertCountByUserId">
+	<bean id="getUnreadInAppNotificationCountsByUserId" 
+		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadInAppNotificationCountsByUserId">
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 		
-	<bean id="getCachedAlertCountByUserId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="getCachedUnreadInAppNotificationCountsByUserId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<!-- Cache mapper -->
 		<constructor-arg>
 		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
@@ -1811,7 +1800,7 @@
 			</bean>
 		</constructor-arg>
 		<!-- Database mapper -->
-		<constructor-arg ref="getUnreadApplicationAlertCountByUserId" />
+		<constructor-arg ref="getUnreadInAppNotificationCountsByUserId" />
 		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		<!-- Cache updater -->
@@ -1826,11 +1815,11 @@
 	    </constructor-arg>       
 	</bean>
 	
-	<bean id="getCachedAlertCountByUserId_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="getCachedUnreadInAppNotificationCountsByUserId_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<!-- Cache mapper -->
 		<constructor-arg ref="nullResultPartialMapper" />
 		<!-- Database mapper -->
-		<constructor-arg ref="getUnreadApplicationAlertCountByUserId" />
+		<constructor-arg ref="getUnreadInAppNotificationCountsByUserId" />
 		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		<!-- Cache updater -->

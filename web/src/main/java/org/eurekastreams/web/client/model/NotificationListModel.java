@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.eurekastreams.server.domain.ApplicationAlertNotification;
-import org.eurekastreams.web.client.events.NotificationCountAvailableEvent;
+import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
+
+import com.google.gwt.user.client.Window;
 
 /**
  * Model for handling the list of application alert notifications.
@@ -49,10 +50,9 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getApplicationAlerts", request,
-                new OnSuccessCommand<ArrayList<ApplicationAlertNotification>>()
+        super.callReadAction("getInAppNotifications", request, new OnSuccessCommand<ArrayList<InAppNotificationDTO>>()
                 {
-                    public void onSuccess(final ArrayList<ApplicationAlertNotification> response)
+            public void onSuccess(final ArrayList<InAppNotificationDTO> response)
                     {
                         Session.getInstance().getEventBus().notifyObservers(
                                 new GotNotificationListResponseEvent(response));
@@ -68,17 +68,18 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
      */
     public void update(final Date inRequest)
     {
-        super.callWriteAction("setAllApplicationAlertsAsRead", inRequest, new OnSuccessCommand<Integer>()
-        {
-            public void onSuccess(final Integer inResponse)
-            {
-                // this affects the data held by the count model, so clear the count model's cache
-                NotificationCountModel.getInstance().clearCache();
-
-                // announce the new count
-                // (Would be ideal if we could hand it in to the count model and let it do this + cache it.)
-                Session.getInstance().getEventBus().notifyObservers(new NotificationCountAvailableEvent(inResponse));
-            }
-        });
+        Window.alert("NotificationListModel.update needs to be replaced");
+        // super.callWriteAction("setAllApplicationAlertsAsRead", inRequest, new OnSuccessCommand<Integer>()
+        // {
+        // public void onSuccess(final Integer inResponse)
+        // {
+        // // this affects the data held by the count model, so clear the count model's cache
+        // NotificationCountModel.getInstance().clearCache();
+        //
+        // // announce the new count
+        // // (Would be ideal if we could hand it in to the count model and let it do this + cache it.)
+        // Session.getInstance().getEventBus().notifyObservers(new NotificationCountAvailableEvent(inResponse));
+        // }
+        // });
     }
 }

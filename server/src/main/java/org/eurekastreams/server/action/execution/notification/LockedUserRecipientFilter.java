@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.notification;
 
-import org.eurekastreams.server.domain.NotificationDTO;
+import java.util.Map;
+
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -27,8 +29,8 @@ public class LockedUserRecipientFilter implements RecipientFilter
      * {@inheritDoc}
      */
     @Override
-    public boolean shouldFilter(final PersonModelView inRecipient, final NotificationDTO inNotification,
-            final String inNotifierType)
+    public boolean shouldFilter(final NotificationType inType, final PersonModelView inRecipient,
+            final Map<String, Object> inProperties, final String inNotifierType)
     {
         return inRecipient.isAccountLocked();
     }

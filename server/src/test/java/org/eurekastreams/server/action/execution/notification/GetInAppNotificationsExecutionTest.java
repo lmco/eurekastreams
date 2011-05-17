@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.action.execution.notification.inapp.GetInAppNotificationsExecution;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;

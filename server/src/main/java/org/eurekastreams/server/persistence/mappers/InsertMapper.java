@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,22 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
  * Mapper used for inserting DomainEntities.
- * 
+ *
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
-@SuppressWarnings("unchecked")
 public class InsertMapper<TDomainEntityType extends DomainEntity> extends
-        BaseArgDomainMapper<PersistenceRequest, Boolean>
+        BaseArgDomainMapper<PersistenceRequest<TDomainEntityType>, Boolean>
 {
     /**
      * Inserts the DomainEntity.
-     * 
+     *
      * @param inRequest
      *            The MapperRequest.
      * @return true if inserted.
      */
-    public Boolean execute(final PersistenceRequest inRequest)
+    @Override
+    public Boolean execute(final PersistenceRequest<TDomainEntityType> inRequest)
     {
         getEntityManager().persist(inRequest.getDomainEnity());
         return true;

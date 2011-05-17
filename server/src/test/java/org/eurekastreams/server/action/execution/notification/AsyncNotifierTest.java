@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.idle.AsyncNotifier;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;

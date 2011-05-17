@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,34 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone posting to a stream to appropriate notifications.
  */
-public class StreamPostTranslator implements NotificationTranslator
+public class StreamPostTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /**
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
-        Collection<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
-        if (inActorId != inDestinationId)
+        if (inRequest.getActorId() == inRequest.getDestinationId())
         {
-            notifications.add(new NotificationDTO(Collections.singletonList(inDestinationId),
-                    NotificationType.POST_TO_PERSONAL_STREAM, inActorId, inDestinationId, EntityType.PERSON,
-                    inActivityId));
+            return null;
         }
-        return notifications;
+
+        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_PERSONAL_STREAM,
+                inRequest.getDestinationId());
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("streamOwner", PersonModelView.class, inRequest.getDestinationId());
+        batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
+        // TODO: add appropriate properties
+        return batch;
     }
 }

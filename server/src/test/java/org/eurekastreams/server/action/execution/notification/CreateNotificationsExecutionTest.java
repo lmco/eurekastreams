@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.eurekastreams.commons.test.EasyMatcher;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationPopulator;
+import org.eurekastreams.server.action.execution.notification.notifier.Notifier;
 import org.eurekastreams.server.action.execution.notification.translator.NotificationTranslator;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.NotificationType;

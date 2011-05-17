@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.AnonymousClassInterceptor;
-import org.eurekastreams.server.action.execution.notification.Notifier;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.notifier.Notifier;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;

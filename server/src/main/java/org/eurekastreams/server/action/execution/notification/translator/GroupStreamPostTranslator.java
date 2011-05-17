@@ -15,19 +15,20 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone posting to a group stream to appropriate notifications.
  */
-public class GroupStreamPostTranslator implements NotificationTranslator
+public class GroupStreamPostTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /** Mapper to get list of members of a group. */
     private final DomainMapper<Long, List<Long>> memberMapper;
@@ -47,15 +48,23 @@ public class GroupStreamPostTranslator implements NotificationTranslator
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
         // NOTE: This code assumes that the mapper returns a list which can be safely altered, specificially that it is
         // not used elsewhere (e.g. stored off) and supports removing elements.
-        List<Long> memberIdsToNotify = memberMapper.execute(inDestinationId);
-        memberIdsToNotify.remove(inActorId);
-        return memberIdsToNotify.isEmpty() ? Collections.EMPTY_LIST : Collections.singletonList(new NotificationDTO(
-                memberIdsToNotify, NotificationType.POST_TO_JOINED_GROUP, inActorId, inDestinationId,
-                EntityType.GROUP, inActivityId));
+        List<Long> memberIdsToNotify = memberMapper.execute(inRequest.getDestinationId());
+        memberIdsToNotify.remove(inRequest.getActorId());
+
+        if (memberIdsToNotify.isEmpty())
+        {
+            return null;
+        }
+
+        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_JOINED_GROUP, memberIdsToNotify);
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("streamEntity", DomainGroupModelView.class, inRequest.getDestinationId());
+        batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
+        // TODO: add appropriate properties
+        return batch;
     }
 }

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.inapp;
 
 import java.io.Serializable;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.notification.InAppNotificationsByUserMapperRequest;
 
@@ -33,7 +34,7 @@ public class ModifyInAppNotificationsExecution implements ExecutionStrategy<Prin
     private final DomainMapper<InAppNotificationsByUserMapperRequest, Serializable> modifyNotifsMapper;
 
     /** Mapper to sync database and cache unread alert count. */
-    private final DomainMapper<Long, Integer> syncMapper;
+    private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper;
 
     /**
      * Constructor.
@@ -45,7 +46,7 @@ public class ModifyInAppNotificationsExecution implements ExecutionStrategy<Prin
      */
     public ModifyInAppNotificationsExecution(
             final DomainMapper<InAppNotificationsByUserMapperRequest, Serializable> inModifyNotifsMapper,
-            final DomainMapper<Long, Integer> inSyncMapper)
+            final DomainMapper<Long, UnreadInAppNotificationCountDTO> inSyncMapper)
     {
         modifyNotifsMapper = inModifyNotifsMapper;
         syncMapper = inSyncMapper;
@@ -66,8 +67,8 @@ public class ModifyInAppNotificationsExecution implements ExecutionStrategy<Prin
         modifyNotifsMapper.execute(new InAppNotificationsByUserMapperRequest(notifIds, userId));
 
         // Sync count in cache with count in database
-        int newCount = syncMapper.execute(userId);
+        UnreadInAppNotificationCountDTO newCounts = syncMapper.execute(userId);
 
-        return newCount;
+        return newCounts;
     }
 }

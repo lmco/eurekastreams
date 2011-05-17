@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 
-import org.eurekastreams.web.client.events.NotificationCountAvailableEvent;
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
+import org.eurekastreams.web.client.events.NotificationCountsAvailableEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
@@ -46,12 +47,17 @@ public class NotificationCountModel extends BaseModel implements Fetchable<Seria
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getUnreadApplicationAlertCount", request, new OnSuccessCommand<Integer>()
-        {
-            public void onSuccess(final Integer response)
-            {
-                Session.getInstance().getEventBus().notifyObservers(new NotificationCountAvailableEvent(response));
-            }
-        }, useClientCacheIfAvailable);
+        super.callReadAction("getUnreadApplicationAlertCount", request,
+                new OnSuccessCommand<UnreadInAppNotificationCountDTO>()
+                {
+                    public void onSuccess(final UnreadInAppNotificationCountDTO response)
+                    {
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new NotificationCountsAvailableEvent(response.getNormalPriority(), response
+                                                .getHighPriority()));
+                    }
+                }, useClientCacheIfAvailable);
     }
 }

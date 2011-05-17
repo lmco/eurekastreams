@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +25,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.notification.CommentNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.domain.EntityType;
@@ -37,28 +38,28 @@ import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
  * Execution strategy for posting a comment to an activity.
- * 
+ *
  */
 public class PostActivityCommentExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Local logger instance.
      */
-    private Log logger = LogFactory.make();
+    private final Log logger = LogFactory.make();
 
     /**
      * Comment insert mapper.
      */
-    private InsertActivityComment insertCommentDAO;
+    private final InsertActivityComment insertCommentDAO;
 
     /**
      * Mapper to get activity dto.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inInsertCommentDAO
      *            The comment insert DAO.
      * @param inActivitiesMapper
@@ -73,11 +74,11 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
     /**
      * Posts a comment to an activity.
-     * 
+     *
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return {@link CommentDTO}.
-     * 
+     *
      */
     @Override
     public CommentDTO execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
@@ -89,30 +90,28 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
         CommentDTO results = insertCommentDAO.execute(new InsertActivityCommentRequest(personId, activityId, inRequest
                 .getBody()));
 
-        inActionContext.getUserActionRequests().addAll(
-                getNotificationUserRequests(personId, activityId, results.getId()));
+        getNotificationUserRequests(personId, activityId, results.getId(), inActionContext.getUserActionRequests());
 
         return results;
     }
 
     /**
      * Creates and sets UserActionRequests based on comment action.
-     * 
+     *
      * @param personId
      *            current user id.
      * @param activityId
      *            id of activity being commented on.
      * @param commentId
      *            ID of new comment.
-     * @return List of UserActionRequests.
+     * @param queuedRequests
+     *            List to receive any queued requests generated.
      */
-    private List<UserActionRequest> getNotificationUserRequests(final long personId, final long activityId,
-            final long commentId)
+    private void getNotificationUserRequests(final long personId, final long activityId, final long commentId,
+            final Collection<UserActionRequest> queuedRequests)
     {
-        List<UserActionRequest> queuedRequests = null;
-
         // need to get activity info to decide about notifying
-        ActivityDTO activityDTO = activitiesMapper.execute(Arrays.asList(activityId)).get(0);
+        ActivityDTO activityDTO = activitiesMapper.execute(Collections.singletonList(activityId)).get(0);
 
         // Sends notifications for new personal stream comments.
         StreamEntityDTO destination = activityDTO.getDestinationStream();
@@ -120,34 +119,25 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
         EntityType destinationType = destination.getType();
 
         RequestType requestType = null;
-        if (destinationType == EntityType.PERSON)
+        switch (destinationType)
         {
+        case PERSON:
             requestType = RequestType.COMMENT;
-        }
-
-        else if (destinationType == EntityType.GROUP)
-        {
+            break;
+        case GROUP:
             requestType = RequestType.GROUP_COMMENT;
-        }
-
-        else if (destinationType == EntityType.RESOURCE)
-        {
+            break;
+        case RESOURCE:
             // TODO: Determine correct action for notifications here.
-            return new ArrayList<UserActionRequest>();
+            return;
+        default:
+            return;
         }
 
-        if (requestType != null)
-        {
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(requestType, personId,
-                    destinationId, commentId);
+        CreateNotificationsRequest notificationRequest = new CommentNotificationsRequest(requestType, personId,
+                destinationId, activityId, commentId);
 
-            // create list if it has not already been done.
-            queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;
-
-            // add UserRequest.
-            queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
-        }
-
-        return queuedRequests;
+        // add request to queued request list
+        queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
     }
 }

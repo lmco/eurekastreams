@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.eurekastreams.server.AnonymousClassInterceptor;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.idle.CommentTemplateEmailBuilder;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.idle.TemplateEmailBuilder;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;

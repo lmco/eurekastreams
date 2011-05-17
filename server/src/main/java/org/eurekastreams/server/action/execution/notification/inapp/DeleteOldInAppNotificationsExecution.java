@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.inapp;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.notification.DeleteInAppNotificationsByDate;
 import org.eurekastreams.server.persistence.mappers.db.notification.GetUserIdsWithUnreadInAppNotificationsByDate;
@@ -48,10 +49,8 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
      */
     private final GetUserIdsWithUnreadInAppNotificationsByDate unreadMapper;
 
-    /**
-     * Mapper to sync database and cache unread alert count.
-     */
-    private final DomainMapper<Long, Integer> syncMapper;
+    /** Mapper to sync database and cache unread alert count. */
+    private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper;
 
     /**
      * Age at which alerts can be deleted.
@@ -72,7 +71,7 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
      */
     public DeleteOldInAppNotificationsExecution(final DeleteInAppNotificationsByDate inDeleteMapper,
             final GetUserIdsWithUnreadInAppNotificationsByDate inUnreadMapper,
-            final DomainMapper<Long, Integer> inSyncMapper, final int inAgeInDays)
+            final DomainMapper<Long, UnreadInAppNotificationCountDTO> inSyncMapper, final int inAgeInDays)
     {
         deleteMapper = inDeleteMapper;
         ageInDays = inAgeInDays;

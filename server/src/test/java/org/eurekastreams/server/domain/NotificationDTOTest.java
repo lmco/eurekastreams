@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 
 import org.eurekastreams.commons.test.IsEqualInternally;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.junit.Test;
 

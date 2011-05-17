@@ -16,21 +16,22 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone liking an activity to appropriate notifications.
  */
-public class LikeTranslator implements NotificationTranslator
+public class LikeTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /** For getting activity info. */
     private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
@@ -68,21 +69,23 @@ public class LikeTranslator implements NotificationTranslator
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
-        ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inActivityId)).get(0);
+        ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inRequest.getActivityId())).get(0);
         List<Long> recipients = new ArrayList<Long>();
 
-        addAuthorIfAppropriate(activity.getActor(), inActorId, recipients);
-        addAuthorIfAppropriate(activity.getOriginalActor(), inActorId, recipients);
+        addAuthorIfAppropriate(activity.getActor(), inRequest.getActorId(), recipients);
+        addAuthorIfAppropriate(activity.getOriginalActor(), inRequest.getActorId(), recipients);
         if (recipients.isEmpty())
         {
-            return Collections.EMPTY_LIST;
+            return null;
         }
 
-        StreamEntityDTO destStream = activity.getDestinationStream();
-        return Collections.singletonList(new NotificationDTO(recipients, NotificationType.LIKE_ACTIVITY, inActorId,
-                destStream.getDestinationEntityId(), destStream.getType(), inActivityId));
+        NotificationBatch batch = new NotificationBatch(NotificationType.LIKE_ACTIVITY, recipients);
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("stream", activity.getDestinationStream());
+        batch.setProperty("activity", activity);
+        // TODO: add appropriate properties
+        return batch;
     }
 }

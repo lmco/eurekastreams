@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.action.execution.notification.inapp.ModifyInAppNotificationsExecution;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.notification.InAppNotificationsByUserMapperRequest;
 import org.eurekastreams.server.testing.TestContextCreator;

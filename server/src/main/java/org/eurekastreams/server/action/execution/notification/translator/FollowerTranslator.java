@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,26 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone beginning to follow a stream to appropriate notifications.
  */
-public class FollowerTranslator implements NotificationTranslator
+public class FollowerTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /**
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
-        return Collections.singletonList(new NotificationDTO(Collections.singletonList(inDestinationId),
-                NotificationType.FOLLOW_PERSON, inActorId, inDestinationId, EntityType.PERSON, 0L));
+        NotificationBatch batch = new NotificationBatch(NotificationType.FOLLOW_PERSON, inRequest.getDestinationId());
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("streamEntity", PersonModelView.class, inRequest.getDestinationId());
+        // TODO: add appropriate properties
+        return batch;
     }
 }

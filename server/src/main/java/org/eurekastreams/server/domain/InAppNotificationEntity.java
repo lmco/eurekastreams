@@ -44,7 +44,7 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     /** Person to receive the notification. */
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "recipientId")
-    private final Person recipient = new Person();
+    private Person recipient = new Person();
 
     /** Type of notification being sent. */
     @Enumerated(EnumType.STRING)
@@ -269,5 +269,22 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     public void setAvatarOwnerUniqueId(final String inAvatarOwnerUniqueId)
     {
         avatarOwnerUniqueId = inAvatarOwnerUniqueId;
+    }
+
+    /**
+     * @return the recipient
+     */
+    public Person getRecipient()
+    {
+        return recipient;
+    }
+
+    /**
+     * @param inRecipient
+     *            the recipient to set
+     */
+    public void setRecipient(final Person inRecipient)
+    {
+        recipient = inRecipient;
     }
 }

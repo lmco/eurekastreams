@@ -17,7 +17,7 @@ package org.eurekastreams.web.client.ui.common.notification;
 
 import java.util.List;
 
-import org.eurekastreams.server.domain.ApplicationAlertNotification;
+import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.events.EventBus;
@@ -27,7 +27,6 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.NotificationListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
-import org.eurekastreams.web.client.ui.common.notification.rendering.NotificationsRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -159,28 +158,33 @@ public class NotificationsDialogContent extends BaseDialogContent
      * @param list
      *            List of notifications.
      */
-    private void displayNotifications(final List<ApplicationAlertNotification> list)
+    private void displayNotifications(final List<InAppNotificationDTO> list)
     {
         listPanel.clear();
         listPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
-        if (list.size() > 0)
+        if (!list.isEmpty())
         {
-            NotificationsRenderer renderer = new NotificationsRenderer();
-            for (ApplicationAlertNotification notif : list)
+            for (InAppNotificationDTO notif : list)
             {
-                try
-                {
-                    listPanel.add(renderer.render(notif));
-                }
-                catch (Exception ex)
-                {
-                    Label label = new Label("Cannot display notification");
-                    listPanel.add(label);
-                }
-            }
+                listPanel.add(new Label(notif.getMessage()));
 
-            // mark all as read since they've been displayed
-            NotificationListModel.getInstance().update(list.get(0).getNotificationDate());
+            }
+            // NotificationsRenderer renderer = new NotificationsRenderer();
+            // for (InAppNotificationDTO notif : list)
+            // {
+            // try
+            // {
+            // listPanel.add(renderer.render(notif));
+            // }
+            // catch (Exception ex)
+            // {
+            // Label label = new Label("Cannot display notification");
+            // listPanel.add(label);
+            // }
+            // }
+            //
+            // // mark all as read since they've been displayed
+            // NotificationListModel.getInstance().update(list.get(0).getNotificationDate());
         }
         else
         {

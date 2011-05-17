@@ -25,7 +25,9 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.eurekastreams.server.AnonymousClassInterceptor;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.idle.ActivityTemplateEmailBuilder;
+import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.idle.TemplateEmailBuilder;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;

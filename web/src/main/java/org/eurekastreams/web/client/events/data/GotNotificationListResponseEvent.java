@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@ package org.eurekastreams.web.client.events.data;
 
 import java.util.ArrayList;
 
-import org.eurekastreams.server.domain.ApplicationAlertNotification;
+import org.eurekastreams.server.domain.InAppNotificationDTO;
 
 /**
  * List of application alert notifications received.
  */
-public class GotNotificationListResponseEvent extends
-        BaseDataResponseEvent<ArrayList<ApplicationAlertNotification>>
+public class GotNotificationListResponseEvent extends BaseDataResponseEvent<ArrayList<InAppNotificationDTO>>
 {
     /**
      * Constructor.
@@ -31,7 +30,7 @@ public class GotNotificationListResponseEvent extends
      * @param inResponse
      *            Response.
      */
-    public GotNotificationListResponseEvent(final ArrayList<ApplicationAlertNotification> inResponse)
+    public GotNotificationListResponseEvent(final ArrayList<InAppNotificationDTO> inResponse)
     {
         super(inResponse);
     }

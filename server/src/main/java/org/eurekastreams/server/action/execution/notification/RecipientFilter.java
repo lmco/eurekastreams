@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.notification;
 
-import org.eurekastreams.server.domain.NotificationDTO;
+import java.util.Map;
+
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -26,13 +28,16 @@ public interface RecipientFilter
     /**
      * Determines whether a given recipient should not receive a given notification via a given notifier (transport).
      *
+     * @param type
+     *            Type of notification.
      * @param recipient
      *            The potential recipient.
-     * @param notification
-     *            The notification.
+     * @param properties
+     *            Notification details.
      * @param notifierType
      *            The notifier type (transport method, e.g. email).
      * @return If recipient should be removed from the list.
      */
-    boolean shouldFilter(PersonModelView recipient, NotificationDTO notification, String notifierType);
+    boolean shouldFilter(NotificationType type, PersonModelView recipient, Map<String, Object> properties,
+            String notifierType);
 }
