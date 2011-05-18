@@ -16,12 +16,14 @@
 package org.eurekastreams.server.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
@@ -88,6 +90,13 @@ public class GalleryTabTemplate extends DomainEntity
     @JoinColumn(name = "tabTemplateId")
     @Basic(optional = false)
     private TabTemplate tabTemplate;
+
+    /**
+     * TabTemplates based on this GalleryTabTemplate.
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
+    @JoinColumn(name = "galleryTabTemplateId")
+    private List<TabTemplate> tabTemplates;
 
     /**
      * Required empty constructor.
