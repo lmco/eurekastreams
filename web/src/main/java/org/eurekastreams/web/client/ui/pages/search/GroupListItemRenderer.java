@@ -67,10 +67,6 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
         groupNameLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         groupAbout.add(groupNameLink);
 
-        url = Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ORGANIZATIONS, group.getParentOrganizationShortName()));
-        groupAbout.add(new Hyperlink(group.getParentOrganizationName(), url));
-
         if (null != group.getDescription())
         {
             Label about = new Label(group.getDescription());

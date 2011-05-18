@@ -18,7 +18,7 @@ package org.eurekastreams.server.action.execution.profile;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.BannerableDTO;
-import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.BannerableMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateCachedBannerMapperRequest;
 import org.eurekastreams.server.persistence.mappers.stream.BaseArgCachedDomainMapper;
@@ -68,9 +68,9 @@ public class DeleteBannerExecutionTest
             .mock(BaseArgCachedDomainMapper.class);
 
     /**
-     * Mocked organization who will get the new tab.
+     * Mocked domain group who will get the new tab.
      */
-    private Organization organization = context.mock(Organization.class);
+    private DomainGroup group = context.mock(DomainGroup.class);
 
     /**
      * Mocked ImageWriter.
@@ -124,7 +124,7 @@ public class DeleteBannerExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(testParam));
 
-                allowing(organization).getId();
+                allowing(group).getId();
                 will(returnValue(5L));
 
                 ignoring(user);

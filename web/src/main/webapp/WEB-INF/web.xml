@@ -211,11 +211,6 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>orgAvatarUploadServlet</servlet-name>
-		<servlet-class>org.eurekastreams.server.service.servlets.UploadOrgAvatarServlet</servlet-class>
-	</servlet>
-
-	<servlet>
 		<servlet-name>bannerUploadServlet</servlet-name>
 		<servlet-class>org.eurekastreams.server.service.servlets.UploadBannerServlet</servlet-class>
 	</servlet>
@@ -238,11 +233,6 @@
 	<servlet-mapping>
 		<servlet-name>groupAvatarUploadServlet</servlet-name>
 		<url-pattern>/eurekastreams/groupavatarupload/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>orgAvatarUploadServlet</servlet-name>
-		<url-pattern>/eurekastreams/orgavatarupload/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

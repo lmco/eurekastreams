@@ -71,6 +71,9 @@ public interface CoreCss extends CssResource
     @ClassName("add-theme")
     String addTheme();
 
+    @ClassName("add-tab")
+    String addTab();
+
     @ClassName("addbutton")
     String filterAddButton();
 

@@ -40,12 +40,6 @@ public class PersonStream extends WrappedLightEntity implements Serializable
     private PersonStreamPk pk = null;
 
     /**
-     * Index of the followed group in the list of followed groups for the follower.
-     */
-    @Basic
-    private int streamIndex = 0;
-
-    /**
      * Constructor.
      * 
      * @param inStreamId
@@ -87,22 +81,6 @@ public class PersonStream extends WrappedLightEntity implements Serializable
     }
 
     /**
-     * @param inStreamIndex the stream index to set
-     */
-    public void setStreamIndex(final int inStreamIndex)
-    {
-        streamIndex = inStreamIndex;
-    }
-
-    /**
-     * @return the stream index
-     */
-    public int getStreamIndex()
-    {
-        return streamIndex;
-    }
-
-    /**
      * Composite primary key for follower.
      * 
      */
@@ -135,8 +113,9 @@ public class PersonStream extends WrappedLightEntity implements Serializable
             personId = inPersonId;
         }
 
-        /** 
+        /**
          * Get the stream id.
+         * 
          * @return the stream id.
          */
         public long getStreamId()
@@ -144,8 +123,9 @@ public class PersonStream extends WrappedLightEntity implements Serializable
             return streamId;
         }
 
-        /** 
+        /**
          * Get the person id.
+         * 
          * @return the person id.
          */
         public long getPersonId()

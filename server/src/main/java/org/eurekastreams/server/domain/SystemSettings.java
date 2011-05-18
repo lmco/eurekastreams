@@ -32,7 +32,7 @@ import org.hibernate.validator.Min;
 
 /**
  * This class represents the System Settings domain object.
- *
+ * 
  */
 @SuppressWarnings("serial")
 @Entity
@@ -161,6 +161,11 @@ public class SystemSettings extends DomainEntity implements Serializable
     private String headerTemplate;
 
     /**
+     * Whether all users can create groups - if set to false, then groups have to be approved by admin.
+     */
+    private boolean allUsersCanCreateGroups;
+
+    /**
      * HTML content template used on the site labeling line of the footer.
      */
     @Transient
@@ -286,9 +291,9 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     *
+     * 
      * @param inPluginWarning
-     * the plugin warning setter.
+     *            the plugin warning setter.
      */
     public void setPluginWarning(final String inPluginWarning)
     {
@@ -296,7 +301,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     *
+     * 
      * @return the plugin warning text.
      */
     public String getPluginWarning()
@@ -306,7 +311,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * Get the phone number for system support.
-     *
+     * 
      * @return the phone number for system support
      */
     public String getSupportPhoneNumber()
@@ -316,7 +321,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * Set the phone number for system support.
-     *
+     * 
      * @param inSupportPhoneNumber
      *            the phone number for system support
      */
@@ -327,7 +332,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * Get the email address for system support.
-     *
+     * 
      * @return the email address for system support
      */
     public String getSupportEmailAddress()
@@ -337,7 +342,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * Set the email address for system support.
-     *
+     * 
      * @param inSupportEmailAddress
      *            the email address for system support
      */
@@ -348,7 +353,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * Get the short name of the group stream that provides help to users.
-     *
+     * 
      * @return the short name of the group stream that provides help to users
      */
     public String getSupportStreamGroupShortName()
@@ -358,7 +363,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * Set the short name of the group stream that provides help to users.
-     *
+     * 
      * @param inSupportStreamGroupShortName
      *            the short name of the group stream that provides help to users
      */
@@ -369,7 +374,7 @@ public class SystemSettings extends DomainEntity implements Serializable
 
     /**
      * @param inSupportStreamGroupDisplayName
-     *          the supportStreamGroupDisplayName to set
+     *            the supportStreamGroupDisplayName to set
      */
     public void setSupportStreamGroupDisplayName(final String inSupportStreamGroupDisplayName)
     {
@@ -417,4 +422,22 @@ public class SystemSettings extends DomainEntity implements Serializable
     {
         footerTemplate = inFooterTemplate;
     }
+
+    /**
+     * @return the allUsersCanCreateGroups
+     */
+    public boolean getAllUsersCanCreateGroups()
+    {
+        return allUsersCanCreateGroups;
+    }
+
+    /**
+     * @param inAllUsersCanCreateGroups
+     *            the allUsersCanCreateGroups to set
+     */
+    public void setAllUsersCanCreateGroups(final boolean inAllUsersCanCreateGroups)
+    {
+        allUsersCanCreateGroups = inAllUsersCanCreateGroups;
+    }
+
 }

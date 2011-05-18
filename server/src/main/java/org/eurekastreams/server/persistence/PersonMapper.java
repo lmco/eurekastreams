@@ -144,15 +144,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     }
 
     /**
-     * Purges the related organizations for all people.
-     * 
-     */
-    public void purgeRelatedOrganizations()
-    {
-        getEntityManager().createQuery("DELETE FROM PersonRelatedOrganization").executeUpdate();
-    }
-
-    /**
      * Removes a follower/following relationship between two Person objects.
      * 
      * @param followerId

@@ -88,7 +88,6 @@ public class PersonTest
     @Before
     public final void setup()
     {
-        final Organization org = new Organization("orgName", "shortOrgName");
         final HashSet<Long> optoutvideos = new HashSet<Long>();
         optoutvideos.add(5L);
 
@@ -173,7 +172,6 @@ public class PersonTest
         assertEquals("engineer", mv.getTitle());
         assertEquals("user@domain.com", mv.getEmail());
         assertEquals(aDate, mv.getDateAdded());
-        // TODO: assertEquals(, mv.getParentOrganizationId());
 
         assertEquals(1, mv.getOptOutVideos().size());
         assertEquals((Long) 5L, mv.getOptOutVideos().iterator().next());
@@ -247,7 +245,6 @@ public class PersonTest
         Date dateAdded = new Date();
         final int updatesCount = 23832;
 
-        Organization organization = new Organization("orgName", "shortOrgName");
         Integer avatarCropX = 1;
         Integer avatarCropY = 2;
         Integer avatarCropSize = 3;

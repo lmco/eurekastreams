@@ -26,7 +26,6 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.profile.DomainGroupCacheUpdaterRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 
 /**
  * Abstract parent class for creating/updating groups.
@@ -44,28 +43,19 @@ public abstract class GroupPersister implements ResourcePersistenceStrategy<Doma
     private final DomainGroupMapper groupMapper;
 
     /**
-     * the org mapper.
-     */
-    private final OrganizationMapper orgMapper;
-
-    /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
-     *            The group mapper.
-     * @param inOrganizationMapper
-     *            The Org being added too.
+     *            The group mapper
      */
-    public GroupPersister(final DomainGroupMapper inGroupMapper, 
-            final OrganizationMapper inOrganizationMapper)
+    public GroupPersister(final DomainGroupMapper inGroupMapper)
     {
         groupMapper = inGroupMapper;
-        orgMapper = inOrganizationMapper;
     }
 
     /**
      * Queue an async cache updating for the input DomainGroup.
-     *
+     * 
      * @param inActionContext
      *            the app context
      * @param inDomainGroup
@@ -87,7 +77,7 @@ public abstract class GroupPersister implements ResourcePersistenceStrategy<Doma
 
     /**
      * Persists Group.
-     *
+     * 
      * @param inActionContext
      *            the app context
      * @param inFields
@@ -102,7 +92,7 @@ public abstract class GroupPersister implements ResourcePersistenceStrategy<Doma
 
     /**
      * Abstract method.
-     *
+     * 
      * @param inActionContext
      *            the action context
      * @param inFields
@@ -118,14 +108,6 @@ public abstract class GroupPersister implements ResourcePersistenceStrategy<Doma
     protected DomainGroupMapper getGroupMapper()
     {
         return groupMapper;
-    }
-
-    /**
-     * @return the orgMapper
-     */
-    protected OrganizationMapper getOrgMapper()
-    {
-        return orgMapper;
     }
 
 }

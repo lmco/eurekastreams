@@ -27,7 +27,7 @@ public final class ValidationTestHelper
      */
     private ValidationTestHelper()
     {
-        //nothing to do here.
+        // nothing to do here.
     }
 
     /**

@@ -103,24 +103,14 @@ public class DomainGroupTest
         sut.setDescription("Description");
         assertEquals("Description", sut.getDescription());
 
-        Organization parent = context.mock(Organization.class);
-        sut.setParentOrganization(parent);
-        assertEquals(parent, sut.getParentOrganization());
-
         sut.setPublicGroup(true);
         assertTrue(sut.isPublicGroup());
-
-        sut.setUrl("http://facelift");
-        assertEquals("http://facelift", sut.getUrl());
 
         sut.setPending(true);
         assertTrue(sut.isPending());
 
         sut.setPending(false);
         assertFalse(sut.isPending());
-
-        sut.setParentOrgId(3L);
-        assertEquals(new Long(3L), sut.getParentOrgId());
 
         sut.setStreamPostable(false);
         assertFalse(sut.isStreamPostable());

@@ -23,7 +23,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 
 /**
- * Lookup people in the database, returning People entities without parent Organizations.
+ * Lookup people in the database, returning People entities.
  */
 public class DomainPersonLookup implements PersonLookupStrategy
 {
@@ -65,10 +65,7 @@ public class DomainPersonLookup implements PersonLookupStrategy
         log.debug("DomainPersonLookup looking up " + searchString);
 
         List<Person> people = mapper.findPeopleByPrefix(prefix);
-        // NOTE: this mapper is not responsible for loading parent organization. If the caller wants it, let them use
-        // the PopulatePeopleWithSkeletonParentOrgsCacheMapper
         return people;
-
     }
 
 }

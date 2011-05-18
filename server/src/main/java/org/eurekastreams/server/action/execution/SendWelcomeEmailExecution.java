@@ -77,7 +77,7 @@ public class SendWelcomeEmailExecution implements ExecutionStrategy<ActionContex
     }
 
     /**
-     * Increase an organizations employee count by a given amount.
+     * Send welcome email.
      * 
      * @param inActionContext
      *            {@link ActionContext}.

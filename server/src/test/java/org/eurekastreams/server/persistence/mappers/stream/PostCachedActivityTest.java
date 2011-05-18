@@ -75,7 +75,6 @@ public class PostCachedActivityTest
     {
         final long activityId = 884872L;
         final long personId = 1737L;
-        final long recipientParentOrgId = 877777L;
         final String personAccountId = "accountid";
         final PersonModelView person = context.mock(PersonModelView.class);
 
@@ -157,7 +156,6 @@ public class PostCachedActivityTest
     {
         final long activityId = 884872L;
         final long personId = 1737L;
-        final long recipientParentOrgId = 877777L;
         final String personAccountId = "accountid";
         final PersonModelView person = context.mock(PersonModelView.class);
         final List<PersonModelView> people = new ArrayList<PersonModelView>();
@@ -235,10 +233,8 @@ public class PostCachedActivityTest
         final long activityId = 884872L;
         PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
-        final long recipientParentOrgId = 877777L;
 
         final DomainGroupModelView group = new DomainGroupModelView();
-        group.setParentOrganizationId(recipientParentOrgId);
         final List<DomainGroupModelView> groups = new ArrayList<DomainGroupModelView>();
         groups.add(group);
 
@@ -296,11 +292,9 @@ public class PostCachedActivityTest
         final long activityId = 884872L;
         PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper);
         sut.setCache(cache);
-        final long recipientParentOrgId = 877777L;
         final long sharedResourceScopeId = 3838L;
 
         final DomainGroupModelView group = new DomainGroupModelView();
-        group.setParentOrganizationId(recipientParentOrgId);
         final List<DomainGroupModelView> groups = new ArrayList<DomainGroupModelView>();
         groups.add(group);
 
@@ -385,7 +379,7 @@ public class PostCachedActivityTest
                 will(returnValue(recipStreamScope));
 
                 allowing(recipStreamScope).getScopeType();
-                will(returnValue(ScopeType.ORGANIZATION));
+                will(returnValue(ScopeType.ALL));
 
                 allowing(recipStreamScope).getUniqueKey();
                 will(returnValue("blah"));

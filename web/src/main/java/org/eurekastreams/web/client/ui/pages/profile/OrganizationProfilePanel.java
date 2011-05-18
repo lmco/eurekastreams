@@ -16,33 +16,25 @@
 package org.eurekastreams.web.client.ui.pages.profile;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
-import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
+import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
-import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPendingGroupsResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedActivityFlagResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedReviewPendingGroupResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.FlaggedActivityModel;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.model.PendingGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
@@ -51,7 +43,6 @@ import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PendingGroupRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
-import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
@@ -59,9 +50,6 @@ import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
-import org.eurekastreams.web.client.ui.pages.profile.widgets.OrgAboutPanel;
-import org.eurekastreams.web.client.ui.pages.profile.widgets.PeopleListPanel;
-import org.eurekastreams.web.client.ui.pages.profile.widgets.PopularHashtagsPanel;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 
@@ -105,19 +93,9 @@ public class OrganizationProfilePanel extends FlowPanel
     private final LeftBarPanel leftBarPanel = new LeftBarPanel();
 
     /**
-     * The org.
-     */
-    private OrganizationModelView org;
-
-    /**
      * Connections Panel Holds the Small boxes with the connect counts.
      */
     private ConnectionsPanel connectionsPanel;
-
-    /**
-     * Action Processor.
-     */
-    private final ActionProcessor processor = Session.getInstance().getActionProcessor();
 
     /** Number of flagged activities (for use on the admin tab label). */
     private int flaggedActivityCount = 0;
@@ -146,9 +124,7 @@ public class OrganizationProfilePanel extends FlowPanel
         final Hyperlink addGroupLink = new Hyperlink("", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.NEW_GROUP, accountId)));
 
-        ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
-
-        addGroupLink.setVisible(false);
+        addGroupLink.setVisible(true);
         portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePageContainer());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
@@ -156,7 +132,11 @@ public class OrganizationProfilePanel extends FlowPanel
         leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
 
         this.add(addGroupLink);
-        this.add(profileSettingsLink);
+
+        if (Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            this.add(profileSettingsLink);
+        }
         leftBarContainer.add(leftBarPanel);
         this.add(leftBarContainer);
         this.add(portalPageContainer);
@@ -164,98 +144,54 @@ public class OrganizationProfilePanel extends FlowPanel
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
-        EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
-                new Observer<GotOrganizationModelViewInformationResponseEvent>()
-                {
-                    public void update(final GotOrganizationModelViewInformationResponseEvent event)
-                    {
-                        addGroupLink.setVisible(true);
-                        setEntity(event.getResponse());
-                    }
-                });
-
-        OrganizationModel.getInstance().fetch(accountId, false);
+        setEntity();
     }
 
     /**
-     * We have the Person, so set up the Profile summary.
-     * 
-     * @param inOrg
-     *            the person whose profile is being displayed
+     * We have the org, so set up the Profile summary.
      */
-    public void setEntity(final OrganizationModelView inOrg)
+    public void setEntity()
     {
-        org = inOrg;
+        final EventBus eventBus = Session.getInstance().getEventBus();
+        eventBus.notifyObservers(new SetBannerEvent(null));
 
         leftBarPanel.clear();
         portalPageContainer.clear();
 
-        // Set the banner.
-        Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent(org));
-
         // Update the Profile summary
         leftBarPanel.clear();
 
-        leftBarPanel.addChildWidget(new OrgAboutPanel(org.getName(), org.getEntityId(), org.getAvatarId(),
-                org.getUrl(), org.getDescription()));
-        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.ORGANIZATION, org.getShortName()));
-
-        connectionsPanel = new ConnectionsPanel();
-        orgDescendantGroupCount = org.getDescendantGroupCount();
-        connectionsPanel.addConnection("Employees", "Recently Added", org.getDescendantEmployeeCount());
-        connectionsPanel.addConnection("Groups", "Recently Added", orgDescendantGroupCount,
-                StaticResourceBundle.INSTANCE.coreCss().center());
-        connectionsPanel.addConnection("Sub Orgs", null, org.getChildOrganizationCount());
-
-        leftBarPanel.addChildWidget(connectionsPanel);
-
-        leftBarPanel.addChildWidget(new PeopleListPanel(new HashSet<PersonModelView>(org.getLeaders()), "Leadership",
-                PeopleListPanel.DISPLAY_ALL, null, null, null));
-
         final StreamPanel streamContent = new StreamPanel(ShowRecipient.ALL);
-        String jsonRequest = StreamJsonRequestFactory.setOrganization(org.getShortName(),
-                StreamJsonRequestFactory.getEmptyRequest()).toString();
-
-        EventBus.getInstance().notifyObservers(new StreamRequestEvent(org.getName(), jsonRequest));
 
         portalPage = new TabContainerPanel();
         portalPage.addTab(new SimpleTab("Stream", streamContent));
 
-        Session.getInstance().getEventBus().addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
-                new Observer<AuthorizeUpdateOrganizationResponseEvent>()
+        profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ORG_SETTINGS, "")));
+
+        profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
+
+        if (Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            final SimpleTab adminTab = buildAdminTab();
+            portalPage.addTab(adminTab);
+
+            // if heading for admin tab on initial entry to the org profile page, then do it
+            switchToAdminTabFilterIfRequested();
+        }
+
+        // listen for history change event so that notifications can later send user to admin
+        // tab
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
                 {
-                    public void update(final AuthorizeUpdateOrganizationResponseEvent event)
+                    public void update(final UpdatedHistoryParametersEvent inArg1)
                     {
-                        if (event.getResponse())
-                        {
-                            profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                    new CreateUrlRequest(Page.ORG_SETTINGS, org.getShortName())));
-
-                            profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-                            RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
-
-                            final SimpleTab adminTab = buildAdminTab();
-                            portalPage.addTab(adminTab);
-
-                            // if heading for admin tab on initial entry to the org profile page, then do it
-                            switchToAdminTabFilterIfRequested();
-
-                            // listen for history change event so that notifications can later send user to admin
-                            // tab
-                            Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                                    new Observer<UpdatedHistoryParametersEvent>()
-                                    {
-                                        public void update(final UpdatedHistoryParametersEvent inArg1)
-                                        {
-                                            switchToAdminTabFilterIfRequested();
-
-                                        }
-                                    });
-                        }
+                        switchToAdminTabFilterIfRequested();
                     }
                 });
 
-        OrganizationModel.getInstance().authorize(org.getShortName(), false);
         portalPage.init();
         portalPage.setStyleName(StaticResourceBundle.INSTANCE.coreCss().profileGadgetsContainer());
         portalPageContainer.add(portalPage);
@@ -266,6 +202,11 @@ public class OrganizationProfilePanel extends FlowPanel
      */
     private void switchToAdminTabFilterIfRequested()
     {
+        if (!Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            return;
+        }
+
         if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
         {
             portalPage.switchToTab("Admin");
@@ -337,8 +278,8 @@ public class OrganizationProfilePanel extends FlowPanel
         // We need the counts for both of the lists, but at most one list will perform an initial data load, we need to
         // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
         // visible lists.)
-        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(0, 1), false);
-        PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(org.getShortName(), 0, 1), false);
+        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesRequest(0, 1), false);
+        PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(0, 1), false);
 
         // wire up events to refresh the list when something is removed
         eventBus.addObserver(UpdatedActivityFlagResponseEvent.class, new Observer<UpdatedActivityFlagResponseEvent>()
@@ -382,10 +323,10 @@ public class OrganizationProfilePanel extends FlowPanel
         activityLinkBuilder.addExtraParameter("manageFlagged", "true");
         flaggedRenderer.setActivityLinkBuilder(activityLinkBuilder);
         adminTabContent.addSet(flaggedActivitiesFilterName, FlaggedActivityModel.getInstance(), flaggedRenderer,
-                new GetFlaggedActivitiesByOrgRequest(0, 0));
+                new GetFlaggedActivitiesRequest(0, 0));
         // pending groups StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
-                new GetPendingGroupsRequest(org.getShortName(), 0, 0));
+                new GetPendingGroupsRequest(0, 0));
 
         return adminTab;
     }

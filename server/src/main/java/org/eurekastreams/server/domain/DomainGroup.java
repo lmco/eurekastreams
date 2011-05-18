@@ -47,7 +47,6 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge;
-import org.hibernate.annotations.Formula;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.DateBridge;
@@ -69,8 +68,7 @@ import org.hibernate.validator.Size;
 @ClassBridge(name = "followerAndCoordinatorIds", index = Index.TOKENIZED, store = Store.NO,
 // whitespace analyzer and custom class bridge to use JPA to get the ids rather than load extra objects
 analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class)
-public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, OrganizationChild,
-        DomainGroupEntity, CompositeEntity
+public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, DomainGroupEntity, CompositeEntity
 {
     /**
      * Serial version uid.
@@ -216,13 +214,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     @Basic
     @Field(name = "isPublic", index = Index.UN_TOKENIZED, store = Store.NO)
     private boolean publicGroup;
-
-    /**
-     * The url of the group.
-     */
-    @Basic(optional = true)
-    @Pattern(regex = URL_REGEX_PATTERN, message = WEBSITE_MESSAGE)
-    private String url;
 
     /**
      * Whether the entity allows comments on their post.
@@ -382,19 +373,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
         hashCode ^= shortName.hashCode();
         return hashCode;
     }
-
-    /**
-     * Parent organization.
-     */
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "parentOrganizationId")
-    private Organization parentOrganization;
-
-    /**
-     * Get the parent org id w/o loading the org.
-     */
-    @Formula("parentOrganizationId")
-    private Long parentOrgId;
 
     /**
      * People who are requesting membership to the group. Only used if the group is private. Field is private with no
@@ -567,25 +545,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     }
 
     /**
-     * @return the group's parent organization
-     */
-    @Override
-    public Organization getParentOrganization()
-    {
-        return parentOrganization;
-    }
-
-    /**
-     * @param inParentOrganization
-     *            the parentOrganization to set
-     */
-    @Override
-    public void setParentOrganization(final Organization inParentOrganization)
-    {
-        parentOrganization = inParentOrganization;
-    }
-
-    /**
      * check to see if the specified account id is a coordinator for this group.
      * 
      * @param account
@@ -622,23 +581,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public void setPublicGroup(final boolean inPublicGroup)
     {
         publicGroup = inPublicGroup;
-    }
-
-    /**
-     * @return the url
-     */
-    public String getUrl()
-    {
-        return url;
-    }
-
-    /**
-     * @param inUrl
-     *            the url to set
-     */
-    public void setUrl(final String inUrl)
-    {
-        url = inUrl;
     }
 
     /**
@@ -953,28 +895,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public String getUniqueId()
     {
         return getShortName();
-    }
-
-    /**
-     * Get the parent org id without loading the parent organization.
-     * 
-     * @return the parent org id without loading the parent organization
-     */
-    @Override
-    public Long getParentOrgId()
-    {
-        return parentOrgId;
-    }
-
-    /**
-     * Set the parent org id.
-     * 
-     * @param inParentOrgId
-     *            the parent org id
-     */
-    protected void setParentOrgId(final Long inParentOrgId)
-    {
-        parentOrgId = inParentOrgId;
     }
 
     /**

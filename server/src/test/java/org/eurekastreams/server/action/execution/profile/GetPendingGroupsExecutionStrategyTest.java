@@ -25,8 +25,8 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsForOrg;
-import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
+import org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsMapper;
+import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -52,7 +52,7 @@ public class GetPendingGroupsExecutionStrategyTest
     /**
      * Mocked mapper.
      */
-    private final GetPendingDomainGroupsForOrg actionMapper = context.mock(GetPendingDomainGroupsForOrg.class);
+    private final GetPendingDomainGroupsMapper actionMapper = context.mock(GetPendingDomainGroupsMapper.class);
 
     /**
      * System under test.
@@ -65,7 +65,6 @@ public class GetPendingGroupsExecutionStrategyTest
     @Test
     public void testExecute()
     {
-        final String orgShortName = "abcdefg";
         final Integer startIndex = 324;
         final Integer endIndex = 898;
 
@@ -75,8 +74,8 @@ public class GetPendingGroupsExecutionStrategyTest
         {
             {
                 oneOf(actionMapper).execute(
-                        with(IsEqualInternally.equalInternally(new GetPendingDomainGroupsForOrgRequest(orgShortName,
-                                startIndex, endIndex))));
+                        with(IsEqualInternally.equalInternally(new GetPendingDomainGroupsRequest(startIndex,
+                                endIndex))));
                 will(returnValue(expectedReturnValue));
             }
         });
@@ -96,7 +95,7 @@ public class GetPendingGroupsExecutionStrategyTest
             @Override
             public GetPendingGroupsRequest getParams()
             {
-                return new GetPendingGroupsRequest(orgShortName, startIndex, endIndex);
+                return new GetPendingGroupsRequest(startIndex, endIndex);
             }
 
             /**

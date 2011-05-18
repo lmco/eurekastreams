@@ -18,7 +18,6 @@ package org.eurekastreams.server.persistence.mappers.cache;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.task.TaskHandler;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StarredActivity;
 import org.jmock.Expectations;
@@ -50,7 +49,6 @@ public class CacheInitializerTest
     public void tearDown()
     {
         DomainGroup.setEntityCacheUpdater(null);
-        Organization.setEntityCacheUpdater(null);
         Person.setEntityCacheUpdater(null);
         StarredActivity.setEntityCacheUpdater(null);
     }
@@ -61,12 +59,9 @@ public class CacheInitializerTest
     public void testWireUpdaters()
     {
         final DomainGroupCacheLoader domainGroupCacheLoader = context.mock(DomainGroupCacheLoader.class);
-        final OrganizationEntityCacheUpdater orgHierarchyCacheLoader = context
-                .mock(OrganizationEntityCacheUpdater.class);
         final PersonEntityCacheUpdater personEntityCacheLoader = context.mock(PersonEntityCacheUpdater.class);
 
-        new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, orgHierarchyCacheLoader,
-                personEntityCacheLoader);
+        new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, personEntityCacheLoader);
 
         // can't really test b/c there's no getter - oh well.
     }

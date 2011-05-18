@@ -20,7 +20,7 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 
 /**
- * Brings together methods that are used for following a Person, Group, or Organization. 
+ * Brings together methods that are used for following a Person, Group.
  */
 public interface FollowMapper
 {

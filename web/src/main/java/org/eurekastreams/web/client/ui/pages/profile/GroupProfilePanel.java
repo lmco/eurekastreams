@@ -48,7 +48,6 @@ import org.eurekastreams.web.client.model.GroupCoordinatorsModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.GroupModel;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.model.requests.GetGroupCoordinatorsRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
@@ -258,8 +257,7 @@ public class GroupProfilePanel extends FlowPanel
         members = group.getFollowersCount();
 
         // Update the Profile summary
-        about.setGroup(inGroup.getName(), inGroup.getId(), inGroup.getAvatarId(), inGroup.getUrl(), inGroup
-                .getDescription());
+        about.setGroup(inGroup.getName(), inGroup.getId(), inGroup.getAvatarId(), inGroup.getDescription());
         connectionsPanel = new ConnectionsPanel();
         connectionsPanel.addConnection("Members", null, group.getFollowersCount());
 
@@ -452,8 +450,6 @@ public class GroupProfilePanel extends FlowPanel
      */
     private void showInvalidGroupMessage()
     {
-        OrganizationModel.getInstance().fetch("", true);
-
         clear();
         Panel errorReport = addNewCenteredErrorBox();
 

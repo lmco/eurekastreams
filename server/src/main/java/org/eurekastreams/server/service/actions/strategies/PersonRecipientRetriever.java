@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.PersonMapper;
 
 /**
- * Retrieves parent organization of person.
+ * Gets stream scope and whether a person destination stream is public.
  * 
  */
 public class PersonRecipientRetriever implements RecipientRetriever

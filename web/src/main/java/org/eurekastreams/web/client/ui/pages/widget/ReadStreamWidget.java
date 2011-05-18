@@ -48,12 +48,11 @@ public class ReadStreamWidget extends Composite
     {
         scopeToPageMap.put(ScopeType.PERSON.name(), Page.PEOPLE);
         scopeToPageMap.put(ScopeType.GROUP.name(), Page.GROUPS);
-        scopeToPageMap.put(ScopeType.ORGANIZATION.name(), Page.ORGANIZATIONS);
     }
 
     /**
      * Constructor.
-     *
+     * 
      * @param jsonRequest
      *            Stream query as a JSON string.
      */
@@ -87,7 +86,7 @@ public class ReadStreamWidget extends Composite
 
     /**
      * Determines the page/view within Eureka to link to for the given stream request.
-     *
+     * 
      * @param jsonRequestString
      *            The JSON activity query request.
      * @return URL request for stream page; null to skip link.

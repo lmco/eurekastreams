@@ -21,17 +21,14 @@ import java.util.HashSet;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.GroupModel;
-import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SettingsPanel;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
@@ -42,7 +39,6 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -110,30 +106,18 @@ public class CreateGroupPanel extends SettingsPanel
     {
         super(panel, "Create a Group");
 
-        EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
-                new Observer<GotOrganizationModelViewInformationResponseEvent>()
-                {
-                    public void update(final GotOrganizationModelViewInformationResponseEvent event)
-                    {
-                        setEntity(event.getResponse());
-                    }
-                });
-
-        OrganizationModel.getInstance().fetch(parentOrgShortName, true);
+        setEntity();
     }
 
     /**
      * Set the parent org.
-     * 
-     * @param parentOrg
-     *            parent org.
      */
-    public void setEntity(final OrganizationModelView parentOrg)
+    public void setEntity()
     {
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         this.clearContentPanel();
-        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
+        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, ""), "< Return to Profile");
 
         final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.INSERT);
 
@@ -145,7 +129,7 @@ public class CreateGroupPanel extends SettingsPanel
 
                 // destination depends on whether org allows immediate creation of groups
                 CreateUrlRequest urlRqst = !group.isPending() ? new CreateUrlRequest(Page.GROUPS, group.getShortName())
-                        : new CreateUrlRequest(Page.ORGANIZATIONS, group.getParentOrganizationShortName());
+                        : new CreateUrlRequest(Page.ORGANIZATIONS, "");
                 eventBus.notifyObservers(new UpdateHistoryEvent(urlRqst));
 
                 // tell the user what just happened
@@ -176,8 +160,6 @@ public class CreateGroupPanel extends SettingsPanel
         form.addFormElement(shortName);
 
         form.addFormDivider();
-
-        form.addFormElement(new ValueOnlyFormElement(DomainGroupModelView.ORG_PARENT_KEY, parentOrg.getShortName()));
 
         form.addFormElement(new BasicTextAreaFormElement(DomainGroup.MAX_DESCRIPTION_LENGTH, "Description",
                 DomainGroupModelView.DESCRIPTION_KEY, "",

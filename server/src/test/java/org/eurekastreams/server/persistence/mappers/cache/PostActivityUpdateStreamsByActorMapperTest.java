@@ -188,7 +188,7 @@ public class PostActivityUpdateStreamsByActorMapperTest extends CachedMapperTest
 
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO destinationStream = new StreamEntityDTO();
-        destinationStream.setType(EntityType.ORGANIZATION);
+        destinationStream.setType(EntityType.APPLICATION);
         destinationStream.setUniqueIdentifier("tstorgname");
         activity.setDestinationStream(destinationStream);
         activity.setId(activityId);

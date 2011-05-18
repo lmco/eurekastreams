@@ -49,10 +49,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * form Key.
      */
     public static final String SHORT_NAME_KEY = "shortName";
-    /**
-     * form Key.
-     */
-    public static final String ORG_PARENT_KEY = "orgParent";
+
     /**
      * form Key.
      */
@@ -73,10 +70,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * form Key.
      */
     public static final String KEYWORDS_KEY = "keywords";
-    /**
-     * form Key.
-     */
-    public static final String URL_KEY = "url";
+
     /**
      * form Key.
      */
@@ -122,21 +116,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * The date this group was added to the system.
      */
     private Date dateAdded = UNINITIALIZED_DATE_VALUE;
-
-    /**
-     * The id of the parent organization.
-     */
-    private long parentOrganizationId = UNINITIALIZED_LONG_VALUE;
-
-    /**
-     * The short name of the parent organization.
-     */
-    private String parentOrganizationShortName = UNINITIALIZED_STRING_VALUE;
-
-    /**
-     * The name of the parent organization.
-     */
-    private String parentOrganizationName = UNINITIALIZED_STRING_VALUE;
 
     /**
      * The number of updates this group has.
@@ -215,11 +194,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private String bannerId = null;
 
     /**
-     * The organization url.
-     */
-    private String url = null;
-
-    /**
      * Group overview.
      */
     private String overview = null;
@@ -230,7 +204,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private Long bannerEntityId = UNINITIALIZED_LONG_VALUE;
 
     /**
-     * Org coordinator personModelViews.
+     * Group coordinator personModelViews.
      */
     private List<PersonModelView> coordinators;
 
@@ -280,18 +254,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         if (properties.containsKey("avatarCropY"))
         {
             setAvatarCropY((Integer) properties.get("avatarCropY"));
-        }
-        if (properties.containsKey("parentOrganizationId"))
-        {
-            parentOrganizationId = (Long) properties.get("parentOrganizationId");
-        }
-        if (properties.containsKey("parentOrganizationShortName"))
-        {
-            setParentOrganizationShortName((String) properties.get("parentOrganizationShortName"));
-        }
-        if (properties.containsKey("parentOrganizationName"))
-        {
-            setParentOrganizationName((String) properties.get("parentOrganizationName"));
         }
         if (properties.containsKey("followersCount"))
         {
@@ -348,10 +310,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         if (properties.containsKey("bannerId"))
         {
             setBannerId((String) properties.get("bannerId"));
-        }
-        if (properties.containsKey("url"))
-        {
-            setUrl((String) properties.get("url"));
         }
         if (properties.containsKey("overview"))
         {
@@ -545,65 +503,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     }
 
     /**
-     * @return The group's parent organization's id.
-     */
-    public long getParentOrganizationId()
-    {
-        return parentOrganizationId;
-    }
-
-    /**
-     * @param inParentOrganizationId
-     *            The group's parent organization's id.
-     */
-    public void setParentOrganizationId(final long inParentOrganizationId)
-    {
-        parentOrganizationId = inParentOrganizationId;
-    }
-
-    /**
-     * Get the group's parent organization's short name.
-     * 
-     * @return the parentOrganizationShortName
-     */
-    public String getParentOrganizationShortName()
-    {
-        return parentOrganizationShortName;
-    }
-
-    /**
-     * Set the group's parent organization's short name.
-     * 
-     * @param inParentOrganizationShortName
-     *            the parentOrganizationShortName to set
-     */
-    public void setParentOrganizationShortName(final String inParentOrganizationShortName)
-    {
-        this.parentOrganizationShortName = inParentOrganizationShortName;
-    }
-
-    /**
-     * Get the group's parent organization's name.
-     * 
-     * @return the parentOrganizationName
-     */
-    public String getParentOrganizationName()
-    {
-        return parentOrganizationName;
-    }
-
-    /**
-     * Set the group's parent organization's name.
-     * 
-     * @param inParentOrganizationName
-     *            the parentOrganizationName to set
-     */
-    public void setParentOrganizationName(final String inParentOrganizationName)
-    {
-        this.parentOrganizationName = inParentOrganizationName;
-    }
-
-    /**
      * 
      * @return the person created by display name.
      */
@@ -778,23 +677,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public void setBannerId(final String inBannerId)
     {
         bannerId = inBannerId;
-    }
-
-    /**
-     * @return the url
-     */
-    public String getUrl()
-    {
-        return url;
-    }
-
-    /**
-     * @param inUrl
-     *            the url to set
-     */
-    public void setUrl(final String inUrl)
-    {
-        url = inUrl;
     }
 
     /**

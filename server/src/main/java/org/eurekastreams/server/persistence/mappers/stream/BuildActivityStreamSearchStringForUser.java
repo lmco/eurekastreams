@@ -23,23 +23,19 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 
 /**
- * Build a Lucene search string that security scopes the activity stream for a
- * specific user. This will include clauses for all public activities,
- * activities posted under organizations that the user is a coordinator for, and
- * to groups that the user is a coordinator or follower of.
+ * Build a Lucene search string that security scopes the activity stream for a specific user. This will include clauses
+ * for all public activities, that the user is a coordinator for, and to groups that the user is a coordinator or
+ * follower of.
  */
-public class BuildActivityStreamSearchStringForUser extends
-        BaseArgDomainMapper<Long, String>
+public class BuildActivityStreamSearchStringForUser extends BaseArgDomainMapper<Long, String>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory
-            .getLog(BuildActivityStreamSearchStringForUser.class);
+    private Log log = LogFactory.getLog(BuildActivityStreamSearchStringForUser.class);
 
     /**
-     * Mapper to get a list of all group ids that aren't public that a user can
-     * see activity for.
+     * Mapper to get a list of all group ids that aren't public that a user can see activity for.
      */
     private GetPrivateCoordinatedAndFollowedGroupIdsForUser getGroupIdsMapper;
 
@@ -47,8 +43,7 @@ public class BuildActivityStreamSearchStringForUser extends
      * Constructor.
      * 
      * @param inGetGroupIdsMapper
-     *            Mapper to get a list of all group ids that aren't public that
-     *            a user can see activity for.
+     *            Mapper to get a list of all group ids that aren't public that a user can see activity for.
      */
     public BuildActivityStreamSearchStringForUser(
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetGroupIdsMapper)
@@ -57,19 +52,16 @@ public class BuildActivityStreamSearchStringForUser extends
     }
 
     /**
-     * Return a Lucene query string that will return IDs for all activities that
-     * a user has access to.
+     * Return a Lucene query string that will return IDs for all activities that a user has access to.
      * 
      * @param inUserPersonId
      *            the user id making the request
-     * @return a Lucene query that will return the IDs for all actvities that a
-     *         user has access to
+     * @return a Lucene query that will return the IDs for all actvities that a user has access to
      */
     public String execute(final Long inUserPersonId)
     {
-        log
-                .info("Building the cached security-scoped activity search string for user with person id: "
-                        + inUserPersonId);
+        log.info("Building the cached security-scoped activity search string for user with person id: "
+                + inUserPersonId);
 
         // get all the group ids coordinated
         Set<Long> groupIds = getGroupIdsMapper.execute(inUserPersonId);
@@ -92,9 +84,7 @@ public class BuildActivityStreamSearchStringForUser extends
 
         String result = sb.toString();
 
-        log
-                .info("User's cached security-scoped activity search string for user: "
-                        + inUserPersonId + " = " + result);
+        log.info("User's cached security-scoped activity search string for user: " + inUserPersonId + " = " + result);
 
         return result;
     }

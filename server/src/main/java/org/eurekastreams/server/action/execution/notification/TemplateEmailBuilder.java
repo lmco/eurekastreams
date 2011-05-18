@@ -53,7 +53,6 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
         activityTypeDisplayNameOverrides.put(BaseObjectType.NOTE, "message");
         entityPageNames.put(EntityType.PERSON, "people");
         entityPageNames.put(EntityType.GROUP, "groups");
-        entityPageNames.put(EntityType.ORGANIZATION, "organizations");
     }
 
     /** Template for the subject. */

@@ -19,14 +19,10 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.CompositeEntity;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
@@ -36,40 +32,6 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
  */
 public class UpdateGroupValidation implements ValidationStrategy<PrincipalActionContext>
 {
-    /**
-     * Logging for this class.
-     */
-    private static Log logger = LogFactory.make();
-
-    /**
-     * {@link GetOrganizationsByShortNames}.
-     */
-    private GetOrganizationsByShortNames mapper;
-
-    /**
-     * @param inMapper
-     *            the mapper to use to get orgs.
-     */
-    public UpdateGroupValidation(final GetOrganizationsByShortNames inMapper)
-    {
-        mapper = inMapper;
-    }
-
-    /**
-     * These are one off messages that are only used for this validation if these need to be reused move them to the
-     * DTO. These are package protected so that test can access them.
-     */
-
-    /**
-     * message if no such parent org exist.
-     */
-    static final String NO_SUCH_PARENT_ORG = "The selected parent organization does not exist.";
-
-    /**
-     * message if no parent org is selected.
-     */
-    static final String MUST_HAVE_PARENT_ORG_MESSAGE = "Please select a parent organization.";
-
     /**
      * {@inheritDoc}
      */
@@ -84,21 +46,6 @@ public class UpdateGroupValidation implements ValidationStrategy<PrincipalAction
 
         vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.ID_KEY, true, ve);
         vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.SHORT_NAME_KEY, true, ve);
-
-        String url = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.URL_KEY, false, ve);
-        vHelper.stringMeetsRequirments(DomainGroupModelView.URL_KEY, url, ve, null, null, null,
-                CompositeEntity.URL_REGEX_PATTERN, DomainGroup.WEBSITE_MESSAGE);
-
-        String parentOrgShortName = (String) vHelper.getAndCheckStringFieldExist(fields,
-                DomainGroupModelView.ORG_PARENT_KEY, true, ve);
-        if (vHelper.stringMeetsRequirments(DomainGroupModelView.ORG_PARENT_KEY, parentOrgShortName, ve,
-                MUST_HAVE_PARENT_ORG_MESSAGE, null, null, null, null))
-        {
-            if (mapper.fetchUniqueResult(parentOrgShortName) == null)
-            {
-                ve.addError(DomainGroupModelView.ORG_PARENT_KEY, NO_SUCH_PARENT_ORG);
-            }
-        }
 
         if (fields.containsKey(DomainGroupModelView.PRIVACY_KEY))
         {

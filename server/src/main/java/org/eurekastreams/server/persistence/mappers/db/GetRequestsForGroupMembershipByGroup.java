@@ -35,10 +35,10 @@ public class GetRequestsForGroupMembershipByGroup extends
     private Log log = LogFactory.make();
 
     /**
-     * Get all flagged activities posted directly under an organization.
-     *
+     * Get all flagged activities.
+     * 
      * @param inRequest
-     *            the request containing the organization and requesting user
+     *            the request containing the start and end index
      * @return a paged set of ActivityDTOs
      */
     @Override
@@ -80,7 +80,7 @@ public class GetRequestsForGroupMembershipByGroup extends
 
     /**
      * Build a query for selecting field(s) from group membership requests.
-     *
+     * 
      * @param fieldsString
      *            a comma-separated string listing the fields to select
      * @param groupId

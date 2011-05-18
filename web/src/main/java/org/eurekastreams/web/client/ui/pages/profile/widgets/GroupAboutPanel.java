@@ -19,9 +19,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -54,16 +52,14 @@ public class GroupAboutPanel extends FlowPanel
      *            id.
      * @param inAvatarId
      *            Avatar id.
-     * @param inUrl
-     *            url.
      * @param inDescription
      *            description.
      */
-    public void setGroup(final String inName, final long inEntityId, final String inAvatarId, final String inUrl,
+    public void setGroup(final String inName, final long inEntityId, final String inAvatarId, // 
             final String inDescription)
     {
         this.clear();
-        AvatarWidget photo = new AvatarWidget(inEntityId, inAvatarId, EntityType.ORGANIZATION, //
+        AvatarWidget photo = new AvatarWidget(inEntityId, inAvatarId, EntityType.GROUP, //
                 AvatarWidget.Size.Normal);
         photo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePhoto());
         this.add(photo);
@@ -73,17 +69,6 @@ public class GroupAboutPanel extends FlowPanel
         Label title = new Label(inName);
         title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileOrgTitle());
         this.add(title);
-
-        FlowPanel urlContainer = new FlowPanel();
-        urlContainer.add(new HTML(""));
-        Anchor url = new Anchor("Website", inUrl, "_NEW");
-        urlContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileWebsite());
-        if (inUrl == null)
-        {
-            urlContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().noValue());
-        }
-        urlContainer.add(url);
-        this.add(urlContainer);
 
         if (inDescription != null && !inDescription.equals(""))
         {

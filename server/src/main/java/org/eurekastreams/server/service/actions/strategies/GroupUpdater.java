@@ -32,14 +32,11 @@ import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
-import org.eurekastreams.server.action.request.stream.SyncGroupActivityRecipientParentOrganizationRequest;
 import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -68,11 +65,6 @@ public class GroupUpdater extends GroupPersister
     private static final String ORIGINAL_GROUP_COORDINATORS_KEY = "__KEY_ORIGINAL_GROUP_COORDINATORS_KEY";
 
     /**
-     * Key used to store original parent org between get and Persist.
-     */
-    private static final String ORIGINAL_PARENT_ORG_KEY = "__KEY_ORIGINAL_PARENT_ORG_KEY";
-
-    /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
     private TaskHandlerExecutionStrategy followStrategy;
@@ -87,8 +79,6 @@ public class GroupUpdater extends GroupPersister
      * 
      * @param inGroupMapper
      *            The group mapper.
-     * @param inOrgMapper
-     *            The org mapper.
      * @param inAccessCheckerMapper
      *            mapper to determine permissions
      * @param inClearActivityStreamSearchStringForUsersMapper
@@ -96,12 +86,12 @@ public class GroupUpdater extends GroupPersister
      * @param inFollowStrategy
      *            used to automatically add coordinators as group followers/members.
      */
-    public GroupUpdater(final DomainGroupMapper inGroupMapper, final OrganizationMapper inOrgMapper,
+    public GroupUpdater(final DomainGroupMapper inGroupMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inAccessCheckerMapper,
             final ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate // \n
             inClearActivityStreamSearchStringForUsersMapper, final TaskHandlerExecutionStrategy inFollowStrategy)
     {
-        super(inGroupMapper, inOrgMapper);
+        super(inGroupMapper);
         clearActivityStreamSearchStringForUsersMapper = inClearActivityStreamSearchStringForUsersMapper;
         followStrategy = inFollowStrategy;
     }
@@ -113,7 +103,7 @@ public class GroupUpdater extends GroupPersister
      *            action context
      * @param inFields
      *            the property map.
-     * @return Organization base on id passed in inFields.
+     * @return group base on id passed in inFields.
      */
     @Override
     public DomainGroup get(final TaskHandlerActionContext<PrincipalActionContext> inActionContext,
@@ -125,9 +115,6 @@ public class GroupUpdater extends GroupPersister
         // store the original domain group name between get and persist
         inFields.put(ORIGINAL_GROUP_NAME_KEY, entity.getName());
         inFields.put(ORIGINAL_GROUP_COORDINATORS_KEY, (Serializable) entity.getCoordinators());
-
-        // store original parent org name.
-        inFields.put(ORIGINAL_PARENT_ORG_KEY, entity.getParentOrganization().getShortName());
 
         // clear out the search text for the group coordinators now, before we
         // commit to the db
@@ -161,31 +148,6 @@ public class GroupUpdater extends GroupPersister
                     .get(DomainGroupModelView.KEYWORDS_KEY)));
 
             String creatorUserName = inActionContext.getActionContext().getPrincipal().getAccountId();
-
-            String newParentOrgName = (String) inFields.get(DomainGroupModelView.ORG_PARENT_KEY);
-            String origParentOrgName = (String) inFields.get(ORIGINAL_PARENT_ORG_KEY);
-
-            // if parent org has changed, update group and update stats for both original and new orgs.
-            if (origParentOrgName.compareToIgnoreCase(newParentOrgName) != 0)
-            {
-                Organization newParentOrg = getOrgMapper().findByShortName(newParentOrgName);
-                Organization origParentOrg = getOrgMapper().findByShortName(origParentOrgName);
-
-                if (null == newParentOrg)
-                {
-                    // Parent org cannot be null.
-                    throw new ValidationException();
-                }
-
-                inGroup.setParentOrganization(newParentOrg);
-
-                // queue action to update parent org for group activities, reindex activities, and sync activity cache
-                // lists for new/old orgs up the tree.
-                inActionContext.getUserActionRequests().add(
-                        new UserActionRequest("syncGroupActivityRecipientParentOrganization", null,
-                                new SyncGroupActivityRecipientParentOrganizationRequest(inGroup.getShortName(),
-                                        newParentOrgName, origParentOrgName)));
-            }
 
             Set<Person> oldCoordinators = (Set<Person>) inFields.get(ORIGINAL_GROUP_COORDINATORS_KEY);
 

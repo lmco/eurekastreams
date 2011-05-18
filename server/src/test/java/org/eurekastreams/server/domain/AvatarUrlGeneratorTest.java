@@ -49,13 +49,6 @@ public class AvatarUrlGeneratorTest
     private AvatarUrlGenerator groupSut = new AvatarUrlGenerator(EntityType.GROUP);
 
     /**
-     * Subject under test - org.
-     */
-    private AvatarUrlGenerator orgSut = new AvatarUrlGenerator(EntityType.ORGANIZATION);
-
-
-
-    /**
      * Test that the avatar url is built correctly.
      */
     @Test
@@ -65,8 +58,6 @@ public class AvatarUrlGeneratorTest
         String returned = personSut.getOriginalAvatarUrl(id, avatarId);
         assertEquals(expected, returned);
         returned = groupSut.getOriginalAvatarUrl(id, avatarId);
-        assertEquals(expected, returned);
-        returned = orgSut.getOriginalAvatarUrl(id, avatarId);
         assertEquals(expected, returned);
     }
 
@@ -81,8 +72,6 @@ public class AvatarUrlGeneratorTest
         assertEquals(expected, returned);
         returned = groupSut.getNormalAvatarUrl(id, avatarId);
         assertEquals(expected, returned);
-        returned = orgSut.getNormalAvatarUrl(id, avatarId);
-        assertEquals(expected, returned);
     }
 
     /**
@@ -96,12 +85,10 @@ public class AvatarUrlGeneratorTest
         assertEquals(expected, returned);
         returned = groupSut.getSmallAvatarUrl(id, avatarId);
         assertEquals(expected, returned);
-        returned = orgSut.getSmallAvatarUrl(id, avatarId);
-        assertEquals(expected, returned);
     }
 
     /**
-     * Test that the  banner URL is built correctly.
+     * Test that the banner URL is built correctly.
      */
     @Test
     public void getBannerUrlWithNonNullBannerId()
@@ -111,12 +98,10 @@ public class AvatarUrlGeneratorTest
         assertEquals(expected, returned);
         returned = groupSut.getBannerUrl(bannerId);
         assertEquals(expected, returned);
-        returned = orgSut.getBannerUrl(bannerId);
-        assertEquals(expected, returned);
     }
 
     /**
-     * Test that the  banner URL is built correctly when passed in bannerid = null.
+     * Test that the banner URL is built correctly when passed in bannerid = null.
      */
     @Test
     public void getBannerUrlWithNullBannerId()
@@ -125,8 +110,6 @@ public class AvatarUrlGeneratorTest
         String returned = personSut.getBannerUrl(null);
         assertEquals(expected, returned);
         returned = groupSut.getBannerUrl(null);
-        assertEquals(expected, returned);
-        returned = orgSut.getBannerUrl(null);
         assertEquals(expected, returned);
     }
 }

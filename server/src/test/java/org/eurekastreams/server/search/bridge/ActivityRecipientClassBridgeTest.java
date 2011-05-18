@@ -154,7 +154,7 @@ public class ActivityRecipientClassBridgeTest
     public void testObjectToStringForUnsupportedFromActivityObject()
     {
         Activity activity = new Activity();
-        activity.setRecipientStreamScope(new StreamScope(ScopeType.ORGANIZATION, "org"));
+        activity.setRecipientStreamScope(new StreamScope(ScopeType.ALL, "bleh"));
         sut.objectToString(activity);
         context.assertIsSatisfied();
     }

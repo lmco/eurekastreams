@@ -262,21 +262,6 @@ public class TemplateEmailBuilderTest
      *             Shouldn't.
      */
     @Test
-    public void testBuildUsingDestination() throws Exception
-    {
-        notification.setDestination(DESTINATION_ID, EntityType.ORGANIZATION, "myorg", "My Organization");
-
-        coreDataUseTest("$(dest.id)/$(dest.type)/$(dest.uniqueid)/$(dest.name)/$(dest.page)", DESTINATION_ID
-                + "/ORGANIZATION/myorg/My Organization/organizations");
-    }
-
-    /**
-     * Tests using destination data.
-     * 
-     * @throws Exception
-     *             Shouldn't.
-     */
-    @Test
     public void testBuildUsingAuxiliary() throws Exception
     {
         notification.setAuxiliary(EntityType.GROUP, "mygroup", GROUP_NAME);

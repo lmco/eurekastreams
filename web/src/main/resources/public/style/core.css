@@ -6972,7 +6972,7 @@ body .stream-view-dialog .delete-button {
 	border: none !important;
 }
 
-.add-gadget,.add-theme {
+.add-gadget,.add-theme,.add-tab {
 	height: 25px;
 	position: absolute;
 	right: 0;
@@ -6990,6 +6990,11 @@ body .stream-view-dialog .delete-button {
 .add-theme {
 	background: url("style/images/addThemeBtn.png") repeat scroll 0 0
 		transparent;
+}
+
+.add-tab {
+    background: url("style/images/addTabBtn.png") repeat scroll 0 0
+        transparent;
 }
 
 .help-page-settings {

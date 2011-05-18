@@ -204,10 +204,6 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormElement(keywords);
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Website URL", "url", entity.getUrl(),
-                "If your group has a website, you can enter the URL above", false));
-        form.addFormDivider();
-
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "
                 + "and moderating the group's activity stream";
 
@@ -338,8 +334,8 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
                                     // navigates away from settings page to the parent org profile page
                                     Session.getInstance().getEventBus().notifyObservers(
-                                            new UpdateHistoryEvent(new CreateUrlRequest(Page.ORGANIZATIONS, entity
-                                                    .getParentOrganizationShortName())));
+                                            new UpdateHistoryEvent(new CreateUrlRequest(Page.PEOPLE, Session
+                                                    .getInstance().getCurrentPerson().getAccountId())));
                                 }
 
                                 public void onFailure(final Throwable caught)

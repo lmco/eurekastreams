@@ -152,14 +152,6 @@
 	<StreamScope id="101" scopeType="RESOURCE" uniqueKey="http://foo.foo.com/foo.html" version="1" destinationEntityId="102" />
 	<StreamScope id="102" scopeType="RESOURCE" uniqueKey="http://foo.com/foo.html" version="1" destinationEntityId="101" />	
 	
-	<Organization id="5" version="1" description="Mission Statement"
-		name="Test Organization Name" allUsersCanCreateGroups="true"
-		shortName="tstorgname" url="http://www.TestOrganizationName.com"
-		childOrganizationCount="2" descendantGroupCount="5"
-		descendantEmployeeCount="2" employeeFollowerCount="0" bannerId="Foo"
-		updatesCount="6" streamScopeId="837433" />
-
-
 	<!-- **************************************** -->
 	<!-- Ford Prefect - Tab Group with three tabs -->
 	<Person id="42" version="1117" accountId="fordp" firstName="Ford"
@@ -186,8 +178,8 @@
         isAdministrator="true"/>
 		
 		
-	<Person_Stream personid="42" streamid="2" streamIndex="0" />
-	<Person_Stream personid="42" streamid="1" streamIndex="1" />
+	<Person_Stream personid="42" streamid="2" />
+	<Person_Stream personid="42" streamid="1" />
 
 	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON" requestorId="42" />
 	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON" requestorId="42" />
@@ -270,8 +262,6 @@
     <Background_Skills Background_Id="1099" skillsIndex="0" BackgroundItem_Id="999923" />
     <Background_Skills Background_Id="1099" skillsIndex="1" BackgroundItem_Id="122" />
         
-	<Organization_Capability OrganizationId="5" capabilityId="130" />
-
 	<Job id="2042" personId="42" version="1117" companyName="Example"
 		industry="Aerospace" title="Engineer" datefrom="2008-01-01 12:00:00.000"
 		dateTo="2009-01-01 12:00:00.000" description="this that and the other thing" />
@@ -545,28 +535,28 @@
 		
 	<Activity id="6789" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE" 
 		openSocialId="123" postedTime="2009-10-27 06:54:00" updated="2009-10-27 06:55:00"
-		verb="POST" recipientParentOrgId="5" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
+		verb="POST" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
 		originalActorType="PERSON" flagged="true" showInStream="true" />
 	
 	<Activity id="6790" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
 		openSocialId="456" postedTime="2009-10-27 06:55:00" updated="2009-10-27 06:56:00"
-		verb="POST" recipientParentOrgId="5" streamScopeId="87433" isDestinationStreamPublic="true" 
+		verb="POST" streamScopeId="87433" isDestinationStreamPublic="true" 
 		flagged="false" showInStream="true"/>
 		
     <Activity id="6791" version="1" actorId="fordp" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="789" postedTime="2009-10-27 06:56:00" updated="2009-10-27 06:56:00"
-        verb="POST" recipientParentOrgId="5" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
+        verb="POST" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
 		originalActorType="PERSON" flagged="false" showInStream="true"/>
     
     <Activity id="6792" version="1" actorId="fordp2" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="012" postedTime="2009-10-27 06:57:00" updated="2009-10-27 06:56:00"
-        verb="POST" recipientParentOrgId="5" streamScopeId="1" isDestinationStreamPublic="true" originalActorId="csagan" 
+        verb="POST" streamScopeId="1" isDestinationStreamPublic="true" originalActorId="csagan" 
 		originalActorType="PERSON" flagged="false" showInStream="true"/>
         
     <!-- smithers posts a note to group1 stream -->
     <Activity id="6793" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="234" postedTime="2010-01-27 06:58:00" updated="2010-01-27 06:58:00"
-        verb="POST" recipientParentOrgId="5" streamScopeId="874" isDestinationStreamPublic="true" originalActorId="smithers" 
+        verb="POST" streamScopeId="874" isDestinationStreamPublic="true" originalActorId="smithers" 
         originalActorType="PERSON" flagged="false" showInStream="true"/>
         
     
@@ -692,7 +682,7 @@
 	<SystemSettings id="1001" version="1122" siteLabel="some site label" 
 		termsOfService="some terms of service" tosPromptInterval="1" 
 		contentWarningText="some content warning" contentExpiration="1" sendWelcomeEmails="true" 
-		supportStreamGroupShortName="group1"
+		supportStreamGroupShortName="group1" allUsersCanCreateGroups="true"
 		/>
 	<MembershipCriteria id="11" version="2" criteria="testCriterion1" systemSettingsId="1001" />
 	<MembershipCriteria id="12" version="2" criteria="testCriterion2" systemSettingsId="1001" />

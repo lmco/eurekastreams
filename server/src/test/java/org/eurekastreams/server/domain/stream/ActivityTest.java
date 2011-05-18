@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Organization;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -87,11 +86,6 @@ public class ActivityTest
     private EntityType originalActorType = EntityType.PERSON;
 
     /**
-     * Recipient's parent org.
-     */
-    private Organization recipientParentOrg = context.mock(Organization.class);
-
-    /**
      * Recipient's stream scope.
      */
     private StreamScope recipientStreamScope = context.mock(StreamScope.class);
@@ -145,7 +139,6 @@ public class ActivityTest
         sut.setActorType(actorType);
         sut.setOriginalActorId(originalActorId);
         sut.setOriginalActorType(originalActorType);
-        sut.setRecipientParentOrg(recipientParentOrg);
         sut.setRecipientStreamScope(recipientStreamScope);
         sut.setVerb(verb);
         sut.setBaseObjectType(baseObjectType);
@@ -172,7 +165,6 @@ public class ActivityTest
         assertEquals("actorType not as expected", actorType, sut.getActorType());
         assertEquals("original actorId not as expected", originalActorId, sut.getOriginalActorId());
         assertEquals("original actorType not as expected", originalActorType, sut.getOriginalActorType());
-        assertEquals("recipient parent org not as expected", recipientParentOrg, sut.getRecipientParentOrg());
         assertEquals("recipient StreamScope not as expected", recipientStreamScope, sut.getRecipientStreamScope());
         assertEquals("verb not as expected", verb, sut.getVerb());
         assertEquals("base object type not as expected", baseObjectType, sut.getBaseObjectType());

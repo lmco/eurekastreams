@@ -281,8 +281,7 @@
          <constructor-arg ref="createPersonActionFactory" />
          <constructor-arg ref="jpaPersonMapper" />
          <!-- email action ref -->
-         <constructor-arg value="sendWelcomeEmail"/> 
-         <constructor-arg ref="findByIdMapper"/>            
+         <constructor-arg value="sendWelcomeEmail"/>             
     </bean>    
     
     <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
@@ -355,16 +354,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>    
-    
-    <bean id="increaseOrgEmployeeCountAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.IncreaseOrgEmployeeCountExecution">
-                <constructor-arg ref="increaseOrgEmployeeCount" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
     
     <bean id="sendWelcomeEmail" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1603,20 +1592,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>   
-    
-    <bean id="getOrganizationById" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.GetOrganizationByIdExecution">
-                <constructor-arg ref="getOrganizationsByIdsMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-
 
     <bean id="getPersonModelView" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1854,10 +1829,6 @@
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                                     <constructor-arg ref="getStreamScopeForResourceScopeTypeByUniqueKey" />
                                 </bean>
-                            </entry>
-                            <entry key="organization">
-                                <bean 
-                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.OrgPersistenceRequestTransformer" />
                             </entry>                            
                             <entry key="savedBy">
                                 <bean 
@@ -2057,7 +2028,7 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.profile.GetPendingGroupsExecutionStrategy">
-                <constructor-arg ref="getPendingDomainGroupsForOrg" />
+                <constructor-arg ref="getPendingDomainGroupsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -2072,7 +2043,6 @@
                 <constructor-arg ref="jpaGroupMapper" />
                 <constructor-arg ref="emailNotifier" />
                 <constructor-arg ref="addPrivateGroupIdToCachedCoordinatorAccessList" />
-                <constructor-arg ref="jpaOrganizationMapper"/>
                 <constructor-arg ref="deleteGroupExecution" />
             </bean>
         </constructor-arg>
@@ -2183,21 +2153,6 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>
-    
-    <bean id="warmCache_orgs" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <!-- Validation -->
-        <constructor-arg ref="noValidationStrategy" />
-        <!-- Authorization -->
-        <constructor-arg ref="isSystemAdminAuthorization" />
-        <!-- Execution -->
-        <constructor-arg> 
-            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
-                <constructor-arg value="queueOrganizationCacheWarmingTasks" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean>     
     
     <bean id="warmCache_themes" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
@@ -2663,27 +2618,13 @@
         <constructor-arg value="false" />
     </bean>
 
-    <bean id="setStreamOrder" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.stream.SetStreamOrderExecution">
-                <constructor-arg ref="getOrderedPersonStreamsByPersonIdDbMapper" />
-                <constructor-arg ref="reorderStreamsDbMapper" />
-                <constructor-arg ref="removeCachedPersonModelViewCacheMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="getFlaggedActivitiesForOrganization" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="getFlaggedActivities" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean
-                class="org.eurekastreams.server.action.execution.stream.GetFlaggedActivitiesForOrganizationExecution">
-                    <constructor-arg ref="getFlaggedActivitiesForOrganizationMapper" />
+                class="org.eurekastreams.server.action.execution.stream.GetFlaggedActivitiesExecution">
+                    <constructor-arg ref="getFlaggedActivitiesMapper" />
                     <constructor-arg ref="getPersonByAccountIdMapper" />
                     <constructor-arg ref="deleteFilter" />
             </bean>
@@ -2843,13 +2784,12 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
-                <constructor-arg ref="deleteAndReorderStreamsDbMapper" />
+                <constructor-arg ref="deleteStreamDbMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
 
-    
     <bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
             <bean
@@ -3177,7 +3117,6 @@
 -->
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
-        <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="getReadOnlyStreamsDbMapper" />
         <constructor-arg ref="newPersonDefaultStreamOrder" />
         <constructor-arg ref="newPersonStartPageTabs" />
@@ -3191,7 +3130,6 @@
           <constructor-arg>
               <bean class="org.eurekastreams.server.action.validation.CreateGroupValidation">
                   <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
-                  <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
               </bean>   
           </constructor-arg>
         <!-- Authorization - done inside execution (for now) -->
@@ -3218,9 +3156,7 @@
     <bean id="updateGroup" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg>
-             <bean class="org.eurekastreams.server.action.validation.UpdateGroupValidation">
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
-             </bean>
+             <bean class="org.eurekastreams.server.action.validation.UpdateGroupValidation" />
         </constructor-arg>
         <constructor-arg>
             <!-- Authorization -->
@@ -3310,11 +3246,7 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
-    
-    <bean id="organizationToOrganizationModelViewTransformer" 
-    class="org.eurekastreams.server.persistence.mappers.cache.OrganizationToOrganizationModelViewTransformer"/>
-    
-    
+       
     <bean id="personLookupStrategy" class="org.eurekastreams.server.service.actions.strategies.DomainPersonLookup">
         <constructor-arg ref="jpaPersonMapper"/>            
     </bean>
@@ -3341,16 +3273,15 @@
     <bean id="groupCreator"
         class="org.eurekastreams.server.service.actions.strategies.GroupCreator">
         <constructor-arg ref="jpaGroupMapper" />
-        <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="getSystemAdministratorIds" />
         <constructor-arg ref="setFollowingGroupStatusExecution" />
+        <constructor-arg ref="findSystemSettings" />
     </bean>
 
     <bean id="groupUpdater"
         class="org.eurekastreams.server.service.actions.strategies.GroupUpdater">
         <constructor-arg ref="jpaGroupMapper" />
-        <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
         <constructor-arg ref="clearActivityStreamSearchStringCacheOnGroupUpdate" />
         <constructor-arg ref="setFollowingGroupStatusExecution" />
@@ -3402,7 +3333,6 @@
         class="org.eurekastreams.server.service.actions.strategies.PersonCreator">
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="jpaTabMapper" />
-        <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="getReadOnlyStreamsDbMapper" />
         <constructor-arg ref="newPersonDefaultStreamOrder" />
         <constructor-arg ref="newPersonStartPageTabs" />
@@ -3872,7 +3802,32 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
         </constructor-arg>
-    </bean>
+    </bean>        
+    
+    <bean id="galleryTabTemplateValidator"
+        class="org.eurekastreams.server.action.validation.MapParameterDecoratorValidation">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                <constructor-arg value="description" />
+                <constructor-arg value="java.lang.String" />
+                <constructor-arg value="Description is required." />  
+                <property name="mapParameterValidatorDecorator">
+                        <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                            <constructor-arg value="category" />
+                            <constructor-arg value="java.lang.String" />
+                            <constructor-arg value="Category is required" />
+                            <property name="mapParameterValidatorDecorator">
+                                <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                                    <constructor-arg value="tab" />
+                                    <constructor-arg value="java.lang.String" />
+                                    <constructor-arg value="Source tab is required." />
+                                </bean>
+                            </property>
+                        </bean>
+                </property>              
+            </bean>
+        </constructor-arg>
+    </bean>    
     
     <!-- GALLERY ITEMPOPULATORS -->
     <bean id="themePopulator"
@@ -3890,11 +3845,12 @@
     </bean>
     
     <bean id="createGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="galleryTabTemplateValidator" />
         <constructor-arg ref="isSystemAdminAuthorization"/>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
                 <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="createGalleryTabTemplateMapper" />
                 <constructor-arg ref="jpaGalleryItemCategoryMapper" />
                 <constructor-arg>
 		            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
@@ -3903,6 +3859,32 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>    
+    
+    <bean id="editGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="isSystemAdminAuthorization"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.CreateGalleryTabTemplateExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="jpaGalleryItemCategoryMapper" />
+                <constructor-arg ref="flushMapper" />                                 
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean> 
+    
+    <bean id="addTabFromGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">        
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.AddTabFromGalleryTabTemplateIdExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="deleteCacheKeys" />                           
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
     
     <bean id="deleteGalleryTabTemplate" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4140,12 +4122,6 @@
     <bean id="groupFinder" class="org.eurekastreams.server.service.actions.strategies.GroupFinder">
         <constructor-arg>
             <ref bean="jpaGroupMapper" />
-        </constructor-arg>
-    </bean>
-
-    <bean id="organizationFinder" class="org.eurekastreams.server.service.actions.strategies.OrganizationFinder">
-        <constructor-arg>
-            <ref bean="jpaOrganizationMapper" />
         </constructor-arg>
     </bean>
 

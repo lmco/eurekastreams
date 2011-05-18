@@ -50,16 +50,6 @@ public class PersonModelViewTest
     /**
      * Test data.
      */
-    private final String parentOrganizationShortName = "heynow";
-
-    /**
-     * Test data.
-     */
-    private final String parentOrganizationName = "hey now, whoa there";
-
-    /**
-     * Test data.
-     */
     private final String jobDescription = "Here ya have a guy...";
 
     /**
@@ -202,8 +192,6 @@ public class PersonModelViewTest
         p.put("dateAdded", dateAdded);
         p.put("accountId", accountId);
         p.put("title", title);
-        p.put("parentOrganizationName", parentOrganizationName);
-        p.put("parentOrganizationShortName", parentOrganizationShortName);
         p.put("jobDescription", jobDescription);
         p.put("preferredName", "Hey");
         p.put("lastName", "McNow");

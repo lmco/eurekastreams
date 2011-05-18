@@ -22,84 +22,86 @@ import java.util.HashMap;
  * 
  * in an enum, name() and valueOf() are bidirectional
  * 
- * For our purposes, constructor/toEnum and toString are bidirectional. 
+ * For our purposes, constructor/toEnum and toString are bidirectional.
  */
-public enum BackgroundItemType 
-{ 
-    /** Uninitialized value.  */
+public enum BackgroundItemType
+{
+    /** Uninitialized value. */
     NOT_SET("Not Initialized"),
-    
-    /**  An interest of a person. */
-    INTEREST("Interests and Hobbies"), 
-    
-    /**  A skill of a person.   */
+
+    /** An interest of a person. */
+    INTEREST("Interests and Hobbies"),
+
+    /** A skill of a person. */
     SKILL("Skills and Specialties"),
-    
-    /**  An affiliation of a person. */
+
+    /** An affiliation of a person. */
     AFFILIATION("Affiliations"),
-    
-    /**  An honor of a person.  */
+
+    /** An honor of a person. */
     HONOR("Honors and Awards"),
-    
-    /** A capability for an organization. */
+
+    /** A capability. */
     CAPABILITY("Capability"),
-    
-    /**  An area of study of a person.  */
+
+    /** An area of study of a person. */
     AREA_OF_STUDY("Area of Study"),
 
-    /**  An activity or society of a person.  */
+    /** An activity or society of a person. */
     ACTIVITY_OR_SOCIETY("Activity or Society"),
-    
+
     /** Name of school. */
     SCHOOL_NAME("School name");
 
-    /** 
+    /**
      * human-readable name (ie, "Business Development" as opposed to enum.BD).
      */
     private final String displayableName;
-    
+
     /**
      * for string-enum conversion.
      */
     private static HashMap<String, BackgroundItemType> map = new HashMap<String, BackgroundItemType>();
-    
-    static 
+
+    static
     {
         BackgroundItemType[] types = BackgroundItemType.values();
         for (BackgroundItemType type : types)
         {
             map.put(type.toString(), type);
         }
-        
+
     }
-    
+
     /**
      * constructor for this enum.
      * 
-     * @param name a displayable name.
+     * @param name
+     *            a displayable name.
      */
     private BackgroundItemType(final String name)
     {
         displayableName = name;
     }
-    
+
     /**
      * 
-     * @param displayableName to convert.
+     * @param displayableName
+     *            to convert.
      * @return the enum corresponding to that string.
      */
-    public static BackgroundItemType toEnum(final String displayableName) 
+    public static BackgroundItemType toEnum(final String displayableName)
     {
         return map.get(displayableName);
     }
-    
+
     /**
      * @return the displayable name that was passed into the constructor.
      */
     @Override
-    public String toString() 
-    { 
-        return displayableName; 
+    public String toString()
+    {
+        return displayableName;
     }
 
 }

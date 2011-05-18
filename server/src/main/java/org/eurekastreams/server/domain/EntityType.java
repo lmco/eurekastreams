@@ -16,8 +16,8 @@
 package org.eurekastreams.server.domain;
 
 /**
- * Since Person, Organization, DomainGroup, and Application have a lot in common, but don't have a distinctive common
- * parent, this enum can be used to distinguish between them.
+ * Since Person, DomainGroup, and Application have a lot in common, but don't have a distinctive common parent, this
+ * enum can be used to distinguish between them.
  */
 public enum EntityType
 {
@@ -30,11 +30,6 @@ public enum EntityType
      * Represents a Person.
      */
     PERSON,
-
-    /**
-     * Represents an Organization.
-     */
-    ORGANIZATION,
 
     /**
      * Represents a DomainGroup.

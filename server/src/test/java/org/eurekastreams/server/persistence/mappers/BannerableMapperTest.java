@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test all Bannerable Templates.
- *
+ * 
  */
 public class BannerableMapperTest extends MapperTest
 {
@@ -35,48 +35,6 @@ public class BannerableMapperTest extends MapperTest
      */
     @Autowired
     private DomainGroupBannerMapper domainGroupBannerMapper;
-
-    /**
-     * Organization Template.
-     */
-    @Autowired
-    private OrganizationBannerMapper organizationBannerMapper;
-
-    /**
-     * Org Test.
-     */
-    @Test
-    public void updateOrgBannerableTest()
-    {
-        Bannerable bannerDTO;
-        boolean success;
-
-        // check to make sure it isn't set
-        bannerDTO = organizationBannerMapper.getBannerableDTO(5L);
-        assertEquals(bannerDTO.getBannerId(), "Foo");
-        assertEquals((long) bannerDTO.getBannerEntityId(), 5L);
-
-        // set it to John
-        success = organizationBannerMapper.updateBannerId(5L, "John");
-        assertTrue(success);
-
-        // Check again
-        bannerDTO = organizationBannerMapper.getBannerableDTO(5L);
-        assertEquals(bannerDTO.getBannerId(), "John");
-
-        // update using id
-        success = organizationBannerMapper.updateBannerId(5L, "JohnsDad");
-        assertTrue(success);
-
-        // Check again
-        bannerDTO = organizationBannerMapper.getBannerableDTO(5L);
-        assertEquals(bannerDTO.getBannerId(), "JohnsDad");
-
-        // fail at updating
-        success = organizationBannerMapper.updateBannerId(9L, "John");
-        assertFalse(success);
-
-    }
 
     /**
      * Group Test.

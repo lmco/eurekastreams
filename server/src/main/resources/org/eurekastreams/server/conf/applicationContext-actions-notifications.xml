@@ -145,7 +145,6 @@
                     <bean class="org.eurekastreams.server.action.execution.notification.NotificationPopulator">
                         <constructor-arg ref="getPersonsByIdsMapper" />
                         <constructor-arg ref="getGroupsByIdsMapper" />
-                        <constructor-arg ref="getOrganizationsByIdsMapper" />
                         <constructor-arg ref="bulkActivitiesMapper" />
                     </bean>
                 </constructor-arg>
@@ -179,7 +178,7 @@
         abstract="true" />
         
     <bean id="flaggedActivityNotificationEmailBuilder" parent="baseTemplateEmailBuilder">
-        <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) flagged a $(activity.type) in the $(dest.name) organization" />
+        <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) flagged a $(activity.type)" />
         <constructor-arg>
             <bean parent="baseResourceContentLoader">
                 <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt" />
@@ -428,7 +427,7 @@
                         <entry key="FLAG_GROUP_ACTIVITY" value-ref="flaggedActivityNotificationEmailBuilder" />
                         <entry key="REQUEST_NEW_GROUP">
                             <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)The $(aux.name) group is pending approval in the $(dest.name) organization" />
+                                <constructor-arg value="$(eureka.notification.email.subjectprefix)The $(aux.name) group is pending approval" />
                                 <constructor-arg>
                                     <bean parent="baseResourceContentLoader">
                                         <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP.txt" />

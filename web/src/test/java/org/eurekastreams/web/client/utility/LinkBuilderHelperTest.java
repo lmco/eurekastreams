@@ -47,7 +47,6 @@ public class LinkBuilderHelperTest
     {
         assertEquals(Page.PEOPLE, sut.getEntityProfilePage(EntityType.PERSON));
         assertEquals(Page.GROUPS, sut.getEntityProfilePage(EntityType.GROUP));
-        assertEquals(Page.ORGANIZATIONS, sut.getEntityProfilePage(EntityType.ORGANIZATION));
     }
 
 }

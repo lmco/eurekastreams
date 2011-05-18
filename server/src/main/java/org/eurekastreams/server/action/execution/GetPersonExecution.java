@@ -94,15 +94,6 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
                 result.getBackground().getBackgroundItems(BackgroundItemType.SKILL).size();
             }
         }
-
-        if (result != null)
-        {
-            if (log.isTraceEnabled())
-            {
-                log.trace("Attempting to populate skeleton Organizations for Person " + result.toString());
-            }
-
-        }
         return result;
     }
 

@@ -527,7 +527,6 @@ public class RefreshFeedExecutionTest
 
                 allowing(personOwner).getAccountId();
                 allowing(personOwner).getId();
-                allowing(groupOwner).getParentOrganization();
                 allowing(personOwner).getStreamScope();
                 allowing(groupOwner).getStreamScope();
                 allowing(groupOwner).isPublicGroup();
@@ -576,7 +575,6 @@ public class RefreshFeedExecutionTest
         {
             {
                 allowing(personOwner).getAccountId();
-                allowing(groupOwner).getParentOrganization();
                 allowing(personOwner).getId();
                 allowing(personOwner).getStreamScope();
                 allowing(groupOwner).getStreamScope();

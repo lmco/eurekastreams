@@ -24,12 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainEntityMapperTest;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper;
@@ -77,21 +75,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     private final TabMapper tabMapperMock = context.mock(TabMapper.class);
 
     /**
-     * Person Mapper Mock.
-     */
-    private final OrganizationMapper organizationMapperMock = context.mock(OrganizationMapper.class);
-
-    /**
      * actual person mapper.
      */
     @Autowired
     private PersonMapper personMapper;
-
-    /**
-     * actual org mapper.
-     */
-    @Autowired
-    private OrganizationMapper organizationMapper;
 
     /**
      * Actual Tab Mapper.
@@ -113,8 +100,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
-        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, readonlyStreamsMapper,
-                streamNames, startPageTabTypes);
+        sut = new PersonCreator(personMapperMock, tabMapperMock, readonlyStreamsMapper, streamNames, startPageTabTypes);
     }
 
     /**
@@ -164,13 +150,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     {
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 
-        final Organization orgMock = context.mock(Organization.class);
         inFields.put("accountId", "nflanders");
         inFields.put("firstName", "Ned");
         inFields.put("middleName", "");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Ned-diddly");
-        inFields.put("organization", orgMock);
 
         context.checking(new Expectations()
         {
@@ -186,8 +170,8 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
-        PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock,
-                readonlyStreamsMapper, streamNames, startPageTabTypes);
+        PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, readonlyStreamsMapper, streamNames,
+                startPageTabTypes);
 
         Person p = localSut.get(null, inFields);
         context.assertIsSatisfied();
@@ -254,8 +238,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
         List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
 
-        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, readonlyStreamsMapper, streamNames,
-                startPageTabTypes);
+        sut = new PersonCreator(personMapper, tabMapper, readonlyStreamsMapper, streamNames, startPageTabTypes);
 
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 

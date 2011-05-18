@@ -21,7 +21,6 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.task.TaskHandler;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 
 /**
@@ -39,23 +38,20 @@ public class CacheInitializer
      * 
      * @param inDomainGroupEntityCacheUpdater
      *            the domain group EntityCacheUpdater
-     * @param inOrgEntityCacheUpdater
-     *            the organization EntityCacheUpdater
      * @param inPersonEntityCacheUpdater
      *            the person EntityCacheUpdater
      */
     @SuppressWarnings("unchecked")
     public void wireCacheUpdaters(final EntityCacheUpdater inDomainGroupEntityCacheUpdater,
-            final EntityCacheUpdater inOrgEntityCacheUpdater, final EntityCacheUpdater inPersonEntityCacheUpdater)
+            final EntityCacheUpdater inPersonEntityCacheUpdater)
     {
         // set the updaters
         if (logger.isInfoEnabled())
         {
-            logger.info("Wiring up cache updaters for Person, DomainGroup, Organization.");
+            logger.info("Wiring up cache updaters for Person, DomainGroup.");
         }
 
         DomainGroup.setEntityCacheUpdater(inDomainGroupEntityCacheUpdater);
-        Organization.setEntityCacheUpdater(inOrgEntityCacheUpdater);
         Person.setEntityCacheUpdater(inPersonEntityCacheUpdater);
     }
 

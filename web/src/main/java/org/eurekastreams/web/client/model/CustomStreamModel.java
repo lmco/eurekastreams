@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
@@ -36,8 +35,7 @@ import com.google.gwt.json.client.JSONParser;
  * 
  */
 public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>,
-        Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>,
-        Reorderable<SetStreamOrderRequest>
+        Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>
 {
     /**
      * Singleton.
@@ -137,13 +135,5 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
                 Session.getInstance().getEventBus().notifyObservers(new CustomStreamDeletedEvent(request));
             }
         });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void reorder(final SetStreamOrderRequest request)
-    {
-        super.callWriteAction("setStreamOrder", request, null);
     }
 }

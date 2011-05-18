@@ -51,11 +51,6 @@ public class DirectorySearchLuceneQueryBuilderTest
     private final int fieldBoostFactor = 500;
 
     /**
-     * Org id getter.
-     */
-    private OrganizationIdGetter orgIdGetter = context.mock(OrganizationIdGetter.class);
-
-    /**
      * System under test.
      */
     private DirectorySearchLuceneQueryBuilder sut;
@@ -83,11 +78,6 @@ public class DirectorySearchLuceneQueryBuilderTest
     private final long userPersonId = 38281L;
 
     /**
-     * The organization id for the above org short name.
-     */
-    private final String orgId = "958302";
-
-    /**
      * Setup method.
      */
     @Before
@@ -97,10 +87,10 @@ public class DirectorySearchLuceneQueryBuilderTest
     }
 
     /**
-     * Test buildNativeQuery with no weighted field, for all organizations, and for a user that's not logged in.
+     * Test buildNativeQuery with no weighted field, and for a user that's not logged in.
      */
     @Test
-    public void testBuildNativeQueryNoWeightedFieldAllOrgsNoUser()
+    public void testBuildNativeQueryNoWeightedFieldAllNoUser()
     {
         String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))";
@@ -111,10 +101,10 @@ public class DirectorySearchLuceneQueryBuilderTest
     }
 
     /**
-     * Test buildNativeQuery with no weighted field, for all organizations, and for a user that is logged in.
+     * Test buildNativeQuery with no weighted field, and for a user that is logged in.
      */
     @Test
-    public void testBuildNativeQueryNoWeightedFieldAllOrgsWithUser()
+    public void testBuildNativeQueryNoWeightedFieldAllWithUser()
     {
         String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))";
@@ -124,10 +114,10 @@ public class DirectorySearchLuceneQueryBuilderTest
     }
 
     /**
-     * Test buildNativeQuery with a weighted field, for all organizations, and for a user that's not logged in.
+     * Test buildNativeQuery with a weighted field, and for a user that's not logged in.
      */
     @Test
-    public void testBuildNativeQueryWithWeightedFieldAllOrgsNoUser()
+    public void testBuildNativeQueryWithWeightedFieldAllNoUser()
     {
         context.checking(new Expectations()
         {
@@ -149,7 +139,7 @@ public class DirectorySearchLuceneQueryBuilderTest
      * Test buildNativeQuery.
      */
     @Test
-    public void testBuildNativeQueryWithWeightedFieldAllOrgsWithUser()
+    public void testBuildNativeQueryWithWeightedFieldAllWithUser()
     {
         context.checking(new Expectations()
         {

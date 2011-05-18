@@ -70,7 +70,7 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
     }
 
     /**
-     * Initialize the Organization hierarchy cache - intended to run on system start-up.
+     * Initialize the Domain Group hierarchy cache - intended to run on system start-up.
      */
     public void initialize()
     {

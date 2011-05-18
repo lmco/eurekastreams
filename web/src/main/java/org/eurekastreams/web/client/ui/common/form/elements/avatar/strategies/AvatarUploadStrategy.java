@@ -22,11 +22,9 @@ import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.data.DeletedGroupAvatarResponseEvent;
-import org.eurekastreams.web.client.events.data.DeletedOrganizationAvatarResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonAvatarResponseEvent;
 import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.GroupAvatarModel;
-import org.eurekastreams.web.client.model.OrganizationAvatarModel;
 import org.eurekastreams.web.client.model.PersonAvatarModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
@@ -85,23 +83,18 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
         case GROUP:
             deleteKey = GroupAvatarModel.getInstance();
             break;
-        case ORGANIZATION:
-            deleteKey = OrganizationAvatarModel.getInstance();
-            break;
         default:
             throw new ExecutionException("Entity type key invalid.");
         }
 
-        Session.getInstance().getEventBus().addObservers(
-                new Observer()
-                {
-                    public void update(final Object arg1)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ClearUploadedImageEvent(entityType, ImageType.AVATAR));
-                    }
-                }, DeletedPersonAvatarResponseEvent.class, DeletedGroupAvatarResponseEvent.class,
-                DeletedOrganizationAvatarResponseEvent.class);
+        Session.getInstance().getEventBus().addObservers(new Observer()
+        {
+            public void update(final Object arg1)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new ClearUploadedImageEvent(entityType, ImageType.AVATAR));
+            }
+        }, DeletedPersonAvatarResponseEvent.class, DeletedGroupAvatarResponseEvent.class);
     }
 
     /**

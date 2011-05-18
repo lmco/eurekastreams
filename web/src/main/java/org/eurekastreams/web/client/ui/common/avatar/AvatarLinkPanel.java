@@ -61,9 +61,6 @@ public class AvatarLinkPanel extends Composite
         case GROUP:
             page = Page.GROUPS;
             break;
-        case ORGANIZATION:
-            page = Page.ORGANIZATIONS;
-            break;
         default:
             // this should never happen
             return;
@@ -99,7 +96,6 @@ public class AvatarLinkPanel extends Composite
     {
         this(entityType, entityUniqueId, new AvatarWidget(entityId, avatarId, entityType, size, title));
     }
-
 
     /**
      * Constructor.

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.domain.OrganizationChild;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -71,7 +71,7 @@ public class PersonLookupUtilityStrategyTest
     public final void testPerformAction()
     {
 
-        final List<OrganizationChild> people = new ArrayList<OrganizationChild>();
+        final List<Person> people = new ArrayList<Person>();
 
         context.checking(new Expectations()
         {

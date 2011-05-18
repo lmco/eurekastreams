@@ -37,10 +37,8 @@ import org.eurekastreams.server.action.execution.notification.Notifier;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationDTO;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
@@ -129,16 +127,6 @@ public class ReviewPendingGroupExecutionTest
     /** Fixture: async request to send notification. */
     private UserActionRequest notifAsyncRequest = context.mock(UserActionRequest.class);
 
-    /**
-     * Mocked instance of the {@link OrganizationMapper}.
-     */
-    private final OrganizationMapper orgMapperMock = context.mock(OrganizationMapper.class);
-
-    /**
-     * Mocked instance of the {@link Organization}.
-     */
-    private final Organization orgMock = context.mock(Organization.class);
-
     /** Fixture: Execution strategy for deleting a group. */
     private DeleteGroupFromDBExecution deleteGroupExecution = context.mock(DeleteGroupFromDBExecution.class);
 
@@ -152,7 +140,7 @@ public class ReviewPendingGroupExecutionTest
     public void setup() throws MalformedURLException
     {
         sut = new ReviewPendingGroupExecution(groupMapper, emailNotifier, addPrivateGroupIdToCachedListMock,
-                orgMapperMock, deleteGroupExecution);
+                deleteGroupExecution);
     }
 
     /**
@@ -176,9 +164,6 @@ public class ReviewPendingGroupExecutionTest
 
                 oneOf(group).isPublicGroup();
                 will(returnValue(true));
-
-                allowing(group).getParentOrganization();
-                will(returnValue(orgMock));
             }
         });
 
@@ -212,10 +197,6 @@ public class ReviewPendingGroupExecutionTest
                 will(returnValue(false));
 
                 oneOf(addPrivateGroupIdToCachedListMock).execute(GROUP_ID);
-
-                allowing(group).getParentOrganization();
-                will(returnValue(orgMock));
-
             }
         });
 

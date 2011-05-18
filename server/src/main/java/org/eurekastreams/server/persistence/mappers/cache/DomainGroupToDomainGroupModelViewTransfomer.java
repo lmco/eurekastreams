@@ -38,7 +38,6 @@ public class DomainGroupToDomainGroupModelViewTransfomer implements Transformer<
         DomainGroupModelView result = new DomainGroupModelView();
 
         result.setShortName(inTransformType.getShortName());
-        result.setParentOrganizationShortName("");
         result.setPending(inTransformType.isPending());
 
         return result;

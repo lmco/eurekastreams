@@ -34,7 +34,6 @@ public class LinkBuilderHelper
     {
         entityProfilePageMapping.put(EntityType.PERSON, Page.PEOPLE);
         entityProfilePageMapping.put(EntityType.GROUP, Page.GROUPS);
-        entityProfilePageMapping.put(EntityType.ORGANIZATION, Page.ORGANIZATIONS);
     }
 
     /**
