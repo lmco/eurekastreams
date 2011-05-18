@@ -15,49 +15,40 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters;
 
-import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
 /**
  * Interface for filter render strategy.
- *
+ * 
  */
 public interface FilterRenderStrategy
 {
     /**
      * Gets the token to look for in the history token to switch to the filter. (i.e. viewId, searchid. etc).
-     *
+     * 
      * @return the token.
      */
     String getFilterHistoryToken();
 
     /**
      * Gets the title of the list.
-     *
+     * 
      * @return the title.
      */
     String getTitle();
 
     /**
      * Sets up the events on the bus.
-     *
+     * 
      * @param listPanel
      *            the panel to tie events to.
      */
     void setUpEvents(FilterListPanel listPanel);
 
     /**
-     * Gets the drag reorder action.
-     *
-     * @return the action key.
-     */
-    Reorderable<SetStreamOrderRequest> getReorderableModel();
-
-    /**
      * Gets the filter panel.
-     *
+     * 
      * @param filter
      *            the filter.
      * @return the filter panel.
@@ -66,7 +57,7 @@ public interface FilterRenderStrategy
 
     /**
      * Gets the create/edit dialog.
-     *
+     * 
      * @return the dialog.
      */
     DialogContent getDialogContent();
