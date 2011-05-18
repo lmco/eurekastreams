@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CommentNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -167,8 +168,9 @@ public class GroupCommentTranslator implements NotificationTranslator<CommentNot
         }
 
         // Add properties
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", activity.getDestinationStream());
+        batch.setAlias(NotificationPropertyKeys.SOURCE, "stream");
         batch.setProperty("activity", activity);
         batch.setProperty("comment", comment);
 

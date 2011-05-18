@@ -72,7 +72,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
     private final Map<String, Iterable<RecipientFilter>> recipientFilters;
 
     /** Mappers for loading notification properties. */
-    private Map<Class, DomainMapper<Serializable, Object>> propertyLoadMappers;
+    private final Map<Class, DomainMapper<Serializable, Object>> propertyLoadMappers;
 
     /**
      * Constructor.
@@ -89,13 +89,16 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      *            Map providing the category for each notification type.
      * @param inRecipientFilters
      *            Recipient filter strategies per notifier type.
+     * @param inPropertyLoadMappers
+     *            Mappers for loading notification properties.
      */
     public CreateNotificationsExecution(final Map<RequestType, NotificationTranslator> inTranslators,
             final Map<String, Notifier> inNotifiers,
             final GetNotificationFilterPreferencesByPeopleIds inPreferencesMapper,
             final DomainMapper<Long, PersonModelView> inPersonMapper,
             final Map<NotificationType, Category> inNotificationTypeCategories,
-            final Map<String, Iterable<RecipientFilter>> inRecipientFilters)
+            final Map<String, Iterable<RecipientFilter>> inRecipientFilters,
+            final Map<Class, DomainMapper<Serializable, Object>> inPropertyLoadMappers)
     {
         translators = inTranslators;
         notifiers = inNotifiers;
@@ -103,6 +106,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         personMapper = inPersonMapper;
         notificationTypeToCategory = inNotificationTypeCategories;
         recipientFilters = inRecipientFilters;
+        propertyLoadMappers = inPropertyLoadMappers;
     }
 
     @Override

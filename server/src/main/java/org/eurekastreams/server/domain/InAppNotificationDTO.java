@@ -74,7 +74,7 @@ public class InAppNotificationDTO implements Serializable
 
     /**
      * Constructor for Hibernate query to build the DTO.
-     * 
+     *
      * @param inId
      *            DB ID.
      * @param inNotificationType
@@ -184,7 +184,7 @@ public class InAppNotificationDTO implements Serializable
     }
 
     /**
-     * @return the priority
+     * @return If high priority.
      */
     public boolean isHighPriority()
     {

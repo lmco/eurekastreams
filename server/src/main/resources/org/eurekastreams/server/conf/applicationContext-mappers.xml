@@ -1016,6 +1016,12 @@
         <constructor-arg value="False" />
         <property name="cache" ref="memcachedCache" />
     </bean>        
+
+	<!-- Mapper to get a group by id, returning null when not found -->
+	<bean id="getGroupByIdMapperAllowNullResult" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getGroupsByIdsMapper" />
+		<constructor-arg value="false" />
+	</bean>
 	
 	<bean id="getFollowedGroupIdsForPersonByIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -1185,6 +1191,12 @@
 	<bean id="getPersonByIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getPersonsByIdsMapper" />
 		<constructor-arg value="true" />
+	</bean>
+
+	<!-- Mapper to get a person by id, returning null when not found -->
+	<bean id="getPersonByIdMapperAllowNullResult" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPersonsByIdsMapper" />
+		<constructor-arg value="false" />
 	</bean>
     
     <bean id="getPersonsByIdsMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">

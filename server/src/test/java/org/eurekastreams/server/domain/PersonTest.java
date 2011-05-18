@@ -45,7 +45,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test class for Person.
- * 
+ *
  * Note: for tabGroups testing, tab groups are named after electron shells 1s, 2s, 2p, 3s, 3p, 3d
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -142,6 +142,7 @@ public class PersonTest
         assertEquals(aDate, sut.getDateAdded());
         assertEquals("Doe", sut.getLastName());
         assertEquals("John", sut.getPreferredName());
+        assertEquals(EntityType.PERSON, sut.getEntityType());
     }
 
     /**
@@ -172,6 +173,8 @@ public class PersonTest
         assertEquals("engineer", mv.getTitle());
         assertEquals("user@domain.com", mv.getEmail());
         assertEquals(aDate, mv.getDateAdded());
+        assertEquals(EntityType.PERSON, sut.getEntityType());
+        assertEquals(7L, sut.getEntityId());
 
         assertEquals(1, mv.getOptOutVideos().size());
         assertEquals((Long) 5L, mv.getOptOutVideos().iterator().next());
@@ -396,7 +399,7 @@ public class PersonTest
 
     /**
      * jobDescription too long
-     * 
+     *
      * hibernate validation.
      */
     @Test
@@ -417,7 +420,7 @@ public class PersonTest
 
     /**
      * non-parsable zip code
-     * 
+     *
      * hibernate validation.
      */
     @Test
@@ -432,7 +435,7 @@ public class PersonTest
 
     /**
      * test phone numbers
-     * 
+     *
      * hibernate validation.
      */
     @Test
@@ -453,7 +456,7 @@ public class PersonTest
 
     /**
      * Core of phone number test: insures the given value is acceptable or not.
-     * 
+     *
      * @param testValue
      *            Test value for a phone nubmer.
      * @param ok

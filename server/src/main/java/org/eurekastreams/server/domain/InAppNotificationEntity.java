@@ -73,7 +73,7 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     /** Type of entity from which the notification came (person, group, app, or NOTSET=system). */
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
-    private EntityType sourceType;
+    private EntityType sourceType = EntityType.NOTSET;
 
     /** Unique ID of source. */
     @Basic(optional = true)
@@ -86,12 +86,40 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     /** Type of entity whose avatar will be displayed with the notification (person, group, app, or NOTSET=system). */
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
-    private EntityType avatarOwnerType;
+    private EntityType avatarOwnerType = EntityType.NOTSET;
 
     /** Unique ID of entity whose avatar will be displayed. */
     @Basic(optional = true)
     private String avatarOwnerUniqueId;
 
+    /**
+     * Constructor.
+     */
+    public InAppNotificationEntity()
+    {
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other
+     *            Object to copy.
+     */
+    public InAppNotificationEntity(final InAppNotificationEntity other)
+    {
+        recipient = other.recipient;
+        notificationType = other.notificationType;
+        notificationDate = other.notificationDate;
+        message = other.message;
+        url = other.url;
+        highPriority = other.highPriority;
+        isRead = other.isRead;
+        sourceType = other.sourceType;
+        sourceUniqueId = other.sourceUniqueId;
+        sourceName = other.sourceName;
+        avatarOwnerType = other.avatarOwnerType;
+        avatarOwnerUniqueId = other.avatarOwnerUniqueId;
+    }
 
     /**
      * @return the notificationType
@@ -102,7 +130,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inNotificationType the notificationType to set
+     * @param inNotificationType
+     *            the notificationType to set
      */
     public void setNotificationType(final NotificationType inNotificationType)
     {
@@ -118,7 +147,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inNotificationDate the notificationDate to set
+     * @param inNotificationDate
+     *            the notificationDate to set
      */
     public void setNotificationDate(final Date inNotificationDate)
     {
@@ -134,7 +164,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inMessage the message to set
+     * @param inMessage
+     *            the message to set
      */
     public void setMessage(final String inMessage)
     {
@@ -150,7 +181,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inUrl the url to set
+     * @param inUrl
+     *            the url to set
      */
     public void setUrl(final String inUrl)
     {
@@ -166,7 +198,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inPriority the priority to set
+     * @param inPriority
+     *            the priority to set
      */
     public void setHighPriority(final boolean inPriority)
     {
@@ -182,7 +215,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inIsRead the isRead to set
+     * @param inIsRead
+     *            the isRead to set
      */
     public void setRead(final boolean inIsRead)
     {
@@ -198,7 +232,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inSourceType the sourceType to set
+     * @param inSourceType
+     *            the sourceType to set
      */
     public void setSourceType(final EntityType inSourceType)
     {
@@ -214,7 +249,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inSourceUniqueId the sourceUniqueId to set
+     * @param inSourceUniqueId
+     *            the sourceUniqueId to set
      */
     public void setSourceUniqueId(final String inSourceUniqueId)
     {
@@ -230,7 +266,8 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     }
 
     /**
-     * @param inSourceName the sourceName to set
+     * @param inSourceName
+     *            the sourceName to set
      */
     public void setSourceName(final String inSourceName)
     {

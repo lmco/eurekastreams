@@ -68,7 +68,8 @@ import org.hibernate.validator.Size;
 @ClassBridge(name = "followerAndCoordinatorIds", index = Index.TOKENIZED, store = Store.NO,
 // whitespace analyzer and custom class bridge to use JPA to get the ids rather than load extra objects
 analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class)
-public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, DomainGroupEntity, CompositeEntity
+public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, DomainGroupEntity, CompositeEntity,
+        Identifiable
 {
     /**
      * Serial version uid.
@@ -317,7 +318,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * Retrieve the name of the DomainEntity. This is to allow for the super class to identify the table within
      * hibernate.
-     * 
+     *
      * @return The name of the domain entity.
      */
     public static String getDomainEntityName()
@@ -335,7 +336,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * set the id - useful for unit testing.
-     * 
+     *
      * @param newId
      *            the new id
      */
@@ -347,7 +348,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Override equality to be based on the group's id.
-     * 
+     *
      * @param rhs
      *            target object
      * @return true if equal, false otherwise.
@@ -360,7 +361,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * HashCode override.
-     * 
+     *
      * @see java.lang.Object#hashCode()
      * @return hashcode for object.
      */
@@ -389,7 +390,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Constructor. This should have every non-null parameter included.
-     * 
+     *
      * @param inName
      *            - Full name of group.
      * @param inShortName
@@ -406,7 +407,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Add coordinator to group.
-     * 
+     *
      * @param person
      *            The Person to add.
      */
@@ -421,7 +422,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter for list of coordinators.
-     * 
+     *
      * @return list of coordinators.
      */
     @Override
@@ -432,7 +433,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for list of coordinators.
-     * 
+     *
      * @param inCoordinators
      *            list of coordinators.
      */
@@ -471,7 +472,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for group name.
-     * 
+     *
      * @param inName
      *            new name
      */
@@ -483,7 +484,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter for group short name.
-     * 
+     *
      * @return the shortName
      */
     @Override
@@ -494,7 +495,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for group short name.
-     * 
+     *
      * @param inShortName
      *            the shortName to set.
      */
@@ -505,7 +506,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter.
-     * 
+     *
      * @return the overview
      */
     @Override
@@ -516,7 +517,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter.
-     * 
+     *
      * @param inOverview
      *            the overview to set
      */
@@ -546,7 +547,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * check to see if the specified account id is a coordinator for this group.
-     * 
+     *
      * @param account
      *            to check.
      * @return if they're a coordinator.
@@ -585,7 +586,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get avatar x coord.
-     * 
+     *
      * @return avatar x coord.
      */
     @Override
@@ -596,7 +597,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set avatar x coord.
-     * 
+     *
      * @param value
      *            x coord.
      */
@@ -608,7 +609,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get avatar y coord.
-     * 
+     *
      * @return avatar y coord.
      */
     @Override
@@ -619,7 +620,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set avatar y coord.
-     * 
+     *
      * @param value
      *            y coord.
      */
@@ -631,7 +632,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get avatar crop size.
-     * 
+     *
      * @return avatar crop size.
      */
     @Override
@@ -642,7 +643,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set avatar crop size.
-     * 
+     *
      * @param value
      *            crop size.
      */
@@ -710,7 +711,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get the number of updates for this group.
-     * 
+     *
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -720,7 +721,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set the number of updates for this group.
-     * 
+     *
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -731,7 +732,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Set the date the group was added to the system.
-     * 
+     *
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -742,7 +743,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Get the date the group was added to the system.
-     * 
+     *
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -761,7 +762,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * Sets if the group is pending. Note: Name is awkward, but follows the bean spec. (setIsPending would go with
      * getIsPending; setIsPending is NOT a match for isPending and thus the field doesn't serialize)
-     * 
+     *
      * @param inIsPending
      *            the status to set
      */
@@ -857,7 +858,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Setter for the static PersonUpdater.
-     * 
+     *
      * @param inEntityCacheUpdater
      *            the PersonUpdater to set
      */
@@ -888,7 +889,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /**
      * Getter for the domain short name as implementation for Followable.
-     * 
+     *
      * @return - UniqueId of the Group - shortname.
      */
     @Override
@@ -947,5 +948,32 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public void setSuppressPostNotifToCoordinator(final boolean inSuppressPostNotifToCoordinator)
     {
         suppressPostNotifToCoordinator = inSuppressPostNotifToCoordinator;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EntityType getEntityType()
+    {
+        return EntityType.GROUP;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDisplayName()
+    {
+        return name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getEntityId()
+    {
+        return getId();
     }
 }

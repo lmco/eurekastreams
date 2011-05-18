@@ -125,4 +125,21 @@ public class NotificationBatch
     {
         properties.put(key, new Property<Object>(type, identity));
     }
+
+    /**
+     * Causes two keys to point to the same property, so both will hold the same value and lazy-loading will load both.
+     *
+     * @param aliasKey
+     *            New key.
+     * @param originalKey
+     *            Existing key.
+     */
+    public void setAlias(final String aliasKey, final String originalKey)
+    {
+        Property<Object> property = properties.get(originalKey);
+        if (property != null)
+        {
+            properties.put(aliasKey, property);
+        }
+    }
 }

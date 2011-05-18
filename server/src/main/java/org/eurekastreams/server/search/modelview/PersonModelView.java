@@ -28,14 +28,16 @@ import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Bannerable;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.HasEmail;
+import org.eurekastreams.server.domain.Identifiable;
 
 /**
  * A lightweight view of a Person containing everything needed for display of a search result of an Person.
  */
 public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable,
-        ActivityRestrictionEntity, AvatarEntity, Bannerable
+        ActivityRestrictionEntity, AvatarEntity, Bannerable, Identifiable
 {
     /**
      * Serial version uid.
@@ -85,7 +87,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Role in the system.
-     * 
+     *
      */
     public enum Role implements Serializable
     {
@@ -287,7 +289,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the name of this entity.
-     * 
+     *
      * @return the name of this entity
      */
     @Override
@@ -305,7 +307,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Load this object's properties from the input Map.
-     * 
+     *
      * @param properties
      *            the Map of the properties to load
      */
@@ -481,7 +483,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the date the person was added to the system.
-     * 
+     *
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -491,7 +493,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the date the person was added to the system.
-     * 
+     *
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -502,7 +504,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's account id.
-     * 
+     *
      * @return the accountId
      */
     public String getAccountId()
@@ -512,7 +514,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's account id.
-     * 
+     *
      * @param inAccountId
      *            the accountId to set
      */
@@ -523,7 +525,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's OpenSocial id.
-     * 
+     *
      * @return the openSocialId
      */
     public String getOpenSocialId()
@@ -533,7 +535,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's OpenSocial id.
-     * 
+     *
      * @param inOpenSocialId
      *            the openSocialId to set
      */
@@ -544,7 +546,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's title.
-     * 
+     *
      * @return the title
      */
     public String getTitle()
@@ -554,7 +556,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's title.
-     * 
+     *
      * @param inTitle
      *            the title to set
      */
@@ -565,7 +567,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's description.
-     * 
+     *
      * @return the description
      */
     public String getDescription()
@@ -575,7 +577,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's description.
-     * 
+     *
      * @param inDescription
      *            the description to set
      */
@@ -586,7 +588,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the number of people following this person.
-     * 
+     *
      * @return the followersCount
      */
     @Override
@@ -614,7 +616,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of people following this person.
-     * 
+     *
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -625,9 +627,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's display name.
-     * 
+     *
      * @return the displayName
      */
+    @Override
     public String getDisplayName()
     {
         return displayName;
@@ -635,7 +638,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's display name.
-     * 
+     *
      * @param inDisplayName
      *            the displayName to set
      */
@@ -646,9 +649,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's avatar id.
-     * 
+     *
      * @return the avatarId
      */
+    @Override
     public String getAvatarId()
     {
         return avatarId;
@@ -656,10 +660,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's avatar id.
-     * 
+     *
      * @param inAvatarId
      *            the avatarId to set
      */
+    @Override
     public void setAvatarId(final String inAvatarId)
     {
         avatarId = inAvatarId;
@@ -667,7 +672,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the entity id.
-     * 
+     *
      * @param inEntityId
      *            the entity id of the person.
      */
@@ -680,7 +685,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The the number of updates for this person.
-     * 
+     *
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -690,7 +695,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of updates for this person.
-     * 
+     *
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -752,7 +757,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the roles.
-     * 
+     *
      * @param inRoles
      *            the roles.
      */
@@ -763,7 +768,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Gets the roles.
-     * 
+     *
      * @return the roles.
      */
     public Set<Role> getRoles()
@@ -860,7 +865,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     * 
+     *
      * @return videos the person has opted out of.
      */
     public HashSet<Long> getOptOutVideos()
@@ -870,10 +875,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * set the set of videos a person has opted out of.
-     * 
+     *
      * @param inOptOutVideos
      *            the set of videos.
-     * 
+     *
      */
     public void setOptOutVideos(final HashSet<Long> inOptOutVideos)
     {
@@ -900,7 +905,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the last date the person accepted the terms of service.
-     * 
+     *
      * @return the last date the person accepted the terms of service
      */
     public Date getLastAcceptedTermsOfService()
@@ -910,7 +915,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the last date the person accepted the terms of service.
-     * 
+     *
      * @param inLastAcceptedTermsOfService
      *            the last date the person accepted the terms of service.
      */
@@ -921,7 +926,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties setter.
-     * 
+     *
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -932,7 +937,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties getter.
-     * 
+     *
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()
@@ -1028,6 +1033,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return the avatarCropSize
      */
+    @Override
     public Integer getAvatarCropSize()
     {
         return avatarCropSize;
@@ -1037,6 +1043,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * @param inAvatarCropSize
      *            the avatarCropSize to set
      */
+    @Override
     public void setAvatarCropSize(final Integer inAvatarCropSize)
     {
         avatarCropSize = inAvatarCropSize;
@@ -1045,6 +1052,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return the avatarCropX
      */
+    @Override
     public Integer getAvatarCropX()
     {
         return avatarCropX;
@@ -1054,6 +1062,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * @param inAvatarCropX
      *            the avatarCropX to set
      */
+    @Override
     public void setAvatarCropX(final Integer inAvatarCropX)
     {
         avatarCropX = inAvatarCropX;
@@ -1062,6 +1071,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return the avatarCropY
      */
+    @Override
     public Integer getAvatarCropY()
     {
         return avatarCropY;
@@ -1071,6 +1081,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * @param inAvatarCropY
      *            the avatarCropY to set
      */
+    @Override
     public void setAvatarCropY(final Integer inAvatarCropY)
     {
         avatarCropY = inAvatarCropY;
@@ -1205,7 +1216,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the company name.
-     * 
+     *
      * @return the company name.
      */
     public String getCompanyName()
@@ -1215,7 +1226,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the company name.
-     * 
+     *
      * @param inCompanyName
      *            the company name.
      */
@@ -1224,4 +1235,12 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         companyName = inCompanyName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EntityType getEntityType()
+    {
+        return EntityType.PERSON;
+    }
 }

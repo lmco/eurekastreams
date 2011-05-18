@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.search.modelview;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.junit.Test;
 
@@ -230,7 +231,7 @@ public class PersonModelViewTest
 
     /**
      * Test helper method to assert the default values.
-     * 
+     *
      * @param sut
      *            the SUT
      */
@@ -259,7 +260,7 @@ public class PersonModelViewTest
 
     /**
      * Test helper method to assert all properties.
-     * 
+     *
      * @param sut
      *            the SUT
      */
@@ -283,6 +284,7 @@ public class PersonModelViewTest
         assertEquals(streamPostable, sut.isStreamPostable());
         assertEquals(lastAcceptedTermsOfService, sut.getLastAcceptedTermsOfService());
 
+        assertEquals(EntityType.PERSON, sut.getEntityType());
         assertEquals(sut.getEntityId(), sut.getId());
         assertEquals(sut.getAccountId(), sut.getUniqueId());
         assertTrue(sut.isAccountLocked());

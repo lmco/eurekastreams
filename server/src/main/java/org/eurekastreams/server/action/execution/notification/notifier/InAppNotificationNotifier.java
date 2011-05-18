@@ -17,13 +17,14 @@ package org.eurekastreams.server.action.execution.notification.notifier;
 
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.domain.Identifiable;
 import org.eurekastreams.server.domain.InAppNotificationEntity;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.Person;
@@ -104,27 +105,44 @@ public class InAppNotificationNotifier implements Notifier
         velocityEngine.evaluate(velocityContext, writer, "InAppNotification-" + inType, template);
 
         String message = writer.toString();
-        Date now = new Date();
 
+        InAppNotificationEntity dbNotif = null;
         for (long recipientId : inRecipients)
         {
             // Person recipient = (Person) getHibernateSession().get(Person.class, recipientId);
             Person recipient = placeholderPersonMapper.execute(recipientId);
             if (recipient != null)
             {
-                InAppNotificationEntity dbNotif = new InAppNotificationEntity();
+                // build or clone notification
+                if (dbNotif == null)
+                {
+                    dbNotif = new InAppNotificationEntity();
+                    dbNotif.setNotificationType(inType);
+                    dbNotif.setMessage(message);
+                    dbNotif.setUrl((String) inProperties.get(NotificationPropertyKeys.URL));
+                    dbNotif.setHighPriority(Boolean.TRUE.equals(inProperties.get(NotificationPropertyKeys.HIGH_PRIORITY)));
+
+                    Object obj = inProperties.get(NotificationPropertyKeys.SOURCE);
+                    if (obj instanceof Identifiable)
+                    {
+                        Identifiable source = (Identifiable) obj;
+                        dbNotif.setSourceType(source.getEntityType());
+                        dbNotif.setSourceUniqueId(source.getUniqueId());
+                        dbNotif.setSourceName(source.getDisplayName());
+                    }
+                    obj = inProperties.get(NotificationPropertyKeys.ACTOR);
+                    if (obj instanceof Identifiable)
+                    {
+                        Identifiable actor = (Identifiable) obj;
+                        dbNotif.setAvatarOwnerType(actor.getEntityType());
+                        dbNotif.setAvatarOwnerUniqueId(actor.getUniqueId());
+                    }
+                }
+                else
+                {
+                    dbNotif = new InAppNotificationEntity(dbNotif);
+                }
                 dbNotif.setRecipient(recipient);
-                dbNotif.setNotificationType(inType);
-                dbNotif.setNotificationDate(now);
-                dbNotif.setMessage(message);
-                // TODO: DO THESE
-                // dbNotif.setUrl(inNotification.get());
-                // dbNotif.setHighPriority(inNotification.get());
-                // dbNotif.setSourceType(inNotification.get());
-                // dbNotif.setSourceUniqueId(inNotification.get());
-                // dbNotif.setSourceName(inNotification.get());
-                // dbNotif.setAvatarOwnerType(inNotification.get());
-                // dbNotif.setAvatarOwnerUniqueId(inNotification.get());
 
                 insertMapper.execute(new PersistenceRequest<InAppNotificationEntity>(dbNotif));
                 syncMapper.execute(recipientId);

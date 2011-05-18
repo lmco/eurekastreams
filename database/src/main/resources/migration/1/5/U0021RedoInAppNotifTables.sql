@@ -1,4 +1,4 @@
-insert into db_version (major, minor, patch, scriptname, description) values (1, 5, '0020', 'U0020RedoInAppNotifTables', 'Replace in-app notification table');
+insert into db_version (major, minor, patch, scriptname, description) values (1, 5, '0021', 'U0021RedoInAppNotifTables', 'Replace in-app notification table');
 
 drop table applicationalertnotification;
 
