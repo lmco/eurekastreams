@@ -1543,7 +1543,7 @@
 
 	<bean id="commentDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
-		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 		<constructor-arg ref="getSystemAdministratorIds" />
@@ -1635,11 +1635,6 @@
 	<bean id="getPersonIdsWithStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">
 		<property name="queryOptimizer" ref="queryOptimizer" />
-	</bean>
-
-	<bean id="reorderFollowedGroupIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
-		<property name="cache" ref="memcachedCache" />
 	</bean>
 
 	<bean id="getStarredActivityIds"

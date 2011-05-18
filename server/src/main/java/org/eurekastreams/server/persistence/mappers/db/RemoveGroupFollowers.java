@@ -43,14 +43,6 @@ public class RemoveGroupFollowers extends BaseArgDomainMapper<Long, List<Long>>
                 "SELECT gf1.pk.followerId FROM GroupFollower gf1 " + "WHERE gf1.pk.followingId=:followingId")
                 .setParameter("followingId", inRequest).getResultList();
 
-        // Decrement the groupStreamIndex for all users that are following the group
-        getEntityManager().createQuery(// \n
-                "UPDATE GroupFollower gf1 SET gf1.groupStreamIndex = gf1.groupStreamIndex - 1 "// \n
-                        + "WHERE gf1.groupStreamIndex > " // \n
-                        + "(SELECT gf2.groupStreamIndex FROM GroupFollower gf2 " // \n
-                        + "WHERE gf2.pk.followerId = gf1.pk.followerId AND gf2.pk.followingId=:followingId)") // \n
-                .setParameter("followingId", inRequest).executeUpdate();
-
         // now update the counts for persons.
         // NOTE: groupsCount is not indexed by search so we don't need to reindex all the Person entities updated here.
         getEntityManager().createQuery(// \n

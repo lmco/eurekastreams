@@ -509,6 +509,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * List of groups this user is following.
      */
+    @OrderBy(clause = "name")
     @SuppressWarnings("unused")
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinTable(name = "GroupFollower",

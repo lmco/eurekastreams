@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
-import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
@@ -24,7 +23,6 @@ import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
@@ -37,11 +35,6 @@ import org.eurekastreams.web.client.ui.common.stream.filters.FilterRenderStrateg
  */
 public class CustomStreamRenderer implements FilterRenderStrategy
 {
-    /**
-     * No-op reorderable model.
-     */
-    private NoOpReorderableModel reorderable = new NoOpReorderableModel();
-
     /**
      * Gets the title of the list.
      * 
@@ -126,15 +119,4 @@ public class CustomStreamRenderer implements FilterRenderStrategy
     {
         return "streamId";
     }
-
-    /**
-     * No reordering of custom streams.
-     * 
-     * @return a no-op reorderable
-     */
-    public Reorderable<SetStreamOrderRequest> getReorderableModel()
-    {
-        return reorderable;
-    }
-
 }

@@ -483,13 +483,13 @@
 	
 
 	<!-- Smithers and Burns follow group 1 -->
-	<GroupFollower followerId="99" followingId="1" groupstreamindex="0" receivenewactivitynotifications="false" />
-	<GroupFollower followerId="98" followingId="1" groupstreamindex="0" receiveNewActivityNotifications="true" />
+	<GroupFollower followerId="99" followingId="1" receivenewactivitynotifications="false" />
+	<GroupFollower followerId="98" followingId="1" receiveNewActivityNotifications="true" />
 	
 	<!-- Fordp follows groups 1, 2, and 3 -->
-	<GroupFollower followerId="42" followingId="1" groupstreamindex="0" receiveNewActivityNotifications="true" />
-	<GroupFollower followerId="42" followingId="2" groupstreamindex="1" receiveNewActivityNotifications="true" />
-	<GroupFollower followerId="42" followingId="3" groupstreamindex="2" receiveNewActivityNotifications="true" />
+	<GroupFollower followerId="42" followingId="1" receiveNewActivityNotifications="true" />
+	<GroupFollower followerId="42" followingId="2" receiveNewActivityNotifications="true" />
+	<GroupFollower followerId="42" followingId="3" receiveNewActivityNotifications="true" />
 
 	<!-- Smithers and Ford are coordinators for Group 1 -->
 	<Group_Coordinators DomainGroup_id="1"
@@ -499,7 +499,7 @@
 
 
 	<!-- Sagan follows group 2 -->
-	<GroupFollower followerId="4507" followingId="2" groupstreamindex="0" receiveNewActivityNotifications="true" />
+	<GroupFollower followerId="4507" followingId="2" receiveNewActivityNotifications="true" />
 
 	<!-- FordP2 is a coordinator for group 2 -->
 	<Group_Coordinators DomainGroup_id="2"

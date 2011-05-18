@@ -161,7 +161,7 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
     private void queryAllFollowers()
     {
         // single query to get all follower->group
-        String queryString = "SELECT f.pk.followerId, f.pk.followingId from GroupFollower f order by groupstreamindex";
+        String queryString = "SELECT f.pk.followerId, f.pk.followingId from GroupFollower f";
         Query query = getEntityManager().createQuery(queryString);
         List<Object[]> results = query.getResultList();
 

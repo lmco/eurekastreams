@@ -26,7 +26,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.IndexedDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Anchor;
@@ -39,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Shows a list of views.
- *
+ * 
  */
 public class FilterListPanel extends FlowPanel
 {
@@ -83,11 +82,6 @@ public class FilterListPanel extends FlowPanel
     private final VerticalPanel panel = new VerticalPanel();
 
     /**
-     * View drag controller.
-     */
-    private final PickupDragController viewDragController;
-
-    /**
      * The renderer.
      */
     private final FilterRenderStrategy renderer;
@@ -109,7 +103,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inViews
      *            the views.
      * @param inHiddenLineIndex
@@ -157,13 +151,6 @@ public class FilterListPanel extends FlowPanel
         renderer.setUpEvents(this);
 
         IndexedDropController tabDropController = new IndexedDropController(panel);
-        viewDragController = new PickupDragController(viewBoundaryPanel, false);
-
-        viewDragController.setBehaviorConstrainedToBoundaryPanel(true);
-        viewDragController.setBehaviorMultipleSelection(false);
-        viewDragController.setBehaviorDragStartSensitivity(DRAG_SENSITIVITY);
-        viewDragController.addDragHandler(new FilterDragHandler(this, renderer.getReorderableModel()));
-        viewDragController.registerDropController(tabDropController);
 
         int count = 0;
 
@@ -180,7 +167,6 @@ public class FilterListPanel extends FlowPanel
             }
             listCache.put(view.getId(), listItem);
             panel.add((Widget) listItem);
-            viewDragController.makeDraggable((Widget) listItem, listItem.getMoveHandle());
             count++;
         }
 
@@ -257,7 +243,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * hides the text on the hidden line if its the last one.
-     *
+     * 
      * @param inHiddenLineIndex
      *            the hidden line index.
      */
@@ -279,7 +265,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Activate a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -302,7 +288,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Adds a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -313,7 +299,6 @@ public class FilterListPanel extends FlowPanel
         ((Widget) listItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
         listCache.put(filter.getId(), listItem);
         panel.add((Widget) listItem);
-        viewDragController.makeDraggable((Widget) listItem, listItem.getMoveHandle());
 
         listItem.updateHistory();
 
@@ -339,7 +324,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Removes a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -360,7 +345,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Updates the filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -399,7 +384,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get drop panel.
-     *
+     * 
      * @return the drop panel.
      */
     public VerticalPanel getDropPanel()
@@ -409,14 +394,13 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Gets the hidden line.
-     *
+     * 
      * @return the hidden line.
      */
     public Integer getHiddenLineIndex()
     {
         return panel.getWidgetIndex(showMore);
     }
-
 
     /**
      * Unhide.
@@ -431,7 +415,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get the views.
-     *
+     * 
      * @return the views.
      */
     public List<StreamFilter> getViews()

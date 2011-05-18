@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * Tests for Follower/FollowerPk classes.
- *
+ * 
  */
 public class GroupFollowerTest
 {
@@ -35,11 +35,11 @@ public class GroupFollowerTest
     public void testConstructor()
     {
         GroupFollower sut = new GroupFollower(1L, 2L);
-        
+
         assertEquals("FollowerId not expected value set in constructor.", 1, sut.getFollowerId());
-        assertEquals("FolloweringId not expected value set in constructor.", 2, sut.getFollowingId());        
+        assertEquals("FolloweringId not expected value set in constructor.", 2, sut.getFollowingId());
     }
-    
+
     /**
      * Test the equals override for FollowerPk.
      */
@@ -48,11 +48,11 @@ public class GroupFollowerTest
     {
         GroupFollower.GroupFollowerPk sut = new GroupFollower.GroupFollowerPk(1L, 2L);
         assertFalse(sut.equals(new Object()));
-        
+
         GroupFollower.GroupFollowerPk target = new GroupFollower.GroupFollowerPk(1L, 2L);
         assertTrue(sut.equals(target));
     }
-    
+
     /**
      * Test the hashcode override for FollowerPk.
      */
@@ -61,16 +61,5 @@ public class GroupFollowerTest
     {
         GroupFollower.GroupFollowerPk sut = new GroupFollower.GroupFollowerPk(1L, 2L);
         assertNotNull(sut.hashCode());
-    }
-    
-    /**
-     * Test the getter/setter for group stream index.
-     */
-    @Test
-    public void testGroupStreamIndex()
-    {
-        GroupFollower sut = new GroupFollower(1L, 2L);
-        sut.setGroupStreamIndex(2);
-        assertEquals(2, sut.getGroupStreamIndex());
     }
 }
