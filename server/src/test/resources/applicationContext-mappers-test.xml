@@ -240,15 +240,8 @@
 	
 	<bean id="personQueryStrategy" class="org.eurekastreams.server.persistence.strategies.PersonQueryStrategy" />
 	
-	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" /><!--
-
-	-->
-
-	<bean id="reorderFollowedGroupIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
-		<property name="cache" ref="testCache" />
-	</bean>	
-
+	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" />
+	
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
 		<property name="bulkPeopleMapper" ref="getPersonsByIdsDBMapper" />

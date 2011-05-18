@@ -72,10 +72,33 @@ public class GalleryTabTemplateMapperTest extends DomainEntityMapperTest
     @Test
     public void testFindSortedByPopular()
     {
+        // null out galleryTabTemplate ids and then set only 1
+        getEntityManager().createQuery("update TabTemplate set galleryTabTemplateId = null").executeUpdate();
+        getEntityManager().createQuery("update TabTemplate set galleryTabTemplateId = 2 where id = 1097")
+                .executeUpdate();
+
+        // verify that it's correct.
         List<GalleryTabTemplateDTO> result = sut.findSortedByPopularity(0, 5).getPagedSet();
         assertEquals(2, result.size());
         assertEquals("2", result.get(0).getId().toString());
+        assertEquals("1", result.get(0).getChildTabTemplateCount().toString());
         assertEquals("1", result.get(1).getId().toString());
+
+        assertEquals("1", result.get(0).getChildTabTemplateCount().toString());
+        assertEquals("0", result.get(1).getChildTabTemplateCount().toString());
+
+        // now do same, but swap galleryTabTemplate ids to verify it wasn't just default db ordering.
+        getEntityManager().createQuery("update TabTemplate set galleryTabTemplateId = null").executeUpdate();
+        getEntityManager().createQuery("update TabTemplate set galleryTabTemplateId = 1 where id = 1097")
+                .executeUpdate();
+
+        result = sut.findSortedByPopularity(0, 5).getPagedSet();
+        assertEquals(2, result.size());
+        assertEquals("1", result.get(0).getId().toString());
+        assertEquals("2", result.get(1).getId().toString());
+
+        assertEquals("1", result.get(0).getChildTabTemplateCount().toString());
+        assertEquals("0", result.get(1).getChildTabTemplateCount().toString());
     }
 
     /**

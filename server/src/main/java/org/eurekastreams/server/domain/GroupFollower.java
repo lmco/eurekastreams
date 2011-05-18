@@ -42,12 +42,6 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
     private GroupFollowerPk pk = null;
 
     /**
-     * Index of the followed group in the list of followed groups for the follower.
-     */
-    @Basic
-    private int groupStreamIndex = 0;
-
-    /**
      * Whether to receive notifications after new activities are posted to this group.
      */
     @Basic
@@ -92,23 +86,6 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
     public long getFollowingId()
     {
         return pk.getFollowingId();
-    }
-
-    /**
-     * @param inGroupStreamIndex
-     *            the group stream index to set
-     */
-    public void setGroupStreamIndex(final int inGroupStreamIndex)
-    {
-        groupStreamIndex = inGroupStreamIndex;
-    }
-
-    /**
-     * @return the group stream index
-     */
-    public int getGroupStreamIndex()
-    {
-        return groupStreamIndex;
     }
 
     /**

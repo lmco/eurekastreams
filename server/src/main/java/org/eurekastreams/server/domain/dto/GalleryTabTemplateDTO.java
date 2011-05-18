@@ -56,6 +56,11 @@ public class GalleryTabTemplateDTO implements Serializable
     private Date created;
 
     /**
+     * Number of tab templates that were created from this galleryTabTemplate.
+     */
+    private Long childTabTemplateCount = 0L;
+
+    /**
      * Constructor.
      */
     public GalleryTabTemplateDTO()
@@ -175,6 +180,23 @@ public class GalleryTabTemplateDTO implements Serializable
     public void setCreated(final Date inCreated)
     {
         created = inCreated;
+    }
+
+    /**
+     * @return the childTabTemplateCount
+     */
+    public Long getChildTabTemplateCount()
+    {
+        return childTabTemplateCount;
+    }
+
+    /**
+     * @param inChildTabTemplateCount
+     *            the childTabTemplateCount to set
+     */
+    public void setChildTabTemplateCount(final Long inChildTabTemplateCount)
+    {
+        childTabTemplateCount = inChildTabTemplateCount;
     }
 
 }

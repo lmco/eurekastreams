@@ -66,8 +66,8 @@ public class RemoveGroupFollowersTest extends MapperTest
     {
         // VERIFY FORD INFO
         List<GroupFollower> gf = getEntityManager().createQuery(
-                "FROM GroupFollower gf WHERE gf.pk.followerId=:followerId ORDER BY gf.groupStreamIndex").setParameter(
-                "followerId", fordId).getResultList();
+                "FROM GroupFollower gf WHERE gf.pk.followerId=:followerId").setParameter("followerId", fordId)
+                .getResultList();
 
         assertEquals(3, gf.size());
 
@@ -75,11 +75,6 @@ public class RemoveGroupFollowersTest extends MapperTest
         assertEquals(1, gf.get(0).getFollowingId());
         assertEquals(2, gf.get(1).getFollowingId());
         assertEquals(3, gf.get(2).getFollowingId());
-
-        // verify index
-        assertEquals(0, gf.get(0).getGroupStreamIndex());
-        assertEquals(1, gf.get(1).getGroupStreamIndex());
-        assertEquals(2, gf.get(2).getGroupStreamIndex());
 
         // make sure person groupsCount is in sync with GroupFollower entries.
         getEntityManager().createQuery("UPDATE VERSIONED Person SET groupsCount = followingGroup.size WHERE id = :id")
@@ -93,13 +88,10 @@ public class RemoveGroupFollowersTest extends MapperTest
 
         // VERIFY BURNS INFO
         List<GroupFollower> burnsGf = getEntityManager().createQuery(
-                "FROM GroupFollower gf WHERE gf.pk.followerId=:followerId ORDER BY gf.groupStreamIndex").setParameter(
-                "followerId", burnsId).getResultList();
+                "FROM GroupFollower gf WHERE gf.pk.followerId=:followerId").setParameter("followerId", burnsId)
+                .getResultList();
 
         assertEquals(1, burnsGf.size());
-
-        // verify that expected ids are in correct order.
-        assertEquals(0, burnsGf.get(0).getGroupStreamIndex());
 
         // make sure person groupsCount is in sync with GroupFollower entries.
         getEntityManager().createQuery("UPDATE VERSIONED Person SET groupsCount = followingGroup.size WHERE id = :id")
@@ -124,8 +116,7 @@ public class RemoveGroupFollowersTest extends MapperTest
         assertTrue(followerIds.contains(fordId));
 
         // VERIFY FORD INFO
-        gf = getEntityManager().createQuery(
-                "FROM GroupFollower gf WHERE gf.pk.followerId=:followerId ORDER BY gf.groupStreamIndex").setParameter(
+        gf = getEntityManager().createQuery("FROM GroupFollower gf WHERE gf.pk.followerId=:followerId").setParameter(
                 "followerId", fordId).getResultList();
 
         assertEquals(2, gf.size());
@@ -134,10 +125,6 @@ public class RemoveGroupFollowersTest extends MapperTest
         assertEquals(2, gf.get(0).getFollowingId());
         assertEquals(3, gf.get(1).getFollowingId());
 
-        // verify index decrement.
-        assertEquals(0, gf.get(0).getGroupStreamIndex());
-        assertEquals(1, gf.get(1).getGroupStreamIndex());
-
         // verify groupCount for user.
         fordGroupCount = (Integer) getEntityManager()
                 .createQuery("SELECT p.groupsCount FROM Person p WHERE p.id = :id").setParameter("id", fordId)
@@ -145,9 +132,8 @@ public class RemoveGroupFollowersTest extends MapperTest
         assertEquals(2, fordGroupCount.intValue());
 
         // VERIFY BURNS INFO
-        burnsGf = getEntityManager().createQuery(
-                "FROM GroupFollower gf WHERE gf.pk.followerId=:followerId ORDER BY gf.groupStreamIndex").setParameter(
-                "followerId", burnsId).getResultList();
+        burnsGf = getEntityManager().createQuery("FROM GroupFollower gf WHERE gf.pk.followerId=:followerId")
+                .setParameter("followerId", burnsId).getResultList();
 
         assertEquals(0, burnsGf.size());
 

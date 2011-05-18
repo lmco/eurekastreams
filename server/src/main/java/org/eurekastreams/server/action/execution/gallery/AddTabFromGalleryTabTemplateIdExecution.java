@@ -80,6 +80,7 @@ public class AddTabFromGalleryTabTemplateIdExecution implements ExecutionStrateg
                 (Long) inActionContext.getParams()));
 
         TabTemplate newTabTemplate = new TabTemplate(gtt.getTabTemplate());
+        newTabTemplate.setGalleryTabTemplate(gtt);
         for (Gadget gadget : newTabTemplate.getGadgets())
         {
             gadget.setOwner(currentUser);

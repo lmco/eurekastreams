@@ -15,14 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.group;
 
-import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
-import org.eurekastreams.web.client.model.GroupStreamListModel;
-import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
@@ -30,13 +27,13 @@ import org.eurekastreams.web.client.ui.common.stream.filters.FilterRenderStrateg
 
 /**
  * Renderer for group streams.
- *
+ * 
  */
 public class GroupStreamRenderer implements FilterRenderStrategy
 {
     /**
      * Gets the title of the list.
-     *
+     * 
      * @return the title.
      */
     public String getTitle()
@@ -45,18 +42,8 @@ public class GroupStreamRenderer implements FilterRenderStrategy
     }
 
     /**
-     * Gets the model.
-     *
-     * @return the model.
-     */
-    public Reorderable<SetStreamOrderRequest> getReorderableModel()
-    {
-        return GroupStreamListModel.getInstance();
-    }
-
-    /**
      * Gets the filter panel.
-     *
+     * 
      * @param filter
      *            the filter.
      * @return the filter panel.
@@ -68,7 +55,7 @@ public class GroupStreamRenderer implements FilterRenderStrategy
 
     /**
      * Sets up the events on the bus.
-     *
+     * 
      * @param listPanel
      *            the panel to tie events to.
      */
@@ -87,7 +74,7 @@ public class GroupStreamRenderer implements FilterRenderStrategy
     /**
      * Gets the create/edit dialog. Returning null here makes the create/edit dialog not available (no plus sign in the
      * UI)
-     *
+     * 
      * @return the dialog.
      */
     public DialogContent getDialogContent()
@@ -97,7 +84,7 @@ public class GroupStreamRenderer implements FilterRenderStrategy
 
     /**
      * Look for searchId in the token.
-     *
+     * 
      * @return the token.
      */
     public String getFilterHistoryToken()

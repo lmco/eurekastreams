@@ -26,6 +26,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
@@ -37,11 +38,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 
-
 /**
- * Tab template is a cookie cutter used for creating tabs with a given set
- * of starter information.
- *
+ * Tab template is a cookie cutter used for creating tabs with a given set of starter information.
+ * 
  */
 @SuppressWarnings("serial")
 @Entity
@@ -58,8 +57,8 @@ public class TabTemplate extends DomainEntity implements Serializable
      * Max characters for tab name.
      */
     @Transient
-    public static final String MAX_TAB_NAME_MESSAGE = "Tab name must be between 1 and "
-                                                    + MAX_TAB_NAME_LENGTH + " characters.";
+    public static final String MAX_TAB_NAME_MESSAGE = "Tab name must be between 1 and " + MAX_TAB_NAME_LENGTH
+            + " characters.";
 
     /**
      * Store the value of the TabName.
@@ -69,11 +68,9 @@ public class TabTemplate extends DomainEntity implements Serializable
     private String tabName;
 
     /**
-     * Enum value of the Layout definition the the tab. The EnumType.STRING was
-     * explicit because it forces hibernate to store the value in the database
-     * as a string. This is important because the default uses an integer value
-     * and if more layouts are added later the integer value could get messed
-     * up. The string tends to be more stable.
+     * Enum value of the Layout definition the the tab. The EnumType.STRING was explicit because it forces hibernate to
+     * store the value in the database as a string. This is important because the default uses an integer value and if
+     * more layouts are added later the integer value could get messed up. The string tends to be more stable.
      */
     @Basic(fetch = FetchType.EAGER, optional = false)
     @Enumerated(EnumType.STRING)
@@ -85,18 +82,15 @@ public class TabTemplate extends DomainEntity implements Serializable
     @Basic
     private String type;
 
-
     /**
-     * The gadgets that are contained in this TabTemplate. Lazy load this collection
-     * because the Tab Groups will want to show all of the Tabs while only
-     * loading the current Tab's Gadgets.
+     * The gadgets that are contained in this TabTemplate. Lazy load this collection because the Tab Groups will want to
+     * show all of the Tabs while only loading the current Tab's Gadgets.
      */
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "tabTemplateId")
     @OrderBy("zoneNumber, zoneIndex")
     @Where(clause = "deleted='false'")
-    @Cascade({ org.hibernate.annotations.CascadeType.ALL,
-                org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+    @Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     private List<Gadget> gadgets;
 
     /**
@@ -107,15 +101,21 @@ public class TabTemplate extends DomainEntity implements Serializable
     private boolean deleted;
 
     /**
-     * This is a timestamp that is used to track when a tab template was deleted. Since
-     * the deleted record remains in the db until it expires (logic for cleanup
-     * is defined in the mapper), this value needs to track the full date and
-     * time of when the tab was deleted so that it can be cleaned up with a
-     * minute based expiration.
+     * This is a timestamp that is used to track when a tab template was deleted. Since the deleted record remains in
+     * the db until it expires (logic for cleanup is defined in the mapper), this value needs to track the full date and
+     * time of when the tab was deleted so that it can be cleaned up with a minute based expiration.
      */
     @SuppressWarnings("unused")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateDeleted;
+    
+    /**
+     * This field will maintain a link to the optional corresponding galleryTabTemplate.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Basic
+    @JoinColumn(name = "galleryTabTemplateId")
+    private GalleryTabTemplate galleryTabTemplate;
 
     /**
      * Protected constructor for ORM.
@@ -126,7 +126,9 @@ public class TabTemplate extends DomainEntity implements Serializable
 
     /**
      * Constructor to create a TabTemplate base on existing TabTemplate.
-     * @param inTabTemplate TabTemplate to use as "template".
+     * 
+     * @param inTabTemplate
+     *            TabTemplate to use as "template".
      */
     public TabTemplate(final TabTemplate inTabTemplate)
     {
@@ -143,7 +145,7 @@ public class TabTemplate extends DomainEntity implements Serializable
 
     /**
      * Public constructor for API.
-     *
+     * 
      * @param inTabName
      *            The name to display in the tab
      * @param inTabLayout
@@ -158,7 +160,7 @@ public class TabTemplate extends DomainEntity implements Serializable
 
     /**
      * Get the name of the tab.
-     *
+     * 
      * @return the name of the tab
      */
     public String getTabName()
@@ -167,9 +169,8 @@ public class TabTemplate extends DomainEntity implements Serializable
     }
 
     /**
-     * This method is a required settings for the tab name to satisfy
-     * serialization requirements in GWT.
-     *
+     * This method is a required settings for the tab name to satisfy serialization requirements in GWT.
+     * 
      * @param inTabName
      *            The name of the tab.
      */
@@ -180,7 +181,7 @@ public class TabTemplate extends DomainEntity implements Serializable
 
     /**
      * This method retrieves the current layout for this tab.
-     *
+     * 
      * @return current tab layout.
      */
     public Layout getTabLayout()
@@ -189,9 +190,8 @@ public class TabTemplate extends DomainEntity implements Serializable
     }
 
     /**
-     * This Method is a required setting for the layout to satisfy serialization
-     * requirements in GWT.
-     *
+     * This Method is a required setting for the layout to satisfy serialization requirements in GWT.
+     * 
      * @param inTabLayout
      *            The layout of the tab.
      */
@@ -201,7 +201,8 @@ public class TabTemplate extends DomainEntity implements Serializable
     }
 
     /**
-     * @param inGadgets the gadgets to set
+     * @param inGadgets
+     *            the gadgets to set
      */
     public void setGadgets(final List<Gadget> inGadgets)
     {
@@ -225,7 +226,8 @@ public class TabTemplate extends DomainEntity implements Serializable
     }
 
     /**
-     * @param inType the type to set
+     * @param inType
+     *            the type to set
      */
     @SuppressWarnings("unused")
     private void setType(final String inType)
@@ -233,6 +235,20 @@ public class TabTemplate extends DomainEntity implements Serializable
         type = inType;
     }
 
+    /**
+     * @return the galleryTabTemplate
+     */
+    public GalleryTabTemplate getGalleryTabTemplate()
+    {
+        return galleryTabTemplate;
+    }
 
+    /**
+     * @param inGalleryTabTemplate the galleryTabTemplate to set
+     */
+    public void setGalleryTabTemplate(final GalleryTabTemplate inGalleryTabTemplate)
+    {
+        galleryTabTemplate = inGalleryTabTemplate;
+    }
 
 }

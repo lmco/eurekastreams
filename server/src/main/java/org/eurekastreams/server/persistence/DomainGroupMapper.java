@@ -93,12 +93,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
             return;
         }
 
-        // Shift down the groupstreamindex of the existing followed groups
-        getEntityManager().createQuery(
-                "update GroupFollower set groupstreamindex = groupstreamindex + 1 where followerId=:followerId")
-                .setParameter("followerId", followerId).executeUpdate();
-
-        // add follower, groupstreamindex defaults to 0
+        // add follower
         getEntityManager().persist(new GroupFollower(followerId, followingId));
 
         // now update the counts for persons.
@@ -205,15 +200,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      */
     public void removeFollower(final long followerId, final long followingId)
     {
-        // Shift up the groupstreamindex of the remaining followed groups
-        getEntityManager().createQuery(// \n
-                "update GroupFollower gf1 set gf1.groupStreamIndex = gf1.groupStreamIndex - 1 "// \n
-                        + "where gf1.groupStreamIndex > " // \n
-                        + "(select gf2.groupStreamIndex from GroupFollower gf2 " // \n
-                        + "where gf2.pk.followerId=gf1.pk.followerId and gf2.pk.followingId=:followingId)" // \n
-                        + "AND gf1.pk.followerId=:followerId") // \n
-                .setParameter("followerId", followerId).setParameter("followingId", followingId).executeUpdate();
-
         int rowsDeleted = getEntityManager().createQuery(
                 "DELETE FROM GroupFollower where followerId=:followerId and followingId=:followingId").setParameter(
                 "followerId", followerId).setParameter("followingId", followingId).executeUpdate();

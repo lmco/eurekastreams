@@ -48,7 +48,6 @@ public class GetFollowedGroupIdsForPersonByIdDbMapperTest extends MapperTest
     /**
      * test.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecute()
     {

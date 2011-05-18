@@ -2604,20 +2604,6 @@
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="setGroupStreamsOrder" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.stream.SetGroupStreamsOrderExecution">
-                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-                <constructor-arg ref="reorderFollowedGroupIds" />
-                <constructor-arg ref="memcachedCache" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
     <bean id="getFlaggedActivities" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="isSystemAdminAuthorization" />

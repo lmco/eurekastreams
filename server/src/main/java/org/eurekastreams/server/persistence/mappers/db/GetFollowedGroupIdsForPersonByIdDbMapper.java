@@ -38,8 +38,8 @@ public class GetFollowedGroupIdsForPersonByIdDbMapper extends BaseArgDomainMappe
     public List<Long> execute(final Long inRequest)
     {
         return getEntityManager().createQuery(
-                "select gf.pk.followingId from GroupFollower gf where gf.pk.followerId = :id "
-                        + "order by groupstreamindex").setParameter("id", inRequest).getResultList();
+                "select gf.pk.followingId from GroupFollower gf where gf.pk.followerId = :id").setParameter("id",
+                inRequest).getResultList();
     }
 
 }
