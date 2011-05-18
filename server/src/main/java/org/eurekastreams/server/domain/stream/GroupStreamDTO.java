@@ -144,4 +144,11 @@ public class GroupStreamDTO implements Serializable, StreamFilter
     {
         isPostable = inIsPostable;
     }
+
+    @Override
+    public String getRequest()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

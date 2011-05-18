@@ -2053,7 +2053,7 @@ body .post-to-stream .over-character-limit {
 
 .stream-message-item {
 	padding-bottom: 5px;
-	margin-top: 15px;
+	padding-top: 15px;
 	margin-left: 17px;
 	margin-right: 35px;
 	margin-bottom: 0px;

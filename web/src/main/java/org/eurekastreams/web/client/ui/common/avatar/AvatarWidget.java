@@ -50,7 +50,11 @@ public class AvatarWidget extends Composite
         /** #FFFFFF. */
         White,
         /** #CCCCCC. */
-        Gray
+        Gray, 
+        /**
+         * No background.
+         */
+        None
     }
 
     /** The image. */

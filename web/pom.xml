@@ -235,6 +235,11 @@
             <artifactId>gwt-dnd</artifactId>
             <version>3.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.gchart</groupId>
+            <artifactId>gchart</artifactId>
+            <version>2.7</version>
+        </dependency>
         <!-- Uncomment to enable GWT logging -->
 		<!--<dependency>
 		    <groupId>com.google.code.gwt-log</groupId>

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders an avatar for a stream activity.
- *
+ * 
  */
 public class AvatarRenderer
 {
@@ -46,7 +46,7 @@ public class AvatarRenderer
 
     /**
      * Renders an avatar.
-     *
+     * 
      * @param id
      *            id of the user.
      * @param avatarId
@@ -62,7 +62,7 @@ public class AvatarRenderer
 
     /**
      * Renders an avatar.
-     *
+     * 
      * @param id
      *            id of the user.
      * @param avatarId
@@ -74,6 +74,26 @@ public class AvatarRenderer
     public Widget render(final Long id, final String avatarId, final EntityType type)
     {
         AvatarWidget avatar = new AvatarWidget(id, avatarId, type, Size.Small, Background.White);
+        avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
+        return avatar;
+    }
+
+    /**
+     * Renders an avatar.
+     * 
+     * @param id
+     *            id of the user.
+     * @param avatarId
+     *            avatar id of the user.
+     * @param type
+     *            the type.
+     * @param size
+     *            the avatar size.
+     * @return the avatar panel.
+     */
+    public Widget render(final Long id, final String avatarId, final EntityType type, final Size size)
+    {
+        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, size, Background.White);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }

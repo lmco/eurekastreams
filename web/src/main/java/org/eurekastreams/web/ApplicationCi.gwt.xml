@@ -6,6 +6,7 @@
     <inherits name="org.eurekastreams.server.Domain" />
     <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
     <inherits name='net.sf.gilead.Gilead4Gwt'/>
+    <inherits name='com.googlecode.gchart.GChart'/>
     <set-property name="user.agent" value="gecko1_8"/>    
     <entry-point class='org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint' />
     <entry-point class='org.eurekastreams.web.client.ui.pages.master.ConnectEntryPoint' />

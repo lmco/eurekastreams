@@ -36,6 +36,12 @@ public interface StreamFilter
     void setName(String inName);
     
     /**
+     * Return the request.
+     * @return the request.
+     */
+    String getRequest();
+    
+    /**
      * Get the id of the StreamFilter.
      * @return the id.
      */

@@ -128,7 +128,7 @@ public class MasterComposite extends Composite
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public MasterComposite()
     {
@@ -162,8 +162,8 @@ public class MasterComposite extends Composite
 
         initWidget(panel);
 
-        Session.getInstance().getEventBus()
-                .addObserver(GetTutorialVideoResponseEvent.class, new Observer<GetTutorialVideoResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GetTutorialVideoResponseEvent.class,
+                new Observer<GetTutorialVideoResponseEvent>()
                 {
                     public void update(final GetTutorialVideoResponseEvent event)
                     {
@@ -212,20 +212,19 @@ public class MasterComposite extends Composite
                     }
                 });
 
-        Session.getInstance().getEventBus()
-                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
                         mainContents.remove(banner);
                         notifier.setVisible(false);
                         contentPanel.clear();
-                        contentPanel.add(factory.createPage(event.getPage(), event.getViews()));
+                        factory.createPage(event.getPage(), event.getViews(), contentPanel);
                         currentPage = event.getPage();
                         currentViews = event.getViews();
                         pageHasBeenLoaded = true;
                         TutorialVideoModel.getInstance().fetch(null, true);
-
                     }
                 });
 
@@ -239,8 +238,8 @@ public class MasterComposite extends Composite
                 if (event.getBannerableEntity() != null)
                 {
                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(null);
-                    new WidgetJSNIFacadeImpl().setBanner(urlGen
-                            .getBannerUrl(event.getBannerableEntity().getBannerId()));
+                    new WidgetJSNIFacadeImpl()
+                            .setBanner(urlGen.getBannerUrl(event.getBannerableEntity().getBannerId()));
                 }
                 // Start page, the bannerable entity is null, just clear out the banner value
                 // to let the theme take over again.
@@ -255,7 +254,7 @@ public class MasterComposite extends Composite
 
     /**
      * Get the user agent (for detecting IE7).
-     *
+     * 
      * @return the user agent.
      */
     public static native String getUserAgent()
@@ -265,7 +264,7 @@ public class MasterComposite extends Composite
 
     /**
      * Render header and footer.
-     *
+     * 
      */
     public void renderHeaderAndFooter()
     {
@@ -277,7 +276,7 @@ public class MasterComposite extends Composite
 
     /**
      * Get the header composite.
-     *
+     * 
      * @param viewer
      *            the user.
      * @return the header composite.
@@ -287,8 +286,8 @@ public class MasterComposite extends Composite
         panel.add(footerPanel);
         header.render(viewer);
 
-        Session.getInstance().getEventBus()
-                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {

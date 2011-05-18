@@ -64,11 +64,8 @@
                     var height = layoutElem.height();
                     if (height != lastHeight)
                     {
-                        if (window.postMessage) {
-                            sendMessage('{"frameHeight":"' + height + '"}') 
-                        } else {
-                            sendMessage('{"frameHeight":"' + height + 5 + '"}') 
-                        }
+                    	height = (height * 1) + 5;
+                        sendMessage('{"frameHeight":"' + height + '"}')
                         lastHeight = height;
                     }
                 }
