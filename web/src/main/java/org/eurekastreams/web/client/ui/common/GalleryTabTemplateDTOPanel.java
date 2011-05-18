@@ -147,7 +147,7 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
 
         gadgetExtInfo.add(category);
         insertActionSeparator(gadgetExtInfo);
-        gadgetExtInfo.add(new HTML(" Users: <span class='light'>" + 0 + "</span>"));
+        gadgetExtInfo.add(new HTML(" Users: <span class='light'>" + inItem.getChildTabTemplateCount() + "</span>"));
         insertActionSeparator(gadgetExtInfo);
         gadgetExtInfo.add(new HTML(" Publish date: <span class='light'>"
                 + DateTimeFormat.getLongDateFormat().format(inItem.getCreated()) + "</span>"));

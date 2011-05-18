@@ -219,4 +219,21 @@ public class GalleryTabTemplate extends DomainEntity
         tabTemplate = inTabTemplate;
     }
 
+    /**
+     * @return the tabTemplates
+     */
+    public List<TabTemplate> getTabTemplates()
+    {
+        return tabTemplates;
+    }
+
+    /**
+     * @param inTabTemplates
+     *            the tabTemplates to set
+     */
+    public void setTabTemplates(final List<TabTemplate> inTabTemplates)
+    {
+        tabTemplates = inTabTemplates;
+    }
+
 }
