@@ -61,7 +61,14 @@ public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTempl
     public PagedSet<GalleryTabTemplateDTO> findForCategorySortedByPopularity(final String inCategory,
             final int inStart, final int inEnd)
     {
-        return findForCategorySortedByRecent(inCategory, inStart, inEnd);
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("category", inCategory);
+
+        String q = "SELECT NEW org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO "
+                + "(id, created, description, title, category.id, category.galleryItemType, category.name) "
+                + "FROM GalleryTabTemplate WHERE category.name = :category ORDER BY size(tabTemplates) DESC";
+
+        return getPagedResults(inStart, inEnd, q, parameters);
     }
 
     @Override
@@ -81,7 +88,11 @@ public class GalleryTabTemplateMapper extends DomainEntityMapper<GalleryTabTempl
     @Override
     public PagedSet<GalleryTabTemplateDTO> findSortedByPopularity(final int inStart, final int inEnd)
     {
-        return findSortedByRecent(inStart, inEnd);
+        String q = "SELECT NEW org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO "
+                + "(id, created, description, title, category.id, category.galleryItemType, category.name) "
+                + "FROM GalleryTabTemplate ORDER BY size(tabTemplates) DESC";
+
+        return getPagedResults(inStart, inEnd, q, new HashMap<String, Object>());
     }
 
     @Override

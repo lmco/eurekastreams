@@ -20,8 +20,10 @@ import java.util.HashMap;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.data.DeletedGalleryTabTemplateResponse;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
@@ -33,8 +35,13 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Render panel for GalleryTabTemplateDTO.
@@ -55,6 +62,8 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
      */
     public GalleryTabTemplateDTOPanel(final GalleryTabTemplateDTO inItem)
     {
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMetaData());
+
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             EditPanel editControls = new EditPanel(this, Mode.EDIT_AND_DELETE);
@@ -110,8 +119,39 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
                     }
                 });
 
+        FlowPanel dataPanel = new FlowPanel();
+
         Label title = new Label(inItem.getTitle());
         title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
+        dataPanel.add(title);
+
+        Label description = new Label(inItem.getDescription());
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
+        dataPanel.add(description);
+
+        FlowPanel gadgetExtInfo = new FlowPanel();
+        gadgetExtInfo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetExtInfo());
+        gadgetExtInfo.add(new HTML("Category: "));
+        Anchor category = new Anchor();
+        category.setText(inItem.getCategory().getName());
+
+        category.addClickHandler(new ClickHandler()
+        {
+
+            public void onClick(final ClickEvent arg0)
+            {
+                EventBus.getInstance().notifyObservers(
+                        new SwitchToFilterOnPagedFilterPanelEvent("tabs", inItem.getCategory().getName(), "Recent"));
+            }
+        });
+
+        gadgetExtInfo.add(category);
+        insertActionSeparator(gadgetExtInfo);
+        gadgetExtInfo.add(new HTML(" Users: <span class='light'>" + 0 + "</span>"));
+        insertActionSeparator(gadgetExtInfo);
+        gadgetExtInfo.add(new HTML(" Publish date: <span class='light'>"
+                + DateTimeFormat.getLongDateFormat().format(inItem.getCreated()) + "</span>"));
+        dataPanel.add(gadgetExtInfo);
 
         applyTab = new Label("Apply");
         applyTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyTheme());
@@ -122,11 +162,21 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
                 GalleryTabTemplateModel.getInstance().set(inItem.getId());
             }
         });
+        dataPanel.add(applyTab);
 
-        add(new Label(inItem.getTitle()));
-        add(new Label(inItem.getDescription()));
-        add(new Label(inItem.getCategory().getName()));
-        add(new Label(inItem.getCreated().toString()));
-        add(applyTab);
+        add(dataPanel);
+    }
+
+    /**
+     * Adds a separator (dot).
+     * 
+     * @param panel
+     *            Panel to put the separator in.
+     */
+    private void insertActionSeparator(final Panel panel)
+    {
+        Label sep = new InlineLabel("\u2219");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
+        panel.add(sep);
     }
 }
