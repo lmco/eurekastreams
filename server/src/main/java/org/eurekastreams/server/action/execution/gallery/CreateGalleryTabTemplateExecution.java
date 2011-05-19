@@ -119,7 +119,8 @@ public class CreateGalleryTabTemplateExecution implements ExecutionStrategy<Serv
         String description = (String) fields.get(DESCRIPTION_KEY);
 
         String tabStringId = (String) fields.get(TAB_KEY);
-        Long tabId = StringUtils.isNotEmpty(tabStringId) ? Long.parseLong(tabStringId) : null;
+        Long tabId = StringUtils.isNotEmpty(tabStringId) && !StringUtils.equalsIgnoreCase(tabStringId, "-1") ? Long
+                .parseLong(tabStringId) : null;
 
         String galleryTabTemplateStringId = (String) fields.get(GALLERYTABTEMPLATE_ID_KEY);
         Long galleryTabTemplateId = StringUtils.isNotEmpty(galleryTabTemplateStringId) ? Long

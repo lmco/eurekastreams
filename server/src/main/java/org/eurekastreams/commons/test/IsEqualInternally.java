@@ -25,10 +25,10 @@ import org.hamcrest.Matcher;
 
 /**
  * A matcher to use in junit tests to determine if two objects contain the same state.
- *
+ * 
  * This is useful for comparing objects for value equality instead of reference equality when the class does not have an
  * appropriate implementation of equals(), such as ClickListeners and AsyncCallbacks.
- *
+ * 
  * @param <T>
  *            Type to compare.
  */
@@ -42,7 +42,7 @@ public class IsEqualInternally<T> extends BaseMatcher<T>
 
     /**
      * Create matcher with a given value.
-     *
+     * 
      * @param inCompareAgainst
      *            Value to compare result against.
      */
@@ -53,7 +53,7 @@ public class IsEqualInternally<T> extends BaseMatcher<T>
 
     /**
      * Compares the values.
-     *
+     * 
      * @param item
      *            Item to compare.
      * @return If objects match.
@@ -65,7 +65,7 @@ public class IsEqualInternally<T> extends BaseMatcher<T>
 
     /**
      * Determines if two objects are equal internally, i.e. based on values of all fields.
-     *
+     * 
      * @param object1
      *            First object.
      * @param object2
@@ -103,7 +103,7 @@ public class IsEqualInternally<T> extends BaseMatcher<T>
                 field.setAccessible(true);
                 Object value1 = field.get(object1);
                 Object value2 = field.get(object2);
-                if (value1 == null ? value2 != null : !value1.equals(value2))
+                if (!areEqual(value1, value2))
                 {
                     if (log.isDebugEnabled())
                     {
@@ -128,7 +128,7 @@ public class IsEqualInternally<T> extends BaseMatcher<T>
 
     /**
      * Describes the object. Needed for a matcher.
-     *
+     * 
      * @param description
      *            THe description to add to.
      */
@@ -138,8 +138,48 @@ public class IsEqualInternally<T> extends BaseMatcher<T>
     }
 
     /**
+     * Test whether the two objects are equal.
+     * 
+     * @param obj1
+     *            obj1
+     * @param obj2
+     *            obj2
+     * @return whether the two objects are effectively equal
+     */
+    private static boolean areEqual(final Object obj1, final Object obj2)
+    {
+        if (obj1 == null)
+        {
+            if (obj2 == null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        if (obj1 instanceof Object[] && obj2 instanceof Object[])
+        {
+            Object[] l1 = (Object[]) obj1;
+            Object[] l2 = (Object[]) obj2;
+            if (l1.length != l2.length)
+            {
+                return false;
+            }
+            for (int i = 0; i < l1.length; i++)
+            {
+                if (!areEqual(l1[i], l2[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return obj1.equals(obj2);
+    }
+
+    /**
      * Creates an instance of the matcher.
-     *
+     * 
      * @param <T>
      *            Type of object to match.
      * @param value

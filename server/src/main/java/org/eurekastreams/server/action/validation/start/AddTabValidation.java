@@ -36,6 +36,25 @@ public class AddTabValidation implements ValidationStrategy<PrincipalActionConte
     private FindByIdMapper<Person> personMapper = null;
 
     /**
+     * Skip tab name check. Only check tab size limits.
+     */
+    private boolean validateTabName = true;
+
+    /**
+     * Constructor.
+     * 
+     * @param inPersonMapper
+     *            for looking up the Person who will get the new tab
+     * @param inSkipNameCheck
+     *            Skip tab name check, only to tab group size validation.
+     */
+    public AddTabValidation(final FindByIdMapper<Person> inPersonMapper, final boolean inSkipNameCheck)
+    {
+        personMapper = inPersonMapper;
+        validateTabName = inSkipNameCheck;
+    }
+
+    /**
      * Constructor.
      * 
      * @param inPersonMapper
@@ -43,7 +62,7 @@ public class AddTabValidation implements ValidationStrategy<PrincipalActionConte
      */
     public AddTabValidation(final FindByIdMapper<Person> inPersonMapper)
     {
-        personMapper = inPersonMapper;
+        this(inPersonMapper, true);
     }
 
     /**
@@ -53,23 +72,24 @@ public class AddTabValidation implements ValidationStrategy<PrincipalActionConte
      * @throws ValidationException
      *             if inputs don't meet validation standards.
      */
-    @SuppressWarnings("deprecation")
     @Override
     public void validate(final PrincipalActionContext inActionContext) throws ValidationException
     {
 
-        //TODO #performance make customized request to get tab count instead of pulling back whole object.
-        Person user = (Person) personMapper.execute(new FindByIdRequest("Person", 
-                inActionContext.getPrincipal().getId()));
-        
+        // TODO #performance make customized request to get tab count instead of pulling back whole object.
+        Person user = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
+
         if (user.getTabs(TabGroupType.START).size() >= Person.TAB_LIMIT)
         {
             throw new ValidationException(Person.TAB_LIMIT_MESSAGE);
         }
 
-        if (((String) inActionContext.getParams()).length() > TabTemplate.MAX_TAB_NAME_LENGTH)
+        if (validateTabName)
         {
-            throw new ValidationException(TabTemplate.MAX_TAB_NAME_MESSAGE);
+            if (((String) inActionContext.getParams()).length() > TabTemplate.MAX_TAB_NAME_LENGTH)
+            {
+                throw new ValidationException(TabTemplate.MAX_TAB_NAME_MESSAGE);
+            }
         }
 
     }

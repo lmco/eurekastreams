@@ -154,7 +154,7 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
         dataPanel.add(gadgetExtInfo);
 
         applyTab = new Label("Apply");
-        applyTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyTheme());
+        applyTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyGalleryTab());
         applyTab.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)

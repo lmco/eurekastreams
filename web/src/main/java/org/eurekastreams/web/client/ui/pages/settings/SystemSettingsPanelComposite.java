@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.pages.settings;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
@@ -23,6 +25,7 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
@@ -40,6 +43,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.HideableRichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.HideableTextAreaFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.TermsOfServicePromptIntervalFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.userassociation.UserAssociationFormElement;
@@ -323,6 +327,12 @@ public class SystemSettingsPanelComposite extends FlowPanel
                         + "Terms of Service document.", true);
 
         tosElement.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
+
+        Set<PersonModelView> coordinatorList = new HashSet<PersonModelView>(); // coordinators should be passed into
+        form.addFormElement(new PersonModelViewLookupFormElement("Eureka Administrators", "Add Coordinator", "",
+                "admins", coordinatorList, true));
+
+        form.addFormDivider();
 
         Integer promptVal = systemSettingValues.getTosPromptInterval();
 
