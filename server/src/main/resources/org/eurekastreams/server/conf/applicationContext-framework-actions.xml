@@ -138,7 +138,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution"/>
         </constructor-arg>
-        <constructor-arg value="true" />
+        <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean> 
     
@@ -766,10 +766,11 @@
         <constructor-arg value="true" />
     </bean>
     
-    <bean id="updateSystemSettings" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="updateSystemSettings" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.settings.UpdateSystemSettingsValidation">
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="isSystemAdminAuthorization" />
@@ -784,9 +785,14 @@
                         <constructor-arg ref="deleteSystemSettingsCacheMapper" />
                     </bean>
                 </constructor-arg>
+                <constructor-arg ref="setSystemAdminsDbMapper" />
+                <constructor-arg ref="getSystemAdministratorIdsDbMapper" />
+                <constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
+                <constructor-arg ref="memcachedCache" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
     </bean>
 
     <bean id="deleteAppData" class="org.eurekastreams.commons.actions.service.ServiceAction">
