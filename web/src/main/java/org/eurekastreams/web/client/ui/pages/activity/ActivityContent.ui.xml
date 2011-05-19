@@ -70,6 +70,7 @@
 		.person-avatar
 		{
 			float: left;
+			margin-top: 1px;
 		}
 		
 		.activeSort
@@ -113,6 +114,7 @@
 			width: 100%;
 			overflow: hidden;
 			padding: 5px;
+			height: 44px;
 		}
 		
 		.post-box-container
@@ -146,6 +148,11 @@
 			display: block;
 		}
 		
+		.stream-details-container > a, .stream-details-container > a:hover, .stream-details-container > a:link, .stream-details-container > a:active
+		{
+			color: #3AB0EF;
+		}
+		
 		.stream-name
 		{
 			display: block;
@@ -156,7 +163,17 @@
 		.stream-details-container
 		{
 			height: 0;
-			background-color: black;
+			background-color: #252525;
+			overflow: hidden;
+			color: white;
+			position: relative;
+    		top: -1px;			
+		}
+		
+		.stream-details-container h2
+		{
+			font-weight: bold;
+			height: 16px;
 		}
 		
 		.toggle-details-link
@@ -169,13 +186,70 @@
 			bottom: 0;
 			right: 0;
 			cursor: pointer;
+			z-index: 10;			
 		}
 		
 		@sprite .view-details
 		{
 			gwt-image: "viewDetails";
 		}
+		
+		.analyticsChartContainer {
+			float: right;
+			margin: 10px;
+		}
 
+		.analyticsChartContainer > div {
+			padding-top: 10px;
+		}
+		
+		.stream-details
+		{
+		    clear: left;
+    		float: left;
+    		margin: 0 10px;
+    		width: 200px;
+		}
+
+		.stream-details-options
+		{
+			 background-color: #111111;
+    		border-bottom: 1px solid #404040;
+    		border-top: 1px solid #404040;
+    		height: 37px;
+		}
+		
+		.stream-details-options > a, .stream-details-options > a:hover, .stream-details-options > a:link, .stream-details-options > a:active
+		{
+		    background-image: url("style/images/subFilterBackground.png");
+    		color: white;
+    		display: block;
+    		float: left;
+    		height: 27px;
+    		margin: 10px 0 10px 10px;
+		    padding: 0 10px;
+		}
+		
+		.post-options
+		{
+			overflow: hidden;
+			display: none;
+		}
+		
+		.post-button
+		{
+			float: right;
+			cursor: pointer;
+		}
+		.post-char-count
+		{
+			float: right;
+		}
+		
+		body .visiblePostBox
+		{
+			display: block;
+		}
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
@@ -198,7 +272,19 @@
 				<g:Anchor addStyleNames="{style.toggle-details-link} {style.view-details}" ui:field="toggleDetails">Details</g:Anchor>				
 			</div>
 			<div class="{style.stream-details-container}" ui:field="streamDetailsContainer">
-				<g:HTMLPanel ui:field="analyticsChartContainer">
+				<div class="{style.stream-details-options}">
+					<a href="#">About</a>
+					<a href="#">Followers</a>					
+				</div>
+				<div class="{style.stream-details}">
+					<h2>Description</h2>
+					<div ui:field="streamDescription"></div>
+					<h2>Interests</h2>
+					<div ui:field="streamInterests"></div>
+					<h2>Popular Hashtags</h2>
+					<div ui:field="streamHashtags"></div>
+				</div>
+				<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}" ui:field="analyticsChartContainer">
 				</g:HTMLPanel>			
 			</div>
 			<div class="{style.post-container}" ui:field="postPanel">
@@ -206,6 +292,10 @@
 				</g:HTMLPanel>
 				<div class="{style.post-box-container}">
 					<ea:ExtendedTextArea addStyleNames="{style.post-box}" ui:field="postBox"></ea:ExtendedTextArea>
+					<div ui:field="postOptions" class="{style.post-options}">
+						<g:Label ui:field="postButton" addStyleNames="{style.post-button}">Post</g:Label>
+						<div ui:field="postCharCount" class="{style.post-char-count}"></div>
+					</div>
 				</div>
 			</div>
 			<div class="{style.options-panel}">
@@ -213,8 +303,8 @@
 				<g:Anchor addStyleNames="{style.sort-option}" ui:field="popularSort">Popular</g:Anchor>
 				<g:Anchor addStyleNames="{style.sort-option}" ui:field="activeSort">Active</g:Anchor>
 			</div>			
-			<g:HTMLPanel addStyleNames="{style.stream-panel}" ui:field="streamPanel">
-			</g:HTMLPanel>
+			<g:FlowPanel addStyleNames="{style.stream-panel}" ui:field="streamPanel">
+			</g:FlowPanel>
 		</g:HTMLPanel>
 	
 		<ul class="{style.stream-option-list}" ui:field="defaultList">

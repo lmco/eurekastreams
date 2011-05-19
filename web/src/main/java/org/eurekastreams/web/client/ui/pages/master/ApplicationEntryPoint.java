@@ -58,23 +58,44 @@ import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupConten
 import org.eurekastreams.web.client.ui.common.dialog.message.MessageDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.Context2d.LineJoin;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.gchart.client.GChart;
+import com.googlecode.gchart.client.GChartCanvasFactory;
+import com.googlecode.gchart.client.GChartCanvasLite;
+import com.google.gwt.widgetideas.graphics.client.GWTCanvas; 
+import com.google.gwt.widgetideas.graphics.client.Color; 
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class ApplicationEntryPoint implements EntryPoint
 {
+    public class GWTCanvasBasedCanvasFactory implements GChartCanvasFactory
+    {
+
+        public GChartCanvasLite create()
+        {
+            GChartCanvasLite result = new GWTCanvasBasedCanvasLite();
+            return result;
+        }
+
+    }
+
     /**
      * Relative URL of page to redirect to for users without access.
      */
@@ -124,6 +145,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public void onModuleLoad()
     {
+        GChart.setCanvasFactory(new GWTCanvasBasedCanvasFactory());
+
         // The entry point will be invoked when just a Eureka Connect widget is desired, so do nothing if the
         // appropriate full-app element is not found
         rootPanel = RootPanel.get(FULL_APP_ELEMENT_ID);
@@ -261,13 +284,13 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     *
+     * 
      */
     private void displayToS()
     {
 
-        Session.getInstance().getEventBus()
-                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -292,8 +315,8 @@ public class ApplicationEntryPoint implements EntryPoint
         // twice on activity page for some reason (profile pages work correctly). Somewhere
         // this is filtered down to only one call to the server to get the stream, so response
         // event works fine for metrics, but should track down why request it double-firing.
-        Session.getInstance().getEventBus()
-                .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
+                new Observer<GotStreamResponseEvent>()
                 {
                     public void update(final GotStreamResponseEvent event)
                     {
@@ -309,8 +332,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void recordPageViewMetrics()
     {
-        Session.getInstance().getEventBus()
-                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
@@ -323,7 +346,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     *
+     * 
      * @param id
      *            the gadget id
      * @param view
@@ -339,7 +362,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     *
+     * 
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -353,7 +376,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     *
+     * 
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -382,7 +405,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     *
+     * 
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -398,7 +421,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     *
+     * 
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -406,8 +429,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public static void bulkGetPeople(final String[] ntids, final int callbackIndex)
     {
-        Session.getInstance().getEventBus()
-                .addObserver(GotBulkEntityResponseEvent.class, new Observer<GotBulkEntityResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
+                new Observer<GotBulkEntityResponseEvent>()
                 {
                     public void update(final GotBulkEntityResponseEvent arg1)
                     {
@@ -425,8 +448,8 @@ public class ApplicationEntryPoint implements EntryPoint
                                 if (ntidList.contains(personMV.getAccountId()))
                                 {
                                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                                    String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(),
-                                            personMV.getAvatarId());
+                                    String imageUrl = urlGen
+                                            .getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
 
                                     JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
                                     personJSON.set(0, personMV.getAccountId());
@@ -473,7 +496,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     *
+     * 
      * @param data
      *            the data.
      * @param callbackIndex
@@ -486,7 +509,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.
@@ -552,12 +575,32 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the user agent (for detecting IE7).
-     *
+     * 
      * @return the user agent.
      */
     public static native String getUserAgent()
     /*-{
         return navigator.userAgent.toLowerCase();
     }-*/;
+
+    public class GWTCanvasBasedCanvasLite extends GWTCanvas implements GChartCanvasLite
+    {
+        // GChartCanvasLite requires CSS/RGBA color strings, but
+        // GWTCanvas uses its own Color class instead, so we wrap:
+        public void setStrokeStyle(String cssColor)
+        {
+            // Sharp angles of default MITER can overwrite adjacent pie slices
+            setLineJoin(GWTCanvas.ROUND);
+            setStrokeStyle(new Color(cssColor));
+        }
+
+        public void setFillStyle(String cssColor)
+        {
+            setFillStyle(new Color(cssColor));
+        }
+        // Note: all other GChartCanvasLite methods (lineTo, moveTo,
+        // arc, etc.) are directly inherited from GWTCanvas, so no
+        // wrapper methods are needed.
+    }
 
 }

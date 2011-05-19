@@ -17,18 +17,26 @@ package org.eurekastreams.web.client.ui.pages.activity;
 
 import java.util.HashMap;
 
+import org.eurekastreams.commons.client.ActionProcessor;
+import org.eurekastreams.server.action.request.stream.PostActivityRequest;
+import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.jsni.EffectsFacade;
+import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamModel;
@@ -38,6 +46,11 @@ import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
+import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
+import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
+import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
@@ -54,6 +67,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.http.client.URL;
@@ -63,7 +78,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -77,6 +95,8 @@ public class ActivityContent extends Composite
     interface ActivityStyle extends CssResource
     {
         String activeSort();
+
+        String visiblePostBox();
     }
 
     @UiField
@@ -84,7 +104,7 @@ public class ActivityContent extends Composite
 
     /** UI element for streams. */
     @UiField
-    HTMLPanel streamPanel;
+    FlowPanel streamPanel;
 
     /** UI element for bookmarks. */
     @UiField
@@ -114,6 +134,15 @@ public class ActivityContent extends Composite
     DivElement postPanel;
 
     @UiField
+    DivElement streamDescription;
+
+    @UiField
+    DivElement streamInterests;
+
+    @UiField
+    DivElement streamHashtags;
+
+    @UiField
     ExtendedTextArea postBox;
 
     @UiField
@@ -136,18 +165,35 @@ public class ActivityContent extends Composite
 
     @UiField
     DivElement streamDetailsContainer;
-    
+
     @UiField
     HTMLPanel analyticsChartContainer;
+
+    @UiField
+    DivElement postOptions;
+
+    @UiField
+    Label postButton;
+
+    @UiField
+    DivElement postCharCount;
+
+    private static final Integer POST_MAX = 250;
 
     private ExpandCollapseAnimation detailsContainerAnimation;
 
     private ExpandCollapseAnimation postBoxAnimation;
 
+    StreamScope currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
+            .getAccountId());
+
+    /** Activity Populator. */
+    private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
+
     /**
      * Message Renderer.
      */
-    StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.FOREIGN_ONLY);
+    StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
 
     /**
      * Avatar Widget.
@@ -168,8 +214,10 @@ public class ActivityContent extends Composite
      */
     private void buildPage()
     {
-        detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, 250, 500);
+        detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, 330, 500);
         postBoxAnimation = new ExpandCollapseAnimation(postBox.getElement(), 250, 100);
+        final StreamAnalyticsChart chart = new StreamAnalyticsChart();
+
         toggleDetails.addClickHandler(new ClickHandler()
         {
             public void onClick(ClickEvent event)
@@ -243,8 +291,27 @@ public class ActivityContent extends Composite
 
                         followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
                         followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
+                        streamDescription.setInnerText(person.getJobDescription());
+                        String interestString = "";
+                        for (String interest : person.getInterests())
+                        {
+                            interestString += "<a href='#" + interest + "'>" + interest + "</a>";
+                        }
+                        streamInterests.setInnerHTML(interestString);
+                        streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
                     }
                 });
+
+        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        {
+            public void update(MessageStreamAppendEvent event)
+            {
+                Panel newActivity = renderer.render(event.getMessage());
+                newActivity.setVisible(false);
+                streamPanel.insert(newActivity, 0);
+                EffectsFacade.nativeFadeIn(newActivity.getElement(), true);
+            }
+        });
 
         postBox.addKeyUpHandler(new KeyUpHandler()
         {
@@ -263,6 +330,31 @@ public class ActivityContent extends Composite
             }
         });
 
+        postBox.addFocusHandler(new FocusHandler()
+        {
+            public void onFocus(FocusEvent event)
+            {
+                postOptions.addClassName(style.visiblePostBox());
+            }
+        });
+
+        postButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent event)
+            {
+                Attachment attachment = null;
+                ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                        : new NotePopulator();
+
+                ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(), DomainConversionUtility
+                        .convertToEntityType(currentStream.getScopeType()), currentStream.getUniqueKey(),
+                        new PostPopulator(), objectStrat);
+                PostActivityRequest postRequest = new PostActivityRequest(activity);
+
+                ActivityModel.getInstance().insert(postRequest);
+            }
+        });
+
         defaultList.appendChild(createLI("Following", ""));
         defaultList.appendChild(createLI("Everyone", "?stream=everyone"));
 
@@ -275,10 +367,11 @@ public class ActivityContent extends Composite
         streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
 
         CustomStreamModel.getInstance().fetch(null, true);
-        
-        StreamAnalyticsChart chart = new StreamAnalyticsChart();
+
         analyticsChartContainer.add(chart);
         chart.update();
+
+        postCharCount.setInnerText(POST_MAX.toString());
     }
 
     protected void checkPostBox()
@@ -287,11 +380,16 @@ public class ActivityContent extends Composite
         {
             postBoxAnimation.expand(postBox.getElement().getScrollHeight());
         }
+
+        postCharCount.setInnerText(Integer.toString(POST_MAX - postBox.getText().length()));
     }
 
     private void loadStream(final HashMap<String, String> params)
     {
+        Session.getInstance().getActionProcessor().setQueueRequests(true);
         JSONObject jsonObj = StreamJsonRequestFactory.getEmptyRequest();
+        currentStream.setScopeType(ScopeType.PERSON);
+        currentStream.setUniqueKey(Session.getInstance().getCurrentPerson().getAccountId());
 
         if (params == null || params.size() == 0)
         {
@@ -305,6 +403,8 @@ public class ActivityContent extends Composite
             jsonObj = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, accountId, jsonObj);
             PersonalInformationModel.getInstance().fetch(accountId, false);
             postPanel.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+            currentStream.setScopeType(ScopeType.PERSON);
+            currentStream.setUniqueKey(accountId);
         }
         else if (params.get("stream").equals("custom"))
         {
@@ -345,6 +445,9 @@ public class ActivityContent extends Composite
         }
 
         StreamModel.getInstance().fetch(jsonObj.toString(), false);
+
+        Session.getInstance().getActionProcessor().fireQueuedRequests();
+        Session.getInstance().getActionProcessor().setQueueRequests(false);
     }
 
     private LIElement createLI(final String name, final String view)
