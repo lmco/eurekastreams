@@ -5668,6 +5668,10 @@ body .gallery-search-results-list .options-panel {
 	cursor: pointer;
 }
 
+.gadget-meta-data .apply-galleryTab {
+    cursor: pointer;
+}
+
 @sprite .gadget-meta-data .apply-gadget.active {
 	gwt-image: "addedButton";
 	margin-top: 9px;
