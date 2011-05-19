@@ -723,13 +723,8 @@ public class GalleryContent extends SettingsPanel
                 + "Updates you make to the tab will not be reflected for users who have previously add it."));
         form.addFormDivider();
 
-        if (method.equals(Method.INSERT))
-        {
-            form
-                    .addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, null, "",
-                            true));
-            form.addFormDivider();
-        }
+        form.addFormElement(new BasicDropDownFormElement("Tabs", "tab", startPageTabsDropDownValues, "-1", "", true));
+        form.addFormDivider();
 
         form
                 .addFormElement(new BasicDropDownFormElement("Category", "category", categories, defaultCategory, "",
@@ -874,6 +869,7 @@ public class GalleryContent extends SettingsPanel
     private void setStartTabDropdownValues(final List<Tab> inStartPageTabs)
     {
         startPageTabsDropDownValues.clear();
+        startPageTabsDropDownValues.put("-1", "select tab...");
 
         for (Tab t : inStartPageTabs)
         {
