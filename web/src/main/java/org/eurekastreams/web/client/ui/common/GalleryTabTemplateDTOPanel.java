@@ -147,14 +147,14 @@ public class GalleryTabTemplateDTOPanel extends FlowPanel
 
         gadgetExtInfo.add(category);
         insertActionSeparator(gadgetExtInfo);
-        gadgetExtInfo.add(new HTML(" Users: <span class='light'>" + 0 + "</span>"));
+        gadgetExtInfo.add(new HTML(" Users: <span class='light'>" + inItem.getChildTabTemplateCount() + "</span>"));
         insertActionSeparator(gadgetExtInfo);
         gadgetExtInfo.add(new HTML(" Publish date: <span class='light'>"
                 + DateTimeFormat.getLongDateFormat().format(inItem.getCreated()) + "</span>"));
         dataPanel.add(gadgetExtInfo);
 
         applyTab = new Label("Apply");
-        applyTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyTheme());
+        applyTab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyGalleryTab());
         applyTab.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)

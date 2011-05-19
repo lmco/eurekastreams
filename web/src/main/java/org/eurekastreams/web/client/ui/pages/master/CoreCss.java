@@ -92,6 +92,9 @@ public interface CoreCss extends CssResource
     @ClassName("apply-theme")
     String applyTheme();
 
+    @ClassName("apply-galleryTab")
+    String applyGalleryTab();
+
     @ClassName("approve-button")
     String approveButton();
 

@@ -5641,7 +5641,7 @@ body .gallery-search-results-list .options-panel {
 	height: 80px;
 }
 
-.gadget-meta-data .apply-theme {
+.gadget-meta-data .apply-theme,.gadget-meta-data .apply-galleryTab {
 	overflow: hidden;
 	width: 68px;
 }
@@ -5652,7 +5652,7 @@ body .gallery-search-results-list .options-panel {
 	margin-left: 28px;
 }
 
-@sprite .gadget-meta-data .apply-gadget a,.gadget-meta-data .apply-theme {
+@sprite .gadget-meta-data .apply-gadget a,.gadget-meta-data .apply-theme,.gadget-meta-data .apply-galleryTab {
 	gwt-image: "addThemeGadgetBtnSmall";
 	display: block;
 	margin-top: 10px;
@@ -5666,6 +5666,10 @@ body .gallery-search-results-list .options-panel {
 @sprite .gadget-meta-data .apply-theme {
 	gwt-image: "applyBtnSmall";
 	cursor: pointer;
+}
+
+.gadget-meta-data .apply-galleryTab {
+    cursor: pointer;
 }
 
 @sprite .gadget-meta-data .apply-gadget.active {
