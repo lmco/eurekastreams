@@ -14,5 +14,4 @@
     
 	<entry-point class='org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint' />
 	<entry-point class='org.eurekastreams.web.client.ui.pages.master.ConnectEntryPoint' />
-	<set-configuration-property name="CssResource.style" value="pretty"/>
 </module>
