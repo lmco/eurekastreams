@@ -739,6 +739,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
+        galleryAddOrEditContainer.clear();
         galleryAddOrEditContainer.add(form);
     }
 
@@ -799,6 +800,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
+        galleryAddOrEditContainer.clear();
         galleryAddOrEditContainer.add(form);
     }
 
@@ -860,6 +862,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
+        galleryAddOrEditContainer.clear();
         galleryAddOrEditContainer.add(form);
     }
 
