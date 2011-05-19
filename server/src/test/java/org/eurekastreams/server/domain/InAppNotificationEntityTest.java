@@ -28,7 +28,7 @@ import org.junit.Test;
 public class InAppNotificationEntityTest
 {
     /**
-     * Tests
+     * Tests copy constructor.
      */
     @Test
     public void testClone()

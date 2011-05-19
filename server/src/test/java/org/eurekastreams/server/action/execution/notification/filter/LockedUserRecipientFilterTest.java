@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.filter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -41,9 +40,6 @@ public class LockedUserRecipientFilterTest
 
     /** SUT. */
     private LockedUserRecipientFilter sut;
-
-    /** Fixture: notification. */
-    private final NotificationDTO notification = context.mock(NotificationDTO.class);
 
     /** Fixture: person. */
     private final PersonModelView person = context.mock(PersonModelView.class);
@@ -71,7 +67,7 @@ public class LockedUserRecipientFilterTest
             }
         });
 
-        assertTrue(sut.shouldFilter(person, notification, "notifierType"));
+        assertTrue(sut.shouldFilter(null, person, null, null));
         context.assertIsSatisfied();
     }
 
@@ -89,7 +85,7 @@ public class LockedUserRecipientFilterTest
             }
         });
 
-        assertFalse(sut.shouldFilter(person, notification, "notifierType"));
+        assertFalse(sut.shouldFilter(null, person, null, null));
         context.assertIsSatisfied();
     }
 

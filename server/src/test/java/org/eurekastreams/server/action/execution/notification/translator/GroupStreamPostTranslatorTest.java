@@ -15,25 +15,27 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -110,22 +112,22 @@ public class GroupStreamPostTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_ID, ACTIVITY_ID);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.POST_TO_JOINED_GROUP, members);
 
-        Iterator<NotificationDTO> iter = notifs.iterator();
-
-        NotificationDTO notif1 = iter.next();
-        Assert.assertEquals(ACTIVITY_ID, notif1.getActivityId());
-        Assert.assertEquals(NotificationType.POST_TO_JOINED_GROUP, notif1.getType());
-        Assert.assertEquals(GROUP_ID, notif1.getDestinationId());
-        Assert.assertEquals(EntityType.GROUP, notif1.getDestinationType());
-        Assert.assertEquals(members, notif1.getRecipientIds());
-        Assert.assertEquals(ACTOR_ID, notif1.getActorId());
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(4, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        PropertyMapTestHelper.assertPlaceholder(props, "stream", DomainGroupModelView.class, GROUP_ID);
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        PropertyMapTestHelper.assertPlaceholder(props, "activity", ActivityDTO.class, ACTIVITY_ID);
     }
 
     /**
@@ -143,11 +145,10 @@ public class GroupStreamPostTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_ID, ACTIVITY_ID);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
-
-        assertNotNull(notifs);
-        assertTrue(notifs.isEmpty());
+        assertNull(results);
     }
 }

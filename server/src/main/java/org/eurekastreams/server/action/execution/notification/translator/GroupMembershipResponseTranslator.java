@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -47,8 +48,10 @@ public class GroupMembershipResponseTranslator implements NotificationTranslator
     @Override
     public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
+        // TODO: Make sense out of the inputs by using a specific request type.
+
         NotificationBatch batch = new NotificationBatch(type, inRequest.getActivityId());
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("group", DomainGroupModelView.class, inRequest.getDestinationId());
         // TODO: add appropriate properties
         return batch;

@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -40,8 +41,9 @@ public class StreamPostTranslator implements NotificationTranslator<CreateNotifi
         NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_PERSONAL_STREAM,
                 inRequest.getDestinationId());
         batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("streamOwner", PersonModelView.class, inRequest.getDestinationId());
+        batch.setProperty("stream", PersonModelView.class, inRequest.getDestinationId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         // TODO: add appropriate properties
         return batch;
     }

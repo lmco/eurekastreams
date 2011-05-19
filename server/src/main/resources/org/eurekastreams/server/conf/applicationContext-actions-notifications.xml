@@ -129,10 +129,10 @@
     
 	<!-- recipient filters - one list per notifier -->
 	<util:list id="notificationRecipientFiltersAppAlert">
-		<bean class="org.eurekastreams.server.action.execution.notification.LockedUserRecipientFilter" />
+		<bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
 	</util:list>
 	<util:list id="notificationRecipientFiltersEmail">
-		<bean class="org.eurekastreams.server.action.execution.notification.LockedUserRecipientFilter" />
+		<bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
 	</util:list>
 	
 	<!-- ==== RENDERING ==== -->
@@ -177,22 +177,10 @@
     </util:map>
 
 	<!-- data loaders (for lazy-loading) -->
-	<util:map id="notificationPropertyLoadMappers">
-		<entry value-ref="getPersonByIdMapperAllowNullResult">
-			<key>
-				<value type="java.lang.Class">org.eurekastreams.server.search.modelview.PersonModelView</value>
-			</key>
-		</entry>
-		<entry value-ref="getGroupByIdMapperAllowNullResult">
-			<key>
-				<value type="java.lang.Class">org.eurekastreams.server.search.modelview.DomainGroupModelView</value>
-			</key>
-		</entry>
-		<entry value-ref="activityDTOMapper">
-			<key>
-				<value type="java.lang.Class">org.eurekastreams.server.domain.stream.ActivityDTO</value>
-			</key>
-		</entry>
+	<util:map id="notificationPropertyLoadMappers" key-type="java.lang.Class">
+		<entry key="org.eurekastreams.server.search.modelview.PersonModelView" value-ref="getPersonByIdMapperAllowNullResult" />
+		<entry key="org.eurekastreams.server.search.modelview.DomainGroupModelView" value-ref="getGroupByIdMapperAllowNullResult" />
+		<entry key="org.eurekastreams.server.domain.stream.ActivityDTO" value-ref="activityDTOMapper" />
     </util:map>
   
 	  

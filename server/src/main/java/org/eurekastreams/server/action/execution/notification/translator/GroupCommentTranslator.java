@@ -170,7 +170,7 @@ public class GroupCommentTranslator implements NotificationTranslator<CommentNot
         // Add properties
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", activity.getDestinationStream());
-        batch.setAlias(NotificationPropertyKeys.SOURCE, "stream");
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         batch.setProperty("activity", activity);
         batch.setProperty("comment", comment);
 

@@ -17,21 +17,21 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.hamcrest.Matchers;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -43,7 +43,7 @@ import org.junit.Test;
 public class RequestNewGroupTranslatorTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -75,11 +75,11 @@ public class RequestNewGroupTranslatorTest
 
         // expectations
         final FindByIdMapper<DomainGroup> groupMapper = context.mock(FindByIdMapper.class);
-        final FindByIdRequest request = new FindByIdRequest("DomainGroup", groupId);
+        final FindByIdRequest mapperRequest = new FindByIdRequest("DomainGroup", groupId);
         context.checking(new Expectations()
         {
             {
-                allowing(groupMapper).execute(with(equalInternally(request)));
+                allowing(groupMapper).execute(with(equalInternally(mapperRequest)));
                 will(returnValue(group));
 
                 oneOf(systemAdminIdsMapper).execute(null);
@@ -87,23 +87,22 @@ public class RequestNewGroupTranslatorTest
             }
         });
 
-        // run
-
         RequestNewGroupTranslator sut = new RequestNewGroupTranslator(groupMapper, systemAdminIdsMapper);
-        Collection<NotificationDTO> list = sut.translate(actorId, orgId, groupId);
 
-        // verify
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, actorId, 0L, groupId);
+        NotificationBatch results = sut.translate(request);
 
-        assertEquals(1, list.size());
-        NotificationDTO notif = list.iterator().next();
-        assertEquals(actorId, notif.getActorId());
-        assertEquals(orgId, notif.getDestinationId());
-        assertEquals(EntityType.NOTSET, notif.getDestinationType());
-        assertEquals(NotificationType.REQUEST_NEW_GROUP, notif.getType());
-        assertEquals(0L, notif.getActivityId());
-        List<Long> recipients = notif.getRecipientIds();
-        assertEquals(2, recipients.size());
-        assertTrue(Matchers.hasItems(coord1id, coord2id).matches(recipients));
+        context.assertIsSatisfied();
+
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.REQUEST_NEW_GROUP, admins);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(2, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, actorId);
+        PropertyMapTestHelper.assertValue(props, "group", group);
     }
 
 }

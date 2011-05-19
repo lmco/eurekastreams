@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.filter;
 
 import java.util.Map;
 

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.inapp;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.action.execution.notification.inapp.DeleteOldInAppNotificationsExecution;
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.notification.DeleteInAppNotificationsByDate;
 import org.eurekastreams.server.persistence.mappers.db.notification.GetUserIdsWithUnreadInAppNotificationsByDate;
@@ -65,7 +65,7 @@ public class DeleteOldApplicationAlertsExecutionTest
     /**
      * Sync mapper mock.
      */
-    private final DomainMapper<Long, Integer> syncMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper = context.mock(DomainMapper.class);
 
     /**
      * ActionContext mock.

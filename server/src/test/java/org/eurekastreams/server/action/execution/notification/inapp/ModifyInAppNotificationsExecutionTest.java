@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.inapp;
 
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.action.execution.notification.inapp.ModifyInAppNotificationsExecution;
+import org.eurekastreams.commons.test.IsEqualInternally;
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.notification.InAppNotificationsByUserMapperRequest;
 import org.eurekastreams.server.testing.TestContextCreator;
@@ -73,7 +74,7 @@ public class ModifyInAppNotificationsExecutionTest
     {
         final Collection<Long> items = Arrays.asList(1L, 2L, 3L);
         final long userId = 77L;
-        final Integer newCount = 20;
+        final UnreadInAppNotificationCountDTO newCount = new UnreadInAppNotificationCountDTO(4, 6);
 
         final InAppNotificationsByUserMapperRequest expectedRequest = new InAppNotificationsByUserMapperRequest(items,
                 userId);
@@ -90,7 +91,7 @@ public class ModifyInAppNotificationsExecutionTest
         PrincipalActionContext ctx = TestContextCreator.createPrincipalActionContext((Serializable) items, "whomever",
                 userId);
 
-        assertEquals(newCount, sut.execute(ctx));
+        assertTrue(IsEqualInternally.areEqualInternally(newCount, sut.execute(ctx)));
 
         context.assertIsSatisfied();
     }

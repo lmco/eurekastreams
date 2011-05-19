@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -33,7 +34,8 @@ public class FollowerTranslator implements NotificationTranslator<CreateNotifica
     {
         NotificationBatch batch = new NotificationBatch(NotificationType.FOLLOW_PERSON, inRequest.getDestinationId());
         batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("streamEntity", PersonModelView.class, inRequest.getDestinationId());
+        batch.setProperty("stream", PersonModelView.class, inRequest.getDestinationId());
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         // TODO: add appropriate properties
         return batch;
     }

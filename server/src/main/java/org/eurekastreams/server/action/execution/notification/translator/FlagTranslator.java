@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
@@ -76,6 +77,7 @@ public class FlagTranslator implements NotificationTranslator<CreateNotification
         NotificationBatch batch = new NotificationBatch(type, adminIds);
         batch.setProperty("activity", activity);
         batch.setProperty("stream", stream);
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         return batch;
     }
 }

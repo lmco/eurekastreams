@@ -265,9 +265,6 @@
         </property>
 	</bean>
 
-	<bean id="getStreamScopeProxyById"
-		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />
-
 	<bean id="getStreamScopeById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
 

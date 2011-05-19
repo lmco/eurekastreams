@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -64,7 +65,8 @@ public class GroupFollowerTranslator implements NotificationTranslator
 
         NotificationBatch batch = new NotificationBatch(NotificationType.FOLLOW_GROUP, coordinatorIds);
         batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("streamEntity", DomainGroupModelView.class, inRequest.getDestinationId());
+        batch.setProperty("stream", DomainGroupModelView.class, inRequest.getDestinationId());
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         // TODO: add appropriate properties
         return batch;
     }

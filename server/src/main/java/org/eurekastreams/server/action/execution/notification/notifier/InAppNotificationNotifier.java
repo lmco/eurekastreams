@@ -120,7 +120,8 @@ public class InAppNotificationNotifier implements Notifier
                     dbNotif.setNotificationType(inType);
                     dbNotif.setMessage(message);
                     dbNotif.setUrl((String) inProperties.get(NotificationPropertyKeys.URL));
-                    dbNotif.setHighPriority(Boolean.TRUE.equals(inProperties.get(NotificationPropertyKeys.HIGH_PRIORITY)));
+                    dbNotif.setHighPriority(Boolean.TRUE.equals(inProperties
+                            .get(NotificationPropertyKeys.HIGH_PRIORITY)));
 
                     Object obj = inProperties.get(NotificationPropertyKeys.SOURCE);
                     if (obj instanceof Identifiable)

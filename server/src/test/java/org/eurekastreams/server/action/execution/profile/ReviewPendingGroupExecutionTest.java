@@ -16,15 +16,11 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
@@ -32,9 +28,13 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.AnonymousClassInterceptor;
-import org.eurekastreams.server.action.execution.notification.idle.NotificationDTO;
 import org.eurekastreams.server.action.execution.notification.notifier.Notifier;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.GroupRemovedNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
@@ -42,12 +42,15 @@ import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
+import org.eurekastreams.server.testing.TestContextCreator;
+import org.eurekastreams.server.testing.TestHelper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Test fixture for ReviewPendingGroupExecution.
@@ -83,33 +86,33 @@ public class ReviewPendingGroupExecutionTest
     /**
      * User info in the session.
      */
-    private ExtendedUserDetails user = context.mock(ExtendedUserDetails.class);
+    private final ExtendedUserDetails user = context.mock(ExtendedUserDetails.class);
 
     /**
      * Mocked group cache.
      */
-    private DomainGroupMapper groupMapper = context.mock(DomainGroupMapper.class);
+    private final DomainGroupMapper groupMapper = context.mock(DomainGroupMapper.class);
 
     /**
      * Mocked group.
      */
-    private DomainGroup group = context.mock(DomainGroup.class);
+    private final DomainGroup group = context.mock(DomainGroup.class);
 
     /**
      * Mock used to update privategroupcoordinatorcache.
      */
-    private AddPrivateGroupIdToCachedCoordinatorAccessList addPrivateGroupIdToCachedListMock = context
+    private final AddPrivateGroupIdToCachedCoordinatorAccessList addPrivateGroupIdToCachedListMock = context
             .mock(AddPrivateGroupIdToCachedCoordinatorAccessList.class);
 
     /**
      * A username for tests.
      */
-    private String username = "username";
+    private static final String USER_ACCOUNT_ID = "username";
 
     /**
      * User's email address.
      */
-    private String userEmailAddress = "username@example.com";
+    private final String userEmailAddress = "username@example.com";
 
     /**
      * PersonModelView returned for the user.
@@ -119,38 +122,34 @@ public class ReviewPendingGroupExecutionTest
     /**
      * Mocked principal.
      */
-    private Principal mockedPrincipal = context.mock(Principal.class);
+    private final Principal mockedPrincipal = context.mock(Principal.class);
 
     /** Fixture: email notifier. */
-    private Notifier emailNotifier = context.mock(Notifier.class);
-
-    /** Fixture: async request to send notification. */
-    private UserActionRequest notifAsyncRequest = context.mock(UserActionRequest.class);
+    private final Notifier emailNotifier = context.mock(Notifier.class);
 
     /** Fixture: Execution strategy for deleting a group. */
-    private DeleteGroupFromDBExecution deleteGroupExecution = context.mock(DeleteGroupFromDBExecution.class);
+    private final DeleteGroupFromDBExecution deleteGroupExecution = context.mock(DeleteGroupFromDBExecution.class);
 
     /**
      * Set up the SUT.
-     * 
+     *
      * @throws MalformedURLException
      *             won't happen
      */
     @Before
     public void setup() throws MalformedURLException
     {
-        sut = new ReviewPendingGroupExecution(groupMapper, emailNotifier, addPrivateGroupIdToCachedListMock,
-                deleteGroupExecution);
+        sut = new ReviewPendingGroupExecution(groupMapper, addPrivateGroupIdToCachedListMock, deleteGroupExecution);
     }
 
     /**
      * Test a valid case where the coordinator approves.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
     @Test
-    public void performActionApprovePublicGroupTest() throws Exception
+    public void testExecuteApprovePublicGroupTest() throws Exception
     {
         final ReviewPendingGroupRequest request = new ReviewPendingGroupRequest(GROUP_SHORTNAME, true);
 
@@ -168,20 +167,25 @@ public class ReviewPendingGroupExecutionTest
         });
 
         List<UserActionRequest> asyncRequests = callExecute(request);
+
         context.assertIsSatisfied();
+
         assertEquals(1, asyncRequests.size());
-        assertSame(notifAsyncRequest, asyncRequests.get(0));
+        assertEquals("createNotificationsAction", asyncRequests.get(0).getActionKey());
+        CreateNotificationsRequest expected = new GroupActionNotificationsRequest(
+                RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, GROUP_ID);
+        assertTrue(IsEqualInternally.areEqualInternally(expected, asyncRequests.get(0).getParams()));
     }
 
     /**
      * Test a valid case where the coordinator approves.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
     @SuppressWarnings("deprecation")
     @Test
-    public void performActionApprovePrivateGroupTest() throws Exception
+    public void testExecuteApprovePrivateGroupTest() throws Exception
     {
         final ReviewPendingGroupRequest request = new ReviewPendingGroupRequest(GROUP_SHORTNAME, true);
         setupCommonExpectations();
@@ -201,19 +205,24 @@ public class ReviewPendingGroupExecutionTest
         });
 
         List<UserActionRequest> asyncRequests = callExecute(request);
+
         context.assertIsSatisfied();
+
         assertEquals(1, asyncRequests.size());
-        assertSame(notifAsyncRequest, asyncRequests.get(0));
+        assertEquals("createNotificationsAction", asyncRequests.get(0).getActionKey());
+        CreateNotificationsRequest expected = new GroupActionNotificationsRequest(
+                RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, GROUP_ID);
+        assertTrue(IsEqualInternally.areEqualInternally(expected, asyncRequests.get(0).getParams()));
     }
 
     /**
      * Test a valid case where the coordinator denies the new group.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
     @Test
-    public void performActionDenyPrivateGroupTest() throws Exception
+    public void testExecuteDenyPrivateGroupTest() throws Exception
     {
         final ReviewPendingGroupRequest request = new ReviewPendingGroupRequest(GROUP_SHORTNAME, false);
 
@@ -229,69 +238,38 @@ public class ReviewPendingGroupExecutionTest
         });
 
         List<UserActionRequest> asyncRequests = callExecute(request);
+
         context.assertIsSatisfied();
-        assertTrue(asyncRequests.size() >= 1);
-        assertSame(notifAsyncRequest, asyncRequests.get(0));
-        TaskHandlerActionContext<ActionContext> thac = intCtx.getObject();
-        assertSame(asyncRequests, thac.getUserActionRequests());
-        assertEquals(GROUP_ID, thac.getActionContext().getParams());
+
+        assertEquals(1, asyncRequests.size());
+        assertEquals("createNotificationsAction", asyncRequests.get(0).getActionKey());
+
+        GroupRemovedNotificationsRequest params = (GroupRemovedNotificationsRequest) asyncRequests.get(0).getParams();
+        assertEquals(RequestType.REQUEST_NEW_GROUP_DENIED, params.getType());
+        assertEquals(GROUP_NAME, params.getGroupName());
+        assertTrue("Expected recipient list", TestHelper.containsExactly(params.getCoordinatorIds(), 7L, 8L));
     }
 
     /**
      * Executes the SUT with the proper action context setup.
-     * 
+     *
      * @param request
      *            The request to pass.
      * @return List with any async requests made by the SUT.
      */
     private List<UserActionRequest> callExecute(final ReviewPendingGroupRequest request)
     {
-        List<UserActionRequest> asyncRequests = new ArrayList<UserActionRequest>();
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(request, USER_ACCOUNT_ID, 0L);
 
-        sut.execute(new TaskHandlerActionContext<PrincipalActionContext>(new PrincipalActionContext()
-        {
-            /**
-             * Serial version uid.
-             */
-            private static final long serialVersionUID = -1644049510102329123L;
+        sut.execute(actionContext);
 
-            @Override
-            public Map<String, Object> getState()
-            {
-                return null;
-            }
-
-            @Override
-            public Serializable getParams()
-            {
-                return request;
-            }
-
-            @Override
-            public Principal getPrincipal()
-            {
-                return mockedPrincipal;
-            }
-
-            @Override
-            public String getActionId()
-            {
-                return null;
-            }
-
-            @Override
-            public void setActionId(final String inActionId)
-            {
-
-            }
-        }, asyncRequests));
-
-        return asyncRequests;
+        return actionContext.getUserActionRequests();
     }
 
     /**
      * Set up expectations that are common to multiple tests.
-     * 
+     *
      * @throws Exception
      *             Shouldn't.
      */
@@ -309,9 +287,6 @@ public class ReviewPendingGroupExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(mockedPrincipal).getAccountId();
-                will(returnValue(username));
-
                 allowing(groupMapper).findByShortName(GROUP_SHORTNAME);
                 will(returnValue(group));
 
@@ -333,9 +308,6 @@ public class ReviewPendingGroupExecutionTest
                 will(returnValue(8L));
 
                 allowing(user).getPerson();
-
-                oneOf(emailNotifier).notify(with(aNonNull(NotificationDTO.class)));
-                will(returnValue(notifAsyncRequest));
             }
         });
     }

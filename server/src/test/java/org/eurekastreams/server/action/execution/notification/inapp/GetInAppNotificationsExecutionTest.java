@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.notification;
+package org.eurekastreams.server.action.execution.notification.inapp;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.action.execution.notification.inapp.GetInAppNotificationsExecution;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;

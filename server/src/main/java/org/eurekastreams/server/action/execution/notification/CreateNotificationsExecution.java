@@ -28,6 +28,7 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.execution.notification.filter.RecipientFilter;
 import org.eurekastreams.server.action.execution.notification.notifier.Notifier;
 import org.eurekastreams.server.action.execution.notification.translator.NotificationTranslator;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;

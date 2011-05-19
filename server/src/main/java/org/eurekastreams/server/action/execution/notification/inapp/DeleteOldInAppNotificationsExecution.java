@@ -20,14 +20,14 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.notification.DeleteInAppNotificationsByDate;
-import org.eurekastreams.server.persistence.mappers.db.notification.GetUserIdsWithUnreadInAppNotificationsByDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Deletes application that are older (in days) than the configured ageInDays value.
@@ -37,7 +37,7 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
     /**
      * Logger.
      */
-    private final Log log = LogFactory.make();
+    private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
 
     /**
      * Mapper to delete alerts.
@@ -47,7 +47,7 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
     /**
      * Mapper to find user ids with old unread alerts.
      */
-    private final GetUserIdsWithUnreadInAppNotificationsByDate unreadMapper;
+    private final DomainMapper<Date, List<Long>> unreadMapper;
 
     /** Mapper to sync database and cache unread alert count. */
     private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper;
@@ -70,7 +70,7 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
      *            The age in days when an alert is considered "old".
      */
     public DeleteOldInAppNotificationsExecution(final DeleteInAppNotificationsByDate inDeleteMapper,
-            final GetUserIdsWithUnreadInAppNotificationsByDate inUnreadMapper,
+            final DomainMapper<Date, List<Long>> inUnreadMapper,
             final DomainMapper<Long, UnreadInAppNotificationCountDTO> inSyncMapper, final int inAgeInDays)
     {
         deleteMapper = inDeleteMapper;
@@ -87,10 +87,7 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
     @Override
     public Serializable execute(final ActionContext inActionContext)
     {
-        if (log.isInfoEnabled())
-        {
-            log.info("Deleting application alerts older than " + ageInDays + " days");
-        }
+        log.info("Deleting application alerts older than {} days.", ageInDays);
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.add(GregorianCalendar.DATE, ageInDays * -1);
