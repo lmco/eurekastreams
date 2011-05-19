@@ -53,6 +53,7 @@ public class SetSystemAdminsDbMapperTest extends MapperTest
         final Long ford1 = 42L;
         final Long ford2 = 142L;
         final Long sagan = 4507L;
+        final Long smithers = 98L;
 
         List<String> adminAccountIds = new ArrayList<String>();
         adminAccountIds.add("fordp");
@@ -67,5 +68,18 @@ public class SetSystemAdminsDbMapperTest extends MapperTest
         Assert.assertTrue(peopleIds.contains(ford1));
         Assert.assertTrue(peopleIds.contains(ford2));
         Assert.assertTrue(peopleIds.contains(sagan));
+
+        // change the list and try again to make sure it works
+
+        adminAccountIds = new ArrayList<String>();
+        adminAccountIds.add("fordp");
+        adminAccountIds.add("smithers");
+
+        sut.execute(adminAccountIds);
+
+        peopleIds = getEntityManager().createQuery("SELECT id FROM Person WHERE isAdministrator=true").getResultList();
+        Assert.assertEquals(2, peopleIds.size());
+        Assert.assertTrue(peopleIds.contains(ford1));
+        Assert.assertTrue(peopleIds.contains(smithers));
     }
 }
