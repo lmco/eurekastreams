@@ -116,7 +116,12 @@ public class CreateNotificationsRequest implements Serializable
          * A coordinator denied access to a private group. Actor=coordinator who denied access; Destination=id of group;
          * Activity=person id who requested access (need some field to store it in).
          */
-        REQUEST_GROUP_ACCESS_DENIED
+        REQUEST_GROUP_ACCESS_DENIED,
+
+        /**
+         * A notification requested by an external system.
+         */
+        EXTERNAL_PRE_BUILT
     }
 
     /** Type of event that occurred. */

@@ -109,7 +109,6 @@ public class InAppNotificationNotifier implements Notifier
         InAppNotificationEntity dbNotif = null;
         for (long recipientId : inRecipients)
         {
-            // Person recipient = (Person) getHibernateSession().get(Person.class, recipientId);
             Person recipient = placeholderPersonMapper.execute(recipientId);
             if (recipient != null)
             {

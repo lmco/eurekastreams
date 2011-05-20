@@ -32,8 +32,15 @@ public class UnreadInAppNotificationCountDTO implements Serializable
     private int normalPriority;
 
     /**
+     * Constructor for serialization.
+     */
+    private UnreadInAppNotificationCountDTO()
+    {
+    }
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inHighPriority
      *            Number of high priority alerts.
      * @param inNormalPriority
