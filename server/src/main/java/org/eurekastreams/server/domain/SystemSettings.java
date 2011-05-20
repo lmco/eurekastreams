@@ -18,6 +18,7 @@ package org.eurekastreams.server.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -27,6 +28,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.Min;
 
@@ -170,6 +172,12 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     @Transient
     private String footerTemplate;
+
+    /**
+     * System admins - not loaded from the database - this is here to send over the wire to the client, if requested.
+     */
+    @Transient
+    private Set<PersonModelView> systemAdministrators;
 
     /**
      * @return Returns the site label.
@@ -438,6 +446,23 @@ public class SystemSettings extends DomainEntity implements Serializable
     public void setAllUsersCanCreateGroups(final boolean inAllUsersCanCreateGroups)
     {
         allUsersCanCreateGroups = inAllUsersCanCreateGroups;
+    }
+
+    /**
+     * @return the systemAdministrators
+     */
+    public Set<PersonModelView> getSystemAdministrators()
+    {
+        return systemAdministrators;
+    }
+
+    /**
+     * @param inSystemAdministrators
+     *            the systemAdministrators to set
+     */
+    public void setSystemAdministrators(final Set<PersonModelView> inSystemAdministrators)
+    {
+        systemAdministrators = inSystemAdministrators;
     }
 
 }

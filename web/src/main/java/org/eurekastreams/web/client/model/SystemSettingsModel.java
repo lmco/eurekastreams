@@ -25,7 +25,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * System Settings Model.
- *
+ * 
  */
 public class SystemSettingsModel extends BaseModel implements Fetchable<Serializable>,
         Updateable<HashMap<String, Serializable>>
@@ -37,7 +37,7 @@ public class SystemSettingsModel extends BaseModel implements Fetchable<Serializ
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static SystemSettingsModel getInstance()
@@ -55,6 +55,7 @@ public class SystemSettingsModel extends BaseModel implements Fetchable<Serializ
             public void onSuccess(final SystemSettings response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new UpdatedSystemSettingsResponseEvent(response));
+                SystemSettingsModel.getInstance().clearCache();
             }
         });
     }
@@ -62,9 +63,10 @@ public class SystemSettingsModel extends BaseModel implements Fetchable<Serializ
     /**
      * {@inheritDoc}
      */
-    public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
+    public void fetch(final Serializable inShouldLoadAdmins, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getSystemSettings", request, new OnSuccessCommand<SystemSettings>()
+        Boolean shouldLoadAdmins = (Boolean) inShouldLoadAdmins;
+        super.callReadAction("getSystemSettings", shouldLoadAdmins, new OnSuccessCommand<SystemSettings>()
         {
             public void onSuccess(final SystemSettings response)
             {
@@ -72,5 +74,4 @@ public class SystemSettingsModel extends BaseModel implements Fetchable<Serializ
             }
         }, useClientCacheIfAvailable);
     }
-
 }

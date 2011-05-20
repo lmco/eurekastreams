@@ -15,9 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.settings;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
@@ -25,7 +23,6 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
@@ -253,8 +250,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
                 });
 
-        SystemSettingsModel.getInstance().fetch(null, true);
-
+        SystemSettingsModel.getInstance().fetch(new Boolean(true), false);
     }
 
     /**
@@ -328,9 +324,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         tosElement.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
 
-        Set<PersonModelView> coordinatorList = new HashSet<PersonModelView>(); // coordinators should be passed into
-        form.addFormElement(new PersonModelViewLookupFormElement("Eureka Administrators", "Add Coordinator", "",
-                "admins", coordinatorList, true));
+        form.addFormElement(new PersonModelViewLookupFormElement("Eureka Administrators", "Add Administrator", "",
+                "admins", systemSettingValues.getSystemAdministrators(), true));
 
         form.addFormDivider();
 
@@ -375,6 +370,20 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormDivider();
 
         form.addFormElement(activityExp);
+        form.addFormDivider();
+
+        BasicCheckBoxFormElement groupCreationPolicy = new BasicCheckBoxFormElement("New Group Moderation",
+                "allUsersCanCreateGroups", "Enable Moderation.",
+                "By enabling moderation, system administrators will be required to review new group requests.  "
+                        + "Groups pending approval will be listed under the pending tab of system settings.", false,
+                !systemSettingValues.getAllUsersCanCreateGroups());
+
+        // The key is true for "allowing group creation" and the checkbox displays "allowing moderation". Since
+        // these are opposites, the value needs to be reversed when the form gets submitted.
+        groupCreationPolicy.setReverseValue(true);
+
+        groupCreationPolicy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgGroupPolicy());
+        form.addFormElement(groupCreationPolicy);
         form.addFormDivider();
 
         if (!tosElement.isChecked())

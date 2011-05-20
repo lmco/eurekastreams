@@ -2220,4 +2220,14 @@
 		</constructor-arg>       
     </bean>
     
+    
+    <bean id="getSystemAdministrators" class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
+        <!-- Get the system administrator ids -->
+        <constructor-arg ref="getSystemAdministratorIds" />
+        
+        <!-- And convert those people ids to PersonModelViews -->
+        <constructor-arg ref="getPersonsByIdsMapper" />
+    </bean>
+    
+    
 </beans>
