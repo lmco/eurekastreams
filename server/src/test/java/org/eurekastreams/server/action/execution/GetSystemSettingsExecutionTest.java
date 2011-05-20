@@ -16,10 +16,20 @@
 package org.eurekastreams.server.action.execution;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -29,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for GetSystemSettingsExecution class.
- *
+ * 
  */
 public class GetSystemSettingsExecutionTest
 {
@@ -59,30 +69,81 @@ public class GetSystemSettingsExecutionTest
     private SystemSettings systemSettings = context.mock(SystemSettings.class);
 
     /**
+     * Mapper to get the system administrator ids.
+     */
+    private DomainMapper<Serializable, List<PersonModelView>> systemAdminsMapper = context.mock(DomainMapper.class,
+            "systemAdminsMapper");
+
+    /**
+     * {@link PrincipalActionContext} mock.
+     */
+    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+    /**
      * Set up the SUT.
      */
     @Before
     public void setup()
     {
-        sut = new GetSystemSettingsExecution(systemSettingDAO);
+        sut = new GetSystemSettingsExecution(systemSettingDAO, systemAdminsMapper);
     }
 
     /**
-     * Check that the action correctly returns the system settings.
-     *
+     * Check that the action correctly returns the system settings, without admins.
      */
     @Test
-    public final void testExecute()
+    public final void testExecuteWithoutSystemAdmins()
     {
         context.checking(new Expectations()
         {
             {
                 oneOf(systemSettingDAO).execute(null);
                 will(returnValue(systemSettings));
+
+                allowing(actionContext).getParams();
+                will(returnValue(null));
             }
         });
 
-        assertEquals(systemSettings, sut.execute(null));
+        assertEquals(systemSettings, sut.execute(actionContext));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Check that the action correctly returns the system settings, with admins.
+     */
+    @Test
+    public final void testExecuteWithSystemAdmins()
+    {
+        PersonModelView admin = new PersonModelView();
+        final List<PersonModelView> adminsList = new ArrayList<PersonModelView>();
+        adminsList.add(admin);
+
+        final Set<PersonModelView> adminsSet = new HashSet<PersonModelView>();
+        adminsSet.add(admin);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(systemSettingDAO).execute(null);
+                will(returnValue(systemSettings));
+
+                oneOf(systemSettings).setSystemAdministrators(with(IsEqualInternally.equalInternally(adminsSet)));
+
+                allowing(systemSettings).getSystemAdministrators();
+                will(returnValue(adminsSet));
+
+                allowing(actionContext).getParams();
+                will(returnValue(new Boolean(true)));
+
+                oneOf(systemAdminsMapper).execute(null);
+                will(returnValue(adminsList));
+            }
+        });
+
+        assertEquals(systemSettings, sut.execute(actionContext));
+        assertEquals(1, systemSettings.getSystemAdministrators().size());
+        assertTrue(systemSettings.getSystemAdministrators().contains(admin));
         context.assertIsSatisfied();
     }
 }

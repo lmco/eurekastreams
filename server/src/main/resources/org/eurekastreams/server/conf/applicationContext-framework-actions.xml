@@ -1335,6 +1335,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.GetSystemSettingsExecution">
                 <constructor-arg ref="findSystemSettings" />
+                <constructor-arg ref="getSystemAdministrators" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
