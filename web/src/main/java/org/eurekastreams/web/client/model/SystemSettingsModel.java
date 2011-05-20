@@ -55,6 +55,7 @@ public class SystemSettingsModel extends BaseModel implements Fetchable<Serializ
             public void onSuccess(final SystemSettings response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new UpdatedSystemSettingsResponseEvent(response));
+                SystemSettingsModel.getInstance().clearCache();
             }
         });
     }

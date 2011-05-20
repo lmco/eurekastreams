@@ -324,7 +324,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         tosElement.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
 
-        form.addFormElement(new PersonModelViewLookupFormElement("Eureka Administrators", "Add Coordinator", "",
+        form.addFormElement(new PersonModelViewLookupFormElement("Eureka Administrators", "Add Administrator", "",
                 "admins", systemSettingValues.getSystemAdministrators(), true));
 
         form.addFormDivider();
@@ -370,6 +370,20 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormDivider();
 
         form.addFormElement(activityExp);
+        form.addFormDivider();
+
+        BasicCheckBoxFormElement groupCreationPolicy = new BasicCheckBoxFormElement("New Group Moderation",
+                "allUsersCanCreateGroups", "Enable Moderation.",
+                "By enabling moderation, system administrators will be required to review new group requests.  "
+                        + "Groups pending approval will be listed under the pending tab of system settings.", false,
+                !systemSettingValues.getAllUsersCanCreateGroups());
+
+        // The key is true for "allowing group creation" and the checkbox displays "allowing moderation". Since
+        // these are opposites, the value needs to be reversed when the form gets submitted.
+        groupCreationPolicy.setReverseValue(true);
+
+        groupCreationPolicy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgGroupPolicy());
+        form.addFormElement(groupCreationPolicy);
         form.addFormDivider();
 
         if (!tosElement.isChecked())
