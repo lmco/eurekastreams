@@ -123,7 +123,7 @@
 				gadgets.io.makeRequest(url,
 					function(results)
 					{
-						console.dir(results);
+						//console.dir(results);
 						if(results.errors && results.errors.length > 0)
 						{
 							resultsArea.className = 'error';
@@ -132,7 +132,6 @@
 						else
 						{
 							resultsArea.value = results.text;
-//							console.dir(results);
 						}
 						resultsTimeField.innerHTML = new Date().toString();
 					}, params);
