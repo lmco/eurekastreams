@@ -15,12 +15,12 @@
  */
 package org.eurekastreams.web.client.ui.pages.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.action.request.stream.PostActivityRequest;
-import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -28,49 +28,39 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
+import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
-import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
-import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
-import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
-import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
-import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
-import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
-import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.UListElement;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.CssResource;
@@ -80,7 +70,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -95,8 +84,6 @@ public class ActivityContent extends Composite
     interface ActivityStyle extends CssResource
     {
         String activeSort();
-
-        String visiblePostBox();
     }
 
     @UiField
@@ -128,12 +115,6 @@ public class ActivityContent extends Composite
     HTMLPanel streamAvatar;
 
     @UiField
-    HTMLPanel posterAvatar;
-
-    @UiField
-    DivElement postPanel;
-
-    @UiField
     DivElement streamDescription;
 
     @UiField
@@ -143,10 +124,10 @@ public class ActivityContent extends Composite
     DivElement streamHashtags;
 
     @UiField
-    ExtendedTextArea postBox;
+    Anchor recentSort;
 
     @UiField
-    Anchor recentSort;
+    HTMLPanel streamConnections;
 
     @UiField
     Anchor popularSort;
@@ -156,6 +137,9 @@ public class ActivityContent extends Composite
 
     @UiField
     Anchor toggleDetails;
+
+    @UiField
+    HTMLPanel streamAbout;
 
     @UiField
     SpanElement followerCount;
@@ -170,35 +154,26 @@ public class ActivityContent extends Composite
     HTMLPanel analyticsChartContainer;
 
     @UiField
-    DivElement postOptions;
+    Anchor aboutLink;
 
     @UiField
-    Label postButton;
-
-    @UiField
-    DivElement postCharCount;
-
-    private static final Integer POST_MAX = 250;
+    Anchor followersLink;
 
     private ExpandCollapseAnimation detailsContainerAnimation;
-
-    private ExpandCollapseAnimation postBoxAnimation;
-
-    StreamScope currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
-            .getAccountId());
-
-    /** Activity Populator. */
-    private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
 
     /**
      * Message Renderer.
      */
     StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
 
+    private long longNewestActivityId = 0L;
+
     /**
-     * Avatar Widget.
+     * Avatar Renderer.
      */
     private AvatarRenderer avatarRenderer = new AvatarRenderer();
+
+    private JSONObject currentRequestObj = null;
 
     /**
      * Default constructor.
@@ -215,9 +190,27 @@ public class ActivityContent extends Composite
     private void buildPage()
     {
         detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, 330, 500);
-        postBoxAnimation = new ExpandCollapseAnimation(postBox.getElement(), 250, 100);
         final StreamAnalyticsChart chart = new StreamAnalyticsChart();
 
+        addEventHandlers();
+
+        defaultList.appendChild(createLI("Following", "/following"));
+        defaultList.appendChild(createLI("Everyone", "/everyone"));
+
+        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getPreferredName(), "/person/"
+                + Session.getInstance().getCurrentPerson().getAccountId()));
+
+        streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
+
+        CustomStreamModel.getInstance().fetch(null, true);
+
+        analyticsChartContainer.add(chart);
+        chart.update();
+        streamConnections.setVisible(false);
+    }
+
+    private void addEventHandlers()
+    {
         toggleDetails.addClickHandler(new ClickHandler()
         {
             public void onClick(ClickEvent event)
@@ -230,14 +223,29 @@ public class ActivityContent extends Composite
         {
             public void update(final GotStreamResponseEvent event)
             {
-                PagedSet<ActivityDTO> activitySet = event.getStream();
-                streamPanel.clear();
+                final PagedSet<ActivityDTO> activitySet = event.getStream();
 
-                for (ActivityDTO activity : activitySet.getPagedSet())
+                if (activitySet.getPagedSet().size() > 0)
                 {
-                    streamPanel.add(renderer.render(activity));
+                    longNewestActivityId = activitySet.getPagedSet().get(0).getEntityId();
                 }
 
+                if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("minId"))
+                {
+                    for (int i = activitySet.getPagedSet().size(); i > 0; i--)
+                    {
+                        appendActivity(activitySet.getPagedSet().get(i - 1));
+                    }
+                }
+                else
+                {
+                    streamPanel.clear();
+
+                    for (ActivityDTO activity : activitySet.getPagedSet())
+                    {
+                        streamPanel.add(renderer.render(activity));
+                    }
+                }
             }
         });
 
@@ -249,9 +257,9 @@ public class ActivityContent extends Composite
                         for (StreamFilter filter : event.getResponse().getStreamFilters())
                         {
 
-                            filterList.appendChild(createLI(filter.getName(), "?stream=custom&id="
+                            filterList.appendChild(createLI(filter.getName(), "/custom/"
                                     + filter.getId()
-                                    + "&request="
+                                    + "/"
                                     + URL.encodeQueryString(filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
                                             Session.getInstance().getCurrentPerson().getAccountId()))));
                         }
@@ -263,19 +271,51 @@ public class ActivityContent extends Composite
                 {
                     public void update(UpdatedHistoryParametersEvent event)
                     {
-                        loadStream(event.getParameters());
-                        HashMap<String, String> params = new HashMap<String, String>(event.getParameters());
-
-                        params.put("sort", "date");
-                        recentSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params)));
-
-                        params.put("sort", "interesting");
-                        popularSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params)));
-
-                        params.put("sort", "commentdate");
-                        activeSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params)));
+                        if (event.getParameters().containsKey("details"))
+                        {
+                            streamConnections.setVisible("connections".equals(event.getParameters().get("details")));
+                            streamAbout.setVisible("about".equals(event.getParameters().get("details")));
+                        }
                     }
-                }, true);
+                });
+
+        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
+        {
+            public void update(HistoryViewsChangedEvent event)
+            {
+                loadStream(event.getViews());
+                List<String> views = new ArrayList<String>(event.getViews());
+
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("details", "about");
+                aboutLink.setHref("#"
+                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY_NEW, views, params)));
+
+                params.put("details", "connections");
+                followersLink.setHref("#"
+                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY_NEW, views, params)));
+
+                
+                if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
+                {
+                    views.add("sort");
+                    views.add("recent");
+                }
+              
+                views.set(views.size() - 1, "recent");
+                recentSort.setHref("#"
+                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY_NEW, views)));
+
+                views.set(views.size() - 1, "popular");
+                popularSort.setHref("#"
+                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY_NEW, views)));
+
+                views.set(views.size() - 1, "active");
+                activeSort.setHref("#"
+                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY_NEW, views)));
+                
+            }
+        }, true);
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
@@ -299,6 +339,9 @@ public class ActivityContent extends Composite
                         }
                         streamInterests.setInnerHTML(interestString);
                         streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
+
+                        streamConnections.clear();
+                        streamConnections.add(GetPersonFollowingTab.getFollowingTab(person));
                     }
                 });
 
@@ -306,148 +349,110 @@ public class ActivityContent extends Composite
         {
             public void update(MessageStreamAppendEvent event)
             {
-                Panel newActivity = renderer.render(event.getMessage());
-                newActivity.setVisible(false);
-                streamPanel.insert(newActivity, 0);
-                EffectsFacade.nativeFadeIn(newActivity.getElement(), true);
+                longNewestActivityId = event.getMessage().getId();
+                appendActivity(event.getMessage());
+
             }
         });
 
-        postBox.addKeyUpHandler(new KeyUpHandler()
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
-            public void onKeyUp(KeyUpEvent event)
+            public boolean execute()
             {
-                checkPostBox();
+                if (null != currentRequestObj
+                        && "date".equals(currentRequestObj.get("query").isObject().get("sortBy").isString()
+                                .stringValue()))
+                {
+                    if (Document.get().getScrollTop() < streamDetailsContainer.getAbsoluteTop())
+                    {
+                        JSONObject newItemsRequest = StreamJsonRequestFactory.setMinId(longNewestActivityId,
+                                StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
+
+                        StreamModel.getInstance().fetch(newItemsRequest.toString(), false);
+                    }
+                }
+
+                return Session.getInstance().getUrlPage().equals(Page.ACTIVITY_NEW);
             }
-        });
+        }, 30000);
 
-        postBox.addChangeHandler(new ChangeHandler()
-        {
-
-            public void onChange(ChangeEvent event)
-            {
-                checkPostBox();
-            }
-        });
-
-        postBox.addFocusHandler(new FocusHandler()
-        {
-            public void onFocus(FocusEvent event)
-            {
-                postOptions.addClassName(style.visiblePostBox());
-            }
-        });
-
-        postButton.addClickHandler(new ClickHandler()
-        {
-            public void onClick(ClickEvent event)
-            {
-                Attachment attachment = null;
-                ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                        : new NotePopulator();
-
-                ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(), DomainConversionUtility
-                        .convertToEntityType(currentStream.getScopeType()), currentStream.getUniqueKey(),
-                        new PostPopulator(), objectStrat);
-                PostActivityRequest postRequest = new PostActivityRequest(activity);
-
-                ActivityModel.getInstance().insert(postRequest);
-            }
-        });
-
-        defaultList.appendChild(createLI("Following", ""));
-        defaultList.appendChild(createLI("Everyone", "?stream=everyone"));
-
-        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getPreferredName(),
-                "?stream=person&uniqueid=" + Session.getInstance().getCurrentPerson().getAccountId()));
-
-        posterAvatar.add(avatarRenderer.render(Session.getInstance().getCurrentPerson().getEntityId(), Session
-                .getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.Small));
-
-        streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
-
-        CustomStreamModel.getInstance().fetch(null, true);
-
-        analyticsChartContainer.add(chart);
-        chart.update();
-
-        postCharCount.setInnerText(POST_MAX.toString());
     }
 
-    protected void checkPostBox()
+    private void appendActivity(ActivityDTO message)
     {
-        if (postBox.getElement().getClientHeight() != postBox.getElement().getScrollHeight())
-        {
-            postBoxAnimation.expand(postBox.getElement().getScrollHeight());
-        }
-
-        postCharCount.setInnerText(Integer.toString(POST_MAX - postBox.getText().length()));
+        Panel newActivity = renderer.render(message);
+        newActivity.setVisible(false);
+        streamPanel.insert(newActivity, 0);
+        EffectsFacade.nativeFadeIn(newActivity.getElement(), true);
     }
 
-    private void loadStream(final HashMap<String, String> params)
+    private void loadStream(final List<String> views)
     {
         Session.getInstance().getActionProcessor().setQueueRequests(true);
-        JSONObject jsonObj = StreamJsonRequestFactory.getEmptyRequest();
-        currentStream.setScopeType(ScopeType.PERSON);
-        currentStream.setUniqueKey(Session.getInstance().getCurrentPerson().getAccountId());
+        currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
+        StreamScope currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
+                .getAccountId());
 
-        if (params == null || params.size() == 0)
+        if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
-            jsonObj = StreamJsonRequestFactory.setSourceAsFollowing(jsonObj);
+            currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             streamName.setInnerHTML("Following");
-            postPanel.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         }
-        else if (params.get("stream").equals("person"))
+        else if (views.get(0).equals("person") && views.size() >= 2)
         {
-            String accountId = params.get("uniqueid");
-            jsonObj = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, accountId, jsonObj);
+            String accountId = views.get(1);
+            currentRequestObj = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, accountId, currentRequestObj);
             PersonalInformationModel.getInstance().fetch(accountId, false);
-            postPanel.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
         }
-        else if (params.get("stream").equals("custom"))
+        else if (views.get(0).equals("custom") && views.size() >= 3)
         {
-            jsonObj = StreamJsonRequestFactory.getJSONRequest(params.get("request"));
+            currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             streamName.setInnerHTML("Custom Stream");
-            postPanel.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+            currentStream.setScopeType(null);
         }
-        else if (params.get("stream").equals("everyone"))
+        else if (views.get(0).equals("everyone"))
         {
             streamName.setInnerHTML("Everyone");
-            postPanel.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         }
 
-        String sortBy = "date";
+        String sortBy = "recent";
 
-        if (params != null && params.containsKey("sort"))
+        if (views != null && views.size() >= 2 && "sort".equals(views.get(views.size() - 2)))
         {
-            sortBy = params.get("sort");
+            sortBy = views.get(views.size() - 1);
         }
-
-        jsonObj = StreamJsonRequestFactory.setSort(sortBy, jsonObj);
 
         recentSort.removeStyleName(style.activeSort());
         popularSort.removeStyleName(style.activeSort());
         activeSort.removeStyleName(style.activeSort());
 
-        if ("date".equals(sortBy))
+        String sortKeyword = "date";
+
+        if ("recent".equals(sortBy))
         {
             recentSort.addStyleName(style.activeSort());
+            sortKeyword = "date";
         }
-        else if ("interesting".equals(sortBy))
+        else if ("popular".equals(sortBy))
         {
             popularSort.addStyleName(style.activeSort());
+            sortKeyword = "interesting";
         }
-        else if ("commentdate".equals(sortBy))
+        else if ("active".equals(sortBy))
         {
             activeSort.addStyleName(style.activeSort());
+            sortKeyword = "commentdate";
         }
 
-        StreamModel.getInstance().fetch(jsonObj.toString(), false);
+        currentRequestObj = StreamJsonRequestFactory.setSort(sortKeyword, currentRequestObj);
+
+        StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
 
         Session.getInstance().getActionProcessor().fireQueuedRequests();
         Session.getInstance().getActionProcessor().setQueueRequests(false);
+        EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
     }
 
     private LIElement createLI(final String name, final String view)

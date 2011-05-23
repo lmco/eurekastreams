@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PreSwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.PreventHistoryChangeEvent;
@@ -34,6 +36,7 @@ import org.eurekastreams.web.client.ui.Session;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 
 /**
  * The HistoryHandler should be the ONLY history listener in the entire app. It should listen for history change events
@@ -170,8 +173,13 @@ public class HistoryHandler implements ValueChangeHandler<String>
                 viewUpdated = true;
             }
 
+            if (viewUpdated)
+            {
+                EventBus.getInstance().notifyObservers(new HistoryViewsChangedEvent(views));
+            }
+
             // The view has updated.
-            if (viewUpdated || originalPage != page)
+            if (originalPage != page)
             {
                 // Let developers know we're about to switch the view. Prep for it if necessary. If you want us
                 // to stop, throw a PreventHistoryChangeEvent and we'll set the boolean to stop it from going.

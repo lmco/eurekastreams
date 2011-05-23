@@ -1880,7 +1880,6 @@
                     <ref bean="canCommentFilter" />
                     <ref bean="canShareFilter" />
                     <ref bean="likeFilter" />
-                    <ref bean="deleteFilter" />
                     <ref bean="savedFilter" />
                     <ref bean="authorLockedFilter" />
                     <ref bean="serverTimeFilter" />

@@ -3618,12 +3618,6 @@ body .options>li>.option-title:hover {
 		0px;
 }
 
-.connection-master {
-	background-color: white;
-	border: 1px solid #bbbbbb;
-	padding: 0px 10px 14px;
-	zoom: 1;
-}
 
 .connection-master .pager-container {
 	width: auto;
