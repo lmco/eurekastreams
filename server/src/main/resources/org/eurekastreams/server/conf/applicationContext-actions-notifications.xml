@@ -101,6 +101,14 @@
                 <constructor-arg ref="getSystemAdministratorIds" />
             </bean>
         </entry>
+        <entry key="REQUEST_NEW_GROUP_APPROVED">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PendingGroupApprovedTranslator">
+                <constructor-arg ref="getGroupByIdMapper" />
+            </bean>
+        </entry>
+        <entry key="REQUEST_NEW_GROUP_DENIED">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PendingGroupDeniedTranslator" />
+        </entry>
         <entry key="REQUEST_GROUP_ACCESS">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestGroupAccessTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
@@ -156,6 +164,11 @@
 	<!-- Apache Velocity beans -->
 
 	<bean id="velocityEngine" class="org.apache.velocity.app.VelocityEngine" init-method="init">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.service.utility.ResourcePropertyFileLoaderFactoryBean">
+				<constructor-arg value="classpath:conf/velocity.properties" />
+			</bean>
+		</constructor-arg>
 	</bean>
 
 	<bean id="velocityGlobalContext" class="org.apache.velocity.VelocityContext">
