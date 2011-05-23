@@ -18,6 +18,8 @@ package org.eurekastreams.web.client.ui.pages.settings;
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.Pager;
+import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -81,7 +83,12 @@ public class SettingsContent extends Composite
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             tabContainer.addTab(new SimpleTab("System", systemPanel));
-            tabContainer.addTab(new SimpleTab("Plugins", new StreamPluginsPanel()));
+
+            SimpleTab pluginsTab = new SimpleTab("Plugins", new StreamPluginsPanel());
+            pluginsTab.setParamsToClear(PagedListPanel.URL_PARAM_LIST_ID, PagedListPanel.URL_PARAM_FILTER,
+                    PagedListPanel.URL_PARAM_SORT, Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
+
+            tabContainer.addTab(pluginsTab);
             tabContainer.addTab(new PendingGroupsAndFlaggedActivitiesPanelComposite("Pending"));
         }
 
