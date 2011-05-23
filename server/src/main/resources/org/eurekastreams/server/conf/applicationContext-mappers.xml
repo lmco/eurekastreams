@@ -1018,6 +1018,12 @@
         <property name="cache" ref="memcachedCache" />
     </bean>        
 
+	<!-- Mapper to get a group by id, throwing exception when not found -->
+	<bean id="getGroupByIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getGroupsByIdsMapper" />
+		<constructor-arg value="true" />
+	</bean>
+	
 	<!-- Mapper to get a group by id, returning null when not found -->
 	<bean id="getGroupByIdMapperAllowNullResult" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getGroupsByIdsMapper" />

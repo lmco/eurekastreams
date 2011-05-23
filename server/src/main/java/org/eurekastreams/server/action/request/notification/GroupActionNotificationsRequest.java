@@ -21,7 +21,7 @@ package org.eurekastreams.server.action.request.notification;
 public class GroupActionNotificationsRequest extends CreateNotificationsRequest
 {
     /** Group acted on. */
-    private long groupId;
+    private final long groupId;
 
     /**
      * Constructor.
@@ -36,6 +36,7 @@ public class GroupActionNotificationsRequest extends CreateNotificationsRequest
     public GroupActionNotificationsRequest(final RequestType inType, final long inActorId, final long inGroupId)
     {
         super(inType, inActorId, 0L, 0L);
+        groupId = inGroupId;
     }
 
     /**
