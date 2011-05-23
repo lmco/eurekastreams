@@ -53,12 +53,16 @@ public class GroupFollowerTranslator implements NotificationTranslator
     @Override
     public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
+        // TODO: When a user is added as a group coordinator, they are also added as a group member. Probably should
+        // filter out these notifications.
+
         List<Long> coordinatorIds = coordinatorMapper.execute(inRequest.getDestinationId());
         if (coordinatorIds.contains(inRequest.getActorId()))
         {
-            // Don't sent notification to the actor (if a group coordinator follows their own group).
+            // Don't send notification to the actor (if a group coordinator follows their own group).
             // Clone the list, since the mapper contract doesn't specify if the caller owns the list and thus can alter
             // it, or whether it belongs to the mapper.
+            // TODO: revisit the cloning - would be more efficient to alter the list
             coordinatorIds = new ArrayList<Long>(coordinatorIds);
             coordinatorIds.remove(inRequest.getActorId());
         }

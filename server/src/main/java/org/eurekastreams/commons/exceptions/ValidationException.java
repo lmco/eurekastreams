@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class ValidationException extends RuntimeException
 
     /**
      * Constructs new ValidationException with specified detailed message.
-     * 
+     *
      * @param message
      *            Detailed message.
      */
@@ -54,7 +54,7 @@ public class ValidationException extends RuntimeException
     }
 
     /**
-     * 
+     *
      * @return errors found in validation.
      */
     public Map<String, String> getErrors()
@@ -63,7 +63,7 @@ public class ValidationException extends RuntimeException
     }
 
     /**
-     * 
+     *
      * @param map
      *            errors to set.
      */
@@ -73,7 +73,7 @@ public class ValidationException extends RuntimeException
     }
 
     /**
-     * 
+     *
      * @param property
      *            that had the error.
      * @param message
@@ -84,4 +84,11 @@ public class ValidationException extends RuntimeException
         errors.put(property, message);
     }
 
+    /**
+     * @return If any errors have been added to the exception.
+     */
+    public boolean hasErrors()
+    {
+        return errors != null && !errors.isEmpty();
+    }
 }
