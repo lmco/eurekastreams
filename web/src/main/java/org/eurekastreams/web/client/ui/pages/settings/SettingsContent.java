@@ -82,6 +82,7 @@ public class SettingsContent extends Composite
         {
             tabContainer.addTab(new SimpleTab("System", systemPanel));
             tabContainer.addTab(new SimpleTab("Plugins", new StreamPluginsPanel()));
+            tabContainer.addTab(new PendingGroupsAndFlaggedActivitiesPanelComposite("Pending"));
         }
 
         tabContainer.addTab(new SimpleTab("Notifications", personalPanel));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.service.opensocial.oauth;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -27,7 +27,6 @@ import org.junit.Test;
 
 /**
  * This class will test the Eureka Streams OAuth Realm.
- *
  */
 public class SocialRealmTest
 {
@@ -49,12 +48,12 @@ public class SocialRealmTest
     /**
      * Mocked collection for testing.
      */
-    private PrincipalCollection testPrincCollection = context.mock(PrincipalCollection.class);
+    private final PrincipalCollection testPrincCollection = context.mock(PrincipalCollection.class);
     
     /**
      * Mocked token for testing.
      */
-    private AuthenticationToken testAuthToken = context.mock(AuthenticationToken.class);
+    private final AuthenticationToken testAuthToken = context.mock(AuthenticationToken.class);
     
     /**
      * Setup the system under test.

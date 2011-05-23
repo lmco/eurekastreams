@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ package org.eurekastreams.server.domain.stream;
 import java.io.Serializable;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Identifiable;
 
 /**
  * Represents an entity that can be an actor of an activity.
  */
-public class StreamEntityDTO implements Serializable
+public class StreamEntityDTO implements Serializable, Identifiable
 {
     /**
      * Serial version id.
@@ -132,6 +133,7 @@ public class StreamEntityDTO implements Serializable
     /**
      * @return the displayName
      */
+    @Override
     public String getDisplayName()
     {
         return displayName;
@@ -145,10 +147,10 @@ public class StreamEntityDTO implements Serializable
     {
         displayName = inDisplayName;
     }
-    
+
     /**
      * Get the destination/recipient entity's id.
-     * 
+     *
      * @return the destination/recipient entity's id.
      */
     public Long getDestinationEntityId()
@@ -162,6 +164,33 @@ public class StreamEntityDTO implements Serializable
      */
     public void setDestinationEntityId(final Long inDestinationEntityId)
     {
-        this.destinationEntityId = inDestinationEntityId;
+        destinationEntityId = inDestinationEntityId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getUniqueId()
+    {
+        return uniqueIdentifier;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EntityType getEntityType()
+    {
+        return type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getEntityId()
+    {
+        return destinationEntityId;
     }
 }

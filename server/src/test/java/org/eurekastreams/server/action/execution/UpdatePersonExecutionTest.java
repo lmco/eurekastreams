@@ -28,6 +28,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -140,6 +141,7 @@ public class UpdatePersonExecutionTest
     public void testExecuteWithSkills()
     {
         fields.put("skills", "stuff, things");
+        fields.put("isAdministrator", true); // make sure this is pulled out
 
         context.checking(new Expectations()
         {
@@ -163,7 +165,7 @@ public class UpdatePersonExecutionTest
 
         sut.execute(taskHandlerActionContextMock);
         context.assertIsSatisfied();
-
+        Assert.assertFalse(fields.containsKey("isAdministrator"));
     }
 
     /**

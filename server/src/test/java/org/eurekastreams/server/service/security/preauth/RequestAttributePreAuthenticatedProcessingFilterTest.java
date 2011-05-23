@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,21 @@
  */
 package org.eurekastreams.server.service.security.preauth;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.security.ui.FilterChainOrder;
 import org.springframework.security.ui.preauth.PreAuthenticatedCredentialsNotFoundException;
 
 /**
  * Tests for RequestAttributePreAutenticatedProcessingFilter class.
- *
  */
 public class RequestAttributePreAuthenticatedProcessingFilterTest
 {
@@ -126,7 +125,7 @@ public class RequestAttributePreAuthenticatedProcessingFilterTest
     	// assert the Object is a String
     	assertTrue(principal instanceof String);
     	// assert the Object is equal to the expected value
-    	assertEquals(PRINCIPALNAME, (String) principal);
+    	assertEquals(PRINCIPALNAME, principal);
         context.assertIsSatisfied();
     }
     
@@ -156,7 +155,7 @@ public class RequestAttributePreAuthenticatedProcessingFilterTest
     	// assert the Object is a String
     	assertTrue(principal instanceof String);
     	// assert the Object is equal to the expected value
-    	assertEquals(PRINCIPALNAME, (String) principal);  
+    	assertEquals(PRINCIPALNAME, principal);  
         context.assertIsSatisfied();
     }
     
@@ -174,7 +173,7 @@ public class RequestAttributePreAuthenticatedProcessingFilterTest
     	// assert the Object is a String
     	assertTrue(credentials instanceof String);
     	// assert the Object is equal to the expected value
-    	assertEquals(CREDENTIALSDEFAULT, (String) credentials);    	 
+    	assertEquals(CREDENTIALSDEFAULT, credentials);    	 
     }
     
     /**
@@ -227,7 +226,7 @@ public class RequestAttributePreAuthenticatedProcessingFilterTest
     	// assert the Object is a String
     	assertTrue(credentials instanceof String);
     	// assert the Object is equal to the expected value
-    	assertEquals(CREDENTIALSNONDEFAULT, (String) credentials);  
+    	assertEquals(CREDENTIALSNONDEFAULT, credentials);  
         context.assertIsSatisfied();
     }    
 }

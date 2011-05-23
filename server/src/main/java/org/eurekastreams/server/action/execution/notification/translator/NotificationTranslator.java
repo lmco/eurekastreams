@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,23 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.Collection;
-
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 
 /**
  * Interface for strategies which convert a notification request into a list of notifications to send.
+ *
+ * @param <T>
+ *            Type of request translator uses.
  */
-public interface NotificationTranslator
+public interface NotificationTranslator<T extends CreateNotificationsRequest>
 {
     /**
      * Creates a list of notifications for the given event.
      * 
-     * @param actorId
-     *            ID of the entity (person) who performed the action which the notification is about.
-     * @param destinationId
-     *            ID of the entity (person or group) upon whom or upon whose stream that the action acted.
-     * @param activityId
-     *            ID of the activity the event pertained to.
-     * @return List of notifications.
+     * @param request
+     *            The request containing information about the event that occurred.
+     * @return Notification batch (includes notification types, recipients, and properties).
      */
-    Collection<NotificationDTO> translate(final long actorId, final long destinationId, final long activityId);
+    NotificationBatch translate(T request);
 }

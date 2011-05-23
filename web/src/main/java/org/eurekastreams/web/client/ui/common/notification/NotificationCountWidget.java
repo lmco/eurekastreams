@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.notification;
 
-import org.eurekastreams.web.client.events.NotificationCountAvailableEvent;
+import org.eurekastreams.web.client.events.NotificationCountsAvailableEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.model.NotificationCountModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -57,14 +57,16 @@ public class NotificationCountWidget extends Composite
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(NotificationCountAvailableEvent.class,
-                new Observer<NotificationCountAvailableEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(NotificationCountsAvailableEvent.class, new Observer<NotificationCountsAvailableEvent>()
                 {
-                    public void update(final NotificationCountAvailableEvent ev)
+                    public void update(final NotificationCountsAvailableEvent ev)
                     {
-                        if (ev.getCount() > 0)
+                        int total = ev.getNormalCount() + ev.getHighPriorityCount();
+                        if (total > 0)
                         {
-                            countLabel.setText(Integer.toString(ev.getCount()));
+                            String text = (ev.getHighPriorityCount() > 0 ? total + "!" : Integer.toString(total));
+                            countLabel.setText(text);
                             countLabel.addStyleName(UNREAD_STYLE);
                         }
                         else
@@ -81,8 +83,8 @@ public class NotificationCountWidget extends Composite
      */
     public void init()
     {
-        Session.getInstance().getTimer().addTimerJob("getNotificationCountTimerJob", 1,
-                NotificationCountModel.getInstance(), null, true);
+        Session.getInstance().getTimer()
+                .addTimerJob("getNotificationCountTimerJob", 1, NotificationCountModel.getInstance(), null, true);
 
         NotificationCountModel.getInstance().fetch(null, true);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.commons.actions.context;
 /**
  * This class creates a specification of the {@link ActionContext} that includes retrieving
  * the {@link Principal} object.
- *
  */
 public interface PrincipalActionContext extends ActionContext
 {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,5 +75,8 @@ public enum NotificationType
     REQUEST_GROUP_ACCESS_APPROVED,
 
     /** A coordinator denied access to a private group. */
-    REQUEST_GROUP_ACCESS_DENIED
+    REQUEST_GROUP_ACCESS_DENIED,
+
+    /** Relaying a message that was already built outside the notification engine. */
+    PASS_THROUGH
 }

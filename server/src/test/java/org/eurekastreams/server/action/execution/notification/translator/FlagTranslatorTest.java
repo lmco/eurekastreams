@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -41,7 +43,7 @@ import org.junit.Test;
 public class FlagTranslatorTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -49,10 +51,10 @@ public class FlagTranslatorTest
     };
 
     /** Fixture: mapper. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class);
 
     /** Fixture: mapper. */
-    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
             "systemAdminIdsMapper");
 
     /** SUT. */
@@ -79,8 +81,7 @@ public class FlagTranslatorTest
         final ActivityDTO activity = new ActivityDTO();
         activity.setDestinationStream(stream);
 
-        final List<Long> admins = new ArrayList<Long>();
-        admins.add(5L);
+        final List<Long> admins = Arrays.asList(7L, 5L);
         context.checking(new Expectations()
         {
             {
@@ -91,11 +92,19 @@ public class FlagTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(1L, 0L, 3L);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, 3L);
+        NotificationBatch results = sut.translate(request);
+
         context.assertIsSatisfied();
 
-        assertEquals(1, results.size());
-        NotificationDTO notif = results.iterator().next();
-        assertEquals((Long) 5L, notif.getRecipientIds().get(0));
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_PERSONAL_ACTIVITY, admins);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        PropertyMapTestHelper.assertValue(props, "activity", activity);
     }
 }

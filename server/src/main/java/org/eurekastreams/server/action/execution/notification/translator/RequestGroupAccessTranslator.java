@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,28 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone requesting access to a private group to appropriate notifications.
  */
-public class RequestGroupAccessTranslator implements NotificationTranslator
+public class RequestGroupAccessTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /**
      * Mapper to get group coordinator ids.
      */
-    private DomainMapper<Long, List<Long>> coordinatorMapper;
+    private final DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
      */
@@ -49,14 +49,16 @@ public class RequestGroupAccessTranslator implements NotificationTranslator
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
-        List<Long> coordinatorIds = coordinatorMapper.execute(inDestinationId);
+        List<Long> coordinatorIds = coordinatorMapper.execute(inRequest.getDestinationId());
         // actor cannot be a recipient - if they were a group coordinator, they wouldn't and couldn't be asking for
         // access, hence we don't need to filter
 
-        return (Collections.singletonList(new NotificationDTO(coordinatorIds, NotificationType.REQUEST_GROUP_ACCESS,
-                inActorId, inDestinationId, EntityType.GROUP, 0L)));
+        NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_GROUP_ACCESS, coordinatorIds);
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("group", DomainGroupModelView.class, inRequest.getDestinationId());
+        // TODO: add appropriate properties
+        return batch;
     }
 }

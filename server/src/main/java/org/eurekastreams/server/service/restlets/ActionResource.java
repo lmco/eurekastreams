@@ -31,8 +31,9 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.eurekastreams.commons.actions.context.ClientPrincipalActionContextImpl;
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -61,6 +62,9 @@ public class ActionResource extends SmpResource
 
     /** Principal populators. */
     private final List<Transformer<Request, Principal>> principalExtractors;
+
+    /** Client populators. */
+    private final List<Transformer<Request, String>> clientExtractors;
 
     /** JSON Factory for building JSON Generators. */
     private final JsonFactory jsonFactory;
@@ -91,14 +95,18 @@ public class ActionResource extends SmpResource
      */
     private String paramsJSON;
 
+    /** ID of client submitting the request. */
+    private String clientUniqueId;
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inServiceActionController
      *            the action controller.
      * @param inPrincipalExtractors
      *            the principal extractors.
+     * @param inClientExtractors
+     *            Strategies to extract the client.
      * @param inJsonFactory
      *            the json factory.
      * @param inApplicationContextHolder
@@ -107,11 +115,13 @@ public class ActionResource extends SmpResource
      *            Only allow read-only actions.
      */
     public ActionResource(final ActionController inServiceActionController,
-            final List<Transformer<Request, Principal>> inPrincipalExtractors, final JsonFactory inJsonFactory,
+            final List<Transformer<Request, Principal>> inPrincipalExtractors,
+            final List<Transformer<Request, String>> inClientExtractors, final JsonFactory inJsonFactory,
             final ApplicationContextHolder inApplicationContextHolder, final boolean inReadOnly)
     {
         serviceActionController = inServiceActionController;
         principalExtractors = inPrincipalExtractors;
+        clientExtractors = inClientExtractors;
         jsonFactory = inJsonFactory;
         applicationContextHolder = inApplicationContextHolder;
         readOnly = inReadOnly;
@@ -127,6 +137,7 @@ public class ActionResource extends SmpResource
     protected void initParams(final Request request)
     {
         principal = getPrincipal(request);
+        clientUniqueId = getClient(request);
         Assert.notNull(principal, "Principal object cannot be null.");
         actionKey = (String) request.getAttributes().get("action");
         requestType = (String) request.getAttributes().get("requestType");
@@ -164,7 +175,8 @@ public class ActionResource extends SmpResource
             Serializable actionParameter = getRequestObject();
 
             // create ServiceActionContext.
-            ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principal);
+            PrincipalActionContext actionContext = new ClientPrincipalActionContextImpl(actionParameter, principal,
+                    clientUniqueId);
             actionContext.setActionId(actionKey);
 
             log.debug("executing action: " + actionKey + " for user: " + principal.getAccountId());
@@ -219,6 +231,26 @@ public class ActionResource extends SmpResource
         for (Transformer<Request, Principal> extractor : principalExtractors)
         {
             Principal result = extractor.transform(inRequest);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the client used for the request (if available).
+     *
+     * @param inRequest
+     *            Request to get client from.
+     * @return Client for the current request.
+     */
+    private String getClient(final Request inRequest)
+    {
+        for (Transformer<Request, String> extractor : clientExtractors)
+        {
+            String result = extractor.transform(inRequest);
             if (result != null)
             {
                 return result;

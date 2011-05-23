@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="API Test" thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" author="Eureka Streams"
+        description="Allows developers and integrators to invoke methods in the programmatic API.  Do not add this to the gallery in a production environment." author_email="support@eurekastreams.org">
+        <Require feature="opensocial-0.9" />
+        <Require feature="osapi" />
+        <Require feature="views" />
+        <Require feature="dynamic-height" />
+        <Require feature="opensocial-data"/>
+        <Require feature="opensocial-data-context"/>
+        <Require feature="settitle" />
+        <Require feature="eurekastreams-core" />
+        <Require feature="xmlutil"/>
+        <Optional feature="content-rewrite">
+                        <Param name="expires">1</Param>
+                        <Param name="include-url"></Param>
+                        <Param name="minify-css">true</Param>
+                        <Param name="minify-js">true</Param>
+                        <Param name="minify-html">true</Param>
+        </Optional>
+    </ModulePrefs>
+	<UserPref name="apiVersion" datatype="string" default_value="0" />
+	<UserPref name="defaultApi" datatype="string" default_value="" />
+	<UserPref name="defaultParameters" datatype="string" default_value="" />
+	
+    <Content type="html" view="default, canvas">
+    <![CDATA[
+        <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" " http://www.w3.org/ TR/html4/strict.dtd">
+		<!-- link rel="stylesheet" type="text/css" href="${build.web.baseurl}/style/eureka-apps.css" / -->
+        <style type="text/css">
+
+		body
+		{
+			padding: 10px;
+			margin: 0px;
+		}
+		
+		textarea
+		{
+			width: 100%;
+			padding: 0px;
+			border: none;
+		}
+
+		.textareawrapper
+		{
+			border:1px solid #BBB;
+			padding:5px;
+		}
+		
+        .error
+        {
+            color: red;
+        }
+		
+        </style>
+        <!--script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js" ></script>
+        <script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js" ></script-->
+
+        <!--script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
+            <os:ViewerRequest key="databindviewer"/>
+        </script-->
+
+		<div>API: <input id="actionname"></input></div>
+		Params: 
+		<div class="textareawrapper"><textarea id="requestparams"></textarea></div>
+		<div>
+			<button onclick="callApi('full'); return false;">Full</button>
+			<button onclick="callApi('read'); return false;">Read</button>
+		</div>
+		<div>Results:</div>
+		<div class="textareawrapper"><textarea id="results" readonly="readonly"></textarea></div>
+		<div id="resulttime">&nbsp;</div>
+		
+        <script type="text/javascript">
+		
+		var prefs = new gadgets.Prefs();
+		var baseApiUrl = '${build.web.baseurl}/api/' + prefs.getString("apiVersion") + '/';
+		var actionNameEntry = document.getElementById('actionname');
+		var paramsEntry = document.getElementById('requestparams');
+		var resultsArea = document.getElementById('results');
+		var resultsTimeField = document.getElementById('resulttime');
+		
+		var pref = prefs.getString('defaultApi');
+		if (pref)
+			actionNameEntry.value = pref;
+		pref = prefs.getString('defaultParameters');
+		if (pref)
+			paramsEntry.value = pref;
+
+			
+		function callApi(endpoint)
+		{
+			resultsArea.value = '';
+			resultsTimeField.text = 'Requesting...';
+			resultsArea.className = '';
+			
+			try
+			{
+				var action = actionNameEntry.value;
+				var request = paramsEntry.value;
+				
+				var paramString;
+				if (request.charAt(0) == '%')
+					paramString = request;
+				else
+				{
+					if (request.charAt(0) != '{')
+						request = '"' + request + '"';
+					paramString = encodeURIComponent('{"request":' + request + '}');
+				}
+				
+				var url = baseApiUrl + endpoint + '/' + action + '/' + paramString;
+				
+				var params={};
+				params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+				params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+				params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+				params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
+				params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekastreams";
+				params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+
+				gadgets.io.makeRequest(url,
+					function(results)
+					{
+						//console.dir(results);
+						if(results.errors && results.errors.length > 0)
+						{
+							resultsArea.className = 'error';
+							resultsArea.value = results.errors[0];
+						}
+						else
+						{
+							resultsArea.value = results.text;
+						}
+						resultsTimeField.innerHTML = new Date().toString();
+					}, params);
+			}
+			catch (err)
+			{
+				resultsArea.className = 'error';
+				resultsArea.value = err;
+				resultsTimeField.innerHTML = new Date().toString();
+			}
+		}	
+		
+		gadgets.util.registerOnLoadHandler(function(){ gadgets.window.adjustHeight(document.body.clientHeight); });
+		//gadgets.util.registerOnLoadHandler(function(){ console.log("gadgets.window.adjustHeight(" + document.body.height + ");"); });
+		//gadgets.util.registerOnLoadHandler(function(){ console.dir(document.body); });
+        </script>
+    ]]>
+    </Content>
+</Module>

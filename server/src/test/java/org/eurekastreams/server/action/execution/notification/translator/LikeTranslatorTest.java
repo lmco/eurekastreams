@@ -15,24 +15,25 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eurekastreams.commons.test.IsEqualInternally;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -122,15 +123,21 @@ public class LikeTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(1L, 0L, ACTIVITY_ID);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, ACTIVITY_ID);
+        NotificationBatch results = sut.translate(request);
+
         context.assertIsSatisfied();
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-        NotificationDTO notif = notifs.iterator().next();
-        NotificationDTO expected = new NotificationDTO(Collections.singletonList(AUTHOR_ID),
-                NotificationType.LIKE_ACTIVITY, 1L, ACTIVITY_STREAM_ID, EntityType.GROUP, ACTIVITY_ID);
-        assertTrue(IsEqualInternally.areEqualInternally(expected, notif));
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.LIKE_ACTIVITY, AUTHOR_ID);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(3, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, 1L);
+        PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
+        PropertyMapTestHelper.assertValue(props, "activity", activity);
     }
 
     /**
@@ -149,9 +156,11 @@ public class LikeTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(AUTHOR_ID, 0L, ACTIVITY_ID);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, AUTHOR_ID, 0L, ACTIVITY_ID);
+        NotificationBatch results = sut.translate(request);
+
         context.assertIsSatisfied();
-        assertTrue(notifs.isEmpty());
+        assertNull(results);
     }
 
     /**
@@ -170,10 +179,11 @@ public class LikeTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(1L, 0L, ACTIVITY_ID);
-        context.assertIsSatisfied();
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, ACTIVITY_ID);
+        NotificationBatch results = sut.translate(request);
 
-        assertTrue(notifs.isEmpty());
+        context.assertIsSatisfied();
+        assertNull(results);
     }
 
     /**
@@ -194,15 +204,20 @@ public class LikeTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(1L, 0L, ACTIVITY_ID);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, ACTIVITY_ID);
+        NotificationBatch results = sut.translate(request);
+
         context.assertIsSatisfied();
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-        NotificationDTO notif = notifs.iterator().next();
-        NotificationDTO expected = new NotificationDTO(Arrays.asList(AUTHOR_ID, ORIGINAL_AUTHOR_ID),
-                NotificationType.LIKE_ACTIVITY, 1L, ACTIVITY_STREAM_ID, EntityType.GROUP, ACTIVITY_ID);
-        assertTrue(IsEqualInternally.areEqualInternally(expected, notif));
-    }
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.LIKE_ACTIVITY, AUTHOR_ID, ORIGINAL_AUTHOR_ID);
 
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(3, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, 1L);
+        PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
+        PropertyMapTestHelper.assertValue(props, "activity", activity);
+    }
 }

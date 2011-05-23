@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,29 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.hamcrest.Matchers;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests the group follower notification translator.
- * 
+ *
  */
 public class GroupFollowerTranslatorTest
 {
@@ -67,7 +68,7 @@ public class GroupFollowerTranslatorTest
     };
 
     /** Mock coordinator mapper. */
-    private DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class);
 
     /**
      * Setup test.
@@ -97,22 +98,22 @@ public class GroupFollowerTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_FOLLOWED_ID, 0L);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_FOLLOWED_ID, 0L);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-        NotificationDTO notif = notifs.iterator().next();
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper
+                .assertRecipients(results, NotificationType.FOLLOW_GROUP, COORDINATOR1_ID, COORDINATOR3_ID);
 
-        Assert.assertEquals(NotificationType.FOLLOW_GROUP, notif.getType());
-        Assert.assertEquals(GROUP_FOLLOWED_ID, notif.getDestinationId());
-        Assert.assertEquals(EntityType.GROUP, notif.getDestinationType());
-        Assert.assertEquals(ACTOR_ID, notif.getActorId());
-        Assert.assertEquals(0L, notif.getActivityId());
-
-        Assert.assertEquals(2, notif.getRecipientIds().size());
-        assertTrue(Matchers.hasItems(COORDINATOR1_ID, COORDINATOR3_ID).matches(notif.getRecipientIds()));
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(3, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        PropertyMapTestHelper.assertPlaceholder(props, "stream", DomainGroupModelView.class, GROUP_FOLLOWED_ID);
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
     }
 
     /**
@@ -133,22 +134,21 @@ public class GroupFollowerTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_FOLLOWED_ID, 0L);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_FOLLOWED_ID, 0L);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-        NotificationDTO notif = notifs.iterator().next();
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper
+                .assertRecipients(results, NotificationType.FOLLOW_GROUP, COORDINATOR1_ID, COORDINATOR3_ID);
 
-        Assert.assertEquals(NotificationType.FOLLOW_GROUP, notif.getType());
-        Assert.assertEquals(GROUP_FOLLOWED_ID, notif.getDestinationId());
-        Assert.assertEquals(EntityType.GROUP, notif.getDestinationType());
-        Assert.assertEquals(ACTOR_ID, notif.getActorId());
-        Assert.assertEquals(0L, notif.getActivityId());
-
-        Assert.assertEquals(2, notif.getRecipientIds().size());
-        assertTrue(Matchers.hasItems(COORDINATOR1_ID, COORDINATOR3_ID).matches(notif.getRecipientIds()));
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(3, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        PropertyMapTestHelper.assertPlaceholder(props, "stream", DomainGroupModelView.class, GROUP_FOLLOWED_ID);
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
     }
-
 }

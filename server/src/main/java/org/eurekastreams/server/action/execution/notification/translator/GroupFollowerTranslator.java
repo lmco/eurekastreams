@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone beginning to follow a group stream to appropriate notifications.
@@ -33,11 +34,11 @@ public class GroupFollowerTranslator implements NotificationTranslator
     /**
      * Mapper to get group coordinator ids.
      */
-    private DomainMapper<Long, List<Long>> coordinatorMapper;
+    private final DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
      */
@@ -50,20 +51,23 @@ public class GroupFollowerTranslator implements NotificationTranslator
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
-        List<Long> coordinatorIds = coordinatorMapper.execute(inDestinationId);
-        if (coordinatorIds.contains(inActorId))
+        List<Long> coordinatorIds = coordinatorMapper.execute(inRequest.getDestinationId());
+        if (coordinatorIds.contains(inRequest.getActorId()))
         {
             // Don't sent notification to the actor (if a group coordinator follows their own group).
             // Clone the list, since the mapper contract doesn't specify if the caller owns the list and thus can alter
             // it, or whether it belongs to the mapper.
             coordinatorIds = new ArrayList<Long>(coordinatorIds);
-            coordinatorIds.remove(inActorId);
+            coordinatorIds.remove(inRequest.getActorId());
         }
 
-        return (Collections.singletonList(new NotificationDTO(coordinatorIds, NotificationType.FOLLOW_GROUP, inActorId,
-                inDestinationId, EntityType.GROUP, 0L)));
+        NotificationBatch batch = new NotificationBatch(NotificationType.FOLLOW_GROUP, coordinatorIds);
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("stream", DomainGroupModelView.class, inRequest.getDestinationId());
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+        // TODO: add appropriate properties
+        return batch;
     }
 }

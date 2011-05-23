@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-//TODO must be brought out into the feed reader project. 
+//TODO must be brought out into the feed reader project.
 
 /**
  * FeedReaderMapperTest class.
@@ -49,27 +49,27 @@ public class FeedReaderMapperTest
     /**
      * Instance ID.
      */
-    private long testId = 0;
+    private final long testId = 0;
 
     /**
      * OS ID.
      */
-    private String testOSId = "1234";
+    private final String testOSId = "1234";
 
     /**
      * module ID.
      */
-    private String testModuleId = "45";
+    private final String testModuleId = "45";
 
     /**
      * url ID.
      */
-    private String testUrl = "www.google.com";
+    private final String testUrl = "www.google.com";
 
     /**
      * test Date.
      */
-    private Date testDate = new Date(Long.parseLong("100000"));
+    private final Date testDate = new Date(Long.parseLong("100000"));
 
     /**
      * JpaBackgroundMapper - system under test.
@@ -80,7 +80,7 @@ public class FeedReaderMapperTest
     /**
      * new Feedreader object to create.
      */
-    private FeedReader newFeedReader = new FeedReader();
+    private final FeedReader newFeedReader = new FeedReader();
 
     /**
      * Set up the SUT.
@@ -132,7 +132,7 @@ public class FeedReaderMapperTest
 
     /**
      * Test to verify that data has been removed from the object and persisted to the db.
-     * 
+     *
      * @throws Exception
      *             when an exception is encountered.
      */
@@ -145,7 +145,7 @@ public class FeedReaderMapperTest
 
     /**
      * Test to verify that data has been removed from the object and persisted to the db.
-     * 
+     *
      * @throws Exception
      *             when an exception is encountered.
      */
@@ -169,7 +169,7 @@ public class FeedReaderMapperTest
         // Assert that the google2.com one is first.
         assertEquals("http://www.google2.com", feedReaders.get(0).getUrl());
         // assert that it has two counts.
-        assertEquals((Long) 2L, (Long) feedReaders.get(0).getCount());
+        assertEquals((Long) 2L, feedReaders.get(0).getCount());
     }
 
     /**
@@ -186,12 +186,12 @@ public class FeedReaderMapperTest
 
     /**
      * Load the DBUnit XML for the all tests in this suite.
-     * 
+     *
      * @throws Exception
      *             If error occurs during setup.
      */
     @BeforeClass
-    public static void setUp() throws Exception
+    public static void setUpOnce() throws Exception
     {
         // Load up the DBUnit data set
         FeedReaderDBUnitFixtureSetup.loadDataSet("/feedReaderDataset.xml");

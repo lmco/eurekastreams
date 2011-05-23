@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
@@ -27,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class tests the functionality of the {@link AddPrivateGroupIdToCachedCoordinatorAccessList} cache mapper.
- *
  */
 public class AddPrivateGroupIdToCachedCoordinatorAccessListTest extends CachedMapperTest
 {
@@ -35,33 +37,33 @@ public class AddPrivateGroupIdToCachedCoordinatorAccessListTest extends CachedMa
      * Instance of the {@link GetAllPersonIdsWhoHaveGroupCoordinatorAccess} mapper.
      */
     @Autowired
-    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorAccessMapper; 
-    
+    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorAccessMapper;
+
     /**
      * System under test.
      */
     private AddPrivateGroupIdToCachedCoordinatorAccessList sut;
-    
+
     /**
      * Test root org coordinator.
      */
     private static final Long ROOT_ORG_COORD_1 = 42L;
-    
+
     /**
      * Test child org coordinator.
      */
     private static final Long CHILD_ORG_COORD_1 = 99L;
-    
+
     /**
      * Test child org coordinator.
      */
     private static final Long CHILD_ORG_COORD_2 = 142L;
-    
+
     /**
      * Test group id.
      */
     private static final Long GROUP_ID = 1L;
-    
+
     /**
      * Prepare the system under test.
      */
@@ -72,7 +74,7 @@ public class AddPrivateGroupIdToCachedCoordinatorAccessListTest extends CachedMa
         sut.setCache(getCache());
         sut.setEntityManager(getEntityManager());
     }
-    
+
     /**
      * Test the execution of the sut.
      */
@@ -80,16 +82,14 @@ public class AddPrivateGroupIdToCachedCoordinatorAccessListTest extends CachedMa
     @Test
     public void testExecute()
     {
-        Set<Long> origRootOrgCoordList = 
-            (Set<Long>) getCache().get(
-                    CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + ROOT_ORG_COORD_1);
+        Set<Long> origRootOrgCoordList = (Set<Long>) getCache().get(
+                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + ROOT_ORG_COORD_1);
         assertNull(origRootOrgCoordList);
-        
+
         sut.execute(GROUP_ID);
-        
-        Set<Long> updatedRootOrgCoordList = 
-            (Set<Long>) getCache().get(
-                    CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + ROOT_ORG_COORD_1);
+
+        Set<Long> updatedRootOrgCoordList = (Set<Long>) getCache().get(
+                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + ROOT_ORG_COORD_1);
         assertNotNull(updatedRootOrgCoordList);
         assertEquals(1, updatedRootOrgCoordList.size());
         assertTrue(updatedRootOrgCoordList.contains(GROUP_ID));

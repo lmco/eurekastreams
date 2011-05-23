@@ -50,14 +50,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Form Builder.
- * 
+ *
  */
 public class FormBuilder extends FlowPanel
 {
     /**
      * Method to call on the BaseModel. (Forms never fetch or delete).
-     * 
-     * 
      */
     public enum Method
     {
@@ -144,9 +142,20 @@ public class FormBuilder extends FlowPanel
      */
     private boolean scrollToTopOnValidationError = true;
 
+    /** If events are currently wired to the event bus. */
+    private boolean eventsWired;
+    /** Event handler. */
+    private Observer<ValidationExceptionResponseEvent> validationExceptionResponseHandler;
+    /** Event handler. */
+    private Observer<ExceptionResponseEvent> exceptionResponseHandler;
+    /** Event handler. */
+    private Observer<PreSwitchedHistoryViewEvent> preSwitchedHistoryViewHandler;
+    /** Event handler. */
+    private Observer<SubmitFormIfChangedEvent> submitFormIfChangedHandler;
+
     /**
      * Constructor.
-     * 
+     *
      * @param title
      *            the form title.
      * @param inBaseModel
@@ -161,7 +170,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param title
      *            the form title.
      * @param inBaseModel
@@ -229,8 +238,36 @@ public class FormBuilder extends FlowPanel
             }
         });
 
-        final EventBus eventBus = Session.getInstance().getEventBus();
-        eventBus.addObserver(ValidationExceptionResponseEvent.class, new Observer<ValidationExceptionResponseEvent>()
+        createEventHandlers();
+        // wireEventHandlers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onAttach()
+    {
+        super.onAttach();
+        wireEventHandlers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onDetach()
+    {
+        super.onDetach();
+        unwireEventHandlers();
+    }
+
+    /**
+     * Creates the event handlers used with the event bus.
+     */
+    private void createEventHandlers()
+    {
+        validationExceptionResponseHandler = new Observer<ValidationExceptionResponseEvent>()
         {
             public void update(final ValidationExceptionResponseEvent event)
             {
@@ -245,7 +282,7 @@ public class FormBuilder extends FlowPanel
                     }
                 }
 
-                if (errors.size() > 0)
+                if (!errors.isEmpty())
                 {
                     errorBox.clear();
                     resetSubmitButton();
@@ -275,9 +312,9 @@ public class FormBuilder extends FlowPanel
                     }
                 }
             }
-        });
+        };
 
-        eventBus.addObserver(ExceptionResponseEvent.class, new Observer<ExceptionResponseEvent>()
+        exceptionResponseHandler = new Observer<ExceptionResponseEvent>()
         {
             public void update(final ExceptionResponseEvent event)
             {
@@ -286,27 +323,26 @@ public class FormBuilder extends FlowPanel
                     resetSubmitButton();
                 }
             }
-        });
+        };
 
-        eventBus.addObserver(PreSwitchedHistoryViewEvent.class, new Observer<PreSwitchedHistoryViewEvent>()
+        preSwitchedHistoryViewHandler = new Observer<PreSwitchedHistoryViewEvent>()
         {
-
             public void update(final PreSwitchedHistoryViewEvent arg1)
             {
                 if (hasFormChanged())
                 {
                     if (new WidgetJSNIFacadeImpl().confirm("The form has been changed. Do you wish to save changes?"))
                     {
+                        EventBus eventBus = Session.getInstance().getEventBus();
                         eventBus.notifyObservers(new PreventHistoryChangeEvent());
                         eventBus.notifyObservers(new SubmitFormIfChangedEvent());
                     }
                 }
             }
-        });
+        };
 
-        eventBus.addObserver(SubmitFormIfChangedEvent.class, new Observer<SubmitFormIfChangedEvent>()
+        submitFormIfChangedHandler = new Observer<SubmitFormIfChangedEvent>()
         {
-
             public void update(final SubmitFormIfChangedEvent arg1)
             {
                 if (hasFormChanged())
@@ -314,7 +350,39 @@ public class FormBuilder extends FlowPanel
                     submit();
                 }
             }
-        });
+        };
+    }
+
+    /**
+     * Attaches the event handlers to the event bus.
+     */
+    public void wireEventHandlers()
+    {
+        if (!eventsWired)
+        {
+            final EventBus eventBus = Session.getInstance().getEventBus();
+            eventBus.addObserver(ValidationExceptionResponseEvent.class, validationExceptionResponseHandler);
+            eventBus.addObserver(ExceptionResponseEvent.class, exceptionResponseHandler);
+            eventBus.addObserver(PreSwitchedHistoryViewEvent.class, preSwitchedHistoryViewHandler);
+            eventBus.addObserver(SubmitFormIfChangedEvent.class, submitFormIfChangedHandler);
+            eventsWired = true;
+        }
+    }
+
+    /**
+     * Removes the event handlers from the event bus.
+     */
+    public void unwireEventHandlers()
+    {
+        if (eventsWired)
+        {
+            final EventBus eventBus = Session.getInstance().getEventBus();
+            eventBus.removeObserver(ValidationExceptionResponseEvent.class, validationExceptionResponseHandler);
+            eventBus.removeObserver(ExceptionResponseEvent.class, exceptionResponseHandler);
+            eventBus.removeObserver(PreSwitchedHistoryViewEvent.class, preSwitchedHistoryViewHandler);
+            eventBus.removeObserver(SubmitFormIfChangedEvent.class, submitFormIfChangedHandler);
+            eventsWired = false;
+        }
     }
 
     /**
@@ -327,7 +395,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Has the form changed?
-     * 
+     *
      * @return has the form changed?
      */
     private boolean hasFormChanged()
@@ -391,7 +459,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Sets the CSS class on the Submit button. Used if you're changing it to say, an update button.
-     * 
+     *
      * @param cssClass
      *            the css class.
      */
@@ -404,7 +472,7 @@ public class FormBuilder extends FlowPanel
     /**
      * Used to inject widgets in the form container itself. Useful if you need to add something after the submit and
      * cancel.
-     * 
+     *
      * @param widget
      *            the widget.
      */
@@ -415,7 +483,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Sets the token for when the user clicks cancel.
-     * 
+     *
      * @param token
      *            the token.
      */
@@ -426,7 +494,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Gives a command to execute on cancel.
-     * 
+     *
      * @param inOnCancelCommand
      *            the command.
      */
@@ -437,7 +505,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Adds a form element to the form.
-     * 
+     *
      * @param element
      *            the form element.
      */
@@ -463,7 +531,7 @@ public class FormBuilder extends FlowPanel
     /**
      * Adds a "last form element". This is a form element that will ALWAYS stay at the bottom of the form Regardless of
      * others added.
-     * 
+     *
      * @param element
      *            the element.
      */
@@ -482,7 +550,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Gets the form value from the key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
@@ -532,7 +600,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Adds a form label to the form.
-     * 
+     *
      * @param header
      *            the label.
      * @return the label.
@@ -549,7 +617,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Adds a widget to the form panel.
-     * 
+     *
      * @param w
      *            the widget to add.
      */

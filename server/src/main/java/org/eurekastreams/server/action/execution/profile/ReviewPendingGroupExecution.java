@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.action.execution.notification.Notifier;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.GroupRemovedNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
-import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
@@ -46,17 +46,12 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * The group mapper.
      */
-    private DomainGroupMapper groupMapper;
-
-    /**
-     * Used to send email notifications to the group coordinators about whether the group was approved or denied.
-     */
-    private Notifier emailNotifier;
+    private final DomainGroupMapper groupMapper;
 
     /**
      * Used to update Cache when private group is approved.
@@ -64,33 +59,30 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
     private final AddPrivateGroupIdToCachedCoordinatorAccessList addPrivateGroupIdToCachedListMapper;
 
     /** Execution strategy for deleting a group. */
-    private TaskHandlerExecutionStrategy deleteGroupExecution;
+    private final TaskHandlerExecutionStrategy deleteGroupExecution;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            the group mapper to use to find the domain group.
-     * @param inEmailNotifier
-     *            Email notifier.
      * @param inAddPrivateGroupIdToCachedListMapper
      *            mapper to update cache when a private group is approved
      * @param inDeleteGroupExecution
      *            Execution strategy for deleting a group.
      */
-    public ReviewPendingGroupExecution(final DomainGroupMapper inGroupMapper, final Notifier inEmailNotifier,
+    public ReviewPendingGroupExecution(final DomainGroupMapper inGroupMapper,
             final AddPrivateGroupIdToCachedCoordinatorAccessList inAddPrivateGroupIdToCachedListMapper,
             final TaskHandlerExecutionStrategy inDeleteGroupExecution)
     {
         groupMapper = inGroupMapper;
         addPrivateGroupIdToCachedListMapper = inAddPrivateGroupIdToCachedListMapper;
-        emailNotifier = inEmailNotifier;
         deleteGroupExecution = inDeleteGroupExecution;
     }
 
     /**
      * Execute the action, approving or declining the DomainGroup request.
-     * 
+     *
      * @param inActionContext
      *            the action context containing the principal and request
      * @return true on success
@@ -127,11 +119,13 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
                 TaskHandlerActionContext<ActionContext> childContext = new TaskHandlerActionContext<ActionContext>(
                         new ActionContext()
                         {
+                            @Override
                             public Serializable getParams()
                             {
                                 return groupId;
                             }
 
+                            @Override
                             public Map<String, Object> getState()
                             {
                                 return null;
@@ -162,7 +156,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Notify the group's coordinators of the decision.
-     * 
+     *
      * @param inActionContext
      *            Context (needed for async actions).
      * @param group
@@ -175,23 +169,23 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
     private void notifyCoordinators(final TaskHandlerActionContext<PrincipalActionContext> inActionContext,
             final DomainGroup group, final ReviewPendingGroupRequest request) throws Exception
     {
-        // This is using just the email backend of the notification subsystem. So it builds the notification object
-        // (which is normally the notif engine's job) and hands it right to the email notifier.
-
-        List<Long> recipients = new ArrayList<Long>();
-        for (Person coord : group.getCoordinators())
+        CreateNotificationsRequest notifRequest;
+        if (request.getApproved())
         {
-            recipients.add(coord.getId());
+            notifRequest = new GroupActionNotificationsRequest(RequestType.REQUEST_NEW_GROUP_APPROVED, 0L,
+                    group.getId());
         }
-        NotificationDTO notif = new NotificationDTO(recipients,
-                request.getApproved() ? NotificationType.REQUEST_NEW_GROUP_APPROVED
-                        : NotificationType.REQUEST_NEW_GROUP_DENIED, 0L);
-        notif.setAuxiliary(EntityType.GROUP, group.getShortName(), group.getName());
-
-        UserActionRequest asyncAction = emailNotifier.notify(notif);
-        if (asyncAction != null)
+        else
         {
-            inActionContext.getUserActionRequests().add(asyncAction);
+            List<Long> recipients = new ArrayList<Long>();
+            for (Person coord : group.getCoordinators())
+            {
+                recipients.add(coord.getId());
+            }
+            notifRequest = new GroupRemovedNotificationsRequest(RequestType.REQUEST_NEW_GROUP_DENIED, 0L,
+                    group.getName(), recipients);
         }
+        inActionContext.getUserActionRequests().add(
+                new UserActionRequest("createNotificationsAction", null, notifRequest));
     }
 }

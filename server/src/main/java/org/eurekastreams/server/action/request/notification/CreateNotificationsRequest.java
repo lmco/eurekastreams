@@ -91,6 +91,16 @@ public class CreateNotificationsRequest implements Serializable
         REQUEST_NEW_GROUP,
 
         /**
+         * Group creation request approved. Uses GroupActionNotificationsRequest with unset actor ID.
+         */
+        REQUEST_NEW_GROUP_APPROVED,
+
+        /**
+         * Group creation request denied. Uses GroupRemovedNotificationsRequest with unset actor ID.
+         */
+        REQUEST_NEW_GROUP_DENIED,
+
+        /**
          * Someone requested access to a private group. Actor=person id who requested access, Destination=id of group,
          * Activity=(not used).
          */
@@ -106,7 +116,12 @@ public class CreateNotificationsRequest implements Serializable
          * A coordinator denied access to a private group. Actor=coordinator who denied access; Destination=id of group;
          * Activity=person id who requested access (need some field to store it in).
          */
-        REQUEST_GROUP_ACCESS_DENIED
+        REQUEST_GROUP_ACCESS_DENIED,
+
+        /**
+         * A notification requested by an external system.
+         */
+        EXTERNAL_PRE_BUILT
     }
 
     /** Type of event that occurred. */

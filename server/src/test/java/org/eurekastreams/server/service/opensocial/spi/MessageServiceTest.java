@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.service.opensocial.spi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +37,6 @@ import org.junit.Test;
  * of the Shindig OpenSocial spec.
  * 
  * Currently this class is only stubbed out.
- *
  */
 public class MessageServiceTest
 {
@@ -59,22 +58,22 @@ public class MessageServiceTest
     /**
      * Test message to use in unit tests.
      */
-    private Message testMessage = new MessageImpl();
+    private final Message testMessage = new MessageImpl();
     
     /**
      * Test message collection to use in unit tests.
      */
-    private MessageCollection testMsgCollection = new MessageCollectionImpl();
+    private final MessageCollection testMsgCollection = new MessageCollectionImpl();
     
     /**
      * Test collection options to use in unit tests.
      */
-    private CollectionOptions testCollectionOptions = new CollectionOptions();
+    private final CollectionOptions testCollectionOptions = new CollectionOptions();
     
     /**
      * A test UserId object to be used during the tests.
      */
-    private UserId testId = new UserId(Type.userId, "123456");
+    private final UserId testId = new UserId(Type.userId, "123456");
  
     /**
      * System under test.

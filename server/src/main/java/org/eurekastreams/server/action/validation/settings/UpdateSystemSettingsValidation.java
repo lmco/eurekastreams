@@ -16,6 +16,8 @@
 package org.eurekastreams.server.action.validation.settings;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +28,11 @@ import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.MembershipCriteria;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Validate UpdateSystemSettingsExecution input.
@@ -67,8 +72,8 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     /**
      * Terms of Service Prompt Interval Invalid Input Error Message.
      */
-    public static final String TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE = 
-        "Prompt Interval for Terms of Service supports up to 5 numeric characters";
+    public static final String TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE = "Prompt Interval for Terms of "
+            + "Service supports up to 5 numeric characters";
 
     /**
      * Terms of Service Prompt Interval Minimal Value Error Message.
@@ -120,19 +125,46 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     public static final String SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE = "Support Email Address is invalid";
 
     /**
+     * System administrators missing error message.
+     */
+    public static final String SYSTEM_ADMINISTRATORS_EMPTY_ERROR_MESSAGE = "At least one System "
+            + "Administrator required.";
+
+    /**
+     * At least one of the system admins is locked error message.
+     */
+    public static final String SYSTEM_ADMINISTRATOR_LOCKED_OUT_ERROR_MESSAGE = // 
+    "At least one of the requested administrators is currently locked out of the system: ";
+    /**
+     * 
+     * At least one of the system admins is locked error message.
+     */
+    public static final String SYSTEM_ADMINISTRATOR_NOTFOUND_ERROR_MESSAGE = // 
+    "At least one of the requested administrators is currently locked out of the system: ";
+
+    /**
      * mapper to get group by short name.
      */
     private GetDomainGroupsByShortNames getGroupsByShortNamesMapper;
+
+    /**
+     * Mapper to get people by ids.
+     */
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleByIdsMapper;
 
     /**
      * Constructor.
      * 
      * @param inGetGroupsByShortNamesMapper
      *            the mapper to get domain group by short name
+     * @param inPeopleByIdsMapper
+     *            mapper to get people by ids
      */
-    public UpdateSystemSettingsValidation(final GetDomainGroupsByShortNames inGetGroupsByShortNamesMapper)
+    public UpdateSystemSettingsValidation(final GetDomainGroupsByShortNames inGetGroupsByShortNamesMapper,
+            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleByIdsMapper)
     {
         getGroupsByShortNamesMapper = inGetGroupsByShortNamesMapper;
+        peopleByIdsMapper = inPeopleByIdsMapper;
     }
 
     /**
@@ -152,8 +184,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
          * filled in. For String based fields we are using a return of null to signify they are required and are blank
          * For Integer based ones we are returning false.
          * 
-         * This is mainly hacky since we know on the front end they are in 
-         * valid inputs but we send a cryptic message to
+         * This is mainly hacky since we know on the front end they are in valid inputs but we send a cryptic message to
          * the backend (see above) that it in turn alerts the user that it is invalid input. But with out a very decent
          * sized refactoring this is the best way.
          */
@@ -211,11 +242,10 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
         {
             ve.addError("contentExpiration", CONTENT_EXPIRATION_ERROR_MESSAGE);
         }
-        else if (fields.containsKey("contentExpiration")
-                && fields.get("contentExpiration") != null
+        else if (fields.containsKey("contentExpiration") && fields.get("contentExpiration") != null
                 && fields.get("contentExpiration") instanceof Integer
-                && ((Integer) fields.get("contentExpiration") < SystemSettings.MIN_CONTENT_EXPIRATION 
-                        || (Integer) fields.get("contentExpiration") > SystemSettings.MAX_CONTENT_EXPIRATION))
+                && ((Integer) fields.get("contentExpiration") < SystemSettings.MIN_CONTENT_EXPIRATION //
+                || (Integer) fields.get("contentExpiration") > SystemSettings.MAX_CONTENT_EXPIRATION))
         {
             ve.addError("contentExpiration", CONTENT_EXPIRATION_ERROR_MESSAGE);
         }
@@ -242,18 +272,16 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
             }
         }
 
-        if (fields.containsKey("supportPhoneNumber")
-                && fields.get("supportPhoneNumber") != null
-                && ((String) fields.get("supportPhoneNumber")).length() 
-                    > SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
+        if (fields.containsKey("supportPhoneNumber") && fields.get("supportPhoneNumber") != null
+                && ((String) fields.get("supportPhoneNumber")).length() > //
+                SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
         {
             ve.addError("supportPhoneNumber", MAX_SUPPORT_PHONE_NUMBER_LENGTH_ERROR_MESSAGE);
         }
 
-        if (fields.containsKey("supportEmailAddress")
-                && fields.get("supportEmailAddress") != null
-                && ((String) fields.get("supportEmailAddress")).length() 
-                    > SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
+        if (fields.containsKey("supportEmailAddress") && fields.get("supportEmailAddress") != null
+                && ((String) fields.get("supportEmailAddress")).length() > //
+                SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
         {
             ve.addError("supportEmailAddress", MAX_SUPPORT_EMAIL_ADDRESS_LENGTH_ERROR_MESSAGE);
         }
@@ -264,10 +292,95 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
             ve.addError("supportEmailAddress", SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE);
         }
 
+        if (!fields.containsKey("admins") || fields.get("admins") == null
+                || ((HashSet<Person>) fields.get("admins")).size() == 0)
+        {
+            ve.addError("admins", SYSTEM_ADMINISTRATORS_EMPTY_ERROR_MESSAGE);
+        }
+        else
+        {
+            boolean adminErrorOccurred = false;
+            // see if the people exist
+            HashSet<Person> requestedAdmins = (HashSet<Person>) fields.get("admins");
+            List<Long> adminIds = new ArrayList<Long>();
+
+            // convert the list of people to people ids
+            for (Person person : requestedAdmins)
+            {
+                adminIds.add(person.getId());
+            }
+            // get the people from db/cache
+            List<PersonModelView> foundPeople = peopleByIdsMapper.execute(adminIds);
+
+            // check for locked users
+            String lockedUsers = "";
+            for (PersonModelView foundPerson : foundPeople)
+            {
+                if (foundPerson.isAccountLocked())
+                {
+                    if (lockedUsers.length() > 0)
+                    {
+                        lockedUsers += ", ";
+                    }
+                    lockedUsers += foundPerson.getAccountId();
+                }
+            }
+            if (lockedUsers.length() > 0)
+            {
+                // some of the users are locked users
+                ve.addError("admins", SYSTEM_ADMINISTRATOR_LOCKED_OUT_ERROR_MESSAGE + lockedUsers);
+                adminErrorOccurred = true;
+            }
+
+            if (!adminErrorOccurred)
+            {
+                // check for missing users
+                String missingUsers = "";
+                for (Person requestedAdmin : requestedAdmins)
+                {
+                    if (!isPersonIdInPersonList(foundPeople, requestedAdmin.getId()))
+                    {
+                        // missing person
+                        if (missingUsers.length() > 0)
+                        {
+                            missingUsers += ", ";
+                        }
+                        missingUsers += requestedAdmin.getAccountId();
+                    }
+                }
+                if (missingUsers.length() > 0)
+                {
+                    // some of the users weren't found
+                    ve.addError("admins", SYSTEM_ADMINISTRATOR_NOTFOUND_ERROR_MESSAGE + missingUsers);
+                }
+            }
+        }
+
         if (!ve.getErrors().isEmpty())
         {
             throw ve;
         }
+    }
+
+    /**
+     * Check whether the input person account id is found in the list of people.
+     * 
+     * @param inPeople
+     *            the list of people to look through
+     * @param inPersonId
+     *            the person id to search for
+     * @return whether the person id is found in the input person list
+     */
+    private boolean isPersonIdInPersonList(final List<PersonModelView> inPeople, final Long inPersonId)
+    {
+        for (PersonModelView person : inPeople)
+        {
+            if (person.getId() == inPersonId)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

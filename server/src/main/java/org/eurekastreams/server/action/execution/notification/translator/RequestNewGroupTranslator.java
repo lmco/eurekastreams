@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,32 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of someone requesting creation of a group to appropriate notifications.
  */
-public class RequestNewGroupTranslator implements NotificationTranslator
+public class RequestNewGroupTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /** For getting the group. Need to use this mapper, since the bulk group mapper excludes pending groups. */
     // TODO: Should use GetDomainGroupsByIds, but it excludes pending groups, which are the only ones we want.
-    private FindByIdMapper<DomainGroup> groupMapper;
+    private final FindByIdMapper<DomainGroup> groupMapper;
 
     /** For getting the org coordinators. */
-    private DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
+    private final DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            For getting the group.
      * @param inSystemAdminIdsMapper
@@ -59,18 +58,18 @@ public class RequestNewGroupTranslator implements NotificationTranslator
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
         // TODO: The "activityId" is being used loosely as the "thing being acted on", hence the group being created.
         // Should refactor notifications for more flexible parameters.
-        DomainGroup group = groupMapper.execute(new FindByIdRequest("DomainGroup", inActivityId));
+        DomainGroup group = groupMapper.execute(new FindByIdRequest("DomainGroup", inRequest.getActivityId()));
 
         List<Long> admins = systemAdminIdsMapper.execute(null);
 
-        NotificationDTO notif = new NotificationDTO(admins, NotificationType.REQUEST_NEW_GROUP, inActorId,
-                inDestinationId, EntityType.NOTSET, 0L);
-        notif.setAuxiliary(EntityType.GROUP, group.getShortName(), group.getName());
-        return Collections.singletonList(notif);
+        NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP, admins);
+        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("group", group);
+        // TODO: add appropriate properties
+        return batch;
     }
 }

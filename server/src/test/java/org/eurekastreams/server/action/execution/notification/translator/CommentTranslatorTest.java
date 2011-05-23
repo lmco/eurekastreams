@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CommentNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -104,7 +104,6 @@ public class CommentTranslatorTest
      * Test the translator.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testTranslate()
     {
         final StreamEntityDTO actor = new StreamEntityDTO();
@@ -133,23 +132,26 @@ public class CommentTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
+        CommentNotificationsRequest request = new CommentNotificationsRequest(null, ACTOR_ID, DESTINATION_ID,
+                ACTIVITY_ID, COMMENT_ID);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
-        assertEquals(4, results.size());
 
-        // put notifs in a map to easily get by expected type
-        Map<NotificationType, NotificationDTO> notifs = new HashMap<NotificationType, NotificationDTO>();
-        for (NotificationDTO notif : results)
-        {
-            notifs.put(notif.getType(), notif);
-        }
-        // check COMMENT_TO_SAVED_POST notif
-        NotificationDTO notif = notifs.get(NotificationType.COMMENT_TO_SAVED_POST);
-        assertNotNull(notif);
-        assertEquals(1, notif.getRecipientIds().size());
-        assertEquals((Long) SAVER, notif.getRecipientIds().get(0));
+        // check recipients
+        assertEquals(4, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.COMMENT_TO_SAVED_POST, SAVER);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(5, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        PropertyMapTestHelper.assertValue(props, "activity", activity);
+        PropertyMapTestHelper.assertValue(props, "comment", comment);
     }
+
 
     /**
      * Test the translator.
@@ -166,10 +168,12 @@ public class CommentTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
+        CommentNotificationsRequest request = new CommentNotificationsRequest(null, ACTOR_ID, DESTINATION_ID,
+                ACTIVITY_ID, COMMENT_ID);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
-        assertTrue(results.isEmpty());
+        assertNull(results);
     }
 
     /**
@@ -193,10 +197,11 @@ public class CommentTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
+        CommentNotificationsRequest request = new CommentNotificationsRequest(null, ACTOR_ID, DESTINATION_ID,
+                ACTIVITY_ID, COMMENT_ID);
+        NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
-        assertTrue(results.isEmpty());
+        assertNull(results);
     }
-
 }

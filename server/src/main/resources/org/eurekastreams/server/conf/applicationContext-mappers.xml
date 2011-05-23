@@ -436,6 +436,11 @@
 		</constructor-arg>
 	</bean>
 
+    <bean id="getPeopleIdsByAccountIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+        <constructor-arg value="accountId" />
+        <constructor-arg value="org.eurekastreams.server.domain.Person" />
+    </bean>
+            
     <!-- Mapper to get people ids by account ids -->
     <bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
@@ -449,12 +454,7 @@
         </constructor-arg>
         
         <!-- Database mapper -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
-                <constructor-arg value="accountId" />
-                <constructor-arg value="org.eurekastreams.server.domain.Person" />
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="getPeopleIdsByAccountIdsDbMapper" />
     
         <!-- Combiner -->
         <constructor-arg ref="collectionCombiner" />
@@ -592,7 +592,6 @@
 		</constructor-arg>
 	</bean>
 
-
 	<bean id="findSystemSettingsFromDatabase"
 		class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
 		<constructor-arg ref="headerContentTemplate" />
@@ -603,6 +602,8 @@
 		-->
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
+	
+	<bean id="setSystemAdminsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetSystemAdminsDbMapper" />
 	
 	<bean id="getTutorialVideos" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -1016,6 +1017,12 @@
         <constructor-arg value="False" />
         <property name="cache" ref="memcachedCache" />
     </bean>        
+
+	<!-- Mapper to get a group by id, returning null when not found -->
+	<bean id="getGroupByIdMapperAllowNullResult" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getGroupsByIdsMapper" />
+		<constructor-arg value="false" />
+	</bean>
 	
 	<bean id="getFollowedGroupIdsForPersonByIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -1186,6 +1193,12 @@
 		<constructor-arg ref="getPersonsByIdsMapper" />
 		<constructor-arg value="true" />
 	</bean>
+
+	<!-- Mapper to get a person by id, returning null when not found -->
+	<bean id="getPersonByIdMapperAllowNullResult" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPersonsByIdsMapper" />
+		<constructor-arg value="false" />
+	</bean>
     
     <bean id="getPersonsByIdsMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -1308,8 +1321,9 @@
 	<bean id="getStreamScopeById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
 
-	<bean id="getStreamScopeProxyById"
-		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />		
+	<bean id="getStreamScopeProxyById" class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+		<constructor-arg value="org.eurekastreams.server.domain.stream.StreamScope" />
+	</bean>
 
 	<bean id="followedActivityIdsLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
@@ -1767,24 +1781,12 @@
 	<bean id="getNotificationFilterPreferencesByPeopleIds"
 		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
 
-	<bean id="setAllApplicationAlertsAsReadByUserId"
-		class="org.eurekastreams.server.persistence.mappers.db.SetAllApplicationAlertsAsReadByUserId" />
-
-	<bean id="getApplicationAlertsByUserId"
-		class="org.eurekastreams.server.persistence.mappers.db.GetApplicationAlertsByUserId" />
-
-	<bean id="deleteApplicationAlertsByDate"
-		class="org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate" />
-
-	<bean id="getUserIdsWithUnreadApplicationAlertsByDate"
-		class="org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate" />
-
-	<bean id="getUnreadApplicationAlertCountByUserId" 
-		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadApplicationAlertCountByUserId">
+	<bean id="getUnreadInAppNotificationCountsByUserId" 
+		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadInAppNotificationCountsByUserId">
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 		
-	<bean id="getCachedAlertCountByUserId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="getCachedUnreadInAppNotificationCountsByUserId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<!-- Cache mapper -->
 		<constructor-arg>
 		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
@@ -1800,7 +1802,7 @@
 			</bean>
 		</constructor-arg>
 		<!-- Database mapper -->
-		<constructor-arg ref="getUnreadApplicationAlertCountByUserId" />
+		<constructor-arg ref="getUnreadInAppNotificationCountsByUserId" />
 		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		<!-- Cache updater -->
@@ -1815,11 +1817,11 @@
 	    </constructor-arg>       
 	</bean>
 	
-	<bean id="getCachedAlertCountByUserId_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="getCachedUnreadInAppNotificationCountsByUserId_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<!-- Cache mapper -->
 		<constructor-arg ref="nullResultPartialMapper" />
 		<!-- Database mapper -->
-		<constructor-arg ref="getUnreadApplicationAlertCountByUserId" />
+		<constructor-arg ref="getUnreadInAppNotificationCountsByUserId" />
 		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		<!-- Cache updater -->
@@ -2185,6 +2187,8 @@
         <constructor-arg value="false" />
     </bean>
     
+    <bean id="getSystemAdministratorIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
+    
     <bean id="getSystemAdministratorIds" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
         <constructor-arg>
@@ -2201,9 +2205,7 @@
 		    </bean>
         </constructor-arg>
         <!-- Database mapper -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
-        </constructor-arg>
+        <constructor-arg ref="getSystemAdministratorIdsDbMapper" />
          <!-- Results combiner:  return whichever is not null -->
         <constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
@@ -2217,5 +2219,15 @@
 		    </bean>
 		</constructor-arg>       
     </bean>
+    
+    
+    <bean id="getSystemAdministrators" class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
+        <!-- Get the system administrator ids -->
+        <constructor-arg ref="getSystemAdministratorIds" />
+        
+        <!-- And convert those people ids to PersonModelViews -->
+        <constructor-arg ref="getPersonsByIdsMapper" />
+    </bean>
+    
     
 </beans>

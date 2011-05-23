@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.util.Collection;
-
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
-import org.junit.Assert;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.junit.Test;
 
 /**
@@ -47,18 +48,18 @@ public class GroupMembershipResponseTranslatorTest
     {
         GroupMembershipResponseTranslator sut = new GroupMembershipResponseTranslator(
                 NotificationType.REQUEST_GROUP_ACCESS_APPROVED);
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_ID, FOLLOWER_ID);
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-        NotificationDTO notif = notifs.iterator().next();
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, FOLLOWER_ID);
+        NotificationBatch results = sut.translate(request);
 
-        assertEquals(ACTOR_ID, notif.getActorId());
-        assertEquals(GROUP_ID, notif.getDestinationId());
-        assertEquals(EntityType.GROUP, notif.getDestinationType());
-        assertEquals(1, notif.getRecipientIds().size());
-        assertEquals((Long) FOLLOWER_ID, notif.getRecipientIds().get(0));
-        assertEquals(NotificationType.REQUEST_GROUP_ACCESS_APPROVED, notif.getType());
-        assertEquals(0, notif.getActivityId());
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.REQUEST_GROUP_ACCESS_APPROVED, FOLLOWER_ID);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(2, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        PropertyMapTestHelper.assertPlaceholder(props, "group", DomainGroupModelView.class, GROUP_ID);
     }
 }

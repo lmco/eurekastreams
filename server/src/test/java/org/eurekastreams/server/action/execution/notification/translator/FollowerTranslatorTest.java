@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.Arrays;
-import java.util.Collection;
+import static org.junit.Assert.assertEquals;
 
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
-import org.junit.Assert;
+import org.eurekastreams.server.domain.PropertyMap;
+import org.eurekastreams.server.domain.PropertyMapTestHelper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.junit.Test;
 
 /**
@@ -43,15 +44,19 @@ public class FollowerTranslatorTest
     public void testTranslateFollowPerson()
     {
         FollowerTranslator sut = new FollowerTranslator();
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, FOLLOWED_ID, 0L);
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-        NotificationDTO notif = notifs.iterator().next();
-        NotificationDTO expected = new NotificationDTO(Arrays.asList(FOLLOWED_ID),
-                NotificationType.FOLLOW_PERSON, ACTOR_ID, FOLLOWED_ID, EntityType.PERSON, 0L);
-        Assert.assertEquals(expected.getActivityId(), notif.getActivityId());
-        Assert.assertEquals(expected.getType(), notif.getType());
-        Assert.assertEquals(expected.getDestinationId(), notif.getDestinationId());
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, FOLLOWED_ID, 0L);
+        NotificationBatch results = sut.translate(request);
+
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FOLLOW_PERSON, FOLLOWED_ID);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        assertEquals(3, props.size());
+        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        PropertyMapTestHelper.assertPlaceholder(props, "stream", PersonModelView.class, FOLLOWED_ID);
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
     }
 }

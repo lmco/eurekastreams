@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,10 @@ public class DomainGroupTest
     @Test
     public void testGettersAndSetters()
     {
+        sut.setId(9L);
+        assertEquals(9L, sut.getId());
+        assertEquals(9L, sut.getEntityId());
+
         sut.setStreamScope(streamScopeMock);
         assertEquals(streamScopeMock, sut.getStreamScope());
 
@@ -90,6 +94,7 @@ public class DomainGroupTest
 
         sut.setName("name");
         assertEquals("name", sut.getName());
+        assertEquals("name", sut.getDisplayName());
 
         sut.setName(null);
         assertEquals("", sut.getName());
@@ -127,6 +132,8 @@ public class DomainGroupTest
 
         sut.setSuppressPostNotifToCoordinator(true);
         assertTrue(sut.isSuppressPostNotifToCoordinator());
+
+        assertEquals(EntityType.GROUP, sut.getEntityType());
     }
 
     /**

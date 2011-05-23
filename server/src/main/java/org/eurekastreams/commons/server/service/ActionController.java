@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.eurekastreams.commons.server.service;
 import java.io.Serializable;
 
 import org.eurekastreams.commons.actions.TaskHandlerAction;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 
 /**
@@ -28,10 +28,10 @@ public interface ActionController
 {
 
     /**
-     * Execute the supplied {@link ServiceAction} with the given {@link ServiceActionContext}.
+     * Execute the supplied {@link ServiceAction} with the given {@link PrincipalActionContext}.
      *
      * @param inServiceActionContext
-     *            - instance of the {@link ServiceActionContext} with which to execution the {@link ServiceAction}.
+     *            - instance of the {@link PrincipalActionContext} with which to execution the {@link ServiceAction}.
      * @param inServiceAction
      *            - instance of the {@link ServiceAction} to execute.
      * @return - results from the execution of the ServiceAction.
@@ -40,21 +40,21 @@ public interface ActionController
      *         {@link ValidationException} occurs. - AuthorizationException - when an {@link AuthorizationException}
      *         occurs. - ExecutionException - when an {@link ExecutionException} occurs.
      */
-    Serializable execute(final ServiceActionContext inServiceActionContext, final ServiceAction inServiceAction);
+    Serializable execute(final PrincipalActionContext inServiceActionContext, final ServiceAction inServiceAction);
 
     /**
-     * This method executes a {@link TaskHandlerAction} with the supplied {@link ServiceActionContext}.
-     *
+     * This method executes a {@link TaskHandlerAction} with the supplied {@link PrincipalActionContext}.
+     * 
      * @param inServiceActionContext
-     *            - instance of the {@link ServiceActionContext} associated with this request.
+     *            - instance of the {@link PrincipalActionContext} associated with this request.
      * @param inTaskHandlerAction
      *            - instance of the {@link TaskHandlerAction}.
      * @return - results of the execution.
-     *
+     * 
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - AuthorizationException - when an {@link AuthorizationException}
      *         occurs. - ExecutionException - when an {@link ExecutionException} occurs.
      */
-    Serializable execute(final ServiceActionContext inServiceActionContext, // \n
+    Serializable execute(final PrincipalActionContext inServiceActionContext, // \n
             final TaskHandlerAction inTaskHandlerAction);
 }

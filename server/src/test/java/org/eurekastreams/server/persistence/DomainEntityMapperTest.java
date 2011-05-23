@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -175,7 +175,7 @@ public abstract class DomainEntityMapperTest
     @PersistenceContext
     public void setEntityManager(final EntityManager inEntityManager)
     {
-        this.entityManager = inEntityManager;
+        entityManager = inEntityManager;
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class DomainEntityMapperTest
      *             If error occurs during setup.
      */
     @BeforeClass
-    public static void setUp() throws Exception
+    public static void setUpOnce() throws Exception
     {
         // Load up the DBUnit data set
         DBUnitFixtureSetup.loadDataSet("/dataset.xml");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
@@ -31,19 +31,19 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 /**
  * Translates the event of someone flagging an activity to appropriate notifications.
  */
-public class FlagTranslator implements NotificationTranslator
+public class FlagTranslator implements NotificationTranslator<CreateNotificationsRequest>
 {
     /** For getting activity details. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Mapper to get a list of system admin ids.
      */
-    private DomainMapper<Serializable, List<Long>> systemAdminMapper;
+    private final DomainMapper<Serializable, List<Long>> systemAdminMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inActivitiesMapper
      *            For getting activity details.
      * @param inSystemAdminMapper
@@ -57,17 +57,16 @@ public class FlagTranslator implements NotificationTranslator
     }
 
     /**
-     * This method takes the activity and gets a list of all the org coordinators who are responsible for the person or
-     * group to whose stream the activity was posted. Those will be the recipients.
-     * 
+     * This method takes the activity and gets a list of all the admins (since they have authority over the person or
+     * group stream where the activity was posted. Those will be the recipients.
+     *
      * {@inheritDoc}
      */
     @Override
-    public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
     {
         // Get the activity
-        ActivityDTO activity = activitiesMapper.execute(Arrays.asList(inActivityId)).get(0);
+        ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inRequest.getActivityId())).get(0);
         StreamEntityDTO stream = activity.getDestinationStream();
         NotificationType type = EntityType.PERSON == stream.getType() ? NotificationType.FLAG_PERSONAL_ACTIVITY
                 : NotificationType.FLAG_GROUP_ACTIVITY;
@@ -75,9 +74,10 @@ public class FlagTranslator implements NotificationTranslator
         // Get the list of admins
         List<Long> adminIds = systemAdminMapper.execute(null);
 
-        NotificationDTO notif = new NotificationDTO(adminIds, type, inActorId);
-        notif.setActivity(inActivityId, activity.getBaseObjectType());
-
-        return Collections.singletonList(notif);
+        NotificationBatch batch = new NotificationBatch(type, adminIds);
+        batch.setProperty("activity", activity);
+        batch.setProperty("stream", stream);
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+        return batch;
     }
 }

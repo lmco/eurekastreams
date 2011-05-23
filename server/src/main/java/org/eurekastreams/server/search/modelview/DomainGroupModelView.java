@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,15 @@ import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Bannerable;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
+import org.eurekastreams.server.domain.Identifiable;
 
 /**
  * ModelView for DomainGroup.
  */
 public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity, Bannerable,
-        AvatarEntity
+        AvatarEntity, Identifiable
 {
     /**
      * The serial version id.
@@ -225,7 +227,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Load this object's properties from the input Map.
-     * 
+     *
      * @param properties
      *            the Map of the properties to load
      */
@@ -327,7 +329,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Sets is public.
-     * 
+     *
      * @param inIsPublic
      *            sets isPublic.
      */
@@ -346,7 +348,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the entity name.
-     * 
+     *
      * @return the entity name
      */
     @Override
@@ -357,9 +359,10 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the group's avatar id.
-     * 
+     *
      * @return the avatarId
      */
+    @Override
     public String getAvatarId()
     {
         return avatarId;
@@ -367,20 +370,22 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the group's avatar id.
-     * 
+     *
      * @param inAvatarId
      *            the avatarId to set
      */
+    @Override
     public void setAvatarId(final String inAvatarId)
     {
-        this.avatarId = inAvatarId;
+        avatarId = inAvatarId;
     }
 
     /**
      * Get the number of people following this group.
-     * 
+     *
      * @return the followersCount
      */
+    @Override
     public int getFollowersCount()
     {
         return followersCount;
@@ -388,18 +393,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the number of people following this group.
-     * 
+     *
      * @param inFollowersCount
      *            the followersCount to set
      */
     public void setFollowersCount(final int inFollowersCount)
     {
-        this.followersCount = inFollowersCount;
+        followersCount = inFollowersCount;
     }
 
     /**
      * The the number of updates for this group.
-     * 
+     *
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -409,18 +414,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the number of updates for this group.
-     * 
+     *
      * @param inUpdatesCount
      *            the updatesCount to set
      */
     public void setUpdatesCount(final int inUpdatesCount)
     {
-        this.updatesCount = inUpdatesCount;
+        updatesCount = inUpdatesCount;
     }
 
     /**
      * Get the shortname.
-     * 
+     *
      * @return the shortname.
      */
     public String getShortName()
@@ -430,18 +435,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the shortname.
-     * 
+     *
      * @param inShortName
      *            the shortname.
      */
     public void setShortName(final String inShortName)
     {
-        this.shortName = inShortName;
+        shortName = inShortName;
     }
 
     /**
      * Get the name of the group.
-     * 
+     *
      * @return the name of the group
      */
     public String getName()
@@ -451,18 +456,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the name of the group.
-     * 
+     *
      * @param inName
      *            the name to set
      */
     public void setName(final String inName)
     {
-        this.name = inName;
+        name = inName;
     }
 
     /**
      * Get the description of the group.
-     * 
+     *
      * @return the description
      */
     public String getDescription()
@@ -472,18 +477,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the description of the group.
-     * 
+     *
      * @param inDescription
      *            the description to set
      */
     public void setDescription(final String inDescription)
     {
-        this.description = inDescription;
+        description = inDescription;
     }
 
     /**
      * Get the date the group was added to the system.
-     * 
+     *
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -493,17 +498,17 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the date the group was added to the system.
-     * 
+     *
      * @param inDateAdded
      *            the dateAdded to set
      */
     public void setDateAdded(final Date inDateAdded)
     {
-        this.dateAdded = inDateAdded;
+        dateAdded = inDateAdded;
     }
 
     /**
-     * 
+     *
      * @return the person created by display name.
      */
     public String getPersonCreatedByDisplayName()
@@ -538,7 +543,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * This is only available on the server and is not serialized and sent over the wire.
-     * 
+     *
      * @param inPersonCreatedById
      *            The person created by id.
      */
@@ -558,7 +563,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the entity id.
-     * 
+     *
      * @param inEntityId
      *            the entity id of the domain group.
      */
@@ -583,7 +588,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      */
     public void setStreamId(final long inStreamId)
     {
-        this.streamId = inStreamId;
+        streamId = inStreamId;
     }
 
     /**
@@ -598,6 +603,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     /**
      * @return The commentable flag.
      */
+    @Override
     public boolean isCommentable()
     {
         return commentable;
@@ -606,6 +612,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     /**
      * @return The streamPostable flag.
      */
+    @Override
     public boolean isStreamPostable()
     {
         return streamPostable;
@@ -750,6 +757,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     /**
      * @return the avatarCropSize
      */
+    @Override
     public Integer getAvatarCropSize()
     {
         return avatarCropSize;
@@ -759,6 +767,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * @param inAvatarCropSize
      *            the avatarCropSize to set
      */
+    @Override
     public void setAvatarCropSize(final Integer inAvatarCropSize)
     {
         avatarCropSize = inAvatarCropSize;
@@ -767,6 +776,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     /**
      * @return the avatarCropX
      */
+    @Override
     public Integer getAvatarCropX()
     {
         return avatarCropX;
@@ -776,6 +786,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * @param inAvatarCropX
      *            the avatarCropX to set
      */
+    @Override
     public void setAvatarCropX(final Integer inAvatarCropX)
     {
         avatarCropX = inAvatarCropX;
@@ -784,6 +795,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     /**
      * @return the avatarCropY
      */
+    @Override
     public Integer getAvatarCropY()
     {
         return avatarCropY;
@@ -793,6 +805,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * @param inAvatarCropY
      *            the avatarCropY to set
      */
+    @Override
     public void setAvatarCropY(final Integer inAvatarCropY)
     {
         avatarCropY = inAvatarCropY;
@@ -830,6 +843,24 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public void setSuppressPostNotifToMember(final boolean inSuppressPostNotifToMember)
     {
         suppressPostNotifToMember = inSuppressPostNotifToMember;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EntityType getEntityType()
+    {
+        return EntityType.GROUP;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDisplayName()
+    {
+        return name;
     }
 
 }

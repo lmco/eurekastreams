@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public final class LogFactory
 
     /**
      * Make a log for the calling class.
-     * 
+     *
      * @return a log for the calling class
      */
     public static Log make()
@@ -40,5 +40,15 @@ public final class LogFactory
         Throwable t = new Throwable();
         StackTraceElement directCaller = t.getStackTrace()[1];
         return org.apache.commons.logging.LogFactory.getLog(directCaller.getClassName());
+    }
+
+    /**
+     * @return The class name of the calling class.
+     */
+    public static String getClassName()
+    {
+        Throwable t = new Throwable();
+        StackTraceElement directCaller = t.getStackTrace()[1];
+        return directCaller.getClassName();
     }
 }

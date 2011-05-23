@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Background;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.BackgroundItemType;
@@ -39,6 +41,10 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
 
     /**
      * Person mapper.
@@ -86,6 +92,9 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
             throws ExecutionException
     {
         Map<String, Serializable> fields = (Map<String, Serializable>) inActionContext.getActionContext().getParams();
+        fields.remove("isAdministrator");
+
+        log.debug("Updating person with fields: " + fields.keySet());
 
         Person person = (Person) personPersister.execute(inActionContext);
 
