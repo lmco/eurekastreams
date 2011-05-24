@@ -42,8 +42,6 @@ public class ActivityDTO extends ModelView implements Serializable
     public ActivityDTO()
     {
         actor = new StreamEntityDTO();
-        originalActor = new StreamEntityDTO();
-        proxyActor = new StreamEntityDTO();
         destinationStream = new StreamEntityDTO();
     }
 
@@ -76,11 +74,6 @@ public class ActivityDTO extends ModelView implements Serializable
      * The original creator of the activity - used during sharing.
      */
     private StreamEntityDTO originalActor;
-
-    /**
-     * The actor inside an application that created the activity.
-     */
-    private StreamEntityDTO proxyActor;
 
     /**
      * Information regarding the stream that this activity was posted to.
@@ -202,7 +195,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Load this object's properties from the input Map.
-     * 
+     *
      * @param properties
      *            the Map of the properties to load
      */
@@ -298,11 +291,27 @@ public class ActivityDTO extends ModelView implements Serializable
         }
         if (properties.containsKey("originalActorType"))
         {
-            getOriginalActor().setType((EntityType) properties.get("originalActorType"));
+            final EntityType type = (EntityType) properties.get("originalActorType");
+            if (type != null)
+            {
+                if (originalActor == null)
+                {
+                    originalActor = new StreamEntityDTO();
+                }
+                getOriginalActor().setType(type);
+            }
         }
         if (properties.containsKey("originalActorUniqueIdentifier"))
         {
-            getOriginalActor().setUniqueIdentifier((String) properties.get("originalActorUniqueIdentifier"));
+            final String uniqueIdentifier = (String) properties.get("originalActorUniqueIdentifier");
+            if (uniqueIdentifier != null)
+            {
+                if (originalActor == null)
+                {
+                    originalActor = new StreamEntityDTO();
+                }
+                getOriginalActor().setUniqueIdentifier(uniqueIdentifier);
+            }
         }
         if (properties.containsKey("comments"))
         {
@@ -532,7 +541,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Gets the name of the entity backing this model view.
-     * 
+     *
      * @return the entity name;
      */
     @Override
@@ -627,23 +636,6 @@ public class ActivityDTO extends ModelView implements Serializable
     }
 
     /**
-     * @return the proxyActor
-     */
-    public StreamEntityDTO getProxyActor()
-    {
-        return proxyActor;
-    }
-
-    /**
-     * @param inProxyActor
-     *            the proxyActor to set
-     */
-    public void setProxyActor(final StreamEntityDTO inProxyActor)
-    {
-        proxyActor = inProxyActor;
-    }
-
-    /**
      * @return the destinationStream
      */
     public StreamEntityDTO getDestinationStream()
@@ -696,7 +688,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get whether the destination stream is a public.
-     * 
+     *
      * @return whether the destination stream is public.
      */
     public Boolean getIsDestinationStreamPublic()
@@ -706,7 +698,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set whether the destination stream is public.
-     * 
+     *
      * @param inIsDestinationStreamPublic
      *            whether the destination stream is public
      */
@@ -819,7 +811,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set the likers.
-     * 
+     *
      * @param inLikers
      *            the likers.
      */
@@ -830,7 +822,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get the likers.
-     * 
+     *
      * @return the likers.
      */
     public List<PersonModelView> getLikers()

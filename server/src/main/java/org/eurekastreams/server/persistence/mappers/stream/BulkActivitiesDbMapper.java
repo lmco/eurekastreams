@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.factories.ActivityDTOFactory;
@@ -45,27 +47,27 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * Mapper to get PersonModelView by account id.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Mapper to get PersonModelViews by account ids.
      */
-    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
+    private final DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * Group Mapper.
      */
-    private GetDomainGroupsByShortNames groupMapper;
+    private final GetDomainGroupsByShortNames groupMapper;
 
     /**
      * DAO for comment id list.
      */
-    private DomainMapper<Long, List<Long>> commentIdListDAO;
+    private final DomainMapper<Long, List<Long>> commentIdListDAO;
 
     /**
      * DAO for comments by id.
      */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO;
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO;
 
     /**
      * @param inGetPersonModelViewByAccountIdMapper
@@ -94,11 +96,12 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * Looks in cache for the necessary activity DTOs and returns them if found. Otherwise, makes a database call, puts
      * them in cache, and returns them.
-     * 
+     *
      * @param activityIds
      *            the list of ids that should be found.
      * @return list of ActivityDTO objects.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public List<ActivityDTO> execute(final List<Long> activityIds)
     {
@@ -161,41 +164,46 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
                 }
             }
 
-            if (activity.getActor().getType() == EntityType.PERSON)
+            final StreamEntityDTO actor = activity.getActor();
+            if (actor.getType() == EntityType.PERSON)
             {
-                List<String> peopleIds = new ArrayList<String>();
-                peopleIds.add(activity.getActor().getUniqueIdentifier());
-                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(peopleIds);
-                if (people.size() > 0)
+                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(Collections
+                        .singletonList(actor.getUniqueIdentifier()));
+                if (!people.isEmpty())
                 {
-                    activity.getActor().setId(people.get(0).getEntityId());
-                    activity.getActor().setDisplayName(people.get(0).getDisplayName());
-                    activity.getActor().setAvatarId(people.get(0).getAvatarId());
+                    final PersonModelView person = people.get(0);
+                    actor.setId(person.getEntityId());
+                    actor.setDestinationEntityId(person.getEntityId());
+                    actor.setDisplayName(person.getDisplayName());
+                    actor.setAvatarId(person.getAvatarId());
                 }
             }
-            else if (activity.getActor().getType() == EntityType.GROUP)
+            else if (actor.getType() == EntityType.GROUP)
             {
-                List<String> groupIds = new ArrayList<String>();
-                groupIds.add(activity.getActor().getUniqueIdentifier());
-                List<DomainGroupModelView> groups = groupMapper.execute(groupIds);
-                if (groups.size() > 0)
+                List<DomainGroupModelView> groups = groupMapper.execute(Collections.singletonList(actor
+                        .getUniqueIdentifier()));
+                if (!groups.isEmpty())
                 {
-                    activity.getActor().setId(groups.get(0).getEntityId());
-                    activity.getActor().setDisplayName(groups.get(0).getName());
-                    activity.getActor().setAvatarId(groups.get(0).getAvatarId());
+                    final DomainGroupModelView group = groups.get(0);
+                    actor.setId(group.getEntityId());
+                    actor.setDestinationEntityId(group.getEntityId());
+                    actor.setDisplayName(group.getName());
+                    actor.setAvatarId(group.getAvatarId());
                 }
             }
             // fills in data from cached view of original actor
-            if (activity.getOriginalActor().getType() == EntityType.PERSON)
+            final StreamEntityDTO originalActor = activity.getOriginalActor();
+            if (originalActor != null && originalActor.getType() == EntityType.PERSON)
             {
-                List<String> peopleIds = new ArrayList<String>();
-                peopleIds.add(activity.getOriginalActor().getUniqueIdentifier());
-                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(peopleIds);
-                if (people.size() > 0)
+                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(Collections
+                        .singletonList(originalActor.getUniqueIdentifier()));
+                if (!people.isEmpty())
                 {
-                    activity.getOriginalActor().setId(people.get(0).getEntityId());
-                    activity.getOriginalActor().setDisplayName(people.get(0).getDisplayName());
-                    activity.getOriginalActor().setAvatarId(people.get(0).getAvatarId());
+                    final PersonModelView person = people.get(0);
+                    originalActor.setId(person.getEntityId());
+                    originalActor.setDestinationEntityId(person.getEntityId());
+                    originalActor.setDisplayName(person.getDisplayName());
+                    originalActor.setAvatarId(person.getAvatarId());
                 }
             }
 
@@ -217,13 +225,13 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
 
     /**
      * Load the first/last comments of an activity if present, also sets the comment count.
-     * 
+     *
      * @param activity
      *            ActivityDTO to load comment info for.
      */
     private void loadCommentInfo(final ActivityDTO activity)
     {
-        List<Long> commentIds = this.commentIdListDAO.execute(activity.getId());
+        List<Long> commentIds = commentIdListDAO.execute(activity.getId());
         int numOfComments = commentIds.size();
         activity.setCommentCount(numOfComments);
 
