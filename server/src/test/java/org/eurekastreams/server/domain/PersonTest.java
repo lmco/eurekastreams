@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test class for Person.
- *
+ * 
  * Note: for tabGroups testing, tab groups are named after electron shells 1s, 2s, 2p, 3s, 3p, 3d
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -244,9 +245,9 @@ public class PersonTest
         String avatar = "abc";
         String biography = "my bio";
         String overview = "my overview";
-        final Long parentOrgId = 832L;
         Date dateAdded = new Date();
         final int updatesCount = 23832;
+        ArrayList<String> source = new ArrayList<String>(Arrays.asList("blah"));
 
         Integer avatarCropX = 1;
         Integer avatarCropY = 2;
@@ -270,6 +271,7 @@ public class PersonTest
         sut.setGroupCount(3);
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         sut.setStreamScope(streamScopeMock);
+        sut.setSourceList(source);
 
         assertTrue(0 == sut.getStreamViewHiddenLineIndex());
         assertTrue(0 == sut.getGroupStreamHiddenLineIndex());
@@ -315,6 +317,7 @@ public class PersonTest
         assertEquals(title, (String) props.get("title"));
         assertEquals(location, (String) props.get("location"));
         assertEquals(streamScopeMock, sut.getStreamScope());
+        assertEquals(source, sut.getSourceList());
 
         // verify that null values are dropped.
         sut.setTitle(null);
@@ -399,7 +402,7 @@ public class PersonTest
 
     /**
      * jobDescription too long
-     *
+     * 
      * hibernate validation.
      */
     @Test
@@ -420,7 +423,7 @@ public class PersonTest
 
     /**
      * non-parsable zip code
-     *
+     * 
      * hibernate validation.
      */
     @Test
@@ -435,7 +438,7 @@ public class PersonTest
 
     /**
      * test phone numbers
-     *
+     * 
      * hibernate validation.
      */
     @Test
@@ -456,7 +459,7 @@ public class PersonTest
 
     /**
      * Core of phone number test: insures the given value is acceptable or not.
-     *
+     * 
      * @param testValue
      *            Test value for a phone nubmer.
      * @param ok

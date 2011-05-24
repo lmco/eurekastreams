@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies.ldap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,7 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
             // throw all results into map to eliminate duplicates.
             for (Person p : people)
             {
+                p.setSourceList(lg.getSourceList());
                 personBucket.put(p.getAccountId(), p);
             }
         }
@@ -146,9 +148,12 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
         }
 
         // for each group found add to list of groups then find all subgroups and add them.
+        String dn = null;
         for (LdapGroup lg : topLevelGroups)
         {
-            allGroups.put(lg.getDistinguishedName().toCompactString(), lg);
+            dn = lg.getDistinguishedName().toCompactString();
+            lg.setSourceList(new ArrayList<String>(Arrays.asList(dn)));
+            allGroups.put(dn, lg);
             addSubGroups(lg, allGroups);
         }
 
@@ -175,13 +180,21 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
         // call once here to avoid multiple calls in loop.
         boolean logDebug = log.isDebugEnabled();
 
+        String dn = null;
         for (LdapGroup lg : subGroups)
         {
-            inAllGroups.put(lg.getDistinguishedName().toCompactString(), lg);
+            dn = lg.getDistinguishedName().toCompactString();
+
+            // copy source list from parent and add self to it.
+            lg.setSourceList(new ArrayList<String>(inParentGroup.getSourceList()));
+            lg.getSourceList().add(dn);
+
+            // add group to map of all groups.
+            inAllGroups.put(dn, lg);
 
             if (logDebug)
             {
-                log.debug("Found " + lg.getDistinguishedName().toCompactString() + " as direct subGroup of "
+                log.debug("Found " + dn + " as direct subGroup of "
                         + inParentGroup.getDistinguishedName().toCompactString());
             }
 
