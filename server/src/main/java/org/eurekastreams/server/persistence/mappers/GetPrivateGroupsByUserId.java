@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  * This class retrieves a set of private group ids from cache that a user has access to view activities for through
- * either a direct group coordinator role or a parent org tree coordinator role.
+ * either a direct group coordinator role or a system admin role.
  * 
  */
 public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
@@ -63,7 +63,7 @@ public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
 
     /**
      * Retrieve the Set of ids for the private groups that the supplied user has the ability to view either through
-     * group/org coordinator access.
+     * group/admin coordinator access.
      * 
      * @param inUserId
      *            - user id of the context to bring back private group ids.
@@ -74,7 +74,7 @@ public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
     {
         Set<Long> groupIds = new HashSet<Long>();
 
-        // Retrieve recursive child org ids of orgs direct coordinator of.
+        // get the administrator ids
         List<Long> adminPersonIds = systemAdminIdsMapper.execute(null);
 
         if (adminPersonIds.contains(inUserId))
