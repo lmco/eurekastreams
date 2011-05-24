@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
@@ -27,7 +28,6 @@ import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -50,6 +50,10 @@ public class PendingGroupApprovedTranslatorTest
     private final DomainMapper<Long, DomainGroupModelView> groupMapper = context.mock(DomainMapper.class,
             "groupMapper");
 
+    /** Group mapper. */
+    private final DomainMapper<Long, List<Long>> groupCoordinatorMapper = context.mock(DomainMapper.class,
+            "groupCoordinatorMapper");
+
     /**
      * Tests translate.
      */
@@ -59,22 +63,17 @@ public class PendingGroupApprovedTranslatorTest
         final long groupId = 50L;
         GroupActionNotificationsRequest request = new GroupActionNotificationsRequest(
                 RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, groupId);
-        PendingGroupApprovedTranslator sut = new PendingGroupApprovedTranslator(groupMapper);
+        PendingGroupApprovedTranslator sut = new PendingGroupApprovedTranslator(groupMapper,
+                groupCoordinatorMapper);
         final DomainGroupModelView group = context.mock(DomainGroupModelView.class);
-        final PersonModelView person1 = context.mock(PersonModelView.class, "person1");
-        final PersonModelView person2 = context.mock(PersonModelView.class, "person2");
 
         context.checking(new Expectations()
         {
             {
                 allowing(groupMapper).execute(groupId);
                 will(returnValue(group));
-                allowing(group).getCoordinators();
-                will(returnValue(Arrays.asList(person1, person2)));
-                allowing(person1).getId();
-                will(returnValue(4L));
-                allowing(person2).getId();
-                will(returnValue(2L));
+                allowing(groupCoordinatorMapper).execute(groupId);
+                will(returnValue(Arrays.asList(4L, 2L)));
             }
         });
 

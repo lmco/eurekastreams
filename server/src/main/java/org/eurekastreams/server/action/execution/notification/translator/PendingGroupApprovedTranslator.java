@@ -15,15 +15,14 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates pending group approval events.
@@ -33,16 +32,24 @@ public class PendingGroupApprovedTranslator implements NotificationTranslator<Gr
     /** Group mapper. */
     private final DomainMapper<Long, DomainGroupModelView> groupMapper;
 
+    /** Group coordinator mapper. */
+    private final DomainMapper<Long, List<Long>> groupCoordinatorMapper;
+
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            Group mapper.
+     * @param inGroupCoordinatorMapper
+     *            Group coordinator mapper.
      */
-    public PendingGroupApprovedTranslator(final DomainMapper<Long, DomainGroupModelView> inGroupMapper)
+    public PendingGroupApprovedTranslator(final DomainMapper<Long, DomainGroupModelView> inGroupMapper,
+            final DomainMapper<Long, List<Long>> inGroupCoordinatorMapper)
     {
         groupMapper = inGroupMapper;
+        groupCoordinatorMapper = inGroupCoordinatorMapper;
     }
+
 
     /**
      * {@inheritDoc}
@@ -51,12 +58,7 @@ public class PendingGroupApprovedTranslator implements NotificationTranslator<Gr
     public NotificationBatch translate(final GroupActionNotificationsRequest inRequest)
     {
         DomainGroupModelView group = groupMapper.execute(inRequest.getGroupId());
-
-        Collection<Long> recipientIds = new ArrayList<Long>();
-        for (PersonModelView coordinator : group.getCoordinators())
-        {
-            recipientIds.add(coordinator.getId());
-        }
+        Collection<Long> recipientIds = groupCoordinatorMapper.execute(inRequest.getGroupId());
 
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP_APPROVED, recipientIds);
         batch.setProperty("group", group);

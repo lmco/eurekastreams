@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import org.eurekastreams.server.service.actions.strategies.RecipientRetriever;
 
 /**
  * This class contains the business logic for posting an Activity to the system.
- * 
+ *
  */
 public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -87,16 +87,16 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
     /**
      * Mapper to get or insert shared resources.
      */
-    private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
+    private final DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
 
     /**
      * The cache to use to clean up shared resources.
      */
-    private Cache cache;
+    private final Cache cache;
 
     /**
      * Constructor for the PostActivityExecutionStrategy.
-     * 
+     *
      * @param inInsertMapper
      *            - instance of the {@link InsertMapper} for the {@link Activity} object.
      * @param inInsertCommentDAO
@@ -131,13 +131,13 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * Perform the business logic for posting an {@link Activity} to the system.
-     * 
+     *
      * Create the {@link Activity} object from the provided {@link ActivityDTO}, assign appropriate values, update the
      * cached streams related to the actor (surgical strike) and submit assemble async requests to be submitted to the
      * queue.
-     * 
+     *
      * @return Populated instance of the {@link ActivityDTO} after being persisted.
      */
     @Override
@@ -214,7 +214,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * Method to convert ActivityDTO to an Activity object.
-     * 
+     *
      * @param inActivityDTO
      *            - ActivityDTO instance to be converted.
      * @param inUserActionRequestList
@@ -276,8 +276,11 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         currentActivity.setBaseObjectType(inActivityDTO.getBaseObjectType());
         currentActivity.setLocation(inActivityDTO.getLocation());
         currentActivity.setMood(inActivityDTO.getMood());
-        currentActivity.setOriginalActorId(inActivityDTO.getOriginalActor().getUniqueIdentifier());
-        currentActivity.setOriginalActorType(inActivityDTO.getOriginalActor().getType());
+        if (inActivityDTO.getOriginalActor() != null)
+        {
+            currentActivity.setOriginalActorId(inActivityDTO.getOriginalActor().getUniqueIdentifier());
+            currentActivity.setOriginalActorType(inActivityDTO.getOriginalActor().getType());
+        }
         currentActivity.setRecipientStreamScope(recipientRetriever.getStreamScope(inActivityDTO));
         currentActivity.setVerb(inActivityDTO.getVerb());
         currentActivity.setIsDestinationStreamPublic(recipientRetriever.isDestinationStreamPublic(inActivityDTO));
