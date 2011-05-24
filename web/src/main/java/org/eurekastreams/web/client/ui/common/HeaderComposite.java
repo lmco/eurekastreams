@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HeaderComposite draws the header bar for the user.
- *
+ * 
  */
 public class HeaderComposite extends Composite
 {
@@ -110,7 +110,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     *
+     * 
      * @param viewer
      *            - user to display.
      */
@@ -161,7 +161,6 @@ public class HeaderComposite extends Composite
         linkMap.put(Page.GROUPS, directoryLink);
         linkMap.put(Page.PEOPLE, directoryLink);
         linkMap.put(Page.GROUP_SETTINGS, directoryLink);
-        linkMap.put(Page.ORG_SETTINGS, directoryLink);
         linkMap.put(Page.PERSONAL_SETTINGS, directoryLink);
         linkMap.put(Page.SETTINGS, settingsLink);
         linkMap.put(Page.HELP, helpLink);
@@ -247,7 +246,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Sets Site labeling.
-     *
+     * 
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -262,7 +261,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     *
+     * 
      * @param page
      *            the page to activate.
      */

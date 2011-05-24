@@ -20,7 +20,8 @@
         applicationContext-servletcontextaware-framework-actions.xml file.
     --> 
     
-    <!-- Authorization strategy for ensuring the current user is a system admin -->
+    <!-- Authorization strategy for ensuring the current user is a system admin
+-->
     <bean id="isSystemAdminAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserIsSystemAdministratorAuthorization">
         <constructor-arg ref="getSystemAdministratorIds" />
     </bean>
@@ -1197,19 +1198,6 @@
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="getFollowingGroups" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="getPersonIdByAccountIdMapper" />
-                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-                <constructor-arg ref="getGroupsByIdsMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
     <bean id="getFollowing" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1221,7 +1209,9 @@
                         <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
                     </bean>
                 </constructor-arg>
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1242,35 +1232,17 @@
                 <constructor-arg ref="getPersonIdByAccountIdMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
-                        <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
+                        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
                     </bean>
                 </constructor-arg>
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="getGroupFollowers" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.authorization.profile.GetFollowersAuthorizationStrategy">
-                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                <constructor-arg ref="getSystemAdministratorIds"/>
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" /> <!-- wbc -->
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-                <constructor-arg ref="getPersonsByIdsMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-    
     <bean id="changeGroupNewActivityNotificationPreference" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />

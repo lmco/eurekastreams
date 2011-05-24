@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.ldap;
 
+import java.util.List;
+
 import org.springframework.ldap.core.DistinguishedName;
 
 /**
@@ -27,6 +29,11 @@ public class LdapGroup
      * {@link DistinguishedName}.
      */
     private DistinguishedName distinguishedName;
+
+    /**
+     * Optional inclusive list of groups that were traversed to locate this group.
+     */
+    private List<String> sourceList;
 
     /**
      * Constructor.
@@ -45,6 +52,23 @@ public class LdapGroup
     public DistinguishedName getDistinguishedName()
     {
         return distinguishedName;
+    }
+
+    /**
+     * @return the sourceList
+     */
+    public List<String> getSourceList()
+    {
+        return sourceList;
+    }
+
+    /**
+     * @param inSourceList
+     *            the sourceList to set
+     */
+    public void setSourceList(final List<String> inSourceList)
+    {
+        sourceList = inSourceList;
     }
 
 }

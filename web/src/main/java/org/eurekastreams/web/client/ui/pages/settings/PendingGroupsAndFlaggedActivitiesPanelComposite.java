@@ -15,16 +15,22 @@
  */
 package org.eurekastreams.web.client.ui.pages.settings;
 
+import java.util.HashMap;
+
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPendingGroupsResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedActivityFlagResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedReviewPendingGroupResponseEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.FlaggedActivityModel;
 import org.eurekastreams.web.client.model.PendingGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -79,8 +85,8 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
         final String pendingGroupsFilterName = "Group Requests";
 
         // set up the tab itself
-        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer(), "tab",
-                "Admin");
+        final PagedListPanel adminTabContent = new PagedListPanel("pending", new SingleColumnPagedListRenderer(),
+                "tab", "Pending");
 
         // wire up the data retrieval events
         eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class, new Observer<GotFlaggedActivitiesResponseEvent>()
@@ -94,7 +100,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
                 flaggedActivityCount = event.getResponse().getTotal();
                 adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
                         + flaggedActivityCount + ")");
-                setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
+                setTitle("Pending (" + (flaggedActivityCount + pendingGroupCount) + ")");
             }
         });
 
@@ -108,7 +114,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
                 }
                 pendingGroupCount = event.getResponse().getTotal();
                 adminTabContent.setFilterTitle(pendingGroupsFilterName, "Group Requests (" + pendingGroupCount + ")");
-                setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
+                setTitle("Pending (" + (flaggedActivityCount + pendingGroupCount) + ")");
             }
         });
 
@@ -152,6 +158,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
         StreamMessageItemRenderer flaggedRenderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
         flaggedRenderer.setShowManageFlagged(true);
         flaggedRenderer.setShowComment(true);
+
         BaseActivityLinkBuilder activityLinkBuilder = new InContextActivityLinkBuilder();
         activityLinkBuilder.addExtraParameter("manageFlagged", "true");
         flaggedRenderer.setActivityLinkBuilder(activityLinkBuilder);
@@ -162,5 +169,33 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
                 new GetPendingGroupsRequest(0, 0));
 
         return adminTabContent;
+    }
+
+    /**
+     * Switches to the admin tab and filters thereon if URL parameters dictate.
+     */
+    private void switchToAdminTabFilterIfRequested()
+    {
+        if (!Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            return;
+        }
+
+        if ("Pending".equals(Session.getInstance().getParameterValue("tab")))
+        {
+            String adminFilter = Session.getInstance().getParameterValue("adminFilter");
+            if (adminFilter != null)
+            {
+                // remove parameter from the URL. Since changing filters does not keep it updated, we
+                // don't want to be on a different filter with this still in the URL.
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("adminFilter", null);
+                Session.getInstance().getEventBus().notifyObservers(
+                        new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+
+                Session.getInstance().getEventBus().notifyObservers(
+                        new SwitchToFilterOnPagedFilterPanelEvent("admin", adminFilter, "", true));
+            }
+        }
     }
 }

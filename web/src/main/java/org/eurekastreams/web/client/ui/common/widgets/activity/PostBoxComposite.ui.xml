@@ -1,7 +1,10 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
-	xmlns:ea='urn:import:org.eurekastreams.web.client.ui.common.autocomplete'>
+	xmlns:ea='urn:import:org.eurekastreams.web.client.ui.common.autocomplete'
+	xmlns:eb='urn:import:org.eurekastreams.web.client.ui.common.stream.attach.bookmark'>
 
+	<ui:image field="postActive" src="style/images/postActive.png" />
+	<ui:image field="postInactive" src="style/images/postInactive.png" />
 
 	<ui:style type="org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite.PostBoxStyle">
 			
@@ -35,11 +38,18 @@
 			display: none;
 		}
 		
-		.post-button
+		@sprite .post-button
 		{
 			float: right;
 			cursor: pointer;
+			gwt-image: "postActive";
 		}
+		
+		@sprite .post-button-inactive
+		{
+			gwt-image: "postInactive";
+		}
+		
 		.post-char-count
 		{
 			float: right;
@@ -66,8 +76,8 @@
 			<ea:ExtendedTextArea addStyleNames="{style.post-box}"
 				ui:field="postBox"></ea:ExtendedTextArea>
 			<div ui:field="postOptions" class="{style.post-options}">
-				<g:Label ui:field="postButton" addStyleNames="{style.post-button}">Post
-				</g:Label>
+				<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
+				<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>
 				<div ui:field="postCharCount" class="{style.post-char-count}"></div>
 			</div>
 		</div>

@@ -9,13 +9,13 @@ create table InAppNotification (
 	avatarOwnerUniqueId varchar(255),
 	highPriority bool not null,
 	isRead bool not null,
-	message varchar(255),
+	message varchar(255) not null,
 	notificationDate timestamp not null,
 	notificationType varchar(255) not null,
 	sourceName varchar(255),
 	sourceType varchar(255) not null,
 	sourceUniqueId varchar(255),
-	url varchar(255),
+	url varchar(2048),
 	recipientId int8 not null,
 	primary key (id)
 );

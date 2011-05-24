@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package org.eurekastreams.commons.exceptions;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
@@ -37,14 +39,16 @@ public class ValidationExceptionTest
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("foo", "bar");
 
-        ValidationException validation = new ValidationException();
-        validation.setErrors(map);
+        ValidationException sut = new ValidationException();
+        assertFalse(sut.hasErrors());
+        sut.setErrors(map);
+        assertTrue(sut.hasErrors());
 
-        assertEquals(message, map, validation.getErrors());
+        assertEquals(message, map, sut.getErrors());
 
-        validation.addError("foo1", "bar1");
-        assertEquals(2, validation.getErrors().size());
-
+        sut.addError("foo1", "bar1");
+        assertEquals(2, sut.getErrors().size());
+        assertTrue(sut.hasErrors());
     }
 
     /**
@@ -55,6 +59,7 @@ public class ValidationExceptionTest
     {
         ValidationException sut = new ValidationException("msg");
         assertEquals("msg", sut.getMessage());
+        assertFalse(sut.hasErrors());
     }
 
 }

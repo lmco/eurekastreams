@@ -754,7 +754,7 @@
                             <gwtVersion>${gwtVersion}</gwtVersion>
                             <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
                             <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
-                            <runTarget>Application.html</runTarget>
+                            <runTarget>index.html</runTarget>
                             <noServer>true</noServer>
                             <compileReport>true</compileReport>
                             <port>8080</port>

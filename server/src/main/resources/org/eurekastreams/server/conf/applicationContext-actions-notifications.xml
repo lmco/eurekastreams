@@ -35,7 +35,11 @@
     </bean>
 
     <bean id="sendPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+			<bean class="org.eurekastreams.server.action.validation.notification.SendPrebuiltNotificationValidation">
+				<constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+			</bean>
+		</constructor-arg>
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.SendPrebuiltNotificationExecution">
@@ -101,6 +105,15 @@
                 <constructor-arg ref="getSystemAdministratorIds" />
             </bean>
         </entry>
+        <entry key="REQUEST_NEW_GROUP_APPROVED">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PendingGroupApprovedTranslator">
+                <constructor-arg ref="getGroupByIdMapper" />
+				<constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
+            </bean>
+        </entry>
+        <entry key="REQUEST_NEW_GROUP_DENIED">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PendingGroupDeniedTranslator" />
+        </entry>
         <entry key="REQUEST_GROUP_ACCESS">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestGroupAccessTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
@@ -156,6 +169,11 @@
 	<!-- Apache Velocity beans -->
 
 	<bean id="velocityEngine" class="org.apache.velocity.app.VelocityEngine" init-method="init">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.service.utility.ResourcePropertyFileLoaderFactoryBean">
+				<constructor-arg value="classpath:conf/velocity.properties" />
+			</bean>
+		</constructor-arg>
 	</bean>
 
 	<bean id="velocityGlobalContext" class="org.apache.velocity.VelocityContext">
@@ -299,9 +317,9 @@
 		<entry key="FOLLOW_GROUP" value="FOLLOW_GROUP" />
 		<entry key="FLAG_PERSONAL_ACTIVITY" value="FLAG_PERSONAL_ACTIVITY" />
 		<entry key="FLAG_GROUP_ACTIVITY" value="FLAG_GROUP_ACTIVITY" />
-		<entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
-		<entry key="REQUEST_NEW_GROUP_APPROVED" value="REQUEST_NEW_GROUP_APPROVED" />
-		<entry key="REQUEST_NEW_GROUP_DENIED" value="REQUEST_NEW_GROUP_DENIED" />
+		<entry key="REQUEST_NEW_GROUP" value="The $group.name group is pending approval." />
+		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.name group has been approved." />
+		<entry key="REQUEST_NEW_GROUP_DENIED" value="Your request to create the $groupName group has been denied." />
 		<entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
 		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="REQUEST_GROUP_ACCESS_APPROVED" />
 		<entry key="REQUEST_GROUP_ACCESS_DENIED" value="REQUEST_GROUP_ACCESS_DENIED" />

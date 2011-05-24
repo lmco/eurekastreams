@@ -402,7 +402,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Profile location for person.
-     *
+     * 
      * @Digits integerDigits tells you *up to* how many digits it can have so we include a minimum length here to make
      *         sure there are exactly 10.
      */
@@ -567,6 +567,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private boolean accountLocked = false;
 
     /**
+     * Optional list of sources that were traversed to locate this employee.
+     */
+    @Transient
+    private List<String> sourceList = new ArrayList<String>();
+
+    /**
      * Public constructor for ORM and ResourcePersistenceStrategy.
      */
     public Person()
@@ -575,7 +581,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Gets the user's name in the standard format for display.
-     *
+     * 
      * @return Displayed name.
      */
     @Override
@@ -590,7 +596,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the display name - for de/serialization only.
-     *
+     * 
      * @param inDisplayName
      *            the display name to set
      */
@@ -625,9 +631,9 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * TODO: This is a patch until we stop sending entities over the line
-     *
+     * 
      * Construct a person from a person model view.
-     *
+     * 
      * @param personModelView
      *            the person model view.
      */
@@ -650,7 +656,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Public constructor for API.
-     *
+     * 
      * @param inAccountId
      *            unique key for person - lower-cased for uniqueness
      * @param inFirstName
@@ -676,7 +682,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the person's unique key.
-     *
+     * 
      * @return the unique case-insensitive account id of this Person.
      */
     public String getAccountId()
@@ -686,7 +692,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Gets the opensocial ID.
-     *
+     * 
      * @return the open social id.
      */
     public String getOpenSocialId()
@@ -696,7 +702,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Sets the open social id.
-     *
+     * 
      * @param inOpenSocialId
      *            the open social id.
      */
@@ -707,7 +713,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Returns list of tabs of correct TabGroupType or empty list if none exist.
-     *
+     * 
      * @param tabGroupType
      *            The tab type enum value.
      * @return list of tabs of correct TabGroupType.
@@ -725,7 +731,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Adds the given tab to the specified tab group type.
-     *
+     * 
      * @param newTab
      *            The new tab.
      * @param tabGroupType
@@ -761,7 +767,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the Person's individual theme.
-     *
+     * 
      * @param inTheme
      *            the new theme.
      */
@@ -772,7 +778,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the Person's individual theme.
-     *
+     * 
      * @return the theme
      */
     public Theme getTheme()
@@ -782,7 +788,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the Person's biography.
-     *
+     * 
      * @param inBiography
      *            the biography.
      */
@@ -793,7 +799,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the Person's biography.
-     *
+     * 
      * @return the biography.
      */
     public String getBiography()
@@ -803,7 +809,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the person's first name.
-     *
+     * 
      * @return the first name
      */
     public String getFirstName()
@@ -813,7 +819,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the person's middle name.
-     *
+     * 
      * @return the middle name
      */
     public String getMiddleName()
@@ -823,7 +829,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the person's last name.
-     *
+     * 
      * @return the last name
      */
     public String getLastName()
@@ -833,9 +839,9 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the name the user prefers to be called.
-     *
+     * 
      * Method is non-final to facilitate mocking.
-     *
+     * 
      * @return the name the user prefers to be called
      */
     public String getPreferredName()
@@ -845,7 +851,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Getter for person's email address.
-     *
+     * 
      * @return person's email address.
      */
     @Override
@@ -856,10 +862,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for person's email address.
-     *
+     * 
      * Hibernate validation on this object requires the attribute to be not null and to be a valid email address.
      * (name@domain.com, etc).
-     *
+     * 
      * @param inEmail
      *            person's email address.
      */
@@ -878,7 +884,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for work phone number.
-     *
+     * 
      * @param phoneNumber
      *            The phone number.
      */
@@ -897,7 +903,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for cell phone number.
-     *
+     * 
      * @param phoneNumber
      *            The phone number.
      */
@@ -917,7 +923,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * private methods.
-     *
+     * 
      * @param inOptOutVideoIds
      *            the String of opt videos to set.
      */
@@ -930,7 +936,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * NOTE: this method abstracts the way the db stores this data. This returns a copy of the set. Adding to this copy
      * will not save to the entity. You must use the set method to modify these values.
-     *
+     * 
      * @return a COPY of the set of videos a person has opted out of.
      */
     @SuppressWarnings("unchecked")
@@ -957,10 +963,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * set the set of videos a person has opted out of.
-     *
+     * 
      * @param inOptOutVideos
      *            the set of videos.
-     *
+     * 
      */
     public void setOptOutVideos(final HashSet<Long> inOptOutVideos)
     {
@@ -984,7 +990,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for fax number.
-     *
+     * 
      * @param faxNumber
      *            The phone number.
      */
@@ -995,7 +1001,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Getter for job description.
-     *
+     * 
      * @return job description.
      */
     public String getJobDescription()
@@ -1005,7 +1011,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for job description.
-     *
+     * 
      * @param inJobDescription
      *            person's job description.
      */
@@ -1016,7 +1022,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Getter for person's title.
-     *
+     * 
      * @return person's title.
      */
     public String getTitle()
@@ -1026,7 +1032,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for person's title.
-     *
+     * 
      * @param inTitle
      *            person's title.
      */
@@ -1037,7 +1043,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Getter for person's location.
-     *
+     * 
      * @return person's location.
      */
     public String getLocation()
@@ -1047,7 +1053,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for person's location.
-     *
+     * 
      * @param inLocation
      *            person's location.
      */
@@ -1067,7 +1073,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Private setter for followers count.
-     *
+     * 
      * @param inFollowersCount
      *            The count.
      */
@@ -1087,7 +1093,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Private setter for followingCount.
-     *
+     * 
      * @param inFollowingCount
      *            The count.
      */
@@ -1107,7 +1113,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get avatar x coord.
-     *
+     * 
      * @return avatar x coord.
      */
     @Override
@@ -1118,7 +1124,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set avatar x coord.
-     *
+     * 
      * @param value
      *            x coord.
      */
@@ -1130,7 +1136,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get avatar y coord.
-     *
+     * 
      * @return avatar y coord.
      */
     @Override
@@ -1141,7 +1147,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set avatar y coord.
-     *
+     * 
      * @param value
      *            y coord.
      */
@@ -1153,7 +1159,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get avatar crop size.
-     *
+     * 
      * @return avatar crop size.
      */
     @Override
@@ -1164,7 +1170,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set avatar crop size.
-     *
+     * 
      * @param value
      *            crop size.
      */
@@ -1195,10 +1201,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Adding private setter to make serialization work.
-     *
+     * 
      * Hibernate validation on this object requires the first name to be not null, and of length greater than 1 and less
      * than MAX_FIRST_NAME_LENGTH
-     *
+     * 
      * @param inFirstName
      *            the firstName to set
      */
@@ -1210,7 +1216,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Adding private setter to make serialization work.
-     *
+     * 
      * @param inMiddleName
      *            the middleName to set
      */
@@ -1222,10 +1228,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the person's last name.
-     *
+     * 
      * Hibernate validation on this object requires the last name to be not null, and of length greater than 1 and less
      * than MAX_LAST_NAME_LENGTH
-     *
+     * 
      * @param inLastName
      *            the lastName to set
      */
@@ -1236,7 +1242,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the person's preferred name.
-     *
+     * 
      * @param inPreferredName
      *            the preferredName to set
      */
@@ -1250,7 +1256,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the person's unique key, needed for serialization.
-     *
+     * 
      * @param inAccountId
      *            the account ID.
      */
@@ -1261,7 +1267,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Returns properties of person, this is NOT an all inclusive list, this is used by create and update functionality.
-     *
+     * 
      * @return properties of person.
      */
     public HashMap<String, Serializable> getProperties()
@@ -1291,7 +1297,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Adds key/value pairs to a map if non-null.
-     *
+     * 
      * @param key
      *            Key to use.
      * @param value
@@ -1345,7 +1351,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Override equality to be based on the person's id.
-     *
+     * 
      * @param rhs
      *            target object
      * @return true if equal, false otherwise.
@@ -1359,7 +1365,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * set the id - useful for unit testing.
-     *
+     * 
      * @param newId
      *            the new id
      */
@@ -1371,7 +1377,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * HashCode override.
-     *
+     * 
      * @see java.lang.Object#hashCode()
      * @return hashcode for object.
      */
@@ -1387,7 +1393,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the date the user was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -1398,7 +1404,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the date the person was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -1408,7 +1414,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the number of updates for this person.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -1418,7 +1424,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the number of updates for this person.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -1429,7 +1435,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the Person's jobs.
-     *
+     * 
      * @return the jobs for a person.
      */
     public List<Job> getJobs()
@@ -1439,7 +1445,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the Person's background.
-     *
+     * 
      * @return the Person's background.
      */
     public Background getBackground()
@@ -1449,7 +1455,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for serialization.
-     *
+     * 
      * @param inBackground
      *            the background to set
      */
@@ -1461,7 +1467,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the Person's school enrollments.
-     *
+     * 
      * @return the Person's school enrollments.
      */
     public List<Enrollment> getSchoolEnrollments()
@@ -1573,7 +1579,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Setter for the static PersonUpdater.
-     *
+     * 
      * @param inEntityCacheUpdater
      *            the PersonUpdater to set
      */
@@ -1637,7 +1643,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the unique id for as implemented for Followable.
-     *
+     * 
      * @return uniqueId of the person - accountid.
      */
     @Override
@@ -1684,7 +1690,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the streams.
-     *
+     * 
      * @return the streams
      */
     public List<Stream> getStreams()
@@ -1694,7 +1700,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the streams.
-     *
+     * 
      * @param inStreams
      *            the streams to set
      */
@@ -1705,7 +1711,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * The additionalProperties setter.
-     *
+     * 
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -1716,7 +1722,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * The additionalProperties getter.
-     *
+     * 
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()
@@ -1726,9 +1732,9 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * TODO: This is a patch until we stop sending entities over the line
-     *
+     * 
      * Creates a PersonModelView from the person.
-     *
+     * 
      * @return PersonModelView.
      */
     public PersonModelView toPersonModelView()
@@ -1774,7 +1780,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Get the company name.
-     *
+     * 
      * @return the company name.
      */
     public String getCompanyName()
@@ -1784,7 +1790,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * Set the company name.
-     *
+     * 
      * @param inCompanyName
      *            the company name.
      */
@@ -1827,4 +1833,22 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return getId();
     }
+
+    /**
+     * @return the sourceList
+     */
+    public List<String> getSourceList()
+    {
+        return sourceList;
+    }
+
+    /**
+     * @param inSourceList
+     *            the sourceList to set
+     */
+    public void setSourceList(final List<String> inSourceList)
+    {
+        sourceList = inSourceList;
+    }
+
 }

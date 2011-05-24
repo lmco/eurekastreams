@@ -49,7 +49,6 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Stream plugins panel.
@@ -111,7 +110,7 @@ public class StreamPluginsPanel extends FlowPanel
         params.put("action", "newPlugin");
         addPlugin = new Hyperlink("Add Plugin", Session.getInstance().generateUrl(new CreateUrlRequest(params)));
 
-        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().gallery());
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gallery());
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().galleryMaster());
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pluginsMaster());
         galleryAddOrEditContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTab());

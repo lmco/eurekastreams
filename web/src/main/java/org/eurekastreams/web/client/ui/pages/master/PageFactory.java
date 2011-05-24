@@ -29,7 +29,6 @@ import org.eurekastreams.web.client.ui.pages.profile.OrganizationProfilePanel;
 import org.eurekastreams.web.client.ui.pages.profile.PersonalProfilePanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.CreateGroupPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.GroupProfileSettingsPanel;
-import org.eurekastreams.web.client.ui.pages.profile.settings.OrganizationProfileSettingsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.PersonalProfileSettingsPanel;
 import org.eurekastreams.web.client.ui.pages.search.SearchContent;
 import org.eurekastreams.web.client.ui.pages.settings.SettingsContent;
@@ -221,6 +220,9 @@ public class PageFactory
                 }
             });              
             break;
+            return new CreateGroupPanel(view);
+        case ORGANIZATIONS:
+            return new OrganizationProfilePanel(view);
         case HELP:
             GWT.runAsync(new RunAsyncCallback()
             {

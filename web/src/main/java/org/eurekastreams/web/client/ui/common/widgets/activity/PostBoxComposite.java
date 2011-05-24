@@ -7,6 +7,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
@@ -84,7 +85,7 @@ public class PostBoxComposite extends Composite
     @UiField
     DivElement postCharCount;
 
-    private static final Integer BLUR_DELAY = 100;
+    private static final Integer BLUR_DELAY = 500;
 
     private static final Integer POST_MAX = 250;
 
@@ -102,6 +103,8 @@ public class PostBoxComposite extends Composite
 
     /** Activity Populator. */
     private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
+
+    protected Attachment attachment;
 
     /**
      * Default constructor.
@@ -163,7 +166,7 @@ public class PostBoxComposite extends Composite
                 {
                     public void run()
                     {
-                        if (postBox.getText().length() == 0)
+                        if (postBox.getText().length() == 0 && attachment == null)
                         {
                             postOptions.removeClassName(style.visiblePostBox());
                             postBox.getElement().getStyle().clearHeight();
@@ -183,11 +186,19 @@ public class PostBoxComposite extends Composite
                     }
                 });
 
+        EventBus.getInstance().addObserver(MessageAttachmentChangedEvent.class,
+                new Observer<MessageAttachmentChangedEvent>()
+                {
+                    public void update(final MessageAttachmentChangedEvent evt)
+                    {
+                        attachment = evt.getAttachment();
+                    }
+                });
+
         postButton.addClickHandler(new ClickHandler()
         {
             public void onClick(ClickEvent event)
             {
-                Attachment attachment = null;
                 ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
                         : new NotePopulator();
 
@@ -199,7 +210,6 @@ public class PostBoxComposite extends Composite
                 ActivityModel.getInstance().insert(postRequest);
             }
         });
-
     }
 
     protected void checkPostBox()

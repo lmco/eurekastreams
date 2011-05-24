@@ -50,7 +50,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     private Boolean readOnly;
 
     /**
-     * The name of the view.
+     * The request.
      */
     @Column(nullable = false)
     @Lob

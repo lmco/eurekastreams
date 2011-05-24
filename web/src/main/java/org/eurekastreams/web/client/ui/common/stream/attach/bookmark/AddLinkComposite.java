@@ -348,14 +348,6 @@ public class AddLinkComposite extends FlowPanel
                                     }
                                     eventBus.notifyObservers(event);
 
-                                    // no reason to show any errors
-                                    // if (titleBlank
-                                    // && (result.getDescription() == null || result.getDescription().isEmpty())
-                                    // && result.getImageUrls().isEmpty())
-                                    // {
-                                    // eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
-                                    // INCOMPLETE_INFO_URL_MESSAGE)));
-                                    // }
                                 }
                             });
         }

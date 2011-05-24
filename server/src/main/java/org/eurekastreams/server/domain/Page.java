@@ -73,10 +73,6 @@ public enum Page implements Serializable
      */
     ORGANIZATIONS("organizations"),
     /**
-     * Org settings.
-     */
-    ORG_SETTINGS("orgsettings"),
-    /**
      * New group page.
      */
     NEW_GROUP("newgroup"),
