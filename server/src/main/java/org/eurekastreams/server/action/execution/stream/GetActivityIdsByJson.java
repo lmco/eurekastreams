@@ -163,6 +163,8 @@ public class GetActivityIdsByJson
         // increment the start index for next page
         List<Long> page = new ArrayList<Long>();
 
+        boolean reachedMinActivityIdWhenSortingByIdDescending = false;
+        boolean sortedByIdDescending = false;
         do
         {
             allKeys.clear();
@@ -174,17 +176,23 @@ public class GetActivityIdsByJson
 
             final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(jsonRequest, userEntityId);
 
-            if (descendingOrderDataSet != null && sortedDataSet != null)
+            if (descendingOrderDataSet != null)
             {
-                // we have both lists
-                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
-            }
-            else if (descendingOrderDataSet != null)
-            {
-                allKeys = descendingOrderDataSet;
+                sortedByIdDescending = true;
+                if (sortedDataSet != null)
+                {
+                    // we have both lists
+                    allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
+                }
+                else
+                {
+                    // we don't have a sorted list - just descending order list
+                    allKeys = descendingOrderDataSet;
+                }
             }
             else if (sortedDataSet != null)
             {
+                sortedByIdDescending = false;
                 allKeys = sortedDataSet;
             }
 
@@ -198,6 +206,12 @@ public class GetActivityIdsByJson
             // loop across the available keys in allKeys
             for (int i = startingIndex; i < allKeys.size(); i++, startingIndex++)
             {
+                if (sortedByIdDescending && allKeys.get(i) <= minActivityId)
+                {
+                    // we've reached the minimum id and our list is sorted by id, descending, so we can safely break out
+                    reachedMinActivityIdWhenSortingByIdDescending = true;
+                    break;
+                }
                 // if this is within our limits, include it for security trimming
                 if (allKeys.get(i) < maxActivityId && allKeys.get(i) > minActivityId)
                 {
@@ -233,13 +247,18 @@ public class GetActivityIdsByJson
             // we've looped across allPages and haven't yet found enough results - increment the pass, and try
             // getting more into allKeys
 
-            pass++;
+            log.trace("Done looping?: "
+                    + (reachedMinActivityIdWhenSortingByIdDescending || allKeys.size() >= batchSize) + ", pass: "
+                    + pass + ", results.size(): " + results.size() + ", maxResults: " + maxResults
+                    + ", allKeys.size(): " + allKeys.size() + ", batchSize: " + batchSize
+                    + ", sorting by id descending? " + sortedByIdDescending
+                    + ", reached min activity id when sorted by id descending? "
+                    + reachedMinActivityIdWhenSortingByIdDescending);
 
-            log.trace("Done looping?: " + (allKeys.size() < batchSize) + ", pass: " + pass + ", results.size(): "
-                    + results.size() + ", maxResults: " + maxResults + ", allKeys.size(): " + allKeys.size()
-                    + ", batchSize: " + batchSize);
+            pass++;
         }
-        while (allKeys.size() >= batchSize); // while we got back at least as many as we needed for the recent batch
+        while (!reachedMinActivityIdWhenSortingByIdDescending && allKeys.size() >= batchSize); // while we got back at
+        // least as many as we needed for the recent batch
 
         if (results.size() < maxResults && page.size() > 0)
         { // we haven't gotten all our results yet, and we still have results to security trim

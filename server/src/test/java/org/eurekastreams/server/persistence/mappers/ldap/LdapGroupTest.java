@@ -17,6 +17,9 @@ package org.eurekastreams.server.persistence.mappers.ldap;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.springframework.ldap.core.DistinguishedName;
 
@@ -34,6 +37,10 @@ public class LdapGroupTest
     {
         DistinguishedName dn = new DistinguishedName();
         LdapGroup sut = new LdapGroup(dn);
+        ArrayList<String> source = new ArrayList<String>(Arrays.asList("blah"));
+        sut.setSourceList(source);
+
         assertEquals(dn, sut.getDistinguishedName());
+        assertEquals(source, sut.getSourceList());
     }
 }

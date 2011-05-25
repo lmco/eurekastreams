@@ -88,7 +88,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
                 Session.getInstance().getEventBus().notifyObservers(
                         new ClearUploadedImageEvent(entityType, ImageType.BANNER, arg1.getResponse()));
             }
-        }, DeleteGroupBannerResponseEvent.class, DeleteGroupBannerResponseEvent.class);
+        }, DeleteGroupBannerResponseEvent.class);
     }
 
     /**

@@ -2179,6 +2179,22 @@
         <constructor-arg value="false" />
     </bean>
     
+    <!-- gets single streamScopeId for person based on StreamScope uniqueKey, returns null if exactly one result not found. -->
+    <bean id="getStreamScopeForPersonScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
+        <constructor-arg>
+             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">PERSON</value>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
+    <!-- gets single streamScopeId for person based on StreamScope uniqueKey, returns null if exactly one result not found. -->
+    <bean id="getStreamScopeForGroupScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
+        <constructor-arg>
+             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">GROUP</value>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, throws exception if exactly one result not found. -->
     <bean id="getStreamScopeForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
