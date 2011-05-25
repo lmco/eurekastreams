@@ -140,7 +140,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
      * At least one of the system admins is locked error message.
      */
     public static final String SYSTEM_ADMINISTRATOR_NOTFOUND_ERROR_MESSAGE = // 
-    "At least one of the requested administrators is currently locked out of the system: ";
+    "At least one of the requested administrators is not found in the system: ";
 
     /**
      * mapper to get group by short name.

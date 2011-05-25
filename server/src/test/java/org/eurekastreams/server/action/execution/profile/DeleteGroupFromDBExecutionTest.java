@@ -17,19 +17,23 @@ package org.eurekastreams.server.action.execution.profile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteAllFeedSubscriberByEntityTypeAndId;
 import org.eurekastreams.server.persistence.mappers.db.DeleteGroup;
 import org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity;
 import org.eurekastreams.server.persistence.mappers.db.RemoveGroupFollowers;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteAllFeedSubscriberByEntityTypeAndIdRequest;
+import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -99,6 +103,8 @@ public class DeleteGroupFromDBExecutionTest
     {
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         final int maxCacheListSize = 10000;
+        final String shortName = "shortname";
+        final DeleteGroupResponse deleteGroupResponse = new DeleteGroupResponse(groupId, shortName, 3L);
 
         sut = new DeleteGroupFromDBExecution(deleteGroupActivityDAO, removeGroupFollowersDAO, deleteGroupDAO,
                 deleteGroupSubscriptionsDAO, maxCacheListSize);
@@ -120,6 +126,7 @@ public class DeleteGroupFromDBExecutionTest
                         with(any(DeleteAllFeedSubscriberByEntityTypeAndIdRequest.class)));
 
                 allowing(deleteGroupDAO).execute(groupId);
+                will(returnValue(deleteGroupResponse));
 
                 allowing(taskHandlerConext).getUserActionRequests();
                 will(returnValue(requests));
@@ -127,6 +134,17 @@ public class DeleteGroupFromDBExecutionTest
         });
 
         sut.execute(taskHandlerConext);
+
+        // check to make sure the right cache keys will be cleared
+        Set<String> keysToDelete = (Set<String>) (requests.get(0)).getParams();
+        Assert.assertEquals(6, keysToDelete.size());
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.GROUP_BY_SHORT_NAME + shortName));
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.FOLLOWERS_BY_GROUP + groupId));
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID + groupId));
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.GROUP_BY_ID + groupId));
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + 3));
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME + shortName));
+
         context.assertIsSatisfied();
     }
 }

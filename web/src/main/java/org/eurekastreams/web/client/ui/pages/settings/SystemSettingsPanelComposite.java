@@ -243,11 +243,16 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        // got the system settings - remove the observer
-                        Session.getInstance().getEventBus().removeObserver(GotSystemSettingsResponseEvent.class, this);
-                        generateForm(event.getResponse());
+                        // Got the system settings - make sure it's the response with the system administrators loaded.
+                        // If it's not, then it's the general settings response.
+                        if (event.getResponse().getSystemAdministrators() != null)
+                        {
+                            // this is the response we were waiting for - unhook and generate the form
+                            Session.getInstance().getEventBus().removeObserver(GotSystemSettingsResponseEvent.class,
+                                    this);
+                            generateForm(event.getResponse());
+                        }
                     }
-
                 });
 
         SystemSettingsModel.getInstance().fetch(new Boolean(true), false);

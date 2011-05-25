@@ -54,6 +54,11 @@ public class UsageMetric implements Serializable
     private long actorPersonId;
 
     /**
+     * The stream scope id for metrics that are stream views - null for non-streamview page views.
+     */
+    private Long streamViewStreamScopeId;
+
+    /**
      * Whether the metric registers a page view.
      */
     private boolean isPageView;
@@ -181,6 +186,23 @@ public class UsageMetric implements Serializable
     public void setCreated(final Date inCreated)
     {
         created = inCreated;
+    }
+
+    /**
+     * @return the streamViewStreamScopeId
+     */
+    public Long getStreamViewStreamScopeId()
+    {
+        return streamViewStreamScopeId;
+    }
+
+    /**
+     * @param inStreamViewStreamScopeId
+     *            the streamViewStreamScopeId to set
+     */
+    public void setStreamViewStreamScopeId(final Long inStreamViewStreamScopeId)
+    {
+        streamViewStreamScopeId = inStreamViewStreamScopeId;
     }
 
 }

@@ -1,0 +1,49 @@
+## Macros must be written with no whitespace, since contrary to their documentation Velocity does NOT gobble it up.
+## The comment marker after the content prevents the newline from being included in the content
+## See the post and first comment on http://www.blueskyonmars.com/2003/10/29/velocity-whitespace-handling-is-not-as-written
+
+#macro( prop $name )
+$properties.getProperty($name)##
+#end
+
+#macro( activityType $activity )
+#if ($activity.BaseObjectType == 'NOTE')
+message##
+#elseif ($activity.BaseObjectType == 'BOOKMARK')
+link##
+#else
+$activity.BaseObjectType##
+#end
+#end
+
+#macro( activityUrl $stream $activity )
+#prop('eureka.web.baseurl')$pound#streamPage($stream)/$stream.uniqueId?activityId=${activity.id}##
+#end
+
+#macro( streamPage $stream )
+#if ($stream.EntityType == 'PERSON')
+people##
+#elseif ($stream.EntityType == 'GROUP')
+groups##
+#else
+UNKNOWN##
+#end
+#end
+
+#macro( siteLabelText )
+#if ($settings.siteLabel != '')
+$settings.siteLabel
+
+#end
+#end
+
+#macro( siteLabelHtml )
+#if ($settings.siteLabel != '')
+<p style="text-align: center">$settings.siteLabel</p>
+#end
+#end
+
+#macro( activityBody $activity )
+##${helper.substituteEurekaPlaceholders($activity.getBaseObjectProperties('content'),$context)}##
+${helper.resolveActivityBody($activity,$context)}##
+#end

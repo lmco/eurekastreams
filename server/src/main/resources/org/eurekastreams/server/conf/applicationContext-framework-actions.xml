@@ -144,7 +144,10 @@
         <!-- Authorization -->
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution"/>
+            <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution">
+                <constructor-arg ref="getStreamScopeIdForPersonByUniqueKeyMapper" />
+                <constructor-arg ref="getStreamScopeIdForGroupTypeByUniqueKeyMapper" />
+            </bean>
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
@@ -2233,12 +2236,8 @@
         <constructor-arg value="true"/>
     </bean>
     
-    <bean id="getDirectorySearchResultsValidation"
-        class="org.eurekastreams.server.action.validation.directory.GetDirectorySearchResultsValidation">
-    </bean>
-
     <bean id="getDirectorySearchResultsPeople" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
@@ -2252,7 +2251,7 @@
     </bean>
 
     <bean id="getDirectorySearchResultsGroups" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
@@ -2266,7 +2265,7 @@
     </bean>
 
     <bean id="getDirectorySearchResults" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
