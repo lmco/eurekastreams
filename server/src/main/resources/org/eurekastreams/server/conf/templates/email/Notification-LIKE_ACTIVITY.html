@@ -1,19 +1,12 @@
 <html>
 <body>
+#siteLabelHtml()
 <p>
-$(actor.name) liked your $(activity.type).
+$actor.displayName liked your #activityType($activity).
 </p>
 <p>
-To see the post follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)">link</a>.
+To see the post follow this <a href="#activityUrl($stream,$activity)">link</a>.
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>

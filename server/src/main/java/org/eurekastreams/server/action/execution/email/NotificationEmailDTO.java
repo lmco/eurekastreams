@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.email;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * Holds information to build an email.
@@ -36,7 +35,10 @@ public class NotificationEmailDTO implements Serializable
     private String toRecipient;
 
     /** Addresses of BCC recipients. */
-    private Collection<String> bccRecipients;
+    private String bccRecipients;
+
+    /** Optional description of the notification/message used for logging events about the message. */
+    private String description;
 
     /**
      * @return the subject
@@ -109,7 +111,7 @@ public class NotificationEmailDTO implements Serializable
     /**
      * @return the bccRecipients
      */
-    public Collection<String> getBccRecipients()
+    public String getBccRecipients()
     {
         return bccRecipients;
     }
@@ -118,8 +120,25 @@ public class NotificationEmailDTO implements Serializable
      * @param inBccRecipients
      *            the bccRecipients to set
      */
-    public void setBccRecipients(final Collection<String> inBccRecipients)
+    public void setBccRecipients(final String inBccRecipients)
     {
         bccRecipients = inBccRecipients;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription()
+    {
+        return description;
+    }
+
+    /**
+     * @param inDescription
+     *            the description to set
+     */
+    public void setDescription(final String inDescription)
+    {
+        description = inDescription;
     }
 }

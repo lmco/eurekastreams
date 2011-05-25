@@ -99,7 +99,9 @@ public class InAppNotificationNotifier implements Notifier
             return null;
         }
 
-        Context velocityContext = new VelocityContext(inProperties, velocityGlobalContext);
+        Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
+        velocityContext.put("context", velocityContext);
+        // velocityContext.put("notificationProperties", inProperties);
 
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(velocityContext, writer, "InAppNotification-" + inType, template);

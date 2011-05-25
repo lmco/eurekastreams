@@ -1,15 +1,9 @@
-$(actor.name) liked your $(activity.type).
+#siteLabelText()
+$actor.displayName liked your #activityType($activity).
+
+"#activityBody($activity)"
 
 To see the post follow this link:
-$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)
-
-Thank You,
-Eureka Streams
-
---- 
-
-To find out more information, visit $(eureka.infosite.url)
-
-Emails you receive from Eureka Streams can be managed from your notification settings page:
-$(eureka.web.baseurl)#settings?tab=Notifications
+#activityUrl($stream,$activity)
+#parse('Footer.txt')
 
