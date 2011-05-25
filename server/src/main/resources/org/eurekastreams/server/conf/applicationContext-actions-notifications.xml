@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
@@ -27,6 +28,7 @@
                 		<entry key="EMAIL" value-ref="notificationRecipientFiltersEmail" />
                 	</map>
                 </constructor-arg>
+				<constructor-arg ref="defaultNotificationProperties" />
 				<constructor-arg ref="notificationPropertyLoadMappers" />
             </bean>
         </constructor-arg>
@@ -177,6 +179,15 @@
 	</bean>
 
 	<bean id="velocityGlobalContext" class="org.apache.velocity.VelocityContext">
+		<constructor-arg>
+			<map>
+				<entry key="properties" value-ref="applicationProperties" />
+				<entry key="pound" value="#" />
+				<entry key="helper">
+					<bean class="org.eurekastreams.server.action.execution.notification.notifier.NotificationMessageBuilderHelper" />
+				</entry>
+			</map>
+		</constructor-arg>
 	</bean>
 
 	<!-- Notifiers -->
@@ -196,9 +207,18 @@
         </constructor-arg>
     </bean>
 
+    <bean id="emailNotifier" class="org.eurekastreams.server.action.execution.notification.notifier.EmailNotifier">
+		<constructor-arg ref="velocityEngine" />
+		<constructor-arg ref="velocityGlobalContext" />
+		<constructor-arg ref="emailNotifierMessageTemplates" />
+		<constructor-arg ref="getPersonsByIdsMapper" />
+    </bean>
+	
+	
     <!-- all notifiers, by ID -->
     <util:map id="notifiersByIdMap">
         <entry key="APP_ALERT" value-ref="inAppNotifier" />
+		<entry key="EMAIL" value-ref="emailNotifier" />
     </util:map>
 
     <!--
@@ -216,8 +236,16 @@
 		<entry key="org.eurekastreams.server.search.modelview.DomainGroupModelView" value-ref="getGroupByIdMapperAllowNullResult" />
 		<entry key="org.eurekastreams.server.domain.stream.ActivityDTO" value-ref="activityDTOMapper" />
 		<entry key="org.eurekastreams.server.domain.OAuthConsumer" value-ref="getOAuthConsumerByConsumerKeyMapper" />
+		<entry key="org.eurekastreams.server.domain.SystemSettings" value-ref="findSystemSettings" />
     </util:map>
 
+	<!-- default properties for notifiers -->
+	<util:map id="defaultNotificationProperties">
+		<!-- always allow for system settings to be lazy-loaded via the property "settings" -->
+		<entry key="settings">
+			<bean class="org.eurekastreams.server.domain.Property" p:type="org.eurekastreams.server.domain.SystemSettings" />
+		</entry>
+	</util:map>
 
 	<!-- ========== IN-APP ========== -->
 
@@ -298,32 +326,57 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
+	
+	<!-- ========== EMAIL ========== -->
+	
+	<bean id="sendEmailNotificationAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.action.execution.notification.email.SendNotificationEmailExecution">
+				<constructor-arg ref="emailerFactory" />
+			</bean>
+		</constructor-arg>	
+        <constructor-arg value="true" />
+    </bean>
 
 	<!-- ========== CONTENT ========== -->
 
 	<!-- ==== IN-APP ==== -->
 
 	<util:map id="inAppNotifierMessageTemplates">
-		<entry key="LIKE_ACTIVITY" value="LIKE_ACTIVITY" />
-		<entry key="POST_TO_PERSONAL_STREAM" value="POST_TO_PERSONAL_STREAM" />
-		<entry key="COMMENT_TO_PERSONAL_STREAM" value="COMMENT_TO_PERSONAL_STREAM" />
-		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your $activity.BaseObjectType which now has $activity.commentCount comments." />
-		<entry key="COMMENT_TO_COMMENTED_POST" value="COMMENT_TO_COMMENTED_POST" />
-		<entry key="COMMENT_TO_SAVED_POST" value="COMMENT_TO_SAVED_POST" />
-		<entry key="FOLLOW_PERSON" value="FOLLOW_PERSON" />
-		<entry key="POST_TO_GROUP_STREAM" value="POST_TO_GROUP_STREAM" />
-		<entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
-		<entry key="COMMENT_TO_GROUP_STREAM" value="COMMENT_TO_GROUP_STREAM" />
-		<entry key="FOLLOW_GROUP" value="FOLLOW_GROUP" />
-		<entry key="FLAG_PERSONAL_ACTIVITY" value="FLAG_PERSONAL_ACTIVITY" />
-		<entry key="FLAG_GROUP_ACTIVITY" value="FLAG_GROUP_ACTIVITY" />
+		<entry key="LIKE_ACTIVITY" value="$actor.displayName liked your #activityType($activity)." />
+		<entry key="POST_TO_PERSONAL_STREAM" value="$actor.displayName posted a #activityType($activity) to your stream." />
+		<entry key="COMMENT_TO_PERSONAL_STREAM" value="$actor.displayName commented on a #activityType($activity) in your stream." />
+		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your #activityType($activity) which now has $activity.commentCount comments." />
+		<entry key="COMMENT_TO_COMMENTED_POST" value="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)." />
+		<entry key="COMMENT_TO_SAVED_POST" value="$actor.displayName commented on $activity.actor.displayName's #activityType($activity) which you saved." />
+		<entry key="FOLLOW_PERSON" value="$actor.displayName is following you." />
+		<entry key="POST_TO_GROUP_STREAM" value="$actor.displayName posted a #activityType($activity) to the $stream.displayName stream." />
+		<entry key="POST_TO_JOINED_GROUP" value="$actor.displayName posted a #activityType($activity) to the $stream.displayName stream." />
+		<entry key="COMMENT_TO_GROUP_STREAM" value="$actor.displayName commented on a #activityType($activity) in the $stream.displayName stream." />
+		<entry key="FOLLOW_GROUP" value="$actor.displayName joined the $stream.displayName group." />
+		<entry key="FLAG_PERSONAL_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in $stream.displayName's stream." />
+		<entry key="FLAG_GROUP_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in the $stream.displayName stream." />
 		<entry key="REQUEST_NEW_GROUP" value="The $group.name group is pending approval." />
 		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.name group has been approved." />
 		<entry key="REQUEST_NEW_GROUP_DENIED" value="Your request to create the $groupName group has been denied." />
-		<entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
-		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="REQUEST_GROUP_ACCESS_APPROVED" />
-		<entry key="REQUEST_GROUP_ACCESS_DENIED" value="REQUEST_GROUP_ACCESS_DENIED" />
+		<entry key="REQUEST_GROUP_ACCESS" value="$actor.displayName requested to join the $group.displayName private group." />
+		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="Your request to join the $group.displayName group has been approved." />
+		<entry key="REQUEST_GROUP_ACCESS_DENIED" value="Your request to join the $group.displayName group has been denied." />
 		<entry key="PASS_THROUGH" value="$message" />
 	</util:map>
 
+	<!-- ==== EMAIL ==== -->
+
+	<bean id="emailTemplate" class="org.eurekastreams.server.action.execution.notification.notifier.EmailNotificationTemplate" abstract="true" />
+	
+	<util:map id="emailNotifierMessageTemplates">
+		<entry key="LIKE_ACTIVITY">
+			<bean parent="emailTemplate" 
+				p:subject="$actor.displayName liked your #activityType($activity)"
+				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt"
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html" />
+		</entry>
+	</util:map>
+	
 </beans>

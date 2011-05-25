@@ -36,6 +36,9 @@ import org.eurekastreams.server.action.request.notification.CreateNotificationsR
 import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.Property;
+import org.eurekastreams.server.domain.PropertyHashMap;
+import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.persistence.LazyLoadPropertiesMap;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds;
@@ -75,6 +78,9 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
     /** Mappers for loading notification properties. */
     private final Map<Class, DomainMapper<Serializable, Object>> propertyLoadMappers;
 
+    /** Properties provided to all notifications. */
+    private final Map<String, Property<Object>> defaultProperties;
+
     /**
      * Constructor.
      *
@@ -90,6 +96,8 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      *            Map providing the category for each notification type.
      * @param inRecipientFilters
      *            Recipient filter strategies per notifier type.
+     * @param inDefaultProperties
+     *            Properties provided to all notifications.
      * @param inPropertyLoadMappers
      *            Mappers for loading notification properties.
      */
@@ -99,6 +107,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
             final DomainMapper<Long, PersonModelView> inPersonMapper,
             final Map<NotificationType, Category> inNotificationTypeCategories,
             final Map<String, Iterable<RecipientFilter>> inRecipientFilters,
+            final Map<String, Property<Object>> inDefaultProperties,
             final Map<Class, DomainMapper<Serializable, Object>> inPropertyLoadMappers)
     {
         translators = inTranslators;
@@ -107,6 +116,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         personMapper = inPersonMapper;
         notificationTypeToCategory = inNotificationTypeCategories;
         recipientFilters = inRecipientFilters;
+        defaultProperties = inDefaultProperties;
         propertyLoadMappers = inPropertyLoadMappers;
     }
 
@@ -139,9 +149,12 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         }
         List<NotificationFilterPreferenceDTO> recipientFilterPreferences = preferencesMapper.execute(allRecipientIds);
 
-        List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
-        Map<String, Object> properties = new LazyLoadPropertiesMap<Object>(batch.getProperties(), propertyLoadMappers);
+        PropertyMap<Object> propertyList = new PropertyHashMap<Object>();
+        propertyList.putAll(defaultProperties);
+        propertyList.putAll(batch.getProperties());
+        Map<String, Object> properties = new LazyLoadPropertiesMap<Object>(propertyList, propertyLoadMappers);
 
+        List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
         for (Entry<NotificationType, Collection<Long>> notification : batch.getRecipients().entrySet())
         {
             NotificationType type = notification.getKey();
