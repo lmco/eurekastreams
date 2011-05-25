@@ -83,6 +83,7 @@ public class RegisterUsageMetricExecution implements TaskHandlerExecutionStrateg
         UsageMetricDTO umdto = (UsageMetricDTO) inActionContext.getActionContext().getParams();
         Principal principal = inActionContext.getActionContext().getPrincipal();
         Long streamScopeId = null;
+        String uniqueKey = null;
 
         String streamJson = umdto.getMetricDetails();
         logger.info("Stream metric received: " + streamJson);
@@ -105,13 +106,18 @@ public class RegisterUsageMetricExecution implements TaskHandlerExecutionStrateg
                             jsonObj = recipients.getJSONObject(0);
                             if (jsonObj.containsKey("type") && jsonObj.containsKey("name"))
                             {
+                                uniqueKey = jsonObj.getString("name");
                                 if ("PERSON".equals(jsonObj.getString("type")))
                                 {
-                                    streamScopeId = personStreamScopeIdMapper.execute(jsonObj.getString("name"));
+                                    streamScopeId = personStreamScopeIdMapper.execute(uniqueKey);
+                                    logger.debug("Found person stream scope id " + streamScopeId + " from account id: "
+                                            + uniqueKey);
                                 }
                                 else if ("GROUP".equals(jsonObj.getString("type")))
                                 {
-                                    streamScopeId = groupStreamScopeIdMapper.execute(jsonObj.getString("name"));
+                                    streamScopeId = groupStreamScopeIdMapper.execute(uniqueKey);
+                                    logger.debug("Found group stream scope id " + streamScopeId + " from short name: "
+                                            + uniqueKey);
                                 }
                             }
                         }
