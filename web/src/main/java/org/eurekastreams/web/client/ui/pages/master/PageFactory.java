@@ -220,9 +220,8 @@ public class PageFactory
                 }
             });              
             break;
-            return new CreateGroupPanel(view);
         case ORGANIZATIONS:
-            return new OrganizationProfilePanel(view);
+            contentPanel.add(new OrganizationProfilePanel(view));
         case HELP:
             GWT.runAsync(new RunAsyncCallback()
             {

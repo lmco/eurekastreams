@@ -239,6 +239,14 @@ public class AddLinkComposite extends FlowPanel
     }
 
     /**
+     * @return if the widget is in add mode.
+     */
+    public boolean inAddMode()
+    {
+        return (addPanel.isVisible());
+    }
+
+    /**
      * Close the link.
      */
     public void close()
@@ -249,7 +257,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Called when a link is added to the message.
-     *
+     * 
      * @param link
      *            the link that was added.
      */
@@ -300,7 +308,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Fetch link.
-     *
+     * 
      * @param inLinkUrl
      *            link url.
      */
@@ -316,40 +324,39 @@ public class AddLinkComposite extends FlowPanel
         }
         else if (inLinkUrl != fetchedLink)
         {
-            Session.getInstance()
-                    .getActionProcessor()
-                    .makeRequest(new ActionRequestImpl<LinkInformation>("getParsedLinkInformation", inLinkUrl),
-                            new AsyncCallback<LinkInformation>()
+            Session.getInstance().getActionProcessor().makeRequest(
+                    new ActionRequestImpl<LinkInformation>("getParsedLinkInformation", inLinkUrl),
+                    new AsyncCallback<LinkInformation>()
+                    {
+                        /* implement the async call back methods */
+                        public void onFailure(final Throwable caught)
+                        {
+                            LinkInformation linkInformation = new LinkInformation();
+                            linkInformation.setTitle(inLinkUrl);
+                            linkInformation.setUrl(inLinkUrl);
+
+                            MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(new Bookmark(
+                                    linkInformation));
+                            eventBus.notifyObservers(event);
+
+                            eventBus
+                                    .notifyObservers(new ShowNotificationEvent(new Notification(UNVERIFIED_URL_MESSAGE)));
+                        }
+
+                        public void onSuccess(final LinkInformation result)
+                        {
+                            MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
+                                    new Bookmark(result));
+
+                            boolean titleBlank = result.getTitle() == null || result.getTitle().isEmpty();
+                            if (titleBlank)
                             {
-                                /* implement the async call back methods */
-                                public void onFailure(final Throwable caught)
-                                {
-                                    LinkInformation linkInformation = new LinkInformation();
-                                    linkInformation.setTitle(inLinkUrl);
-                                    linkInformation.setUrl(inLinkUrl);
+                                result.setTitle(result.getUrl());
+                            }
+                            eventBus.notifyObservers(event);
 
-                                    MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
-                                            new Bookmark(linkInformation));
-                                    eventBus.notifyObservers(event);
-
-                                    eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
-                                            UNVERIFIED_URL_MESSAGE)));
-                                }
-
-                                public void onSuccess(final LinkInformation result)
-                                {
-                                    MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
-                                            new Bookmark(result));
-
-                                    boolean titleBlank = result.getTitle() == null || result.getTitle().isEmpty();
-                                    if (titleBlank)
-                                    {
-                                        result.setTitle(result.getUrl());
-                                    }
-                                    eventBus.notifyObservers(event);
-
-                                }
-                            });
+                        }
+                    });
         }
 
         fetchedLink = inLinkUrl;

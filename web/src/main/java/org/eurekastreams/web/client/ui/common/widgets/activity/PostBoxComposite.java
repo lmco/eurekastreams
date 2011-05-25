@@ -19,12 +19,12 @@ import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
 import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
+import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.AddLinkComposite;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -41,7 +41,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -84,6 +83,9 @@ public class PostBoxComposite extends Composite
 
     @UiField
     DivElement postCharCount;
+    
+    @UiField
+    AddLinkComposite addLinkComposite;
 
     private static final Integer BLUR_DELAY = 500;
 
@@ -166,7 +168,7 @@ public class PostBoxComposite extends Composite
                 {
                     public void run()
                     {
-                        if (postBox.getText().length() == 0 && attachment == null)
+                        if (postBox.getText().length() == 0 && !addLinkComposite.inAddMode())
                         {
                             postOptions.removeClassName(style.visiblePostBox());
                             postBox.getElement().getStyle().clearHeight();
