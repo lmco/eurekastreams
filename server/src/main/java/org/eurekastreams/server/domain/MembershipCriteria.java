@@ -19,6 +19,9 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.eurekastreams.commons.model.DomainEntity;
 
@@ -36,6 +39,22 @@ public class MembershipCriteria extends DomainEntity implements Serializable
     private String criteria = "";
 
     /**
+     * This field will maintain a link to the optional corresponding galleryTabTemplate.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Basic
+    @JoinColumn(name = "galleryTabTemplateId")
+    private GalleryTabTemplate galleryTabTemplate;
+
+    /**
+     * This field will maintain a link to the optional corresponding galleryTabTemplate.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Basic
+    @JoinColumn(name = "themeId")
+    private Theme theme;
+
+    /**
      * Constructor, used for serialization.
      */
     public MembershipCriteria()
@@ -44,7 +63,7 @@ public class MembershipCriteria extends DomainEntity implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCriteria
      *            The criteria.
      */
@@ -55,7 +74,7 @@ public class MembershipCriteria extends DomainEntity implements Serializable
 
     /**
      * Set the criteria.
-     *
+     * 
      * @param inCriteria
      *            the criteria.
      */
@@ -66,11 +85,45 @@ public class MembershipCriteria extends DomainEntity implements Serializable
 
     /**
      * Get the criteria.
-     *
+     * 
      * @return the criteria.
      */
     public String getCriteria()
     {
         return criteria;
+    }
+
+    /**
+     * @return the galleryTabTemplate
+     */
+    public GalleryTabTemplate getGalleryTabTemplate()
+    {
+        return galleryTabTemplate;
+    }
+
+    /**
+     * @param inGalleryTabTemplate
+     *            the galleryTabTemplate to set
+     */
+    public void setGalleryTabTemplate(final GalleryTabTemplate inGalleryTabTemplate)
+    {
+        galleryTabTemplate = inGalleryTabTemplate;
+    }
+
+    /**
+     * @return the theme
+     */
+    public Theme getTheme()
+    {
+        return theme;
+    }
+
+    /**
+     * @param inTheme
+     *            the theme to set
+     */
+    public void setTheme(final Theme inTheme)
+    {
+        theme = inTheme;
     }
 }

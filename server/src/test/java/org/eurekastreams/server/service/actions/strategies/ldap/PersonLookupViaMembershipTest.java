@@ -105,11 +105,11 @@ public class PersonLookupViaMembershipTest
                 allowing(group).getDistinguishedName();
                 will(returnValue(dn));
 
-                allowing(group).setSourceList(with(any(List.class)));
+                allowing(group).setSourceList(with(any(ArrayList.class)));
 
                 allowing(group).getSourceList();
 
-                allowing(person).setSourceList(with(any(List.class)));
+                allowing(person).setSourceList(with(any(ArrayList.class)));
 
                 allowing(directGroupMemberMapper).execute(with(any(LdapLookupRequest.class)));
                 will(returnValue(directMembers));

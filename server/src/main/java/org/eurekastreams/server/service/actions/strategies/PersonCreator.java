@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.server.action.response.settings.PersonPropertiesResponse;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
@@ -35,7 +36,6 @@ import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
@@ -49,11 +49,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     private final PersonMapper personMapper;
 
     /**
-     * The tab mapper.
-     */
-    private final TabMapper tabMapper;
-
-    /**
      * Mapper to get the readonly streams.
      */
     private final DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
@@ -64,33 +59,30 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     private final List<String> readOnlyStreamsNameList;
 
     /**
-     * List of StartPage Tabs to create when adding a new user.
+     * {@link PersonPropertiesGenerator}.
      */
-    private final List<String> startPageTabs;
+    private final PersonPropertiesGenerator personPropertiesGenerator;
 
     /**
      * Constructor.
      * 
      * @param inPersonMapper
      *            person mapper.
-     * @param inTabMapper
-     *            tab mapper.
      * @param inReadonlyStreamsMapper
      *            mapper to get the readonly streams
      * @param inReadOnlyStreamsNameList
      *            List of the names of readonly streams to add to a person, in order
-     * @param inStartPageTabs
-     *            - list of tabs to be created on the start page.
+     * @param inPersonPropertiesGenerator
+     *            {@link PersonPropertyGenerator}.
      */
-    public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
+    public PersonCreator(final PersonMapper inPersonMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
-            final List<String> inReadOnlyStreamsNameList, final List<String> inStartPageTabs)
+            final List<String> inReadOnlyStreamsNameList, final PersonPropertiesGenerator inPersonPropertiesGenerator)
     {
         personMapper = inPersonMapper;
-        tabMapper = inTabMapper;
         readonlyStreamsMapper = inReadonlyStreamsMapper;
         readOnlyStreamsNameList = inReadOnlyStreamsNameList;
-        startPageTabs = inStartPageTabs;
+        personPropertiesGenerator = inPersonPropertiesGenerator;
     }
 
     /**
@@ -116,17 +108,20 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
         // create and add start page tabs
         TabGroup startTabGroup = new TabGroup();
-        for (String tabType : startPageTabs)
+
+        PersonPropertiesResponse properties = personPropertiesGenerator.getPersonProperties(inFields);
+
+        for (TabTemplate tt : properties.getTabTemplates())
         {
-            // These tabs create their own templates based on other templates.
-            TabTemplate template = new TabTemplate(tabMapper.getTabTemplate(tabType));
-            for (Gadget gadget : template.getGadgets())
+            for (Gadget gadget : tt.getGadgets())
             {
                 gadget.setOwner(person);
             }
-            startTabGroup.addTab(new Tab(template));
+            startTabGroup.addTab(new Tab(tt));
         }
+
         person.setStartTabGroup(startTabGroup);
+        person.setTheme(properties.getTheme());
 
         // Make the default view for a person
         StreamScope personScope = new StreamScope(ScopeType.PERSON, (String) inFields.get("accountId"));
@@ -154,6 +149,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // remove public settable properties already handled from map so updater
         // doesn't do them again.
         inFields.remove("email");
+        inFields.remove("sourceList");
 
         return person;
     }

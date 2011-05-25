@@ -21,11 +21,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eurekastreams.server.action.response.settings.PersonPropertiesResponse;
+import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.TabType;
+import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainEntityMapperTest;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -75,6 +78,16 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     private final TabMapper tabMapperMock = context.mock(TabMapper.class);
 
     /**
+     * {@link PersonPropertiesGenerator}.
+     */
+    private PersonPropertiesGenerator ppg = context.mock(PersonPropertiesGenerator.class, "ppg");
+
+    /**
+     * {@link PersonPropertiesResponse}.
+     */
+    private PersonPropertiesResponse ppr = context.mock(PersonPropertiesResponse.class, "ppr");
+
+    /**
      * actual person mapper.
      */
     @Autowired
@@ -98,9 +111,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("Everyone", "My saved items",
                 "Following"));
 
-        List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
-
-        sut = new PersonCreator(personMapperMock, tabMapperMock, readonlyStreamsMapper, streamNames, startPageTabTypes);
+        sut = new PersonCreator(personMapperMock, readonlyStreamsMapper, streamNames, ppg);
     }
 
     /**
@@ -119,7 +130,15 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(tabMapperMock).getTabTemplate(TabType.WELCOME);
+                oneOf(ppg).getPersonProperties(inFields);
+                will(returnValue(ppr));
+
+                oneOf(ppr).getTabTemplates();
+                will(returnValue(new ArrayList<TabTemplate>(//
+                        Arrays.asList(new TabTemplate("welcome", Layout.ONECOLUMN)))));
+
+                oneOf(ppr).getTheme();
+                will(returnValue(null));
             }
         });
 
@@ -159,7 +178,15 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(tabMapperMock).getTabTemplate(TabType.WELCOME);
+                oneOf(ppg).getPersonProperties(inFields);
+                will(returnValue(ppr));
+
+                oneOf(ppr).getTabTemplates();
+                will(returnValue(new ArrayList<TabTemplate>(//
+                        Arrays.asList(new TabTemplate("welcome", Layout.ONECOLUMN)))));
+
+                oneOf(ppr).getTheme();
+                will(returnValue(null));
             }
         });
 
@@ -168,10 +195,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
 
-        List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
-
-        PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, readonlyStreamsMapper, streamNames,
-                startPageTabTypes);
+        PersonCreator localSut = new PersonCreator(personMapperMock, readonlyStreamsMapper, streamNames, ppg);
 
         Person p = localSut.get(null, inFields);
         context.assertIsSatisfied();
@@ -236,9 +260,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         (readonlyStreamsMapper).setEntityManager(getEntityManager());
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
 
-        List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
-
-        sut = new PersonCreator(personMapper, tabMapper, readonlyStreamsMapper, streamNames, startPageTabTypes);
+        sut = new PersonCreator(personMapper, readonlyStreamsMapper, streamNames, ppg);
 
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 
@@ -252,6 +274,21 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         HashMap<String, String> props = new HashMap<String, String>();
         props.put("somekey", "somevalue");
         inFields.put("additionalProperties", props);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(ppg).getPersonProperties(inFields);
+                will(returnValue(ppr));
+
+                oneOf(ppr).getTabTemplates();
+                will(returnValue(new ArrayList<TabTemplate>(//
+                        Arrays.asList(new TabTemplate("welcome", Layout.ONECOLUMN)))));
+
+                oneOf(ppr).getTheme();
+                will(returnValue(null));
+            }
+        });
 
         final Person testPerson = sut.get(null, inFields);
 
