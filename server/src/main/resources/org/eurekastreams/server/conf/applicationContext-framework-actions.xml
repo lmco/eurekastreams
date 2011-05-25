@@ -2225,12 +2225,8 @@
         <constructor-arg value="true"/>
     </bean>
     
-    <bean id="getDirectorySearchResultsValidation"
-        class="org.eurekastreams.server.action.validation.directory.GetDirectorySearchResultsValidation">
-    </bean>
-
     <bean id="getDirectorySearchResultsPeople" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
@@ -2244,7 +2240,7 @@
     </bean>
 
     <bean id="getDirectorySearchResultsGroups" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
@@ -2258,7 +2254,7 @@
     </bean>
 
     <bean id="getDirectorySearchResults" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="getDirectorySearchResultsValidation" />
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
