@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.actions.strategies.ldap;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Person;
@@ -51,24 +52,34 @@ public class PersonLookupViaAttributeTest
     private LdapLookup<Person> ldapLookup = context.mock(LdapLookup.class);
 
     /**
+     * {@link Person}.
+     */
+    private Person p = context.mock(Person.class);
+
+    /**
      * Test.
      */
     @Test
     public void test()
     {
         PersonLookupViaAttribute sut = new PersonLookupViaAttribute(ldapLookup);
-        final List<Person> rawResults = new ArrayList<Person>();
+        final List<Person> rawResults = new ArrayList<Person>(Arrays.asList(p));
+        final ArrayList<String> sourceList = new ArrayList<String>();
 
         context.checking(new Expectations()
         {
             {
-                allowing(ldapLookup).execute(with(any(LdapLookupRequest.class)));
+                oneOf(ldapLookup).execute(with(any(LdapLookupRequest.class)));
                 will(returnValue(rawResults));
+
+                allowing(p).getSourceList();
+                will(returnValue(sourceList));
             }
         });
 
         // verify results from mapper are passed back.
         assertEquals(rawResults, sut.findPeople("foo", 5));
+        assertEquals("foo", p.getSourceList().get(0));
 
         context.assertIsSatisfied();
     }
