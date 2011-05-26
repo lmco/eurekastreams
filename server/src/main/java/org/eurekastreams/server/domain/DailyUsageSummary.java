@@ -87,6 +87,11 @@ public class DailyUsageSummary implements Serializable
     private long avgActivityResponseTime;
 
     /**
+     * The stream scope id for metrics that are stream views - null for non-streamview page views.
+     */
+    private Long streamViewStreamScopeId;
+
+    /**
      * The date.
      */
     @Basic(optional = false)
@@ -311,6 +316,23 @@ public class DailyUsageSummary implements Serializable
     public void setWeekday(final boolean inIsWeekday)
     {
         isWeekday = inIsWeekday;
+    }
+
+    /**
+     * @return the streamViewStreamScopeId
+     */
+    public Long getStreamViewStreamScopeId()
+    {
+        return streamViewStreamScopeId;
+    }
+
+    /**
+     * @param inStreamViewStreamScopeId
+     *            the streamViewStreamScopeId to set
+     */
+    public void setStreamViewStreamScopeId(final Long inStreamViewStreamScopeId)
+    {
+        streamViewStreamScopeId = inStreamViewStreamScopeId;
     }
 
 }
