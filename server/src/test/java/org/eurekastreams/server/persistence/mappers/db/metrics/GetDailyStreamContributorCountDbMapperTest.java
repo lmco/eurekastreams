@@ -57,7 +57,7 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
      * Test execute().
      */
     @Test
-    public void testExecute()
+    public void testExecuteAllStreams()
     {
         // dataset.xml has 3 people that have commented, 3 people that have posted activities. overlap is 2, total
         // unique: 4
@@ -82,5 +82,23 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
         getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
                 .executeUpdate();
         Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
+    }
+
+    /**
+     * Test execute().
+     */
+    @Test
+    public void testExecuteSpecificStream()
+    {
+        final Long streamScopeId = 87433L;
+
+        getEntityManager().createQuery("UPDATE Activity set postedTime=:date").setParameter("date",
+                new Date(apri8th2011)).executeUpdate();
+        getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
+                .executeUpdate();
+
+        Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011),
+                streamScopeId)));
+
     }
 }
