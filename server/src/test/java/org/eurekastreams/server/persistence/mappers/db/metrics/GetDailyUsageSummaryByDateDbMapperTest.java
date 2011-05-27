@@ -45,10 +45,10 @@ public class GetDailyUsageSummaryByDateDbMapperTest extends MapperTest
     }
 
     /**
-     * Test execute() with expected data.
+     * Test execute() with expected data for all streams.
      */
     @Test
-    public void testExecuteWithData()
+    public void testExecuteWithDataForAllStreams()
     {
         final long id = 1L;
         final long messagecount = 5L;
@@ -57,6 +57,7 @@ public class GetDailyUsageSummaryByDateDbMapperTest extends MapperTest
         final long streamviewcount = 5555L;
         final long streamviewercount = 55555L;
         final long uniquevisitorcount = 555555L;
+        final long responseTime = 5555555L;
 
         final long april7th2011 = 1302196002000L;
         Date date = new Date(april7th2011);
@@ -69,6 +70,38 @@ public class GetDailyUsageSummaryByDateDbMapperTest extends MapperTest
         Assert.assertEquals(streamviewcount, result.getStreamViewCount());
         Assert.assertEquals(streamviewercount, result.getStreamViewerCount());
         Assert.assertEquals(uniquevisitorcount, result.getUniqueVisitorCount());
+        Assert.assertEquals(responseTime, result.getAvgActivityResponseTime());
+    }
+
+    /**
+     * Test execute() with expected data for specific stream.
+     */
+    @Test
+    public void testExecuteWithDataForSpecificStreams()
+    {
+        final long streamScopeId = 1L;
+
+        final long id = 4L;
+        final long messagecount = 9L;
+        final long pageviewcount = 99L;
+        final long streamcontributorcount = 999L;
+        final long streamviewcount = 9999L;
+        final long streamviewercount = 99999L;
+        final long uniquevisitorcount = 999999L;
+        final long responseTime = 9999999L;
+
+        final long april7th2011 = 1302196002000L;
+        Date date = new Date(april7th2011);
+
+        DailyUsageSummary result = sut.execute(new UsageMetricDailyStreamInfoRequest(date, streamScopeId));
+        Assert.assertEquals(id, result.getId());
+        Assert.assertEquals(messagecount, result.getMessageCount());
+        Assert.assertEquals(pageviewcount, result.getPageViewCount());
+        Assert.assertEquals(streamcontributorcount, result.getStreamContributorCount());
+        Assert.assertEquals(streamviewcount, result.getStreamViewCount());
+        Assert.assertEquals(streamviewercount, result.getStreamViewerCount());
+        Assert.assertEquals(uniquevisitorcount, result.getUniqueVisitorCount());
+        Assert.assertEquals(responseTime, result.getAvgActivityResponseTime());
     }
 
     /**

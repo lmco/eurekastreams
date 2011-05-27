@@ -42,8 +42,22 @@ public class GetDailyUsageSummaryByDateDbMapper extends
         List<DailyUsageSummary> results;
         Query q;
 
-        q = getEntityManager().createQuery("FROM DailyUsageSummary WHERE usageDate = :usageDate");
-        q.setParameter("usageDate", inRequest.getMetricsDate());
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            q = getEntityManager().createQuery(
+                    "FROM DailyUsageSummary WHERE usageDate = :usageDate " + "AND streamViewStreamScopeId IS NULL");
+            q.setParameter("usageDate", inRequest.getMetricsDate());
+        }
+        else
+        {
+            // specific stream
+            q = getEntityManager().createQuery(
+                    "FROM DailyUsageSummary WHERE usageDate = :usageDate "
+                            + "AND streamViewStreamScopeId = :streamViewStreamScopeId");
+            q.setParameter("usageDate", inRequest.getMetricsDate());
+            q.setParameter("streamViewStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
+        }
 
         results = q.getResultList();
         if (results.size() > 0)
