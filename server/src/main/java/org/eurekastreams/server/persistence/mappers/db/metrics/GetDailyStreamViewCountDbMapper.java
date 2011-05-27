@@ -43,10 +43,24 @@ public class GetDailyStreamViewCountDbMapper extends BaseArgDomainMapper<UsageMe
 
         startOfDay = DateDayExtractor.getStartOfDay(inRequest.getMetricsDate());
         endOfDay = DateDayExtractor.getEndOfDay(inRequest.getMetricsDate());
-        q = getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM UsageMetric "
-                        + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate").setParameter(
-                "startDate", startOfDay).setParameter("endDate", endOfDay);
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            q = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM UsageMetric "
+                            + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate")
+                    .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
+        }
+        else
+        {
+            // specific stream
+            q = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM UsageMetric "
+                            + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate "
+                            + "AND streamViewStreamScopeId = :streamViewStreamScopeId").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("streamViewStreamScopeId",
+                    inRequest.getStreamRecipientStreamScopeId());
+        }
         return (Long) q.getSingleResult();
     }
 }

@@ -130,8 +130,8 @@ public class RegisterUsageMetricExecution implements TaskHandlerExecutionStrateg
             }
         }
 
-        UsageMetric um = new UsageMetric(principal.getId(), umdto.isPageView(), umdto.isStreamView(), new Date());
-        um.setStreamViewStreamScopeId(streamScopeId);
+        UsageMetric um = new UsageMetric(principal.getId(), umdto.isPageView(), umdto.isStreamView(), streamScopeId,
+                new Date());
 
         logger.trace("Registering metric for user: " + principal.getAccountId() + " StreamView:" + umdto.isStreamView()
                 + " PageView:" + umdto.isPageView() + " MetricDetails: " + umdto.getMetricDetails());
