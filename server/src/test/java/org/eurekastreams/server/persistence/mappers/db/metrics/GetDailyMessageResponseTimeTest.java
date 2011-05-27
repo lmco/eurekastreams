@@ -20,6 +20,7 @@ import java.util.Date;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.Comment;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +80,7 @@ public class GetDailyMessageResponseTimeTest extends MapperTest
         getEntityManager().clear();
 
         // execute mapper assert avg response time is 15 min.
-        Assert.assertEquals(4, (long) sut.execute(new Date(year, 4, 1)));
+        Assert.assertEquals(4, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 1), null)));
     }
 
     /**
@@ -110,7 +111,7 @@ public class GetDailyMessageResponseTimeTest extends MapperTest
         getEntityManager().clear();
 
         // execute mapper assert avg response time is 15 min.
-        Assert.assertEquals(2, (long) sut.execute(new Date(year, 4, 1)));
+        Assert.assertEquals(2, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 1), null)));
     }
 
     /**
@@ -130,6 +131,6 @@ public class GetDailyMessageResponseTimeTest extends MapperTest
         getEntityManager().flush();
         getEntityManager().clear();
 
-        Assert.assertEquals(0, (long) sut.execute(new Date(year, 4, 2)));
+        Assert.assertEquals(0, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 2), null)));
     }
 }

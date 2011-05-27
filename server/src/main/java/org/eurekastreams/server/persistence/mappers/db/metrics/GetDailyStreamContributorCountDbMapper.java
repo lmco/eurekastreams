@@ -23,28 +23,30 @@ import javax.persistence.Query;
 import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * DB Mapper to get the stream contributor count of a specific day.
  */
-public class GetDailyStreamContributorCountDbMapper extends BaseArgDomainMapper<Date, Long>
+public class GetDailyStreamContributorCountDbMapper extends
+        BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
      * Get the number of stream contributors on a specific day.
      * 
-     * @param inDay
-     *            the date to look for stats
+     * @param inRequest
+     *            the UsageMetricDailyStreamInfoRequest
      * @return the number of stream contributors on the input day
      */
     @Override
-    public Long execute(final Date inDay)
+    public Long execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
         Query q;
         Date startOfDay, endOfDay;
         HashSet<String> peopleIds = new HashSet<String>();
 
-        startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        endOfDay = DateDayExtractor.getEndOfDay(inDay);
+        startOfDay = DateDayExtractor.getStartOfDay(inRequest.getMetricsDate());
+        endOfDay = DateDayExtractor.getEndOfDay(inRequest.getMetricsDate());
 
         q = getEntityManager().createQuery(
                 "SELECT DISTINCT(actorId) FROM Activity "

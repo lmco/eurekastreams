@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,6 +77,6 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
         getEntityManager().flush();
         getEntityManager().clear();
 
-        Assert.assertEquals(4L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(4L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
     }
 }

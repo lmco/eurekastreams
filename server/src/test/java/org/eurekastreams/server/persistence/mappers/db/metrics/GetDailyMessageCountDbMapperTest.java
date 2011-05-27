@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.Comment;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,6 +96,6 @@ public class GetDailyMessageCountDbMapperTest extends MapperTest
     public void testExecute()
     {
         Date april4th = new Date(april4th2011 + 8); // change the date a little bit
-        assertEquals(3, (long) sut.execute(april4th));
+        assertEquals(3, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(april4th, null)));
     }
 }

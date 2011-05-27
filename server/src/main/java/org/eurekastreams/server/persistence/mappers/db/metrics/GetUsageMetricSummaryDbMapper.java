@@ -22,28 +22,30 @@ import javax.persistence.Query;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 
 /**
  * Mapper to get UsageMetricSummary.
  * 
  */
-public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, UsageMetricSummaryDTO>
+public class GetUsageMetricSummaryDbMapper extends
+        BaseArgDomainMapper<UsageMetricStreamSummaryRequest, UsageMetricSummaryDTO>
 {
     /**
      * Get Summary usage metrics for last X number of days.
      * 
      * @param inRequest
-     *            number of days to get metrics summary for.
+     *            the UsageMetricStreamSummaryRequest
      * @return {@link UsageMetricSummaryDTO} representing given time period.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public UsageMetricSummaryDTO execute(final Integer inRequest)
+    public UsageMetricSummaryDTO execute(final UsageMetricStreamSummaryRequest inRequest)
     {
         Query q = getEntityManager()
                 .createQuery("FROM DailyUsageSummary WHERE isWeekday = :isWeekday ORDER BY id DESC");
         q.setParameter("isWeekday", true);
-        q.setMaxResults(inRequest);
+        q.setMaxResults(inRequest.getNumberOfDays());
 
         List<DailyUsageSummary> results = q.getResultList();
 

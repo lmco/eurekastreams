@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,7 @@ public class GetDailyUsageSummaryByDateDbMapperTest extends MapperTest
         final long april7th2011 = 1302196002000L;
         Date date = new Date(april7th2011);
 
-        DailyUsageSummary result = sut.execute(date);
+        DailyUsageSummary result = sut.execute(new UsageMetricDailyStreamInfoRequest(date, null));
         Assert.assertEquals(id, result.getId());
         Assert.assertEquals(messagecount, result.getMessageCount());
         Assert.assertEquals(pageviewcount, result.getPageViewCount());
@@ -79,6 +80,6 @@ public class GetDailyUsageSummaryByDateDbMapperTest extends MapperTest
         final long april12th2011 = 1302628002000L;
         Date date = new Date(april12th2011);
 
-        Assert.assertNull(sut.execute(date));
+        Assert.assertNull(sut.execute(new UsageMetricDailyStreamInfoRequest(date, null)));
     }
 }

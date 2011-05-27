@@ -25,6 +25,7 @@ import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +58,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
         getEntityManager().flush();
 
-        UsageMetricSummaryDTO result = sut.execute(3);
+        UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(3, null));
         assertNotNull(result);
         assertEquals(0, result.getRecordCount());
     }
@@ -122,7 +123,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         getEntityManager().clear();
 
         // execute sut.
-        UsageMetricSummaryDTO result = sut.execute(3);
+        UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(3, null));
 
         // verfiy row count and averages.
         assertNotNull(result);

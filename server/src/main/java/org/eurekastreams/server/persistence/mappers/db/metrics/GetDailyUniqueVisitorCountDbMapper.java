@@ -31,7 +31,7 @@ public class GetDailyUniqueVisitorCountDbMapper extends BaseArgDomainMapper<Date
      * Get the number of unique visitors on a specific day.
      * 
      * @param inDay
-     *            the date to look for stats
+     *            the day to get data for
      * @return the number of unique visitors on the input day
      */
     @Override
