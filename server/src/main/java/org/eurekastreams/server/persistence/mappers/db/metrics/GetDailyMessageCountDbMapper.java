@@ -41,23 +41,42 @@ public class GetDailyMessageCountDbMapper extends BaseArgDomainMapper<UsageMetri
     {
         Long activityCount, commentCount;
         Date startOfDay, endOfDay;
-        Query q;
+        Query activityCountQuery, commentCountQuery;
 
         startOfDay = DateDayExtractor.getStartOfDay(inRequest.getMetricsDate());
         endOfDay = DateDayExtractor.getEndOfDay(inRequest.getMetricsDate());
 
-        // get the activity count
-        q = getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM Activity WHERE (appType = null OR appType != :plugin) AND "
-                        + "postedTime >= :startDate AND postedTime <= :endDate").setParameter("startDate", startOfDay)
-                .setParameter("endDate", endOfDay).setParameter("plugin", EntityType.PLUGIN);
-        activityCount = (Long) q.getSingleResult();
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            activityCountQuery = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM Activity WHERE (appType = null OR appType != :plugin) AND "
+                            + "postedTime >= :startDate AND postedTime <= :endDate").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("plugin", EntityType.PLUGIN);
 
-        // get the comment count
-        q = getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate").setParameter(
-                "startDate", startOfDay).setParameter("endDate", endOfDay);
-        commentCount = (Long) q.getSingleResult();
+            commentCountQuery = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate").setParameter(
+                    "startDate", startOfDay).setParameter("endDate", endOfDay);
+        }
+        else
+        {
+            // specific stream
+            activityCountQuery = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM Activity WHERE (appType = null OR appType != :plugin) "
+                            + "AND postedTime >= :startDate AND postedTime <= :endDate "
+                            + "AND recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("plugin", EntityType.PLUGIN)
+                    .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
+
+            commentCountQuery = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate "
+                            + "AND target.recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("recipientStreamScopeId",
+                    inRequest.getStreamRecipientStreamScopeId());
+        }
+
+        activityCount = (Long) activityCountQuery.getSingleResult();
+        commentCount = (Long) commentCountQuery.getSingleResult();
 
         return activityCount + commentCount;
     }
