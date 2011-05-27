@@ -60,9 +60,6 @@ public class GetDailyStreamViewerCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        final Long expectedViewerId = 8327L;
-        final Long otherViewerId = 288L;
-
         // right day
         getEntityManager().persist(new UsageMetric(1L, true, true, 1L, new Date(apri8th2011)));
         getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(apri8th2011 + 3)));
