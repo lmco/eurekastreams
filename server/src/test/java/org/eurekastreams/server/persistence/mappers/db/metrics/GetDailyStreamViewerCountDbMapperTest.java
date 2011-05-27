@@ -60,15 +60,18 @@ public class GetDailyStreamViewerCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
+        final Long expectedViewerId = 8327L;
+        final Long otherViewerId = 288L;
+
         // right day
         getEntityManager().persist(new UsageMetric(1L, true, true, 1L, new Date(apri8th2011)));
         getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(apri8th2011 + 3)));
+        getEntityManager().persist(new UsageMetric(2L, true, true, 2L, new Date(apri8th2011 + 5)));
+        getEntityManager().persist(new UsageMetric(2L, true, true, 2L, new Date(apri8th2011 + 3)));
+        getEntityManager().persist(new UsageMetric(2L, true, true, 2L, new Date(apri8th2011 + 7)));
         getEntityManager().persist(new UsageMetric(2L, true, true, 1L, new Date(apri8th2011 + 5)));
-        getEntityManager().persist(new UsageMetric(2L, true, true, 1L, new Date(apri8th2011 + 3)));
-        getEntityManager().persist(new UsageMetric(2L, true, true, 1L, new Date(apri8th2011 + 7)));
         getEntityManager().persist(new UsageMetric(2L, true, true, 1L, new Date(apri8th2011 + 5)));
-        getEntityManager().persist(new UsageMetric(2L, true, true, 1L, new Date(apri8th2011 + 5)));
-        getEntityManager().persist(new UsageMetric(5L, true, true, 1L, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 3L, new Date(apri8th2011)));
 
         // wrong day
         getEntityManager().persist(new UsageMetric(6L, true, false, null, new Date(april7th2011)));
@@ -79,6 +82,10 @@ public class GetDailyStreamViewerCountDbMapperTest extends MapperTest
         getEntityManager().flush();
         getEntityManager().clear();
 
+        // test with all streams
         Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
+
+        // test with stream #1
+        Assert.assertEquals(2L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), 1L)));
     }
 }
