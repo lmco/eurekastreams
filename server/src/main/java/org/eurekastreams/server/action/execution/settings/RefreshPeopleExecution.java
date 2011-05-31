@@ -86,7 +86,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
      * @param inRefreshPersonActionKey
      *            action key for refresh action.
      * @param inGetPersonIdsByLockedStatus
-     *            {@link GetPersonAccountIdsByLockedStatus}.
+     *            Gets locked/unlocked users (GetPersonAccountIdsByLockedStatus).
      * @param inSettingsMapper
      *            {@link FindSystemSettings}.
      */

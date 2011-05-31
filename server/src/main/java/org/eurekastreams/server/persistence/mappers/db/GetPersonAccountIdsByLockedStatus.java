@@ -38,5 +38,4 @@ public class GetPersonAccountIdsByLockedStatus extends BaseArgDomainMapper<Boole
         return getEntityManager().createQuery("SELECT accountId FROM Person WHERE accountLocked = :lockedStatus")
                 .setParameter("lockedStatus", inLockedStatus).getResultList();
     }
-
 }
