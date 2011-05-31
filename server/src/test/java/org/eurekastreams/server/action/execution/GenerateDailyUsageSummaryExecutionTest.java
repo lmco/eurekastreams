@@ -143,11 +143,12 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
                         with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(existingSummary));
+
+                oneOf(usageMetricDataCleanupMapper).execute(0);
             }
         });
 
         Serializable result = sut.execute(actionContext);
-        Assert.assertEquals(Boolean.FALSE, result);
 
         context.assertIsSatisfied();
     }
@@ -233,7 +234,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(dayOfWeekStrategy).isWeekday(with(date));
                 will(returnValue(inIsWeekday));
 
-                oneOf(usageMetricDataCleanupMapper).execute(with(any(Serializable.class)));
+                oneOf(usageMetricDataCleanupMapper).execute(0);
             }
         });
 
