@@ -4403,6 +4403,9 @@
             </bean>
         </constructor-arg>
         <constructor-arg ref="dayOfWeekStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetMetricStreamScopeIdsDbMapper" />
+        </constructor-arg>
     </bean>
 
     <!--
