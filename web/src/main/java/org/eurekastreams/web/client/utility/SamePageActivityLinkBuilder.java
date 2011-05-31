@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.utility;
 import java.util.Map;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 
 /**
@@ -32,8 +33,6 @@ public class SamePageActivityLinkBuilder extends BaseActivityLinkBuilder
     public CreateUrlRequest buildActivityPermalinkUrlRequest(final long inActivityId, final EntityType inStreamType,
             final String inStreamUniqueId, final Map<String, String> inExtraParameters)
     {
-        Map<String, String> parameters = buildParameters(inExtraParameters);
-        parameters.put("activityId", Long.toString(inActivityId));
-        return new CreateUrlRequest(parameters);
+        return new CreateUrlRequest(Page.ACTIVITY, Long.toString(inActivityId));
     }
 }

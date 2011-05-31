@@ -407,13 +407,15 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     public static native void nativeClearBanner(final boolean inBlankBanner)
     /*-{
          var elem = $doc.getElementById("banner");
-         if(inBlankBanner)
-         {
-             elem.style.backgroundImage="none";
-         }
-         else
-         {
-             elem.style.backgroundImage="";
+         if (elem) {
+             if(inBlankBanner)
+             {
+                 elem.style.backgroundImage="none";
+             }
+             else
+             {
+                 elem.style.backgroundImage="";
+             }
          }
      }-*/;
 

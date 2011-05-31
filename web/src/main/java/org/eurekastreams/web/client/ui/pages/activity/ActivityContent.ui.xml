@@ -1,0 +1,349 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:ewa='urn:import:org.eurekastreams.web.client.ui.common.widgets.activity'>
+
+	<ui:image field="activityHeaderBackground" src="style/images/activityHeaderBackground.png" />
+	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
+	<ui:image field="viewDetails" src="style/images/viewDetailsBtn.png" />
+	<ui:image field="spinner" src="style/images/wait-spinner.gif" />
+
+	<ui:style
+		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
+		.main
+		{
+		overflow: hidden;
+		margin-top: 40px;
+		}
+
+		.stream-option-list {
+		border-top: 2px solid #bbb;
+		list-style: none;
+		padding-left: 0;
+		width:
+		220px;
+		float: left;
+		clear: left;
+		margin-left: 10px;
+		}
+
+		.stream-container-panel {
+		float: right;
+		width: 730px;
+		margin-right: 10px;
+		}
+
+		.stream-panel {
+		background-color: white;
+		clear: both;
+		border: 1px solid
+		#c6c6c6;
+		border-top-width: 0;
+		padding-bottom: 5px;
+		min-height: 100px;
+		}
+
+		.stream-option-list li a
+		{
+		display: block;
+		border-bottom: 1px solid #bbb;
+		height: 24px;
+		padding-top: 9px;
+		padding-left: 5px;
+		color: #000;
+		}
+
+		.stream-option-list li a:hover
+		{
+		background-image:
+		url(style/images/activeBackground.png);
+		color: #000;
+		}
+
+		.stream-option-list li a.activeStream
+		{
+		background-image:
+		url(style/images/activeBackground.png);
+		}
+
+		.stream-avatar
+		{
+		background-image:
+		url(style/images/avatarBackground.png);
+		float: left;
+		padding: 5px;
+		margin: 10px;
+		}
+
+		.stream-avatar > img
+		{
+		padding: 0px;
+		border:
+		none;
+		}
+
+
+		.activeSort
+		{
+		background-image:
+		url(style/images/activeBackground.png);
+		}
+
+		.options-panel
+		{
+		background-color: white;
+		padding: 1px;
+		border: 1px solid
+		#c6c6c6;
+		overflow: hidden;
+		}
+
+		.sort-option, .sort-option:hover,
+		.sort-option:link,
+		.sort-option:active,
+		.sort-option:visited
+		{
+		height:
+		19px;
+		padding: 7px
+		10px;
+		float: left;
+		color: black;
+		}
+
+		.sort-option:hover
+		{
+		color: black;
+		}
+
+		@sprite .header {
+		gwt-image: "activityHeaderBackground";
+		position:
+		relative;
+		color: white;
+		}
+
+		.stream-info-container
+		{
+		float: left;
+		margin-left: 20px;
+		margin: 10px;
+		}
+
+		.follow-info-container
+		{
+		margin: 10px;
+		float: right;
+		text-align: center;
+		}
+
+		.follow-info-link,
+		.follow-info-link:hover {
+		color: #3AB0EF;
+		display: block;
+		}
+
+		.stream-details-container > a, .stream-details-container > a:hover,
+		.stream-details-container >
+		a:link, .stream-details-container >
+		a:active
+		{
+		color: #3AB0EF;
+		}
+
+		.stream-name
+		{
+		display: block;
+		height: 16px;
+		font-weight: bold;
+		}
+
+		.stream-details-container
+		{
+		height: 0;
+		background-color: #252525;
+		overflow: hidden;
+		color: white;
+		position:
+		relative;
+		top: -1px;
+		}
+
+		.stream-details-container h2
+		{
+		font-weight: bold;
+		height: 16px;
+		}
+
+		.toggle-details-link
+		{
+		clear: right;
+		float: right;
+		text-indent: 1000em;
+		overflow: hidden;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		cursor: pointer;
+		z-index: 10;
+		}
+
+		@sprite .view-details
+		{
+		gwt-image: "viewDetails";
+		}
+
+		.analyticsChartContainer {
+		float: right;
+		margin: 10px;
+		}
+
+		.analyticsChartContainer > div {
+		padding-top: 10px;
+		}
+
+		.stream-details
+		{
+		clear: left;
+		float: left;
+		margin: 0 10px;
+		width: 200px;
+		}
+
+		.stream-details-options
+		{
+		background-color: #111111;
+		border-bottom: 1px
+		solid #404040;
+		border-top: 1px solid #404040;
+		height: 37px;
+		}
+
+		.stream-details-options > a, .stream-details-options > a:hover,
+		.stream-details-options >
+		a:link, .stream-details-options > a:active
+		{
+		background-image: url("style/images/subFilterBackground.png");
+		color:
+		white;
+		display: block;
+		float: left;
+		height: 27px;
+		margin: 10px 0 10px
+		10px;
+		padding: 0 10px;
+		}
+
+		.search-box
+		{
+		float: right;
+		}
+
+		@sprite .stream-loading-spinner
+		{
+		gwt-image: "spinner";
+		margin: 0 auto;
+		position:
+		relative;
+		top: 30px;
+		}
+
+		@sprite .more-loading-spinner
+		{
+		gwt-image: "spinner";
+		margin: 0 auto;
+		}
+
+		.view-more-link
+		{
+		margin: 0 auto;
+		margin-top: 10px;
+		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
+		width: 95%;
+		border-top: 1px solid #bbbbbb;
+		padding-top: 5px;
+		display: block;
+		cursor: pointer;
+		color: #0066CC;
+		}
+
+	</ui:style>
+
+	<g:HTMLPanel addStyleNames="{style.main}">
+		<g:HTMLPanel addStyleNames="{style.stream-container-panel}"
+			ui:field="streamContainerPanel">
+			<div class="{style.header}">
+				<g:HTMLPanel addStyleNames="{style.stream-avatar}"
+					ui:field="streamAvatar">
+				</g:HTMLPanel>
+				<div class="{style.stream-info-container}">
+					<span class="{style.stream-name}" ui:field="streamName"></span>
+					<span ui:field="streamMeta"></span>
+				</div>
+				<div class="{style.follow-info-container}">
+					<span ui:field="followerCount"></span>
+					<g:Anchor addStyleNames="{style.follow-info-link}"
+						ui:field="showFollowers">Followers</g:Anchor>
+				</div>
+				<div class="{style.follow-info-container}">
+					<span ui:field="followingCount"></span>
+					<g:Anchor addStyleNames="{style.follow-info-link}"
+						ui:field="showFollowing">Following</g:Anchor>
+				</div>
+				<g:Anchor addStyleNames="{style.toggle-details-link} {style.view-details}"
+					ui:field="toggleDetails">Details</g:Anchor>
+			</div>
+			<div class="{style.stream-details-container}" ui:field="streamDetailsContainer">
+				<div class="{style.stream-details-options}">
+					<g:Anchor ui:field="aboutLink">About</g:Anchor>
+					<g:Anchor ui:field="followersLink">Followers</g:Anchor>
+				</div>
+				<div>
+					<g:HTMLPanel ui:field="streamAbout">
+						<div class="{style.stream-details}">
+							<h2>Description</h2>
+							<div ui:field="streamDescription"></div>
+							<h2>Interests</h2>
+							<div ui:field="streamInterests"></div>
+							<h2>Popular Hashtags</h2>
+							<div ui:field="streamHashtags"></div>
+						</div>
+						<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}"
+							ui:field="analyticsChartContainer">
+						</g:HTMLPanel>
+					</g:HTMLPanel>
+					<g:HTMLPanel ui:field="streamConnections">
+					</g:HTMLPanel>
+				</div>
+			</div>
+			<ewa:PostBoxComposite></ewa:PostBoxComposite>
+			<div class="{style.options-panel}">
+				<g:Anchor addStyleNames="{style.sort-option} {style.activeSort}"
+					ui:field="recentSort">Recent</g:Anchor>
+				<g:Anchor addStyleNames="{style.sort-option}" ui:field="popularSort">
+					Popular</g:Anchor>
+				<g:Anchor addStyleNames="{style.sort-option}" ui:field="activeSort">
+					Active</g:Anchor>
+				<g:TextBox addStyleNames="{style.search-box}" ui:field="searchBox"></g:TextBox>
+			</div>
+			<div class="{style.stream-panel}">
+				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
+				<g:FlowPanel ui:field="streamPanel">
+				</g:FlowPanel>
+				<div class="{style.more-loading-spinner}" ui:field="moreSpinner"></div>
+				<g:Label addStyleNames="{style.view-more-link}" ui:field="moreLink">View More</g:Label>
+			</div>
+		</g:HTMLPanel>
+
+		<ul class="{style.stream-option-list}" ui:field="defaultList">
+		</ul>
+
+		<ul class="{style.stream-option-list}" ui:field="bookmarkList">
+		</ul>
+
+		<ul class="{style.stream-option-list}" ui:field="filterList">
+		</ul>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,13 @@ package org.eurekastreams.web.client.ui.pages.master;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.ActionExecutorPanel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.activity.ActivityContent;
 import org.eurekastreams.web.client.ui.pages.help.HelpContent;
 import org.eurekastreams.web.client.ui.pages.metrics.MetricsSummaryContent;
 import org.eurekastreams.web.client.ui.pages.oauth.OAuthAuthorizeContent;
-import org.eurekastreams.web.client.ui.pages.profile.GroupProfilePanel;
-import org.eurekastreams.web.client.ui.pages.profile.OrganizationProfilePanel;
-import org.eurekastreams.web.client.ui.pages.profile.PersonalProfilePanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.CreateGroupPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.GroupProfileSettingsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.PersonalProfileSettingsPanel;
@@ -33,10 +32,12 @@ import org.eurekastreams.web.client.ui.pages.search.SearchContent;
 import org.eurekastreams.web.client.ui.pages.settings.SettingsContent;
 import org.eurekastreams.web.client.ui.pages.start.StartPageContent;
 import org.eurekastreams.web.client.ui.pages.start.gallery.GalleryContent;
-import org.eurekastreams.web.client.ui.pages.stream.StreamContent;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Creates a page given a page and view.
@@ -51,50 +52,165 @@ public class PageFactory
      *            the page.
      * @param views
      *            the views.
-     * @return the page widget.
+     * @param contentPanel
+     *            panel to add page to.
      */
-    public Widget createPage(final Page page, final List<String> views)
+    public void createPage(final Page page, final List<String> views, final FlowPanel contentPanel)
     {
         RootPanel.get().setStyleName("");
 
-        String view = "";
+        String viewStr = "";
         if (views.size() > 0)
         {
-            view = views.get(0);
+            viewStr = views.get(0);
         }
+
+        final String view = viewStr;
 
         switch (page)
         {
         case ACTION:
-            return new ActionExecutorPanel(Session.getInstance().getActionProcessor(), view);
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new ActionExecutorPanel(Session.getInstance().getActionProcessor(), view));
+                }
+            });
+            break;
         case SEARCH:
-            return new SearchContent();
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new SearchContent());
+                }
+            });
+            break;
         case SETTINGS:
-            return new SettingsContent(Session.getInstance().getActionProcessor());
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new SettingsContent(Session.getInstance().getActionProcessor()));
+                }
+            });
+            break;
         case AUTHORIZE:
-            return new OAuthAuthorizeContent(Session.getInstance().getActionProcessor(), view);
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new OAuthAuthorizeContent(Session.getInstance().getActionProcessor(), view));
+                }
+            });
+            break;
         case GALLERY:
-            return new GalleryContent();
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new GalleryContent());
+                }
+            });
+            break;
         case ACTIVITY:
-            return new StreamContent();
-        case PEOPLE:
-            return new PersonalProfilePanel(view);
+            contentPanel.add(new ActivityContent());
+            break;
+        case PEOPLE_LEGACY:
+            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
+            break;
+        case GROUPS_LEGACY:
+            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
+            break;
         case PERSONAL_SETTINGS:
-            return new PersonalProfileSettingsPanel();
-        case GROUPS:
-            return new GroupProfilePanel(view);
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new PersonalProfileSettingsPanel());
+                }
+            });
+            break;
         case GROUP_SETTINGS:
-            return new GroupProfileSettingsPanel(view);
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new GroupProfileSettingsPanel(view));
+                }
+            });
+            break;
         case NEW_GROUP:
-            return new CreateGroupPanel(view);
-        case ORGANIZATIONS:
-            return new OrganizationProfilePanel(view);
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new CreateGroupPanel(view));
+                }
+            });
+            break;
         case HELP:
-            return new HelpContent();
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new HelpContent());
+                }
+            });
+            break;
         case METRICS:
-            return new MetricsSummaryContent();
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new MetricsSummaryContent());
+                }
+            });
+            break;
         default:
-            return new StartPageContent();
+            contentPanel.add(new StartPageContent());
+            break;
         }
 
     }

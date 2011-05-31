@@ -28,10 +28,14 @@ import org.eurekastreams.commons.model.DomainEntity;
 /**
  * Membership criteria.
  */
-@SuppressWarnings("serial")
 @Entity
 public class MembershipCriteria extends DomainEntity implements Serializable
 {
+    /**
+     * Serial version uid.
+     */
+    private static final long serialVersionUID = -6648003009881047137L;
+
     /**
      * The criteria.
      */

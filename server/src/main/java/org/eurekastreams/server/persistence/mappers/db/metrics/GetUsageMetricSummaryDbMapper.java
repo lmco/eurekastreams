@@ -26,7 +26,6 @@ import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummar
 
 /**
  * Mapper to get UsageMetricSummary.
- * 
  */
 public class GetUsageMetricSummaryDbMapper extends
         BaseArgDomainMapper<UsageMetricStreamSummaryRequest, UsageMetricSummaryDTO>
@@ -42,9 +41,22 @@ public class GetUsageMetricSummaryDbMapper extends
     @Override
     public UsageMetricSummaryDTO execute(final UsageMetricStreamSummaryRequest inRequest)
     {
-        Query q = getEntityManager()
-                .createQuery("FROM DailyUsageSummary WHERE isWeekday = :isWeekday ORDER BY id DESC");
-        q.setParameter("isWeekday", true);
+        Query q;
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            q = getEntityManager().createQuery(
+                    "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NULL "
+                            + "AND isWeekday = true ORDER BY id DESC");
+        }
+        else
+        {
+            // specific stream
+            q = getEntityManager().createQuery(
+                    "FROM DailyUsageSummary WHERE streamViewStreamScopeId = :streamViewStreamScopeId "
+                            + "AND isWeekday = true ORDER BY id DESC").setParameter("streamViewStreamScopeId",
+                    inRequest.getStreamRecipientStreamScopeId());
+        }
         q.setMaxResults(inRequest.getNumberOfDays());
 
         List<DailyUsageSummary> results = q.getResultList();

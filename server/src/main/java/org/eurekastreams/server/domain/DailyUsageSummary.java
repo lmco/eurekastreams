@@ -128,11 +128,13 @@ public class DailyUsageSummary implements Serializable
      *            the date
      * @param inIsWeekday
      *            whether this date is a weekday
+     * @param inStreamViewStreamScopeId
+     *            the stream view that these stats apply to, or null if for all streams
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final boolean inIsWeekday)
+            final boolean inIsWeekday, final Long inStreamViewStreamScopeId)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -143,6 +145,7 @@ public class DailyUsageSummary implements Serializable
         avgActivityResponseTime = inAvgActivityResponseTime;
         usageDate = inUsageDate;
         isWeekday = inIsWeekday;
+        streamViewStreamScopeId = inStreamViewStreamScopeId;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PreSwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.PreventHistoryChangeEvent;
@@ -170,8 +172,13 @@ public class HistoryHandler implements ValueChangeHandler<String>
                 viewUpdated = true;
             }
 
+            if (viewUpdated)
+            {
+                EventBus.getInstance().notifyObservers(new HistoryViewsChangedEvent(views));
+            }
+
             // The view has updated.
-            if (viewUpdated || originalPage != page)
+            if (originalPage != page)
             {
                 // Let developers know we're about to switch the view. Prep for it if necessary. If you want us
                 // to stop, throw a PreventHistoryChangeEvent and we'll set the boolean to stop it from going.

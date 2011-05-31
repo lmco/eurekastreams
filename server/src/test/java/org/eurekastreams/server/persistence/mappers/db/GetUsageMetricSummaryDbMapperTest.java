@@ -95,6 +95,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
             foo.setUsageDate(new Date(april11th2001 + i * msInDay));
             foo.setAvgActivityResponseTime(count * i);
             foo.setWeekday(true);
+            foo.setStreamViewStreamScopeId(null);
 
             getEntityManager().persist(foo);
             getEntityManager().flush();
@@ -103,27 +104,137 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
 
         // throw in some weekend days that will be ignored
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 2 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 2 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 3 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 3 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 4 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 4 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 5 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 5 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 6 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 6 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 7 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 7 * msInDay), false, null));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 8 * msInDay), false));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 8 * msInDay), false, null));
+
+        // throw in some specific stream stats that will be ignored
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false, 3L));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false, 4L));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false, 5L));
 
         getEntityManager().flush();
         getEntityManager().clear();
 
         // execute sut.
         UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(3, null));
+
+        // verfiy row count and averages.
+        assertNotNull(result);
+        assertEquals(2, result.getRecordCount());
+        assertEquals(resultValue, result.getMessageCount());
+        assertEquals(resultValue, result.getPageViewCount());
+        assertEquals(resultValue, result.getStreamContributorCount());
+        assertEquals(resultValue, result.getStreamViewCount());
+        assertEquals(resultValue, result.getStreamViewerCount());
+        assertEquals(resultValue, result.getUniqueVisitorCount());
+        assertEquals(resultValue, result.getAvgActivityResponseTime());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testValuesForSpecificStream()
+    {
+        /**
+         * April 7th, 2011 in ticks.
+         */
+        final long april11th2001 = 987012529000L;
+        final long jan1th2001 = 1302804695000L;
+        final long msInDay = 86400000L;
+        final long streamViewScopeId = 372L;
+
+        final long resultValue = 15;
+        final long count = 10;
+        // clear table.
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
+        getEntityManager().flush();
+
+        // put in two records, one with 10 for values, one with 20
+        for (int i = 1; i <= 2; i++)
+        {
+            DailyUsageSummary foo = new DailyUsageSummary();
+            foo.setMessageCount(count * i);
+            foo.setPageViewCount(count * i);
+            foo.setStreamContributorCount(count * i);
+            foo.setStreamViewCount(count * i);
+            foo.setStreamViewerCount(count * i);
+            foo.setUniqueVisitorCount(count * i);
+            foo.setUsageDate(new Date(april11th2001 + i * msInDay));
+            foo.setAvgActivityResponseTime(count * i);
+            foo.setWeekday(true);
+            foo.setStreamViewStreamScopeId(streamViewScopeId);
+
+            getEntityManager().persist(foo);
+            getEntityManager().flush();
+            assertTrue(foo.getId() > 0);
+        }
+
+        // throw in some weekend days that will be ignored
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 2 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 3 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 4 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 5 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 6 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 7 * msInDay), false,
+                                streamViewScopeId));
+        getEntityManager()
+                .persist(
+                        new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 8 * msInDay), false,
+                                streamViewScopeId));
+
+        // throw in some stats that don't pertain to this stream that will be ignored
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 6 * msInDay), false,
+                        streamViewScopeId + 1));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 7 * msInDay), false,
+                        streamViewScopeId + 1));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 8 * msInDay), false, null));
+
+        getEntityManager().flush();
+        getEntityManager().clear();
+
+        // execute sut.
+        UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(3, streamViewScopeId));
 
         // verfiy row count and averages.
         assertNotNull(result);

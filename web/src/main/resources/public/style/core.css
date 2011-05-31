@@ -2053,8 +2053,8 @@ body .post-to-stream .over-character-limit {
 
 .stream-message-item {
 	padding-bottom: 5px;
-	margin-top: 15px;
-	margin-left: 17px;
+	padding-top: 10px;
+	margin-left: 10px;
 	margin-right: 35px;
 	margin-bottom: 0px;
 	overflow: auto;
@@ -2201,10 +2201,6 @@ body .post-to-stream .over-character-limit {
 .comment-timestamp,.message-timestamp-link,a.message-timestamp-link:link,a.message-timestamp-link:visited,a.message-timestamp-link:active
 	{
 	color: #666;
-}
-
-.message-actions-area,.comment-actions-area {
-	display: none;
 }
 
 .message-timestamp-actions-area {
@@ -2384,7 +2380,7 @@ body .post-to-stream .over-character-limit {
 	margin-top: -2px;
 }
 
-.stream-message-item:hover .message-actions-area {
+.stream-message-item .message-actions-area {
 	display: inline-block;
 }
 
@@ -3618,12 +3614,6 @@ body .options>li>.option-title:hover {
 		0px;
 }
 
-.connection-master {
-	background-color: white;
-	border: 1px solid #bbbbbb;
-	padding: 0px 10px 14px;
-	zoom: 1;
-}
 
 .connection-master .pager-container {
 	width: auto;

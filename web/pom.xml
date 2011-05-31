@@ -192,6 +192,11 @@
 			</exclusions>
         </dependency>
         <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-incubator</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.shindig</groupId>
             <artifactId>shindig-server</artifactId>
             <version>${build.gadget.shindig.version}</version>
@@ -234,6 +239,11 @@
             <groupId>com.google.code.gwt-dnd</groupId>
             <artifactId>gwt-dnd</artifactId>
             <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.gchart</groupId>
+            <artifactId>gchart</artifactId>
+            <version>2.7</version>
         </dependency>
         <!-- Uncomment to enable GWT logging -->
 		<!--<dependency>
@@ -744,7 +754,7 @@
                             <gwtVersion>${gwtVersion}</gwtVersion>
                             <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
                             <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
-                            <runTarget>Application.html</runTarget>
+                            <runTarget>index.html</runTarget>
                             <noServer>true</noServer>
                             <compileReport>true</compileReport>
                             <port>8080</port>
