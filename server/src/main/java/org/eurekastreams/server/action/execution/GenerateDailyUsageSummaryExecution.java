@@ -248,22 +248,24 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         }
 
         logger.info("Generating number of stream views for " + inDate);
-        streamViewCount = getDailyStreamViewCountMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate, null));
+        streamViewCount = getDailyStreamViewCountMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate,
+                inStreamScopeId));
 
         logger.info("Generating number of stream viewers for " + inDate);
-        streamViewerCount = getDailyStreamViewerCountMapper
-                .execute(new UsageMetricDailyStreamInfoRequest(inDate, null));
+        streamViewerCount = getDailyStreamViewerCountMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate,
+                inStreamScopeId));
 
         logger.info("Generating number of stream contributors for " + inDate);
         streamContributorCount = getDailyStreamContributorCountMapper.execute(new UsageMetricDailyStreamInfoRequest(
-                inDate, null));
+                inDate, inStreamScopeId));
 
         logger.info("Generating number of messages (activities and comments) for " + inDate);
-        messageCount = getDailyMessageCountMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate, null));
+        messageCount = getDailyMessageCountMapper
+                .execute(new UsageMetricDailyStreamInfoRequest(inDate, inStreamScopeId));
 
         logger.info("Generating average activity comment time (for those with comments on the same day) for " + inDate);
         avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate,
-                null));
+                inStreamScopeId));
 
         boolean isWeekday = dayOfWeekStrategy.isWeekday(inDate);
 
