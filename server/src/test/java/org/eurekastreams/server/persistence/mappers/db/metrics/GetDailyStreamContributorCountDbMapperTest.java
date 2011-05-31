@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 import java.util.Date;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
      * Test execute().
      */
     @Test
-    public void testExecute()
+    public void testExecuteAllStreams()
     {
         // dataset.xml has 3 people that have commented, 3 people that have posted activities. overlap is 2, total
         // unique: 4
@@ -65,21 +66,39 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
         getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
                 .executeUpdate();
 
-        Assert.assertEquals(4L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(4L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
 
         // push all activities out of the date range
         getEntityManager().createQuery("UPDATE Activity set postedTime=:date").setParameter("date",
                 new Date(april7th2011)).executeUpdate();
-        Assert.assertEquals(3L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
 
         // push all comments out of the date range
         getEntityManager().createQuery("UPDATE Comment set timeSent=:date")
                 .setParameter("date", new Date(april7th2011)).executeUpdate();
-        Assert.assertEquals(0L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(0L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
 
         // now pull back just the comments
         getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
                 .executeUpdate();
-        Assert.assertEquals(3L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
+    }
+
+    /**
+     * Test execute().
+     */
+    @Test
+    public void testExecuteSpecificStream()
+    {
+        final Long streamScopeId = 87433L;
+
+        getEntityManager().createQuery("UPDATE Activity set postedTime=:date").setParameter("date",
+                new Date(apri8th2011)).executeUpdate();
+        getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
+                .executeUpdate();
+
+        Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011),
+                streamScopeId)));
+
     }
 }

@@ -740,8 +740,13 @@
        innercontenttitle="Inner Content Title 3" page="START" videoheight="600" videourl="http://google.com"
        videowidth="200" /> 
     
+    <DailyUsageSummary id="4" messagecount="9" pageviewcount="99" streamcontributorcount="999" 
+        streamviewcount="9999" streamviewercount="99999" uniquevisitorcount="999999" usagedate="2011-04-07" avgactivityresponsetime="9999999" 
+        isWeekday="true" streamViewStreamScopeId="1"
+        />
+    
     <DailyUsageSummary id="1" messagecount="5" pageviewcount="55" streamcontributorcount="555" 
-        streamviewcount="5555" streamviewercount="55555" uniquevisitorcount="555555" usagedate="2011-04-07" avgactivityresponsetime="5" 
+        streamviewcount="5555" streamviewercount="55555" uniquevisitorcount="555555" usagedate="2011-04-07" avgactivityresponsetime="5555555" 
         isWeekday="true"
         />
         
@@ -754,6 +759,7 @@
         streamviewcount="7777" streamviewercount="77777" uniquevisitorcount="777777" usagedate="2011-04-09" avgactivityresponsetime="7" 
         isWeekday="true"
         />
+        
         
     <GalleryTabTemplate id="1"  version="0" created="2009-01-01 12:00:00.000" description="GalleryTabTemplate1" title="Welcome"
         categoryid="1235" tabtemplateid="5555" />         

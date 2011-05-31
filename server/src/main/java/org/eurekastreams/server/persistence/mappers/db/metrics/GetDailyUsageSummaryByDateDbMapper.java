@@ -15,34 +15,49 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * Database mapper to get the DailyUsageSummary for a given date.
  */
-public class GetDailyUsageSummaryByDateDbMapper extends BaseArgDomainMapper<Date, DailyUsageSummary>
+public class GetDailyUsageSummaryByDateDbMapper extends
+        BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary>
 {
     /**
      * Get the DailyUsageSummary for a specific day, or null if not available.
      * 
-     * @param inDate
-     *            the date to get DailyUsageSummary for
+     * @param inRequest
+     *            the UsageMetricDailyStreamInfoRequest
      * @return the DailyUsageSummary for the input day, or null if not available
      */
     @Override
-    public DailyUsageSummary execute(final Date inDate)
+    public DailyUsageSummary execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
         List<DailyUsageSummary> results;
         Query q;
 
-        q = getEntityManager().createQuery("FROM DailyUsageSummary WHERE usageDate = :usageDate");
-        q.setParameter("usageDate", inDate);
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            q = getEntityManager().createQuery(
+                    "FROM DailyUsageSummary WHERE usageDate = :usageDate " + "AND streamViewStreamScopeId IS NULL");
+            q.setParameter("usageDate", inRequest.getMetricsDate());
+        }
+        else
+        {
+            // specific stream
+            q = getEntityManager().createQuery(
+                    "FROM DailyUsageSummary WHERE usageDate = :usageDate "
+                            + "AND streamViewStreamScopeId = :streamViewStreamScopeId");
+            q.setParameter("usageDate", inRequest.getMetricsDate());
+            q.setParameter("streamViewStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
+        }
 
         results = q.getResultList();
         if (results.size() > 0)

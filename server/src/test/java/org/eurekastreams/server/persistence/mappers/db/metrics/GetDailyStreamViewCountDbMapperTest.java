@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,28 +55,58 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
     }
 
     /**
-     * Test execute().
+     * Test execute() for all streams.
      */
     @Test
-    public void testExecute()
+    public void testExecuteForAllStreams()
     {
         // right day - 4
-        getEntityManager().persist(new UsageMetric(1L, true, true, new Date(apri8th2011)));
-        getEntityManager().persist(new UsageMetric(3L, true, false, new Date(apri8th2011 + 3)));
-        getEntityManager().persist(new UsageMetric(6L, true, false, new Date(apri8th2011)));
-        getEntityManager().persist(new UsageMetric(2L, true, true, new Date(apri8th2011 + 5)));
-        getEntityManager().persist(new UsageMetric(4L, true, true, new Date(apri8th2011)));
-        getEntityManager().persist(new UsageMetric(5L, true, true, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(1L, true, true, 1L, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, 2L, new Date(apri8th2011 + 3)));
+        getEntityManager().persist(new UsageMetric(6L, true, false, null, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(2L, true, true, 3L, new Date(apri8th2011 + 5)));
+        getEntityManager().persist(new UsageMetric(4L, true, true, 4L, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 5L, new Date(apri8th2011)));
 
         // wrong day
-        getEntityManager().persist(new UsageMetric(6L, true, true, new Date(april7th2011)));
-        getEntityManager().persist(new UsageMetric(5L, true, true, new Date(april7th2011)));
-        getEntityManager().persist(new UsageMetric(4L, true, true, new Date(april7th2011)));
-        getEntityManager().persist(new UsageMetric(3L, true, false, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(6L, true, true, 1L, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 2L, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(4L, true, true, 3L, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(april7th2011)));
 
         getEntityManager().flush();
         getEntityManager().clear();
 
-        Assert.assertEquals(4L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(4L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011), null)));
+    }
+
+    /**
+     * Test execute() for a specific stream.
+     */
+    @Test
+    public void testExecuteForSpecificStream()
+    {
+        final Long targetScopeId = 382L;
+        final Long otherScopeId = 828L;
+
+        // right day - 4
+        getEntityManager().persist(new UsageMetric(1L, true, true, targetScopeId, new Date(apri8th2011))); // yes
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(apri8th2011 + 3)));
+        getEntityManager().persist(new UsageMetric(6L, true, false, null, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(2L, true, true, targetScopeId, new Date(apri8th2011 + 5))); // yes
+        getEntityManager().persist(new UsageMetric(4L, true, true, targetScopeId, new Date(apri8th2011))); // yes
+        getEntityManager().persist(new UsageMetric(5L, true, true, otherScopeId, new Date(apri8th2011)));
+
+        // wrong day
+        getEntityManager().persist(new UsageMetric(6L, true, true, targetScopeId, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, targetScopeId, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(4L, true, true, otherScopeId, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(april7th2011)));
+
+        getEntityManager().flush();
+        getEntityManager().clear();
+
+        Assert.assertEquals(3L, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(apri8th2011),
+                targetScopeId)));
     }
 }

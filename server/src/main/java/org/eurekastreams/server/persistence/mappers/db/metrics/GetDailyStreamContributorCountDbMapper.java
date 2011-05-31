@@ -23,42 +23,66 @@ import javax.persistence.Query;
 import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * DB Mapper to get the stream contributor count of a specific day.
  */
-public class GetDailyStreamContributorCountDbMapper extends BaseArgDomainMapper<Date, Long>
+public class GetDailyStreamContributorCountDbMapper extends
+        BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
      * Get the number of stream contributors on a specific day.
      * 
-     * @param inDay
-     *            the date to look for stats
+     * @param inRequest
+     *            the UsageMetricDailyStreamInfoRequest
      * @return the number of stream contributors on the input day
      */
     @Override
-    public Long execute(final Date inDay)
+    public Long execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
-        Query q;
+        Query activityQuery, commentQuery;
         Date startOfDay, endOfDay;
         HashSet<String> peopleIds = new HashSet<String>();
 
-        startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        endOfDay = DateDayExtractor.getEndOfDay(inDay);
+        startOfDay = DateDayExtractor.getStartOfDay(inRequest.getMetricsDate());
+        endOfDay = DateDayExtractor.getEndOfDay(inRequest.getMetricsDate());
 
-        q = getEntityManager().createQuery(
-                "SELECT DISTINCT(actorId) FROM Activity "
-                        + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate)")
-                .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay).setParameter("actorType",
-                        EntityType.PERSON);
-        peopleIds.addAll(q.getResultList());
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            activityQuery = getEntityManager().createQuery(
+                    "SELECT DISTINCT(actorId) FROM Activity "
+                            + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate)")
+                    .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay).setParameter("actorType",
+                            EntityType.PERSON);
 
-        q = getEntityManager().createQuery(
-                "SELECT DISTINCT(author.accountId) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate")
-                .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
-        peopleIds.addAll(q.getResultList());
+            commentQuery = getEntityManager().createQuery(
+                    "SELECT DISTINCT(author.accountId) FROM Comment WHERE timeSent >= :startDate"
+                            + " AND timeSent <= :endDate").setParameter("startDate", startOfDay).setParameter(
+                    "endDate", endOfDay);
+        }
+        else
+        {
+            // specific stream
+            activityQuery = getEntityManager().createQuery(
+                    "SELECT DISTINCT(actorId) FROM Activity "
+                            + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate "
+                            + "AND recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("actorType", EntityType.PERSON)
+                    .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
 
-        System.out.println(peopleIds);
+            commentQuery = getEntityManager().createQuery(
+                    "SELECT DISTINCT(author.accountId) FROM Comment WHERE timeSent >= :startDate"
+                            + " AND timeSent <= :endDate "
+                            + "AND target.recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("recipientStreamScopeId",
+                    inRequest.getStreamRecipientStreamScopeId());
+        }
+
+        // need to use a set here to find the uniques between the activity and comment authors
+        peopleIds.addAll(activityQuery.getResultList());
+        peopleIds.addAll(commentQuery.getResultList());
 
         return new Long(peopleIds.size());
     }

@@ -91,15 +91,18 @@ public class UsageMetric implements Serializable
      *            whether the metric registers a page view.
      * @param inIsStreamView
      *            whether this metric registers a stream view.
+     * @param inStreamViewStreamScopeId
+     *            the stream scope id of the recipient stream scope, or null if not a stream metric
      * @param inCreated
      *            the date created
      */
     public UsageMetric(final long inActorPersonId, final boolean inIsPageView, final boolean inIsStreamView,
-            final Date inCreated)
+            final Long inStreamViewStreamScopeId, final Date inCreated)
     {
         actorPersonId = inActorPersonId;
         isPageView = inIsPageView;
         isStreamView = inIsStreamView;
+        streamViewStreamScopeId = inStreamViewStreamScopeId;
         created = inCreated;
     }
 

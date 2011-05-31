@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.Comment;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +36,11 @@ public class GetDailyMessageCountDbMapperTest extends MapperTest
      * April 4th, 2011 in ticks.
      */
     private final long april4th2011 = 1301944331000L;
+
+    /**
+     * April 5th, 2011 in ticks.
+     */
+    private final long april5th2011 = 1302030731000L;
 
     /**
      * System under test.
@@ -89,12 +95,45 @@ public class GetDailyMessageCountDbMapperTest extends MapperTest
     }
 
     /**
-     * Test execute.
+     * Test execute for all streams.
      */
     @Test
-    public void testExecute()
+    public void testExecuteForAllStreams()
     {
         Date april4th = new Date(april4th2011 + 8); // change the date a little bit
-        assertEquals(3, (long) sut.execute(april4th));
+        assertEquals(3, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(april4th, null)));
+    }
+
+    /**
+     * Test execute for a specific stream with data.
+     */
+    @Test
+    public void testExecuteForSpecificStreamWithData()
+    {
+        final Long streamScopeId = 87433L;
+        Date april4th = new Date(april4th2011 + 8); // change the date a little bit
+        assertEquals(2, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(april4th, streamScopeId)));
+    }
+
+    /**
+     * Test execute for a specific stream with no data - no data for this stream scope.
+     */
+    @Test
+    public void testExecuteForSpecificStreamWithNoData1()
+    {
+        final Long streamScopeId = 877L;
+        Date april4th = new Date(april4th2011 + 8); // change the date a little bit
+        assertEquals(0, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(april4th, streamScopeId)));
+    }
+
+    /**
+     * Test execute for a specific stream with no data - no data for this date.
+     */
+    @Test
+    public void testExecuteForSpecificStreamWithNoData2()
+    {
+        final Long streamScopeId = 877L;
+        Date april4th = new Date(april5th2011 + 8); // change the date a little bit
+        assertEquals(0, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(april4th, streamScopeId)));
     }
 }
