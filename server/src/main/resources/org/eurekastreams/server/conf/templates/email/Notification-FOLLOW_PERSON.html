@@ -1,19 +1,11 @@
 <html>
 <body>
 <p>
-$(actor.name) is following your stream.
+$actor.displayName is following your stream.
 </p>
 <p>
-To see $(actor.name)'s profile follow this <a href="$(eureka.web.baseurl)#people/$(actor.accountid)">link</a>.
+To see $actor.displayName's profile follow this <a href="#profileUrl($actor)">link</a>.
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>

@@ -107,4 +107,43 @@ public class FlagTranslatorTest
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
     }
+
+    /**
+     * Tests translating.
+     */
+    @Test
+    public void testTranslateGroup()
+    {
+        StreamEntityDTO stream = new StreamEntityDTO();
+        stream.setType(EntityType.GROUP);
+        stream.setDestinationEntityId(4L);
+        final ActivityDTO activity = new ActivityDTO();
+        activity.setDestinationStream(stream);
+
+        final List<Long> admins = Arrays.asList(7L, 5L);
+        context.checking(new Expectations()
+        {
+            {
+                allowing(activitiesMapper).execute(Arrays.asList(3L));
+                will(returnValue(Arrays.asList(activity)));
+                allowing(systemAdminIdsMapper).execute(null);
+                will(returnValue(admins));
+            }
+        });
+
+        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, 3L);
+        NotificationBatch results = sut.translate(request);
+
+        context.assertIsSatisfied();
+
+        // check recipients
+        assertEquals(1, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_GROUP_ACTIVITY, admins);
+
+        // check properties
+        PropertyMap<Object> props = results.getProperties();
+        PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
+        PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        PropertyMapTestHelper.assertValue(props, "activity", activity);
+    }
 }

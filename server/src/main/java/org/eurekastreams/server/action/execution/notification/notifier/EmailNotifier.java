@@ -51,6 +51,9 @@ public class EmailNotifier implements Notifier
     /** To fetch people for email addresses. */
     private final DomainMapper<List<Long>, List<PersonModelView>> personsMapper;
 
+    /** Prefix to use on email subjects. */
+    private final String subjectPrefix;
+
     /**
      * Constructor.
      *
@@ -62,15 +65,18 @@ public class EmailNotifier implements Notifier
      *            Message templates by notification type.
      * @param inPersonsMapper
      *            To fetch people for email addresses.
+     * @param inSubjectPrefix
+     *            Prefix to use on email subjects.
      */
     public EmailNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
             final Map<NotificationType, EmailNotificationTemplate> inTemplates,
-            final DomainMapper<List<Long>, List<PersonModelView>> inPersonsMapper)
+            final DomainMapper<List<Long>, List<PersonModelView>> inPersonsMapper, final String inSubjectPrefix)
     {
         velocityEngine = inVelocityEngine;
         velocityGlobalContext = inVelocityGlobalContext;
         templates = inTemplates;
         personsMapper = inPersonsMapper;
+        subjectPrefix = inSubjectPrefix;
     }
 
     /**
@@ -95,7 +101,7 @@ public class EmailNotifier implements Notifier
         // build the subject
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(velocityContext, writer, "EmailSubject-" + inType, template.getSubjectTemplate());
-        email.setSubject(writer.toString());
+        email.setSubject(subjectPrefix + writer.toString());
 
         // build the text body
         writer.getBuffer().setLength(0);

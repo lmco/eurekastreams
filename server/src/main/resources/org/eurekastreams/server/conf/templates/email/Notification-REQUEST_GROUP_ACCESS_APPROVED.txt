@@ -1,14 +1,5 @@
-Your request to join the $(dest.name) group has been approved.
+Your request to join the $group.displayName group has been approved.
 
 To see the group follow this link:
-$(eureka.web.baseurl)#groups/$(dest.uniqueid)
-
-Thank You,
-Eureka Streams
-
---- 
-
-To find out more information, visit $(eureka.infosite.url)
-
-Emails you receive from Eureka Streams can be managed from your notification settings page:
-$(eureka.web.baseurl)#settings?tab=Notifications
+#profileUrl($group)
+#parse('Footer.txt')

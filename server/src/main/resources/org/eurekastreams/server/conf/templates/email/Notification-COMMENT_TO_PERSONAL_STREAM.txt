@@ -1,19 +1,8 @@
-$(settings.sitelabel)
+#siteLabelText()
+$actor.displayName commented on a #activityType($activity) in your stream.
 
-
-$(actor.name) commented on a $(activity.type) in your stream.
-
-"$(comment.content)"
+"$comment.body"
 
 To see the post and comments follow this link:
-$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)
-
-Thank You,
-Eureka Streams
-
---- 
-
-To find out more information, visit $(eureka.infosite.url)
-
-Emails you receive from Eureka Streams can be managed from your notification settings page:
-$(eureka.web.baseurl)#settings?tab=Notifications
+#activityUrl($stream,$activity)
+#parse('Footer.txt')

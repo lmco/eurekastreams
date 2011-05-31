@@ -1,7 +1,7 @@
 <html>
 <body>
 <p>
-Your request to create the $(aux.name) group has been approved.  Here are a few things to help you get started...
+Your request to create the $group.displayName group has been approved.  Here are a few things to help you get started...
 <ul>
 <li>
 Fill out your group profile
@@ -22,16 +22,8 @@ Email your target audience
 </p>
 <p>
 Here's the link to your group. Time to get started!<br />
-<a href="$(eureka.web.baseurl)#$(aux.page)/$(aux.uniqueid)">$(aux.name)</a>
+<a href="#profileUrl($group)">$group.displayName</a>
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.  
-Post questions to <a href="$(eureka.web.baseurl)#groups/$(settings.support.uniqueid)">$(settings.support.name)</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>
