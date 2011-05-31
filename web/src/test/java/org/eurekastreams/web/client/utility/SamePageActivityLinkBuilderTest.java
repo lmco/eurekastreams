@@ -16,19 +16,12 @@
 package org.eurekastreams.web.client.utility;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests the link builder.
@@ -57,59 +50,12 @@ public class SamePageActivityLinkBuilderTest
      * Tests building activity permalink URL request.
      */
     @Test
-    public void testBuildActivityPermalinkUrlRequest()
+    public void testBuildActivityPermalink()
     {
-        CreateUrlRequest result =
-                sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.PERSON, STREAM_UNIQUE_ID, null);
+        CreateUrlRequest result = sut.buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.PERSON,
+                STREAM_UNIQUE_ID, null);
 
-        assertNull(result.getPage());
-        assertFalse(result.getReplacePrevious());
-        assertNull(result.getViews());
-        assertMap(result.getParameters(), "activityId", "87");
-    }
-
-    /**
-     * Tests building activity permalink URL request.
-     */
-    @Test
-    public void testBuildActivityPermalinkUrlRequestUsesStoredParams()
-    {
-        sut.addExtraParameter("p1", "v1");
-        sut.addExtraParameter("p2", "v2");
-        sut.addExtraParameter("activityId", "overwriteThis");
-
-        Map<String, String> extraParms = new HashMap<String, String>();
-        extraParms.put("p2", "v2a");
-        extraParms.put("p3", "v3");
-        extraParms.put("activityId", "overwriteMe");
-
-        CreateUrlRequest result =
-                sut
-                        .buildActivityPermalinkUrlRequest(ACTIVITY_ID, EntityType.APPLICATION, STREAM_UNIQUE_ID,
-                                extraParms);
-
-        assertNull(result.getPage());
-        assertFalse(result.getReplacePrevious());
-        assertNull(result.getViews());
-        assertMap(result.getParameters(), "activityId", "87", "p1", "v1", "p2", "v2a", "p3", "v3");
-    }
-
-    /**
-     * Tests that a result map contains what is expected.
-     *
-     * @param actual
-     *            Map actually returned.
-     * @param entries
-     *            Keys and values expected to be in the map.
-     */
-    private void assertMap(final Map<String, String> actual, final String... entries)
-    {
-        assertTrue("Test code is broken:  assertMap must have key-value pairs.", entries.length % 2 == 0);
-        assertNotNull(actual);
-        assertEquals(entries.length / 2, actual.size());
-        for (int i = 0; i < entries.length; i += 2)
-        {
-            assertEquals(entries[i + 1], actual.get(entries[i]));
-        }
+        assertEquals(Page.ACTIVITY, result.getPage());
+        assertEquals(ACTIVITY_ID, Long.parseLong(result.getViews().get(0)));
     }
 }

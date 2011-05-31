@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -35,21 +34,6 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
     /** Logger. */
     private Log log = LogFactory.make();
 
-    /** Mapper to find the follower's id given their account id. */
-    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
-
-    /** Mapper returning the ids of the entities being followed. */
-    private DomainMapper<Long, List<Long>> personIdsMapper;
-
-    /** Mapper returning the ids of the entities being followed. */
-    private DomainMapper<Long, List<Long>> groupIdsMapper;
-
-    /** Mapper returning entities (people, groups) given their ids. */
-    private DomainMapper<List<Long>, List<Followable>> bulkPersonModelViewMapper;
-
-    /** Mapper returning entities (people, groups) given their ids. */
-    private DomainMapper<List<Long>, List<Followable>> bulkGroupModelViewMapper;
-
     /**
      * Constructor.
      * 
@@ -59,7 +43,9 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
      *            Mapper returning the ids of the entities being followed.
      * @param inGroupIdsMapper
      *            Mapper returning the ids of the entities being followed.
-     * @param inBulkModelViewMapper
+     * @param inBulkPersonModelViewMapper
+     *            Mapper returning entities (people, groups) given their ids.
+     * @param inBulkGroupModelViewMapper
      *            Mapper returning entities (people, groups) given their ids.
      */
     public GetFollowingExecution(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
@@ -68,11 +54,7 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
             final DomainMapper<List<Long>, List<Followable>> inBulkPersonModelViewMapper,
             final DomainMapper<List<Long>, List<Followable>> inBulkGroupModelViewMapper)
     {
-        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
-        personIdsMapper = inPersonIdsMapper;
-        groupIdsMapper = inGroupIdsMapper;
-        bulkPersonModelViewMapper = inBulkPersonModelViewMapper;
-        bulkGroupModelViewMapper = inBulkGroupModelViewMapper;
+
     }
 
     /**
@@ -85,54 +67,7 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
     @Override
     public PagedSet<Followable> execute(final PrincipalActionContext inActionContext)
     {
-        // get the request
-        GetFollowersFollowingRequest inRequest = (GetFollowersFollowingRequest) inActionContext.getParams();
-
-        // get the unique entity Id
-        final String entityUniqueId = inRequest.getEntityId();
-
-        Long entityId = getPersonIdByAccountIdMapper.execute(entityUniqueId);
-
-        List<Long> allPersonIds = personIdsMapper.execute(entityId);
-        List<Long> allGroupIds = groupIdsMapper.execute(entityId);
-
-        // determine the page
-        int startIndex = ((Integer) inRequest.getStartIndex()).intValue();
-        int endIndex = ((Integer) inRequest.getEndIndex()).intValue();
-
-        PagedSet<Followable> pagedSet;
-        if (allPersonIds.isEmpty() && allGroupIds.isEmpty())
-        {
-            pagedSet = new PagedSet<Followable>();
-        }
-        else if (startIndex >= (allPersonIds.size() + allGroupIds.size()))
-        {
-            // if asking for a range beyond the end of the list return an empty set
-            pagedSet = new PagedSet<Followable>();
-            pagedSet.setTotal(allPersonIds.size() + allGroupIds.size());
-        }
-        else
-        {
-            if (endIndex >= (allPersonIds.size() + allGroupIds.size()))
-            {
-                endIndex = allPersonIds.size() + allGroupIds.size() - 1;
-            }
-            List<Long> personIds = allPersonIds.subList(startIndex, endIndex + 1);
-            List<Followable> list = bulkPersonModelViewMapper.execute(personIds);
-
-            List<Long> groupIds = allGroupIds.subList(startIndex, endIndex + 1);
-            list.addAll(bulkGroupModelViewMapper.execute(groupIds));
-
-            pagedSet = new PagedSet<Followable>(startIndex, endIndex, allPersonIds.size() + allGroupIds.size(), list);
-        }
-
-        if (log.isTraceEnabled())
-        {
-            log.trace("Retrieved " + pagedSet.getFromIndex() + " to " + pagedSet.getToIndex() + " of "
-                    + pagedSet.getTotal() + " following for person " + entityUniqueId);
-        }
-
-        return pagedSet;
+        return new PagedSet<Followable>();
     }
 
 }

@@ -2203,10 +2203,6 @@ body .post-to-stream .over-character-limit {
 	color: #666;
 }
 
-.message-actions-area,.comment-actions-area {
-	display: none;
-}
-
 .message-timestamp-actions-area {
 	height: 20px;
 }
@@ -2384,7 +2380,7 @@ body .post-to-stream .over-character-limit {
 	margin-top: -2px;
 }
 
-.stream-message-item:hover .message-actions-area {
+.stream-message-item .message-actions-area {
 	display: inline-block;
 }
 

@@ -55,7 +55,7 @@ public enum Page implements Serializable
     /**
      * People profile.
      */
-    PEOPLE("people"),
+    PEOPLE("activity/person"),
     /**
      * Personal settings.
      */
@@ -63,7 +63,7 @@ public enum Page implements Serializable
     /**
      * Group profile.
      */
-    GROUPS("groups"),
+    GROUPS("activity/group"),
     /**
      * Group settings.
      */
@@ -107,11 +107,7 @@ public enum Page implements Serializable
     /**
      * Widget displaying basic user profile information.
      */
-    WIDGET_PROFILE_BADGE("widget-profilebadge"), 
-    /**
-     * XXX - New Activity page.
-     */
-    ACTIVITY_NEW("activity-new");
+    WIDGET_PROFILE_BADGE("widget-profilebadge"), PEOPLE_LEGACY("people"), GROUPS_LEGACY("groups");
 
     /**
      * human-readable name (ie, "Business Development" as opposed to enum.BD).

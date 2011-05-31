@@ -5,6 +5,7 @@
 	<ui:image field="activityHeaderBackground" src="style/images/activityHeaderBackground.png" />
 	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
 	<ui:image field="viewDetails" src="style/images/viewDetailsBtn.png" />
+	<ui:image field="spinner" src="style/images/wait-spinner.gif" />
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
@@ -37,6 +38,8 @@
 		border: 1px solid
 		#c6c6c6;
 		border-top-width: 0;
+		padding-bottom: 5px;
+		min-height: 100px;
 		}
 
 		.stream-option-list li a
@@ -51,8 +54,15 @@
 
 		.stream-option-list li a:hover
 		{
-		background-image: url(style/images/activeBackground.png);
+		background-image:
+		url(style/images/activeBackground.png);
 		color: #000;
+		}
+
+		.stream-option-list li a.activeStream
+		{
+		background-image:
+		url(style/images/activeBackground.png);
 		}
 
 		.stream-avatar
@@ -67,13 +77,15 @@
 		.stream-avatar > img
 		{
 		padding: 0px;
-		border: none;
+		border:
+		none;
 		}
 
 
 		.activeSort
 		{
-		background-image: url(style/images/activeBackground.png);
+		background-image:
+		url(style/images/activeBackground.png);
 		}
 
 		.options-panel
@@ -86,12 +98,14 @@
 		}
 
 		.sort-option, .sort-option:hover,
-		.sort-option:link, .sort-option:active,
+		.sort-option:link,
+		.sort-option:active,
 		.sort-option:visited
 		{
 		height:
 		19px;
-		padding: 7px 10px;
+		padding: 7px
+		10px;
 		float: left;
 		color: black;
 		}
@@ -103,7 +117,8 @@
 
 		@sprite .header {
 		gwt-image: "activityHeaderBackground";
-		position: relative;
+		position:
+		relative;
 		color: white;
 		}
 
@@ -222,6 +237,37 @@
 		{
 		float: right;
 		}
+
+		@sprite .stream-loading-spinner
+		{
+		gwt-image: "spinner";
+		margin: 0 auto;
+		position:
+		relative;
+		top: 30px;
+		}
+
+		@sprite .more-loading-spinner
+		{
+		gwt-image: "spinner";
+		margin: 0 auto;
+		}
+
+		.view-more-link
+		{
+		margin: 0 auto;
+		margin-top: 10px;
+		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
+		width: 95%;
+		border-top: 1px solid #bbbbbb;
+		padding-top: 5px;
+		display: block;
+		cursor: pointer;
+		color: #0066CC;
+		}
+
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
@@ -281,9 +327,13 @@
 					Active</g:Anchor>
 				<g:TextBox addStyleNames="{style.search-box}" ui:field="searchBox"></g:TextBox>
 			</div>
-			<g:FlowPanel addStyleNames="{style.stream-panel}"
-				ui:field="streamPanel">
-			</g:FlowPanel>
+			<div class="{style.stream-panel}">
+				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
+				<g:FlowPanel ui:field="streamPanel">
+				</g:FlowPanel>
+				<div class="{style.more-loading-spinner}" ui:field="moreSpinner"></div>
+				<g:Label addStyleNames="{style.view-more-link}" ui:field="moreLink">View More</g:Label>
+			</div>
 		</g:HTMLPanel>
 
 		<ul class="{style.stream-option-list}" ui:field="defaultList">

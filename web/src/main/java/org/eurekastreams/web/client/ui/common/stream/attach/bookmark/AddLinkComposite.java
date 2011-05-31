@@ -340,7 +340,9 @@ public class AddLinkComposite extends FlowPanel
                             eventBus.notifyObservers(event);
 
                             eventBus
-                                    .notifyObservers(new ShowNotificationEvent(new Notification(UNVERIFIED_URL_MESSAGE)));
+                                    .notifyObservers(new
+                                            // line break.
+                                            ShowNotificationEvent(new Notification(UNVERIFIED_URL_MESSAGE)));
                         }
 
                         public void onSuccess(final LinkInformation result)

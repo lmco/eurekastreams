@@ -36,7 +36,6 @@ import org.eurekastreams.web.client.ui.Session;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 
 /**
  * The HistoryHandler should be the ONLY history listener in the entire app. It should listen for history change events

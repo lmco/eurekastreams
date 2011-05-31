@@ -18,15 +18,13 @@ package org.eurekastreams.web.client.ui.pages.master;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.ActionExecutorPanel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.activity.ActivityContent;
 import org.eurekastreams.web.client.ui.pages.help.HelpContent;
 import org.eurekastreams.web.client.ui.pages.metrics.MetricsSummaryContent;
 import org.eurekastreams.web.client.ui.pages.oauth.OAuthAuthorizeContent;
-import org.eurekastreams.web.client.ui.pages.profile.GroupProfilePanel;
-import org.eurekastreams.web.client.ui.pages.profile.OrganizationProfilePanel;
-import org.eurekastreams.web.client.ui.pages.profile.PersonalProfilePanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.CreateGroupPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.GroupProfileSettingsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.PersonalProfileSettingsPanel;
@@ -34,15 +32,12 @@ import org.eurekastreams.web.client.ui.pages.search.SearchContent;
 import org.eurekastreams.web.client.ui.pages.settings.SettingsContent;
 import org.eurekastreams.web.client.ui.pages.start.StartPageContent;
 import org.eurekastreams.web.client.ui.pages.start.gallery.GalleryContent;
-import org.eurekastreams.web.client.ui.pages.stream.StreamContent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.AsyncProxy;
-import com.google.gwt.user.client.AsyncProxy.ConcreteType;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Creates a page given a page and view.
@@ -77,7 +72,7 @@ public class PageFactory
         case ACTION:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -90,7 +85,7 @@ public class PageFactory
         case SEARCH:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -103,7 +98,7 @@ public class PageFactory
         case SETTINGS:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -116,7 +111,7 @@ public class PageFactory
         case AUTHORIZE:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -129,7 +124,7 @@ public class PageFactory
         case GALLERY:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -137,41 +132,21 @@ public class PageFactory
                 {
                     contentPanel.add(new GalleryContent());
                 }
-            });            
-            break;
-        case ACTIVITY:
-            GWT.runAsync(new RunAsyncCallback()
-            {
-                public void onFailure(Throwable reason)
-                {
-                }
-
-                public void onSuccess()
-                {
-                    contentPanel.add(new StreamContent());
-                }
             });
             break;
-        case ACTIVITY_NEW:
+        case ACTIVITY:
             contentPanel.add(new ActivityContent());
             break;
-        case PEOPLE:
-            GWT.runAsync(new RunAsyncCallback()
-            {
-                public void onFailure(Throwable reason)
-                {
-                }
-
-                public void onSuccess()
-                {
-                    contentPanel.add(new PersonalProfilePanel(view));
-                }
-            });               
+        case PEOPLE_LEGACY:
+            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
+            break;
+        case GROUPS_LEGACY:
+            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
             break;
         case PERSONAL_SETTINGS:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -179,25 +154,12 @@ public class PageFactory
                 {
                     contentPanel.add(new PersonalProfileSettingsPanel());
                 }
-            });                
-            break;
-        case GROUPS:
-            GWT.runAsync(new RunAsyncCallback()
-            {
-                public void onFailure(Throwable reason)
-                {
-                }
-
-                public void onSuccess()
-                {
-                    contentPanel.add(new GroupProfilePanel(view));
-                }
-            });               
+            });
             break;
         case GROUP_SETTINGS:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -205,12 +167,12 @@ public class PageFactory
                 {
                     contentPanel.add(new GroupProfileSettingsPanel(view));
                 }
-            });                  
+            });
             break;
         case NEW_GROUP:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -218,14 +180,12 @@ public class PageFactory
                 {
                     contentPanel.add(new CreateGroupPanel(view));
                 }
-            });              
+            });
             break;
-        case ORGANIZATIONS:
-            contentPanel.add(new OrganizationProfilePanel(view));
         case HELP:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 
@@ -233,12 +193,12 @@ public class PageFactory
                 {
                     contentPanel.add(new HelpContent());
                 }
-            });               
+            });
             break;
         case METRICS:
             GWT.runAsync(new RunAsyncCallback()
             {
-                public void onFailure(Throwable reason)
+                public void onFailure(final Throwable reason)
                 {
                 }
 

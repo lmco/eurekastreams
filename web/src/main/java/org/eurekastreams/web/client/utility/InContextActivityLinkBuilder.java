@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.utility;
 
-import java.util.Collections;
 import java.util.Map;
 
 import org.eurekastreams.server.domain.EntityType;
@@ -38,14 +37,6 @@ public class InContextActivityLinkBuilder extends BaseActivityLinkBuilder
     public CreateUrlRequest buildActivityPermalinkUrlRequest(final long inActivityId, final EntityType inStreamType,
             final String inStreamUniqueId, final Map<String, String> inExtraParameters)
     {
-        Map<String, String> parameters = buildParameters(inExtraParameters);
-        parameters.put("activityId", Long.toString(inActivityId));
-
-        Page page = linkBuilderHelper.getEntityProfilePage(inStreamType);
-
-        // if we cannot determine the profile page for the destination type, then go to the activity page, else go to
-        // the appropriate profile page
-        return page == null ? new CreateUrlRequest(Page.ACTIVITY, Collections.EMPTY_LIST, parameters)
-                : new CreateUrlRequest(page, inStreamUniqueId, parameters);
+        return new CreateUrlRequest(Page.ACTIVITY, Long.toString(inActivityId)); 
     }
 }

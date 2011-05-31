@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.utility;
 import java.util.Map;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 
 /**
@@ -32,8 +33,6 @@ public class SamePageActivityLinkBuilder extends BaseActivityLinkBuilder
     public CreateUrlRequest buildActivityPermalinkUrlRequest(final long inActivityId, final EntityType inStreamType,
             final String inStreamUniqueId, final Map<String, String> inExtraParameters)
     {
-        Map<String, String> parameters = buildParameters(inExtraParameters);
-        parameters.put("activityId", Long.toString(inActivityId));
-        return new CreateUrlRequest(parameters);
+        return new CreateUrlRequest(Page.ACTIVITY, Long.toString(inActivityId));
     }
 }

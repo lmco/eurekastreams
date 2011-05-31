@@ -58,42 +58,41 @@ import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupConten
 import org.eurekastreams.web.client.ui.common.dialog.message.MessageDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 
-import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.Context2d.LineJoin;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.gchart.client.GChart;
 import com.googlecode.gchart.client.GChartCanvasFactory;
 import com.googlecode.gchart.client.GChartCanvasLite;
-import com.google.gwt.widgetideas.graphics.client.GWTCanvas; 
-import com.google.gwt.widgetideas.graphics.client.Color; 
+import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
+import com.google.gwt.widgetideas.graphics.client.Color;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class ApplicationEntryPoint implements EntryPoint
 {
+    /**
+     * GWT canvas factory for charts.
+     */
     public class GWTCanvasBasedCanvasFactory implements GChartCanvasFactory
     {
-
+        /**
+         * Create canvas element.
+         * @return canvas element.
+         */
         public GChartCanvasLite create()
         {
-            GChartCanvasLite result = new GWTCanvasBasedCanvasLite();
-            return result;
+            return new GWTCanvasBasedCanvasLite();
         }
-
     }
 
     /**
@@ -583,24 +582,34 @@ public class ApplicationEntryPoint implements EntryPoint
         return navigator.userAgent.toLowerCase();
     }-*/;
 
+    /**
+     * GWT Canvas for charts.
+     */
     public class GWTCanvasBasedCanvasLite extends GWTCanvas implements GChartCanvasLite
     {
-        // GChartCanvasLite requires CSS/RGBA color strings, but
-        // GWTCanvas uses its own Color class instead, so we wrap:
-        public void setStrokeStyle(String cssColor)
+        /**
+         * GChartCanvasLite requires CSS/RGBA color strings, but GWTCanvas uses its own Color class instead, so we wrap.
+         * 
+         * @param cssColor
+         *            the color.
+         */
+        public void setStrokeStyle(final String cssColor)
         {
             // Sharp angles of default MITER can overwrite adjacent pie slices
             setLineJoin(GWTCanvas.ROUND);
             setStrokeStyle(new Color(cssColor));
         }
 
-        public void setFillStyle(String cssColor)
+        /**
+         * Set the fill style.
+         * 
+         * @param cssColor
+         *            the color.
+         */
+        public void setFillStyle(final String cssColor)
         {
             setFillStyle(new Color(cssColor));
         }
-        // Note: all other GChartCanvasLite methods (lineTo, moveTo,
-        // arc, etc.) are directly inherited from GWTCanvas, so no
-        // wrapper methods are needed.
     }
 
 }
