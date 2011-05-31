@@ -1,21 +1,13 @@
 <html>
 <body>
 <p>
-The $(aux.name) group is pending approval in the $(dest.name) organization.
+The $group.displayName group is pending approval.
 </p>
 <p>
 To see the pending group request follow this 
-<a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?tab=Admin&amp;adminFilter=Pending Groups">link</a> 
-to the organization Admin tab and click on the Pending Groups view.
+<a href="#prop('eureka.web.baseurl')#settings?tab=Pending&listFilter=Group+Requests">link</a> 
+to the Pending Groups view of the settings Pending tab.
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>

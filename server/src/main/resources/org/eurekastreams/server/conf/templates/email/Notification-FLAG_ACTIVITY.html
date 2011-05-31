@@ -1,20 +1,12 @@
-
 <html>
 <body>
 <p>
-$(actor.name) flagged a $(activity.type) in the $(dest.name) organization.
+$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream.
 </p>
 <p>
-To see the flagged activity follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?tab=Admin">link</a> to the organization Admin tab.
+To see the flagged activity follow this <a href="#prop('eureka.web.baseurl')#settings?tab=Pending&listFilter=Flagged+Activities">link</a>
+to the Flagged Activities view of the settings Pending tab.
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>

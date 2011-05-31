@@ -1,14 +1,5 @@
-The $(aux.name) group is pending approval in the $(dest.name) organization.
+The $group.displayName group is pending approval.
 
-To see the pending group request follow this link to the organization Admin tab and click on the Pending Groups view:
-$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?tab=Admin&adminFilter=Pending Groups
-
-Thank You,
-Eureka Streams
-
----
-
-To find out more information, visit $(eureka.infosite.url)
-
-Emails you receive from Eureka Streams can be managed from your notification settings page:
-$(eureka.web.baseurl)#settings?tab=Notifications
+To see the pending group request follow this link to the Pending Groups view of the settings Pending tab:
+#prop('eureka.web.baseurl')#settings?tab=Pending&listFilter=Group+Requests
+#parse('Footer.txt')

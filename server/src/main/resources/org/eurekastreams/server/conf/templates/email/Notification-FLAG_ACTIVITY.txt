@@ -1,14 +1,5 @@
-$(actor.name) flagged a $(activity.type) in the $(dest.name) organization.
+$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream.
 
-To see the flagged activity follow this link to the organization Admin tab:
-$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?tab=Admin
-
-Thank You,
-Eureka Streams
-
---- 
-
-To find out more information, visit $(eureka.infosite.url)
-
-Emails you receive from Eureka Streams can be managed from your notification settings page:
-$(eureka.web.baseurl)#settings?tab=Notifications
+To see the flagged activity follow this link to the Flagged Activities view of the settings Pending tab:
+#prop('eureka.web.baseurl')#settings?tab=Pending&listFilter=Flagged+Activities
+#parse('Footer.txt')

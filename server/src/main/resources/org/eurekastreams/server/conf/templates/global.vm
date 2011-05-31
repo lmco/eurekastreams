@@ -20,6 +20,11 @@ $activity.BaseObjectType##
 #prop('eureka.web.baseurl')$pound#streamPage($stream)/$stream.uniqueId?activityId=${activity.id}##
 #end
 
+#macro( profileUrl $whom )
+#prop('eureka.web.baseurl')$pound#streamPage($whom)/${whom.uniqueId}##
+#end
+
+
 #macro( streamPage $stream )
 #if ($stream.EntityType == 'PERSON')
 people##
@@ -29,6 +34,29 @@ groups##
 UNKNOWN##
 #end
 #end
+
+#*
+#macro( streamDescription $stream $recipient )
+#if ($stream.EntityType == 'PERSON')
+#if ($stream.entityId == $recipient.id)
+your##
+#else
+$stream.displayName's##
+#end
+#else
+the $stream.displayName##
+#end
+#end
+*#
+
+#macro( streamDescription $stream $recipient )
+#if ($stream.EntityType == 'PERSON')
+$stream.displayName's##
+#else
+the ${stream.displayName}##
+#end
+#end
+
 
 #macro( siteLabelText )
 #if ($settings.siteLabel != '')
@@ -46,4 +74,23 @@ $settings.siteLabel
 #macro( activityBody $activity )
 ##${helper.substituteEurekaPlaceholders($activity.getBaseObjectProperties('content'),$context)}##
 ${helper.resolveActivityBody($activity,$context)}##
+#end
+
+#macro( activityContent_txt $activity )
+#if ($activity.BaseObjectType == 'BOOKMARK')
+"#activityBody($activity)
+
+$activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targetUrl"
+#else
+"#activityBody($activity)"
+#end
+#end
+
+#macro( activityContent_html $activity )
+#if ($activity.BaseObjectType == 'BOOKMARK')
+<p>"#activityBody($activity)<br/><br/>
+<a href="$activity.baseObjectProperties.targetUrl">$activity.baseObjectProperties.targetTitle</a>"</p>
+#else
+<p>"#activityBody($activity)"</p>
+#end
 #end

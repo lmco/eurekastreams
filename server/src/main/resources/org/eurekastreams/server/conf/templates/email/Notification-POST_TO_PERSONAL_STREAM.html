@@ -2,12 +2,13 @@
 <body>
 #siteLabelHtml()
 <p>
-$actor.displayName liked your #activityType($activity).
+$actor.displayName posted a #activityType($activity) to your stream.
 </p>
 #activityContent_html($activity)
 <p>
 To see the post follow this <a href="#activityUrl($stream,$activity)">link</a>.
 </p>
+<p>
 #parse('Footer.html')
 </body>
 </html>

@@ -1,21 +1,14 @@
 <html>
 <body>
-<p style="text-align: center">$(settings.sitelabel)</p>
+#siteLabelHtml()
 <p>
-$(actor.name) commented on a $(activity.type) in your stream.
+$actor.displayName commented on a #activityType($activity) in your stream.
 </p>
-<p>"$(comment.content)"</p>
+<p>"$comment.body"</p>
 <p>
-To see the post and comments follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)">link</a>.
+To see the post and comments follow this <a href="#activityUrl($stream,$activity)">link</a>.
 </p>
 <p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>

@@ -1,9 +1,8 @@
 #siteLabelText()
-$actor.displayName liked your #activityType($activity).
+$actor.displayName posted a #activityType($activity) to your stream.
 
 #activityContent_txt($activity)
 
 To see the post follow this link:
 #activityUrl($stream,$activity)
 #parse('Footer.txt')
-

@@ -1,19 +1,11 @@
 <html>
 <body>
 <p>
-Your request to join the $(dest.name) group has been approved.
+Your request to join the $group.displayName group has been approved.
 </p>
 <p>
-To see the group follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)">link</a>.
+To see the group follow this <a href="#profileUrl($group)">link</a>.
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>

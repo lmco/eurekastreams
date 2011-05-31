@@ -1,7 +1,7 @@
 <html>
 <body>
 <p>
-$(actor.name) requested to join the $(dest.name) private group.  As a coordinator, 
+$actor.displayName requested to join the $group.displayName private group.  As a coordinator, 
 you have the ability to approve or deny this person access.
 </p>
 <p>
@@ -9,16 +9,8 @@ If you would like to grant this user access to your group, please visit the grou
 We also recommend that you please send the user an email stating your decision regarding their request.
 </p>
 <p>
-To see the membership request follow this <a href="$(eureka.web.baseurl)#groups/$(dest.uniqueid)?tab=Admin">link</a> to the group Admin tab.
+To see the membership request follow this <a href="#profileUrl($group)?tab=Admin">link</a> to the group Admin tab.
 </p>
-<p>
-Thank You,<br/>
-Eureka Streams
-</p>
-<hr/>
-<p>
-To find out more information, visit <a href="$(eureka.infosite.url)">$(eureka.infosite.text)</a>.
-Emails you receive from Eureka Streams can be managed from your notification settings page <a href="$(eureka.web.baseurl)#settings?tab=Notifications">here</a>.
-</p>
+#parse('Footer.html')
 </body>
 </html>
