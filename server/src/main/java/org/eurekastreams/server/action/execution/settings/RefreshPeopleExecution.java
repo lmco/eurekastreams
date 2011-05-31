@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.settings;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -30,24 +31,24 @@ import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
+import org.eurekastreams.server.persistence.mappers.db.GetPersonAccountIdsByLockedStatus;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Use {@link PersonSource} to create/lock/unlock user accounts.
- * 
+ *
  */
 public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Source of person information for users.
      */
-    private PersonSource source;
+    private final PersonSource source;
 
     /**
      * Action key for create action to be called for new user.
@@ -67,16 +68,16 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
     /**
      * {@link GetNonLockedPersonIds}.
      */
-    private GetPersonIdsByLockedStatus personIdsByLockedStatusDAO;
+    private final DomainMapper<Boolean, List<String>> personIdsByLockedStatusDAO;
 
     /**
      * The settings mapper.
      */
-    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
+    private final DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSource
      *            {@link PersonSource}.
      * @param inCreatePersonActionKey
@@ -86,13 +87,13 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
      * @param inRefreshPersonActionKey
      *            action key for refresh action.
      * @param inGetPersonIdsByLockedStatus
-     *            {@link GetPersonIdsByLockedStatus}.
+     *            {@link GetPersonAccountIdsByLockedStatus}.
      * @param inSettingsMapper
      *            {@link FindSystemSettings}.
      */
     public RefreshPeopleExecution(final PersonSource inSource, final String inCreatePersonActionKey,
             final String inLockPersonAccountActionKey, final String inRefreshPersonActionKey,
-            final GetPersonIdsByLockedStatus inGetPersonIdsByLockedStatus,
+            final DomainMapper<Boolean, List<String>> inGetPersonIdsByLockedStatus,
             final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         source = inSource;
@@ -105,7 +106,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
     /**
      * Get updated info for all users of system and generate UserActionRequests to refresh them.
-     * 
+     *
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return null.

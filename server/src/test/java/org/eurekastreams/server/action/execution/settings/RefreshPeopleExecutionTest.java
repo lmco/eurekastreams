@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -40,12 +39,12 @@ import org.junit.Test;
 
 /**
  * Test for RefreshPeopleExecution.
- * 
+ *
  */
 public class RefreshPeopleExecutionTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -55,57 +54,59 @@ public class RefreshPeopleExecutionTest
     /**
      * Source of person information for users.
      */
-    private PersonSource source = context.mock(PersonSource.class);
+    private final PersonSource source = context.mock(PersonSource.class);
 
     /**
      * Action key for create action to be called for new user.
      */
-    private String createPersonActionKey = null;
+    private final String createPersonActionKey = null;
 
     /**
      * Action key for set status action to be called for users.
      */
-    private String lockPersonActionKey = null;
+    private final String lockPersonActionKey = null;
 
     /**
      * {@link GetNonLockedPersonIds}.
      */
-    private GetPersonIdsByLockedStatus personIdsByLockedStatusDAO = context.mock(GetPersonIdsByLockedStatus.class);
+    private final DomainMapper<Boolean, List<String>> personIdsByLockedStatusDAO = context.mock(DomainMapper.class,
+            "personIdsByLockedStatusDAO");
 
     /**
      * The settings mapper.
      */
-    private DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class,
+            "settingsMapper");
 
     /**
      * Person.
      */
-    private Person person1 = context.mock(Person.class, "person1");
+    private final Person person1 = context.mock(Person.class, "person1");
 
     /**
      * Person.
      */
-    private Person person2 = context.mock(Person.class, "person2");
+    private final Person person2 = context.mock(Person.class, "person2");
 
     /**
      * Person.
      */
-    private Person person3 = context.mock(Person.class, "person3");
+    private final Person person3 = context.mock(Person.class, "person3");
 
     /**
      * {@link SystemSettings}.
      */
-    private SystemSettings settings = context.mock(SystemSettings.class);
+    private final SystemSettings settings = context.mock(SystemSettings.class);
 
     /**
      * {@link TaskHandlerActionContext}.
      */
-    private TaskHandlerActionContext actionContext = context.mock(TaskHandlerActionContext.class);
+    private final TaskHandlerActionContext actionContext = context.mock(TaskHandlerActionContext.class);
 
     /**
      * System under test.
      */
-    private RefreshPeopleExecution sut = new RefreshPeopleExecution(source, "create", "lock", "refresh",
+    private final RefreshPeopleExecution sut = new RefreshPeopleExecution(source, "create", "lock", "refresh",
             personIdsByLockedStatusDAO, settingsMapper);
 
     /**

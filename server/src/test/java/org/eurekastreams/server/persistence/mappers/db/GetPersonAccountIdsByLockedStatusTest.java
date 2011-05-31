@@ -24,13 +24,14 @@ import org.junit.Test;
 
 /**
  * Test for GetPersonIdsByLockedStatus.
+ *
  */
-public class GetPersonIdsByLockedStatusTest extends MapperTest
+public class GetPersonAccountIdsByLockedStatusTest extends MapperTest
 {
     /**
      * System under test.
      */
-    private GetPersonIdsByLockedStatus sut;
+    private GetPersonAccountIdsByLockedStatus sut;
 
     /**
      * Setup before each test.
@@ -38,7 +39,7 @@ public class GetPersonIdsByLockedStatusTest extends MapperTest
     @Before
     public void setUp()
     {
-        sut = new GetPersonIdsByLockedStatus();
+        sut = new GetPersonAccountIdsByLockedStatus();
         sut.setEntityManager(getEntityManager());
     }
 
@@ -48,18 +49,19 @@ public class GetPersonIdsByLockedStatusTest extends MapperTest
     @Test
     public void test()
     {
-        long total = (Long) getEntityManager().createQuery("SELECT COUNT(id) FROM Person").getSingleResult();
+        Long total = (Long) getEntityManager().createQuery("SELECT COUNT(id) FROM Person").getSingleResult();
 
         assertTrue(total > 0);
 
         getEntityManager().createQuery("UPDATE Person SET accountLocked = false").executeUpdate();
 
-        assertEquals(total, sut.execute(false).size());
+        assertEquals(total.longValue(), sut.execute(false).size());
         assertEquals(0, sut.execute(true).size());
 
         getEntityManager().createQuery("UPDATE Person SET accountLocked = true").executeUpdate();
 
-        assertEquals(total, sut.execute(true).size());
+        assertEquals(total.longValue(), sut.execute(true).size());
         assertEquals(0, sut.execute(false).size());
     }
+
 }
