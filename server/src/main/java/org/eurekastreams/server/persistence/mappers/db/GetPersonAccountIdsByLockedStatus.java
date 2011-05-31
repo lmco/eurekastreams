@@ -22,20 +22,20 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 /**
  * Return user ids for all users with matching locked status.
  */
-public class GetPersonIdsByLockedStatus extends BaseArgDomainMapper<Boolean, List<Long>>
+public class GetPersonAccountIdsByLockedStatus extends BaseArgDomainMapper<Boolean, List<String>>
 {
     /**
      * Return user ids for all users with matching locked status.
-     *
+     * 
      * @param inLockedStatus
      *            The locked status to match.
      * @return List of user ids for all users with matching locked status.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> execute(final Boolean inLockedStatus)
+    public List<String> execute(final Boolean inLockedStatus)
     {
-        return getEntityManager().createQuery("SELECT id FROM Person WHERE accountLocked = :lockedStatus")
+        return getEntityManager().createQuery("SELECT accountId FROM Person WHERE accountLocked = :lockedStatus")
                 .setParameter("lockedStatus", inLockedStatus).getResultList();
     }
 

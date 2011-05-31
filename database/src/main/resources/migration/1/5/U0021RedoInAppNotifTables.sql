@@ -16,7 +16,7 @@ create table InAppNotification (
 	sourceType varchar(255) not null,
 	sourceUniqueId varchar(255),
 	url varchar(2048),
-	recipientId int8 not null,
+	recipientId int8,
 	primary key (id)
 );
 

@@ -20,7 +20,6 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -41,10 +40,13 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     /** Fingerprint. */
     private static final long serialVersionUID = 6548226026108187196L;
 
-    /** Person to receive the notification. */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = { CascadeType.PERSIST })
+    /**
+     * Person to receive the notification. (optional in DB to allow a template notification to be created and cloned for
+     * mass notifying - see InsertInAppNotificationForAllUsers.)
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = true, cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "recipientId")
-    private Person recipient = new Person();
+    private Person recipient;
 
     /** Type of notification being sent. */
     @Enumerated(EnumType.STRING)
@@ -52,7 +54,7 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     private NotificationType notificationType;
 
     /** The date the notification was added. */
-    @Column(nullable = false)
+    @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date notificationDate = new Date();
 

@@ -52,6 +52,19 @@
         <constructor-arg value="false" />
     </bean>
 
+    <bean id="sendMassPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="isSystemAdminAuthorization" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.notification.SendMassPrebuiltNotificationExecution">
+                <constructor-arg ref="insertInAppNotificationForAllUsers" />
+				<constructor-arg ref="getPersonIdsByLockedStatus" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
+	
 
 	<!-- ==== TRANSLATION ==== -->
 
