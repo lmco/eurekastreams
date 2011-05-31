@@ -31,12 +31,11 @@ import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetPersonAccountIdsByLockedStatus;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Use {@link PersonSource} to create/lock/unlock user accounts.
- *
+ * 
  */
 public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -77,7 +76,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSource
      *            {@link PersonSource}.
      * @param inCreatePersonActionKey
@@ -106,7 +105,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
     /**
      * Get updated info for all users of system and generate UserActionRequests to refresh them.
-     *
+     * 
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return null.
