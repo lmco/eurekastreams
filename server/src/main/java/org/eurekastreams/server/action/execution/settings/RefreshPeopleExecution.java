@@ -31,7 +31,6 @@ import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetPersonAccountIdsByLockedStatus;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
@@ -77,7 +76,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSource
      *            {@link PersonSource}.
      * @param inCreatePersonActionKey
@@ -87,7 +86,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
      * @param inRefreshPersonActionKey
      *            action key for refresh action.
      * @param inGetPersonIdsByLockedStatus
-     *            {@link GetPersonAccountIdsByLockedStatus}.
+     *            Gets locked/unlocked users (GetPersonAccountIdsByLockedStatus).
      * @param inSettingsMapper
      *            {@link FindSystemSettings}.
      */
