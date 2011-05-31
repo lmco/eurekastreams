@@ -58,7 +58,16 @@ public class PersonLookupViaAttribute implements PersonLookupStrategy
     @Override
     public List<Person> findPeople(final String inSearchString, final int inResultsUpperBound)
     {
-        return ldapLookup.execute(new LdapLookupRequest(inSearchString, inResultsUpperBound));
+        // lookup users.
+        List<Person> results = ldapLookup.execute(new LdapLookupRequest(inSearchString, inResultsUpperBound));
+
+        // set sourcelist criteria on results.
+        for (Person p : results)
+        {
+            p.getSourceList().add(inSearchString);
+        }
+
+        return results;
     }
 
 }

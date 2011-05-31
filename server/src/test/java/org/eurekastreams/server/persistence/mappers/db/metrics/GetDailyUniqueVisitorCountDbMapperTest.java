@@ -60,17 +60,17 @@ public class GetDailyUniqueVisitorCountDbMapperTest extends MapperTest
     public void testExecute()
     {
         // right day
-        getEntityManager().persist(new UsageMetric(1L, true, true, new Date(apri8th2011)));
-        getEntityManager().persist(new UsageMetric(3L, true, false, new Date(apri8th2011 + 4)));
-        getEntityManager().persist(new UsageMetric(3L, true, true, new Date(apri8th2011 + 5)));
-        getEntityManager().persist(new UsageMetric(4L, true, true, new Date(apri8th2011)));
-        getEntityManager().persist(new UsageMetric(5L, true, true, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(1L, true, true, 1L, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(apri8th2011 + 4)));
+        getEntityManager().persist(new UsageMetric(3L, true, true, 1L, new Date(apri8th2011 + 5)));
+        getEntityManager().persist(new UsageMetric(4L, true, true, 1L, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 1L, new Date(apri8th2011)));
 
         // wrong day
-        getEntityManager().persist(new UsageMetric(6L, true, false, new Date(april7th2011)));
-        getEntityManager().persist(new UsageMetric(5L, true, false, new Date(april7th2011)));
-        getEntityManager().persist(new UsageMetric(4L, true, false, new Date(april7th2011)));
-        getEntityManager().persist(new UsageMetric(3L, true, false, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(6L, true, false, null, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, false, null, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(4L, true, false, null, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date(april7th2011)));
 
         getEntityManager().flush();
         getEntityManager().clear();

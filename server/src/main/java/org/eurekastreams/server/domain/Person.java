@@ -570,7 +570,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * Optional list of sources that were traversed to locate this employee.
      */
     @Transient
-    private List<String> sourceList = new ArrayList<String>();
+    private ArrayList<String> sourceList = new ArrayList<String>();
 
     /**
      * Public constructor for ORM and ResourcePersistenceStrategy.
@@ -1292,6 +1292,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         {
             personData.put("additionalProperties", getAdditionalProperties());
         }
+        if (getSourceList() != null && !getSourceList().isEmpty())
+        {
+            personData.put("sourceList", getSourceList());
+        }
         return personData;
     }
 
@@ -1837,7 +1841,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * @return the sourceList
      */
-    public List<String> getSourceList()
+    public ArrayList<String> getSourceList()
     {
         return sourceList;
     }
@@ -1846,7 +1850,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param inSourceList
      *            the sourceList to set
      */
-    public void setSourceList(final List<String> inSourceList)
+    public void setSourceList(final ArrayList<String> inSourceList)
     {
         sourceList = inSourceList;
     }

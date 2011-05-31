@@ -170,6 +170,16 @@ public final class CacheKeys
     public static final String ENTITY_STREAM_BY_SCOPE_ID = "EntStr:";
 
     /**
+     * Cache key to get the stream scope of a person by their account id.
+     */
+    public static final String STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID = "PerSSID:";
+
+    /**
+     * Cache key to get the stream scope of a group by the short name.
+     */
+    public static final String STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME = "GrpSSID:";
+
+    /**
      * Key for PersonPageProperties by id.
      */
     public static final String PERSON_PAGE_PROPERTIES_BY_ID = "PagePropsById:";

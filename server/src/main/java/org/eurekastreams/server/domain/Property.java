@@ -35,6 +35,14 @@ public class Property<T>
     private T value;
 
     /**
+     * Default constructor for Spring p-namespace use. Deprecated to alert developers to not use it in code.
+     */
+    @Deprecated
+    public Property()
+    {
+    }
+
+    /**
      * Constructor.
      *
      * @param inType
@@ -90,5 +98,27 @@ public class Property<T>
     public void setValue(final T inValue)
     {
         value = inValue;
+    }
+
+    /**
+     * Setter for use by Spring p-namespace.
+     *
+     * @param inType
+     *            the type to set
+     */
+    public void setType(final Class inType)
+    {
+        type = inType;
+    }
+
+    /**
+     * Setter for use by Spring p-namespace.
+     *
+     * @param inIdentity
+     *            the identity to set
+     */
+    public void setIdentity(final Serializable inIdentity)
+    {
+        identity = inIdentity;
     }
 }

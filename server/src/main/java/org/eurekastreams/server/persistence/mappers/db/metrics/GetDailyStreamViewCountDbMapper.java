@@ -21,31 +21,46 @@ import javax.persistence.Query;
 
 import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * DB Mapper to get the stream view count of a specific day.
  */
-public class GetDailyStreamViewCountDbMapper extends BaseArgDomainMapper<Date, Long>
+public class GetDailyStreamViewCountDbMapper extends BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
      * Get the number of stream view counts on a specific day.
      * 
-     * @param inDay
-     *            the date to look for stats
+     * @param inRequest
+     *            the UsageMetricDailyStreamInfoRequest
      * @return the number of stream view counts on the input day
      */
     @Override
-    public Long execute(final Date inDay)
+    public Long execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
         Query q;
         Date startOfDay, endOfDay;
 
-        startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        endOfDay = DateDayExtractor.getEndOfDay(inDay);
-        q = getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM UsageMetric "
-                        + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate").setParameter(
-                "startDate", startOfDay).setParameter("endDate", endOfDay);
+        startOfDay = DateDayExtractor.getStartOfDay(inRequest.getMetricsDate());
+        endOfDay = DateDayExtractor.getEndOfDay(inRequest.getMetricsDate());
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            q = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM UsageMetric "
+                            + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate")
+                    .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
+        }
+        else
+        {
+            // specific stream
+            q = getEntityManager().createQuery(
+                    "SELECT COUNT(*) FROM UsageMetric "
+                            + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate "
+                            + "AND streamViewStreamScopeId = :streamViewStreamScopeId").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("streamViewStreamScopeId",
+                    inRequest.getStreamRecipientStreamScopeId());
+        }
         return (Long) q.getSingleResult();
     }
 }

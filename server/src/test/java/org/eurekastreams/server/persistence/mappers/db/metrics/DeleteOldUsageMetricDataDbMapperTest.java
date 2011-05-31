@@ -71,13 +71,13 @@ public class DeleteOldUsageMetricDataDbMapperTest extends MapperTest
         getEntityManager().createQuery("DELETE FROM UsageMetric").executeUpdate();
 
         // three usage metrics from two days ago
-        getEntityManager().persist(new UsageMetric(1, true, true, twoDaysAgo));
-        getEntityManager().persist(new UsageMetric(1, true, true, twoDaysAgo));
-        getEntityManager().persist(new UsageMetric(1, true, true, twoDaysAgo));
+        getEntityManager().persist(new UsageMetric(1, true, true, 1L, twoDaysAgo));
+        getEntityManager().persist(new UsageMetric(1, true, true, 1L, twoDaysAgo));
+        getEntityManager().persist(new UsageMetric(1, true, true, 1L, twoDaysAgo));
 
         // 2 usage metrics from just over 3 days ago - these should be deleted
-        getEntityManager().persist(new UsageMetric(2, true, true, threeDaysAgo));
-        getEntityManager().persist(new UsageMetric(2, true, true, threeDaysAgo));
+        getEntityManager().persist(new UsageMetric(2, true, true, 1L, threeDaysAgo));
+        getEntityManager().persist(new UsageMetric(2, true, true, 1L, threeDaysAgo));
 
         getEntityManager().flush();
         getEntityManager().clear();

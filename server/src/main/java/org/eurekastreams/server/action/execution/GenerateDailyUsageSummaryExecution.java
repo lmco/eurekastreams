@@ -29,6 +29,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * Execution strategy to generate the daily usage summary for the previous day.
@@ -45,45 +46,52 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      */
     private GetDateFromDaysAgoStrategy daysAgoDateStrategy;
 
-    /**
-     * Mapper to get a single day's DailyUsageSummary.
-     */
-    private DomainMapper<Date, DailyUsageSummary> getDailyUsageSummaryByDateMapper;
+    // mappers that apply to the whole system
 
     /**
-     * Mapper to get a day's message count.
-     */
-    private DomainMapper<Date, Long> getDailyMessageCountMapper;
-
-    /**
-     * Mapper to get a day's page view count.
+     * Mapper to get a day's page view count - for the whole system.
      */
     private DomainMapper<Date, Long> getDailyPageViewCountMapper;
 
     /**
-     * Mapper to get a day's stream contributor count.
-     */
-    private DomainMapper<Date, Long> getDailyStreamContributorCountMapper;
-
-    /**
-     * Mapper to get a day's stream view count.
-     */
-    private DomainMapper<Date, Long> getDailyStreamViewCountMapper;
-
-    /**
-     * Mapper to get a day's stream viewer count.
-     */
-    private DomainMapper<Date, Long> getDailyStreamViewerCountMapper;
-
-    /**
-     * Mapper to get a day's unique visitor count.
+     * Mapper to get a day's unique visitor count - for whole system.
      */
     private DomainMapper<Date, Long> getDailyUniqueVisitorCountMapper;
 
+    // mappers that may be scoped to a particular thread
+
     /**
-     * Mapper to insert the DailyUsageSummary entity.
+     * Mapper to get a single day's DailyUsageSummary - for a stream or the whole system.
      */
-    private DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> insertMapper;
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> getDailyUsageSummaryByDateMapper;
+
+    /**
+     * Mapper to get a day's message count - for a stream or the whole system.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper;
+
+    /**
+     * Mapper to get a day's stream contributor count - for a stream or the whole system.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamContributorCountMapper;
+
+    /**
+     * Mapper to get a day's stream view count - for a stream or the whole system.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewCountMapper;
+
+    /**
+     * Mapper to get a day's stream viewer count - for a stream or the whole system.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper;
+
+    /**
+     * Mapper to get day's average activity response time (for those that had responses) - for a stream or the whole
+     * system.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageResponseTimeMapper;
+
+    // helpers
 
     /**
      * Mapper to delete old UsageMetric data.
@@ -91,9 +99,9 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     private DomainMapper<Serializable, Serializable> usageMetricDataCleanupMapper;
 
     /**
-     * Mapper to get day's average activity response time (for those that had responses).
+     * Mapper to insert the DailyUsageSummary entity.
      */
-    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper;
+    private DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> insertMapper;
 
     /**
      * Strategy to determine if a day is a weekday.
@@ -128,15 +136,16 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      * @param inDayOfWeekStrategy
      *            dayOfWeekStrategy strategy to determine if a day is a weekday
      */
-    public GenerateDailyUsageSummaryExecution(final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
-            final DomainMapper<Date, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
-            final DomainMapper<Date, Long> inGetDailyMessageCountMapper,
+    public GenerateDailyUsageSummaryExecution(
+            final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyMessageCountMapper,
             final DomainMapper<Date, Long> inGetDailyPageViewCountMapper,
-            final DomainMapper<Date, Long> inGetDailyStreamContributorCountMapper,
-            final DomainMapper<Date, Long> inGetDailyStreamViewCountMapper,
-            final DomainMapper<Date, Long> inGetDailyStreamViewerCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyStreamContributorCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyStreamViewCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyStreamViewerCountMapper,
             final DomainMapper<Date, Long> inGetDailyUniqueVisitorCountMapper,
-            final DomainMapper<Date, Long> inGetDailyMessageResponseTimeMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyMessageResponseTimeMapper,
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
             final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper,
             final DayOfWeekStrategy inDayOfWeekStrategy)
@@ -171,7 +180,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         Date yesterday = daysAgoDateStrategy.execute(1);
 
         // see if we already have data for yesterday
-        DailyUsageSummary data = getDailyUsageSummaryByDateMapper.execute(yesterday);
+        DailyUsageSummary data = getDailyUsageSummaryByDateMapper.execute(new UsageMetricDailyStreamInfoRequest(
+                yesterday, null));
         if (data != null)
         {
             logger.info("No need to create daily usage data for " + yesterday + " - already exists.");
@@ -185,20 +195,24 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         long pageViewCount = getDailyPageViewCountMapper.execute(yesterday);
 
         logger.info("Generating number of stream views for " + yesterday);
-        long streamViewCount = getDailyStreamViewCountMapper.execute(yesterday);
+        long streamViewCount = getDailyStreamViewCountMapper.execute(new UsageMetricDailyStreamInfoRequest(yesterday,
+                null));
 
         logger.info("Generating number of stream viewers for " + yesterday);
-        long streamViewerCount = getDailyStreamViewerCountMapper.execute(yesterday);
+        long streamViewerCount = getDailyStreamViewerCountMapper.execute(new UsageMetricDailyStreamInfoRequest(
+                yesterday, null));
 
         logger.info("Generating number of stream contributors for " + yesterday);
-        long streamContributorCount = getDailyStreamContributorCountMapper.execute(yesterday);
+        long streamContributorCount = getDailyStreamContributorCountMapper
+                .execute(new UsageMetricDailyStreamInfoRequest(yesterday, null));
 
         logger.info("Generating number of messages (activities and comments) for " + yesterday);
-        long messageCount = getDailyMessageCountMapper.execute(yesterday);
+        long messageCount = getDailyMessageCountMapper.execute(new UsageMetricDailyStreamInfoRequest(yesterday, null));
 
         logger.info("Generating average activity comment time (for those with comments on the same day) for "
                 + yesterday);
-        long avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(yesterday);
+        long avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(new UsageMetricDailyStreamInfoRequest(
+                yesterday, null));
 
         boolean isWeekday = dayOfWeekStrategy.isWeekday(yesterday);
 

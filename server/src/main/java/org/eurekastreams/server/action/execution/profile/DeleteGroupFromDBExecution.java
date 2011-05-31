@@ -418,6 +418,9 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         // remove the group stream from cache
         keysToPurgeFromCache.add(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + inRequest.getStreamScopeId());
 
+        // remove the group stream scope id by short name cache key
+        keysToPurgeFromCache.add(CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME + inRequest.getGroupShortName());
+
         return keysToPurgeFromCache;
     }
 

@@ -19,7 +19,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteStreamRequest;
 
 /**
- * Mapper to delete a person's person_stream entry and collapse index of remaining entries.
+ * Mapper to delete a person's person_stream entry.
  * 
  */
 public class DeleteStreamDbMapper extends BaseArgDomainMapper<DeleteStreamRequest, Boolean>

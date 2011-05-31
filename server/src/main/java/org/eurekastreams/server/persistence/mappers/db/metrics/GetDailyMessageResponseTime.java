@@ -23,11 +23,12 @@ import javax.persistence.Query;
 
 import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * DB Mapper to get the avgerage activity response time of a specific day.
  */
-public class GetDailyMessageResponseTime extends BaseArgDomainMapper<Date, Long>
+public class GetDailyMessageResponseTime extends BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
 
     /**
@@ -38,24 +39,41 @@ public class GetDailyMessageResponseTime extends BaseArgDomainMapper<Date, Long>
     /**
      * Get the number of stream viewers on a specific day.
      * 
-     * @param inDay
-     *            the date to look for stats
+     * @param inRequest
+     *            the UsageMetricDailyStreamInfoRequest
      * @return the number of stream viewers on the input day
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Long execute(final Date inDay)
+    public Long execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
         Date startOfDay, endOfDay;
-        startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        endOfDay = DateDayExtractor.getEndOfDay(inDay);
+        Query q;
 
-        Query q = getEntityManager().createQuery(
-                "SELECT MIN(c.timeSent), MIN(c.target.postedTime) FROM Comment c INNER JOIN c.target "
-                        + "WHERE c.timeSent >= :startDate AND c.timeSent <= :endDate AND "
-                        + "c.target.postedTime >= :startDate AND c.target.postedTime <= :endDate "
-                        + "GROUP BY c.target.id").setParameter("startDate", startOfDay).setParameter("endDate",
-                endOfDay);
+        startOfDay = DateDayExtractor.getStartOfDay(inRequest.getMetricsDate());
+        endOfDay = DateDayExtractor.getEndOfDay(inRequest.getMetricsDate());
+
+        if (inRequest.getStreamRecipientStreamScopeId() == null)
+        {
+            // all streams
+            q = getEntityManager().createQuery(
+                    "SELECT MIN(c.timeSent), MIN(c.target.postedTime) FROM Comment c INNER JOIN c.target "
+                            + "WHERE c.timeSent >= :startDate AND c.timeSent <= :endDate AND "
+                            + "c.target.postedTime >= :startDate AND c.target.postedTime <= :endDate "
+                            + "GROUP BY c.target.id").setParameter("startDate", startOfDay).setParameter("endDate",
+                    endOfDay);
+        }
+        else
+        {
+            // specific stream
+            q = getEntityManager().createQuery(
+                    "SELECT MIN(c.timeSent), MIN(c.target.postedTime) FROM Comment c INNER JOIN c.target "
+                            + "WHERE c.timeSent >= :startDate AND c.timeSent <= :endDate AND "
+                            + "c.target.postedTime >= :startDate AND c.target.postedTime <= :endDate "
+                            + "AND c.target.recipientStreamScope.id = :recipientStreamScopeId "
+                            + "GROUP BY c.target.id").setParameter("startDate", startOfDay).setParameter("endDate",
+                    endOfDay).setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
+        }
 
         List<Object[]> results = q.getResultList();
 

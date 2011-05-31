@@ -23,16 +23,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 
 /**
  * Entity representing a day's usage metrics.
  */
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "usageDate" }) })
 public class DailyUsageSummary implements Serializable
 {
     /**
@@ -85,6 +82,11 @@ public class DailyUsageSummary implements Serializable
      * Average response time for activities that have comments.
      */
     private long avgActivityResponseTime;
+
+    /**
+     * The stream scope id for metrics that are stream views - null for non-streamview page views.
+     */
+    private Long streamViewStreamScopeId;
 
     /**
      * The date.
@@ -311,6 +313,23 @@ public class DailyUsageSummary implements Serializable
     public void setWeekday(final boolean inIsWeekday)
     {
         isWeekday = inIsWeekday;
+    }
+
+    /**
+     * @return the streamViewStreamScopeId
+     */
+    public Long getStreamViewStreamScopeId()
+    {
+        return streamViewStreamScopeId;
+    }
+
+    /**
+     * @param inStreamViewStreamScopeId
+     *            the streamViewStreamScopeId to set
+     */
+    public void setStreamViewStreamScopeId(final Long inStreamViewStreamScopeId)
+    {
+        streamViewStreamScopeId = inStreamViewStreamScopeId;
     }
 
 }

@@ -21,9 +21,11 @@ import java.util.Date;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
+import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -51,14 +53,14 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get a single day's DailyUsageSummary.
      */
-    private final DomainMapper<Date, DailyUsageSummary> getDailyUsageSummaryByDateMapper = context.mock(
-            DomainMapper.class, "getDailyUsageSummaryByDateMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
+    getDailyUsageSummaryByDateMapper = context.mock(DomainMapper.class, "getDailyUsageSummaryByDateMapper");
 
     /**
      * Mapper to get a day's message count.
      */
-    private final DomainMapper<Date, Long> getDailyMessageCountMapper = context.mock(DomainMapper.class,
-            "getDailyMessageCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper = context.mock(
+            DomainMapper.class, "getDailyMessageCountMapper");
 
     /**
      * Mapper to get a day's page view count.
@@ -69,20 +71,20 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get a day's stream contributor count.
      */
-    private final DomainMapper<Date, Long> getDailyStreamContributorCountMapper = context.mock(DomainMapper.class,
-            "getDailyStreamContributorCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamContributorCountMapper = context
+            .mock(DomainMapper.class, "getDailyStreamContributorCountMapper");
 
     /**
      * Mapper to get a day's stream view count.
      */
-    private final DomainMapper<Date, Long> getDailyStreamViewCountMapper = context.mock(DomainMapper.class,
-            "getDailyStreamViewCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewCountMapper = context.mock(
+            DomainMapper.class, "getDailyStreamViewCountMapper");
 
     /**
      * Mapper to get a day's stream viewer count.
      */
-    private final DomainMapper<Date, Long> getDailyStreamViewerCountMapper = context.mock(DomainMapper.class,
-            "getDailyStreamViewerCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper = context.mock(
+            DomainMapper.class, "getDailyStreamViewerCountMapper");
 
     /**
      * Mapper to get a day's unique visitor count.
@@ -104,8 +106,8 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get day's average activity response time (for those that had responses).
      */
-    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper = context.mock(DomainMapper.class,
-            "getDailyMessageResponseTimeMapper");
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageResponseTimeMapper = context.mock(
+            DomainMapper.class, "getDailyMessageResponseTimeMapper");
 
     /**
      * Day of week strategy.
@@ -138,7 +140,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(date));
 
-                oneOf(getDailyUsageSummaryByDateMapper).execute(with(date));
+                oneOf(getDailyUsageSummaryByDateMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(existingSummary));
             }
         });
@@ -197,7 +200,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 will(returnValue(date));
 
                 // no data found
-                oneOf(getDailyUsageSummaryByDateMapper).execute(with(date));
+                oneOf(getDailyUsageSummaryByDateMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(null));
 
                 oneOf(getDailyUniqueVisitorCountMapper).execute(with(date));
@@ -206,19 +210,24 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(getDailyPageViewCountMapper).execute(with(date));
                 will(returnValue(pageViewCount));
 
-                oneOf(getDailyStreamViewerCountMapper).execute(with(date));
+                oneOf(getDailyStreamViewerCountMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(streamViewerCount));
 
-                oneOf(getDailyStreamViewCountMapper).execute(with(date));
+                oneOf(getDailyStreamViewCountMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(streamViewCount));
 
-                oneOf(getDailyStreamContributorCountMapper).execute(with(date));
+                oneOf(getDailyStreamContributorCountMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(streamContributorCount));
 
-                oneOf(getDailyMessageResponseTimeMapper).execute(with(date));
+                oneOf(getDailyMessageResponseTimeMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(avgActivityResponseTime));
 
-                oneOf(getDailyMessageCountMapper).execute(with(date));
+                oneOf(getDailyMessageCountMapper).execute(
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(messageCount));
 
                 oneOf(dayOfWeekStrategy).isWeekday(with(date));

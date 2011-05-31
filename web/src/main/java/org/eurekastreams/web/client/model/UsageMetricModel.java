@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.model;
 
 import org.eurekastreams.server.search.modelview.UsageMetricDTO;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -61,13 +62,14 @@ public class UsageMetricModel extends BaseModel implements Insertable<UsageMetri
      */
     public void fetch(final Integer inRequest, final boolean inUseClientCacheIfAvailable)
     {
-        super.callReadAction("getUsageMetricSummaryAction", inRequest, new OnSuccessCommand<UsageMetricSummaryDTO>()
-        {
-            public void onSuccess(final UsageMetricSummaryDTO response)
-            {
-                Session.getInstance().getEventBus().notifyObservers(new GotUsageMetricSummaryEvent(response));
-            }
-        }, inUseClientCacheIfAvailable);
+        super.callReadAction("getUsageMetricSummaryAction", new UsageMetricStreamSummaryRequest(inRequest, null),
+                new OnSuccessCommand<UsageMetricSummaryDTO>()
+                {
+                    public void onSuccess(final UsageMetricSummaryDTO response)
+                    {
+                        Session.getInstance().getEventBus().notifyObservers(new GotUsageMetricSummaryEvent(response));
+                    }
+                }, inUseClientCacheIfAvailable);
 
     }
 

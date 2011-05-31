@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.ldap;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.ldap.core.DistinguishedName;
 
@@ -33,7 +33,7 @@ public class LdapGroup
     /**
      * Optional inclusive list of groups that were traversed to locate this group.
      */
-    private List<String> sourceList;
+    private ArrayList<String> sourceList;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ public class LdapGroup
     /**
      * @return the sourceList
      */
-    public List<String> getSourceList()
+    public ArrayList<String> getSourceList()
     {
         return sourceList;
     }
@@ -66,7 +66,7 @@ public class LdapGroup
      * @param inSourceList
      *            the sourceList to set
      */
-    public void setSourceList(final List<String> inSourceList)
+    public void setSourceList(final ArrayList<String> inSourceList)
     {
         sourceList = inSourceList;
     }

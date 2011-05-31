@@ -41,7 +41,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     public static final int MAX_NAME_LENGTH = 50;
 
     /** Used for validation. */
-    public static final String NAME_LENGTH_MESSAGE = "Name must supports up to " + MAX_NAME_LENGTH + " characters.";
+    public static final String NAME_LENGTH_MESSAGE = "Name may not be longer than " + MAX_NAME_LENGTH + " characters.";
 
     /**
      * The name of the view.
