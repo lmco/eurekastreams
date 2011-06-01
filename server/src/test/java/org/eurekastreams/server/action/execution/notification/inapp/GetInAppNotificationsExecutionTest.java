@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
@@ -67,7 +68,7 @@ public class GetInAppNotificationsExecutionTest
     private final GetItemsByPointerIds groupsMapper = context.mock(GetItemsByPointerIds.class, "groupsMapper");
 
     /** SUT. */
-    private GetInAppNotificationsExecution sut;
+    private ExecutionStrategy sut;
 
     /**
      * Setup before each test.

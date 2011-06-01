@@ -53,7 +53,9 @@
     </bean>
 
     <bean id="sendMassPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation" />
+		</constructor-arg>
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.SendMassPrebuiltNotificationExecution">
