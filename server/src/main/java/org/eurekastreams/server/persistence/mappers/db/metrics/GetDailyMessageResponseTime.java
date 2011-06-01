@@ -29,7 +29,6 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
  */
 public class GetDailyMessageResponseTime extends BaseArgDomainMapper<Date, Long>
 {
-
     /**
      * Thanks checkstyle.
      */
@@ -38,8 +37,8 @@ public class GetDailyMessageResponseTime extends BaseArgDomainMapper<Date, Long>
     /**
      * Get the number of stream viewers on a specific day.
      * 
-     * @param inRequest
-     *            the UsageMetricDailyStreamInfoRequest
+     * @param inDate
+     *            the date to generate metrics for
      * @return the number of stream viewers on the input day
      */
     @SuppressWarnings("unchecked")
