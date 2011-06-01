@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.test.IsEqualInternally;
@@ -151,7 +152,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 will(returnValue(date));
 
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
-                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(DateDayExtractor
+                                .getStartOfDay(date), null))));
                 will(returnValue(existingSummary));
 
                 oneOf(usageMetricDataCleanupMapper).execute(0);
@@ -198,7 +200,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
                 usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
 
-        final Date date = new Date();
+        final Date dateRaw = new Date();
+        final Date date = DateDayExtractor.getStartOfDay(dateRaw);
         final long uniqueVisitorCount = 1L;
         final long pageViewCount = 2L;
         final long streamViewerCount = 3L;
@@ -213,7 +216,7 @@ public class GenerateDailyUsageSummaryExecutionTest
         {
             {
                 oneOf(daysAgoDateStrategy).execute(with(1));
-                will(returnValue(date));
+                will(returnValue(dateRaw));
 
                 // no data found
                 oneOf(getDailyUsageSummaryByDateMapper).execute(

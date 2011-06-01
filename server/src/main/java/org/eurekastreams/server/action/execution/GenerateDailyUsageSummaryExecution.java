@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -187,7 +188,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
             throws ExecutionException
     {
-        Date yesterday = daysAgoDateStrategy.execute(1);
+        Date yesterday = DateDayExtractor.getStartOfDay(daysAgoDateStrategy.execute(1));
 
         // generate data for all streams
         generateDailyUsageSummaryForStreamScope(yesterday, null);
