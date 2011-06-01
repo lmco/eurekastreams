@@ -17,13 +17,13 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.server.action.response.settings.PersonPropertiesResponse;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.MembershipCriteria;
-import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -54,22 +54,24 @@ public class MembershipCriteriaPersonPropertyGenerator implements PersonProperti
     /**
      * The SystemSettings mapper.
      */
-    private DomainMapper<MapperRequest, SystemSettings> systemSettingsDAO;
+    @SuppressWarnings("unchecked")
+    private DomainMapper<MapperRequest, List<MembershipCriteria>> membershipCriteriaDAO;
 
     /**
      * @param inDefaultTabName
      *            Default tab name.
      * @param inDefaultTabLayout
      *            Default tab layout.
-     * @param inSystemSettingsDAO
+     * @param inMembershipCriteriaDAO
      *            used to look up the system settings.
      */
+    @SuppressWarnings("unchecked")
     public MembershipCriteriaPersonPropertyGenerator(final String inDefaultTabName, final Layout inDefaultTabLayout,
-            final DomainMapper<MapperRequest, SystemSettings> inSystemSettingsDAO)
+            final DomainMapper<MapperRequest, List<MembershipCriteria>> inMembershipCriteriaDAO)
     {
         defaultTabName = inDefaultTabName;
         defaultTabLayout = inDefaultTabLayout;
-        systemSettingsDAO = inSystemSettingsDAO;
+        membershipCriteriaDAO = inMembershipCriteriaDAO;
     }
 
     @SuppressWarnings("unchecked")
@@ -86,12 +88,12 @@ public class MembershipCriteriaPersonPropertyGenerator implements PersonProperti
             // grab source list from params.
             ArrayList<String> sourceList = (ArrayList<String>) inParameters.get(sourceListKey);
 
-            // grab system settings from datastore.
-            SystemSettings settings = systemSettingsDAO.execute(null);
+            // grab all membershipCriteria from datastore.
+            List<MembershipCriteria> membershipCriteria = membershipCriteriaDAO.execute(null);
 
             // loop through criteria checking against the persons source list values to see if the criteria applies, if
             // so, create copy of MC's tab template (if present) and put in result list.
-            for (MembershipCriteria mc : settings.getMembershipCriteria())
+            for (MembershipCriteria mc : membershipCriteria)
             {
                 for (String source : sourceList)
                 {

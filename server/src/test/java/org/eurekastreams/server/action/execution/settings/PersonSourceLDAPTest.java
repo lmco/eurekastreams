@@ -19,9 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
@@ -32,8 +31,9 @@ import org.junit.Test;
 
 /**
  * Test for PersonSourceLDAP.
- *
+ * 
  */
+@SuppressWarnings("unchecked")
 public class PersonSourceLDAPTest
 {
     /** Used for mocking objects. */
@@ -47,7 +47,8 @@ public class PersonSourceLDAPTest
     /**
      * The settings mapper.
      */
-    private DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
+    private DomainMapper<MapperRequest, List<MembershipCriteriaDTO>> membershipCriteriaDAO = context
+            .mock(DomainMapper.class);
 
     /**
      * Group lookup strategy.
@@ -62,23 +63,19 @@ public class PersonSourceLDAPTest
     /**
      * System under test.
      */
-    private PersonSourceLDAP sut = new PersonSourceLDAP(settingsMapper, groupLookupStrategy, attributeLookupStrategy);
+    private PersonSourceLDAP sut = new PersonSourceLDAP(membershipCriteriaDAO, groupLookupStrategy,
+            attributeLookupStrategy);
 
     /**
-     * {@link SystemSettings}.
+     * {@link MembershipCriteriaDTO}.
      */
-    private SystemSettings settings = context.mock(SystemSettings.class);
-
-    /**
-     * {@link MembershipCriteria}.
-     */
-    private MembershipCriteria membershipCriteria = context.mock(MembershipCriteria.class);
+    private MembershipCriteriaDTO membershipCriteria = context.mock(MembershipCriteriaDTO.class);
 
     /**
      * List of criteria.
      */
-    private List<MembershipCriteria> criteriaList = // \n
-    new ArrayList<MembershipCriteria>(Arrays.asList(membershipCriteria));
+    private List<MembershipCriteriaDTO> criteriaList = // \n
+    new ArrayList<MembershipCriteriaDTO>(Arrays.asList(membershipCriteria));
 
     /**
      * Test.
@@ -89,10 +86,7 @@ public class PersonSourceLDAPTest
         context.checking(new Expectations()
         {
             {
-                allowing(settingsMapper).execute(null);
-                will(returnValue(settings));
-
-                allowing(settings).getMembershipCriteria();
+                allowing(membershipCriteriaDAO).execute(null);
                 will(returnValue(criteriaList));
 
                 allowing(membershipCriteria).getCriteria();
@@ -117,10 +111,7 @@ public class PersonSourceLDAPTest
         context.checking(new Expectations()
         {
             {
-                allowing(settingsMapper).execute(null);
-                will(returnValue(settings));
-
-                allowing(settings).getMembershipCriteria();
+                allowing(membershipCriteriaDAO).execute(null);
                 will(returnValue(criteriaList));
 
                 allowing(membershipCriteria).getCriteria();

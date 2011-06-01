@@ -22,9 +22,6 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
@@ -118,8 +115,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     /**
      * the list of ldap groups.
      */
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "systemSettingsId")
+    @Transient
     private List<MembershipCriteria> membershipCriteria = new ArrayList<MembershipCriteria>();
 
     /**

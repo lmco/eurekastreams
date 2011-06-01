@@ -110,7 +110,7 @@
         <constructor-arg value="Welcome" />
         <!-- layout -->
         <constructor-arg value="THREECOLUMN" />
-        <constructor-arg ref="findSystemSettingsFromDatabase" />
+        <constructor-arg ref="membershipCriteriaDbMapper" />
     </bean>
 
 
@@ -188,7 +188,7 @@
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
-                        <constructor-arg ref="findSystemSettings" />
+                        <constructor-arg ref="membershipCriteriaDTODbMapper" />
                         <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
                         <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                     </bean>
@@ -211,7 +211,7 @@
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
-                        <constructor-arg ref="findSystemSettings" />
+                        <constructor-arg ref="membershipCriteriaDTODbMapper" />
                         <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
                         <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                     </bean>
