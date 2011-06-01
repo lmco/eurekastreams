@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,14 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * Subclass the regular text input and give it a different style. Probably can
- * be done cleaner, but this works for now.
- * 
+ * Subclass the regular text input and give it a different style. Probably can be done cleaner, but this works for now.
+ *
  */
-public class SubTextBoxFormElement extends BasicTextBoxFormElement implements
-        FormElement
+public class SubTextBoxFormElement extends BasicTextBoxFormElement implements FormElement
 {
     /**
-     * Creates a regular text input box but styled differently, for the purposes
-     * of indenting.
-     * 
+     * Creates a regular text input box but styled differently, for the purposes of indenting.
+     *
      * @param labelVal
      *            the label.
      * @param inKey
@@ -42,17 +39,15 @@ public class SubTextBoxFormElement extends BasicTextBoxFormElement implements
      * @param required
      *            whether or not its required.
      */
-    //TODO we should get rid of this class and just have a second constructor 
-    //on basic that accepts a class name
-    public SubTextBoxFormElement(final String labelVal, final String inKey,
-            final String value, final String inInstructions,
-            final boolean required)
+    // TODO we should get rid of this class and just have a second constructor
+    // on basic that accepts a class name
+    public SubTextBoxFormElement(final String labelVal, final String inKey, final String value,
+            final String inInstructions, final boolean required)
     {
         super(labelVal, inKey, value, inInstructions, required);
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubElement());
         FlowPanel clear = new FlowPanel();
         clear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
-        this.add(clear);
+        mainPanel.add(clear);
     }
-
 }
