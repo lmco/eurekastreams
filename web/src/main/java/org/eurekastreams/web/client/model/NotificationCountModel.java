@@ -47,7 +47,7 @@ public class NotificationCountModel extends BaseModel implements Fetchable<Seria
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getInAppNotificationCounts", request,
+        super.callReadAction("getUserInAppNotificationCounts", request,
                 new OnSuccessCommand<UnreadInAppNotificationCountDTO>()
                 {
                     public void onSuccess(final UnreadInAppNotificationCountDTO response)
