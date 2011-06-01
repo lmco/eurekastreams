@@ -15,8 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import java.util.Date;
 import java.util.List;
 
+import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,31 +50,17 @@ public class GetMetricStreamScopeIdsDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        final Long ssid1 = 87433L;
-        final Long ssid2 = 1L;
-        final Long ssid3 = 2L;
-        final Long ssid4 = 3L;
-        final Long ssid5 = 4L;
-        final Long ssid6 = 874L;
-        final Long ssid7 = 875L;
+        getEntityManager().persist(new UsageMetric(1L, true, true, 1L, new Date()));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date()));
+        getEntityManager().persist(new UsageMetric(3L, true, true, 2L, new Date()));
+        getEntityManager().persist(new UsageMetric(4L, true, true, 4L, new Date()));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 5L, new Date()));
 
-        final Long badSsid1 = 50000L;
-        final Long badSsid2 = 50001L;
-        final Long badSsid3 = 50002L;
-
-        List<Long> streamScopeIds = sut.execute(null);
-
-        Assert.assertTrue(streamScopeIds.size() > 0);
-        Assert.assertTrue(streamScopeIds.contains(ssid1));
-        Assert.assertTrue(streamScopeIds.contains(ssid2));
-        Assert.assertTrue(streamScopeIds.contains(ssid3));
-        Assert.assertTrue(streamScopeIds.contains(ssid4));
-        Assert.assertTrue(streamScopeIds.contains(ssid5));
-        Assert.assertTrue(streamScopeIds.contains(ssid6));
-        Assert.assertTrue(streamScopeIds.contains(ssid7));
-
-        Assert.assertFalse(streamScopeIds.contains(badSsid1));
-        Assert.assertFalse(streamScopeIds.contains(badSsid2));
-        Assert.assertFalse(streamScopeIds.contains(badSsid3));
+        List<Long> ids = sut.execute(null);
+        Assert.assertEquals(4, ids.size());
+        Assert.assertTrue(ids.contains(1L));
+        Assert.assertTrue(ids.contains(2L));
+        Assert.assertTrue(ids.contains(4L));
+        Assert.assertTrue(ids.contains(5L));
     }
 }

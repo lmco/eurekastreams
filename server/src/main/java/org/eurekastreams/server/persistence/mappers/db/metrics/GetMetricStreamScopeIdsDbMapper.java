@@ -18,7 +18,6 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 import java.io.Serializable;
 import java.util.List;
 
-import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
@@ -38,8 +37,7 @@ public class GetMetricStreamScopeIdsDbMapper extends BaseArgDomainMapper<Seriali
     public List<Long> execute(final Serializable inRequest)
     {
         return getEntityManager().createQuery(
-                "SELECT id FROM StreamScope where scopeType = :personScopeType " + "OR scopeType = :groupScopeType")
-                .setParameter("personScopeType", StreamScope.ScopeType.PERSON).setParameter("groupScopeType",
-                        StreamScope.ScopeType.GROUP).getResultList();
+                "SELECT DISTINCT(streamViewStreamScopeId) FROM UsageMetric WHERE streamViewStreamScopeId != NULL")
+                .getResultList();
     }
 }
