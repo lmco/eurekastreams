@@ -117,6 +117,17 @@ public class GenerateDailyUsageSummaryExecutionTest
      */
     private DomainMapper<Serializable, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
             "streamScopeIdsMapper");
+    /**
+     * Mapper to get the total number of activities posted to a stream.
+     */
+    private DomainMapper<Long, Long> getTotalActivityCountMapper = context.mock(DomainMapper.class,
+            "getTotalActivityCountMapper");
+
+    /**
+     * Mapper to get the total number of comments posted to a stream.
+     */
+    private DomainMapper<Long, Long> getTotalCommentCountMapper = context.mock(DomainMapper.class,
+            "getTotalCommentCountMapper");
 
     /**
      * Day of week strategy.
@@ -138,7 +149,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
+                getTotalCommentCountMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
@@ -163,7 +175,7 @@ public class GenerateDailyUsageSummaryExecutionTest
             }
         });
 
-        Serializable result = sut.execute(actionContext);
+        sut.execute(actionContext);
 
         context.assertIsSatisfied();
     }
@@ -198,7 +210,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
+                getTotalCommentCountMapper);
 
         final Date dateRaw = new Date();
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
@@ -259,8 +272,7 @@ public class GenerateDailyUsageSummaryExecutionTest
         });
 
         this.insertMapper.setRequest(null);
-        Serializable result = sut.execute(actionContext);
-        Assert.assertEquals(Boolean.TRUE, result);
+        sut.execute(actionContext);
 
         DailyUsageSummary ds = (DailyUsageSummary) insertMapper.getRequest().getDomainEnity();
         Assert.assertEquals(uniqueVisitorCount, ds.getUniqueVisitorCount());

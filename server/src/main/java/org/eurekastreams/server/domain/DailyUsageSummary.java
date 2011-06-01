@@ -82,6 +82,16 @@ public class DailyUsageSummary implements Serializable
     private long messageCount;
 
     /**
+     * Total activity count.
+     */
+    private Long totalActivityCount;
+
+    /**
+     * Total comment count.
+     */
+    private Long totalCommentCount;
+
+    /**
      * Average response time for activities that have comments.
      */
     private long avgActivityResponseTime;
@@ -133,11 +143,16 @@ public class DailyUsageSummary implements Serializable
      *            whether this date is a weekday
      * @param inStreamViewStreamScopeId
      *            the stream view that these stats apply to, or null if for all streams
+     * @param inTotalActivityCount
+     *            the total activity count
+     * @param inTotalCommentCount
+     *            the total comment count
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final boolean inIsWeekday, final Long inStreamViewStreamScopeId)
+            final boolean inIsWeekday, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
+            final Long inTotalCommentCount)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -149,6 +164,8 @@ public class DailyUsageSummary implements Serializable
         usageDate = inUsageDate;
         isWeekday = inIsWeekday;
         streamViewStreamScopeId = inStreamViewStreamScopeId;
+        totalActivityCount = inTotalActivityCount;
+        totalCommentCount = inTotalCommentCount;
     }
 
     /**
@@ -336,6 +353,40 @@ public class DailyUsageSummary implements Serializable
     public void setStreamViewStreamScopeId(final Long inStreamViewStreamScopeId)
     {
         streamViewStreamScopeId = inStreamViewStreamScopeId;
+    }
+
+    /**
+     * @return the totalActivityCount
+     */
+    public Long getTotalActivityCount()
+    {
+        return totalActivityCount;
+    }
+
+    /**
+     * @param inTotalActivityCount
+     *            the totalActivityCount to set
+     */
+    public void setTotalActivityCount(final Long inTotalActivityCount)
+    {
+        totalActivityCount = inTotalActivityCount;
+    }
+
+    /**
+     * @return the totalCommentCount
+     */
+    public Long getTotalCommentCount()
+    {
+        return totalCommentCount;
+    }
+
+    /**
+     * @param inTotalCommentCount
+     *            the totalCommentCount to set
+     */
+    public void setTotalCommentCount(final Long inTotalCommentCount)
+    {
+        totalCommentCount = inTotalCommentCount;
     }
 
 }

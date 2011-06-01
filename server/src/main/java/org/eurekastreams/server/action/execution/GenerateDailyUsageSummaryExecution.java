@@ -88,17 +88,27 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper;
 
     /**
+     * Mapper to get the total number of activities posted to a stream.
+     */
+    private DomainMapper<Long, Long> getTotalActivityCountMapper;
+
+    /**
+     * Mapper to get the total number of comments posted to a stream.
+     */
+    private DomainMapper<Long, Long> getTotalCommentCountMapper;
+
+    /**
      * Mapper to get day's average activity response time (for those that had responses) - for a stream or the whole
      * system.
      */
     private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper;
 
+    // helpers
+
     /**
      * Mapper to get all the ids for the stream scopes to generate data for.
      */
     private DomainMapper<Serializable, List<Long>> streamScopeIdsMapper;
-
-    // helpers
 
     /**
      * Mapper to delete old UsageMetric data.
@@ -144,6 +154,10 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      *            dayOfWeekStrategy strategy to determine if a day is a weekday
      * @param inStreamScopeIdsMapper
      *            mapper to get all the ids of the stream scopes to generate data for
+     * @param inGetTotalActivityCountMapper
+     *            mapper to get the total activities for a stream
+     * @param inGetTotalCommentCountMapper
+     *            mapper to get the total comments for a stream
      */
     public GenerateDailyUsageSummaryExecution(
             final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
@@ -158,7 +172,9 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
             final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper,
             final DayOfWeekStrategy inDayOfWeekStrategy,
-            final DomainMapper<Serializable, List<Long>> inStreamScopeIdsMapper)
+            final DomainMapper<Serializable, List<Long>> inStreamScopeIdsMapper,
+            final DomainMapper<Long, Long> inGetTotalActivityCountMapper,
+            final DomainMapper<Long, Long> inGetTotalCommentCountMapper)
     {
         daysAgoDateStrategy = inDaysAgoDateStrategy;
         getDailyUsageSummaryByDateMapper = inGetDailyUsageSummaryByDateMapper;
@@ -173,6 +189,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         usageMetricDataCleanupMapper = inUsageMetricDataCleanupMapper;
         dayOfWeekStrategy = inDayOfWeekStrategy;
         streamScopeIdsMapper = inStreamScopeIdsMapper;
+        getTotalActivityCountMapper = inGetTotalActivityCountMapper;
+        getTotalCommentCountMapper = inGetTotalCommentCountMapper;
     }
 
     /**
@@ -217,9 +235,11 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      */
     private void generateDailyUsageSummaryForStreamScope(final Date inDate, final Long inStreamScopeId)
     {
+        UsageMetricDailyStreamInfoRequest streamInfoRequest = new UsageMetricDailyStreamInfoRequest(inDate,
+                inStreamScopeId);
+
         // see if we already have data for yesterday
-        DailyUsageSummary data = getDailyUsageSummaryByDateMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate,
-                inStreamScopeId));
+        DailyUsageSummary data = getDailyUsageSummaryByDateMapper.execute(streamInfoRequest);
         if (data != null)
         {
             logger.info("No need to create daily usage data for " + inDate + " - already exists.");
@@ -236,6 +256,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         long streamContributorCount = 0;
         long messageCount = 0;
         long avgActvityResponeTime = 0;
+        Long totalActivityCount = null;
+        Long totalCommentCount = null;
 
         if (inStreamScopeId == null)
         {
@@ -250,27 +272,30 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
                     + inDate);
             avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(inDate);
         }
+        else
+        {
+            // these are only generated for individual streams
+            totalActivityCount = getTotalActivityCountMapper.execute(inStreamScopeId);
+            totalCommentCount = getTotalCommentCountMapper.execute(inStreamScopeId);
+        }
 
         logger.info("Generating number of stream views for " + inDate);
-        streamViewCount = getDailyStreamViewCountMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate,
-                inStreamScopeId));
+        streamViewCount = getDailyStreamViewCountMapper.execute(streamInfoRequest);
 
         logger.info("Generating number of stream viewers for " + inDate);
-        streamViewerCount = getDailyStreamViewerCountMapper.execute(new UsageMetricDailyStreamInfoRequest(inDate,
-                inStreamScopeId));
+        streamViewerCount = getDailyStreamViewerCountMapper.execute(streamInfoRequest);
 
         logger.info("Generating number of stream contributors for " + inDate);
-        streamContributorCount = getDailyStreamContributorCountMapper.execute(new UsageMetricDailyStreamInfoRequest(
-                inDate, inStreamScopeId));
+        streamContributorCount = getDailyStreamContributorCountMapper.execute(streamInfoRequest);
 
         logger.info("Generating number of messages (activities and comments) for " + inDate);
-        messageCount = getDailyMessageCountMapper
-                .execute(new UsageMetricDailyStreamInfoRequest(inDate, inStreamScopeId));
+        messageCount = getDailyMessageCountMapper.execute(streamInfoRequest);
 
         boolean isWeekday = dayOfWeekStrategy.isWeekday(inDate);
 
         data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount, streamViewCount,
-                streamContributorCount, messageCount, avgActvityResponeTime, inDate, isWeekday, inStreamScopeId);
+                streamContributorCount, messageCount, avgActvityResponeTime, inDate, isWeekday, inStreamScopeId,
+                totalActivityCount, totalCommentCount);
 
         // store this
         logger.info("Inserting daily usage metric data for " + inDate);
