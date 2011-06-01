@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.metrics;
 
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.model.UsageMetricModel;
@@ -69,9 +70,12 @@ public class MetricsSummaryContent extends Composite
     SpanElement averageTimeToResponseUi;
 
     /**
-     * Default constructor.
+     * Constructor.
+     * 
+     * @param inViewStreamScopeIdString
+     *            if not empty, represents a stream scope id to get the stats for
      */
-    public MetricsSummaryContent()
+    public MetricsSummaryContent(final String inViewStreamScopeIdString)
     {
         initWidget(binder.createAndBindUi(this));
 
@@ -87,7 +91,13 @@ public class MetricsSummaryContent extends Composite
                     }
                 });
 
-        UsageMetricModel.getInstance().fetch(DEFAULT_RECORD_COUNT, true);
+        Long streamScopeId = null;
+        if (inViewStreamScopeIdString != null && inViewStreamScopeIdString.length() > 0)
+        {
+            streamScopeId = Long.parseLong(inViewStreamScopeIdString);
+        }
+        UsageMetricModel.getInstance().fetch(new UsageMetricStreamSummaryRequest(DEFAULT_RECORD_COUNT, streamScopeId),
+                true);
     }
 
     /**
