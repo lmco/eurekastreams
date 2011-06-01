@@ -1307,7 +1307,12 @@
                 class="org.eurekastreams.server.action.execution.GetSystemSettingsExecution">
                 <constructor-arg ref="findSystemSettings" />
                 <constructor-arg ref="getSystemAdministrators" />
-                <constructor-arg ref="membershipCriteriaDTODbMapper" />                
+                <constructor-arg ref="membershipCriteriaDTODbMapper" /> 
+                <constructor-arg ref="galleryTabTemplateDTODBMapper" />
+                <constructor-arg ref="jpaThemeMapper" /> 
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ThemeToThemeDTOTransformer" />
+                </constructor-arg>              
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
