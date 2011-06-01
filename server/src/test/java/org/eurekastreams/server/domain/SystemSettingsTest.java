@@ -21,6 +21,7 @@ import static org.junit.Assert.assertSame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,7 +88,7 @@ public class SystemSettingsTest
     /**
      * test membership criteria.
      */
-    private final List<MembershipCriteria> testMembershipCriteria = new ArrayList<MembershipCriteria>();
+    private final List<MembershipCriteriaDTO> testMembershipCriteria = new ArrayList<MembershipCriteriaDTO>();
 
     /**
      * Subject under test.

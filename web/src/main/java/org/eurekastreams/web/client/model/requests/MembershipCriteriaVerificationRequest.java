@@ -17,37 +17,44 @@ package org.eurekastreams.web.client.model.requests;
 
 import java.io.Serializable;
 
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
+
 /**
  * Request to verify validity of membership criteria.
  */
 public class MembershipCriteriaVerificationRequest implements Serializable
 {
+    /**
+     * Serial version id.
+     */
+    private static final long serialVersionUID = 6235420580823625443L;
+
     /** Actual criteria. */
-    private final String criteria;
+    private final MembershipCriteriaDTO membershipCriteria;
 
     /** If group or attribute query. */
     private final boolean isGroup;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCriteria
      *            Actual criteria.
      * @param inIsGroup
      *            If group or attribute query.
      */
-    public MembershipCriteriaVerificationRequest(final String inCriteria, final boolean inIsGroup)
+    public MembershipCriteriaVerificationRequest(final MembershipCriteriaDTO inCriteria, final boolean inIsGroup)
     {
-        criteria = inCriteria;
+        membershipCriteria = inCriteria;
         isGroup = inIsGroup;
     }
 
     /**
      * @return the criteria
      */
-    public String getCriteria()
+    public MembershipCriteriaDTO getMembershipCriteria()
     {
-        return criteria;
+        return membershipCriteria;
     }
 
     /**

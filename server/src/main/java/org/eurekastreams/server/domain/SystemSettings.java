@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.Min;
@@ -116,7 +117,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      * the list of ldap groups.
      */
     @Transient
-    private List<MembershipCriteria> membershipCriteria = new ArrayList<MembershipCriteria>();
+    private List<MembershipCriteriaDTO> membershipCriteria = new ArrayList<MembershipCriteriaDTO>();
 
     /**
      * If welcome emails should be sent.
@@ -264,7 +265,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      * @param inMembershipCriteria
      *            the membership criteria to set.
      */
-    public void setMembershipCriteria(final List<MembershipCriteria> inMembershipCriteria)
+    public void setMembershipCriteria(final List<MembershipCriteriaDTO> inMembershipCriteria)
     {
         membershipCriteria = inMembershipCriteria;
     }
@@ -272,7 +273,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     /**
      * @return the membership criteria.
      */
-    public List<MembershipCriteria> getMembershipCriteria()
+    public List<MembershipCriteriaDTO> getMembershipCriteria()
     {
         return membershipCriteria;
     }

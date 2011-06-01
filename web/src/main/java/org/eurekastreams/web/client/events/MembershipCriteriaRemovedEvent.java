@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.events;
 
-import org.eurekastreams.server.domain.MembershipCriteria;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 
 /**
  * Membership criteria removed event.
@@ -25,7 +25,7 @@ public class MembershipCriteriaRemovedEvent
     /**
      * Membership criteria.
      */
-    private MembershipCriteria membershipCriteria;
+    private MembershipCriteriaDTO membershipCriteria;
 
     /**
      * Constructor.
@@ -33,7 +33,7 @@ public class MembershipCriteriaRemovedEvent
      * @param inMembershipCriteria
      *            added criteria.
      */
-    public MembershipCriteriaRemovedEvent(final MembershipCriteria inMembershipCriteria)
+    public MembershipCriteriaRemovedEvent(final MembershipCriteriaDTO inMembershipCriteria)
     {
         membershipCriteria = inMembershipCriteria;
     }
@@ -43,7 +43,7 @@ public class MembershipCriteriaRemovedEvent
      * 
      * @return the criteria.
      */
-    public MembershipCriteria getMembershipCriteria()
+    public MembershipCriteriaDTO getMembershipCriteria()
     {
         return membershipCriteria;
     }

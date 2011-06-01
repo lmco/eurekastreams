@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.events;
 
-import org.eurekastreams.server.domain.MembershipCriteria;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 
 /**
  * Membership criteria added event.
@@ -25,7 +25,7 @@ public class MembershipCriteriaAddedEvent
     /**
      * Membership criteria.
      */
-    private MembershipCriteria membershipCriteria;
+    private MembershipCriteriaDTO membershipCriteria;
 
     /**
      * Field for storing if this criteria is new or existing.
@@ -40,7 +40,7 @@ public class MembershipCriteriaAddedEvent
      * @param inIsNew
      *            is the criteria new.
      */
-    public MembershipCriteriaAddedEvent(final MembershipCriteria inMembershipCriteria, final boolean inIsNew)
+    public MembershipCriteriaAddedEvent(final MembershipCriteriaDTO inMembershipCriteria, final boolean inIsNew)
     {
         membershipCriteria = inMembershipCriteria;
         isNew = inIsNew;
@@ -51,7 +51,7 @@ public class MembershipCriteriaAddedEvent
      * 
      * @return the criteria.
      */
-    public MembershipCriteria getMembershipCriteria()
+    public MembershipCriteriaDTO getMembershipCriteria()
     {
         return membershipCriteria;
     }

@@ -211,7 +211,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
             public void update(final MembershipCriteriaRemovedEvent event)
             {
                 processor.makeRequest(new ActionRequestImpl<SystemSettings>("removeMembershipCriteria", event
-                        .getMembershipCriteria()), new AsyncCallback<SystemSettings>()
+                        .getMembershipCriteria().getId()), new AsyncCallback<SystemSettings>()
                 {
                     public void onFailure(final Throwable caught)
                     {
