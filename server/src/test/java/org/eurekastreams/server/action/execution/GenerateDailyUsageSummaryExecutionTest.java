@@ -16,9 +16,12 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.test.IsEqualInternally;
@@ -106,8 +109,14 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get day's average activity response time (for those that had responses).
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageResponseTimeMapper = context.mock(
-            DomainMapper.class, "getDailyMessageResponseTimeMapper");
+    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper = context.mock(DomainMapper.class,
+            "getDailyMessageResponseTimeMapper");
+
+    /**
+     * Mapper to get stream scope ids to generate metrics for.
+     */
+    private DomainMapper<Serializable, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
+            "streamScopeIdsMapper");
 
     /**
      * Day of week strategy.
@@ -129,10 +138,12 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
+
+        final List<Long> streamScopeIds = new ArrayList<Long>();
 
         context.checking(new Expectations()
         {
@@ -141,10 +152,14 @@ public class GenerateDailyUsageSummaryExecutionTest
                 will(returnValue(date));
 
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
-                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
+                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(DateDayExtractor
+                                .getStartOfDay(date), null))));
                 will(returnValue(existingSummary));
 
                 oneOf(usageMetricDataCleanupMapper).execute(0);
+
+                oneOf(streamScopeIdsMapper).execute(null);
+                will(returnValue(streamScopeIds));
             }
         });
 
@@ -183,9 +198,10 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
 
-        final Date date = new Date();
+        final Date dateRaw = new Date();
+        final Date date = DateDayExtractor.getStartOfDay(dateRaw);
         final long uniqueVisitorCount = 1L;
         final long pageViewCount = 2L;
         final long streamViewerCount = 3L;
@@ -194,11 +210,13 @@ public class GenerateDailyUsageSummaryExecutionTest
         final long messageCount = 6L;
         final long avgActivityResponseTime = 3L;
 
+        final List<Long> streamScopeIds = new ArrayList<Long>();
+
         context.checking(new Expectations()
         {
             {
                 oneOf(daysAgoDateStrategy).execute(with(1));
-                will(returnValue(date));
+                will(returnValue(dateRaw));
 
                 // no data found
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
@@ -223,8 +241,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                         with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(streamContributorCount));
 
-                oneOf(getDailyMessageResponseTimeMapper).execute(
-                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
+                oneOf(getDailyMessageResponseTimeMapper).execute(with(date));
                 will(returnValue(avgActivityResponseTime));
 
                 oneOf(getDailyMessageCountMapper).execute(
@@ -235,6 +252,9 @@ public class GenerateDailyUsageSummaryExecutionTest
                 will(returnValue(inIsWeekday));
 
                 oneOf(usageMetricDataCleanupMapper).execute(0);
+
+                oneOf(streamScopeIdsMapper).execute(null);
+                will(returnValue(streamScopeIds));
             }
         });
 

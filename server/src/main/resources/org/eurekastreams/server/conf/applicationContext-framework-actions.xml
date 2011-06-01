@@ -111,7 +111,7 @@
         <constructor-arg value="Welcome" />
         <!-- layout -->
         <constructor-arg value="THREECOLUMN" />
-        <constructor-arg ref="findSystemSettingsFromDatabase" />
+        <constructor-arg ref="membershipCriteriaDbMapper" />
     </bean>
 
 
@@ -189,7 +189,7 @@
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
-                        <constructor-arg ref="findSystemSettings" />
+                        <constructor-arg ref="membershipCriteriaDTODbMapper" />
                         <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
                         <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                     </bean>
@@ -212,7 +212,7 @@
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
-                        <constructor-arg ref="findSystemSettings" />
+                        <constructor-arg ref="membershipCriteriaDTODbMapper" />
                         <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
                         <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                     </bean>
@@ -455,19 +455,13 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.settings.AddMembershipCriteriaExecution">
-                <constructor-arg ref="findSystemSettingsFromDatabase" />
-                <constructor-arg ref="updaterStrategy" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
-                        <!-- Wrapped updater to clear the SystemSettings cache -->
-                        <constructor-arg ref="deleteSystemSettingsCacheMapper" />
-                    </bean>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg >
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer" />
                 </constructor-arg>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
-                </constructor-arg>
+                </constructor-arg>              
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -475,19 +469,15 @@
 
     <bean id="removeMembershipCriteria" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="isSystemAdminAuthorization" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.settings.RemoveMembershipCriteriaExecution">
-                <constructor-arg ref="findSystemSettingsFromDatabase" />
-                <constructor-arg ref="updaterStrategy" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
-                        <!-- Wrapped updater to clear the SystemSettings cache -->
-                        <constructor-arg ref="deleteSystemSettingsCacheMapper" />
-                    </bean>
-                </constructor-arg>
-            </bean>
+        <constructor-arg ref="isSystemAdminAuthorization" />   
+        <constructor-arg>     
+	        <bean parent="baseParamExecuteDomainMapperExecution">
+	                <constructor-arg>
+	                    <bean class="org.eurekastreams.server.persistence.mappers.db.DeleteEntityByIdDbMapper">
+	                        <constructor-arg value="org.eurekastreams.server.domain.MembershipCriteria" />
+	                    </bean>                        
+	                </constructor-arg>
+	        </bean>        
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
@@ -1317,6 +1307,7 @@
                 class="org.eurekastreams.server.action.execution.GetSystemSettingsExecution">
                 <constructor-arg ref="findSystemSettings" />
                 <constructor-arg ref="getSystemAdministrators" />
+                <constructor-arg ref="membershipCriteriaDTODbMapper" />                
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -4401,6 +4392,9 @@
             </bean>
         </constructor-arg>
         <constructor-arg ref="dayOfWeekStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetMetricStreamScopeIdsDbMapper" />
+        </constructor-arg>
     </bean>
 
     <!--

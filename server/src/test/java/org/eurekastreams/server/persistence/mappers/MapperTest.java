@@ -42,7 +42,7 @@ public abstract class MapperTest
 
     /**
      * Getter for EntityManager.
-     *
+     * 
      * @return the EntityManager instance.
      */
     protected EntityManager getEntityManager()
@@ -52,7 +52,7 @@ public abstract class MapperTest
 
     /**
      * Set the entity manager - used for low-level ORM hits like flush & clear.
-     *
+     * 
      * @param inEntityManager
      *            the EntityManager to inject
      */
@@ -65,7 +65,7 @@ public abstract class MapperTest
     /**
      * Load the DBUnit XML for the all tests in this suite. Override this in the subclass if you want it to load a
      * different dataset file.
-     *
+     * 
      * @throws Exception
      *             If error occurs during setup.
      */

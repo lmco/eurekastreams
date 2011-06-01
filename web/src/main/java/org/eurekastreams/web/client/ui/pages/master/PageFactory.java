@@ -204,7 +204,7 @@ public class PageFactory
 
                 public void onSuccess()
                 {
-                    contentPanel.add(new MetricsSummaryContent());
+                    contentPanel.add(new MetricsSummaryContent(view));
                 }
             });
             break;

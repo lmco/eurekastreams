@@ -35,7 +35,7 @@ import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Use {@link PersonSource} to create/lock/unlock user accounts.
- *
+ * 
  */
 public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -105,7 +105,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
     /**
      * Get updated info for all users of system and generate UserActionRequests to refresh them.
-     *
+     * 
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return null.

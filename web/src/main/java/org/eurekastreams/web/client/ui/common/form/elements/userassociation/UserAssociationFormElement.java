@@ -18,8 +18,8 @@ package org.eurekastreams.web.client.ui.common.form.elements.userassociation;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
@@ -58,11 +58,11 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
     private static final String ATTR_DESC = "Specify an LDAP attribute (in the format: attribute=value)";
 
     /** Message for verification with no users. */
-    private static final String VERIFY_NO_USERS_MESSAGE = //\n
-        "No matching groups or users were found. Please check your query and search again.";
+    private static final String VERIFY_NO_USERS_MESSAGE = // \n
+    "No matching groups or users were found. Please check your query and search again.";
 
     /** Message for verification failures. */
-    private static final String VERIFY_FAILURE_MESSAGE = //\n
+    private static final String VERIFY_FAILURE_MESSAGE = // \n
     "There was an error processing your request. Please check your query and search again.";
 
     /** The access groups panel. */
@@ -96,12 +96,11 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
     private final WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
 
     /** Membership criteria items. */
-    private final ArrayList<MembershipCriteria> items = new ArrayList<MembershipCriteria>();
-
+    private final ArrayList<MembershipCriteriaDTO> items = new ArrayList<MembershipCriteriaDTO>();
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSettings
      *            the system settings.
      */
@@ -110,7 +109,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         setupWidgets();
         setupEvents();
 
-        for (MembershipCriteria criterion : inSettings.getMembershipCriteria())
+        for (MembershipCriteriaDTO criterion : inSettings.getMembershipCriteria())
         {
             addMembershipCriteria(criterion);
         }
@@ -136,7 +135,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
         FlowPanel radioButtons = new FlowPanel();
         radioButtons.addStyleName(StaticResourceBundle.INSTANCE.coreCss().radioButtonContainer());
-        
+
         Label searchLDAPBy = new Label("Search by LDAP");
         searchLDAPBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchLdapLabel());
         searchLDAPBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
@@ -276,8 +275,13 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         requiredLabel.setVisible(false);
         results.setVisible(false);
 
+        MembershipCriteriaDTO mcdto = new MembershipCriteriaDTO();
+
+        // TODO: fill out rest of properties.
+        mcdto.setCriteria(membershipCriteria.getText());
+
         MembershipCriteriaVerificationModel.getInstance().fetch(
-                new MembershipCriteriaVerificationRequest(membershipCriteria.getText(), group.getValue()), false);
+                new MembershipCriteriaVerificationRequest(mcdto, group.getValue()), false);
     }
 
     /**
@@ -308,7 +312,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
     /**
      * Handles an error.
-     *
+     * 
      * @param errMessage
      *            the error message.
      */
@@ -325,11 +329,11 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
     /**
      * Add membership criteria.
-     *
+     * 
      * @param criterion
      *            the membership criteria.
      */
-    public void addMembershipCriteria(final MembershipCriteria criterion)
+    public void addMembershipCriteria(final MembershipCriteriaDTO criterion)
     {
         items.add(criterion);
 

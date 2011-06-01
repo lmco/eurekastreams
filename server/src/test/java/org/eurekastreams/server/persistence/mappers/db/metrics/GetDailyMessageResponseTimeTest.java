@@ -20,7 +20,6 @@ import java.util.Date;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.Comment;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,53 +79,7 @@ public class GetDailyMessageResponseTimeTest extends MapperTest
         getEntityManager().clear();
 
         // execute mapper assert avg response time is 15 min.
-        Assert.assertEquals(4, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 1), null)));
-    }
-
-    /**
-     * Test execute() for a specific stream.
-     */
-    @Test
-    public void testExecuteForSpecificStreamWithData()
-    {
-        final Long streamScopeId = 87433L;
-
-        // set up activity with two comments posted same day, quickest comment is 10 min
-        Activity a1 = (Activity) getEntityManager().createQuery("FROM Activity WHERE id = 6789").getSingleResult();
-        Comment a1c1 = (Comment) getEntityManager().createQuery("FROM Comment WHERE id = 1").getSingleResult();
-        Comment a1c2 = (Comment) getEntityManager().createQuery("FROM Comment WHERE id = 2").getSingleResult();
-
-        a1.setPostedTime(new Date(year, 4, 1, 7, 0, 0));
-        a1c1.setTimeSent(new Date(year, 4, 1, 7, 2, 0));
-        a1c2.setTimeSent(new Date(year, 4, 1, 7, 4, 0));
-
-        // set up another activity with two comments post same day, quickest comment is 20 min.
-        Activity a2 = (Activity) getEntityManager().createQuery("FROM Activity WHERE id = 6790").getSingleResult();
-        Comment a2c1 = (Comment) getEntityManager().createQuery("FROM Comment WHERE id = 5").getSingleResult();
-        Comment a2c2 = (Comment) getEntityManager().createQuery("FROM Comment WHERE id = 6").getSingleResult();
-
-        a2.setPostedTime(new Date(year, 4, 1, 8, 0, 0));
-        a2c1.setTimeSent(new Date(year, 4, 1, 8, 6, 0));
-        a2c2.setTimeSent(new Date(year, 4, 1, 8, 8, 0));
-
-        getEntityManager().flush();
-        getEntityManager().clear();
-
-        // execute mapper assert avg response time is 15 min.
-        Assert.assertEquals(4, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 1),
-                streamScopeId)));
-    }
-
-    /**
-     * Test execute() for a specific stream with no data.
-     */
-    @Test
-    public void testExecuteForSpecificStreamWithNoData()
-    {
-        final Long streamScopeId = 880L;
-
-        Assert.assertEquals(0, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 1),
-                streamScopeId)));
+        Assert.assertEquals(4, (long) sut.execute(new Date(year, 4, 1)));
     }
 
     /**
@@ -157,7 +110,7 @@ public class GetDailyMessageResponseTimeTest extends MapperTest
         getEntityManager().clear();
 
         // execute mapper assert avg response time is 15 min.
-        Assert.assertEquals(2, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 1), null)));
+        Assert.assertEquals(2, (long) sut.execute(new Date(year, 4, 1)));
     }
 
     /**
@@ -177,6 +130,6 @@ public class GetDailyMessageResponseTimeTest extends MapperTest
         getEntityManager().flush();
         getEntityManager().clear();
 
-        Assert.assertEquals(0, (long) sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(year, 4, 2), null)));
+        Assert.assertEquals(0, (long) sut.execute(new Date(year, 4, 2)));
     }
 }

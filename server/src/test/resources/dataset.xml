@@ -684,8 +684,8 @@
 		contentWarningText="some content warning" contentExpiration="1" sendWelcomeEmails="true" 
 		supportStreamGroupShortName="group1" allUsersCanCreateGroups="true"
 		/>
-	<MembershipCriteria id="11" version="2" criteria="testCriterion1" systemSettingsId="1001" />
-	<MembershipCriteria id="12" version="2" criteria="testCriterion2" systemSettingsId="1001" />
+	<MembershipCriteria id="11" version="2" criteria="testCriterion1" />
+	<MembershipCriteria id="12" version="2" criteria="testCriterion2" />
 	
 	<InAppNotification id="1" recipientId="42" highPriority="true" isRead="true" notificationDate="2010-01-01 00:00:00.000"
 		notificationType="LIKE_ACTIVITY" message="" url="" version="0"

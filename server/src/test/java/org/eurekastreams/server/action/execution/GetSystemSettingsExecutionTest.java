@@ -20,6 +20,7 @@ import static junit.framework.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import java.util.Set;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -75,6 +77,12 @@ public class GetSystemSettingsExecutionTest
             "systemAdminsMapper");
 
     /**
+     * the SystemSettings mapper.
+     */
+    private DomainMapper<MapperRequest, List<MembershipCriteriaDTO>> membershipCriteriaDAO = context.mock(
+            DomainMapper.class, "membershipCriteriaDAO");
+
+    /**
      * {@link PrincipalActionContext} mock.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -85,14 +93,14 @@ public class GetSystemSettingsExecutionTest
     @Before
     public void setup()
     {
-        sut = new GetSystemSettingsExecution(systemSettingDAO, systemAdminsMapper);
+        sut = new GetSystemSettingsExecution(systemSettingDAO, systemAdminsMapper, membershipCriteriaDAO);
     }
 
     /**
      * Check that the action correctly returns the system settings, without admins.
      */
     @Test
-    public final void testExecuteWithoutSystemAdmins()
+    public final void testExecuteWithoutFullyLoading()
     {
         context.checking(new Expectations()
         {
@@ -113,7 +121,7 @@ public class GetSystemSettingsExecutionTest
      * Check that the action correctly returns the system settings, with admins.
      */
     @Test
-    public final void testExecuteWithSystemAdmins()
+    public final void testExecuteWithFullyLoading()
     {
         PersonModelView admin = new PersonModelView();
         final List<PersonModelView> adminsList = new ArrayList<PersonModelView>();
@@ -121,6 +129,9 @@ public class GetSystemSettingsExecutionTest
 
         final Set<PersonModelView> adminsSet = new HashSet<PersonModelView>();
         adminsSet.add(admin);
+
+        final List<MembershipCriteriaDTO> mcdtos = new ArrayList<MembershipCriteriaDTO>(Arrays
+                .asList(new MembershipCriteriaDTO(5L, "foo", null, null, null, null)));
 
         context.checking(new Expectations()
         {
@@ -138,12 +149,21 @@ public class GetSystemSettingsExecutionTest
 
                 oneOf(systemAdminsMapper).execute(null);
                 will(returnValue(adminsList));
+
+                oneOf(membershipCriteriaDAO).execute(null);
+                will(returnValue(mcdtos));
+
+                oneOf(systemSettings).setMembershipCriteria((with(IsEqualInternally.equalInternally(mcdtos))));
+
+                allowing(systemSettings).getMembershipCriteria();
+                will(returnValue(mcdtos));
             }
         });
 
         assertEquals(systemSettings, sut.execute(actionContext));
         assertEquals(1, systemSettings.getSystemAdministrators().size());
         assertTrue(systemSettings.getSystemAdministrators().contains(admin));
+        assertEquals("foo", systemSettings.getMembershipCriteria().get(0).getCriteria());
         context.assertIsSatisfied();
     }
 }

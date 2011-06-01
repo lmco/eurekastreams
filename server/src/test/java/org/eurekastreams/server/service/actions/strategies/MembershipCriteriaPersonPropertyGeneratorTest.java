@@ -21,12 +21,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eurekastreams.server.action.response.settings.PersonPropertiesResponse;
 import org.eurekastreams.server.domain.GalleryTabTemplate;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.MembershipCriteria;
-import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
@@ -56,13 +56,8 @@ public class MembershipCriteriaPersonPropertyGeneratorTest
     /**
      * The SystemSettings mapper.
      */
-    private DomainMapper<MapperRequest, SystemSettings> systemSettingsDAO = context.mock(DomainMapper.class,
-            "systemSettingsDAO");
-
-    /**
-     * {@link SystemSettings}.
-     */
-    private SystemSettings systemSettings = context.mock(SystemSettings.class, "systemSettings");
+    private DomainMapper<MapperRequest, List<MembershipCriteria>> membershipCriteriaDAO = context.mock(
+            DomainMapper.class, "membershipCriteriaDAO");
 
     /**
      * {@link GalleryTabTemplate}.
@@ -78,7 +73,7 @@ public class MembershipCriteriaPersonPropertyGeneratorTest
      * System under test.
      */
     private MembershipCriteriaPersonPropertyGenerator sut = new MembershipCriteriaPersonPropertyGenerator("welcome",
-            Layout.THREECOLUMN, systemSettingsDAO);
+            Layout.THREECOLUMN, membershipCriteriaDAO);
 
     /**
      * Test.
@@ -122,10 +117,7 @@ public class MembershipCriteriaPersonPropertyGeneratorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(systemSettingsDAO).execute(null);
-                will(returnValue(systemSettings));
-
-                oneOf(systemSettings).getMembershipCriteria();
+                oneOf(membershipCriteriaDAO).execute(null);
                 will(returnValue(new ArrayList<MembershipCriteria>()));
             }
         });
@@ -152,10 +144,7 @@ public class MembershipCriteriaPersonPropertyGeneratorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(systemSettingsDAO).execute(null);
-                will(returnValue(systemSettings));
-
-                oneOf(systemSettings).getMembershipCriteria();
+                oneOf(membershipCriteriaDAO).execute(null);
                 will(returnValue(mcs));
 
                 oneOf(membershipCriteria).getCriteria();

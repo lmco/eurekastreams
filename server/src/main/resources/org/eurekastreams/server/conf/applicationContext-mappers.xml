@@ -2110,6 +2110,16 @@
     <bean id="flushMapper" class="org.eurekastreams.server.persistence.mappers.db.FlushMapper" />
 
     <bean id="createGalleryTabTemplateMapper" class="org.eurekastreams.server.action.execution.gallery.GalleryTabTemplateFactory" />
+    
+    <bean id="membershipCriteriaDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetMembershipCriteriaDBMapper" />
+
+    <bean id="membershipCriteriaDTODbMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
+        <constructor-arg ref="membershipCriteriaDbMapper" />
+        <constructor-arg ref="membershipCriteriaToMembershipCriteriaDTOTransformer" />
+    </bean>
+
+    <bean id="membershipCriteriaToMembershipCriteriaDTOTransformer"
+        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaToMembershipCriteriaDTOTransformer" /> 
 
     <!-- Metrics -->
     <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />
