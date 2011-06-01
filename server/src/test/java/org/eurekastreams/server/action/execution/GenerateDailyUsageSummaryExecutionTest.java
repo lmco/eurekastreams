@@ -109,8 +109,8 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get day's average activity response time (for those that had responses).
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageResponseTimeMapper = context.mock(
-            DomainMapper.class, "getDailyMessageResponseTimeMapper");
+    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper = context.mock(DomainMapper.class,
+            "getDailyMessageResponseTimeMapper");
 
     /**
      * Mapper to get stream scope ids to generate metrics for.
@@ -241,8 +241,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                         with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
                 will(returnValue(streamContributorCount));
 
-                oneOf(getDailyMessageResponseTimeMapper).execute(
-                        with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(date, null))));
+                oneOf(getDailyMessageResponseTimeMapper).execute(with(date));
                 will(returnValue(avgActivityResponseTime));
 
                 oneOf(getDailyMessageCountMapper).execute(
