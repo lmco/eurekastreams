@@ -21,7 +21,9 @@ import static org.junit.Assert.assertSame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
+import org.eurekastreams.server.domain.dto.ThemeDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,6 +93,16 @@ public class SystemSettingsTest
     private final List<MembershipCriteriaDTO> testMembershipCriteria = new ArrayList<MembershipCriteriaDTO>();
 
     /**
+     * test gallery tab templates.
+     */
+    private final List<GalleryTabTemplateDTO> testGalleryTabTemplates = new ArrayList<GalleryTabTemplateDTO>();
+
+    /**
+     * test themes.
+     */
+    private final List<ThemeDTO> testThemes = new ArrayList<ThemeDTO>();
+
+    /**
      * Subject under test.
      */
     private SystemSettings systemSettings;
@@ -113,6 +125,8 @@ public class SystemSettingsTest
         systemSettings.setSupportStreamGroupDisplayName(supportStreamGroupDisplayName);
         systemSettings.setSupportEmailAddress(supportEmailAddress);
         systemSettings.setSupportPhoneNumber(supportPhoneNumber);
+        systemSettings.setThemes(testThemes);
+        systemSettings.setGalleryTabTemplates(testGalleryTabTemplates);
     }
 
     /**
@@ -190,6 +204,24 @@ public class SystemSettingsTest
     public void setAndGetLdapGroups()
     {
         assertEquals("property should be gotten", testMembershipCriteria, systemSettings.getMembershipCriteria());
+    }
+
+    /**
+     * Test themes setter/getter.
+     */
+    @Test
+    public void setAndGetThemes()
+    {
+        assertEquals("property should be gotten", testThemes, systemSettings.getThemes());
+    }
+
+    /**
+     * Test gallerytabtemplate setter/getter.
+     */
+    @Test
+    public void setAndGetGalleryTabTemplate()
+    {
+        assertEquals("property should be gotten", testGalleryTabTemplates, systemSettings.getGalleryTabTemplates());
     }
 
 }
