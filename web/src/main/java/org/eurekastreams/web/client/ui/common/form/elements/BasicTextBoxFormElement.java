@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,11 @@ public class BasicTextBoxFormElement extends FlowPanel implements FormElement
     /**
      * The text box.
      */
-    private LabeledTextBox textBox = new LabeledTextBox("");
+    private final LabeledTextBox textBox = new LabeledTextBox("");
     /**
      * The label.
      */
-    private Label label = new Label();
+    private final Label label = new Label();
     /**
      * Puts a (required) on the form.
      */

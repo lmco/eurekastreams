@@ -1,0 +1,30 @@
+<ui:UiBinder 
+	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:form-elem="urn:import:org.eurekastreams.web.client.ui.common.form.elements">
+
+<ui:image field="buttonImage" src="style/images/send-emails-btn.png" />
+<ui:image field="buttonImageDisabled" src="style/images/RequestAccessButton-Disabled.png" />
+
+<ui:style>
+.url-box
+{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+</ui:style>
+
+<ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+<ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" />
+
+<g:HTMLPanel addStyleNames="{coreCss.formElement}">
+	<div class="{coreCss.formLabel}">Send Notification to All Users</div>
+	<g:CheckBox ui:field="highPriorityUi" text="Mark Notification as High Priority" addStyleNames="{coreCss.formCheckBox}" />
+	<form-elem:BasicTextAreaFormElement ui:field="messageUi" />
+	<form-elem:BasicTextBoxFormElement ui:field="urlUi" addStyleNames="{style.url-box}" />
+	<g:Image ui:field="sendButton" resource="{buttonImage}" />
+	<g:Image ui:field="sendButtonDisabled" resource="{buttonImageDisabled}" visible="false" />
+	<g:Image ui:field="waitSpinner" resource="{globalResources.waitSpinner}" visible="false" />
+</g:HTMLPanel>
+	
+</ui:UiBinder>

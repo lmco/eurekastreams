@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLooku
 import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.TermsOfServicePromptIntervalFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.userassociation.UserAssociationFormElement;
+import org.eurekastreams.web.client.ui.common.notification.SendNotificationWidget;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
 // add more then 255 char into the TOS or a String where it should be an Int.
 /**
  * SystemSettings panel.
- * 
+ *
  */
 public class SystemSettingsPanelComposite extends FlowPanel
 {
@@ -94,7 +95,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
     /**
      * the processor.
      */
-    private ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * the site Label CheckBox.
@@ -122,7 +123,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
     /**
      * The extra CL to hide the prompt Int form element.
      */
-    private ClickListener hideTOSIntPanel;
+    private final ClickListener hideTOSIntPanel;
 
     /**
      * The membership refresh button.
@@ -137,11 +138,11 @@ public class SystemSettingsPanelComposite extends FlowPanel
     /**
      * Scopes.
      */
-    private LinkedList<StreamScope> scopes = new LinkedList<StreamScope>();
+    private final LinkedList<StreamScope> scopes = new LinkedList<StreamScope>();
 
     /**
      * Constructor.
-     * 
+     *
      * @param inProcessor
      *            The action processor.
      */
@@ -276,7 +277,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Builds the form.
-     * 
+     *
      * @param systemSettingValues
      *            The system settings to use when preloading the form.
      */
@@ -360,6 +361,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormElement(sendEmails);
 
         form.addFormDivider();
+        form.addWidget(new SendNotificationWidget());
+        form.addFormDivider();
         form.addFormElement(hideableSiteLabel);
         form.addFormDivider();
         form.addFormElement(hideableContentWarning);
@@ -403,7 +406,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Add the help page elements to the form builder.
-     * 
+     *
      * @param systemSettingValues
      *            the system settings
      * @param form
@@ -457,7 +460,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Setup for refresh button.
-     * 
+     *
      * @return newly configured label/button.
      */
     private Label initializeRefreshButton()
