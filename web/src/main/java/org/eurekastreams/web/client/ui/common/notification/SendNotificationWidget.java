@@ -159,10 +159,19 @@ public class SendNotificationWidget extends Composite
     {
         if (allowSubmit)
         {
+            final String url = (String) urlUi.getValue();
+            if (url != null && !url.isEmpty() && !url.startsWith("http://") && !url.startsWith("https://"))
+            {
+                EventBus.getInstance().notifyObservers(
+                        ShowNotificationEvent.getInstance("Notification destination must be an http or https URL"));
+                return;
+            }
+
             SendPrebuiltNotificationRequest rqst = new SendPrebuiltNotificationRequest();
             rqst.setHighPriority(highPriorityUi.getValue());
             rqst.setMessage(messageUi.getValue());
-            rqst.setUrl((String) urlUi.getValue());
+
+            rqst.setUrl(url);
 
             sendButton.setVisible(false);
             waitSpinner.setVisible(true);
