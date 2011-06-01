@@ -53,7 +53,9 @@
     </bean>
 
     <bean id="sendMassPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation" />
+		</constructor-arg>
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.SendMassPrebuiltNotificationExecution">
@@ -263,14 +265,23 @@
 
 	<!-- ========== IN-APP ========== -->
 
-	<bean id="getInAppNotificationCounts" class="org.eurekastreams.commons.actions.service.ServiceAction">
+	<bean id="refreshUserInAppNotificationCounts" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            	<constructor-arg ref="passThruRequestTransformer" />
+                <constructor-arg ref="getCachedUnreadInAppNotificationCountsByUserId_FORCE_REFRESH" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+	
+	<bean id="getUserInAppNotificationCounts" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-            	<constructor-arg>
-            		<bean class="org.eurekastreams.server.action.request.transformer.UsePrincipalPersonIdRequestTransformer" />
-            	</constructor-arg>
+            	<constructor-arg ref="usePrincipalPersonIdRequestTransformer" />
                 <constructor-arg ref="getCachedUnreadInAppNotificationCountsByUserId" />
             </bean>
         </constructor-arg>

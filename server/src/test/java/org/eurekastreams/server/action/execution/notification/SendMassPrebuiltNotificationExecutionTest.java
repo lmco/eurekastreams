@@ -16,13 +16,15 @@
 package org.eurekastreams.server.action.execution.notification;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.testing.TestContextCreator;
@@ -81,7 +83,7 @@ public class SendMassPrebuiltNotificationExecutionTest
                 oneOf(createNotificationsMapper).execute(request);
                 will(returnValue(5));
                 oneOf(unlockedUsersMapper).execute(false);
-                will(returnValue(Collections.EMPTY_LIST));
+                will(returnValue(Arrays.asList(5L, 6L, 7L, 8L, 9L)));
             }
         });
 
@@ -91,6 +93,11 @@ public class SendMassPrebuiltNotificationExecutionTest
         Serializable result = sut.execute(actionContext);
         context.assertIsSatisfied();
         assertEquals(5, result);
+        assertEquals(5, actionContext.getUserActionRequests().size());
+        for (UserActionRequest rqst : actionContext.getUserActionRequests())
+        {
+            assertEquals("refreshUserInAppNotificationCounts", rqst.getActionKey());
+        }
     }
 
     /**
@@ -113,5 +120,6 @@ public class SendMassPrebuiltNotificationExecutionTest
         Serializable result = sut.execute(actionContext);
         context.assertIsSatisfied();
         assertEquals(0, result);
+        assertTrue(actionContext.getUserActionRequests().isEmpty());
     }
 }

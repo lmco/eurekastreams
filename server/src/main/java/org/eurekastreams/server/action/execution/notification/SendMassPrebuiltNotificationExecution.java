@@ -21,6 +21,7 @@ import java.util.List;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
@@ -64,11 +65,18 @@ public class SendMassPrebuiltNotificationExecution implements TaskHandlerExecuti
                 .getParams());
 
         // get list of users and refresh their notification counts
+        // Note: strategy here is to fetch the list within the action, then refresh each asynchronously. Some design
+        // choices/alternatives are: 1) fetch list sync vs. async, 2) delete cache keys immediately also vs. not, 3)
+        // refresh keys vs. just delete keys
         if (count > 0)
         {
             List<Long> userIds = unlockedUsersMapper.execute(false);
 
-            // TODO: refresh their counts
+            List<UserActionRequest> actions = inWrapperContext.getUserActionRequests();
+            for (Long userId : userIds)
+            {
+                actions.add(new UserActionRequest("refreshUserInAppNotificationCounts", null, userId));
+            }
         }
 
         return count;

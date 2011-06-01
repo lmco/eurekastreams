@@ -41,6 +41,7 @@
 	<util:constant id="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />	
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -1808,9 +1809,7 @@
 		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 		       <constructor-arg>
 					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-						<constructor-arg>
-							<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-						</constructor-arg>
+						<constructor-arg ref="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 						<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 						<property name="cache" ref="memcachedCache" />
 					</bean>
@@ -1824,9 +1823,7 @@
 		<!-- Cache updater -->
 		<constructor-arg>
 	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-				<constructor-arg>
-					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-				</constructor-arg>
+				<constructor-arg ref="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 				<property name="cache" ref="memcachedCache" />
 		    </bean> 
@@ -1843,9 +1840,7 @@
 		<!-- Cache updater -->
 		<constructor-arg>
 	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-				<constructor-arg>
-					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-				</constructor-arg>
+				<constructor-arg ref="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 				<property name="cache" ref="memcachedCache" />
 		    </bean> 

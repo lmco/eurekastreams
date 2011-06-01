@@ -92,6 +92,7 @@
 
     <bean id="wrapInListRequestTransformer" class="org.eurekastreams.server.action.request.transformer.WrapInListRequestTransformer"/>
 
+	<bean id="usePrincipalPersonIdRequestTransformer" class="org.eurekastreams.server.action.request.transformer.UsePrincipalPersonIdRequestTransformer" />
 
 	<!-- ========== BASE ACTIONS ========== -->
 
@@ -1260,9 +1261,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.UsePrincipalPersonIdRequestTransformer" />
-                </constructor-arg>
+                <constructor-arg ref="usePrincipalPersonIdRequestTransformer" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedGroupsDbMapper" />
                 </constructor-arg>
