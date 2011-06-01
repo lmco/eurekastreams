@@ -72,7 +72,7 @@ public class GroupCommentTranslatorTest
     private final DomainMapper<Long, List<Long>> saversMapper = context.mock(DomainMapper.class, "saversMapper");
 
     /** System under test. */
-    private GroupCommentTranslator sut;
+    private NotificationTranslator sut;
 
     /** Test data. */
     private static final long ACTOR_ID = 1111L;
