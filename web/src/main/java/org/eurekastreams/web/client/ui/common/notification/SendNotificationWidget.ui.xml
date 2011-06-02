@@ -3,8 +3,8 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:form-elem="urn:import:org.eurekastreams.web.client.ui.common.form.elements">
 
-<ui:image field="buttonImage" src="style/images/send-emails-btn.png" />
-<ui:image field="buttonImageDisabled" src="style/images/RequestAccessButton-Disabled.png" />
+<ui:image field="buttonImage" src="style/images/sendNotification.png" />
+<ui:image field="buttonImageDisabled" src="style/images/sendNotificationInactive.png" />
 
 <ui:style>
 .url-box
