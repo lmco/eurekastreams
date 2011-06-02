@@ -130,6 +130,12 @@ public class GenerateDailyUsageSummaryExecutionTest
             "getTotalCommentCountMapper");
 
     /**
+     * Mapper to get the total number of contributors to a stream by stream scope id.
+     */
+    private DomainMapper<Long, Long> getTotalStreamContributorMapper = context.mock(DomainMapper.class,
+            "getTotalStreamContributorMapper");
+
+    /**
      * Day of week strategy.
      */
     private DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
@@ -150,10 +156,11 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
                 usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
-                getTotalCommentCountMapper);
+                getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
+        final Date datePrior = new Date(2011, 1, 21);
 
         final List<Long> streamScopeIds = new ArrayList<Long>();
 
@@ -162,6 +169,9 @@ public class GenerateDailyUsageSummaryExecutionTest
             {
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(date));
+
+                oneOf(daysAgoDateStrategy).execute(with(2));
+                will(returnValue(datePrior));
 
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
                         with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(DateDayExtractor
@@ -211,10 +221,12 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
                 usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
-                getTotalCommentCountMapper);
+                getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
-        final Date dateRaw = new Date();
+        final Date dateRaw = new Date(2011, 1, 22);
+        final Date datePriorRaw = new Date(2011, 1, 21);
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
+        final Date datePrior = DateDayExtractor.getStartOfDay(datePriorRaw);
         final long uniqueVisitorCount = 1L;
         final long pageViewCount = 2L;
         final long streamViewerCount = 3L;
@@ -230,6 +242,9 @@ public class GenerateDailyUsageSummaryExecutionTest
             {
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(dateRaw));
+
+                oneOf(daysAgoDateStrategy).execute(with(2));
+                will(returnValue(datePriorRaw));
 
                 // no data found
                 oneOf(getDailyUsageSummaryByDateMapper).execute(

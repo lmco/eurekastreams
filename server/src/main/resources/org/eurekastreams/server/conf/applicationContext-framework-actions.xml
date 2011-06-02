@@ -4406,6 +4406,9 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamTotalCommentCountDbMapper" />
         </constructor-arg>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetTotalStreamContributorCountDbMapper" />
+        </constructor-arg>
     </bean>
 
     <!--

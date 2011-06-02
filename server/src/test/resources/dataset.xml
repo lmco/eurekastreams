@@ -742,7 +742,7 @@
     
     <DailyUsageSummary id="4" messagecount="9" pageviewcount="99" streamcontributorcount="999" 
         streamviewcount="9999" streamviewercount="99999" uniquevisitorcount="999999" usagedate="2011-04-07" avgactivityresponsetime="9999999" 
-        isWeekday="true" streamViewStreamScopeId="1" totalActivityCount="3" totalCommentCount="4"
+        isWeekday="true" streamViewStreamScopeId="1" totalActivityCount="3" totalCommentCount="4" totalContributorCount="5"
         />
     
     <DailyUsageSummary id="1" messagecount="5" pageviewcount="55" streamcontributorcount="555" 
