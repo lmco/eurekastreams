@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -28,26 +29,23 @@ import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Makes a basic text area (multi line text box) form element.
- * 
+ *
  */
-public class BasicTextAreaFormElement extends FlowPanel implements FormElement
+public class BasicTextAreaFormElement extends Composite implements FormElement
 {
     /**
      * The text box.
      */
-    private TextArea textBox = new TextArea();
+    private final TextArea textBox = new TextArea();
     /**
      * The label.
      */
-    private Label label = new Label();
+    private final Label label = new Label();
     /**
      * Puts a (required) on the form.
      */
-    private Label requiredLabel = new Label();
-    /**
-     * instructions for the element.
-     */
-    private Label instructions = new Label();
+    private final Label requiredLabel = new Label();
+
     /**
      * The key that this corresponds to in the model.
      */
@@ -55,15 +53,24 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
     /**
      * The max chars of the text area.
      */
-    private Integer size;
+    private final Integer size;
     /**
      * The count down label.
      */
     private Label countDown = new Label();
 
+    /** Current length of text entered. */
+    private int contentLength;
+
+    // /** If the text entered is over the limit. */
+    // private boolean overLimit;
+    //
+    // /** If the text area is empty. */
+    // private boolean empty;
+
     /**
      * Creates a basic text area form element.
-     * 
+     *
      * @param labelVal
      *            the label (i.e. "Quote").
      * @param inKey
@@ -83,7 +90,7 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
 
     /**
      * Creates a basic text area form element.
-     * 
+     *
      * @param inSize
      *            the size (in chars) the text are can hold.
      * @param labelVal
@@ -100,6 +107,8 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
     public BasicTextAreaFormElement(final Integer inSize, final String labelVal, final String inKey,
             final String value, final String inInstructions, final boolean required)
     {
+        FlowPanel main = new FlowPanel();
+
         key = inKey;
         label.setText(labelVal);
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
@@ -112,25 +121,22 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
             requiredLabel.setText("(required)");
         }
 
-        this.add(label);
+        main.add(label);
 
-        this.add(requiredLabel);
+        main.add(requiredLabel);
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
         textWrapper.add(textBox);
         textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
 
-        this.add(textWrapper);
-
-        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
-        instructions.setText(inInstructions);
+        main.add(textWrapper);
 
         if (size != null)
         {
             countDown = new Label(Integer.toString(size - textBox.getText().length()));
             countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
-            this.add(countDown);
+            main.add(countDown);
 
             textBox.addKeyUpHandler(new KeyUpHandler()
             {
@@ -149,36 +155,37 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
             });
         }
 
-        this.add(instructions);
+        if (inInstructions != null && !inInstructions.isEmpty())
+        {
+            Label instructions = new Label(inInstructions);
+            instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
+            main.add(instructions);
+        }
 
-        // Fix IE bug, shows empty divs
-        instructions.setVisible(instructions.getText().length() > 0);
+        initWidget(main);
     }
 
     /**
      * Gets triggered whenever the text box changes.
      */
-    private void onTextChanges()
+    protected void onTextChanges()
     {
-        Integer charsRemaining = size - textBox.getText().length();
-        countDown.setText(charsRemaining.toString());
+        contentLength = textBox.getText().length();
+        int charsRemaining = size - contentLength;
+        countDown.setText(Integer.toString(charsRemaining));
         if (charsRemaining >= 0 && charsRemaining != size)
         {
             countDown.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
         }
-        else
+        else if (charsRemaining != size)
         {
-            if (charsRemaining != size)
-            {
-                countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
-
-            }
+            countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
         }
     }
 
     /**
      * Gets the key.
-     * 
+     *
      * @return the key.
      */
     public String getKey()
@@ -188,7 +195,7 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets the value of the text box.
-     * 
+     *
      * @return the value.
      */
     public String getValue()
@@ -198,7 +205,7 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
 
     /**
      * sets the value of the text box.
-     * 
+     *
      * @param inValue
      *            The Value to set.
      */
@@ -208,8 +215,23 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
     }
 
     /**
+     * Removes all content from the entry field.
+     */
+    public void clear()
+    {
+        textBox.setText("");
+
+        // insure countdown and internal status are properly set - textBox.setText wasn't raising the value changed
+        // event during testing
+        if (contentLength != 0 && size != null)
+        {
+            onTextChanges();
+        }
+    }
+
+    /**
      * Gets called if this element has an error.
-     * 
+     *
      * @param errMessage
      *            the error Message.
      */
@@ -226,4 +248,19 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
         label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
+    /**
+     * @return If over the allowed text entry limit.
+     */
+    public boolean isOverLimit()
+    {
+        return contentLength > size;
+    }
+
+    /**
+     * @return If contains any entered text.
+     */
+    public boolean isEmpty()
+    {
+        return (size != null) ? (contentLength == 0) : (textBox.getText().isEmpty());
+    }
 }
