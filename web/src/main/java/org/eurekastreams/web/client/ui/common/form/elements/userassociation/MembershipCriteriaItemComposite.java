@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements.userassociation;
 
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 
@@ -36,21 +37,24 @@ public class MembershipCriteriaItemComposite extends FlowPanel
      * The edit controls.
      */
     private EditPanel editControls;
-    
+
     /**
      * Constructor.
      * 
      * @param inCriteria
      *            the membership criteria.
      */
-    public MembershipCriteriaItemComposite(final String inCriteria)
+    public MembershipCriteriaItemComposite(final MembershipCriteriaDTO inCriteria)
     {
-        criteria = inCriteria;
-        
+        criteria = inCriteria.getCriteria();
+
         editControls = new EditPanel(this, Mode.DELETE);
-        
+
         this.add(editControls);
         this.add(new Label(criteria));
+        this.add(new Label(inCriteria.getThemeName() == null ? "None" : inCriteria.getThemeName()));
+        this.add(new Label(inCriteria.getGalleryTabTemplateName() == null ? "None" : inCriteria
+                .getGalleryTabTemplateName()));
     }
 
     /**

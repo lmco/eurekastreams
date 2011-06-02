@@ -16,8 +16,11 @@
 package org.eurekastreams.server.persistence.mappers.cache;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.server.domain.GalleryTabTemplate;
 import org.eurekastreams.server.domain.MembershipCriteria;
+import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
@@ -26,6 +29,34 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer implements
         Transformer<ActionContext, PersistenceRequest<MembershipCriteria>>
 {
+    // NOTE: Don't refactor these mappers to findById mappers, as these mappers should just be returning proxy objects
+    // based on id. No need to hit DB to pull objects back.
+
+    /**
+     * Theme mapper.
+     */
+    DomainMapper<Long, Theme> themeProxyMapper;
+
+    /**
+     * GalleryTabTemplate mapper.
+     */
+    DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMappery;
+
+    /**
+     * Constructor.
+     * 
+     * @param inThemeProxyMapper
+     *            Theme mapper.
+     * @param inGalleryTabTemplateProxyMappery
+     *            GalleryTabTemplate mapper.
+     */
+    public ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer(
+            final DomainMapper<Long, Theme> inThemeProxyMapper,
+            final DomainMapper<Long, GalleryTabTemplate> inGalleryTabTemplateProxyMappery)
+    {
+        themeProxyMapper = inThemeProxyMapper;
+        galleryTabTemplateProxyMappery = inGalleryTabTemplateProxyMappery;
+    }
 
     /**
      * create MembershipCriteria persistence request from action context containing MembershipContextDTO.
@@ -38,7 +69,13 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
     public PersistenceRequest<MembershipCriteria> transform(final ActionContext inTransformType)
     {
         MembershipCriteriaDTO mcdto = (MembershipCriteriaDTO) inTransformType.getParams();
+        Long themeId = mcdto.getThemeId();
+        Long gttId = mcdto.getGalleryTabTemplateId();
+
         MembershipCriteria mc = new MembershipCriteria();
+
+        mc.setTheme(themeId == null || themeId == -1 ? null : themeProxyMapper.execute(themeId));
+        mc.setGalleryTabTemplate(gttId == null || gttId == -1 ? null : galleryTabTemplateProxyMappery.execute(gttId));
         mc.setCriteria(mcdto.getCriteria());
 
         return new PersistenceRequest<MembershipCriteria>(mc);

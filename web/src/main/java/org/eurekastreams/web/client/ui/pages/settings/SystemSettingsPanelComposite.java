@@ -21,10 +21,12 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
+import org.eurekastreams.web.client.events.MembershipCriteriaPersistedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
@@ -187,19 +189,24 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 {
                     // TODO: Refactor to use new client models
                     processor.makeRequest(new ActionRequestImpl<SystemSettings>("addMembershipCriteria", event
-                            .getMembershipCriteria()), new AsyncCallback<SystemSettings>()
+                            .getMembershipCriteria()), new AsyncCallback<Long>()
                     {
                         public void onFailure(final Throwable caught)
                         {
                         }
 
-                        public void onSuccess(final SystemSettings systemSettings)
+                        public void onSuccess(final Long persistedItemId)
                         {
                             SystemSettingsModel.getInstance().clearCache();
 
                             Session.getInstance().getEventBus().notifyObservers(
                                     new ShowNotificationEvent(new Notification("Access List Saved")));
                             History.newItem(History.getToken());
+
+                            MembershipCriteriaDTO result = event.getMembershipCriteria();
+                            result.setId(persistedItemId);
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new MembershipCriteriaPersistedEvent(result));
                         }
                     });
                 }

@@ -17,11 +17,15 @@ package org.eurekastreams.web.client.ui.common.form.elements.userassociation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
+import org.eurekastreams.server.domain.dto.ThemeDTO;
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
+import org.eurekastreams.web.client.events.MembershipCriteriaPersistedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaVerificationFailureEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaVerificationNoUsersEvent;
@@ -31,6 +35,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.MembershipCriteriaVerificationModel;
 import org.eurekastreams.web.client.model.requests.MembershipCriteriaVerificationRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.form.elements.BasicDropDownFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -99,6 +104,26 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
     private final ArrayList<MembershipCriteriaDTO> items = new ArrayList<MembershipCriteriaDTO>();
 
     /**
+     * Tab drop down.
+     */
+    private BasicDropDownFormElement tabDropDown;
+
+    /**
+     * Theme drop down.
+     */
+    private BasicDropDownFormElement themeDropDown;
+
+    /**
+     * GalleryTabTemplates drop down info.
+     */
+    private Map<String, String> galleryTabTemplateDropDownValues = new HashMap<String, String>();
+
+    /**
+     * GalleryTabTemplates drop down info.
+     */
+    private Map<String, String> themeDropDownValues = new HashMap<String, String>();
+
+    /**
      * Constructor.
      * 
      * @param inSettings
@@ -106,6 +131,22 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
      */
     public UserAssociationFormElement(final SystemSettings inSettings)
     {
+        galleryTabTemplateDropDownValues.clear();
+        galleryTabTemplateDropDownValues.put("-1", "Choose a Tab...");
+
+        for (GalleryTabTemplateDTO gtt : inSettings.getGalleryTabTemplates())
+        {
+            galleryTabTemplateDropDownValues.put(String.valueOf(gtt.getId()), gtt.getTitle());
+        }
+
+        themeDropDownValues.clear();
+        themeDropDownValues.put("-1", "Choose a Theme...");
+
+        for (ThemeDTO theme : inSettings.getThemes())
+        {
+            themeDropDownValues.put(String.valueOf(theme.getId()), theme.getName());
+        }
+
         setupWidgets();
         setupEvents();
 
@@ -113,6 +154,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         {
             addMembershipCriteria(criterion);
         }
+
     }
 
     /**
@@ -169,6 +211,11 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         description = new Label(GROUP_DESC);
         description.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
 
+        tabDropDown = new BasicDropDownFormElement("Default Tab", "tab", galleryTabTemplateDropDownValues, "-1", "",
+                false);
+
+        themeDropDown = new BasicDropDownFormElement("Default Theme", "theme", themeDropDownValues, "-1", "", false);
+
         this.add(results);
         this.add(label);
         this.add(topDesc);
@@ -178,6 +225,8 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         this.add(verifyButton);
         this.add(verifying);
         this.add(description);
+        this.add(tabDropDown);
+        this.add(themeDropDown);
 
         accessGroupsPanel = new FlowPanel();
         accessGroupsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().accessGroups());
@@ -227,11 +276,13 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         });
 
         // got verification result: criterion matched some users
-        eventBus.addObserver(MembershipCriteriaAddedEvent.class, new Observer<MembershipCriteriaAddedEvent>()
+        eventBus.addObserver(MembershipCriteriaPersistedEvent.class, new Observer<MembershipCriteriaPersistedEvent>()
         {
-            public void update(final MembershipCriteriaAddedEvent ev)
+            public void update(final MembershipCriteriaPersistedEvent ev)
             {
                 membershipCriteria.setText("");
+                tabDropDown.reset();
+                themeDropDown.reset();
                 results.setVisible(false);
                 verifyingDone();
 
@@ -277,8 +328,24 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
         MembershipCriteriaDTO mcdto = new MembershipCriteriaDTO();
 
-        // TODO: fill out rest of properties.
+        // set criteria string.
         mcdto.setCriteria(membershipCriteria.getText());
+
+        // set theme id/name
+        String themeIdSelectedValue = themeDropDown.getValue();
+        mcdto.setThemeId(Long.valueOf(themeIdSelectedValue));
+        if (mcdto.getThemeId() != -1)
+        {
+            mcdto.setThemeName(themeDropDownValues.get(themeIdSelectedValue));
+        }
+
+        // set gallery tab template id/name
+        String gttIdSelectedValue = tabDropDown.getValue();
+        mcdto.setGalleryTabTemplateId(Long.valueOf(gttIdSelectedValue));
+        if (mcdto.getGalleryTabTemplateId() != -1)
+        {
+            mcdto.setGalleryTabTemplateName(galleryTabTemplateDropDownValues.get(gttIdSelectedValue));
+        }
 
         MembershipCriteriaVerificationModel.getInstance().fetch(
                 new MembershipCriteriaVerificationRequest(mcdto, group.getValue()), false);
@@ -338,7 +405,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         items.add(criterion);
 
         final MembershipCriteriaItemComposite membershipCriteriaComposite = new MembershipCriteriaItemComposite(
-                criterion.getCriteria());
+                criterion);
         accessGroupsPanel.add(membershipCriteriaComposite);
 
         membershipCriteriaComposite.addDeleteClickHandler(new ClickHandler()

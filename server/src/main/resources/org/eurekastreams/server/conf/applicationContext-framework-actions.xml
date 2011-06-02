@@ -457,7 +457,18 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
                 <constructor-arg >
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer" />
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer">
+                        <constructor-arg>
+	                        <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+						        <constructor-arg value="org.eurekastreams.server.domain.Theme" />
+						    </bean>
+						</constructor-arg>
+						<constructor-arg>
+						    <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+	                            <constructor-arg value="org.eurekastreams.server.domain.GalleryTabTemplate" />
+	                        </bean>
+                        </constructor-arg>
+                    </bean>
                 </constructor-arg>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
