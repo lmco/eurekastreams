@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,20 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 /**
  * Return user ids for all users with matching locked status.
  */
-public class GetPersonIdsByLockedStatus extends BaseArgDomainMapper<Boolean, List<String>>
+public class GetPersonIdsByLockedStatus extends BaseArgDomainMapper<Boolean, List<Long>>
 {
     /**
      * Return user ids for all users with matching locked status.
-     * 
+     *
      * @param inLockedStatus
      *            The locked status to match.
      * @return List of user ids for all users with matching locked status.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> execute(final Boolean inLockedStatus)
+    public List<Long> execute(final Boolean inLockedStatus)
     {
-        return getEntityManager().createQuery("SELECT accountId FROM Person WHERE accountLocked = :lockedStatus")
+        return getEntityManager().createQuery("SELECT id FROM Person WHERE accountLocked = :lockedStatus")
                 .setParameter("lockedStatus", inLockedStatus).getResultList();
     }
 

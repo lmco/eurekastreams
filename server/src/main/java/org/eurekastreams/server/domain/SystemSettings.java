@@ -22,12 +22,12 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
+import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
+import org.eurekastreams.server.domain.dto.ThemeDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.Min;
@@ -118,9 +118,20 @@ public class SystemSettings extends DomainEntity implements Serializable
     /**
      * the list of ldap groups.
      */
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "systemSettingsId")
-    private List<MembershipCriteria> membershipCriteria = new ArrayList<MembershipCriteria>();
+    @Transient
+    private List<MembershipCriteriaDTO> membershipCriteria = new ArrayList<MembershipCriteriaDTO>();
+
+    /**
+     * List of galleryTabTemplates.
+     */
+    @Transient
+    private List<GalleryTabTemplateDTO> galleryTabTemplates;
+
+    /**
+     * List of Themes.
+     */
+    @Transient
+    private List<ThemeDTO> themes;
 
     /**
      * If welcome emails should be sent.
@@ -268,7 +279,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      * @param inMembershipCriteria
      *            the membership criteria to set.
      */
-    public void setMembershipCriteria(final List<MembershipCriteria> inMembershipCriteria)
+    public void setMembershipCriteria(final List<MembershipCriteriaDTO> inMembershipCriteria)
     {
         membershipCriteria = inMembershipCriteria;
     }
@@ -276,7 +287,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     /**
      * @return the membership criteria.
      */
-    public List<MembershipCriteria> getMembershipCriteria()
+    public List<MembershipCriteriaDTO> getMembershipCriteria()
     {
         return membershipCriteria;
     }
@@ -463,6 +474,40 @@ public class SystemSettings extends DomainEntity implements Serializable
     public void setSystemAdministrators(final Set<PersonModelView> inSystemAdministrators)
     {
         systemAdministrators = inSystemAdministrators;
+    }
+
+    /**
+     * @return the galleryTabTemplates
+     */
+    public List<GalleryTabTemplateDTO> getGalleryTabTemplates()
+    {
+        return galleryTabTemplates;
+    }
+
+    /**
+     * @param inGalleryTabTemplates
+     *            the galleryTabTemplates to set
+     */
+    public void setGalleryTabTemplates(final List<GalleryTabTemplateDTO> inGalleryTabTemplates)
+    {
+        galleryTabTemplates = inGalleryTabTemplates;
+    }
+
+    /**
+     * @return the themes
+     */
+    public List<ThemeDTO> getThemes()
+    {
+        return themes;
+    }
+
+    /**
+     * @param inThemes
+     *            the themes to set
+     */
+    public void setThemes(final List<ThemeDTO> inThemes)
+    {
+        themes = inThemes;
     }
 
 }

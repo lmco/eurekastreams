@@ -24,7 +24,8 @@ import org.eurekastreams.web.client.ui.Session;
 /**
  * Model to register usageMetric with server.
  */
-public class UsageMetricModel extends BaseModel implements Insertable<UsageMetricDTO>, Fetchable<Integer>
+public class UsageMetricModel extends BaseModel implements Insertable<UsageMetricDTO>,
+        Fetchable<UsageMetricStreamSummaryRequest>
 {
     /**
      * Singleton.
@@ -60,16 +61,15 @@ public class UsageMetricModel extends BaseModel implements Insertable<UsageMetri
     /**
      * {@inheritDoc}
      */
-    public void fetch(final Integer inRequest, final boolean inUseClientCacheIfAvailable)
+    public void fetch(final UsageMetricStreamSummaryRequest inRequest, final boolean inUseClientCacheIfAvailable)
     {
-        super.callReadAction("getUsageMetricSummaryAction", new UsageMetricStreamSummaryRequest(inRequest, null),
-                new OnSuccessCommand<UsageMetricSummaryDTO>()
-                {
-                    public void onSuccess(final UsageMetricSummaryDTO response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(new GotUsageMetricSummaryEvent(response));
-                    }
-                }, inUseClientCacheIfAvailable);
+        super.callReadAction("getUsageMetricSummaryAction", inRequest, new OnSuccessCommand<UsageMetricSummaryDTO>()
+        {
+            public void onSuccess(final UsageMetricSummaryDTO response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotUsageMetricSummaryEvent(response));
+            }
+        }, inUseClientCacheIfAvailable);
 
     }
 

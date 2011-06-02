@@ -26,13 +26,13 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
- * DB Mapper to get the stream contributor count of a specific day.
+ * DB Mapper to get the stream contributor count of a specific day, or all time if the day is null.
  */
 public class GetDailyStreamContributorCountDbMapper extends
         BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
-     * Get the number of stream contributors on a specific day.
+     * Get the number of stream contributors on a specific day, or all time if the day is null.
      * 
      * @param inRequest
      *            the UsageMetricDailyStreamInfoRequest
@@ -52,10 +52,9 @@ public class GetDailyStreamContributorCountDbMapper extends
         {
             // all streams
             activityQuery = getEntityManager().createQuery(
-                    "SELECT DISTINCT(actorId) FROM Activity "
-                            + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate)")
-                    .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay).setParameter("actorType",
-                            EntityType.PERSON);
+                    "SELECT DISTINCT(actorId) FROM Activity WHERE actorType=:actorType"
+                            + " AND postedTime >= :startDate AND postedTime <= :endDate").setParameter("startDate",
+                    startOfDay).setParameter("endDate", endOfDay).setParameter("actorType", EntityType.PERSON);
 
             commentQuery = getEntityManager().createQuery(
                     "SELECT DISTINCT(author.accountId) FROM Comment WHERE timeSent >= :startDate"
@@ -66,8 +65,8 @@ public class GetDailyStreamContributorCountDbMapper extends
         {
             // specific stream
             activityQuery = getEntityManager().createQuery(
-                    "SELECT DISTINCT(actorId) FROM Activity "
-                            + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate "
+                    "SELECT DISTINCT(actorId) FROM Activity WHERE actorType=:actorType"
+                            + " AND postedTime >= :startDate AND postedTime <= :endDate "
                             + "AND recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
                     startOfDay).setParameter("endDate", endOfDay).setParameter("actorType", EntityType.PERSON)
                     .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId());

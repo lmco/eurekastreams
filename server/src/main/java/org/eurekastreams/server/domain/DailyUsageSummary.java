@@ -23,13 +23,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Entity representing a day's usage metrics.
  */
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "streamViewStreamScopeId", "usageDate" }) })
 public class DailyUsageSummary implements Serializable
 {
     /**
@@ -49,34 +52,54 @@ public class DailyUsageSummary implements Serializable
     private long id;
 
     /**
-     * The number of unique visitors.
+     * The number of unique visitors on this day.
      */
     private long uniqueVisitorCount;
 
     /**
-     * Number of page views.
+     * Number of page views on this day.
      */
     private long pageViewCount;
 
     /**
-     * Number of people viewing streams.
+     * Number of people viewing streams on this day.
      */
     private long streamViewerCount;
 
     /**
-     * Number of streams viewed.
+     * Number of views of streams on this day.
      */
     private long streamViewCount;
 
     /**
-     * Number of people contributing to streams (comment and activities).
+     * Number of people contributing to streams (comment and activities) on this day.
      */
     private long streamContributorCount;
 
     /**
-     * Number of activities and comments posted.
+     * Number of activities and comments posted on this day.
      */
     private long messageCount;
+
+    /**
+     * Total number of views of streams for all time.
+     */
+    private Long totalStreamViewCount;
+
+    /**
+     * Total activity count for all time.
+     */
+    private Long totalActivityCount;
+
+    /**
+     * Total comment count for all time.
+     */
+    private Long totalCommentCount;
+
+    /**
+     * Total contributor count - for all time - applies to streams only.
+     */
+    private Long totalContributorCount;
 
     /**
      * Average response time for activities that have comments.
@@ -128,11 +151,22 @@ public class DailyUsageSummary implements Serializable
      *            the date
      * @param inIsWeekday
      *            whether this date is a weekday
+     * @param inStreamViewStreamScopeId
+     *            the stream view that these stats apply to, or null if for all streams
+     * @param inTotalActivityCount
+     *            the total activity count
+     * @param inTotalCommentCount
+     *            the total comment count
+     * @param inTotalStreamViewCount
+     *            the total stream views since records started
+     * @param inTotalContributorCount
+     *            the total contributors for the stream
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final boolean inIsWeekday)
+            final boolean inIsWeekday, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
+            final Long inTotalCommentCount, final Long inTotalStreamViewCount, final Long inTotalContributorCount)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -143,6 +177,11 @@ public class DailyUsageSummary implements Serializable
         avgActivityResponseTime = inAvgActivityResponseTime;
         usageDate = inUsageDate;
         isWeekday = inIsWeekday;
+        streamViewStreamScopeId = inStreamViewStreamScopeId;
+        totalActivityCount = inTotalActivityCount;
+        totalCommentCount = inTotalCommentCount;
+        totalStreamViewCount = inTotalStreamViewCount;
+        totalContributorCount = inTotalActivityCount;
     }
 
     /**
@@ -332,4 +371,71 @@ public class DailyUsageSummary implements Serializable
         streamViewStreamScopeId = inStreamViewStreamScopeId;
     }
 
+    /**
+     * @return the totalActivityCount
+     */
+    public Long getTotalActivityCount()
+    {
+        return totalActivityCount;
+    }
+
+    /**
+     * @param inTotalActivityCount
+     *            the totalActivityCount to set
+     */
+    public void setTotalActivityCount(final Long inTotalActivityCount)
+    {
+        totalActivityCount = inTotalActivityCount;
+    }
+
+    /**
+     * @return the totalCommentCount
+     */
+    public Long getTotalCommentCount()
+    {
+        return totalCommentCount;
+    }
+
+    /**
+     * @param inTotalCommentCount
+     *            the totalCommentCount to set
+     */
+    public void setTotalCommentCount(final Long inTotalCommentCount)
+    {
+        totalCommentCount = inTotalCommentCount;
+    }
+
+    /**
+     * @return the totalStreamViewCount
+     */
+    public Long getTotalStreamViewCount()
+    {
+        return totalStreamViewCount;
+    }
+
+    /**
+     * @param inTotalStreamViewCount
+     *            the totalStreamViewCount to set
+     */
+    public void setTotalStreamViewCount(final Long inTotalStreamViewCount)
+    {
+        totalStreamViewCount = inTotalStreamViewCount;
+    }
+
+    /**
+     * @return the totalContributorCount
+     */
+    public Long getTotalContributorCount()
+    {
+        return totalContributorCount;
+    }
+
+    /**
+     * @param inTotalContributorCount
+     *            the totalContributorCount to set
+     */
+    public void setTotalContributorCount(final Long inTotalContributorCount)
+    {
+        totalContributorCount = inTotalContributorCount;
+    }
 }

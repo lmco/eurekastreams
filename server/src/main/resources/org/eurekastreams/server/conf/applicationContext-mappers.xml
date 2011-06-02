@@ -41,6 +41,7 @@
 	<util:constant id="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />	
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -1795,6 +1796,9 @@
 	<bean id="getNotificationFilterPreferencesByPeopleIds"
 		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
 
+	<bean id="insertInAppNotificationForAllUsers"
+		class="org.eurekastreams.server.persistence.mappers.db.notification.InsertInAppNotificationForAllUsers" />
+		
 	<bean id="getUnreadInAppNotificationCountsByUserId" 
 		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadInAppNotificationCountsByUserId">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -1806,9 +1810,7 @@
 		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 		       <constructor-arg>
 					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-						<constructor-arg>
-							<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-						</constructor-arg>
+						<constructor-arg ref="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 						<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 						<property name="cache" ref="memcachedCache" />
 					</bean>
@@ -1822,9 +1824,7 @@
 		<!-- Cache updater -->
 		<constructor-arg>
 	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-				<constructor-arg>
-					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-				</constructor-arg>
+				<constructor-arg ref="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 				<property name="cache" ref="memcachedCache" />
 		    </bean> 
@@ -1841,9 +1841,7 @@
 		<!-- Cache updater -->
 		<constructor-arg>
 	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-				<constructor-arg>
-					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-				</constructor-arg>
+				<constructor-arg ref="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 				<property name="cache" ref="memcachedCache" />
 		    </bean> 
@@ -2093,24 +2091,37 @@
 	<bean id="getPersonIdsByLockedStatus"
 		class="org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus" />
 
+	<bean id="getPersonAccountIdsByLockedStatus"
+		class="org.eurekastreams.server.persistence.mappers.db.GetPersonAccountIdsByLockedStatus" />
+
 	<bean id="setPersonLockedStatus"
 		class="org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus" />
 
 	<bean id="getReadOnlyStreamsDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper" />
-    
+
     <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
 
     <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeGroupActivitySubscriptionDbMapper" />
-    
+
     <bean id="findOrInsertSharedResourceByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceByUniqueKeyDbMapper" />
-    
+
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
-    
+
     <bean id="flushMapper" class="org.eurekastreams.server.persistence.mappers.db.FlushMapper" />
-    
+
     <bean id="createGalleryTabTemplateMapper" class="org.eurekastreams.server.action.execution.gallery.GalleryTabTemplateFactory" />
-        
+    
+    <bean id="membershipCriteriaDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetMembershipCriteriaDBMapper" />
+
+    <bean id="membershipCriteriaDTODbMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
+        <constructor-arg ref="membershipCriteriaDbMapper" />
+        <constructor-arg ref="membershipCriteriaToMembershipCriteriaDTOTransformer" />
+    </bean>
+
+    <bean id="membershipCriteriaToMembershipCriteriaDTOTransformer"
+        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaToMembershipCriteriaDTOTransformer" /> 
+
     <!-- Metrics -->
     <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />
     <bean id="getDailyMessageCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyMessageCountDbMapper" />
@@ -2122,18 +2133,18 @@
     <bean id="getDailyUniqueVisitorCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyUniqueVisitorCountDbMapper" />
     <bean id="getDailyUsageSummaryByDateDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyUsageSummaryByDateDbMapper" />
     <!-- END Metrics -->
-    
+
     <bean id="dayOfWeekStrategy" class="org.eurekastreams.commons.date.DayOfWeekStrategy" />
     <bean id="getDateFromDaysAgoStrategy" class="org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy" />
-    
+
     <bean id="personModelViewAvatarDisplayTransformer" class="org.eurekastreams.server.domain.strategies.PersonModelViewAvatarDisplayTransformer"/>
-    
+
     <!-- Mapper to get PersonModelViews with only the information needed to display avatars -->
     <bean id="getPersonAvatarDisplayInfoByIdsMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
         <constructor-arg ref="getPersonsByIdsMapper" />
         <constructor-arg ref="personModelViewAvatarDisplayTransformer" />
     </bean>
-    
+
     <bean id="sharedResourceRequestToUniqueKeyTransformer" class="org.eurekastreams.server.persistence.mappers.cache.SharedResourceRequestToUniqueKeyTransformer" />
     <bean id="getSharedResourceByKeyDBMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
         <constructor-arg ref="getStreamScopeForResourceScopeTypeByUniqueKey" />
@@ -2144,7 +2155,7 @@
             <bean class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
         </constructor-arg>
     </bean>
-    <!-- 
+    <!--
         Mapper to get the cacheable components of a SharedResourceDTO, which is everything except whether the current person liked it, and does not include
         any avatar info for the people that liked it.
      -->
@@ -2175,10 +2186,10 @@
                 </constructor-arg>
                 <constructor-arg ref="sharedResourceRequestToUniqueKeyTransformer" />
                 <property name="cache" ref="memcachedCache" />
-            </bean> 
-        </constructor-arg>       
+            </bean>
+        </constructor-arg>
     </bean>
-    
+
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null if exactly one result not found. -->
     <bean id="getStreamScopeForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
@@ -2186,7 +2197,7 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
+
     <!-- gets single streamScopeId for person based on StreamScope uniqueKey, returns null if exactly one result not found. -->
     <bean id="getStreamScopeForPersonScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
@@ -2194,7 +2205,7 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
+
     <!-- gets single streamScopeId for person based on StreamScope uniqueKey, returns null if exactly one result not found. -->
     <bean id="getStreamScopeForGroupScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
@@ -2202,7 +2213,7 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
+
     <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, throws exception if exactly one result not found. -->
     <bean id="getStreamScopeForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeForScopeTypeByUniqueKey">
         <constructor-arg>
@@ -2210,15 +2221,15 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-    
+
     <!-- gets single activityDTO by id, returns null if exactly one result not found. -->
     <bean id="activityDTOMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
         <constructor-arg ref="bulkActivitiesMapper" />
         <constructor-arg value="false" />
     </bean>
-    
+
     <bean id="getSystemAdministratorIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
-    
+
     <bean id="getSystemAdministratorIds" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
         <constructor-arg>
@@ -2247,18 +2258,18 @@
 		        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
 		        <property name="cache" ref="memcachedCache" />
 		    </bean>
-		</constructor-arg>       
+		</constructor-arg>
     </bean>
-    
-    
+
+
     <bean id="getSystemAdministrators" class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
         <!-- Get the system administrator ids -->
         <constructor-arg ref="getSystemAdministratorIds" />
-        
+
         <!-- And convert those people ids to PersonModelViews -->
         <constructor-arg ref="getPersonsByIdsMapper" />
     </bean>
-    
+
     <!-- Get the stream scope id for a person by their account id - using cache if available -->
     <bean id="getStreamScopeIdForPersonByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -2289,10 +2300,10 @@
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID" />
                 <constructor-arg ref="toStringCacheKeySuffixTransformer" />
                 <property name="cache" ref="memcachedCache" />
-            </bean> 
+            </bean>
         </constructor-arg>
     </bean>
-    
+
     <!-- Get the stream scope id for a group by its short name - using cache if available -->
     <bean id="getStreamScopeIdForGroupTypeByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -2323,9 +2334,9 @@
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME" />
                 <constructor-arg ref="toStringCacheKeySuffixTransformer" />
                 <property name="cache" ref="memcachedCache" />
-            </bean> 
+            </bean>
         </constructor-arg>
     </bean>
-    
-    
+
+
 </beans>

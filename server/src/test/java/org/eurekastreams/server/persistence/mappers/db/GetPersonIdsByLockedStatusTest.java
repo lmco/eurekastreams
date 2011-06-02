@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for GetPersonIdsByLockedStatus.
- * 
  */
 public class GetPersonIdsByLockedStatusTest extends MapperTest
 {
     /**
      * System under test.
      */
-    @Autowired
     private GetPersonIdsByLockedStatus sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new GetPersonIdsByLockedStatus();
+        sut.setEntityManager(getEntityManager());
+    }
 
     /**
      * Test.
@@ -40,19 +48,18 @@ public class GetPersonIdsByLockedStatusTest extends MapperTest
     @Test
     public void test()
     {
-        Long total = (Long) getEntityManager().createQuery("SELECT COUNT(id) FROM Person").getSingleResult();
+        long total = (Long) getEntityManager().createQuery("SELECT COUNT(id) FROM Person").getSingleResult();
 
         assertTrue(total > 0);
 
         getEntityManager().createQuery("UPDATE Person SET accountLocked = false").executeUpdate();
 
-        assertEquals(total.longValue(), sut.execute(false).size());
+        assertEquals(total, sut.execute(false).size());
         assertEquals(0, sut.execute(true).size());
 
         getEntityManager().createQuery("UPDATE Person SET accountLocked = true").executeUpdate();
 
-        assertEquals(total.longValue(), sut.execute(true).size());
+        assertEquals(total, sut.execute(true).size());
         assertEquals(0, sut.execute(false).size());
     }
-
 }

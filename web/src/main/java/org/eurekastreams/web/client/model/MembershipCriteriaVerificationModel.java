@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import org.eurekastreams.server.action.request.GroupLookupRequest;
 import org.eurekastreams.server.action.request.PersonLookupRequest;
-import org.eurekastreams.server.domain.MembershipCriteria;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
@@ -46,7 +46,7 @@ public class MembershipCriteriaVerificationModel extends BaseModel implements
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static MembershipCriteriaVerificationModel getInstance()
@@ -60,24 +60,23 @@ public class MembershipCriteriaVerificationModel extends BaseModel implements
     public void fetch(final MembershipCriteriaVerificationRequest inRequest, final boolean inUseClientCacheIfAvailable)
     {
         final EventBus eventBus = Session.getInstance().getEventBus();
-        final String criterion = inRequest.getCriteria();
+        final String criterion = inRequest.getMembershipCriteria().getCriteria();
 
         if (inRequest.isGroup())
         {
-            super.callReadAction("groupLookup", new GroupLookupRequest(criterion),
-                    new OnSuccessCommand<Boolean>()
-                    {
-                        public void onSuccess(final Boolean wasFound)
-                        {
-                    sendSuccessEvent(criterion, wasFound);
-                        }
-                    }, new OnFailureCommand()
-                    {
-                        public void onFailure(final Throwable inEx)
-                        {
-                            eventBus.notifyObservers(new MembershipCriteriaVerificationFailureEvent());
-                        }
-                    }, inUseClientCacheIfAvailable);
+            super.callReadAction("groupLookup", new GroupLookupRequest(criterion), new OnSuccessCommand<Boolean>()
+            {
+                public void onSuccess(final Boolean wasFound)
+                {
+                    sendSuccessEvent(inRequest.getMembershipCriteria(), wasFound);
+                }
+            }, new OnFailureCommand()
+            {
+                public void onFailure(final Throwable inEx)
+                {
+                    eventBus.notifyObservers(new MembershipCriteriaVerificationFailureEvent());
+                }
+            }, inUseClientCacheIfAvailable);
         }
         else
         {
@@ -86,7 +85,7 @@ public class MembershipCriteriaVerificationModel extends BaseModel implements
                     {
                         public void onSuccess(final ArrayList<PersonModelView> people)
                         {
-                            sendSuccessEvent(criterion, !people.isEmpty());
+                            sendSuccessEvent(inRequest.getMembershipCriteria(), !people.isEmpty());
                         }
                     }, new OnFailureCommand()
                     {
@@ -100,18 +99,18 @@ public class MembershipCriteriaVerificationModel extends BaseModel implements
 
     /**
      * Sends event on successful response.
-     *
-     * @param criterion
+     * 
+     * @param inMembershipCriteria
      *            Requested criterion.
      * @param found
      *            If any query results found.
      */
-    private void sendSuccessEvent(final String criterion, final boolean found)
+    private void sendSuccessEvent(final MembershipCriteriaDTO inMembershipCriteria, final boolean found)
     {
         final EventBus eventBus = Session.getInstance().getEventBus();
         if (found)
         {
-            eventBus.notifyObservers(new MembershipCriteriaAddedEvent(new MembershipCriteria(criterion), true));
+            eventBus.notifyObservers(new MembershipCriteriaAddedEvent(inMembershipCriteria, true));
         }
         else
         {

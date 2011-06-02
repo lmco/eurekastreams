@@ -63,7 +63,7 @@ public class PendingGroupApprovedTranslatorTest
         final long groupId = 50L;
         GroupActionNotificationsRequest request = new GroupActionNotificationsRequest(
                 RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, groupId);
-        PendingGroupApprovedTranslator sut = new PendingGroupApprovedTranslator(groupMapper,
+        NotificationTranslator sut = new PendingGroupApprovedTranslator(groupMapper,
                 groupCoordinatorMapper);
         final DomainGroupModelView group = context.mock(DomainGroupModelView.class);
 

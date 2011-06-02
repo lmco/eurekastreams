@@ -21,16 +21,15 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 
 /**
  * LDAP source for user information.
- *
+ * 
  */
 public class PersonSourceLDAP implements PersonSource
 {
@@ -40,9 +39,9 @@ public class PersonSourceLDAP implements PersonSource
     private Log log = LogFactory.make();
 
     /**
-     * The settings mapper.
+     * The membership criteria mapper.
      */
-    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
+    private DomainMapper<MapperRequest, List<MembershipCriteriaDTO>> membershipCriteriaDAO;
 
     /**
      * Group lookup strategy.
@@ -56,18 +55,18 @@ public class PersonSourceLDAP implements PersonSource
 
     /**
      * Constructor.
-     *
-     * @param inSettingsMapper
-     *            mapper to get system settings.
+     * 
+     * @param inMembershipCriteriaDAO
+     *            mapper to get membership criteria.
      * @param inGroupLookupStrategy
      *            group lookup mapper.
      * @param inAttributeLookupStrategy
      *            person lookup mapper.
      */
-    public PersonSourceLDAP(final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper,
+    public PersonSourceLDAP(final DomainMapper<MapperRequest, List<MembershipCriteriaDTO>> inMembershipCriteriaDAO,
             final PersonLookupStrategy inGroupLookupStrategy, final PersonLookupStrategy inAttributeLookupStrategy)
     {
-        settingsMapper = inSettingsMapper;
+        membershipCriteriaDAO = inMembershipCriteriaDAO;
         groupLookupStrategy = inGroupLookupStrategy;
         attributeLookupStrategy = inAttributeLookupStrategy;
     }
@@ -78,13 +77,12 @@ public class PersonSourceLDAP implements PersonSource
     @Override
     public Set<Person> getPeople()
     {
-        SystemSettings settings = settingsMapper.execute(null);
-        List<MembershipCriteria> membershipCriteria = settings.getMembershipCriteria();
+        List<MembershipCriteriaDTO> membershipCriteria = membershipCriteriaDAO.execute(null);
 
         HashSet<Person> results = new HashSet<Person>();
 
         PersonLookupStrategy lookupStrategy = null;
-        for (MembershipCriteria criterion : membershipCriteria)
+        for (MembershipCriteriaDTO criterion : membershipCriteria)
         {
             String ldapQuery = criterion.getCriteria();
             log.info("Processing criteria: " + ldapQuery);
