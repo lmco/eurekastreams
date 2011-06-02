@@ -94,7 +94,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                             request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
                             // add and configure
-                            Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
+                            Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 2,
                                     UnseenActivityCountForViewModel.getInstance(), request.toString(), false);
 
                             // unpause just to be sure it's cleared.

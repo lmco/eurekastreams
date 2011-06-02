@@ -81,7 +81,7 @@ public class NotificationCountWidget extends Composite
      */
     public void init()
     {
-        Session.getInstance().getTimer().addTimerJob("getNotificationCountTimerJob", 1,
+        Session.getInstance().getTimer().addTimerJob("getNotificationCountTimerJob", 3,
                 NotificationCountModel.getInstance(), null, true);
 
         NotificationCountModel.getInstance().fetch(null, true);
