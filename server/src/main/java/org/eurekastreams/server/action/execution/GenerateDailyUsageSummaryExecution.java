@@ -48,6 +48,11 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      */
     private GetDateFromDaysAgoStrategy daysAgoDateStrategy;
 
+    /**
+     * Number of days of data to generate.
+     */
+    private int daysToGenerate;
+
     // mappers that apply to the whole system
 
     /**
@@ -113,7 +118,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     /**
      * Mapper to get all the ids for the stream scopes to generate data for.
      */
-    private DomainMapper<Serializable, List<Long>> streamScopeIdsMapper;
+    private DomainMapper<Date, List<Long>> streamScopeIdsMapper;
 
     /**
      * Mapper to delete old UsageMetric data.
@@ -133,6 +138,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     /**
      * Constructor.
      * 
+     * @param inDaysToGenerate
+     *            the number of days to generate data for
      * @param inDaysAgoDateStrategy
      *            strategy to get a date from yesterday
      * @param inGetDailyUsageSummaryByDateMapper
@@ -167,6 +174,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      *            mapper to get the total number of contributors to a stream
      */
     public GenerateDailyUsageSummaryExecution(
+            final int inDaysToGenerate,
             final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyMessageCountMapper,
@@ -178,12 +186,12 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final DomainMapper<Date, Long> inGetDailyMessageResponseTimeMapper,
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
             final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper,
-            final DayOfWeekStrategy inDayOfWeekStrategy,
-            final DomainMapper<Serializable, List<Long>> inStreamScopeIdsMapper,
+            final DayOfWeekStrategy inDayOfWeekStrategy, final DomainMapper<Date, List<Long>> inStreamScopeIdsMapper,
             final DomainMapper<Long, Long> inGetTotalActivityCountMapper,
             final DomainMapper<Long, Long> inGetTotalCommentCountMapper,
             final DomainMapper<Long, Long> inGetTotalStreamContributorMapper)
     {
+        daysToGenerate = inDaysToGenerate;
         daysAgoDateStrategy = inDaysAgoDateStrategy;
         getDailyUsageSummaryByDateMapper = inGetDailyUsageSummaryByDateMapper;
         getDailyMessageCountMapper = inGetDailyMessageCountMapper;
@@ -215,24 +223,50 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
             throws ExecutionException
     {
-        Date yesterday = DateDayExtractor.getStartOfDay(daysAgoDateStrategy.execute(1));
-        Date priorDate = DateDayExtractor.getStartOfDay(daysAgoDateStrategy.execute(2));
-
-        // generate data for all streams
-        generateDailyUsageSummaryForStreamScope(yesterday, priorDate, null);
-
-        List<Long> streamScopeIds = streamScopeIdsMapper.execute(null);
-        for (Long streamScopeId : streamScopeIds)
+        for (int i = daysToGenerate; i >= 1; i--)
         {
-            generateDailyUsageSummaryForStreamScope(yesterday, priorDate, streamScopeId);
+            logger.info("Generating metric data for " + i + " days ago.");
+            generateDailyUsageSummaryForDay(i);
         }
 
         // delete old data
-        logger.info("Deleting old daily usage metric data");
-        usageMetricDataCleanupMapper.execute(0);
+        logger.info("Deleting old daily usage metric data older than 2 days");
+        usageMetricDataCleanupMapper.execute(null);
 
-        logger.info("Inserted Daily Summary metrics for " + yesterday);
         return Boolean.TRUE;
+    }
+
+    /**
+     * Generate the daily usage summary for all streams for a specific day.
+     * 
+     * @param inDaysAgo
+     *            the number of days ago to generate data for
+     */
+    private void generateDailyUsageSummaryForDay(final int inDaysAgo)
+    {
+        Date reportDate = DateDayExtractor.getStartOfDay(daysAgoDateStrategy.execute(inDaysAgo));
+        Date priorDate = DateDayExtractor.getStartOfDay(daysAgoDateStrategy.execute(inDaysAgo + 1));
+
+        logger.info("Checking id daily usage summary data exists for " + reportDate);
+        DailyUsageSummary existingSummary = getDailyUsageSummaryByDateMapper
+                .execute(new UsageMetricDailyStreamInfoRequest(reportDate, null));
+
+        if (existingSummary != null)
+        {
+            logger.info("Data already exists for " + reportDate);
+            return;
+        }
+
+        // generate data for all streams
+        generateDailyUsageSummaryForStreamScope(reportDate, priorDate, null);
+
+        // now generate data for each stream
+        List<Long> streamScopeIds = streamScopeIdsMapper.execute(reportDate);
+        for (Long streamScopeId : streamScopeIds)
+        {
+            generateDailyUsageSummaryForStreamScope(reportDate, priorDate, streamScopeId);
+        }
+        logger.info("Inserted Daily Summary metrics for " + reportDate);
     }
 
     /**
@@ -250,14 +284,6 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     {
         UsageMetricDailyStreamInfoRequest streamInfoRequest = new UsageMetricDailyStreamInfoRequest(inDate,
                 inStreamScopeId);
-
-        // see if we already have data for yesterday
-        DailyUsageSummary data = getDailyUsageSummaryByDateMapper.execute(streamInfoRequest);
-        if (data != null)
-        {
-            logger.info("No need to create daily usage data for " + inDate + " - already exists.");
-            return;
-        }
 
         long uniqueVisitorCount = 0;
         long pageViewCount = 0;
@@ -320,9 +346,9 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
         boolean isWeekday = dayOfWeekStrategy.isWeekday(inDate);
 
-        data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount, streamViewCount,
-                streamContributorCount, messageCount, avgActvityResponeTime, inDate, isWeekday, inStreamScopeId,
-                totalActivityCount, totalCommentCount, totalStreamViewCount, totalContributorCount);
+        DailyUsageSummary data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount,
+                streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate, isWeekday,
+                inStreamScopeId, totalActivityCount, totalCommentCount, totalStreamViewCount, totalContributorCount);
 
         // store this
         logger.info("Inserting daily usage metric data for " + inDate);

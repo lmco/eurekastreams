@@ -115,7 +115,7 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get stream scope ids to generate metrics for.
      */
-    private DomainMapper<Serializable, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
+    private DomainMapper<Date, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
             "streamScopeIdsMapper");
     /**
      * Mapper to get the total number of activities posted to a stream.
@@ -151,7 +151,7 @@ public class GenerateDailyUsageSummaryExecutionTest
     @Test
     public void testExecuteWithDataAlreadyExisting()
     {
-        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
+        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
@@ -178,10 +178,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                                 .getStartOfDay(date), null))));
                 will(returnValue(existingSummary));
 
-                oneOf(usageMetricDataCleanupMapper).execute(0);
-
-                oneOf(streamScopeIdsMapper).execute(null);
-                will(returnValue(streamScopeIds));
+                oneOf(usageMetricDataCleanupMapper).execute(null);
             }
         });
 
@@ -216,7 +213,7 @@ public class GenerateDailyUsageSummaryExecutionTest
      */
     public void executeWithNoDataAlreadyExisting(final boolean inIsWeekday)
     {
-        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
+        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
@@ -279,9 +276,9 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(dayOfWeekStrategy).isWeekday(with(date));
                 will(returnValue(inIsWeekday));
 
-                oneOf(usageMetricDataCleanupMapper).execute(0);
+                oneOf(usageMetricDataCleanupMapper).execute(null);
 
-                oneOf(streamScopeIdsMapper).execute(null);
+                oneOf(streamScopeIdsMapper).execute(with(date));
                 will(returnValue(streamScopeIds));
             }
         });
