@@ -5,6 +5,7 @@
 	<ui:image field="activityHeaderBackground" src="style/images/activityHeaderBackground.png" />
 	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
 	<ui:image field="viewDetails" src="style/images/viewDetailsBtn.png" />
+	<ui:image field="subscribeNormal" src="style/images/subscribeNormal.png" />
 	<ui:image field="spinner" src="style/images/wait-spinner.gif" />
 
 	<ui:style
@@ -153,8 +154,8 @@
 		.stream-name
 		{
 		display: block;
-		height: 16px;
 		font-weight: bold;
+		font-size: 24px;
 		}
 
 		.stream-details-container
@@ -235,13 +236,28 @@
 
 		.search-box
 		{
+		background-image: url("style/images/searchActive.png");
+		border: 0 none;
+		float: right;
+		height: 20px;
+		padding-left: 35px;
+		padding-right: 21px;
+		width: 160px;
+		padding-top: 6px;
+		padding-bottom: 6px;
+		}
+		
+		@sprite .subscribe-box 
+		{
+		gwt-image: "subscribeNormal";
 		float: right;
 		}
-
+		
 		@sprite .stream-loading-spinner
 		{
 		gwt-image: "spinner";
-		margin: 0 auto;
+		margin: 0
+		auto;
 		position:
 		relative;
 		top: 30px;
@@ -267,6 +283,11 @@
 		cursor: pointer;
 		color: #0066CC;
 		}
+		
+		.condensedStream .toggle-details-link, .condensedStream .follow-info-container, .condensedStream .stream-meta  
+		{
+			display: none;
+		}
 
 	</ui:style>
 
@@ -279,7 +300,7 @@
 				</g:HTMLPanel>
 				<div class="{style.stream-info-container}">
 					<span class="{style.stream-name}" ui:field="streamName"></span>
-					<span ui:field="streamMeta"></span>
+					<span class="{style.stream-meta}" ui:field="streamMeta"></span>
 				</div>
 				<div class="{style.follow-info-container}">
 					<span ui:field="followerCount"></span>
@@ -325,6 +346,9 @@
 					Popular</g:Anchor>
 				<g:Anchor addStyleNames="{style.sort-option}" ui:field="activeSort">
 					Active</g:Anchor>
+				<g:FlowPanel addStyleNames="{style.subscribe-box}">
+					
+				</g:FlowPanel>
 				<g:TextBox addStyleNames="{style.search-box}" ui:field="searchBox"></g:TextBox>
 			</div>
 			<div class="{style.stream-panel}">

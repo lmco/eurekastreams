@@ -16,34 +16,43 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 
 /**
  * Get the streams for the current user.
  */
-public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetCurrentUsersBookmarksExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Streams mapper.
      */
-    private DomainMapper<Long, List<StreamFilter>> getUserStreamsMapper;
+    private DomainMapper<Long, List<StreamScope>> getUserBookmarksMapper;
+
+    /**
+     * Bookmark Transformer.
+     */
+    private Transformer<List<StreamScope>, List<StreamFilter>> bookmarkTransformer;
 
     /**
      * Constructor.
      * 
-     * @param inGetUserStreamsMapper
-     *            stream mapper.
+     * @param inGetUserBookmarksTransformer
+     *            bookmarks transformer.
      */
-    public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper)
+    public GetCurrentUsersBookmarksExecution(final DomainMapper<Long, List<StreamScope>> inGetUserBookmarksMapper,
+            final Transformer<List<StreamScope>, List<StreamFilter>> inBookmarkTransformer)
     {
-        getUserStreamsMapper = inGetUserStreamsMapper;
+        getUserBookmarksMapper = inGetUserBookmarksMapper;
+        bookmarkTransformer = inBookmarkTransformer;
     }
 
     /**
@@ -57,7 +66,11 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        final List<StreamFilter> streams = getUserStreamsMapper.execute(inActionContext.getPrincipal().getId());
-        return new GetCurrentUserStreamFiltersResponse(streams.size(), streams);
+
+        final List<StreamFilter> filters = bookmarkTransformer.transform(getUserBookmarksMapper.execute(inActionContext
+                .getPrincipal().getId()));
+
+        return (Serializable) filters;
+
     }
 }

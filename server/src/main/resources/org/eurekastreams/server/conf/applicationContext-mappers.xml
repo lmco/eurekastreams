@@ -405,6 +405,7 @@
 
 	<bean id="getUserStreamsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetUserStreamsDbMapper" />
 
+	<bean id="getUserBookmarksMapper" class="org.eurekastreams.server.persistence.mappers.db.GetUserBookmarksDbMapper" />
 
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ENTITY_STREAM_BY_SCOPE_ID"

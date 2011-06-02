@@ -35,6 +35,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
+import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
@@ -45,6 +46,7 @@ import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
+import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
@@ -69,6 +71,7 @@ import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -107,6 +110,12 @@ public class ActivityContent extends Composite
          * @return Active stream style.
          */
         String activeStream();
+        
+        /**
+         * Condensed Stream view.
+         * @return Condensed Stream view.
+         */
+        String condensedStream();
     }
 
     /**
@@ -333,12 +342,13 @@ public class ActivityContent extends Composite
         defaultList.appendChild(createLI("Following", "following"));
         defaultList.appendChild(createLI("Everyone", "everyone"));
 
-        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getPreferredName(), "person/"
+        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
                 + Session.getInstance().getCurrentPerson().getAccountId()));
 
         streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
 
         CustomStreamModel.getInstance().fetch(null, true);
+        StreamBookmarksModel.getInstance().fetch(null, true);
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         analyticsChartContainer.add(chart);
@@ -524,6 +534,42 @@ public class ActivityContent extends Composite
                     }
                 });
 
+        EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
+                new Observer<GotCurrentUserStreamBookmarks>()
+                {
+                    public void update(final GotCurrentUserStreamBookmarks event)
+                    {
+
+                        for (StreamFilter filter : event.getResponse())
+                        {
+                            JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
+                            String uniqueId = null;
+                            String entityType = null;
+
+                            if (req.containsKey("query"))
+                            {
+                                JSONObject query = req.get("query").isObject();
+                                if (query.containsKey(StreamJsonRequestFactory.RECIPIENT_KEY))
+                                {
+                                    JSONArray recipient = query.get(StreamJsonRequestFactory.RECIPIENT_KEY).isArray();
+                                    if (recipient.size() > 0)
+                                    {
+                                        JSONObject recipientObj = recipient.get(0).isObject();
+                                        uniqueId = recipientObj.get("name").isString().stringValue();
+                                        entityType = recipientObj.get("type").isString().stringValue().toLowerCase();
+                                    }
+                                }
+
+                            }
+
+                            if (uniqueId != null && entityType != null)
+                            {
+                                bookmarkList.appendChild(createLI(filter.getName(), entityType + "/" + uniqueId));
+                            }
+                        }
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
                 new Observer<GotGroupModelViewInformationResponseEvent>()
                 {
@@ -619,6 +665,7 @@ public class ActivityContent extends Composite
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             streamName.setInnerHTML("Following");
+            streamDetailsContainer.addClassName(style.condensedStream());
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -627,6 +674,7 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
+            streamDetailsContainer.removeClassName(style.condensedStream());
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -635,20 +683,24 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
+            streamDetailsContainer.removeClassName(style.condensedStream());
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             streamName.setInnerHTML("Custom Stream");
             currentStream.setScopeType(null);
+            streamDetailsContainer.addClassName(style.condensedStream());
         }
         else if (views.get(0).equals("everyone"))
         {
             streamName.setInnerHTML("Everyone");
+            streamDetailsContainer.addClassName(style.condensedStream());
         }
         else if (views.size() == 1)
         {
             singleActivityMode = true;
+            streamDetailsContainer.addClassName(style.condensedStream());
         }
 
         if (!singleActivityMode)

@@ -232,6 +232,22 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     // unique constraints
     uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "streamId" }) })
     private List<Stream> streams;
+    
+    /**
+     * List of Bookmarks for this person.
+     */
+    @OrderBy(clause = "scopeId")
+    // Don't cascade on delete
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @JoinTable(name = "Person_Bookmark",
+    // join columns
+    joinColumns = { @JoinColumn(table = "Person", name = "personId") },
+    // inverse join columns
+    inverseJoinColumns = { @JoinColumn(table = "StreamScope", name = "scopeId") },
+    // unique constraints
+    uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "scopeId" }) })
+    private List<StreamScope> bookmarks;
+
 
     // ///////////////////////////////////////////////////////////////////
     // ATTRIBUTES

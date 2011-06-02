@@ -41,10 +41,10 @@
     <extend-configuration-property name="rpc.blacklist" value="com.google.gwt.view.client.DefaultSelectionEventManager"/>
     <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.server.domain.OAuthConsumer"/>
     <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.server.domain.Person"/>
-    <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.server.domain.Organization"/>
     <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.server.domain.AppData"/>
     <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.server.domain.AppDataValue"/>
     <extend-configuration-property name="rpc.blacklist" value="com.google.gwt.user.client.ui.*"/>
     <extend-configuration-property name="rpc.blacklist" value="org.apache.shindig.*"/>
     <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.commons.actions.context.ActionContext"/>
+    <extend-configuration-property name="rpc.blacklist" value="org.eurekastreams.server.domain.strategies.BookmarkStreamFilterAdapter"/>
 </module>
