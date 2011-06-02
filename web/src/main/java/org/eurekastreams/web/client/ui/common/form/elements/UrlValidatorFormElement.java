@@ -185,16 +185,16 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         urlLabel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().urlLabel());
         urlPanel.add(closeUrlPanel);
         urlPanel.add(urlLabel);
-        this.insert(urlPanel, 3);
+        mainPanel.insert(urlPanel, 3);
 
         importBtn = new Hyperlink("import", History.getToken());
         importBtn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().importButton());
         importBtn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUploadButton());
         importBtn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
-        this.insert(importBtn, 4);
+        mainPanel.insert(importBtn, 4);
         processingSpinny.setVisible(false);
         processingSpinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
-        this.insert(processingSpinny, 5);
+        mainPanel.insert(processingSpinny, 5);
 
         errorBox = new FlowPanel();
         errorBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
@@ -207,9 +207,7 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         errorDetail.addStyleName(StaticResourceBundle.INSTANCE.coreCss().error());
         errorBox.add(errorDetail);
 
-        this.insert(errorBox, 0);
-
-
+        mainPanel.insert(errorBox, 0);
 
         importBtn.addClickHandler(new ClickHandler()
         {
@@ -229,15 +227,17 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         importBtn.setVisible(false);
         processingSpinny.setVisible(true);
 
-        Session.getInstance().getActionProcessor().makeRequest(
-                new ActionRequestImpl<String>("getFeedTitleAction", getValue()), new AsyncCallback<String>()
-                {
-                    /* implement the async call back methods */
-                    public void onFailure(final Throwable caught)
-                    {
-                        importBtn.setVisible(true);
-                        processingSpinny.setVisible(false);
-                        errorBox.setVisible(true);
+        Session.getInstance()
+                .getActionProcessor()
+                .makeRequest(new ActionRequestImpl<String>("getFeedTitleAction", getValue()),
+                        new AsyncCallback<String>()
+                        {
+                            /* implement the async call back methods */
+                            public void onFailure(final Throwable caught)
+                            {
+                                importBtn.setVisible(true);
+                                processingSpinny.setVisible(false);
+                                errorBox.setVisible(true);
                                 if (caught instanceof ValidationException)
                                 {
                                     errorDetail.setVisible(true);
@@ -247,25 +247,25 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
                                 {
                                     errorDetail.setVisible(false);
                                 }
-                        requiredLabel.setVisible(true);
-                        instructions.setVisible(true);
-                        failed = true;
-                        thisBuffered.onError("");
-                    }
+                                requiredLabel.setVisible(true);
+                                instructions.setVisible(true);
+                                failed = true;
+                                thisBuffered.onError("");
+                            }
 
-                    public void onSuccess(final String result)
-                    {
-                        originalValueFormElement.setValue(getOriginalValue());
-                        importBtn.setVisible(false);
-                        requiredLabel.setVisible(false);
-                        instructions.setVisible(false);
-                        processingSpinny.setVisible(false);
-                        errorBox.setVisible(false);
-                        urlPanel.setVisible(true);
-                        getTextBox().setVisible(false);
-                        urlLabel.setText(result);
-                        thisBuffered.onSuccess();
-                    }
-                });
+                            public void onSuccess(final String result)
+                            {
+                                originalValueFormElement.setValue(getOriginalValue());
+                                importBtn.setVisible(false);
+                                requiredLabel.setVisible(false);
+                                instructions.setVisible(false);
+                                processingSpinny.setVisible(false);
+                                errorBox.setVisible(false);
+                                urlPanel.setVisible(true);
+                                getTextBox().setVisible(false);
+                                urlLabel.setText(result);
+                                thisBuffered.onSuccess();
+                            }
+                        });
     }
 }

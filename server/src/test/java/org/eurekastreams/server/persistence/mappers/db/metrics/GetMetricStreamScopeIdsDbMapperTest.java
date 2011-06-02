@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 import java.util.Date;
 import java.util.List;
 
+import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Assert;
@@ -48,18 +49,42 @@ public class GetMetricStreamScopeIdsDbMapperTest extends MapperTest
      * Test execute.
      */
     @Test
-    public void testExecute()
+    public void testExecuteAll()
     {
-        getEntityManager().persist(new UsageMetric(1L, true, true, 1L, new Date()));
-        getEntityManager().persist(new UsageMetric(3L, true, false, null, new Date()));
-        getEntityManager().persist(new UsageMetric(3L, true, true, 2L, new Date()));
-        getEntityManager().persist(new UsageMetric(4L, true, true, 4L, new Date()));
-        getEntityManager().persist(new UsageMetric(5L, true, true, 5L, new Date()));
+        Date yesterday = new GetDateFromDaysAgoStrategy().execute(1);
 
-        List<Long> ids = sut.execute(null);
+        getEntityManager().persist(new UsageMetric(1L, true, true, 1L, yesterday));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, yesterday));
+        getEntityManager().persist(new UsageMetric(3L, true, true, 2L, yesterday));
+        getEntityManager().persist(new UsageMetric(4L, true, true, 4L, yesterday));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 5L, yesterday));
+
+        List<Long> ids = sut.execute(yesterday);
         Assert.assertEquals(4, ids.size());
         Assert.assertTrue(ids.contains(1L));
         Assert.assertTrue(ids.contains(2L));
+        Assert.assertTrue(ids.contains(4L));
+        Assert.assertTrue(ids.contains(5L));
+    }
+
+    /**
+     * Test execute.
+     */
+    @Test
+    public void testExecuteFew()
+    {
+        Date yesterday = new GetDateFromDaysAgoStrategy().execute(1);
+        Date twoDaysAgo = new GetDateFromDaysAgoStrategy().execute(2);
+
+        getEntityManager().persist(new UsageMetric(1L, true, true, 1L, yesterday));
+        getEntityManager().persist(new UsageMetric(3L, true, false, null, twoDaysAgo));
+        getEntityManager().persist(new UsageMetric(3L, true, true, 2L, twoDaysAgo));
+        getEntityManager().persist(new UsageMetric(4L, true, true, 4L, yesterday));
+        getEntityManager().persist(new UsageMetric(5L, true, true, 5L, yesterday));
+
+        List<Long> ids = sut.execute(yesterday);
+        Assert.assertEquals(3, ids.size());
+        Assert.assertTrue(ids.contains(1L));
         Assert.assertTrue(ids.contains(4L));
         Assert.assertTrue(ids.contains(5L));
     }

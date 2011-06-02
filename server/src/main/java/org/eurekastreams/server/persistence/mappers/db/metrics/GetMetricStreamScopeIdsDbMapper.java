@@ -15,29 +15,34 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
-import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * DB mapper to get the stream scope ids to generate nightly metrics for. This includes person and group streams.
  */
-public class GetMetricStreamScopeIdsDbMapper extends BaseArgDomainMapper<Serializable, List<Long>>
+public class GetMetricStreamScopeIdsDbMapper extends BaseArgDomainMapper<Date, List<Long>>
 {
     /**
      * Get the IDs of the stream scopes of views to generate metrics for.
      * 
-     * @param inRequest
-     *            ignored - have fun, be creative
+     * @param inMetricsDate
+     *            the date to look for stream scope ids
      * @return all stream scope ids of people and group streams
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> execute(final Serializable inRequest)
+    public List<Long> execute(final Date inMetricsDate)
     {
+        Date startOfDay = DateDayExtractor.getStartOfDay(inMetricsDate);
+        Date endOfDay = DateDayExtractor.getEndOfDay(inMetricsDate);
+
         return getEntityManager().createQuery(
-                "SELECT DISTINCT(streamViewStreamScopeId) FROM UsageMetric WHERE streamViewStreamScopeId != NULL")
-                .getResultList();
+                "SELECT DISTINCT(streamViewStreamScopeId) FROM UsageMetric "
+                        + "WHERE streamViewStreamScopeId != NULL AND created >= :start AND created <= :end")
+                .setParameter("start", startOfDay).setParameter("end", endOfDay).getResultList();
     }
 }

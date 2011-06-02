@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
@@ -55,7 +56,7 @@ public class ModifyInAppNotificationsExecutionTest
     private final DomainMapper syncMapper = context.mock(DomainMapper.class, "syncMapper");
 
     /** SUT. */
-    private ModifyInAppNotificationsExecution sut;
+    private ExecutionStrategy sut;
 
     /**
      * Setup before each test.

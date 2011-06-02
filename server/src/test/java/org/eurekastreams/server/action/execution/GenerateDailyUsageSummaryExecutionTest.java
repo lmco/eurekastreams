@@ -115,8 +115,25 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get stream scope ids to generate metrics for.
      */
-    private DomainMapper<Serializable, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
+    private DomainMapper<Date, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
             "streamScopeIdsMapper");
+    /**
+     * Mapper to get the total number of activities posted to a stream.
+     */
+    private DomainMapper<Long, Long> getTotalActivityCountMapper = context.mock(DomainMapper.class,
+            "getTotalActivityCountMapper");
+
+    /**
+     * Mapper to get the total number of comments posted to a stream.
+     */
+    private DomainMapper<Long, Long> getTotalCommentCountMapper = context.mock(DomainMapper.class,
+            "getTotalCommentCountMapper");
+
+    /**
+     * Mapper to get the total number of contributors to a stream by stream scope id.
+     */
+    private DomainMapper<Long, Long> getTotalStreamContributorMapper = context.mock(DomainMapper.class,
+            "getTotalStreamContributorMapper");
 
     /**
      * Day of week strategy.
@@ -134,14 +151,16 @@ public class GenerateDailyUsageSummaryExecutionTest
     @Test
     public void testExecuteWithDataAlreadyExisting()
     {
-        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
+        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
+                getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
+        final Date datePrior = new Date(2011, 1, 21);
 
         final List<Long> streamScopeIds = new ArrayList<Long>();
 
@@ -151,19 +170,19 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(date));
 
+                oneOf(daysAgoDateStrategy).execute(with(2));
+                will(returnValue(datePrior));
+
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
                         with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(DateDayExtractor
                                 .getStartOfDay(date), null))));
                 will(returnValue(existingSummary));
 
-                oneOf(usageMetricDataCleanupMapper).execute(0);
-
-                oneOf(streamScopeIdsMapper).execute(null);
-                will(returnValue(streamScopeIds));
+                oneOf(usageMetricDataCleanupMapper).execute(null);
             }
         });
 
-        Serializable result = sut.execute(actionContext);
+        sut.execute(actionContext);
 
         context.assertIsSatisfied();
     }
@@ -194,14 +213,17 @@ public class GenerateDailyUsageSummaryExecutionTest
      */
     public void executeWithNoDataAlreadyExisting(final boolean inIsWeekday)
     {
-        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
+        GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
+                getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
-        final Date dateRaw = new Date();
+        final Date dateRaw = new Date(2011, 1, 22);
+        final Date datePriorRaw = new Date(2011, 1, 21);
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
+        final Date datePrior = DateDayExtractor.getStartOfDay(datePriorRaw);
         final long uniqueVisitorCount = 1L;
         final long pageViewCount = 2L;
         final long streamViewerCount = 3L;
@@ -217,6 +239,9 @@ public class GenerateDailyUsageSummaryExecutionTest
             {
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(dateRaw));
+
+                oneOf(daysAgoDateStrategy).execute(with(2));
+                will(returnValue(datePriorRaw));
 
                 // no data found
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
@@ -251,16 +276,15 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(dayOfWeekStrategy).isWeekday(with(date));
                 will(returnValue(inIsWeekday));
 
-                oneOf(usageMetricDataCleanupMapper).execute(0);
+                oneOf(usageMetricDataCleanupMapper).execute(null);
 
-                oneOf(streamScopeIdsMapper).execute(null);
+                oneOf(streamScopeIdsMapper).execute(with(date));
                 will(returnValue(streamScopeIds));
             }
         });
 
         this.insertMapper.setRequest(null);
-        Serializable result = sut.execute(actionContext);
-        Assert.assertEquals(Boolean.TRUE, result);
+        sut.execute(actionContext);
 
         DailyUsageSummary ds = (DailyUsageSummary) insertMapper.getRequest().getDomainEnity();
         Assert.assertEquals(uniqueVisitorCount, ds.getUniqueVisitorCount());

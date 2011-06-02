@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.ClientPrincipalActionContext;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.exceptions.ValidationException;
@@ -68,7 +69,7 @@ public class SendPrebuiltNotificationValidationTest
     private final PersonModelView person = context.mock(PersonModelView.class);
 
     /** SUT. */
-    private SendPrebuiltNotificationValidation sut;
+    private ValidationStrategy sut;
 
     /**
      * Setup before each test.
