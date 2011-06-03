@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationType;
@@ -78,7 +79,7 @@ public class GroupStreamPostTranslatorTest
     private final DomainMapper<Long, List<Long>> memberMapper = context.mock(DomainMapper.class);
 
     /** System under test. */
-    private GroupStreamPostTranslator sut;
+    private NotificationTranslator sut;
 
     /** Test list of coordinators. */
     private final List<Long> coordinators = Arrays.asList(COORDINATOR1_ID, COORDINATOR2_ID);
@@ -112,7 +113,7 @@ public class GroupStreamPostTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
+        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
         NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
@@ -145,7 +146,7 @@ public class GroupStreamPostTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
+        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
         NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();

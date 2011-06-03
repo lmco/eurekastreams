@@ -7,6 +7,16 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	<!-- ========== CONFIGURATION ========== -->
+	<!--  TODO:  These should probably be in the .properties file, but that's not part of the server project.  
+		Probably should have a properties file that is part of the server project, and put them there. -->
+	<bean id="MAX_NOTIFICATION_MESSAGE_LENGTH" class="java.lang.Integer">
+        <constructor-arg value="250" />
+  	</bean>
+	<bean id="MAX_NOTIFICATION_URL_LENGTH" class="java.lang.Integer">
+        <constructor-arg value="2048" />
+  	</bean>
+
 	<!-- ========== GENERATION ========== -->
 
 	  <bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
@@ -40,6 +50,8 @@
         <constructor-arg>
 			<bean class="org.eurekastreams.server.action.validation.notification.SendPrebuiltNotificationValidation">
 				<constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+				<constructor-arg ref="MAX_NOTIFICATION_MESSAGE_LENGTH" />
+				<constructor-arg ref="MAX_NOTIFICATION_URL_LENGTH" />
 			</bean>
 		</constructor-arg>
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -54,7 +66,10 @@
 
     <bean id="sendMassPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation" />
+			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation">
+				<constructor-arg ref="MAX_NOTIFICATION_MESSAGE_LENGTH" />
+				<constructor-arg ref="MAX_NOTIFICATION_URL_LENGTH" />
+			</bean>
 		</constructor-arg>
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
@@ -509,6 +524,12 @@
 				p:subject="Request to join the $group.displayName private group has been denied"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.html" />
+		</entry>
+		<entry key="PASS_THROUGH">
+			<bean parent="emailTemplate"
+				p:subject="$message"
+				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.txt"
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.html" />
 		</entry>
 	</util:map>
 

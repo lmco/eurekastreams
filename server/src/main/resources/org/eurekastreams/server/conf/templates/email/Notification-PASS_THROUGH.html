@@ -1,0 +1,17 @@
+<html>
+<body>
+#siteLabelHtml()
+<p>
+$source.title sent the following notification:
+</p>
+<p>
+"$message"
+</p>
+#if (($url) && ($url != ''))
+<p>
+To see the details follow this <a href="$url">link</a>.
+</p>
+#end
+#parse('Footer.html')
+</body>
+</html>

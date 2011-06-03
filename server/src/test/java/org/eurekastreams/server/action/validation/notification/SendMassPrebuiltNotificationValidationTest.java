@@ -48,6 +48,12 @@ public class SendMassPrebuiltNotificationValidationTest
     /** Test data. */
     private static final String URL = "http://www.eurekastreams.org";
 
+    /** Max length. */
+    private static final int MAX_MESSAGE_LENGTH = 250;
+
+    /** Max length. */
+    private static final int MAX_URL_LENGTH = 2048;
+
     /** Used for mocking objects. */
     private final JUnit4Mockery context = new JUnit4Mockery()
     {
@@ -65,7 +71,7 @@ public class SendMassPrebuiltNotificationValidationTest
     @Before
     public void setUp()
     {
-        sut = new SendMassPrebuiltNotificationValidation();
+        sut = new SendMassPrebuiltNotificationValidation(MAX_MESSAGE_LENGTH, MAX_URL_LENGTH);
     }
 
     /**

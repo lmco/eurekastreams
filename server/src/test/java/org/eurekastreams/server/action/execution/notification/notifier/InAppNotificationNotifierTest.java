@@ -118,8 +118,8 @@ public class InAppNotificationNotifierTest
     @Before
     public void setUp()
     {
-        sut = new InAppNotificationNotifier(velocityEngine, velocityGlobalContext, templates, insertMapper, syncMapper,
-                placeholderPersonMapper);
+        sut = new InAppNotificationNotifier(velocityEngine, velocityGlobalContext, templates, insertMapper,
+                syncMapper, placeholderPersonMapper);
     }
 
     /**
@@ -131,7 +131,8 @@ public class InAppNotificationNotifierTest
     @Test
     public void testNotifyUnknownTemplate() throws Exception
     {
-        UserActionRequest result = sut.notify(NotificationType.POST_TO_GROUP_STREAM, recipients, Collections.EMPTY_MAP);
+        UserActionRequest result = sut
+                .notify(NotificationType.POST_TO_GROUP_STREAM, recipients, Collections.EMPTY_MAP);
 
         context.assertIsSatisfied();
 
@@ -303,8 +304,35 @@ public class InAppNotificationNotifierTest
         properties.put(NotificationPropertyKeys.SOURCE, source);
         properties.put(NotificationPropertyKeys.ACTOR, actor);
 
-        UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST, Collections
-                .singletonList(RECIPIENT1), properties);
+        UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST,
+                Collections.singletonList(RECIPIENT1), properties);
+
+        context.assertIsSatisfied();
+
+        assertNull(result);
+    }
+
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testNotifyUnknownRecipient() throws Exception
+    {
+        commonSetup();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(placeholderPersonMapper).execute(RECIPIENT1);
+                will(returnValue(null));
+            }
+        });
+
+        UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST,
+                Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP);
 
         context.assertIsSatisfied();
 

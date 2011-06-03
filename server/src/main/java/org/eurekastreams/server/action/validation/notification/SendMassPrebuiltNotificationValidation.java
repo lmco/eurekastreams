@@ -25,11 +25,26 @@ import org.eurekastreams.server.action.request.notification.SendPrebuiltNotifica
  */
 public class SendMassPrebuiltNotificationValidation implements ValidationStrategy<ActionContext>
 {
-    /** Max length. */
-    private static final int MAX_MESSAGE_LENGTH = 250;
+    /** Max length of message. */
+    private final int maxMessageLength;
 
-    /** Max length. */
-    private static final int MAX_URL_LENGTH = 2048;
+    /** Max length of attached link. */
+    private final int maxUrlLength;
+
+    /**
+     * Constructor.
+     *
+     * @param inMaxMessageLength
+     *            Max length of message.
+     * @param inMaxUrlLength
+     *            Max length of attached link
+     */
+    public SendMassPrebuiltNotificationValidation(final int inMaxMessageLength, final int inMaxUrlLength)
+    {
+        maxMessageLength = inMaxMessageLength;
+        maxUrlLength = inMaxUrlLength;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -45,16 +60,16 @@ public class SendMassPrebuiltNotificationValidation implements ValidationStrateg
         {
             ve.addError("message", "Message must be provided.");
         }
-        else if (params.getMessage().length() > MAX_MESSAGE_LENGTH)
+        else if (params.getMessage().length() > maxMessageLength)
         {
-            ve.addError("message", "Message must be no more than " + MAX_MESSAGE_LENGTH + " characters.");
+            ve.addError("message", "Message must be no more than " + maxMessageLength + " characters.");
         }
         // TODO: Should we check content of message?
 
         // URL
-        if (params.getUrl() != null && params.getUrl().length() > MAX_URL_LENGTH)
+        if (params.getUrl() != null && params.getUrl().length() > maxUrlLength)
         {
-            ve.addError("url", "URL must be no more than " + MAX_URL_LENGTH + " characters.");
+            ve.addError("url", "URL must be no more than " + maxUrlLength + " characters.");
         }
         // TODO: Should we check format of URL?
 
