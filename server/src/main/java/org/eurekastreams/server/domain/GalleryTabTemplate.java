@@ -99,6 +99,14 @@ public class GalleryTabTemplate extends DomainEntity
     private List<TabTemplate> tabTemplates;
 
     /**
+     * List of MembershipCritera using this galleryTabTemplate.
+     */
+    @SuppressWarnings("unused")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "galleryTabTemplateId")
+    private List<MembershipCriteria> membershipCriteria;
+
+    /**
      * Required empty constructor.
      */
     public GalleryTabTemplate()
