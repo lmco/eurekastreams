@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-import org.eurekastreams.commons.model.DomainEntity;
+import org.eurekastreams.commons.model.DomainEntityIdentifiable;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
@@ -24,7 +24,7 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
-public class InsertMapper<TDomainEntityType extends DomainEntity> extends
+public class InsertMapper<TDomainEntityType extends DomainEntityIdentifiable> extends
         BaseArgDomainMapper<PersistenceRequest<TDomainEntityType>, Long>
 {
     /**

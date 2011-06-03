@@ -23,11 +23,10 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
- * The parent class for all domain entities. Contains the unique id key and
- * version property.
+ * The parent class for all domain entities. Contains the unique id key and version property.
  */
 @MappedSuperclass
-public abstract class DomainEntity extends WrappedLightEntity
+public abstract class DomainEntity extends WrappedLightEntity implements DomainEntityIdentifiable
 {
     /**
      * Serial version uid.
@@ -42,11 +41,10 @@ public abstract class DomainEntity extends WrappedLightEntity
 
     /**
      * Primary key ID field for ORM.
-     *
-     * Where you set the @Id on entities tells the ORM if you're using field or
-     * property-based entity mapping. if you set it on a private variable, then
-     * the ORM will not use getters/setters at all. If you set it on getId(),
-     * then you need to have getters/setters on everything.
+     * 
+     * Where you set the @Id on entities tells the ORM if you're using field or property-based entity mapping. if you
+     * set it on a private variable, then the ORM will not use getters/setters at all. If you set it on getId(), then
+     * you need to have getters/setters on everything.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +58,7 @@ public abstract class DomainEntity extends WrappedLightEntity
 
     /**
      * returns the version.
-     *
+     * 
      * @return version
      */
     public long getVersion()
@@ -70,7 +68,7 @@ public abstract class DomainEntity extends WrappedLightEntity
 
     /**
      * sets the version.
-     *
+     * 
      * @param newVersion
      *            version of the entity.
      */
@@ -81,7 +79,7 @@ public abstract class DomainEntity extends WrappedLightEntity
 
     /**
      * Gets the id of entity.
-     *
+     * 
      * @return the id of the entity
      */
     public long getId()
@@ -91,9 +89,9 @@ public abstract class DomainEntity extends WrappedLightEntity
 
     /**
      * Sets the id of entity.
-     *
+     * 
      * Only used by persistence mechanism. Not testable because it's protected.
-     *
+     * 
      * @param newId
      *            the id of the entity
      */
@@ -104,18 +102,15 @@ public abstract class DomainEntity extends WrappedLightEntity
 
     /**
      * Base toString implementation - class name and ID.
-     *
-     * @return the string representation of the entity, with
-     *         [EntityName]#[Entity ID]
+     * 
+     * @return the string representation of the entity, with [EntityName]#[Entity ID]
      */
     @Override
     public String toString()
     {
         if (toStringBase == null)
         {
-            toStringBase = this.getClass().getName().substring(
-                    this.getClass().getName().lastIndexOf('.') + 1)
-                    + "#";
+            toStringBase = this.getClass().getName().substring(this.getClass().getName().lastIndexOf('.') + 1) + "#";
         }
         return toStringBase + id;
     }

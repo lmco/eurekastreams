@@ -28,12 +28,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.eurekastreams.commons.model.DomainEntityIdentifiable;
+
 /**
  * Entity representing a day's usage metrics.
  */
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "streamViewStreamScopeId", "usageDate" }) })
-public class DailyUsageSummary implements Serializable
+public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
 {
     /**
      * Serial version uid.
