@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.events.data;
 /**
  * Response event object.
  */
-public class InsertedGalleryTabTempalateResponseEvent extends BaseDataResponseEvent<Boolean>
+public class InsertedGalleryTabTempalateResponseEvent extends BaseDataResponseEvent<Long>
 {
     /**
      * Default constructor.
@@ -26,7 +26,7 @@ public class InsertedGalleryTabTempalateResponseEvent extends BaseDataResponseEv
      * @param inResponse
      *            response/
      */
-    public InsertedGalleryTabTempalateResponseEvent(final Boolean inResponse)
+    public InsertedGalleryTabTempalateResponseEvent(final Long inResponse)
     {
         super(inResponse);
     }
