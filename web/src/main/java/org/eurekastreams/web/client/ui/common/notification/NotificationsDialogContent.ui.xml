@@ -1,0 +1,34 @@
+<ui:UiBinder 
+	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+<ui:image field="buttonImage" src="style/images/sendNotification.png" />
+<ui:image field="buttonImageDisabled" src="style/images/sendNotificationInactive.png" />
+
+<ui:style>
+.main
+{
+	height: 387px;
+	overflow: auto;
+}
+</ui:style>
+
+<!-- <ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" /> -->
+<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
+
+<g:HTMLPanel addStyleNames="{style.main}">
+	<g:ScrollPanel>
+		<g:FlowPanel ui:field="sourceFiltersPanel" />
+	</g:ScrollPanel>
+	
+	<div>
+		Unread  All  etc.
+	</div>
+	
+	<div ui:field="noNotificationsUi">No notifications</div>
+	<g:ScrollPanel>
+		<g:FlowPanel ui:field="notificationListPanel" />
+	</g:ScrollPanel>
+</g:HTMLPanel>
+	
+</ui:UiBinder>

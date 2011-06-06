@@ -15,27 +15,27 @@
  */
 package org.eurekastreams.web.client.ui.common.notification;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
-import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.NotificationListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -43,38 +43,67 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NotificationsDialogContent extends BaseDialogContent
 {
-    /** Main panel. */
-    private final Panel main = new FlowPanel();
+    /** Main content widget. */
+    private final Widget main;
 
-    /** Notification list wrapper. */
-    private final ScrollPanel scrollPanel = new ScrollPanel();
+    // /** Notification list wrapper. */
+    // @UiField
+    // ScrollPanel scrollPanel;
 
-    /** Notification list. */
-    private final Panel listPanel = new FlowPanel();
+    //
+    // /** Notification list. */
+    // private final Panel listPanel = new FlowPanel();
 
     /** To unwire the observer when done with dialog. */
     private Observer<DialogLinkClickedEvent> linkClickedObserver;
+
+    /** Binder for building UI. */
+    private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
+
+    // /** Notification list wrapper. */
+    // @UiField
+    // ScrollPanel scrollPanel;
+
+    /** The list of sources. */
+    @UiField
+    FlowPanel sourceFiltersPanel;
+
+    /** The displayed list of notifications. */
+    @UiField
+    FlowPanel notificationListPanel;
+
+    /** Element to indicate no notifications. */
+    @UiField
+    DivElement noNotificationsUi;
+
+    /** Notifications. */
+    private List<InAppNotificationDTO> allNotifications;
+
+    /** The IDs of the notifications currently being displayed. */
+    private final Collection<Long> idsShowing = new ArrayList<Long>();
 
     /**
      * Constructor.
      */
     public NotificationsDialogContent()
     {
-        // -- build UI --
-        main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifDialogMain());
+        main = binder.createAndBindUi(this);
 
-        Hyperlink editSettings =
-                new Hyperlink("edit settings", Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.SETTINGS, null, "tab", "Notifications")));
-        editSettings.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEditSettingsLink());
-        main.add(editSettings);
-
-        scrollPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifScrollList());
-
-        scrollPanel.add(listPanel);
-
-        main.add(scrollPanel);
-        listPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
+        // // -- build UI --
+        // main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifDialogMain());
+        //
+        // Hyperlink editSettings =
+        // new Hyperlink("edit settings", Session.getInstance().generateUrl(
+        // new CreateUrlRequest(Page.SETTINGS, null, "tab", "Notifications")));
+        // editSettings.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEditSettingsLink());
+        // main.add(editSettings);
+        //
+        // scrollPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifScrollList());
+        //
+        // scrollPanel.add(listPanel);
+        //
+        // main.add(scrollPanel);
+        // listPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
 
         // -- setup events --
         final EventBus eventBus = Session.getInstance().getEventBus();
@@ -84,7 +113,8 @@ public class NotificationsDialogContent extends BaseDialogContent
             public void update(final GotNotificationListResponseEvent ev)
             {
                 eventBus.removeObserver(ev, this);
-                displayNotifications(ev.getResponse());
+                storeReceivedNotifications(ev.getResponse());
+                displayNotifications(null, null, false);
             }
         });
 
@@ -94,22 +124,22 @@ public class NotificationsDialogContent extends BaseDialogContent
         // the URL, the GWT does not raise the event.) So we close the dialog on a link being clicked. We directly
         // listen on the "edit settings" link, and have the links in notifications raise an event we listen to.
 
-        editSettings.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent inArg0)
-            {
-                close();
-            }
-        });
-
-        linkClickedObserver = new Observer<DialogLinkClickedEvent>()
-        {
-            public void update(final DialogLinkClickedEvent inArg1)
-            {
-                close();
-            }
-        };
-        Session.getInstance().getEventBus().addObserver(DialogLinkClickedEvent.class, linkClickedObserver);
+        // editSettings.addClickHandler(new ClickHandler()
+        // {
+        // public void onClick(final ClickEvent inArg0)
+        // {
+        // close();
+        // }
+        // });
+        //
+        // linkClickedObserver = new Observer<DialogLinkClickedEvent>()
+        // {
+        // public void update(final DialogLinkClickedEvent inArg1)
+        // {
+        // close();
+        // }
+        // };
+        // Session.getInstance().getEventBus().addObserver(DialogLinkClickedEvent.class, linkClickedObserver);
 
         // -- request data --
         NotificationListModel.getInstance().fetch(null, false);
@@ -158,39 +188,52 @@ public class NotificationsDialogContent extends BaseDialogContent
      * @param list
      *            List of notifications.
      */
-    private void displayNotifications(final List<InAppNotificationDTO> list)
+    private void storeReceivedNotifications(final List<InAppNotificationDTO> list)
     {
-        listPanel.clear();
-        listPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
-        if (!list.isEmpty())
+        allNotifications = list;
+
+        // TODO: determine counts, build filter UI
+
+    }
+
+    /**
+     * Displays the appropriate subset of notifications.
+     *
+     * @param desiredType
+     *            Type of sources to display (null for no filtering).
+     * @param desiredId
+     *            Unique ID of source.
+     * @param showRead
+     *            If read notifications should be displayed (unread are always displayed).
+     */
+    private void displayNotifications(final EntityType desiredType, final String desiredId, final boolean showRead)
+    {
+        noNotificationsUi.getStyle().setDisplay(Display.NONE);
+
+        notificationListPanel.clear();
+        idsShowing.clear();
+
+        for (InAppNotificationDTO item : allNotifications)
         {
-            for (InAppNotificationDTO notif : list)
+            if (desiredType == null
+                    || (desiredType == item.getSourceType() && (desiredId == null || desiredId.equals(item
+                            .getSourceUniqueId()))) && (showRead || !item.isRead()))
             {
-                listPanel.add(new Label(notif.getMessage()));
+                idsShowing.add(item.getId());
+                notificationListPanel.add(new NotificationWidget(item));
 
             }
-            // NotificationsRenderer renderer = new NotificationsRenderer();
-            // for (InAppNotificationDTO notif : list)
-            // {
-            // try
-            // {
-            // listPanel.add(renderer.render(notif));
-            // }
-            // catch (Exception ex)
-            // {
-            // Label label = new Label("Cannot display notification");
-            // listPanel.add(label);
-            // }
-            // }
-            //
-            // // mark all as read since they've been displayed
-            // NotificationListModel.getInstance().update(list.get(0).getNotificationDate());
         }
-        else
+        if (idsShowing.isEmpty())
         {
-            Label label = new Label("No notifications");
-            label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifNoNotifications());
-            listPanel.add(label);
+            noNotificationsUi.getStyle().clearDisplay();
         }
+    }
+
+    /**
+     * Binder for building UI.
+     */
+    interface LocalUiBinder extends UiBinder<Widget, NotificationsDialogContent>
+    {
     }
 }
