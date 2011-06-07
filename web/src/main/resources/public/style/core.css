@@ -3487,7 +3487,6 @@ body .shortname-form-element input {
 
 @sprite .add-button-submit {
 	gwt-image: "addBtnLarge";
-	text-indent: -100px;
 	overflow: hidden;
 	vertical-align: middle;
 	cursor: pointer;
