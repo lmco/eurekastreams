@@ -148,6 +148,7 @@
             <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution">
                 <constructor-arg ref="getStreamScopeIdForPersonByUniqueKeyMapper" />
                 <constructor-arg ref="getStreamScopeIdForGroupTypeByUniqueKeyMapper" />
+                <constructor-arg ref="dayOfWeekStrategy" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

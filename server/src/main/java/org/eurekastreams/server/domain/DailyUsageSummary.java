@@ -121,11 +121,6 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     private Date usageDate;
 
     /**
-     * Whether this is a weekday.
-     */
-    private boolean isWeekday;
-
-    /**
      * Constructor for ORM.
      */
     public DailyUsageSummary()
@@ -151,8 +146,6 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
      *            Average response time for activities that have comments.
      * @param inUsageDate
      *            the date
-     * @param inIsWeekday
-     *            whether this date is a weekday
      * @param inStreamViewStreamScopeId
      *            the stream view that these stats apply to, or null if for all streams
      * @param inTotalActivityCount
@@ -167,8 +160,8 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final boolean inIsWeekday, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
-            final Long inTotalCommentCount, final Long inTotalStreamViewCount, final Long inTotalContributorCount)
+            final Long inStreamViewStreamScopeId, final Long inTotalActivityCount, final Long inTotalCommentCount,
+            final Long inTotalStreamViewCount, final Long inTotalContributorCount)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -178,7 +171,6 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
         messageCount = inMessageCount;
         avgActivityResponseTime = inAvgActivityResponseTime;
         usageDate = inUsageDate;
-        isWeekday = inIsWeekday;
         streamViewStreamScopeId = inStreamViewStreamScopeId;
         totalActivityCount = inTotalActivityCount;
         totalCommentCount = inTotalCommentCount;
@@ -337,23 +329,6 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     public void setAvgActivityResponseTime(final long inAvgActivityResponseTime)
     {
         avgActivityResponseTime = inAvgActivityResponseTime;
-    }
-
-    /**
-     * @return the isWeekday
-     */
-    public boolean isWeekday()
-    {
-        return isWeekday;
-    }
-
-    /**
-     * @param inIsWeekday
-     *            the isWeekday to set
-     */
-    public void setWeekday(final boolean inIsWeekday)
-    {
-        isWeekday = inIsWeekday;
     }
 
     /**

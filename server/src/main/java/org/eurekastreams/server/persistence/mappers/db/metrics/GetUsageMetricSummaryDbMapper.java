@@ -51,15 +51,15 @@ public class GetUsageMetricSummaryDbMapper extends
             // all streams
             q = getEntityManager().createQuery(
                     "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NULL "
-                            + "AND isWeekday = true AND usageDate >= :usageDate ORDER BY id DESC");
+                            + "AND usageDate >= :usageDate ORDER BY id DESC");
         }
         else
         {
             // specific stream
             q = getEntityManager().createQuery(
                     "FROM DailyUsageSummary WHERE streamViewStreamScopeId = :streamViewStreamScopeId "
-                            + "AND isWeekday = true AND usageDate >= :usageDate ORDER BY id DESC").setParameter(
-                    "streamViewStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
+                            + "AND usageDate >= :usageDate ORDER BY id DESC").setParameter("streamViewStreamScopeId",
+                    inRequest.getStreamRecipientStreamScopeId());
         }
         Calendar day = Calendar.getInstance();
         day.add(Calendar.DATE, -inRequest.getNumberOfDays());

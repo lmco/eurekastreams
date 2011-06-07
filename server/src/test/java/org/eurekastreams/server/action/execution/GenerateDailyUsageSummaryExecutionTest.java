@@ -166,8 +166,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
-        final Date date = new Date();
-        final Date datePrior = new Date(2011, 1, 21);
+        final Date date = new Date(2011, 1, 22);
 
         final List<Long> streamScopeIds = new ArrayList<Long>();
 
@@ -177,13 +176,13 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(date));
 
-                oneOf(daysAgoDateStrategy).execute(with(2));
-                will(returnValue(datePrior));
-
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
                         with(IsEqualInternally.equalInternally(new UsageMetricDailyStreamInfoRequest(DateDayExtractor
                                 .getStartOfDay(date), null))));
                 will(returnValue(existingSummary));
+
+                oneOf(dayOfWeekStrategy).isWeekday(with(DateDayExtractor.getStartOfDay(date)));
+                will(returnValue(true));
 
                 oneOf(usageMetricDataCleanupMapper).execute(null);
             }
@@ -195,30 +194,10 @@ public class GenerateDailyUsageSummaryExecutionTest
     }
 
     /**
-     * Test execute when we don't have data from yesterday - is weekday.
+     * Test execute.
      */
     @Test
-    public void testExecuteWithNoDataAlreadyExistingWhenWeekday()
-    {
-        executeWithNoDataAlreadyExisting(true);
-    }
-
-    /**
-     * Test execute when we don't have data from yesterday - is weekend.
-     */
-    @Test
-    public void testExecuteWithNoDataAlreadyExistingWhenWeekend()
-    {
-        executeWithNoDataAlreadyExisting(false);
-    }
-
-    /**
-     * Test execute when we don't have data from yesterday.
-     * 
-     * @param inIsWeekday
-     *            return value of dayOfWeekStrategy.isWeekday
-     */
-    public void executeWithNoDataAlreadyExisting(final boolean inIsWeekday)
+    public void executeWithNoDataAlreadyExisting()
     {
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper, getDailyMessageCountMapper,
@@ -228,9 +207,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
         final Date dateRaw = new Date(2011, 1, 22);
-        final Date datePriorRaw = new Date(2011, 1, 21);
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
-        final Date datePrior = DateDayExtractor.getStartOfDay(datePriorRaw);
         final long uniqueVisitorCount = 1L;
         final long pageViewCount = 2L;
         final long streamViewerCount = 3L;
@@ -246,9 +223,6 @@ public class GenerateDailyUsageSummaryExecutionTest
             {
                 oneOf(daysAgoDateStrategy).execute(with(1));
                 will(returnValue(dateRaw));
-
-                oneOf(daysAgoDateStrategy).execute(with(2));
-                will(returnValue(datePriorRaw));
 
                 // no data found
                 oneOf(getDailyUsageSummaryByDateMapper).execute(
@@ -281,7 +255,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 will(returnValue(messageCount));
 
                 oneOf(dayOfWeekStrategy).isWeekday(with(date));
-                will(returnValue(inIsWeekday));
+                will(returnValue(true));
 
                 oneOf(usageMetricDataCleanupMapper).execute(null);
 
@@ -302,7 +276,6 @@ public class GenerateDailyUsageSummaryExecutionTest
         Assert.assertEquals(avgActivityResponseTime, ds.getAvgActivityResponseTime());
         Assert.assertEquals(messageCount, ds.getMessageCount());
         Assert.assertEquals(date, ds.getUsageDate());
-        Assert.assertEquals(inIsWeekday, ds.isWeekday());
 
         context.assertIsSatisfied();
     }

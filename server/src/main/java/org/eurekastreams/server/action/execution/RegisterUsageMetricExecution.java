@@ -26,6 +26,7 @@ import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.UsageMetric;
@@ -55,18 +56,26 @@ public class RegisterUsageMetricExecution implements TaskHandlerExecutionStrateg
     private DomainMapper<String, Long> groupStreamScopeIdMapper;
 
     /**
+     * Strategy to test if a date is a weekday.
+     */
+    private DayOfWeekStrategy dayOfWeekStrategy;
+
+    /**
      * Constructor.
      * 
      * @param inPersonStreamScopeIdMapper
      *            mapper to get the stream scope id for a person by account id
      * @param inGroupStreamScopeIdMapper
      *            mapper to get the stream scope id for a group by short name
+     * @param inDayOfWeekStrategy
+     *            strategy to determine if a date is a weekday
      */
     public RegisterUsageMetricExecution(final DomainMapper<String, Long> inPersonStreamScopeIdMapper,
-            final DomainMapper<String, Long> inGroupStreamScopeIdMapper)
+            final DomainMapper<String, Long> inGroupStreamScopeIdMapper, final DayOfWeekStrategy inDayOfWeekStrategy)
     {
         personStreamScopeIdMapper = inPersonStreamScopeIdMapper;
         groupStreamScopeIdMapper = inGroupStreamScopeIdMapper;
+        dayOfWeekStrategy = inDayOfWeekStrategy;
     }
 
     /**
@@ -80,6 +89,14 @@ public class RegisterUsageMetricExecution implements TaskHandlerExecutionStrateg
     @Override
     public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
     {
+        Date date = new Date();
+
+        if (!dayOfWeekStrategy.isWeekday(date))
+        {
+            logger.info("Ignoring weekend stats");
+            return null;
+        }
+
         UsageMetricDTO umdto = (UsageMetricDTO) inActionContext.getActionContext().getParams();
         Principal principal = inActionContext.getActionContext().getPrincipal();
         Long streamScopeId = null;
