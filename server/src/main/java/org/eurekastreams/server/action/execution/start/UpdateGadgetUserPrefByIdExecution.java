@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
@@ -30,7 +31,7 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 /**
  * This action updates user prefs for a given gadget. If the gadget does not already have an entry in the db for the
  * user prefs, then a new record will be added to the db.
- *
+ * 
  */
 public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<ActionContext>
 {
@@ -55,7 +56,7 @@ public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<Acti
 
     /**
      * Constructor for action.
-     *
+     * 
      * @param inUpdateMapper
      *            - mapper responsible for gadget user pref updates.
      * @param inFindGadgetByIdMapper
@@ -73,7 +74,7 @@ public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<Acti
 
     /**
      * Update gadget user preferences by id.
-     *
+     * 
      * @param inActionContext
      *            {@link ActionContext}.
      * @return gadget user preferences.
@@ -90,7 +91,18 @@ public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<Acti
 
         Gadget currentGadgetInstance = findGadgetByIdMapper.execute(new FindByIdRequest("Gadget", currentRequest
                 .getGadgetId()));
-        currentGadgetInstance.setGadgetUserPref(currentRequest.getGadgetUserPref());
+
+        String oldValue = currentGadgetInstance.getGadgetUserPref();
+        String newValue = currentRequest.getGadgetUserPref();
+
+        if (StringUtils.equalsIgnoreCase(oldValue, newValue))
+        {
+            logger.debug("gadget user prefs didn't change; i refuse to update them.");
+            return oldValue;
+        }
+        logger.debug("gadget user prefs changed; updating them.");
+
+        currentGadgetInstance.setGadgetUserPref(newValue);
         updateMapper.execute(new PersistenceRequest<Gadget>(currentGadgetInstance));
 
         // clear or refresh user's page data in the cache (since it has old preferences)

@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Tests for UpdateGadgetUserPrefByIdExecution class.
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 public class UpdateGadgetUserPrefByIdExecutionTest
@@ -90,7 +90,7 @@ public class UpdateGadgetUserPrefByIdExecutionTest
 
     /**
      * Testing perform action method.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -98,7 +98,9 @@ public class UpdateGadgetUserPrefByIdExecutionTest
     public void testExecute() throws Exception
     {
         final String userPrefsJson = "{'userPref1':'value1','userPref2':'value2'}";
-        final GadgetUserPrefActionRequest requestParam = new GadgetUserPrefActionRequest(new Long(1L), userPrefsJson);
+        final String userPrefsJsonNew = "{'userPref1':'value1','userPref2':'value2333'}";
+        final GadgetUserPrefActionRequest requestParam = //
+        new GadgetUserPrefActionRequest(new Long(1L), userPrefsJsonNew);
 
         context.checking(new Expectations()
         {
@@ -119,10 +121,46 @@ public class UpdateGadgetUserPrefByIdExecutionTest
 
                 oneOf(updateMapper).execute(with(any(PersistenceRequest.class)));
 
-                oneOf(testGadget).getGadgetUserPref();
+                atLeast(1).of(testGadget).getGadgetUserPref();
                 will(returnValue(userPrefsJson));
 
                 oneOf(pageMapper).execute(9L);
+            }
+        });
+
+        sut.execute(actionContext);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Testing perform action when prefs didn't change.
+     * 
+     * @throws Exception
+     *             - on error.
+     */
+    @Test
+    public void testExecuteWithNoPrefsChanges() throws Exception
+    {
+        final String userPrefsJson = "{'userPref1':'value1','userPref2':'value2'}";
+        final GadgetUserPrefActionRequest requestParam = new GadgetUserPrefActionRequest(new Long(1L), userPrefsJson);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getParams();
+                will(returnValue(requestParam));
+
+                allowing(testGadget).getOwner();
+                will(returnValue(owner));
+
+                allowing(owner).getId();
+                will(returnValue(9L));
+
+                oneOf(findGadgetByIdMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(testGadget));
+
+                oneOf(testGadget).getGadgetUserPref();
+                will(returnValue(userPrefsJson));
             }
         });
 
