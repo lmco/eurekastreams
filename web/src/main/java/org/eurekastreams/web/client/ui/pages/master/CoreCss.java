@@ -2292,4 +2292,19 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-show-all-users-who-liked-activity")
     String eurekaConnectShowAllUsersWhoLikedActivity();
+
+    @ClassName("membershipcriteria-criteria")
+    String membershipCriteriaCriteria();
+
+    @ClassName("membershipcriteria-tab")
+    String membershipCriteriaTab();
+
+    @ClassName("membershipcriteria-theme")
+    String membershipCriteriaTheme();
+
+    @ClassName("dropdownWrapper")
+    String dropdownWrapper();
+
+    @ClassName("membershipcriteria-headers")
+    String membershipCriteriaHeader();
 }

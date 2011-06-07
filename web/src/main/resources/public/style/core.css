@@ -2752,9 +2752,13 @@ body .previous-arrow:hover {
 }
 
 .access-groups {
-	width: 425px;
+	width: 890px;
 	margin-top: 5px;
 	border-top: 1px solid #bbbbbb;
+}
+
+.form-user-association.form-element{
+	width: 890px;	
 }
 
 body .form-user-association .access-groups>div>div.form-small-delete-button
@@ -2769,13 +2773,41 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	color: #666;
 	height: 20px;
 	margin-top: 10px;
-	width: 425px;
+	width: 890px;
 	border-bottom: 1px solid white;
 }
 
 .form-user-association .access-groups>div:hover {
 	border-bottom: 1px solid #bbbbbb;
 }
+
+.form-user-association .dropdownWrapper{
+	margin-top:10px;
+	margin-bottom:10px;	
+}
+
+.membershipcriteria-criteria{
+	display:inline-block;
+	word-wrap:break-word;
+	width:345px;
+}
+	
+.membershipcriteria-theme{
+	display:inline-block;
+	word-wrap:break-word;
+	width:250px;
+}
+    
+.membershipcriteria-tab{
+	display:inline-block;
+	word-wrap:break-word;
+	width:250px;
+}
+
+.membershipcriteria-headers{
+	margin-top:10px;
+	font-weight:bold;
+}	
 
 .form-checkBox {
 	font-style: italic;
@@ -8069,6 +8101,24 @@ IE SPECIFIC CSS.
 	.stream-plugins-settings-container .filter .gwt-Image {
 		float: left;
 	}
+	
+	.membershipcriteria-criteria{
+	    display:inline;
+	    word-wrap:break-word;
+	    width:345px;
+	}
+	    
+	.membershipcriteria-theme{
+	    display:inline;
+	    word-wrap:break-word;
+	    width:250px;
+	}
+	    
+	.membershipcriteria-tab{
+	    display:inline;
+	    word-wrap:break-word;
+	    width:250px;
+	}	
 	
 	.unseen-activity a {
 		display: inline;
