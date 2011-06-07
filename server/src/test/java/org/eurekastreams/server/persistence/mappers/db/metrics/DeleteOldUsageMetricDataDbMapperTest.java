@@ -101,12 +101,12 @@ public class DeleteOldUsageMetricDataDbMapperTest extends MapperTest
         getEntityManager().persist(new UsageMetric(2, true, true, 1L, fourDaysAgo));
 
         // summary metrics from 4 & 9 days ago - should be saved
-        getEntityManager().persist(new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, fourDaysAgo, true, 5L, 5L, 5L, 5L, 5L));
-        getEntityManager().persist(new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, nineDaysAgo, true, 5L, 5L, 5L, 5L, 5L));
+        getEntityManager().persist(new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, fourDaysAgo, 5L, 5L, 5L, 5L, 5L));
+        getEntityManager().persist(new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, nineDaysAgo, 5L, 5L, 5L, 5L, 5L));
 
         // summary metrics from 11-12 days ago - should be deleted
-        getEntityManager().persist(new DailyUsageSummary(2, 2, 3, 4, 5, 6, 7, elevenDaysAgo, true, 5L, 5L, 5L, 5L, 5L));
-        getEntityManager().persist(new DailyUsageSummary(2, 2, 3, 4, 5, 6, 7, twelveDaysAgo, true, 5L, 5L, 5L, 5L, 5L));
+        getEntityManager().persist(new DailyUsageSummary(2, 2, 3, 4, 5, 6, 7, elevenDaysAgo, 5L, 5L, 5L, 5L, 5L));
+        getEntityManager().persist(new DailyUsageSummary(2, 2, 3, 4, 5, 6, 7, twelveDaysAgo, 5L, 5L, 5L, 5L, 5L));
 
         getEntityManager().flush();
         getEntityManager().clear();

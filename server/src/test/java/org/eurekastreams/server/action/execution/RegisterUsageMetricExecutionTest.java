@@ -18,10 +18,12 @@ package org.eurekastreams.server.action.execution;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -83,10 +85,15 @@ public class RegisterUsageMetricExecutionTest
     private final UsageMetricDTO um = context.mock(UsageMetricDTO.class);
 
     /**
+     * Strategy to determine if a date is a weekday.
+     */
+    private final DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
+
+    /**
      * System under test.
      */
     private RegisterUsageMetricExecution sut = new RegisterUsageMetricExecution(personStreamScopeIdMapper,
-            groupStreamScopeIdMapper);
+            groupStreamScopeIdMapper, dayOfWeekStrategy);
 
     /**
      * Test performing the action on a group stream view.
@@ -103,6 +110,9 @@ public class RegisterUsageMetricExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(dayOfWeekStrategy).isWeekday(with(any(Date.class)));
+                will(returnValue(true));
+
                 allowing(taskHandlerActionContextMock).getActionContext();
                 will(returnValue(principalActionContextMock));
 
@@ -162,6 +172,9 @@ public class RegisterUsageMetricExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(dayOfWeekStrategy).isWeekday(with(any(Date.class)));
+                will(returnValue(true));
+
                 allowing(taskHandlerActionContextMock).getActionContext();
                 will(returnValue(principalActionContextMock));
 
@@ -329,6 +342,27 @@ public class RegisterUsageMetricExecutionTest
     }
 
     /**
+     * Test performing the action on a weekend.
+     */
+    @Test
+    public final void textPerformActionOnWeekend()
+    {
+        final ArrayList<UserActionRequest> uar = new ArrayList<UserActionRequest>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(dayOfWeekStrategy).isWeekday(with(any(Date.class)));
+                will(returnValue(false));
+            }
+        });
+
+        sut.execute(taskHandlerActionContextMock);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Run the test with the input json.
      * 
      * @param json
@@ -341,6 +375,9 @@ public class RegisterUsageMetricExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(dayOfWeekStrategy).isWeekday(with(any(Date.class)));
+                will(returnValue(true));
+
                 allowing(taskHandlerActionContextMock).getActionContext();
                 will(returnValue(principalActionContextMock));
 
