@@ -15,14 +15,18 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
+
+import com.ibm.icu.util.Calendar;
 
 /**
  * Mapper to get UsageMetricSummary.
@@ -47,27 +51,28 @@ public class GetUsageMetricSummaryDbMapper extends
             // all streams
             q = getEntityManager().createQuery(
                     "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NULL "
-                            + "AND isWeekday = true ORDER BY id DESC");
+                            + "AND isWeekday = true AND usageDate >= :usageDate ORDER BY id DESC");
         }
         else
         {
             // specific stream
             q = getEntityManager().createQuery(
                     "FROM DailyUsageSummary WHERE streamViewStreamScopeId = :streamViewStreamScopeId "
-                            + "AND isWeekday = true ORDER BY id DESC").setParameter("streamViewStreamScopeId",
-                    inRequest.getStreamRecipientStreamScopeId());
+                            + "AND isWeekday = true AND usageDate >= :usageDate ORDER BY id DESC").setParameter(
+                    "streamViewStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
         }
-        q.setMaxResults(inRequest.getNumberOfDays());
+        Calendar day = Calendar.getInstance();
+        day.add(Calendar.DATE, -inRequest.getNumberOfDays());
+        Date oldestReportDate = DateDayExtractor.getStartOfDay(new Date(day.getTimeInMillis()));
+        q.setParameter("usageDate", oldestReportDate);
 
         List<DailyUsageSummary> results = q.getResultList();
-
-        int numResults = results.size();
 
         UsageMetricSummaryDTO result = new UsageMetricSummaryDTO();
         result.setRecordCount(results.size());
 
         // short-circuit if no results.
-        if (numResults == 0)
+        if (results.size() == 0)
         {
             return result;
         }
@@ -91,13 +96,13 @@ public class GetUsageMetricSummaryDbMapper extends
             avgActivityResponseTime += dus.getAvgActivityResponseTime();
         }
 
-        result.setMessageCount(msgCount / numResults);
-        result.setPageViewCount(pageViewCount / numResults);
-        result.setStreamContributorCount(streamContributorCount / numResults);
-        result.setStreamViewCount(streamViewCount / numResults);
-        result.setStreamViewerCount(streamViewerCount / numResults);
-        result.setUniqueVisitorCount(uniqueVisitorCount / numResults);
-        result.setAvgActivityResponseTime(avgActivityResponseTime / numResults);
+        result.setMessageCount(msgCount / inRequest.getNumberOfDays());
+        result.setPageViewCount(pageViewCount / inRequest.getNumberOfDays());
+        result.setStreamContributorCount(streamContributorCount / inRequest.getNumberOfDays());
+        result.setStreamViewCount(streamViewCount / inRequest.getNumberOfDays());
+        result.setStreamViewerCount(streamViewerCount / inRequest.getNumberOfDays());
+        result.setUniqueVisitorCount(uniqueVisitorCount / inRequest.getNumberOfDays());
+        result.setAvgActivityResponseTime(avgActivityResponseTime / inRequest.getNumberOfDays());
 
         return result;
     }

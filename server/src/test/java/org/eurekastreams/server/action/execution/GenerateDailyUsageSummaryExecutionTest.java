@@ -56,7 +56,7 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get a single day's DailyUsageSummary.
      */
-    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> // 
     getDailyUsageSummaryByDateMapper = context.mock(DomainMapper.class, "getDailyUsageSummaryByDateMapper");
 
     /**
