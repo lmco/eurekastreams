@@ -216,17 +216,42 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
         themeDropDown = new BasicDropDownFormElement("Default Theme", "theme", themeDropDownValues, "-1", "", false);
 
+        FlowPanel tabDropDownWrapper = new FlowPanel();
+        tabDropDownWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropdownWrapper());
+        tabDropDownWrapper.add(tabDropDown);
+
+        FlowPanel themeDropDownWrapper = new FlowPanel();
+        themeDropDownWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropdownWrapper());
+        themeDropDownWrapper.add(themeDropDown);
+
         this.add(results);
         this.add(label);
         this.add(topDesc);
         this.add(requiredLabel);
         this.add(radioButtons);
         this.add(textWrapper);
+        this.add(description);
+        this.add(tabDropDownWrapper);
+        this.add(themeDropDownWrapper);
         this.add(verifyButton);
         this.add(verifying);
-        this.add(description);
-        this.add(tabDropDown);
-        this.add(themeDropDown);
+
+        Label criteriaHeader = new Label("LDAP Query");
+        Label themeHeader = new Label("Default Theme");
+        Label tabHeader = new Label("Default Tab");
+
+        criteriaHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaCriteria());
+        themeHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaTheme());
+        tabHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaTab());
+
+        FlowPanel membershipCriteriaHeaderPanel = new FlowPanel();
+        membershipCriteriaHeaderPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaHeader());
+
+        membershipCriteriaHeaderPanel.add(criteriaHeader);
+        membershipCriteriaHeaderPanel.add(themeHeader);
+        membershipCriteriaHeaderPanel.add(tabHeader);
+
+        this.add(membershipCriteriaHeaderPanel);
 
         accessGroupsPanel = new FlowPanel();
         accessGroupsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().accessGroups());
