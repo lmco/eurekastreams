@@ -60,6 +60,13 @@ public class GenerateDailyUsageSummaryExecutionTest
     getDailyUsageSummaryByDateMapper = context.mock(DomainMapper.class, "getDailyUsageSummaryByDateMapper");
 
     /**
+     * Mapper to get the most recent DailyUsageSummary before the input date.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> // 
+    getPreviousDailyUsageSummaryByDateMapper = context.mock(DomainMapper.class,
+            "getPreviousDailyUsageSummaryByDateMapper");
+
+    /**
      * Mapper to get a day's message count.
      */
     private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper = context.mock(
@@ -152,11 +159,11 @@ public class GenerateDailyUsageSummaryExecutionTest
     public void testExecuteWithDataAlreadyExisting()
     {
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
-                getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
-                getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
-                getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
-                getTotalCommentCountMapper, getTotalStreamContributorMapper);
+                getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper, getDailyMessageCountMapper,
+                getDailyPageViewCountMapper, getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper,
+                getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
+                insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
+                getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
@@ -214,11 +221,11 @@ public class GenerateDailyUsageSummaryExecutionTest
     public void executeWithNoDataAlreadyExisting(final boolean inIsWeekday)
     {
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
-                getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
-                getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
-                getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper, getTotalCommentCountMapper,
-                getTotalCommentCountMapper, getTotalStreamContributorMapper);
+                getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper, getDailyMessageCountMapper,
+                getDailyPageViewCountMapper, getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper,
+                getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
+                insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
+                getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper);
 
         final Date dateRaw = new Date(2011, 1, 22);
         final Date datePriorRaw = new Date(2011, 1, 21);

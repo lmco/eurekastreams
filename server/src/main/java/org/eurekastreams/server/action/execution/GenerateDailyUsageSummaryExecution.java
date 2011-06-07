@@ -73,6 +73,11 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> getDailyUsageSummaryByDateMapper;
 
     /**
+     * Mapper to get the most recent DailyUsageSummary before the input date.
+     */
+    private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> getPreviousDailyUsageSummaryByDateMapper;
+
+    /**
      * Mapper to get a day's message count - for a stream or the whole system.
      */
     private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper;
@@ -144,6 +149,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      *            strategy to get a date from yesterday
      * @param inGetDailyUsageSummaryByDateMapper
      *            Mapper to get a single day's DailyUsageSummary
+     * @param inGetPreviousDailyUsageSummaryByDateMapper
+     *            Mapper to get the most recent DailyUsageSummary before the input date
      * @param inGetDailyMessageCountMapper
      *            Mapper to get a day's message count
      * @param inGetDailyPageViewCountMapper
@@ -177,6 +184,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final int inDaysToGenerate,
             final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> // 
+            inGetPreviousDailyUsageSummaryByDateMapper,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyMessageCountMapper,
             final DomainMapper<Date, Long> inGetDailyPageViewCountMapper,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyStreamContributorCountMapper,
@@ -194,6 +203,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         daysToGenerate = inDaysToGenerate;
         daysAgoDateStrategy = inDaysAgoDateStrategy;
         getDailyUsageSummaryByDateMapper = inGetDailyUsageSummaryByDateMapper;
+        getPreviousDailyUsageSummaryByDateMapper = inGetPreviousDailyUsageSummaryByDateMapper;
         getDailyMessageCountMapper = inGetDailyMessageCountMapper;
         getDailyPageViewCountMapper = inGetDailyPageViewCountMapper;
         getDailyStreamContributorCountMapper = inGetDailyStreamContributorCountMapper;
@@ -322,10 +332,10 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             totalCommentCount = getTotalCommentCountMapper.execute(inStreamScopeId);
             totalContributorCount = getTotalStreamContributorMapper.execute(inStreamScopeId);
 
-            DailyUsageSummary priorDayData = getDailyUsageSummaryByDateMapper
+            DailyUsageSummary priorDayData = getPreviousDailyUsageSummaryByDateMapper
                     .execute(new UsageMetricDailyStreamInfoRequest(inPriorDate, inStreamScopeId));
 
-            if (priorDayData != null)
+            if (priorDayData != null && priorDayData.getTotalStreamViewCount() != null)
             {
                 totalStreamViewCount = priorDayData.getTotalStreamViewCount() + streamViewCount;
             }
