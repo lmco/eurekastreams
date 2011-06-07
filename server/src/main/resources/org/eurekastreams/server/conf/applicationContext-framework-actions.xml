@@ -4407,8 +4407,11 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.DeleteOldUsageMetricDataDbMapper">
-                <!-- keep 2 days of data -->
+                <!-- keep 2 days of metric data -->
                 <constructor-arg value="2" />
+                
+                <!-- keey 30 days of summary data -->
+                <constructor-arg value="30" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="dayOfWeekStrategy" />
