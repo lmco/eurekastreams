@@ -5,7 +5,7 @@
 <ui:image field="buttonImage" src="style/images/sendNotification.png" />
 <ui:image field="buttonImageDisabled" src="style/images/sendNotificationInactive.png" />
 
-<ui:style type="org.eurekastreams.web.client.ui.common.notification.NotificationWidget.LocalStyle">
+<ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationWidget.LocalStyle">
 .highPriority
 {
 	border-right: 10px solid red;
@@ -17,7 +17,16 @@
 .main
 {
 	padding: 5px;
-	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+}
+.message-text
+{
+	overflow: hidden; 
+}
+.timestamp
+{
+	font-size: 11px;
+	color: #666666;
 }
 </ui:style>
 
@@ -29,8 +38,8 @@
 		<g:Image ui:field="avatarUi "/>
 		<div />
 		<div />
-		<div ui:field="messageTextUi" />
-		<div ui:field="dateUi" />
+		<div class="{style.message-text}" ui:field="messageTextUi" />
+		<div class="{style.timestamp}" ui:field="timestampUi" />
 	</a>
 </g:HTMLPanel>
 	

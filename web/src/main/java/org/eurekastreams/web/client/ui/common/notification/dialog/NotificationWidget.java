@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.notification;
+package org.eurekastreams.web.client.ui.common.notification.dialog;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
@@ -62,7 +62,7 @@ public class NotificationWidget extends Composite
 
     /** UI element holding the timestamp. */
     @UiField
-    DivElement dateUi;
+    DivElement timestampUi;
 
     /**
      * Constructor.
@@ -81,7 +81,7 @@ public class NotificationWidget extends Composite
         // TODO: allow bolding
 
         messageTextUi.setInnerText(item.getMessage());
-        dateUi.setInnerText(dateFormatter.timeAgo(item.getNotificationDate()));
+        timestampUi.setInnerText(dateFormatter.timeAgo(item.getNotificationDate()));
 
         if (item.isHighPriority())
         {

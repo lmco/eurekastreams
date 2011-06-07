@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.model.NotificationCountModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
