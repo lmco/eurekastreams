@@ -1,0 +1,37 @@
+<ui:UiBinder 
+	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+<ui:image field="buttonImage" src="style/images/sendNotification.png" />
+<ui:image field="buttonImageDisabled" src="style/images/sendNotificationInactive.png" />
+
+<ui:style type="org.eurekastreams.web.client.ui.common.notification.NotificationWidget.LocalStyle">
+.highPriority
+{
+	border-right: 10px solid red;
+}
+.read
+{
+	background-color: #CCC;
+}
+.main
+{
+	padding: 5px;
+	border-top: 1px solid #CCC;
+}
+</ui:style>
+
+<ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+<ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" />
+
+<g:HTMLPanel addStyleNames="{style.main}">
+	<a>
+		<g:Image ui:field="avatarUi "/>
+		<div />
+		<div />
+		<div ui:field="messageTextUi" />
+		<div ui:field="dateUi" />
+	</a>
+</g:HTMLPanel>
+	
+</ui:UiBinder>
