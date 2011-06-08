@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -83,6 +84,17 @@ public class NotificationsDialogContent extends BaseDialogContent
     @UiField
     DivElement noNotificationsUi;
 
+    /** Selector for all (read+unread) notifications. */
+    @UiField
+    Label allFilterUi;
+
+    /** Selector for unread only notifications. */
+    @UiField
+    Label unreadFilterUi;
+
+    /** Current all/unread selector. */
+    private Widget currentReadFilterWidget;
+
     /** Notifications. */
     private List<InAppNotificationDTO> allNotifications;
 
@@ -99,7 +111,7 @@ public class NotificationsDialogContent extends BaseDialogContent
     private Source currentSource;
 
     /** Currently selected show read option. */
-    private final boolean currentShowRead = false;
+    private boolean currentShowRead = false;
 
     /** Observer (allow unlinking). */
     private final Observer<UnreadNotificationClearedEvent> unreadNotificationClearedObserver = // \n
@@ -118,6 +130,7 @@ public class NotificationsDialogContent extends BaseDialogContent
     {
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
         main = binder.createAndBindUi(this);
+        currentReadFilterWidget = unreadFilterUi;
 
         // // -- build UI --
         // main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifDialogMain());
@@ -343,6 +356,26 @@ public class NotificationsDialogContent extends BaseDialogContent
         {
             notificationListScrollPanel.scrollToTop();
             notificationListScrollPanel.setVisible(true);
+        }
+    }
+
+    /**
+     * Shows all (unread+read) notifications.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler({ "allFilterUi", "unreadFilterUi" })
+    void onAllFilterClick(final ClickEvent ev)
+    {
+        Widget selector = (Widget) ev.getSource();
+        if (selector != currentReadFilterWidget)
+        {
+            currentReadFilterWidget.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+            currentReadFilterWidget = selector;
+            currentReadFilterWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+            currentShowRead = !currentShowRead;
+            displayNotifications(currentSource.getFilter(), currentShowRead);
         }
     }
 

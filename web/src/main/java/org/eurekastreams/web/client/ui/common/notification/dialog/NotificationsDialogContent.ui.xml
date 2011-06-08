@@ -24,7 +24,7 @@
 }
 .controls-bar
 {
-	height: 33px;
+	height: 36px;
 	border-bottom: 1px solid #666;
 }
 .no-notifications,
@@ -51,6 +51,11 @@
 {
 	padding-left: 25px;
 }
+
+.read-filter-options
+{
+	margin-left: 5px;
+}
 </ui:style>
 
 
@@ -64,9 +69,9 @@
 	
 	<div class="{style.right-side}">
 		<div class="{style.controls-bar}">
-			<div class="{coreCss.options}">
-				<div class="{coreCss.connectionFilterButton}">Unread</div>
-				<div class="{coreCss.connectionFilterButton}">All</div>
+			<div class="{coreCss.options} {style.read-filter-options}">
+				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel} {coreCss.active}" ui:field="unreadFilterUi">Unread</g:Label>
+				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel}" ui:field="allFilterUi">All</g:Label>
 			</div>
 			
 		</div>
