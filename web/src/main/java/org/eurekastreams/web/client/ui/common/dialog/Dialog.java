@@ -67,7 +67,11 @@ public class Dialog implements DialogContentHost
         popupPanel.setGlassStyleName(StaticResourceBundle.INSTANCE.coreCss().modalBg());
 
         FlowPanel modalPanel = new FlowPanel();
-        modalPanel.addStyleName(dialogContent.getCssName());
+        final String cssName = dialogContent.getCssName();
+        if (cssName != null && !cssName.isEmpty())
+        {
+            modalPanel.addStyleName(cssName);
+        }
         modalPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modal());
 
         // title panel
@@ -172,7 +176,7 @@ public class Dialog implements DialogContentHost
 
     /**
      * Show a dialog.
-     * 
+     *
      * @param dialogContent
      *            the content.
      */
