@@ -16,17 +16,18 @@
 package org.eurekastreams.web.client.ui.common.notification.dialog;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
+import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -54,7 +55,7 @@ public class NotificationWidget extends Composite
 
     /** Avatar. */
     @UiField
-    Image avatarUi;
+    ImageElement avatarUi;
 
     /** UI element holding the message text. */
     @UiField
@@ -92,7 +93,8 @@ public class NotificationWidget extends Composite
             main.addStyleName(style.read());
         }
 
-        // TODO Auto-generated constructor stub
+        AvatarUrlGenerator urlGen = new AvatarUrlGenerator(item.getAvatarOwnerType());
+        avatarUi.setSrc(urlGen.getSmallAvatarUrl(null, item.getAvatarId()));
     }
 
     /**

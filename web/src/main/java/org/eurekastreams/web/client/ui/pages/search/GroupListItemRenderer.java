@@ -22,7 +22,6 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -42,7 +41,7 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
 {
     /**
      * Renders the group.
-     * 
+     *
      * @param group
      *            the group.
      * @return the group as a widget.
@@ -55,7 +54,7 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
         groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
 
         groupPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group.getEntityId(), group
-                .getAvatarId(), Size.Small, Background.White));
+                .getAvatarId(), Size.Small));
 
         FlowPanel groupAbout = new FlowPanel();
         groupAbout.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
@@ -99,7 +98,7 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */

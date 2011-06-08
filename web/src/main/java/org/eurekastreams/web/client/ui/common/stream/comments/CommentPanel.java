@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
@@ -54,12 +53,12 @@ public class CommentPanel extends Composite
     /**
      * JSNI Facade.
      */
-    private WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
     /**
      * Effects facade.
      */
-    private EffectsFacade effects = new EffectsFacade();
-    
+    private final EffectsFacade effects = new EffectsFacade();
+
     /**
      * Default constructor.
      *
@@ -72,7 +71,7 @@ public class CommentPanel extends Composite
         commentContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
 
         commentContainer.add(new AvatarLinkPanel(EntityType.PERSON, comment.getAuthorAccountId(), comment
-                .getAuthorId(), comment.getAuthorAvatarId(), Size.VerySmall, Background.White));
+                .getAuthorId(), comment.getAuthorAvatarId(), Size.VerySmall));
 
         FlowPanel body = new FlowPanel();
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
@@ -85,17 +84,17 @@ public class CommentPanel extends Composite
 
         // first transform links to hyperlinks
         String commentBody = comment.getBody();
-        
+
         // Strip out any existing HTML.
         commentBody = jSNIFacade.escapeHtml(commentBody);
         commentBody = commentBody.replaceAll("(\r\n|\n|\r)", "<br />");
-        
+
         // transform links
         commentBody =new HyperlinkTransformer(jSNIFacade).transform(commentBody);
 
         // then transform hashtags to hyperlinks
         commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);
-        
+
         Widget text = new InlineHTML(commentBody);
         text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
         body.add(text);
@@ -123,7 +122,7 @@ public class CommentPanel extends Composite
             Label deleteLink = new InlineLabel("Delete");
             deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().delete());
             deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
-            
+
             actionsPanel.add(deleteLink);
 
             deleteLink.addClickHandler(new ClickHandler()

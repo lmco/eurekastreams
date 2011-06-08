@@ -42,23 +42,8 @@ public class AvatarWidget extends Composite
         VerySmall
     }
 
-    /**
-     * The background the avatar will be living on.
-     */
-    public enum Background
-    {
-        /** #FFFFFF. */
-        White,
-        /** #CCCCCC. */
-        Gray, 
-        /**
-         * No background.
-         */
-        None
-    }
-
     /** The image. */
-    private Image image = new Image();
+    private final Image image = new Image();
 
     /** Avatar size. */
     private Size imageSize;
@@ -169,60 +154,6 @@ public class AvatarWidget extends Composite
     public AvatarWidget(final AvatarEntity entity, final EntityType type, final Size size, final String title)
     {
         this(entity.getId(), entity.getAvatarId(), type, size, title);
-    }
-
-    /**
-     * Constructor: Doesn't specify whose avatar, for setting dynamically later.
-     * 
-     * @param size
-     *            the avatar size.
-     * @param bg
-     *            the background color.
-     */
-    @Deprecated
-    public AvatarWidget(final Size size, final Background bg)
-    {
-        this(size);
-    }
-
-    /**
-     * Creates an avatar for the given entity.
-     * 
-     * @param entity
-     *            the entity that has the avatar.
-     * @param type
-     *            the entity type.
-     * @param size
-     *            the avatar size.
-     * @param bg
-     *            the background color.
-     */
-    @Deprecated
-    public AvatarWidget(final AvatarEntity entity, final EntityType type, final Size size, final Background bg)
-    {
-        this(entity.getId(), entity.getAvatarId(), type, size);
-    }
-
-    /**
-     * Creates an avatar for the given entity.
-     * 
-     * @param entityId
-     *            the entity ID.
-     * @param avatarId
-     *            the ID of the avatar.
-     * @param type
-     *            the entity type.
-     * @param size
-     *            the avatar size.
-     * @param bg
-     *            the background color.
-     */
-    @Deprecated
-    public AvatarWidget(final long entityId, final String avatarId, final EntityType type, final Size size,
-            final Background bg)
-    {
-        this(size);
-        setAvatar(entityId, avatarId, type);
     }
 
     /**

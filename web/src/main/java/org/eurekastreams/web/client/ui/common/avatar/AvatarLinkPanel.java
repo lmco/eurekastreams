@@ -21,7 +21,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -113,29 +112,6 @@ public class AvatarLinkPanel extends Composite
      */
     public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final long entityId,
             final String avatarId, final Size size)
-    {
-        this(entityType, entityUniqueId, new AvatarWidget(entityId, avatarId, entityType, size));
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param entityId
-     *            the entity ID.
-     * @param entityUniqueId
-     *            Short name / account id of entity the avatar belongs to.
-     * @param avatarId
-     *            the ID of the avatar.
-     * @param entityType
-     *            the entity type.
-     * @param size
-     *            the avatar size.
-     * @param bg
-     *            the background color.
-     */
-    @Deprecated
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final long entityId,
-            final String avatarId, final Size size, final Background bg)
     {
         this(entityType, entityUniqueId, new AvatarWidget(entityId, avatarId, entityType, size));
     }

@@ -19,8 +19,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.DeletedGroupAvatarResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonAvatarResponseEvent;
 import org.eurekastreams.web.client.model.Deletable;
@@ -201,7 +201,6 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
     {
         entity.setAvatarId(imageId);
         return new AvatarWidget(entity.getId(), imageId, entityType, AvatarWidget.Size.Normal);
-        // return new AvatarWidget(entity, entityType, AvatarWidget.Size.Normal, AvatarWidget.Background.White);
     }
 
     /**

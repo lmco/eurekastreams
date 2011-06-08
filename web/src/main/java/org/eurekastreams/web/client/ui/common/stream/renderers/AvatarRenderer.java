@@ -19,7 +19,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -27,13 +26,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders an avatar for a stream activity.
- * 
+ *
  */
 public class AvatarRenderer
 {
     /**
      * Renders an avatar.
-     * 
+     *
      * @param entity
      *            Entity whose avatar to render.
      * @return Widget displaying avatar.
@@ -41,12 +40,12 @@ public class AvatarRenderer
     public Widget render(final StreamEntityDTO entity)
     {
         return new AvatarLinkPanel(entity.getType(), entity.getUniqueIdentifier(), new AvatarWidget(entity.getId(),
-                entity.getAvatarId(), entity.getType(), Size.Small, Background.White));
+                entity.getAvatarId(), entity.getType(), Size.Small));
     }
 
     /**
      * Renders an avatar.
-     * 
+     *
      * @param id
      *            id of the user.
      * @param avatarId
@@ -55,14 +54,14 @@ public class AvatarRenderer
      */
     public Widget render(final Long id, final String avatarId)
     {
-        AvatarWidget avatar = new AvatarWidget(id, avatarId, EntityType.PERSON, Size.Small, Background.White);
+        AvatarWidget avatar = new AvatarWidget(id, avatarId, EntityType.PERSON, Size.Small);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }
 
     /**
      * Renders an avatar.
-     * 
+     *
      * @param id
      *            id of the user.
      * @param avatarId
@@ -73,14 +72,14 @@ public class AvatarRenderer
      */
     public Widget render(final Long id, final String avatarId, final EntityType type)
     {
-        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, Size.Small, Background.White);
+        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, Size.Small);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }
 
     /**
      * Renders an avatar.
-     * 
+     *
      * @param id
      *            id of the user.
      * @param avatarId
@@ -93,7 +92,7 @@ public class AvatarRenderer
      */
     public Widget render(final Long id, final String avatarId, final EntityType type, final Size size)
     {
-        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, size, Background.White);
+        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, size);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }

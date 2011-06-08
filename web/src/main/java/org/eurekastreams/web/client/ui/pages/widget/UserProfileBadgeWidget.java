@@ -26,7 +26,6 @@ import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -42,7 +41,7 @@ public class UserProfileBadgeWidget extends Composite
 {
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            Unique ID of person to display.
      */
@@ -51,9 +50,8 @@ public class UserProfileBadgeWidget extends Composite
         final FlowPanel widget = new FlowPanel();
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeContainer());
         initWidget(widget);
-        
-        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLoading());
 
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLoading());
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
@@ -65,10 +63,9 @@ public class UserProfileBadgeWidget extends Composite
 
                         if (entity == null)
                         {
-                            final AvatarWidget blankAvatar = new AvatarWidget(0, null, EntityType.PERSON, Size.Normal,
-                                    Background.White);
-                            blankAvatar
-                                    .addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
+                            final AvatarWidget blankAvatar = new AvatarWidget(0, null, EntityType.PERSON, Size.Normal);
+                            blankAvatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                    .eurekaConnectBadgeAvatar());
 
                             widget.add(blankAvatar);
 
@@ -81,7 +78,7 @@ public class UserProfileBadgeWidget extends Composite
                         {
                             AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
                                     new AvatarWidget(entity.getId(), entity.getAvatarId(), EntityType.PERSON,
-                                            Size.Normal, Background.White));
+                                            Size.Normal));
                             linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
 
                             widget.add(linkPanel);
