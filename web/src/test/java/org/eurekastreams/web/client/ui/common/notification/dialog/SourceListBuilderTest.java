@@ -111,13 +111,13 @@ public class SourceListBuilderTest
         Source rootSource = sut.getRootSource();
         List<Source> sources = sut.getSourceList();
 
-        assertEquals(2 * 5, sources.size());
+        assertEquals(10, sources.size());
 
-        assertSource(sources.get(0), null, null, "All", 2 * 6, 4 * 6, notifs2);
+        assertSource(sources.get(0), null, null, "All", 12, 24, notifs2);
         assertNull(sources.get(0).getParent());
         assertSame(rootSource, sources.get(0));
 
-        assertSource(sources.get(1), null, null, "Streams", 5, 5 * 2, notifs2);
+        assertSource(sources.get(1), null, null, "Streams", 5, 10, notifs2);
         assertSame(rootSource, sources.get(1).getParent());
 
         assertSource(sources.get(2), EntityType.PERSON, personId1, "My Stream", 0, 2, notifs2);
