@@ -23,7 +23,6 @@ import java.io.Serializable;
  */
 public class UsageMetricSummaryDTO implements Serializable
 {
-
     /**
      * Serial version id.
      */
