@@ -7,5 +7,6 @@
 <suppressions>
     <suppress checks="JavadocMethodCheck|MethodNameCheck|FileLengthCheck|JavadocTypeCheck" files="CoreCss.java" />
     <suppress checks="JavadocMethodCheck|MethodNameCheck|FileLengthCheck|JavadocTypeCheck" files="StaticResourceBundle.java" />
+    <suppress checks="MagicNumberCheck" files=".*Test\.java" />
 </suppressions>
 

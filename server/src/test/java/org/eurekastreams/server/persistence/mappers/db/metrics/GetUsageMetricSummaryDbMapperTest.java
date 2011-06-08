@@ -16,14 +16,13 @@
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.List;
 
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,9 +56,8 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
         getEntityManager().flush();
 
-        UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(3, null));
-        assertNotNull(result);
-        assertEquals(0, result.getRecordCount());
+        List<DailyUsageSummary> results = sut.execute(new UsageMetricStreamSummaryRequest(3, null));
+        assertEquals(0, results.size());
     }
 
     /**
@@ -71,8 +69,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         final long nowInMs = new Date().getTime();
         final long msInDay = 86400000L;
 
-        final long resultValue = 3;
-        final long count = 10;
+        final long count = 15;
         // clear table.
         getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
         getEntityManager().flush();
@@ -109,18 +106,12 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
 
         // execute sut - 10 day window
         final int ten = 10;
-        UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(ten, null));
+        List<DailyUsageSummary> results = sut.execute(new UsageMetricStreamSummaryRequest(ten, null));
 
         // verfiy row count and averages.
-        assertNotNull(result);
-        assertEquals(2, result.getRecordCount());
-        assertEquals(resultValue, result.getMessageCount());
-        assertEquals(resultValue, result.getPageViewCount());
-        assertEquals(resultValue, result.getStreamContributorCount());
-        assertEquals(resultValue, result.getStreamViewCount());
-        assertEquals(resultValue, result.getStreamViewerCount());
-        assertEquals(resultValue, result.getUniqueVisitorCount());
-        assertEquals(resultValue, result.getAvgActivityResponseTime());
+        assertEquals(2, results.size());
+        assertEquals(count * 2, results.get(0).getMessageCount());
+        assertEquals(count * 1, results.get(1).getMessageCount());
     }
 
     /**
@@ -132,7 +123,6 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         final long nowInMs = new Date().getTime();
         final long msInDay = 86400000L;
 
-        final long resultValue = 15;
         final long count = 100;
 
         final long streamViewScopeId = 372L;
@@ -175,18 +165,12 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
 
         // execute sut.
         final int twenty = 20;
-        UsageMetricSummaryDTO result = sut.execute(new UsageMetricStreamSummaryRequest(twenty, streamViewScopeId));
+        List<DailyUsageSummary> results = sut.execute(new UsageMetricStreamSummaryRequest(twenty, streamViewScopeId));
 
         // verfiy row count and averages.
-        assertNotNull(result);
-        assertEquals(2, result.getRecordCount());
-        assertEquals(resultValue, result.getMessageCount());
-        assertEquals(resultValue, result.getPageViewCount());
-        assertEquals(resultValue, result.getStreamContributorCount());
-        assertEquals(resultValue, result.getStreamViewCount());
-        assertEquals(resultValue, result.getStreamViewerCount());
-        assertEquals(resultValue, result.getUniqueVisitorCount());
-        assertEquals(resultValue, result.getAvgActivityResponseTime());
+        assertEquals(2, results.size());
+        assertEquals(count * 2, results.get(0).getMessageCount());
+        assertEquals(count * 1, results.get(1).getMessageCount());
     }
 
 }
