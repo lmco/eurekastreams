@@ -135,7 +135,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             uniqueVisitorCount += dus.getUniqueVisitorCount();
             avgActivityResponseTime += dus.getAvgActivityResponseTime();
         }
-        result.setRecordCount(recordCount);
 
         // number of weekdays between the two dates
         long weekdaysCount = 0;
@@ -144,17 +143,19 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             weekdaysCount = weekdaysInDateRangeStrategy.getWeekdayCountBetweenDates(oldestAvailableReportDate,
                     DateDayExtractor.getStartOfDay(new Date()));
         }
+        result.setWeekdayRecordCount(weekdaysCount);
+
         logger.debug("Found " + weekdaysCount + " weekdays between " + oldestAvailableReportDate + " and "
                 + latestReportDate);
         if (weekdaysCount > 0)
         {
-            result.setMessageCount(msgCount / weekdaysCount);
-            result.setPageViewCount(pageViewCount / weekdaysCount);
-            result.setStreamContributorCount(streamContributorCount / weekdaysCount);
-            result.setStreamViewCount(streamViewCount / weekdaysCount);
-            result.setStreamViewerCount(streamViewerCount / weekdaysCount);
-            result.setUniqueVisitorCount(uniqueVisitorCount / weekdaysCount);
-            result.setAvgActivityResponseTime(avgActivityResponseTime / weekdaysCount);
+            result.setAverageDailyMessageCount(msgCount / weekdaysCount);
+            result.setAverageDailyPageViewCount(pageViewCount / weekdaysCount);
+            result.setAverageDailyStreamContributorCount(streamContributorCount / weekdaysCount);
+            result.setAverageDailyStreamViewCount(streamViewCount / weekdaysCount);
+            result.setAverageDailyStreamViewerCount(streamViewerCount / weekdaysCount);
+            result.setAverageDailyUniqueVisitorCount(uniqueVisitorCount / weekdaysCount);
+            result.setAverageDailyActivityResponseTime(avgActivityResponseTime / weekdaysCount);
         }
         return result;
     }

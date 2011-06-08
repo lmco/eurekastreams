@@ -164,12 +164,12 @@ public class GetUsageMetricSummaryExecutionTest
             }
         });
 
-        Assert.assertEquals(3, result.getRecordCount());
-        Assert.assertEquals(6, result.getUniqueVisitorCount());
-        Assert.assertEquals(9, result.getPageViewCount());
-        Assert.assertEquals(12, result.getStreamViewerCount());
-        Assert.assertEquals(15, result.getStreamViewCount());
-        Assert.assertEquals(18, result.getStreamContributorCount());
-        Assert.assertEquals(21, result.getMessageCount());
+        Assert.assertEquals(10, result.getWeekdayRecordCount());
+        Assert.assertEquals(6, result.getAverageDailyUniqueVisitorCount());
+        Assert.assertEquals(9, result.getAverageDailyPageViewCount());
+        Assert.assertEquals(12, result.getAverageDailyStreamViewerCount());
+        Assert.assertEquals(15, result.getAverageDailyStreamViewCount());
+        Assert.assertEquals(18, result.getAverageDailyStreamContributorCount());
+        Assert.assertEquals(21, result.getAverageDailyMessageCount());
     }
 }
