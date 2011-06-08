@@ -487,6 +487,7 @@
 								  <exclude>org/eurekastreams/server/service/restlets/FeedReaderWritableResource.class</exclude>
 		                          <exclude>org/eurekastreams/server/service/restlets/GadgetUserPrefsResource.class</exclude>
                                   <!--  Commons exclusions -->
+                                  <exclude>**/Session.class</exclude>
                                   <exclude>**/*Test.class</exclude>
                                   <exclude>**/*Fake.class</exclude>
                                   <exclude>**/*MockSupport.class</exclude>

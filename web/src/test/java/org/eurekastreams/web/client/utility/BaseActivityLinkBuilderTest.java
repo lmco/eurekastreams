@@ -29,7 +29,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,8 +69,6 @@ public class BaseActivityLinkBuilderTest
     /** SUT. */
     private BaseActivityLinkBuilder sut;
 
-    /** Saved session to restore singleton. */
-    private Session savedSession = Session.getInstance();
 
     /** Expected parameters. */
     private Map<String, String> expectedParameters;
@@ -97,15 +94,6 @@ public class BaseActivityLinkBuilderTest
                 return request;
             }
         };
-    }
-
-    /**
-     * Setup after each test.
-     */
-    @After
-    public void tearDown()
-    {
-        Session.setInstance(savedSession);
     }
 
     /**

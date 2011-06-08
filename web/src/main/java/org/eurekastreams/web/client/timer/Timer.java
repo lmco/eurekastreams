@@ -27,7 +27,7 @@ import org.eurekastreams.web.client.ui.TimerHandler;
 
 /**
  * Controls timer jobs going back to the server. Bundles HTTP requests for optimizations.
- *
+ * 
  */
 public class Timer
 {
@@ -43,6 +43,7 @@ public class Timer
      * The jobs.
      */
     private HashMap<Integer, Set<String>> jobs = new HashMap<Integer, Set<String>>();
+
     /**
      * The requests.
      */
@@ -60,7 +61,7 @@ public class Timer
 
     /**
      * Add a timer job.
-     *
+     * 
      * @param jobKey
      *            the job key, used for lookup and modification. DON'T FORGET IT.
      * @param numOfMinutes
@@ -69,7 +70,8 @@ public class Timer
      *            the fetchable client model.
      * @param request
      *            the request.
-     * @param permanant does this timer job persist.
+     * @param permanant
+     *            does this timer job persist.
      */
     public void addTimerJob(final String jobKey, final Integer numOfMinutes, final Fetchable fetchable,
             final Serializable request, final boolean permanant)
@@ -90,26 +92,33 @@ public class Timer
             // Set up the Timer job
             new TimerFactory().runTimerRepeating(numOfMinutes * MS_IN_MIN, new TimerHandler()
             {
+                private int mouseX = -1;
+                private int mouseY = -1;
+
                 public void run()
                 {
-                    Session.getInstance().getActionProcessor().setQueueRequests(true);
-                    for (String job : jobs.get(numOfMinutes))
+                    // Do not run if the user is inactive.
+                    if (mouseX != Session.getInstance().getMouseX() || mouseY != Session.getInstance().getMouseY())
                     {
-                        try
+                        Session.getInstance().getActionProcessor().setQueueRequests(true);
+                        for (String job : jobs.get(numOfMinutes))
                         {
-                            if (fetchables.containsKey(job) && !pausedJobs.contains(job))
+                            try
                             {
-                        	fetchables.get(job).fetch(requests.get(job), false);
+                                if (fetchables.containsKey(job) && !pausedJobs.contains(job))
+                                {
+                                    fetchables.get(job).fetch(requests.get(job), false);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // Just making sure ANYTHING that goes wrong doesn't hose the entire app.
+                                int x = 0;
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            // Just making sure ANYTHING that goes wrong doesn't hose the entire app.
-                            int x = 0;
-                        }
+                        Session.getInstance().getActionProcessor().setQueueRequests(false);
+                        Session.getInstance().getActionProcessor().fireQueuedRequests();
                     }
-                    Session.getInstance().getActionProcessor().setQueueRequests(false);
-                    Session.getInstance().getActionProcessor().fireQueuedRequests();
                 }
             });
         }
@@ -117,13 +126,13 @@ public class Timer
         {
             jobs.get(numOfMinutes).add(jobKey);
             requests.put(jobKey, request);
-            fetchables.put(jobKey, fetchable); 
+            fetchables.put(jobKey, fetchable);
         }
     }
 
     /**
      * Change a request object for a job.
-     *
+     * 
      * @param jobKey
      *            the job key.
      * @param request
@@ -136,7 +145,7 @@ public class Timer
 
     /**
      * Change the fetchable for a job.
-     *
+     * 
      * @param jobKey
      *            the job key.
      * @param fetchable
@@ -149,7 +158,9 @@ public class Timer
 
     /**
      * Pause a job.
-     * @param jobKey the job to pause.
+     * 
+     * @param jobKey
+     *            the job to pause.
      */
     public void pauseJob(final String jobKey)
     {
@@ -158,7 +169,9 @@ public class Timer
 
     /**
      * Unpause a job.
-     * @param jobKey the job to unpause.
+     * 
+     * @param jobKey
+     *            the job to unpause.
      */
     public void unPauseJob(final String jobKey)
     {
@@ -175,9 +188,10 @@ public class Timer
             removeTimerJob(job);
         }
     }
+
     /**
      * Remove a job.
-     *
+     * 
      * @param jobKey
      *            the job key.
      */
