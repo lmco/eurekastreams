@@ -208,4 +208,9 @@ public final class CacheKeys
      * Key for getting a SharedResource by unique key (lower-cased).
      */
     public static final String SHARED_RESOURCE_BY_UNIQUE_KEY = "SRBUK:";
+
+    /**
+     * Key for getting list of FeaturedStreamDTOs.
+     */
+    public static final String FEATURED_STREAMS = "FeaturedStreams:";
 }
