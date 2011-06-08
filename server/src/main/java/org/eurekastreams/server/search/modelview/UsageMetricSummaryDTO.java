@@ -27,6 +27,7 @@ public class UsageMetricSummaryDTO implements Serializable
     /**
      * Serial version id.
      */
+    private static final long serialVersionUID = 5592459737295733787L;
 
     /**
      * Number of weekday records this summary is based on.
