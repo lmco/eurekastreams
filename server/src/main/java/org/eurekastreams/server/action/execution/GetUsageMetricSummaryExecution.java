@@ -99,6 +99,11 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         long uniqueVisitorCount = 0;
         long avgActivityResponseTime = 0;
 
+        Long totalStreamViewCount = null;
+        Long totalActivityCount = null;
+        Long totalCommentCount = null;
+        Long totalContributorCount = null;
+
         Calendar day = Calendar.getInstance();
         day.add(Calendar.DATE, -request.getNumberOfDays());
         Date oldestAllowableReportDate = DateDayExtractor.getStartOfDay(new Date(day.getTimeInMillis()));
@@ -109,6 +114,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
         Date summaryDate;
         Date oldestAvailableReportDate = null;
+        Date newestAvailableReportDate = null;
         int recordCount = 0;
         logger.debug("Looking for data between " + oldestAllowableReportDate + " and " + latestReportDate);
         for (DailyUsageSummary dus : results)
@@ -121,9 +127,21 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 continue;
             }
 
+            if (newestAvailableReportDate == null || summaryDate.after(newestAvailableReportDate))
+            {
+                newestAvailableReportDate = summaryDate;
+
+                // this is currently the most recent record - store the totals
+                totalStreamViewCount = dus.getTotalStreamViewCount();
+                totalActivityCount = dus.getTotalActivityCount();
+                totalCommentCount = dus.getTotalCommentCount();
+                totalContributorCount = dus.getTotalContributorCount();
+            }
+
             recordCount++;
             if (oldestAvailableReportDate == null || summaryDate.before(oldestAvailableReportDate))
             {
+                // this is the earliest reporting date we've seen
                 oldestAvailableReportDate = summaryDate;
             }
 
@@ -144,6 +162,10 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                     DateDayExtractor.getStartOfDay(new Date()));
         }
         result.setWeekdayRecordCount(weekdaysCount);
+        result.setTotalStreamViewCount(totalStreamViewCount);
+        result.setTotalActivityCount(totalActivityCount);
+        result.setTotalCommentCount(totalCommentCount);
+        result.setTotalContributorCount(totalContributorCount);
 
         logger.debug("Found " + weekdaysCount + " weekdays between " + oldestAvailableReportDate + " and "
                 + latestReportDate);

@@ -107,7 +107,7 @@ public class GetUsageMetricSummaryExecutionTest
         cal.add(Calendar.DATE, -4);
         final Date fourDaysAgo = cal.getTime();
 
-        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, yesterday, 80L, 90L, 100L, 110L, 120L));
+        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, yesterday, 80L, 91L, 101L, 111L, 121L));
         results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, twoDaysAgo, 90L, 100L, 110L, 120L, 130L));
         results
                 .add(new DailyUsageSummary(30L, 40L, 50L, 60L, 70L, 80L, 90L, threeDaysAgo, 100L, 110L, 120L, 130L,
@@ -171,5 +171,9 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(15, result.getAverageDailyStreamViewCount());
         Assert.assertEquals(18, result.getAverageDailyStreamContributorCount());
         Assert.assertEquals(21, result.getAverageDailyMessageCount());
+        Assert.assertEquals(new Long(91), result.getTotalActivityCount());
+        Assert.assertEquals(new Long(101), result.getTotalCommentCount());
+        Assert.assertEquals(new Long(111), result.getTotalStreamViewCount());
+        Assert.assertEquals(new Long(121), result.getTotalContributorCount());
     }
 }

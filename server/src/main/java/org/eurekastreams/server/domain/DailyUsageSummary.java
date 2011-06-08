@@ -175,7 +175,7 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
         totalActivityCount = inTotalActivityCount;
         totalCommentCount = inTotalCommentCount;
         totalStreamViewCount = inTotalStreamViewCount;
-        totalContributorCount = inTotalActivityCount;
+        totalContributorCount = inTotalContributorCount;
     }
 
     /**

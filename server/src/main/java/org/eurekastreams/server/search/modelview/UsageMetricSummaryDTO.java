@@ -26,7 +26,7 @@ public class UsageMetricSummaryDTO implements Serializable
     /**
      * Serial version id.
      */
-    private static final long serialVersionUID = 5592459737295733787L;
+    private static final long serialVersionUID = -5235759907279186759L;
 
     /**
      * Number of weekday records this summary is based on.
@@ -67,6 +67,26 @@ public class UsageMetricSummaryDTO implements Serializable
      * Avg time (mins) to first comment (for activities that have comments).
      */
     private long averageDailyActivityResponseTime;
+
+    /**
+     * Total number of views of streams for all time.
+     */
+    private Long totalStreamViewCount;
+
+    /**
+     * Total activity count for all time.
+     */
+    private Long totalActivityCount;
+
+    /**
+     * Total comment count for all time.
+     */
+    private Long totalCommentCount;
+
+    /**
+     * Total contributor count - for all time - applies to streams only.
+     */
+    private Long totalContributorCount;
 
     /**
      * @return the weekdayRecordCount
@@ -202,6 +222,74 @@ public class UsageMetricSummaryDTO implements Serializable
     public void setAverageDailyActivityResponseTime(final long inAverageDailyActivityResponseTime)
     {
         averageDailyActivityResponseTime = inAverageDailyActivityResponseTime;
+    }
+
+    /**
+     * @return the totalStreamViewCount
+     */
+    public Long getTotalStreamViewCount()
+    {
+        return totalStreamViewCount;
+    }
+
+    /**
+     * @param inTotalStreamViewCount
+     *            the totalStreamViewCount to set
+     */
+    public void setTotalStreamViewCount(final Long inTotalStreamViewCount)
+    {
+        totalStreamViewCount = inTotalStreamViewCount;
+    }
+
+    /**
+     * @return the totalActivityCount
+     */
+    public Long getTotalActivityCount()
+    {
+        return totalActivityCount;
+    }
+
+    /**
+     * @param inTotalActivityCount
+     *            the totalActivityCount to set
+     */
+    public void setTotalActivityCount(final Long inTotalActivityCount)
+    {
+        totalActivityCount = inTotalActivityCount;
+    }
+
+    /**
+     * @return the totalCommentCount
+     */
+    public Long getTotalCommentCount()
+    {
+        return totalCommentCount;
+    }
+
+    /**
+     * @param inTotalCommentCount
+     *            the totalCommentCount to set
+     */
+    public void setTotalCommentCount(final Long inTotalCommentCount)
+    {
+        totalCommentCount = inTotalCommentCount;
+    }
+
+    /**
+     * @return the totalContributorCount
+     */
+    public Long getTotalContributorCount()
+    {
+        return totalContributorCount;
+    }
+
+    /**
+     * @param inTotalContributorCount
+     *            the totalContributorCount to set
+     */
+    public void setTotalContributorCount(final Long inTotalContributorCount)
+    {
+        totalContributorCount = inTotalContributorCount;
     }
 
 }
