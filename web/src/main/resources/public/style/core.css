@@ -6407,11 +6407,6 @@ body .user-bar li div.notif-count:hover {
 	cursor: pointer;
 }
 
-.notif-modal {
-	width: 700px;
-	height: 438px;
-}
-
 .modal-content-panel {
 	background: #EEEEEE url(style/images/globalNavshadow.png) repeat-x
 		scroll 0 0;

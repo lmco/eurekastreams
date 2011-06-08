@@ -1390,8 +1390,8 @@ public interface CoreCss extends CssResource
     @ClassName("notif-grid")
     String notifGrid();
 
-    @ClassName("notif-modal")
-    String notifModal();
+    // @ClassName("notif-modal")
+    // String notifModal();
 
     // @ClassName("notif-no-notifications")
     // String notifNoNotifications();

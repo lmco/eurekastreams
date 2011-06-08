@@ -19,6 +19,8 @@ import org.eurekastreams.web.client.events.PreDialogHideEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -141,8 +143,14 @@ public class Dialog implements DialogContentHost
     {
         popupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         show();
-        center();
-        popupPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        Scheduler.get().scheduleDeferred(new ScheduledCommand()
+        {
+            public void execute()
+            {
+                center();
+                popupPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+            }
+        });
     }
 
     /**

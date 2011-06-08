@@ -17,13 +17,9 @@ package org.eurekastreams.web.client.ui.common.notification.dialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.events.EventBus;
@@ -54,25 +50,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NotificationsDialogContent extends BaseDialogContent
 {
-    /** For sorting source filters. */
-    private static final Comparator<Source> SOURCE_SORTER = new Comparator<Source>()
-    {
-        public int compare(final Source inO1, final Source inO2)
-        {
-            return inO1.getDisplayName().compareTo(inO2.getDisplayName());
-        }
-    };
-
     /** Main content widget. */
     private final Widget main;
-
-    // /** Notification list wrapper. */
-    // @UiField
-    // ScrollPanel scrollPanel;
-
-    //
-    // /** Notification list. */
-    // private final Panel listPanel = new FlowPanel();
 
     /** To unwire the observer when done with dialog. */
     private Observer<DialogLinkClickedEvent> linkClickedObserver;
@@ -87,10 +66,6 @@ public class NotificationsDialogContent extends BaseDialogContent
     /** Global CSS. */
     @UiField(provided = true)
     CoreCss coreCss;
-
-    // /** Notification list wrapper. */
-    // @UiField
-    // ScrollPanel scrollPanel;
 
     /** The list of sources. */
     @UiField
@@ -118,16 +93,13 @@ public class NotificationsDialogContent extends BaseDialogContent
     private Source rootSource;
 
     /** Index of actual sources. */
-    private final Map<String, Source> sourceIndex = new HashMap<String, Source>();
+    private Map<String, Source> sourceIndex;
 
-    /** Currently selected source filter. */
-    private Filter currentFilter;
+    /** Currently-selected source. */
+    private Source currentSource;
 
     /** Currently selected show read option. */
     private final boolean currentShowRead = false;
-
-    /** Currently-highlighted source filter widget. */
-    private Widget currentFilterWidget = null;
 
     /** Observer (allow unlinking). */
     private final Observer<UnreadNotificationClearedEvent> unreadNotificationClearedObserver = // \n
@@ -172,7 +144,7 @@ public class NotificationsDialogContent extends BaseDialogContent
             {
                 eventBus.removeObserver(ev, this);
                 storeReceivedNotifications(ev.getResponse());
-                displayNotifications(currentFilter, currentShowRead);
+                selectSource(currentSource);
             }
         });
 
@@ -236,15 +208,6 @@ public class NotificationsDialogContent extends BaseDialogContent
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getCssName()
-    {
-        return StaticResourceBundle.INSTANCE.coreCss().notifModal();
-    }
-
-    /**
      * Reduces the unread count for all applicable sources.
      *
      * @param item
@@ -286,131 +249,17 @@ public class NotificationsDialogContent extends BaseDialogContent
     {
         allNotifications = list;
 
-        // TODO: determine counts, build filter UI
+        SourceListBuilder builder = new SourceListBuilder(list, Session.getInstance().getCurrentPerson()
+                .getAccountId());
+        rootSource = builder.getRootSource();
+        sourceIndex = builder.getSourceIndex();
 
-        // -- build index of sources by type with unread counts --
-        // create the high-level sources
-        rootSource = new Source(null, null, "All", null);
-        Source streamSource = new Source(null, null, "Streams", rootSource);
-        Source appSource = new Source(null, null, "Apps", rootSource);
-
-        // loop through all notifications, building the sources
-        List<Source> streamSources = new ArrayList<Source>();
-        List<Source> appSources = new ArrayList<Source>();
-        String currentUserAccountId = Session.getInstance().getCurrentPerson().getAccountId();
-        int unread = 0;
-        Map<EntityType, Map<String, Integer>> sourcesWithCountsByType = new HashMap<EntityType, Map<String, Integer>>();
-        for (InAppNotificationDTO item : list)
+        for (Source source : builder.getSourceList())
         {
-            String sourceKey = item.getSourceType() + item.getSourceUniqueId();
-            Source source = sourceIndex.get(sourceKey);
-            if (source == null && item.getSourceType() != null)
-            {
-                Source parent;
-                String name = item.getSourceName();
-                List<Source> sourceList = null;
-                switch (item.getSourceType())
-                {
-                case PERSON:
-                    parent = streamSource;
-                    sourceList = streamSources;
-                    if (currentUserAccountId.equals(item.getSourceUniqueId()))
-                    {
-                        name = ""; // sort to beginning
-                    }
-                    break;
-                case GROUP:
-                    parent = streamSource;
-                    sourceList = streamSources;
-                    break;
-                case APPLICATION:
-                    parent = appSource;
-                    sourceList = appSources;
-                    break;
-                default:
-                    parent = null;
-                    break;
-                }
-                // if a parent was found, then create the source, else leave the notif for the "all" bin
-                if (parent != null)
-                {
-                    source = new Source(item.getSourceType(), item.getSourceUniqueId(), name, parent);
-                    sourceIndex.put(sourceKey, source);
-                    sourceList.add(source);
-                }
-            }
-
-            if (!item.isRead())
-            {
-                unread++;
-                if (source != null)
-                {
-                    source.incrementUnreadCount();
-                    if (source.getParent() != null)
-                    {
-                        source.getParent().incrementUnreadCount();
-                    }
-                }
-            }
+            addSourceFilter(source, source.getParent() != null && source.getParent() != rootSource);
         }
-        rootSource.setUnreadCount(unread);
 
-        // -- create source filter links --
-        // all
-        currentFilter = new Filter()
-        {
-            public boolean shouldDisplay(final InAppNotificationDTO inItem)
-            {
-                return true;
-            }
-        };
-        addSourceFilter(rootSource, false, currentFilter);
-        // streams
-        if (!streamSources.isEmpty())
-        {
-            // all streams
-            addSourceFilter(streamSource, false, new Filter()
-            {
-                public boolean shouldDisplay(final InAppNotificationDTO inItem)
-                {
-                    return EntityType.PERSON == inItem.getSourceType() || EntityType.GROUP == inItem.getSourceType();
-                }
-            });
-
-            // prepare list of stream sources: sort, set "My Stream"
-            Collections.sort(streamSources, SOURCE_SORTER);
-            if (streamSources.get(0).getDisplayName().isEmpty())
-            {
-                streamSources.get(0).setDisplayName("My Stream");
-            }
-
-            // create each source filter
-            for (Source source : streamSources)
-            {
-                addSourceFilter(source, true, new SpecificSourceFilter(source));
-            }
-        }
-        // apps
-        if (!appSources.isEmpty())
-        {
-            // all apps
-            addSourceFilter(appSource, false, new Filter()
-            {
-                public boolean shouldDisplay(final InAppNotificationDTO inItem)
-                {
-                    return EntityType.APPLICATION == inItem.getSourceType();
-                }
-            });
-
-            // prepare list of sources: sort
-            Collections.sort(appSources, SOURCE_SORTER);
-
-            // create each source filter
-            for (Source source : appSources)
-            {
-                addSourceFilter(source, true, new SpecificSourceFilter(source));
-            }
-        }
+        currentSource = rootSource;
     }
 
     /**
@@ -420,38 +269,45 @@ public class NotificationsDialogContent extends BaseDialogContent
      *            Source data.
      * @param indent
      *            If the label should be indented.
-     * @param filter
-     *            The filtering function to use for the source.
      */
-    private void addSourceFilter(final Source source, final boolean indent, final Filter filter)
+    private void addSourceFilter(final Source source, final boolean indent)
     {
         int count = source.getUnreadCount();
         String text = count > 0 ? source.getDisplayName() + " (" + count + ")" : source.getDisplayName();
+
         final Label label = new Label(text);
-        label.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent inEvent)
-            {
-                currentFilter = filter;
-                if (currentFilterWidget != null)
-                {
-                    currentFilterWidget.removeStyleName(style.sourceFilterSelected());
-                }
-                currentFilterWidget = label;
-                currentFilterWidget.addStyleName(style.sourceFilterSelected());
-                displayNotifications(currentFilter, currentShowRead);
-            }
-        });
         label.addStyleName(style.sourceFilter());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().buttonLabel());
         if (indent)
         {
             label.addStyleName(style.sourceFilterIndented());
         }
+        label.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inEvent)
+            {
+                selectSource(source);
+            }
+        });
 
         sourceFiltersPanel.add(label);
 
         source.setWidget(label);
+    }
+
+    /**
+     * Updates the display to show a new source.
+     *
+     * @param newSource
+     *            New source.
+     */
+    private void selectSource(final Source newSource)
+    {
+        currentSource.getWidget().removeStyleName(style.sourceFilterSelected());
+
+        currentSource = newSource;
+        currentSource.getWidget().addStyleName(style.sourceFilterSelected());
+        displayNotifications(currentSource.getFilter(), currentShowRead);
     }
 
     /**
@@ -462,9 +318,10 @@ public class NotificationsDialogContent extends BaseDialogContent
      * @param showRead
      *            If read notifications should be displayed (unread are always displayed).
      */
-    private void displayNotifications(final Filter filter, final boolean showRead)
+    private void displayNotifications(final Source.Filter filter, final boolean showRead)
     {
         noNotificationsUi.getStyle().setDisplay(Display.NONE);
+        notificationListScrollPanel.setVisible(false);
 
         notificationListPanel.clear();
         idsShowing.clear();
@@ -485,53 +342,7 @@ public class NotificationsDialogContent extends BaseDialogContent
         else
         {
             notificationListScrollPanel.scrollToTop();
-        }
-    }
-
-    /**
-     * Filter for displaying notifications.
-     */
-    interface Filter
-    {
-        /**
-         * Determines if a notification should be displayed.
-         *
-         * @param item
-         *            Notification.
-         * @return If notification should be displayed.
-         */
-        boolean shouldDisplay(InAppNotificationDTO item);
-    }
-
-    /**
-     * Filter to match only notifications from a specific source.
-     */
-    static class SpecificSourceFilter implements Filter
-    {
-        /** Type of the source. */
-        EntityType sourceType;
-
-        /** Unique ID of the source. */
-        String sourceUniqueId;
-
-        /**
-         * Constructor.
-         *
-         * @param inSource
-         *            The source.
-         */
-        public SpecificSourceFilter(final Source inSource)
-        {
-            sourceType = inSource.getEntityType();
-            sourceUniqueId = inSource.getUniqueId();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public boolean shouldDisplay(final InAppNotificationDTO inItem)
-        {
-            return sourceType == inItem.getSourceType() && sourceUniqueId.equals(inItem.getSourceUniqueId());
+            notificationListScrollPanel.setVisible(true);
         }
     }
 

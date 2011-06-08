@@ -16,19 +16,35 @@
 package org.eurekastreams.web.client.ui.common.notification.dialog;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.InAppNotificationDTO;
 
-import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Identifies a source.
  */
 class Source
 {
-    /** The string-based unique identifier of the source. */
-    private final String uniqueId;
+    /**
+     * Filter for displaying notifications.
+     */
+    public interface Filter
+    {
+        /**
+         * Determines if a notification should be displayed.
+         *
+         * @param item
+         *            Notification.
+         * @return If notification should be displayed.
+         */
+        boolean shouldDisplay(InAppNotificationDTO item);
+    }
 
     /** The type of the source. */
     private final EntityType entityType;
+
+    /** The string-based unique identifier of the source. */
+    private final String uniqueId;
 
     /** The name to display for the source. */
     private String displayName;
@@ -40,7 +56,10 @@ class Source
     private final Source parent;
 
     /** Widget to display the source. */
-    private HasText widget;
+    private Label widget;
+
+    /** Filter to use with this source. */
+    private Filter filter;
 
     /**
      * Constructor.
@@ -53,15 +72,19 @@ class Source
      *            The name to display for the source.
      * @param inParent
      *            Parent "source".
+     * @param inFilter
+     *            Filter to use with this source.
      */
     public Source(final EntityType inEntityType, final String inUniqueId, final String inDisplayName,
-            final Source inParent)
+            final Source inParent, final Filter inFilter)
     {
         entityType = inEntityType;
         uniqueId = inUniqueId;
         displayName = inDisplayName;
         parent = inParent;
+        filter = inFilter;
     }
+
 
     /**
      * increment Unread Count.
@@ -131,7 +154,7 @@ class Source
     /**
      * @return the widget
      */
-    public HasText getWidget()
+    public Label getWidget()
     {
         return widget;
     }
@@ -140,7 +163,7 @@ class Source
      * @param inWidget
      *            the widget to set
      */
-    public void setWidget(final HasText inWidget)
+    public void setWidget(final Label inWidget)
     {
         widget = inWidget;
     }
@@ -152,5 +175,22 @@ class Source
     public void setDisplayName(final String inDisplayName)
     {
         displayName = inDisplayName;
+    }
+
+    /**
+     * @return the filter
+     */
+    public Filter getFilter()
+    {
+        return filter;
+    }
+
+    /**
+     * @param inFilter
+     *            the filter to set
+     */
+    public void setFilter(final Filter inFilter)
+    {
+        filter = inFilter;
     }
 }

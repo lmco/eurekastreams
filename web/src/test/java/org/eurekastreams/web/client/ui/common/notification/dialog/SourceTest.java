@@ -16,15 +16,17 @@
 package org.eurekastreams.web.client.ui.common.notification.dialog;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.web.client.ui.common.notification.dialog.Source.Filter;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 import com.google.gwt.junit.GWTMockUtilities;
-import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Tests Source.
@@ -44,7 +46,10 @@ public class SourceTest
     private final Source parent = context.mock(Source.class);
 
     /** Fixture. */
-    private final HasText widget = context.mock(HasText.class);
+    private final Label widget = context.mock(Label.class);
+
+    /** Fixture. */
+    private final Filter filter = context.mock(Filter.class);
 
     /**
      * Tests getters/setters.
@@ -52,12 +57,13 @@ public class SourceTest
     @Test
     public void testGettersSetters()
     {
-        Source sut = new Source(EntityType.GROUP, "UID", "Display", parent);
+        Source sut = new Source(EntityType.GROUP, "UID", "Display", parent, filter);
 
         assertEquals("UID", sut.getUniqueId());
         assertEquals(EntityType.GROUP, sut.getEntityType());
         assertEquals("Display", sut.getDisplayName());
         assertSame(parent, sut.getParent());
+        assertSame(filter, sut.getFilter());
 
         sut.setUnreadCount(9);
         assertEquals(9, sut.getUnreadCount());
@@ -71,5 +77,10 @@ public class SourceTest
 
         sut.setDisplayName("New Name");
         assertEquals("New Name", sut.getDisplayName());
+
+        sut.setFilter(null);
+        assertNull(sut.getFilter());
+        sut.setFilter(filter);
+        assertSame(filter, sut.getFilter());
     }
 }
