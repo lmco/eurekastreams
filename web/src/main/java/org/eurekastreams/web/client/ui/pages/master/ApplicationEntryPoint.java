@@ -46,6 +46,7 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BulkEntityModel;
+import org.eurekastreams.web.client.model.SessionEstablishModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.UsageMetricModel;
@@ -63,6 +64,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -110,6 +113,11 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /** Employee lookup modal. */
     private static EmployeeLookupContent dialogContent;
+
+    /**
+     * 10 minutes.
+     */
+    private static final int SESSION_POLLING_TIME = 600000;
 
     /**
      * Shows the login.
@@ -189,10 +197,18 @@ public class ApplicationEntryPoint implements EntryPoint
                     public void onSuccess(final Serializable sessionId)
                     {
                         ActionProcessorImpl.setCurrentSessionId((String) sessionId);
-
                         loadPerson();
                     }
                 });
+
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+        {
+            public boolean execute()
+            {
+                SessionEstablishModel.getInstance().fetch(null, false);
+                return true;
+            }
+        }, SESSION_POLLING_TIME);
     }
 
     /**
@@ -261,13 +277,13 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     *
+     * 
      */
     private void displayToS()
     {
 
-        Session.getInstance().getEventBus()
-                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -292,8 +308,8 @@ public class ApplicationEntryPoint implements EntryPoint
         // twice on activity page for some reason (profile pages work correctly). Somewhere
         // this is filtered down to only one call to the server to get the stream, so response
         // event works fine for metrics, but should track down why request it double-firing.
-        Session.getInstance().getEventBus()
-                .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
+                new Observer<GotStreamResponseEvent>()
                 {
                     public void update(final GotStreamResponseEvent event)
                     {
@@ -309,8 +325,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void recordPageViewMetrics()
     {
-        Session.getInstance().getEventBus()
-                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
@@ -323,7 +339,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     *
+     * 
      * @param id
      *            the gadget id
      * @param view
@@ -339,7 +355,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     *
+     * 
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -353,7 +369,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     *
+     * 
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -382,7 +398,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     *
+     * 
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -398,7 +414,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     *
+     * 
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -406,8 +422,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public static void bulkGetPeople(final String[] ntids, final int callbackIndex)
     {
-        Session.getInstance().getEventBus()
-                .addObserver(GotBulkEntityResponseEvent.class, new Observer<GotBulkEntityResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
+                new Observer<GotBulkEntityResponseEvent>()
                 {
                     public void update(final GotBulkEntityResponseEvent arg1)
                     {
@@ -425,8 +441,8 @@ public class ApplicationEntryPoint implements EntryPoint
                                 if (ntidList.contains(personMV.getAccountId()))
                                 {
                                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                                    String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(),
-                                            personMV.getAvatarId());
+                                    String imageUrl = urlGen
+                                            .getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
 
                                     JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
                                     personJSON.set(0, personMV.getAccountId());
@@ -473,7 +489,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     *
+     * 
      * @param data
      *            the data.
      * @param callbackIndex
@@ -486,7 +502,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.
@@ -552,7 +568,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the user agent (for detecting IE7).
-     *
+     * 
      * @return the user agent.
      */
     public static native String getUserAgent()
