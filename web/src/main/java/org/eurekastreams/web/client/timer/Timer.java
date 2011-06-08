@@ -100,6 +100,9 @@ public class Timer
                     // Do not run if the user is inactive.
                     if (mouseX != Session.getInstance().getMouseX() || mouseY != Session.getInstance().getMouseY())
                     {
+                        mouseX = Session.getInstance().getMouseX();
+                        mouseY = Session.getInstance().getMouseY();
+                        
                         Session.getInstance().getActionProcessor().setQueueRequests(true);
                         for (String job : jobs.get(numOfMinutes))
                         {
