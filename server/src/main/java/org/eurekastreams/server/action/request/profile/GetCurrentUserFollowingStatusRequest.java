@@ -74,7 +74,7 @@ public class GetCurrentUserFollowingStatusRequest implements Serializable
      * @param inFollowedEntityId
      *            the followed entity id.
      */
-    public void setCompositeStreamId(final String inFollowedEntityId)
+    public void setFollowedEntityId(final String inFollowedEntityId)
     {
         followedEntityId = inFollowedEntityId;
     }

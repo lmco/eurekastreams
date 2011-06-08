@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
@@ -70,6 +71,9 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -82,6 +86,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -110,9 +115,10 @@ public class ActivityContent extends Composite
          * @return Active stream style.
          */
         String activeStream();
-        
+
         /**
          * Condensed Stream view.
+         * 
          * @return Condensed Stream view.
          */
         String condensedStream();
@@ -308,6 +314,12 @@ public class ActivityContent extends Composite
      * Default stream details container size.
      */
     private static final int DEFAULT_STREAM_DETAILS_CONTAINER_SIZE = 330;
+
+    /**
+     * Search Box.
+     */
+    @UiField
+    TextBox searchBox;
 
     /**
      * Expand animation duration.
@@ -607,6 +619,30 @@ public class ActivityContent extends Composite
             }
         });
 
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+
+                    public void update(UpdatedHistoryParametersEvent event)
+                    {
+                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                    }
+                });
+
+        searchBox.addKeyUpHandler(new KeyUpHandler()
+        {
+            public void onKeyUp(KeyUpEvent event)
+            {
+                if (searchBox.getText().length() > 3 || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER
+                        || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_BACKSPACE
+                        || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_DELETE)
+                {
+                    EventBus.getInstance().notifyObservers(
+                            new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
+                }
+            }
+        });
+
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
             public boolean execute()
@@ -651,6 +687,19 @@ public class ActivityContent extends Composite
      *            the stream history link.
      */
     private void loadStream(final List<String> views)
+    {
+        loadStream(views, "");
+    }
+
+    /**
+     * Load a stream.
+     * 
+     * @param views
+     *            the stream history link.
+     * @param searchTerm
+     *            the search term.
+     */
+    private void loadStream(final List<String> views, final String searchTerm)
     {
         boolean singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
@@ -701,6 +750,11 @@ public class ActivityContent extends Composite
         {
             singleActivityMode = true;
             streamDetailsContainer.addClassName(style.condensedStream());
+        }
+
+        if (searchTerm.length() > 0)
+        {
+            currentRequestObj = StreamJsonRequestFactory.setSearchTerm(searchTerm, currentRequestObj);
         }
 
         if (!singleActivityMode)
