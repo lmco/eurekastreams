@@ -117,7 +117,7 @@ public class ApplicationEntryPoint implements EntryPoint
     /**
      * 10 minutes.
      */
-    private static final int SESSION_POLLING_TIME = 600000;
+    private static final int SESSION_POLLING_TIME = 900000;
 
     /**
      * Shows the login.
@@ -201,6 +201,7 @@ public class ApplicationEntryPoint implements EntryPoint
                     }
                 });
 
+        // Keep session alive.
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
             public boolean execute()
