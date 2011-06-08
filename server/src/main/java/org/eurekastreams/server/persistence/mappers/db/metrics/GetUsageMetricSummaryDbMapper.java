@@ -23,7 +23,6 @@ import javax.persistence.Query;
 import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 
 import com.ibm.icu.util.Calendar;
@@ -32,18 +31,23 @@ import com.ibm.icu.util.Calendar;
  * Mapper to get UsageMetricSummary.
  */
 public class GetUsageMetricSummaryDbMapper extends
-        BaseArgDomainMapper<UsageMetricStreamSummaryRequest, UsageMetricSummaryDTO>
+        BaseArgDomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>>
 {
+    /**
+     * Number of ms in a day.
+     */
+    public static final long MS_IN_DAY = 86400000;
+
     /**
      * Get Summary usage metrics for last X number of days.
      * 
      * @param inRequest
      *            the UsageMetricStreamSummaryRequest
-     * @return {@link UsageMetricSummaryDTO} representing given time period.
+     * @return List of DailyUsageSummary representing given time period.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public UsageMetricSummaryDTO execute(final UsageMetricStreamSummaryRequest inRequest)
+    public List<DailyUsageSummary> execute(final UsageMetricStreamSummaryRequest inRequest)
     {
         Query q;
         if (inRequest.getStreamRecipientStreamScopeId() == null)
@@ -51,59 +55,20 @@ public class GetUsageMetricSummaryDbMapper extends
             // all streams
             q = getEntityManager().createQuery(
                     "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NULL "
-                            + "AND usageDate >= :usageDate ORDER BY id DESC");
+                            + "AND usageDate >= :usageDate ORDER BY usageDate ASC");
         }
         else
         {
             // specific stream
             q = getEntityManager().createQuery(
                     "FROM DailyUsageSummary WHERE streamViewStreamScopeId = :streamViewStreamScopeId "
-                            + "AND usageDate >= :usageDate ORDER BY id DESC").setParameter("streamViewStreamScopeId",
-                    inRequest.getStreamRecipientStreamScopeId());
+                            + "AND usageDate >= :usageDate ORDER BY usageDate ASC").setParameter(
+                    "streamViewStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
         }
         Calendar day = Calendar.getInstance();
         day.add(Calendar.DATE, -inRequest.getNumberOfDays());
         Date oldestReportDate = DateDayExtractor.getStartOfDay(new Date(day.getTimeInMillis()));
         q.setParameter("usageDate", oldestReportDate);
-
-        List<DailyUsageSummary> results = q.getResultList();
-
-        UsageMetricSummaryDTO result = new UsageMetricSummaryDTO();
-        result.setRecordCount(results.size());
-
-        // short-circuit if no results.
-        if (results.size() == 0)
-        {
-            return result;
-        }
-
-        long msgCount = 0;
-        long pageViewCount = 0;
-        long streamContributorCount = 0;
-        long streamViewCount = 0;
-        long streamViewerCount = 0;
-        long uniqueVisitorCount = 0;
-        long avgActivityResponseTime = 0;
-
-        for (DailyUsageSummary dus : results)
-        {
-            msgCount += dus.getMessageCount();
-            pageViewCount += dus.getPageViewCount();
-            streamContributorCount += dus.getStreamContributorCount();
-            streamViewCount += dus.getStreamViewCount();
-            streamViewerCount += dus.getStreamViewerCount();
-            uniqueVisitorCount += dus.getUniqueVisitorCount();
-            avgActivityResponseTime += dus.getAvgActivityResponseTime();
-        }
-
-        result.setMessageCount(msgCount / inRequest.getNumberOfDays());
-        result.setPageViewCount(pageViewCount / inRequest.getNumberOfDays());
-        result.setStreamContributorCount(streamContributorCount / inRequest.getNumberOfDays());
-        result.setStreamViewCount(streamViewCount / inRequest.getNumberOfDays());
-        result.setStreamViewerCount(streamViewerCount / inRequest.getNumberOfDays());
-        result.setUniqueVisitorCount(uniqueVisitorCount / inRequest.getNumberOfDays());
-        result.setAvgActivityResponseTime(avgActivityResponseTime / inRequest.getNumberOfDays());
-
-        return result;
+        return q.getResultList();
     }
 }

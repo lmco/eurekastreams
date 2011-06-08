@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Tests for UpdateGadgetUserPrefByIdExecution class.
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 public class UpdateGadgetUserPrefByIdExecutionTest
@@ -90,12 +90,56 @@ public class UpdateGadgetUserPrefByIdExecutionTest
 
     /**
      * Testing perform action method.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testExecute() throws Exception
+    {
+        final String userPrefsJson = "{'userPref1':'value1','userPref2':'value2'}";
+        final String userPrefsJsonNewValue = "{'userPref1':'value1','userPref2':'value2222'}";
+        final GadgetUserPrefActionRequest requestParam = new GadgetUserPrefActionRequest(new Long(1L),
+                userPrefsJsonNewValue);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getParams();
+                will(returnValue(requestParam));
+
+                allowing(testGadget).getOwner();
+                will(returnValue(owner));
+
+                allowing(owner).getId();
+                will(returnValue(9L));
+
+                oneOf(findGadgetByIdMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(testGadget));
+
+                oneOf(testGadget).setGadgetUserPref(with(userPrefsJsonNewValue));
+
+                oneOf(updateMapper).execute(with(any(PersistenceRequest.class)));
+
+                atLeast(1).of(testGadget).getGadgetUserPref();
+                will(returnValue(userPrefsJson));
+
+                oneOf(pageMapper).execute(9L);
+            }
+        });
+
+        sut.execute(actionContext);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Testing perform action method when no changes to the prefs.
+     * 
+     * @throws Exception
+     *             - on error.
+     */
+    @Test
+    public void testExecuteNoChanges() throws Exception
     {
         final String userPrefsJson = "{'userPref1':'value1','userPref2':'value2'}";
         final GadgetUserPrefActionRequest requestParam = new GadgetUserPrefActionRequest(new Long(1L), userPrefsJson);
@@ -115,14 +159,8 @@ public class UpdateGadgetUserPrefByIdExecutionTest
                 oneOf(findGadgetByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(testGadget));
 
-                oneOf(testGadget).setGadgetUserPref(with(any(String.class)));
-
-                oneOf(updateMapper).execute(with(any(PersistenceRequest.class)));
-
                 oneOf(testGadget).getGadgetUserPref();
                 will(returnValue(userPrefsJson));
-
-                oneOf(pageMapper).execute(9L);
             }
         });
 

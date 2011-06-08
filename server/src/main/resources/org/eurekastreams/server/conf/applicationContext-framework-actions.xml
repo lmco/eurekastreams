@@ -4307,8 +4307,11 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean parent="baseParamExecuteDomainMapperExecution">
+            <bean class="org.eurekastreams.server.action.execution.GetUsageMetricSummaryExecution">
                 <constructor-arg ref="getUsageMetricSummaryDbMapper" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy" />
+                </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

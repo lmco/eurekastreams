@@ -109,15 +109,15 @@ public class MetricsSummaryContent extends Composite
     private void buildPage(final UsageMetricSummaryDTO inMetrics)
     {
         // displayed directly
-        long uniqueVisitorCount = inMetrics.getUniqueVisitorCount();
-        long streamViewerCount = inMetrics.getStreamViewerCount();
-        long streamViewCount = inMetrics.getStreamViewCount();
-        long avgActivityResponseTime = inMetrics.getAvgActivityResponseTime();
+        long uniqueVisitorCount = inMetrics.getAverageDailyUniqueVisitorCount();
+        long streamViewerCount = inMetrics.getAverageDailyStreamViewerCount();
+        long streamViewCount = inMetrics.getAverageDailyStreamViewCount();
+        long avgActivityResponseTime = inMetrics.getAverageDailyActivityResponseTime();
 
         // used in calculations
-        long streamContributorCount = inMetrics.getStreamContributorCount();
-        long pageViewCount = inMetrics.getPageViewCount();
-        long messageCount = inMetrics.getMessageCount();
+        long streamContributorCount = inMetrics.getAverageDailyStreamContributorCount();
+        long pageViewCount = inMetrics.getAverageDailyPageViewCount();
+        long messageCount = inMetrics.getAverageDailyMessageCount();
 
         // calculated and displayed.
         double pageViewsPerUniqueVisitor = uniqueVisitorCount == 0 ? 0 : (double) pageViewCount
