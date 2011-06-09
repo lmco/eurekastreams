@@ -40,7 +40,7 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
     /**
      * GalleryTabTemplate mapper.
      */
-    DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMappery;
+    DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMapper;
 
     /**
      * Constructor.
@@ -55,7 +55,7 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
             final DomainMapper<Long, GalleryTabTemplate> inGalleryTabTemplateProxyMappery)
     {
         themeProxyMapper = inThemeProxyMapper;
-        galleryTabTemplateProxyMappery = inGalleryTabTemplateProxyMappery;
+        galleryTabTemplateProxyMapper = inGalleryTabTemplateProxyMappery;
     }
 
     /**
@@ -75,7 +75,7 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
         MembershipCriteria mc = new MembershipCriteria();
 
         mc.setTheme(themeId == null || themeId == -1 ? null : themeProxyMapper.execute(themeId));
-        mc.setGalleryTabTemplate(gttId == null || gttId == -1 ? null : galleryTabTemplateProxyMappery.execute(gttId));
+        mc.setGalleryTabTemplate(gttId == null || gttId == -1 ? null : galleryTabTemplateProxyMapper.execute(gttId));
         mc.setCriteria(mcdto.getCriteria());
 
         return new PersistenceRequest<MembershipCriteria>(mc);

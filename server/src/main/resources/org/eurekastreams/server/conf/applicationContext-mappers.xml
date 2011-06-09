@@ -2115,11 +2115,11 @@
 
     <bean id="membershipCriteriaDTODbMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
         <constructor-arg ref="membershipCriteriaDbMapper" />
-        <constructor-arg ref="membershipCriteriaToMembershipCriteriaDTOTransformer" />
+        <constructor-arg ref="membershipCriteriaListToMembershipCriteriaDTOListTransformer" />
     </bean>
 
-    <bean id="membershipCriteriaToMembershipCriteriaDTOTransformer"
-        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaToMembershipCriteriaDTOTransformer" /> 
+    <bean id="membershipCriteriaListToMembershipCriteriaDTOListTransformer"
+        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaListToMembershipCriteriaDTOListTransformer" /> 
 
     <!-- Metrics -->
     <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />

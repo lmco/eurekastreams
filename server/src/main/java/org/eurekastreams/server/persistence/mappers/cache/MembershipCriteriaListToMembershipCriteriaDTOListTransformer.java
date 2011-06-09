@@ -27,7 +27,7 @@ import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
  * Transform MembershipCriteria entities to DTOs.
  * 
  */
-public class MembershipCriteriaToMembershipCriteriaDTOTransformer implements
+public class MembershipCriteriaListToMembershipCriteriaDTOListTransformer implements
         Transformer<List<MembershipCriteria>, List<MembershipCriteriaDTO>>
 {
 
