@@ -8,6 +8,8 @@ create index activity_actortype_postedtime_streamscopeid_idx on Activity (posted
 
 -- Comment
 create index comment_timesent_activityid_idx on Comment (timeSent, activityId);
+
+-- DailyUsageSummary
 create index dailyusagesummary_usagedate_streamviewstreamscopeid_idx on DailyUsageSummary (usageDate, streamViewStreamScopeId);
 
 -- Usage Metric
