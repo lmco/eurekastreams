@@ -62,14 +62,54 @@ public class FeaturedStreamDTO implements Serializable
     private ScopeType streamType;
 
     /**
-     * Stream unique id.
+     * Stream unique key.
      */
     private String streamUniqueKey;
+
+    /**
+     * Id of destination person/group of stream.
+     */
+    private Long streamEntityId;
 
     /**
      * Avatar Id.
      */
     private String avatarId;
+
+    /**
+     * Constructor.
+     */
+    private FeaturedStreamDTO()
+    {
+        // no-op.
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inId
+     *            FeaturedStream id.
+     * @param inDescription
+     *            FeaturedStream description.
+     * @param inStreamId
+     *            StreamScope id.
+     * @param inStreamType
+     *            Stream scopetype.
+     * @param inStreamUniqueKey
+     *            Stream unique key.
+     * @param inStreamEntityId
+     *            Id of destination person/group of stream.
+     */
+    public FeaturedStreamDTO(final Long inId, final String inDescription, final Long inStreamId,
+            final ScopeType inStreamType, final String inStreamUniqueKey, final Long inStreamEntityId)
+    {
+        id = inId;
+        description = inDescription;
+        streamId = inStreamId;
+        streamType = inStreamType;
+        streamUniqueKey = inStreamUniqueKey;
+        streamEntityId = inStreamEntityId;
+    }
 
     /**
      * @return the id
@@ -205,6 +245,23 @@ public class FeaturedStreamDTO implements Serializable
     public void setDisplayName(final String inDisplayName)
     {
         displayName = inDisplayName;
+    }
+
+    /**
+     * @return the streamEntityId
+     */
+    public Long getStreamEntityId()
+    {
+        return streamEntityId;
+    }
+
+    /**
+     * @param inStreamEntityId
+     *            the streamEntityId to set
+     */
+    public void setStreamEntityId(final Long inStreamEntityId)
+    {
+        streamEntityId = inStreamEntityId;
     }
 
 }

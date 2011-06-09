@@ -50,8 +50,8 @@ public class MembershipCriteriaToMembershipCriteriaDTOTransformerTest
     /**
      * System under test.
      */
-    private MembershipCriteriaToMembershipCriteriaDTOTransformer sut = //
-    new MembershipCriteriaToMembershipCriteriaDTOTransformer();
+    private MembershipCriteriaListToMembershipCriteriaDTOListTransformer sut = //
+    new MembershipCriteriaListToMembershipCriteriaDTOListTransformer();
 
     /**
      * {@link MembershipCriteria}.

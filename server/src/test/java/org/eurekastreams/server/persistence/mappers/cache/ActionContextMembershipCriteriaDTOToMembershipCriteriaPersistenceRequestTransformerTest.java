@@ -61,7 +61,7 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
     /**
      * GalleryTabTemplate mapper.
      */
-    private DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMappery = context.mock(DomainMapper.class,
+    private DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMapper = context.mock(DomainMapper.class,
             "galleryTabTemplateProxyMappery");
 
     /**
@@ -84,7 +84,7 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
      */
     private ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer sut = //
     new ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer(themeProxyMapper,
-            galleryTabTemplateProxyMappery);
+            galleryTabTemplateProxyMapper);
 
     /**
      * Test.
@@ -163,7 +163,7 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
                 oneOf(themeProxyMapper).execute(themeId);
                 will(returnValue(theme));
 
-                oneOf(galleryTabTemplateProxyMappery).execute(gttId);
+                oneOf(galleryTabTemplateProxyMapper).execute(gttId);
                 will(returnValue(gtt));
             }
         });

@@ -243,7 +243,10 @@
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
     
     <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" /> 
+        
+    <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />         
     
 
 	<!--
@@ -786,6 +789,33 @@
             </bean> 
         </constructor-arg>       
     </bean>      
+    
+    <bean id="getFeaturedStreamsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS"/>
+                        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFeaturedStreamsDbMapper"/>         
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS" />
+                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>       
+    </bean>    
     
     <bean id="getPersonPagePropertiesById" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -2115,11 +2145,13 @@
 
     <bean id="membershipCriteriaDTODbMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
         <constructor-arg ref="membershipCriteriaDbMapper" />
-        <constructor-arg ref="membershipCriteriaToMembershipCriteriaDTOTransformer" />
+        <constructor-arg ref="membershipCriteriaListToMembershipCriteriaDTOListTransformer" />
     </bean>
 
-    <bean id="membershipCriteriaToMembershipCriteriaDTOTransformer"
-        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaToMembershipCriteriaDTOTransformer" /> 
+    <bean id="membershipCriteriaListToMembershipCriteriaDTOListTransformer"
+        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaListToMembershipCriteriaDTOListTransformer" /> 
+        
+    <bean id="getFeaturedStreamsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFeaturedStreamDTOsDbMapper" />
 
     <!-- Metrics -->
     <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />

@@ -76,7 +76,7 @@ public class GetSystemSettingsExecution implements ExecutionStrategy<ActionConte
     /**
      * Tranformer for Theme to ThemeDTO.
      */
-    Transformer<List<Theme>, List<ThemeDTO>> themeTransformer;
+    private Transformer<List<Theme>, List<ThemeDTO>> themeTransformer;
 
     /**
      * Max gallery item count.
