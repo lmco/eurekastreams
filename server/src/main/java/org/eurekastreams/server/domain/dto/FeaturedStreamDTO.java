@@ -17,6 +17,8 @@ package org.eurekastreams.server.domain.dto;
 
 import java.io.Serializable;
 
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 
@@ -24,7 +26,7 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
  * Featured Stream DTO.
  * 
  */
-public class FeaturedStreamDTO implements Serializable
+public class FeaturedStreamDTO implements Serializable, FollowerStatusable
 {
     /**
      * Serial version id.
@@ -69,7 +71,7 @@ public class FeaturedStreamDTO implements Serializable
     /**
      * Id of destination person/group of stream.
      */
-    private Long streamEntityId;
+    private Long streamDestinationEntityId;
 
     /**
      * Avatar Id.
@@ -97,18 +99,18 @@ public class FeaturedStreamDTO implements Serializable
      *            Stream scopetype.
      * @param inStreamUniqueKey
      *            Stream unique key.
-     * @param inStreamEntityId
+     * @param inStreamDestinationEntityId
      *            Id of destination person/group of stream.
      */
     public FeaturedStreamDTO(final Long inId, final String inDescription, final Long inStreamId,
-            final ScopeType inStreamType, final String inStreamUniqueKey, final Long inStreamEntityId)
+            final ScopeType inStreamType, final String inStreamUniqueKey, final Long inStreamDestinationEntityId)
     {
         id = inId;
         description = inDescription;
         streamId = inStreamId;
         streamType = inStreamType;
         streamUniqueKey = inStreamUniqueKey;
-        streamEntityId = inStreamEntityId;
+        streamDestinationEntityId = inStreamDestinationEntityId;
     }
 
     /**
@@ -252,7 +254,7 @@ public class FeaturedStreamDTO implements Serializable
      */
     public Long getStreamEntityId()
     {
-        return streamEntityId;
+        return streamDestinationEntityId;
     }
 
     /**
@@ -261,7 +263,36 @@ public class FeaturedStreamDTO implements Serializable
      */
     public void setStreamEntityId(final Long inStreamEntityId)
     {
-        streamEntityId = inStreamEntityId;
+        streamDestinationEntityId = inStreamEntityId;
+    }
+
+    @Override
+    public long getEntityId()
+    {
+        return getStreamEntityId();
+    }
+
+    @Override
+    public EntityType getEntityType()
+    {
+        // need to convert from ScopeType to EntityType here.
+        switch (streamType)
+        {
+        case PERSON:
+            return EntityType.PERSON;
+        case GROUP:
+            return EntityType.GROUP;
+        case RESOURCE:
+            return EntityType.RESOURCE;
+        default:
+            return EntityType.NOTSET;
+        }
+    }
+
+    @Override
+    public String getUniqueId()
+    {
+        return getStreamUniqueKey();
     }
 
 }

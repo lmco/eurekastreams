@@ -4157,6 +4157,11 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
+    
+    <bean id="followerStatusPopulator" class="org.eurekastreams.server.domain.strategies.FollowerStatusPopulator">
+        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
+        <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
+    </bean>
 
     <bean id="documentCreator" class="org.eurekastreams.server.service.actions.strategies.DocumentCreator">
         <constructor-arg>
