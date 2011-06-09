@@ -379,7 +379,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
             DailyUsageSummary data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount,
                     streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate,
-                    inStreamScopeId, totalActivityCount, totalCommentCount, totalStreamViewCount, totalContributorCount);
+                    inStreamScopeId, totalActivityCount, totalCommentCount, totalStreamViewCount, // 
+                    totalContributorCount);
 
             // store this
             logger.info("Inserting daily usage metric data for " + inDate);

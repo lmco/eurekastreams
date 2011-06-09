@@ -29,12 +29,18 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.eurekastreams.commons.model.DomainEntityIdentifiable;
+import org.hibernate.annotations.Index;
 
 /**
  * Entity representing a day's usage metrics.
  */
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "streamViewStreamScopeId", "usageDate" }) })
+@org.hibernate.annotations.Table(appliesTo = "DailyUsageSummary", //
+indexes = {
+// Note: ("usageDate") is queried on its own, so it should be listed first
+@Index(name = "dailyusagesummary_usagedate_streamviewstreamscopeid_idx", columnNames = { "usageDate",
+        "streamViewStreamScopeId" }) })
 public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
 {
     /**
