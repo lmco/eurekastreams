@@ -47,6 +47,7 @@ import org.eurekastreams.server.search.bridge.ActivityLikesClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge;
 import org.eurekastreams.server.search.bridge.ActivitySourceClassBridge;
 import org.eurekastreams.server.search.bridge.IsActivityPublicClassBridge;
+import org.hibernate.annotations.Table;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
@@ -85,6 +86,24 @@ import org.hibernate.search.annotations.Store;
         @ClassBridge(index = Index.TOKENIZED, name = "isPublic", store = Store.NO,
         // new line
         impl = IsActivityPublicClassBridge.class) })
+@Table(appliesTo = "Activity", indexes = { //
+        @org.hibernate.annotations.Index(name = "activity_actortype_actorid_linksharedresourceid_idx", columnNames = {
+                "actortype", "actorid", "linksharedresourceid" }),
+
+        @org.hibernate.annotations.Index(name = "activity_actortype_streamscopeid_idx", columnNames = { "actorType",
+                "streamScopeId" }),
+
+        @org.hibernate.annotations.Index(name = "activity_streamscopeid_idx", columnNames = { "streamscopeid" }),
+
+        // NOTE: ("postedtime") and ("postedtime","actortype") are used on its own, so order is important
+        @org.hibernate.annotations.Index(name = "activity_actortype_postedtime_streamscopeid_idx", columnNames = {
+                "postedtime", "actortype", "streamscopeId" }),
+
+        // NOTE: ("apptype", postedtime") is used on its own, so order is important
+        @org.hibernate.annotations.Index(name = "activity_apptype_postedtime_streamscopeid_idx", columnNames = {
+                "apptype", "postedtime", "streamscopeId" })
+
+})
 public class Activity extends DomainEntity implements Serializable, Cloneable
 {
     /**

@@ -4354,7 +4354,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetUsageMetricSummaryExecution">
-                <constructor-arg ref="getUsageMetricSummaryDbMapper" />
+                <constructor-arg ref="getUsageMetricSummaryMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy" />
                 </constructor-arg>
@@ -4458,7 +4458,6 @@
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.DeleteOldUsageMetricDataDbMapper">
                 <!-- keep 2 days of metric data -->
                 <constructor-arg value="2" />
-                
                 <!-- keey 30 days of summary data -->
                 <constructor-arg value="30" />
             </bean>
@@ -4476,6 +4475,10 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetTotalStreamContributorCountDbMapper" />
         </constructor-arg>
+        <!-- Generate the usage metrics and dump into cache -->
+        <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
+        <!-- 30 days of summary data caching -->
+        <constructor-arg value="30" />
     </bean>
 
     <!--
