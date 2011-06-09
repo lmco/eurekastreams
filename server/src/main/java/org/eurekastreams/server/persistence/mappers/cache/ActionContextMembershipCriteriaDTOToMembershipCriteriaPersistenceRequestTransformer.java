@@ -35,12 +35,12 @@ public class ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRe
     /**
      * Theme mapper.
      */
-    DomainMapper<Long, Theme> themeProxyMapper;
+    private DomainMapper<Long, Theme> themeProxyMapper;
 
     /**
      * GalleryTabTemplate mapper.
      */
-    DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMapper;
+    private DomainMapper<Long, GalleryTabTemplate> galleryTabTemplateProxyMapper;
 
     /**
      * Constructor.
