@@ -213,4 +213,9 @@ public final class CacheKeys
      * Key for getting list of FeaturedStreamDTOs.
      */
     public static final String FEATURED_STREAMS = "FeaturedStreams:";
+
+    /**
+     * Key prefix for stream metrics by stream scope id.
+     */
+    public static final String STREAM_METRICS_BY_STREAM_SCOPE_ID = "Metrics:";
 }
