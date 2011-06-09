@@ -68,6 +68,8 @@
 			<button onclick="callApi('full'); return false;">Full</button>
 			<button onclick="callApi('read'); return false;">Read</button>
 		</div>
+		<div>URL:</div>
+		<div class="textareawrapper"><textarea id="url" readonly="readonly"></textarea></div>
 		<div>Results:</div>
 		<div class="textareawrapper"><textarea id="results" readonly="readonly"></textarea></div>
 		<div id="resulttime">&nbsp;</div>
@@ -78,6 +80,7 @@
 		var baseApiUrl = '${build.web.baseurl}/api/' + prefs.getString("apiVersion") + '/';
 		var actionNameEntry = document.getElementById('actionname');
 		var paramsEntry = document.getElementById('requestparams');
+		var urlArea = document.getElementById('url');
 		var resultsArea = document.getElementById('results');
 		var resultsTimeField = document.getElementById('resulttime');
 		
@@ -91,6 +94,7 @@
 			
 		function callApi(endpoint)
 		{
+			urlArea.value = '';
 			resultsArea.value = '';
 			resultsTimeField.text = 'Requesting...';
 			resultsArea.className = '';
@@ -111,6 +115,7 @@
 				}
 				
 				var url = baseApiUrl + endpoint + '/' + action + '/' + paramString;
+				urlArea.value = url;
 				
 				var params={};
 				params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
