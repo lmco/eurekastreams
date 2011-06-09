@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class GetCurrentUserFollowingStatusRequest implements Serializable
      * @param inFollowedEntityId
      *            the followed entity id.
      */
-    public void setCompositeStreamId(final String inFollowedEntityId)
+    public void setFollowedEntityId(final String inFollowedEntityId)
     {
         followedEntityId = inFollowedEntityId;
     }
