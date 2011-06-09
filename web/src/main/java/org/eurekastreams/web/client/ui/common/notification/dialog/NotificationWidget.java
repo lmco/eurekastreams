@@ -18,15 +18,20 @@ package org.eurekastreams.web.client.ui.common.notification.dialog;
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.NotificationClickedEvent;
 import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -53,30 +58,45 @@ public class NotificationWidget extends Composite
     @UiField
     LocalStyle style;
 
+    /** Local styles. */
+    @UiField
+    Anchor mainLinkUi;
+
     /** Avatar. */
     @UiField
     ImageElement avatarUi;
 
     /** UI element holding the message text. */
     @UiField
-    DivElement messageTextUi;
+    Element messageTextUi;
 
     /** UI element holding the timestamp. */
     @UiField
-    DivElement timestampUi;
+    Element timestampUi;
+
+    /** The notification to show. */
+    private final InAppNotificationDTO item;
+
+    /** Main widget. */
+    private final Widget main;
+
+    // /** If the notification has an internal link. */
+    // private boolean internalUrl;
 
     /**
      * Constructor.
      *
-     * @param item
+     * @param inItem
      *            Notification to display.
      */
-    public NotificationWidget(final InAppNotificationDTO item)
+    public NotificationWidget(final InAppNotificationDTO inItem)
     {
+        item = inItem;
+
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
         globalResources = StaticResourceBundle.INSTANCE;
 
-        Widget main = binder.createAndBindUi(this);
+        main = binder.createAndBindUi(this);
         initWidget(main);
 
         // TODO: allow bolding
@@ -92,10 +112,74 @@ public class NotificationWidget extends Composite
         {
             main.addStyleName(style.read());
         }
+        final String url = item.getUrl();
+        if (url != null && !url.isEmpty())
+        {
+            if (url.charAt(0) != '#')
+            {
+                mainLinkUi.setTarget("_blank");
+            }
+            // else
+            // {
+            // internalUrl = true;
+            // }
+            mainLinkUi.setHref(url);
+        }
+        // else
+        // {
+        // // nowhere to link, so move all the children up and out, and remove anchor
+        // Element parent = mainLinkUi.getParentElement();
+        // while (mainLinkUi.hasChildNodes())
+        // {
+        // parent.insertBefore(mainLinkUi.getFirstChild(), mainLinkUi);
+        // }
+        // mainLinkUi.removeFromParent();
+        // }
 
         AvatarUrlGenerator urlGen = new AvatarUrlGenerator(item.getAvatarOwnerType());
         avatarUi.setSrc(urlGen.getSmallAvatarUrl(null, item.getAvatarId()));
     }
+
+    /**
+     * Sends notification when button clicked.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("mainLinkUi")
+    void onClick(final ClickEvent ev)
+    {
+        if (!item.isRead())
+        {
+            main.addStyleName(style.read());
+        }
+        EventBus.getInstance().notifyObservers(new NotificationClickedEvent(item));
+    }
+
+    // void onClick(final ClickEvent ev)
+    // {
+    // if (!item.isRead())
+    // {
+    // item.setRead(true);
+    // main.addStyleName(style.read());
+    //
+    // // TODO: update in DB
+    //
+    // // don't bother send the event for internal URLs, because we will close the dialog
+    // if (!internalUrl)
+    // {
+    // EventBus.getInstance().notifyObservers(new UnreadNotificationClearedEvent(item));
+    // }
+    // }
+    //
+    // // force the dialog shut if it contains an internal URL
+    // if (internalUrl)
+    // {
+    // EventBus.getInstance().notifyObservers(new CloseModalRequestEvent());
+    // }
+    // }
+
+    // ### private static native String log(String s)/*-{ console.log(s); }-*/;
 
     /**
      * Local styles.

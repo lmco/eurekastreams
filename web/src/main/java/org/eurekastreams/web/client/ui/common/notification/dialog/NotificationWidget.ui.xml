@@ -27,13 +27,16 @@
 .message-text
 {
 	overflow: hidden;
-	margin: 5px 0px 5px 55px; 
+	margin: 5px 0px 5px 55px;
+	color: black;
+	display: block;
 }
 .timestamp
 {
 	font-size: 11px;
 	color: #666666;
 	margin-left: 55px;
+	display: block;
 }
 .actions-panel
 {
@@ -42,6 +45,7 @@
 .avatar
 {
 	float: left;
+	border: none;
 }
 </ui:style>
 
@@ -49,15 +53,15 @@
 <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" />
 
 <g:HTMLPanel addStyleNames="{style.main}">
-	<a class="{style.main-link}">
+	<g:Anchor addStyleNames="{style.main-link}" ui:field="mainLinkUi">
 		<img class="{style.avatar}" ui:field="avatarUi" />
 		<div class="{style.actions-panel}">
 			<div />
 			<div />
 		</div>
-		<div class="{style.message-text}" ui:field="messageTextUi" />
-		<div class="{style.timestamp}" ui:field="timestampUi" />
-	</a>
+		<span class="{style.message-text}" ui:field="messageTextUi" />
+		<span class="{style.timestamp}" ui:field="timestampUi" />
+	</g:Anchor>
 </g:HTMLPanel>
 	
 </ui:UiBinder>

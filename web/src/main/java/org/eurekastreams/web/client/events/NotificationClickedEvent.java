@@ -19,9 +19,9 @@ import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 
 /**
- * Raised when a single unread notification is marked read or deleted.
+ * Raised when a notification is clicked.
  */
-public class UnreadNotificationClearedEvent extends BaseDataResponseEvent<InAppNotificationDTO>
+public class NotificationClickedEvent extends BaseDataResponseEvent<InAppNotificationDTO>
 {
     /**
      * Constructor.
@@ -29,7 +29,7 @@ public class UnreadNotificationClearedEvent extends BaseDataResponseEvent<InAppN
      * @param inNotification
      *            The notification.
      */
-    public UnreadNotificationClearedEvent(final InAppNotificationDTO inNotification)
+    public NotificationClickedEvent(final InAppNotificationDTO inNotification)
     {
         super(inNotification);
     }

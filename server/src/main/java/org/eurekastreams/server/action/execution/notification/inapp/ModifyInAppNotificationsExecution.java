@@ -16,7 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.inapp;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -60,7 +60,7 @@ public class ModifyInAppNotificationsExecution implements ExecutionStrategy<Prin
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext)
     {
-        List<Long> notifIds = (List<Long>) inActionContext.getParams();
+        Collection<Long> notifIds = (Collection<Long>) inActionContext.getParams();
         long userId = inActionContext.getPrincipal().getId();
 
         // modify notifs

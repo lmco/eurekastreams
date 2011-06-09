@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.NotificationClickedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UnreadNotificationClearedEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
@@ -119,7 +120,16 @@ public class NotificationsDialogContent extends BaseDialogContent
     {
         public void update(final UnreadNotificationClearedEvent ev)
         {
-            reduceUnreadCount(ev.getNotification());
+            reduceUnreadCount(ev.getResponse());
+        }
+    };
+    /** Observer (allow unlinking). */
+    private final Observer<NotificationClickedEvent> notificationClickedObserver = // \n
+    new Observer<NotificationClickedEvent>()
+    {
+        public void update(final NotificationClickedEvent ev)
+        {
+            handleNotificationClicked(ev.getResponse());
         }
     };
 
@@ -160,8 +170,17 @@ public class NotificationsDialogContent extends BaseDialogContent
                 selectSource(currentSource);
             }
         });
+        // eventBus.addObserver(CloseModalRequestEvent.class, new Observer<CloseModalRequestEvent>()
+        // {
+        // public void update(final CloseModalRequestEvent ev)
+        // {
+        // eventBus.removeObserver(ev, this);
+        // close();
+        // }
+        // });
 
         eventBus.addObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
+        eventBus.addObserver(NotificationClickedEvent.class, notificationClickedObserver);
 
         // Since none of the links cause a full page load (which would annihilate the dialog), we must explicitly close
         // the dialog. We cannot count on a history change event (or any of the related events) because the user may
@@ -202,6 +221,7 @@ public class NotificationsDialogContent extends BaseDialogContent
             linkClickedObserver = null;
         }
         EventBus.getInstance().removeObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
+        EventBus.getInstance().removeObserver(NotificationClickedEvent.class, notificationClickedObserver);
     }
 
     /**
@@ -218,6 +238,44 @@ public class NotificationsDialogContent extends BaseDialogContent
     public String getTitle()
     {
         return "Notifications";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCssName()
+    {
+        return style.modal();
+    }
+
+    /**
+     * Responds appropriately to a notification being clicked.
+     *
+     * @param item
+     *            The notification.
+     */
+    private void handleNotificationClicked(final InAppNotificationDTO item)
+    {
+        final String url = item.getUrl();
+        boolean hasInternalUrl = url != null && !url.isEmpty() && url.charAt(0) == '#';
+        if (!item.isRead())
+        {
+            item.setRead(true);
+
+            NotificationListModel.getInstance().update(item.getId());
+
+            // don't bother fixing up the counts if the notification has an internal URL, because we will close the
+            // dialog momentarily
+            if (!hasInternalUrl)
+            {
+                reduceUnreadCount(item);
+            }
+        }
+        if (hasInternalUrl)
+        {
+            close();
+        }
     }
 
     /**
@@ -384,6 +442,10 @@ public class NotificationsDialogContent extends BaseDialogContent
      */
     interface LocalStyle extends CssResource
     {
+        /** @return Extra style for entire modal. */
+        @ClassName("modal")
+        String modal();
+
         /** @return Style for sources. */
         @ClassName("source-filter")
         String sourceFilter();

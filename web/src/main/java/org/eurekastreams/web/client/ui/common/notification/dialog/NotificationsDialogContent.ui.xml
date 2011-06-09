@@ -5,6 +5,15 @@
 <ui:image field="activeBackground" src="style/images/activeBackground.png" />
 
 <ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
+.modal
+{
+}
+@if user.agent ie6 ie8 {
+	.modal
+	{
+		width: 700px;
+	}
+}
 .main
 {
 	width: 700px;
