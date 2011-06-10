@@ -261,6 +261,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
             throws ExecutionException
     {
+        long start = System.currentTimeMillis();
         for (int i = daysToGenerate; i >= 1; i--)
         {
             logger.info("Generating metric data for " + i + " days ago.");
@@ -270,6 +271,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         // delete old data
         logger.info("Deleting old daily usage metric data older than 2 days");
         usageMetricDataCleanupMapper.execute(null);
+
+        logger.info("Completed generating usage metrics in " + (System.currentTimeMillis() - start) + "ms");
 
         return Boolean.TRUE;
     }
