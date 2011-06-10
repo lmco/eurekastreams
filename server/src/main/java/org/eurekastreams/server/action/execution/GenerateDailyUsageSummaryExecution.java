@@ -137,6 +137,11 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     private DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> insertMapper;
 
     /**
+     * Mapper to clear the entity manager.
+     */
+    private DomainMapper<Serializable, Boolean> clearEntityManagerMapper;
+
+    /**
      * Mapper to get the summary data for a stream, or all streams - used for caching.
      */
     private DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper;
@@ -190,6 +195,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      *            mapper to get the total comments for a stream
      * @param inGetTotalStreamContributorMapper
      *            mapper to get the total number of contributors to a stream
+     * @param inClearEntityManagerMapper
+     *            mapper to clear entity manager
      * @param inSummaryDataMapper
      *            mapper to fetch & cache the stream scope's summary data
      * @param inNumberOfDaysToCacheSummaryDataFor
@@ -214,6 +221,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final DomainMapper<Long, Long> inGetTotalActivityCountMapper,
             final DomainMapper<Long, Long> inGetTotalCommentCountMapper,
             final DomainMapper<Long, Long> inGetTotalStreamContributorMapper,
+            final DomainMapper<Serializable, Boolean> inClearEntityManagerMapper,
             final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> inSummaryDataMapper,
             final int inNumberOfDaysToCacheSummaryDataFor)
     {
@@ -235,6 +243,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         getTotalActivityCountMapper = inGetTotalActivityCountMapper;
         getTotalCommentCountMapper = inGetTotalCommentCountMapper;
         getTotalStreamContributorMapper = inGetTotalStreamContributorMapper;
+        clearEntityManagerMapper = inClearEntityManagerMapper;
         summaryDataMapper = inSummaryDataMapper;
         numberOfDaysToCacheSummaryDataFor = inNumberOfDaysToCacheSummaryDataFor;
     }
@@ -284,6 +293,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         logger.info("Checking id daily usage summary data exists for " + reportDate);
         DailyUsageSummary existingSummary = getDailyUsageSummaryByDateMapper
                 .execute(new UsageMetricDailyStreamInfoRequest(reportDate, null));
+        clearEntityManagerMapper.execute(null);
 
         if (existingSummary != null)
         {
@@ -318,6 +328,10 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             UsageMetricDailyStreamInfoRequest streamInfoRequest = new UsageMetricDailyStreamInfoRequest(inDate,
                     inStreamScopeId);
 
+            String timerLog = "TimerData:" + inStreamScopeId;
+            long start;
+            long totalStart = System.currentTimeMillis();
+
             long uniqueVisitorCount = 0;
             long pageViewCount = 0;
             long streamViewCount = 0;
@@ -333,30 +347,51 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
             // get the stream view count -
             logger.info("Generating number of stream views for " + inDate);
+
+            start = System.currentTimeMillis();
+            clearEntityManagerMapper.execute(null);
             streamViewCount = getDailyStreamViewCountMapper.execute(streamInfoRequest);
+            timerLog += "\t1: " + (System.currentTimeMillis() - start);
 
             if (inStreamScopeId == null)
             {
                 // doesn't make sense on a per-stream basis
                 logger.info("Generating number of unique visitors for " + inDate);
+                clearEntityManagerMapper.execute(null);
                 uniqueVisitorCount = getDailyUniqueVisitorCountMapper.execute(inDate);
 
                 logger.info("Generating number of page views for " + inDate);
+                clearEntityManagerMapper.execute(null);
                 pageViewCount = getDailyPageViewCountMapper.execute(inDate);
 
                 logger.info("Generating average activity comment time (for those with comments on the same day) for "
                         + inDate);
+                clearEntityManagerMapper.execute(null);
                 avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(inDate);
             }
             else
             {
                 // these are only generated for individual streams
+                start = System.currentTimeMillis();
+                clearEntityManagerMapper.execute(null);
                 totalActivityCount = getTotalActivityCountMapper.execute(inStreamScopeId);
-                totalCommentCount = getTotalCommentCountMapper.execute(inStreamScopeId);
-                totalContributorCount = getTotalStreamContributorMapper.execute(inStreamScopeId);
+                timerLog += "\t2: " + (System.currentTimeMillis() - start);
 
+                start = System.currentTimeMillis();
+                clearEntityManagerMapper.execute(null);
+                totalCommentCount = getTotalCommentCountMapper.execute(inStreamScopeId);
+                timerLog += "\t3: " + (System.currentTimeMillis() - start);
+
+                start = System.currentTimeMillis();
+                clearEntityManagerMapper.execute(null);
+                totalContributorCount = getTotalStreamContributorMapper.execute(inStreamScopeId);
+                timerLog += "\t4: " + (System.currentTimeMillis() - start);
+
+                start = System.currentTimeMillis();
+                clearEntityManagerMapper.execute(null);
                 DailyUsageSummary priorDayData = getPreviousDailyUsageSummaryByDateMapper
                         .execute(new UsageMetricDailyStreamInfoRequest(inDate, inStreamScopeId));
+                timerLog += "\t5: " + (System.currentTimeMillis() - start);
 
                 if (priorDayData != null && priorDayData.getTotalStreamViewCount() != null)
                 {
@@ -369,13 +404,22 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             }
 
             logger.info("Generating number of stream viewers for " + inDate);
+            start = System.currentTimeMillis();
+            clearEntityManagerMapper.execute(null);
             streamViewerCount = getDailyStreamViewerCountMapper.execute(streamInfoRequest);
+            timerLog += "\t6: " + (System.currentTimeMillis() - start);
 
             logger.info("Generating number of stream contributors for " + inDate);
+            start = System.currentTimeMillis();
+            clearEntityManagerMapper.execute(null);
             streamContributorCount = getDailyStreamContributorCountMapper.execute(streamInfoRequest);
+            timerLog += "\t7: " + (System.currentTimeMillis() - start);
 
             logger.info("Generating number of messages (activities and comments) for " + inDate);
+            start = System.currentTimeMillis();
+            clearEntityManagerMapper.execute(null);
             messageCount = getDailyMessageCountMapper.execute(streamInfoRequest);
+            timerLog += "\t8: " + (System.currentTimeMillis() - start);
 
             DailyUsageSummary data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount,
                     streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate,
@@ -384,11 +428,19 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
             // store this
             logger.info("Inserting daily usage metric data for " + inDate);
+            start = System.currentTimeMillis();
+            clearEntityManagerMapper.execute(null);
             insertMapper.execute(new PersistenceRequest<DailyUsageSummary>(data));
+            timerLog += "\t9: " + (System.currentTimeMillis() - start);
 
             // fetch the stream's data, which should be configured to force a cache refresh
+            start = System.currentTimeMillis();
+            clearEntityManagerMapper.execute(null);
             summaryDataMapper.execute(new UsageMetricStreamSummaryRequest(numberOfDaysToCacheSummaryDataFor,
                     inStreamScopeId));
+            timerLog += "\t10: " + (System.currentTimeMillis() - start);
+            timerLog += "\tTOTAL: " + (System.currentTimeMillis() - totalStart);
+            logger.trace(timerLog);
         }
         catch (Exception e)
         {

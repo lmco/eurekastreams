@@ -2138,6 +2138,8 @@
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
 
     <bean id="flushMapper" class="org.eurekastreams.server.persistence.mappers.db.FlushMapper" />
+    
+    <bean id="clearMapper" class="org.eurekastreams.server.persistence.mappers.db.ClearEntityManagerMapper" />
 
     <bean id="createGalleryTabTemplateMapper" class="org.eurekastreams.server.action.execution.gallery.GalleryTabTemplateFactory" />
     

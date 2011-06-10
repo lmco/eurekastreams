@@ -4475,6 +4475,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetTotalStreamContributorCountDbMapper" />
         </constructor-arg>
+        <constructor-arg ref="clearMapper" />
         <!-- Generate the usage metrics and dump into cache -->
         <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
         <!-- 30 days of summary data caching -->

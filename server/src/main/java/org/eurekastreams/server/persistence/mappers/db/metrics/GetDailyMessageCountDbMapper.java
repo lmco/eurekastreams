@@ -50,26 +50,26 @@ public class GetDailyMessageCountDbMapper extends BaseArgDomainMapper<UsageMetri
         {
             // all streams
             activityCountQuery = getEntityManager().createQuery(
-                    "SELECT COUNT(*) FROM Activity WHERE (appType = null OR appType != :plugin) AND "
+                    "SELECT COUNT(id) FROM Activity WHERE (appType = null OR appType != :plugin) AND "
                             + "postedTime >= :startDate AND postedTime <= :endDate").setParameter("startDate",
                     startOfDay).setParameter("endDate", endOfDay).setParameter("plugin", EntityType.PLUGIN);
 
             commentCountQuery = getEntityManager().createQuery(
-                    "SELECT COUNT(*) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate").setParameter(
-                    "startDate", startOfDay).setParameter("endDate", endOfDay);
+                    "SELECT COUNT(id) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate")
+                    .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
         }
         else
         {
             // specific stream
             activityCountQuery = getEntityManager().createQuery(
-                    "SELECT COUNT(*) FROM Activity WHERE (appType = null OR appType != :plugin) "
+                    "SELECT COUNT(id) FROM Activity WHERE (appType = null OR appType != :plugin) "
                             + "AND postedTime >= :startDate AND postedTime <= :endDate "
                             + "AND recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
                     startOfDay).setParameter("endDate", endOfDay).setParameter("plugin", EntityType.PLUGIN)
                     .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId());
 
             commentCountQuery = getEntityManager().createQuery(
-                    "SELECT COUNT(*) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate "
+                    "SELECT COUNT(id) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate "
                             + "AND target.recipientStreamScope.id = :recipientStreamScopeId").setParameter("startDate",
                     startOfDay).setParameter("endDate", endOfDay).setParameter("recipientStreamScopeId",
                     inRequest.getStreamRecipientStreamScopeId());

@@ -43,7 +43,7 @@ public class GetDailyPageViewCountDbMapper extends BaseArgDomainMapper<Date, Lon
         startOfDay = DateDayExtractor.getStartOfDay(inDay);
         endOfDay = DateDayExtractor.getEndOfDay(inDay);
         q = getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM UsageMetric "
+                "SELECT COUNT(id) FROM UsageMetric "
                         + "WHERE isPageView = true AND created >= :startDate AND created <= :endDate").setParameter(
                 "startDate", startOfDay).setParameter("endDate", endOfDay);
 

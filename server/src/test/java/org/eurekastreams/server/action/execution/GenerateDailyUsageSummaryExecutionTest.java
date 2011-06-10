@@ -149,6 +149,12 @@ public class GenerateDailyUsageSummaryExecutionTest
     private DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
 
     /**
+     * Mapper to clear the entity manager.
+     */
+    private DomainMapper<Serializable, Boolean> clearEntityManagerMapper = context.mock(DomainMapper.class,
+            "clearEntityManagerMapper");
+
+    /**
      * Mapper to get the summary data for a stream, or all streams - used for caching.
      */
     private DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper = context.mock(
@@ -176,7 +182,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
                 insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
                 getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper,
-                summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
+                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date(2011, 1, 22);
@@ -196,6 +202,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 will(returnValue(true));
 
                 oneOf(usageMetricDataCleanupMapper).execute(null);
+
+                allowing(clearEntityManagerMapper).execute(null);
             }
         });
 
@@ -216,7 +224,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
                 insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
                 getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper,
-                summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
+                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
 
         final Date dateRaw = new Date(2011, 1, 22);
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
@@ -277,6 +285,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(summaryDataMapper).execute(
                         with(IsEqualInternally.equalInternally(new UsageMetricStreamSummaryRequest(
                                 numberOfDaysToCacheSummaryDataFor, null))));
+
+                allowing(clearEntityManagerMapper).execute(null);
             }
         });
 

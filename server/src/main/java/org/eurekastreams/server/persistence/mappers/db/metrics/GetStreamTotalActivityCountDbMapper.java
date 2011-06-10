@@ -33,7 +33,7 @@ public class GetStreamTotalActivityCountDbMapper extends BaseArgDomainMapper<Lon
     public Long execute(final Long inRecipientStreamScopeId)
     {
         return (Long) getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM Activity WHERE recipientStreamScope.id = :recipientStreamScopeId").setParameter(
+                "SELECT COUNT(id) FROM Activity WHERE recipientStreamScope.id = :recipientStreamScopeId").setParameter(
                 "recipientStreamScopeId", inRecipientStreamScopeId).getSingleResult();
     }
 }
