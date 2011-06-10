@@ -25,11 +25,11 @@ import org.eurekastreams.server.domain.dto.GalleryTabTemplateDTO;
 import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.server.domain.dto.ThemeDTO;
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.MembershipCriteriaPersistedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaVerificationFailureEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaVerificationNoUsersEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.MembershipCriteriaPersistedEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.MembershipCriteriaVerificationModel;
@@ -311,7 +311,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
                 results.setVisible(false);
                 verifyingDone();
 
-                addMembershipCriteria(ev.getMembershipCriteria());
+                addMembershipCriteria(ev.getResponse());
             }
         });
 
