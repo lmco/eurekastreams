@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.events;
+package org.eurekastreams.web.client.events.data;
 
 import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 
 /**
  * Membership criteria added event.
  */
-public class MembershipCriteriaPersistedEvent
+public class MembershipCriteriaPersistedEvent extends BaseDataResponseEvent<MembershipCriteriaDTO>
 {
-    /**
-     * Membership criteria.
-     */
-    private MembershipCriteriaDTO membershipCriteria;
-
     /**
      * Constructor.
      * 
@@ -35,16 +30,6 @@ public class MembershipCriteriaPersistedEvent
      */
     public MembershipCriteriaPersistedEvent(final MembershipCriteriaDTO inMembershipCriteria)
     {
-        membershipCriteria = inMembershipCriteria;
-    }
-
-    /**
-     * Get the membership criteria.
-     * 
-     * @return the criteria.
-     */
-    public MembershipCriteriaDTO getMembershipCriteria()
-    {
-        return membershipCriteria;
+        super(inMembershipCriteria);
     }
 }
