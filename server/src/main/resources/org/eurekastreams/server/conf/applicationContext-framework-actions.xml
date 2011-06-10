@@ -207,6 +207,20 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>  
+    
+    <bean id="getFeaturedStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.GetFeaturedStreamsExecution">                
+                <constructor-arg ref="getFeaturedStreamsMapper" />
+                <constructor-arg ref="featuredStreamDTOTransientDataPopulator" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
 
     <bean id="updateMembershipTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
@@ -4161,6 +4175,12 @@
     <bean id="followerStatusPopulator" class="org.eurekastreams.server.domain.strategies.FollowerStatusPopulator">
         <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
+    </bean>
+    
+    <bean id="featuredStreamDTOTransientDataPopulator" class="org.eurekastreams.server.domain.strategies.FeaturedStreamDTOTransientDataPopulator">
+        <constructor-arg ref="followerStatusPopulator"/>
+        <constructor-arg ref="getPeopleByAccountIdsMapper"/>
+        <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
     </bean>
 
     <bean id="documentCreator" class="org.eurekastreams.server.service.actions.strategies.DocumentCreator">

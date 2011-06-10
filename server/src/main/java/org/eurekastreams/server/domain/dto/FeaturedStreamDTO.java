@@ -81,7 +81,7 @@ public class FeaturedStreamDTO implements Serializable, FollowerStatusable
     /**
      * Constructor.
      */
-    private FeaturedStreamDTO()
+    public FeaturedStreamDTO()
     {
         // no-op.
     }

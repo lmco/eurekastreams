@@ -65,7 +65,7 @@ public class FollowerStatusPopulator<T extends FollowerStatusable>
      *            Status to use if unable to determine follower status, NOTSPECIFIED is used if value is null.
      * @return List of param items with status set.
      */
-    List<T> execute(final Long inCurrentUserId, final List<T> inFollowerStatusables,
+    public List<T> execute(final Long inCurrentUserId, final List<T> inFollowerStatusables,
             final FollowerStatus inDefaultStatus)
     {
         // set default status or use not specified if not specified (imagine that!).
