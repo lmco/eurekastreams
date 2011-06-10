@@ -27,7 +27,8 @@ import org.eurekastreams.web.client.ui.Session;
 /**
  * Model for handling the list of application alert notifications.
  */
-public class NotificationListModel extends BaseModel implements Fetchable<Serializable>, Updateable<ArrayList<Long>>
+public class NotificationListModel extends BaseModel implements Fetchable<Serializable>, Updateable<ArrayList<Long>>,
+        Deletable<Long>
 {
     /**
      * Singleton.
@@ -61,7 +62,7 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
 
     /**
      * Marks the given notifications as read.
-     * 
+     *
      * @param notifIds
      *            List of IDs of notifications to mark as read.
      */
@@ -72,7 +73,7 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
 
     /**
      * Marks a single notification as read.
-     * 
+     *
      * @param notifId
      *            ID of notification to mark as read.
      */
@@ -81,4 +82,14 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
         super.callWriteAction("markInAppNotificationsRead", (Serializable) Collections.singletonList(notifId), null);
     }
 
+    /**
+     * Deletes a notification.
+     *
+     * @param notifId
+     *            ID of notification to delete.
+     */
+    public void delete(final Long notifId)
+    {
+        super.callWriteAction("deleteInAppNotifications", (Serializable) Collections.singletonList(notifId), null);
+    }
 }

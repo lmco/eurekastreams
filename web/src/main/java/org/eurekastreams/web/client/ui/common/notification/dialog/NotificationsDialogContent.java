@@ -24,6 +24,7 @@ import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.NotificationClickedEvent;
+import org.eurekastreams.web.client.events.NotificationDeleteRequestEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UnreadNotificationClearedEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
@@ -100,7 +101,7 @@ public class NotificationsDialogContent extends BaseDialogContent
     private List<InAppNotificationDTO> allNotifications;
 
     /** The IDs of the notifications currently being displayed. */
-    private final Collection<Long> idsShowing = new ArrayList<Long>();
+    private final Collection<InAppNotificationDTO> notifsShowing = new ArrayList<InAppNotificationDTO>();
 
     /** Source representing all notifications. */
     private Source rootSource;
@@ -130,6 +131,15 @@ public class NotificationsDialogContent extends BaseDialogContent
         public void update(final NotificationClickedEvent ev)
         {
             handleNotificationClicked(ev.getResponse());
+        }
+    };
+    /** Observer (allow unlinking). */
+    private final Observer<NotificationDeleteRequestEvent> notificationDeleteRequestObserver = // \n
+    new Observer<NotificationDeleteRequestEvent>()
+    {
+        public void update(final NotificationDeleteRequestEvent ev)
+        {
+            handleNotificationDeleteRequest(ev.getResponse());
         }
     };
 
@@ -181,6 +191,7 @@ public class NotificationsDialogContent extends BaseDialogContent
 
         eventBus.addObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
         eventBus.addObserver(NotificationClickedEvent.class, notificationClickedObserver);
+        eventBus.addObserver(NotificationDeleteRequestEvent.class, notificationDeleteRequestObserver);
 
         // Since none of the links cause a full page load (which would annihilate the dialog), we must explicitly close
         // the dialog. We cannot count on a history change event (or any of the related events) because the user may
@@ -222,6 +233,7 @@ public class NotificationsDialogContent extends BaseDialogContent
         }
         EventBus.getInstance().removeObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
         EventBus.getInstance().removeObserver(NotificationClickedEvent.class, notificationClickedObserver);
+        EventBus.getInstance().removeObserver(NotificationDeleteRequestEvent.class, notificationDeleteRequestObserver);
     }
 
     /**
@@ -275,6 +287,25 @@ public class NotificationsDialogContent extends BaseDialogContent
         if (hasInternalUrl)
         {
             close();
+        }
+    }
+
+    /**
+     * Deletes a notification on request.
+     *
+     * @param item
+     *            The notification.
+     */
+    private void handleNotificationDeleteRequest(final InAppNotificationDTO item)
+    {
+        if (notifsShowing.remove(item))
+        {
+            allNotifications.remove(item);
+            if (!item.isRead())
+            {
+                reduceUnreadCount(item);
+            }
+            NotificationListModel.getInstance().delete(item.getId());
         }
     }
 
@@ -395,18 +426,18 @@ public class NotificationsDialogContent extends BaseDialogContent
         notificationListScrollPanel.setVisible(false);
 
         notificationListPanel.clear();
-        idsShowing.clear();
+        notifsShowing.clear();
 
         for (InAppNotificationDTO item : allNotifications)
         {
             if (filter.shouldDisplay(item) && (showRead || !item.isRead()))
             {
-                idsShowing.add(item.getId());
+                notifsShowing.add(item);
                 notificationListPanel.add(new NotificationWidget(item));
 
             }
         }
-        if (idsShowing.isEmpty())
+        if (notifsShowing.isEmpty())
         {
             noNotificationsUi.getStyle().clearDisplay();
         }
