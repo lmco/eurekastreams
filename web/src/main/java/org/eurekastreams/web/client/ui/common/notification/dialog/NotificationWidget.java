@@ -20,8 +20,8 @@ import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.NotificationClickedEvent;
-import org.eurekastreams.web.client.ui.pages.master.CoreCss;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+import org.eurekastreams.web.client.events.NotificationDeleteRequestEvent;
+import org.eurekastreams.web.client.jsni.EffectsFacade;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -33,6 +33,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -46,13 +47,13 @@ public class NotificationWidget extends Composite
     /** Date formatter. */
     private final DateFormatter dateFormatter = new DateFormatter();
 
-    /** Global CSS. */
-    @UiField(provided = true)
-    CoreCss coreCss;
-
-    /** Global resources. */
-    @UiField(provided = true)
-    StaticResourceBundle globalResources;
+    // /** Global CSS. */
+    // @UiField(provided = true)
+    // CoreCss coreCss;
+    //
+    // /** Global resources. */
+    // @UiField(provided = true)
+    // StaticResourceBundle globalResources;
 
     /** Local styles. */
     @UiField
@@ -74,14 +75,16 @@ public class NotificationWidget extends Composite
     @UiField
     Element timestampUi;
 
+    /** UI element acting as a delete button. */
+    @UiField
+    Label deleteUi;
+
     /** The notification to show. */
     private final InAppNotificationDTO item;
 
     /** Main widget. */
     private final Widget main;
 
-    // /** If the notification has an internal link. */
-    // private boolean internalUrl;
 
     /**
      * Constructor.
@@ -93,8 +96,8 @@ public class NotificationWidget extends Composite
     {
         item = inItem;
 
-        coreCss = StaticResourceBundle.INSTANCE.coreCss();
-        globalResources = StaticResourceBundle.INSTANCE;
+        // coreCss = StaticResourceBundle.INSTANCE.coreCss();
+        // globalResources = StaticResourceBundle.INSTANCE;
 
         main = binder.createAndBindUi(this);
         initWidget(main);
@@ -119,29 +122,15 @@ public class NotificationWidget extends Composite
             {
                 mainLinkUi.setTarget("_blank");
             }
-            // else
-            // {
-            // internalUrl = true;
-            // }
             mainLinkUi.setHref(url);
         }
-        // else
-        // {
-        // // nowhere to link, so move all the children up and out, and remove anchor
-        // Element parent = mainLinkUi.getParentElement();
-        // while (mainLinkUi.hasChildNodes())
-        // {
-        // parent.insertBefore(mainLinkUi.getFirstChild(), mainLinkUi);
-        // }
-        // mainLinkUi.removeFromParent();
-        // }
 
         AvatarUrlGenerator urlGen = new AvatarUrlGenerator(item.getAvatarOwnerType());
         avatarUi.setSrc(urlGen.getSmallAvatarUrl(null, item.getAvatarId()));
     }
 
     /**
-     * Sends notification when button clicked.
+     * Updates notification when clicked.
      *
      * @param ev
      *            Event.
@@ -156,30 +145,19 @@ public class NotificationWidget extends Composite
         EventBus.getInstance().notifyObservers(new NotificationClickedEvent(item));
     }
 
-    // void onClick(final ClickEvent ev)
-    // {
-    // if (!item.isRead())
-    // {
-    // item.setRead(true);
-    // main.addStyleName(style.read());
-    //
-    // // TODO: update in DB
-    //
-    // // don't bother send the event for internal URLs, because we will close the dialog
-    // if (!internalUrl)
-    // {
-    // EventBus.getInstance().notifyObservers(new UnreadNotificationClearedEvent(item));
-    // }
-    // }
-    //
-    // // force the dialog shut if it contains an internal URL
-    // if (internalUrl)
-    // {
-    // EventBus.getInstance().notifyObservers(new CloseModalRequestEvent());
-    // }
-    // }
-
-    // ### private static native String log(String s)/*-{ console.log(s); }-*/;
+    /**
+     * Deletes notification when button clicked.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("deleteUi")
+    void onDeleteClick(final ClickEvent ev)
+    {
+        new EffectsFacade().fadeOut(getElement(), true);
+        // removeFromParent();
+        EventBus.getInstance().notifyObservers(new NotificationDeleteRequestEvent(item));
+    }
 
     /**
      * Local styles.

@@ -514,6 +514,7 @@
                                 <exclude>**/*Request.class</exclude>
                                 <exclude>**/*Test.class</exclude>
                                 <exclude>**/*Fake.class</exclude>
+								<exclude>**/Debug*.class</exclude>
                                 <exclude>org/eurekastreams/web/client/**/*Facade*.class</exclude>
                                 <exclude>org/eurekastreams/web/client/**/Session.class</exclude>
                                 <exclude>org/eurekastreams/web/client/**/*Composite*.class</exclude>

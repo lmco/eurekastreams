@@ -1,9 +1,10 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder 
 	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-<ui:image field="buttonImage" src="style/images/sendNotification.png" />
-<ui:image field="buttonImageDisabled" src="style/images/sendNotificationInactive.png" />
+<ui:image field="deletePlaceholder" src="style/images/modalCloseBtn.png" />
+<!-- <ui:image field="deleteFloat" src="style/images/modalCloseBtnSmallHover.png" /> -->
 
 <ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationWidget.LocalStyle">
 .highPriority
@@ -47,18 +48,54 @@
 	float: left;
 	border: none;
 }
+.action:hover
+{
+	position: relative;
+}
+@sprite .delete-placeholder
+{
+	gwt-image: "deletePlaceholder";
+	margin-top: 2px;
+}
+.floating-panel
+{
+	display: none;
+}
+.action:hover > .floating-panel
+{
+	display: block;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	background: #7A7A7A url('style/images/modalCloseBtnHover.png') no-repeat scroll right center;
+	/*
+	background-color: #7A7A7A;
+	background-position: right center;
+	gwt-image: "deleteFloat";
+	width: auto;
+	*/
+	padding-left: 5px;
+	padding-right: 29px;
+	height: 28px;
+	line-height: 28px;
+	color: white;
+	cursor: pointer;
+}
 </ui:style>
 
-<ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
-<ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" />
+<!-- <ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" /> -->
+<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
 
 <g:HTMLPanel addStyleNames="{style.main}">
+	<div class="{style.actions-panel}">
+		<div class="{style.action}">
+			<div class="{style.delete-placeholder}"/>
+			<g:Label addStyleNames="{style.floating-panel}" ui:field="deleteUi">Delete&nbsp;Notification</g:Label>
+		</div>
+		<div />
+	</div>
 	<g:Anchor addStyleNames="{style.main-link}" ui:field="mainLinkUi">
 		<img class="{style.avatar}" ui:field="avatarUi" />
-		<div class="{style.actions-panel}">
-			<div />
-			<div />
-		</div>
 		<span class="{style.message-text}" ui:field="messageTextUi" />
 		<span class="{style.timestamp}" ui:field="timestampUi" />
 	</g:Anchor>
