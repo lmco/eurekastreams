@@ -110,7 +110,7 @@
 	</rule>
 	<rule>
 		<from>^/api/0/full/getPersonModelView/(.*)$</from>
-		<to last="true">/resources/api/0/full/getPersonModelView/String/$1</to>
+		<to last="true">/resources/api/0/full/getPersonModelViewDirect/String/$1</to>
 	</rule>
 	<rule>
 		<from>^/api/0/full/getPopularHashTagsForStream/(.*)$</from>
@@ -259,7 +259,7 @@
 	</rule>
 	<rule>
 		<from>^/api/0/read/getPersonModelView/(.*)$</from>
-		<to last="true">/resources/api/0/read/getPersonModelView/String/$1</to>
+		<to last="true">/resources/api/0/read/getPersonModelViewDirect/String/$1</to>
 	</rule>
 	<rule>
 		<from>^/api/0/read/getPopularHashTagsForStream/(.*)$</from>
