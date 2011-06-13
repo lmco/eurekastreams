@@ -121,6 +121,10 @@
 		<to last="true">/resources/api/0/full/getRequestsForGroupMembershipByGroupAction/org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest/$1</to>
 	</rule>
 	<rule>
+		<from>^/api/0/full/getSharedResourceByKey/(.*)$</from>
+		<to last="true">/resources/api/0/full/getSharedResourceByKeyAction/org.eurekastreams.server.action.request.SharedResourceRequest/$1</to>
+	</rule>
+	<rule>
 		<from>^/api/0/full/getSystemSettings/(.*)$</from>
 		<to last="true">/resources/api/0/full/getSystemSettings/null/$1</to>
 	</rule>
@@ -159,6 +163,10 @@
 	<rule>
 		<from>^/api/0/full/setFollowingStatusPerson/(.*)$</from>
 		<to last="true">/resources/api/0/full/setFollowingStatusPersonTaskHandler/org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/setSharedResourceLiked/(.*)$</from>
+		<to last="true">/resources/api/0/full/setSharedResourceLiked/org.eurekastreams.server.action.request.stream.SetSharedResourceLikeRequest/$1</to>
 	</rule>
 	<rule>
 		<from>^/api/0/full/setStreamOrder/(.*)$</from>
@@ -268,6 +276,10 @@
 	<rule>
 		<from>^/api/0/read/getRequestsForGroupMembershipByGroup/(.*)$</from>
 		<to last="true">/resources/api/0/read/getRequestsForGroupMembershipByGroupAction/org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getSharedResourceByKey/(.*)$</from>
+		<to last="true">/resources/api/0/read/getSharedResourceByKeyAction/org.eurekastreams.server.action.request.SharedResourceRequest/$1</to>
 	</rule>
 	<rule>
 		<from>^/api/0/read/getSystemSettings/(.*)$</from>
