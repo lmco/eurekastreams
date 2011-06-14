@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.GroupFollower;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,22 +79,33 @@ public class GetSuggestedGroupsForPersonDbMapperTest extends MapperTest
         // ---
         // 
 
-        List<Long> suggestedGroups = sut.execute(new SuggestedStreamsRequest(42L, 4));
+        List<DomainGroupModelView> suggestedGroups = sut.execute(new SuggestedStreamsRequest(42L, 4));
         Assert.assertEquals(3, suggestedGroups.size());
-        Assert.assertEquals(new Long(5), suggestedGroups.get(0));
-        Assert.assertEquals(new Long(1), suggestedGroups.get(1));
-        Assert.assertEquals(new Long(3), suggestedGroups.get(2));
+        Assert.assertEquals(5, suggestedGroups.get(0).getId());
+        Assert.assertEquals("group5", suggestedGroups.get(0).getShortName());
+        Assert.assertEquals("A Group 1 Name", suggestedGroups.get(0).getName());
+        Assert.assertEquals(3, suggestedGroups.get(0).getFollowersCount());
+
+        Assert.assertEquals(1, suggestedGroups.get(1).getId());
+        Assert.assertEquals("group1", suggestedGroups.get(1).getShortName());
+        Assert.assertEquals("E Group 1 Name", suggestedGroups.get(1).getName());
+        Assert.assertEquals(2, suggestedGroups.get(1).getFollowersCount());
+
+        Assert.assertEquals(3, suggestedGroups.get(2).getId());
+        Assert.assertEquals("group3", suggestedGroups.get(2).getShortName());
+        Assert.assertEquals("C Group 1 Name", suggestedGroups.get(2).getName());
+        Assert.assertEquals(1, suggestedGroups.get(2).getFollowersCount());
 
         suggestedGroups = sut.execute(new SuggestedStreamsRequest(42L, 2));
         Assert.assertEquals(2, suggestedGroups.size());
-        Assert.assertEquals(new Long(5), suggestedGroups.get(0));
-        Assert.assertEquals(new Long(1), suggestedGroups.get(1));
+        Assert.assertEquals(5, suggestedGroups.get(0).getId());
+        Assert.assertEquals(1, suggestedGroups.get(1).getId());
 
         // now follow group 1 so it's removed from the list
         getEntityManager().persist(new GroupFollower(42, 1));
         suggestedGroups = sut.execute(new SuggestedStreamsRequest(42L, 3));
         Assert.assertEquals(2, suggestedGroups.size());
-        Assert.assertEquals(new Long(5), suggestedGroups.get(0));
-        Assert.assertEquals(new Long(3), suggestedGroups.get(1));
+        Assert.assertEquals(5, suggestedGroups.get(0).getId());
+        Assert.assertEquals(3, suggestedGroups.get(1).getId());
     }
 }

@@ -21,12 +21,14 @@ import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers are
  * members of, sorted by follow count within that group, and ignoring the input user's followers as suggestions.
  */
-public class GetSuggestedPeopleForPersonDbMapper extends BaseArgDomainMapper<SuggestedStreamsRequest, List<Long>>
+public class GetSuggestedPeopleForPersonDbMapper extends
+        BaseArgDomainMapper<SuggestedStreamsRequest, List<PersonModelView>>
 {
     /**
      * Get a list of suggested group streams for a person by getting all groups that their followers are members of,
@@ -38,16 +40,20 @@ public class GetSuggestedPeopleForPersonDbMapper extends BaseArgDomainMapper<Sug
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Long> execute(final SuggestedStreamsRequest inRequest)
+    public List<PersonModelView> execute(final SuggestedStreamsRequest inRequest)
     {
         Query query = getEntityManager().createQuery(
-                "SELECT peopleTheyFollow.pk.followingId FROM Follower peopleIFollow, Follower peopleTheyFollow "
+                "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(peopleTheyFollow.pk.followingId, "
+                        + "person.accountId, person.preferredName, person.lastName, "
+                        + "COUNT(peopleTheyFollow.pk.followingId)) "
+                        + "FROM Follower peopleIFollow, Follower peopleTheyFollow, Person person "
                         + "WHERE peopleIFollow.pk.followingId = peopleTheyFollow.pk.followerId "
                         + "AND peopleIFollow.pk.followerId = :personId AND peopleTheyFollow.pk.followingId NOT IN "
                         + "(SELECT pk.followingId FROM Follower WHERE followerId = :personId) "
-                        + "GROUP BY peopleTheyFollow.pk.followingId "
-                        + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC").setParameter("personId",
-                inRequest.getPersonId());
+                        + "AND person.id = peopleTheyFollow.pk.followingId "
+                        + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
+                        + "person.lastName ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC").setParameter(
+                "personId", inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());
         return query.getResultList();
     }

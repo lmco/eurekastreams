@@ -22,6 +22,7 @@ import junit.framework.Assert;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,20 +66,33 @@ public class GetSuggestedPeopleForPersonDbMapperTest extends MapperTest
         // 98 is following 99
         getEntityManager().persist(new Follower(98, 99));
 
-        List<Long> suggestions = sut.execute(new SuggestedStreamsRequest(42, 5));
+        List<PersonModelView> suggestions = sut.execute(new SuggestedStreamsRequest(42, 5));
         Assert.assertEquals(2, suggestions.size());
-        Assert.assertEquals(new Long(142L), suggestions.get(0));
-        Assert.assertEquals(new Long(99L), suggestions.get(1));
+        Assert.assertEquals(142, suggestions.get(0).getId());
+        Assert.assertEquals("fordp2", suggestions.get(0).getAccountId());
+        Assert.assertEquals("Volgon-Vwatter Prefect", suggestions.get(0).getDisplayName());
+        Assert.assertEquals(2, suggestions.get(0).getFollowersCount());
+
+        Assert.assertEquals(99L, suggestions.get(1).getId());
+        Assert.assertEquals("mrburns", suggestions.get(1).getAccountId());
+        Assert.assertEquals("Mr.Burns Burns", suggestions.get(1).getDisplayName());
+        Assert.assertEquals(1, suggestions.get(1).getFollowersCount());
 
         // -- now only ask for 1
         suggestions = sut.execute(new SuggestedStreamsRequest(42, 1));
         Assert.assertEquals(1, suggestions.size());
-        Assert.assertEquals(new Long(142L), suggestions.get(0));
+        Assert.assertEquals(142L, suggestions.get(0).getId());
+        Assert.assertEquals("fordp2", suggestions.get(0).getAccountId());
+        Assert.assertEquals("Volgon-Vwatter Prefect", suggestions.get(0).getDisplayName());
+        Assert.assertEquals(2, suggestions.get(0).getFollowersCount());
 
         // -- now follow 99, which will no longer suggest it
         getEntityManager().persist(new Follower(42, 99));
         suggestions = sut.execute(new SuggestedStreamsRequest(42, 5));
         Assert.assertEquals(1, suggestions.size());
-        Assert.assertEquals(new Long(142L), suggestions.get(0));
+        Assert.assertEquals(142L, suggestions.get(0).getId());
+        Assert.assertEquals("fordp2", suggestions.get(0).getAccountId());
+        Assert.assertEquals("Volgon-Vwatter Prefect", suggestions.get(0).getDisplayName());
+        Assert.assertEquals(2, suggestions.get(0).getFollowersCount());
     }
 }

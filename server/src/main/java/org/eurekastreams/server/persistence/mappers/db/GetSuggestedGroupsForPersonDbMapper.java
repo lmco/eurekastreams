@@ -21,12 +21,14 @@ import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
  * Database mapper to get a list of suggested group streams for a person by getting all groups that their followers are
  * members of, sorted by follow count within that group, and ignoring the input user's groups as suggestions.
  */
-public class GetSuggestedGroupsForPersonDbMapper extends BaseArgDomainMapper<SuggestedStreamsRequest, List<Long>>
+public class GetSuggestedGroupsForPersonDbMapper extends
+        BaseArgDomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>>
 {
     /**
      * Get a list of suggested group streams for a person by getting all groups that their followers are members of,
@@ -38,15 +40,19 @@ public class GetSuggestedGroupsForPersonDbMapper extends BaseArgDomainMapper<Sug
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Long> execute(final SuggestedStreamsRequest inRequest)
+    public List<DomainGroupModelView> execute(final SuggestedStreamsRequest inRequest)
     {
         Query query = getEntityManager().createQuery(
-                "SELECT theirGroups.pk.followingId FROM Follower peopleIFollow, GroupFollower theirGroups "
+                "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(g.id, "
+                        + "g.shortName, g.name, COUNT(theirGroups.pk.followingId)) "
+                        + "FROM Follower peopleIFollow, GroupFollower theirGroups, DomainGroup g "
                         + "WHERE peopleIFollow.pk.followingId = theirGroups.pk.followerId "
+                        + "AND theirGroups.pk.followingId = g.id "
                         + "AND peopleIFollow.pk.followerId = :personId AND theirGroups.pk.followingId NOT IN "
                         + "(SELECT pk.followingId FROM GroupFollower WHERE followerId = :personId) "
-                        + "GROUP BY theirGroups.pk.followingId ORDER BY COUNT(theirGroups.pk.followingId) DESC")
-                .setParameter("personId", inRequest.getPersonId());
+                        + "GROUP BY theirGroups.pk.followingId, g.id, g.shortName, g.name "
+                        + "ORDER BY COUNT(theirGroups.pk.followingId) DESC").setParameter("personId",
+                inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());
         return query.getResultList();
     }
