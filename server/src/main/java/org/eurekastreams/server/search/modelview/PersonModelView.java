@@ -32,17 +32,19 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.Identifiable;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.StreamDTO;
 
 /**
  * A lightweight view of a Person containing everything needed for display of a search result of an Person.
  */
 public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable,
-        ActivityRestrictionEntity, AvatarEntity, Bannerable, Identifiable
+        ActivityRestrictionEntity, AvatarEntity, Bannerable, Identifiable, StreamDTO
 {
     /**
      * Serial version uid.
      */
-    private static final long serialVersionUID = -9138290551061823903L;
+    private static final long serialVersionUID = -9056680427782118919L;
 
     /**
      * The key for the title.
@@ -87,7 +89,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Role in the system.
-     * 
      */
     public enum Role implements Serializable
     {
@@ -286,6 +287,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * Company name.
      */
     private String companyName;
+
+    /**
+     * Follower status.
+     */
+    private FollowerStatus followerStatus;
 
     /**
      * Get the name of this entity.
@@ -1265,5 +1271,17 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public EntityType getEntityType()
     {
         return EntityType.PERSON;
+    }
+
+    @Override
+    public FollowerStatus getFollowerStatus()
+    {
+        return followerStatus;
+    }
+
+    @Override
+    public void setFollowerStatus(final FollowerStatus inFollowerStatus)
+    {
+        followerStatus = inFollowerStatus;
     }
 }

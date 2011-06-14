@@ -44,7 +44,7 @@ public class FeaturedStreamDTOTransientDataPopulator
     private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
-     * Mapper to get a list of PersonModelViews from a list of AccountIds.
+     * Mapper to get a list of DomainGroupModelViews from a list of group short names.
      */
     private GetItemsByPointerIds<DomainGroupModelView> getGroupModelViewsByShortNameMapper;
 
@@ -56,7 +56,7 @@ public class FeaturedStreamDTOTransientDataPopulator
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            Mapper to get a list of PersonModelViews from a list of AccountIds.
      * @param inGetGroupModelViewsByShortNameMapper
-     *            Mapper to get a list of GroupModelViews from a list of AccountIds.
+     *            Mapper to get a list of GroupModelViews from a list of group shortNames.
      */
     public FeaturedStreamDTOTransientDataPopulator(
             final FollowerStatusPopulator<FeaturedStreamDTO> inFollowerStatusPopulator,

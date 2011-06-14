@@ -27,17 +27,19 @@ import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.Identifiable;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.StreamDTO;
 
 /**
  * ModelView for DomainGroup.
  */
 public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity, Bannerable,
-        AvatarEntity, Identifiable
+        AvatarEntity, Identifiable, StreamDTO
 {
     /**
-     * The serial version id.
+     * Serial version uid.
      */
-    private static final long serialVersionUID = 2996495113622674437L;
+    private static final long serialVersionUID = -49328217844974109L;
 
     /**
      * form Key.
@@ -227,6 +229,14 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Constructor.
+     */
+    public DomainGroupModelView()
+    {
+
+    }
+
+    /**
+     * Constructor.
      * 
      * @param inId
      *            the domain group id
@@ -245,6 +255,11 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         setName(inName);
         setFollowersCount(inFollowerCount.intValue());
     }
+
+    /**
+     * Follower status.
+     */
+    private FollowerStatus followerStatus;
 
     /**
      * Load this object's properties from the input Map.
@@ -882,6 +897,24 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public String getDisplayName()
     {
         return name;
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return null;
+    }
+
+    @Override
+    public FollowerStatus getFollowerStatus()
+    {
+        return followerStatus;
+    }
+
+    @Override
+    public void setFollowerStatus(final FollowerStatus inFollowerStatus)
+    {
+        followerStatus = inFollowerStatus;
     }
 
 }
