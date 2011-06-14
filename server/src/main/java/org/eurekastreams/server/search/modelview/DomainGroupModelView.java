@@ -27,12 +27,14 @@ import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.Identifiable;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.StreamDTO;
 
 /**
  * ModelView for DomainGroup.
  */
 public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity, Bannerable,
-        AvatarEntity, Identifiable
+        AvatarEntity, Identifiable, StreamDTO
 {
     /**
      * The serial version id.
@@ -226,8 +228,13 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private boolean suppressPostNotifToMember;
 
     /**
+     * Follower status.
+     */
+    private FollowerStatus followerStatus;
+
+    /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -329,7 +336,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Sets is public.
-     *
+     * 
      * @param inIsPublic
      *            sets isPublic.
      */
@@ -348,7 +355,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the entity name.
-     *
+     * 
      * @return the entity name
      */
     @Override
@@ -359,7 +366,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the group's avatar id.
-     *
+     * 
      * @return the avatarId
      */
     @Override
@@ -370,7 +377,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the group's avatar id.
-     *
+     * 
      * @param inAvatarId
      *            the avatarId to set
      */
@@ -382,7 +389,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the number of people following this group.
-     *
+     * 
      * @return the followersCount
      */
     @Override
@@ -393,7 +400,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the number of people following this group.
-     *
+     * 
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -404,7 +411,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * The the number of updates for this group.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -414,7 +421,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the number of updates for this group.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -425,7 +432,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the shortname.
-     *
+     * 
      * @return the shortname.
      */
     public String getShortName()
@@ -435,7 +442,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the shortname.
-     *
+     * 
      * @param inShortName
      *            the shortname.
      */
@@ -446,7 +453,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the name of the group.
-     *
+     * 
      * @return the name of the group
      */
     public String getName()
@@ -456,7 +463,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the name of the group.
-     *
+     * 
      * @param inName
      *            the name to set
      */
@@ -467,7 +474,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the description of the group.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -477,7 +484,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the description of the group.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -488,7 +495,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the date the group was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -498,7 +505,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the date the group was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -508,7 +515,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     }
 
     /**
-     *
+     * 
      * @return the person created by display name.
      */
     public String getPersonCreatedByDisplayName()
@@ -543,7 +550,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * This is only available on the server and is not serialized and sent over the wire.
-     *
+     * 
      * @param inPersonCreatedById
      *            The person created by id.
      */
@@ -563,7 +570,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the entity id.
-     *
+     * 
      * @param inEntityId
      *            the entity id of the domain group.
      */
@@ -861,6 +868,24 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public String getDisplayName()
     {
         return name;
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return null;
+    }
+
+    @Override
+    public FollowerStatus getFollowerStatus()
+    {
+        return followerStatus;
+    }
+
+    @Override
+    public void setFollowerStatus(final FollowerStatus inFollowerStatus)
+    {
+        followerStatus = inFollowerStatus;
     }
 
 }
