@@ -77,8 +77,12 @@ public class AddFeaturedStreamExecution implements TaskHandlerExecutionStrategy<
     {
         FeaturedStreamDTO dto = (FeaturedStreamDTO) inActionContext.getActionContext().getParams();
 
-        FeaturedStream entity = new FeaturedStream(dto.getDescription(), streamScopeProxyMapper.execute(dto
-                .getStreamId()));
+        // get streamScope from context state, or create proxy verison if not there.
+        StreamScope streamScope = (inActionContext.getActionContext().getState().get("streamScope") == null) ? //
+        streamScopeProxyMapper.execute(dto.getStreamId())
+                : (StreamScope) inActionContext.getActionContext().getState().get("streamScope");
+
+        FeaturedStream entity = new FeaturedStream(dto.getDescription(), streamScope);
 
         // insert into datastore.
         Long entityId = insertMapper.execute(new PersistenceRequest<FeaturedStream>(entity));

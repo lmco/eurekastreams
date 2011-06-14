@@ -169,7 +169,12 @@
     
     <bean id="addFeaturedStream" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.validation.stream.AddFeaturedStreamValidation">
+                <constructor-arg value="250"/>
+                <constructor-arg ref="findByIdMapper" />
+            </bean>
+        </constructor-arg>
         <!-- Authorization -->
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>

@@ -25,6 +25,7 @@ import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -65,8 +66,8 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
-    private DomainMapper<List<String>, List<DomainGroupModelView>> getGroupModelViewsByShortNameMapper = context.mock(
-            DomainMapper.class, "getGroupModelViewsByShortNameMapper");
+    private GetItemsByPointerIds<DomainGroupModelView> getGroupModelViewsByShortNameMapper = context.mock(
+            GetItemsByPointerIds.class, "getGroupModelViewsByShortNameMapper");
 
     /**
      * System under test.
