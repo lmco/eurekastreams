@@ -21,7 +21,7 @@ import org.eurekastreams.server.domain.InAppNotificationDTO;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Identifies a source.
+ * Identifies a source of notifications.
  */
 class Source
 {
@@ -85,6 +85,15 @@ class Source
         filter = inFilter;
     }
 
+    /**
+     * Builds a formatted string for displaying the notification source.
+     *
+     * @return Display string.
+     */
+    public String getDisplayString()
+    {
+        return unreadCount > 0 ? displayName + " (" + unreadCount + ")" : displayName;
+    }
 
     /**
      * increment Unread Count.
@@ -126,7 +135,6 @@ class Source
         return displayName;
     }
 
-
     /**
      * @return the unreadCount
      */
@@ -136,7 +144,8 @@ class Source
     }
 
     /**
-     * @param inUnreadCount the unreadCount to set
+     * @param inUnreadCount
+     *            the unreadCount to set
      */
     public void setUnreadCount(final int inUnreadCount)
     {
