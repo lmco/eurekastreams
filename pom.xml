@@ -5,7 +5,7 @@
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1</version>
+    <version>1.1-SNAPSHOT</version>
     <name>Eureka Streams Parent</name>
     <url>http://www.eurekastreams.org</url>
     <mailingLists>
