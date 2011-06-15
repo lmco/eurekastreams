@@ -69,11 +69,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.widgetideas.graphics.client.Color;
+import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 import com.googlecode.gchart.client.GChart;
 import com.googlecode.gchart.client.GChartCanvasFactory;
 import com.googlecode.gchart.client.GChartCanvasLite;
-import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
-import com.google.gwt.widgetideas.graphics.client.Color;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -223,7 +223,7 @@ public class ApplicationEntryPoint implements EntryPoint
     private void loadPerson()
     {
         // this must be the first action called so that the session is handled correctly
-        processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelView", null),
+        processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelViewForStartup", null),
                 new AsyncCallback<PersonModelView>()
                 {
                     /* implement the async call back methods */
@@ -283,7 +283,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -345,7 +345,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -361,7 +361,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -375,7 +375,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -404,7 +404,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     * 
+     *
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -420,7 +420,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     * 
+     *
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -495,7 +495,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     * 
+     *
      * @param data
      *            the data.
      * @param callbackIndex
@@ -508,7 +508,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
@@ -574,7 +574,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the user agent (for detecting IE7).
-     * 
+     *
      * @return the user agent.
      */
     public static native String getUserAgent()
@@ -589,7 +589,7 @@ public class ApplicationEntryPoint implements EntryPoint
     {
         /**
          * GChartCanvasLite requires CSS/RGBA color strings, but GWTCanvas uses its own Color class instead, so we wrap.
-         * 
+         *
          * @param cssColor
          *            the color.
          */
@@ -602,7 +602,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
         /**
          * Set the fill style.
-         * 
+         *
          * @param cssColor
          *            the color.
          */

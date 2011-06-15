@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,18 @@
 package org.eurekastreams.web.client.events.data;
 
 /**
- * Response event object.
- *
+ * Event stating that a notification category has been disabled.
  */
-public class UpdatedPersonalSettingsResponseEvent
+public class NotificationCategoryDisabledResponseEvent extends BaseDataRequestResultEvent<String>
 {
-
+    /**
+     * Constructor.
+     * 
+     * @param inRequest
+     *            Notification category.
+     */
+    public NotificationCategoryDisabledResponseEvent(final String inRequest)
+    {
+        super(inRequest);
+    }
 }

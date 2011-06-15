@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.settings;
-
-import java.io.Serializable;
-import java.util.Map;
-
-import org.eurekastreams.commons.actions.context.Principal;
+package org.eurekastreams.web.client.events.data;
 
 /**
- * Defines a strategy for saving FormBuilder settings.
+ * Response event object.
  */
-public interface SettingsUpdater
+public class UpdatedNotificationFilterPreferencesResponseEvent
 {
-    /**
-     * Updates/persists settings.
-     *
-     * @param settings
-     *            Map of settings.
-     * @param user
-     *            User performing the update.
-     */
-    void update(Map<String, Serializable> settings, Principal user);
 }

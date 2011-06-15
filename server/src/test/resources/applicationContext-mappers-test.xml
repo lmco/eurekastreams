@@ -345,13 +345,6 @@
 	
 	<bean id="getCommentorIdsByActivityId" class="org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId" />
 	
-	<bean id="getNotificationFilterPreferencesByPersonId" class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPersonId" />
-
-	<bean id="setUserNotificationFilterPreferences" class="org.eurekastreams.server.persistence.mappers.db.SetUserNotificationFilterPreferences" />
-
-    <bean id="getNotificationFilterPreferencesByPeopleIds" 
-    	class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
-	
 	<bean id="deleteGroupActivity" class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
 	
 	<bean id="deleteActivities" class="org.eurekastreams.server.persistence.mappers.db.DeleteActivities" />
@@ -413,8 +406,6 @@
     
     <bean id="getFollowedPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper" />
     
-	<bean id="updateNotificationsOnNameChangeMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
-	
 	<bean id="updatePersonMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />
 
 	<bean id="insertRequestForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.InsertRequestForGroupMembership" />

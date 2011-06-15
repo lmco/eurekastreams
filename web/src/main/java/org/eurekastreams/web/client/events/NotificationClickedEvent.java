@@ -16,21 +16,47 @@
 package org.eurekastreams.web.client.events;
 
 import org.eurekastreams.server.domain.InAppNotificationDTO;
-import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
+
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Raised when a notification is clicked.
  */
-public class NotificationClickedEvent extends BaseDataResponseEvent<InAppNotificationDTO>
+public class NotificationClickedEvent
 {
+    /** Notification. */
+    private final InAppNotificationDTO notification;
+
+    /** Widget displaying the notification. */
+    private final Widget widget;
+
     /**
      * Constructor.
-     *
+     * 
      * @param inNotification
-     *            The notification.
+     *            Notification.
+     * @param inWidget
+     *            Widget displaying the notification.
      */
-    public NotificationClickedEvent(final InAppNotificationDTO inNotification)
+    public NotificationClickedEvent(final InAppNotificationDTO inNotification, final Widget inWidget)
     {
-        super(inNotification);
+        notification = inNotification;
+        widget = inWidget;
+    }
+
+    /**
+     * @return the notification
+     */
+    public InAppNotificationDTO getNotification()
+    {
+        return notification;
+    }
+
+    /**
+     * @return the widget
+     */
+    public Widget getWidget()
+    {
+        return widget;
     }
 }

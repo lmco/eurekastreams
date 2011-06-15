@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.notification.dialog;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.ui.common.notification.dialog.Source.Filter;
@@ -82,5 +83,23 @@ public class SourceTest
         assertNull(sut.getFilter());
         sut.setFilter(filter);
         assertSame(filter, sut.getFilter());
+    }
+
+    /**
+     * Tests getDisplayString.
+     */
+    @Test
+    public void testGetDisplayString()
+    {
+        Source sut = new Source(EntityType.GROUP, "UID", "Display", parent, filter);
+
+        String s = sut.getDisplayString();
+        assertTrue(s.contains("Display"));
+
+        sut.setUnreadCount(42);
+
+        s = sut.getDisplayString();
+        assertTrue(s.contains("Display"));
+        assertTrue(s.contains("42"));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.requests;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
@@ -22,7 +23,7 @@ import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 /**
  * Request data for mapper.
  */
-public class SetUserNotificationFilterPreferencesRequest
+public class SetUserNotificationFilterPreferencesRequest implements Serializable
 {
     /** List of notifications to suppress. */
     private Collection<NotificationFilterPreferenceDTO> prefList;

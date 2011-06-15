@@ -53,6 +53,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NotificationsDialogContent extends BaseDialogContent
 {
+    /** Style applied to the list to make all the notifications in it show as read. */
+    private static final String ALL_READ = "all-read";
+
     /** Main content widget. */
     private final Widget main;
 
@@ -94,13 +97,17 @@ public class NotificationsDialogContent extends BaseDialogContent
     @UiField
     Label unreadFilterUi;
 
+    /** Button to mark all notifications as read. */
+    @UiField
+    Label markAllReadUi;
+
     /** Current all/unread selector. */
     private Widget currentReadFilterWidget;
 
     /** Notifications. */
     private List<InAppNotificationDTO> allNotifications;
 
-    /** The IDs of the notifications currently being displayed. */
+    /** The notifications currently being displayed. */
     private final Collection<InAppNotificationDTO> notifsShowing = new ArrayList<InAppNotificationDTO>();
 
     /** Source representing all notifications. */
@@ -130,7 +137,7 @@ public class NotificationsDialogContent extends BaseDialogContent
     {
         public void update(final NotificationClickedEvent ev)
         {
-            handleNotificationClicked(ev.getResponse());
+            handleNotificationClicked(ev.getNotification(), ev.getWidget());
         }
     };
     /** Observer (allow unlinking). */
@@ -266,8 +273,10 @@ public class NotificationsDialogContent extends BaseDialogContent
      *
      * @param item
      *            The notification.
+     * @param widget
+     *            The notification's widget.
      */
-    private void handleNotificationClicked(final InAppNotificationDTO item)
+    private void handleNotificationClicked(final InAppNotificationDTO item, final Widget widget)
     {
         final String url = item.getUrl();
         boolean hasInternalUrl = url != null && !url.isEmpty() && url.charAt(0) == '#';
@@ -282,6 +291,10 @@ public class NotificationsDialogContent extends BaseDialogContent
             if (!hasInternalUrl)
             {
                 reduceUnreadCount(item);
+                if (!currentShowRead)
+                {
+                    widget.removeFromParent();
+                }
             }
         }
         if (hasInternalUrl)
@@ -317,13 +330,6 @@ public class NotificationsDialogContent extends BaseDialogContent
      */
     private void reduceUnreadCount(final InAppNotificationDTO item)
     {
-        // Source source = rootSource;
-        //
-        // if (item.getSourceType() != null && item.getSourceUniqueId() != null)
-        // {
-        // source = sourceIndex.get(item.getSourceType() + item.getSourceUniqueId());
-        // }
-
         Source source = sourceIndex.get(item.getSourceType() + item.getSourceUniqueId());
         if (source == null)
         {
@@ -333,10 +339,8 @@ public class NotificationsDialogContent extends BaseDialogContent
         // work from the specific source up, reducing the unread count
         while (source != null)
         {
-            int count = source.getUnreadCount() - 1;
-            source.setUnreadCount(count);
-            String text = count > 0 ? source.getDisplayName() + " (" + count + ")" : source.getDisplayName();
-            source.getWidget().setText(text);
+            source.decrementUnreadCount();
+            source.getWidget().setText(source.getDisplayString());
             source = source.getParent();
         }
     }
@@ -426,6 +430,7 @@ public class NotificationsDialogContent extends BaseDialogContent
         notificationListScrollPanel.setVisible(false);
 
         notificationListPanel.clear();
+        notificationListPanel.removeStyleName(ALL_READ);
         notifsShowing.clear();
 
         for (InAppNotificationDTO item : allNotifications)
@@ -465,6 +470,50 @@ public class NotificationsDialogContent extends BaseDialogContent
             currentReadFilterWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
             currentShowRead = !currentShowRead;
             displayNotifications(currentSource.getFilter(), currentShowRead);
+        }
+    }
+
+    /**
+     * Marks all notifications read.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("markAllReadUi")
+    void onMarkAllReadClick(final ClickEvent ev)
+    {
+        // update on server
+        ArrayList<Long> ids = new ArrayList<Long>();
+        for (InAppNotificationDTO item : notifsShowing)
+        {
+            if (!item.isRead())
+            {
+                item.setRead(true);
+                ids.add(item.getId());
+            }
+        }
+        if (!ids.isEmpty())
+        {
+            NotificationListModel.getInstance().update(ids);
+        }
+
+        // update UI
+        if (currentShowRead)
+        {
+            notificationListPanel.addStyleName(ALL_READ);
+        }
+        else
+        {
+            notificationListPanel.clear();
+            noNotificationsUi.getStyle().clearDisplay();
+        }
+
+        // update unread counts
+        int number = currentSource.getUnreadCount();
+        for (Source source = currentSource; source != null; source = source.getParent())
+        {
+            source.setUnreadCount(source.getUnreadCount() - number);
+            source.getWidget().setText(source.getDisplayString());
         }
     }
 

@@ -329,8 +329,8 @@
         ownerId="4507" zoneNumber="2" zoneIndex="2" tabTemplateId="3253"
         deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
                 
-    <NotificationFilterPreference version="1" personId="42" notifierType="email" notificationCategory="FOLLOW_PERSON" />
-    <NotificationFilterPreference version="1" personId="42" notifierType="email" notificationCategory="FOLLOW_GROUP" />
+    <NotificationFilterPreference version="1" personId="42" notifierType="email" notificationCategory="FOLLOW" />
+    <NotificationFilterPreference version="1" personId="42" notifierType="email" notificationCategory="LIKE" />
     
 	<!-- *********************************** -->
 	<!-- Carl Sagan - Tab Group with one tabs -->

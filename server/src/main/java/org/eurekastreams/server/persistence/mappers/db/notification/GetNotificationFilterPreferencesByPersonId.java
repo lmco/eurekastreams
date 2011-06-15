@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.db.notification;
 
 import java.util.Collection;
 
@@ -24,7 +24,6 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Retrieves a user's notification filter preferences.
- *
  */
 public class GetNotificationFilterPreferencesByPersonId extends
         BaseArgDomainMapper<Long, Collection<NotificationFilterPreferenceDTO>>
@@ -36,16 +35,14 @@ public class GetNotificationFilterPreferencesByPersonId extends
      *            User's person id.
      * @return List of filters (notifications which should not be sent).
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Collection<NotificationFilterPreferenceDTO> execute(final Long personId)
     {
-        Query query =
-                getEntityManager()
-                        .createQuery(
-                                "select new org.eurekastreams.server.domain.NotificationFilterPreferenceDTO"
-                                + "(person.id,notifierType,notificationCategory) "
-                                + "from NotificationFilterPreference where person.id = :personId");
-        query.setParameter("personId", personId);
+        String q = "select new org.eurekastreams.server.domain.NotificationFilterPreferenceDTO"
+                + "(person.id,notifierType,notificationCategory) "
+                + "from NotificationFilterPreference where person.id = :personId";
+        Query query = getEntityManager().createQuery(q).setParameter("personId", personId);
         return query.getResultList();
     }
 }

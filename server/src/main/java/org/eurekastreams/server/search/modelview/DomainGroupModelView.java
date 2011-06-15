@@ -39,7 +39,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     /**
      * Serial version uid.
      */
-    private static final long serialVersionUID = -49328217844974109L;
+    private static final long serialVersionUID = -5023052368092297971L;
 
     /**
      * form Key.
