@@ -1288,7 +1288,7 @@
                 </constructor-arg>
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
-                <constructor-arg ref="getGroupsByIdsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />                               
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1308,6 +1308,7 @@
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
                 <constructor-arg ref="getGroupsByIdsMapper" />
+                <constructor-arg ref="followerStatusPopulator" /> 
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

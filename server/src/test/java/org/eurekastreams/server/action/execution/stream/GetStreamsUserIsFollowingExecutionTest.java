@@ -21,10 +21,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -55,10 +58,20 @@ public class GetStreamsUserIsFollowingExecutionTest
     /**
      * Action context.
      */
-    private ActionContext ac = context.mock(ActionContext.class);
+    private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
+
+    /**
+     * Principal.
+     */
+    private Principal principal = context.mock(Principal.class);
 
     /**
      * Current user id.
+     */
+    private long currentUserId = 6L;
+
+    /**
+     * Requested user id.
      */
     private long userId = 5L;
 
@@ -98,11 +111,16 @@ public class GetStreamsUserIsFollowingExecutionTest
             DomainMapper.class, "groupModelViewsMapper");
 
     /**
+     * Populator for follower status of results.
+     */
+    private FollowerStatusPopulator<StreamDTO> followerStatusPopulator = context.mock(FollowerStatusPopulator.class);
+
+    /**
      * System under test.
      */
     private GetStreamsUserIsFollowingExecution sut = new GetStreamsUserIsFollowingExecution(
             getPersonIdByAccountIdMapper, personIdsUserIsFollowingMapper, groupIdsUserIsFollowingMapper,
-            personModelViewsMapper, groupModelViewsMapper);
+            personModelViewsMapper, groupModelViewsMapper, followerStatusPopulator);
 
     /**
      * List of ids for mock id mappers to return.
@@ -168,6 +186,12 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(ac).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getId();
+                will(returnValue(currentUserId));
+
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
@@ -188,6 +212,9 @@ public class GetStreamsUserIsFollowingExecutionTest
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
                 will(returnValue(gmvList));
+
+                oneOf(followerStatusPopulator).execute(with(any(Long.class)), with(any(List.class)),
+                        with(any(FollowerStatus.class)));
 
                 oneOf(request).getStartIndex();
                 will(returnValue(startIndex));
@@ -217,6 +244,12 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(ac).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getId();
+                will(returnValue(currentUserId));
+
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
@@ -237,6 +270,9 @@ public class GetStreamsUserIsFollowingExecutionTest
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
                 will(returnValue(gmvList));
+
+                oneOf(followerStatusPopulator).execute(with(any(Long.class)), with(any(List.class)),
+                        with(any(FollowerStatus.class)));
 
                 oneOf(request).getStartIndex();
                 will(returnValue(startIndex));
@@ -268,6 +304,12 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(ac).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getId();
+                will(returnValue(currentUserId));
+
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
@@ -288,6 +330,9 @@ public class GetStreamsUserIsFollowingExecutionTest
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
                 will(returnValue(gmvList));
+
+                oneOf(followerStatusPopulator).execute(with(any(Long.class)), with(any(List.class)),
+                        with(any(FollowerStatus.class)));
 
                 oneOf(request).getStartIndex();
                 will(returnValue(startIndex));
@@ -320,6 +365,12 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(ac).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getId();
+                will(returnValue(currentUserId));
+
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
@@ -340,6 +391,9 @@ public class GetStreamsUserIsFollowingExecutionTest
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
                 will(returnValue(gmvList));
+
+                oneOf(followerStatusPopulator).execute(with(any(Long.class)), with(any(List.class)),
+                        with(any(FollowerStatus.class)));
 
                 oneOf(request).getStartIndex();
                 will(returnValue(startIndex));
@@ -373,6 +427,12 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
+                oneOf(ac).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getId();
+                will(returnValue(currentUserId));
+
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
@@ -393,6 +453,9 @@ public class GetStreamsUserIsFollowingExecutionTest
 
                 oneOf(groupModelViewsMapper).execute(empty);
                 will(returnValue(empty));
+
+                oneOf(followerStatusPopulator).execute(with(any(Long.class)), with(any(List.class)),
+                        with(any(FollowerStatus.class)));
 
                 oneOf(request).getStartIndex();
                 will(returnValue(startIndex));
