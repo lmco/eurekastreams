@@ -1271,6 +1271,10 @@
         <constructor-arg value="true" />
     </bean>
 
+    <!-- ** NOTE: Currently GetFollowingExecution is just a shell class. Not exactly sure why it's here but think
+    it was something in-progress or being refactored before Rob was out. Found this when config'ing actual functionality 
+    of getting all streams a user is following, which is done by "getStreamsUserIsFollowing". Should verify status of this with Rob
+    when he gets back and delete if needed or consolidate the two actions. -->
     <bean id="getFollowing" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1289,6 +1293,25 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="getStreamsUserIsFollowing" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.GetStreamsUserIsFollowingExecution">  
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />              
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
+                        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>       
 
     <bean id="getPersonFollowers" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />

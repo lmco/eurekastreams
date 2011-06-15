@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.StreamDTO;
@@ -56,17 +55,23 @@ public class GetStreamsUserIsFollowingExecutionTest
     /**
      * Action context.
      */
-    private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
-
-    /**
-     * user principal.
-     */
-    private Principal principal = context.mock(Principal.class);
+    private ActionContext ac = context.mock(ActionContext.class);
 
     /**
      * Current user id.
      */
-    private long currentUserId = 5L;
+    private long userId = 5L;
+
+    /**
+     * User account id.
+     */
+    private String userAccountId = "userAccountId";
+
+    /**
+     * Mapper to get user id by accountid.
+     */
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * Mapper to get person ids for all persons current user is following.
@@ -96,8 +101,8 @@ public class GetStreamsUserIsFollowingExecutionTest
      * System under test.
      */
     private GetStreamsUserIsFollowingExecution sut = new GetStreamsUserIsFollowingExecution(
-            personIdsUserIsFollowingMapper, groupIdsUserIsFollowingMapper, personModelViewsMapper,
-            groupModelViewsMapper);
+            getPersonIdByAccountIdMapper, personIdsUserIsFollowingMapper, groupIdsUserIsFollowingMapper,
+            personModelViewsMapper, groupModelViewsMapper);
 
     /**
      * List of ids for mock id mappers to return.
@@ -163,22 +168,22 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
-                oneOf(personIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(request).getAccountId();
+                will(returnValue(userAccountId));
+
+                oneOf(getPersonIdByAccountIdMapper).execute(userAccountId);
+                will(returnValue(userId));
+
+                oneOf(personIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(personModelViewsMapper).execute(mvIds);
                 will(returnValue(pmvList));
 
-                oneOf(groupIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(groupIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
@@ -212,22 +217,22 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
-                oneOf(personIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(request).getAccountId();
+                will(returnValue(userAccountId));
+
+                oneOf(getPersonIdByAccountIdMapper).execute(userAccountId);
+                will(returnValue(userId));
+
+                oneOf(personIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(personModelViewsMapper).execute(mvIds);
                 will(returnValue(pmvList));
 
-                oneOf(groupIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(groupIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
@@ -263,22 +268,22 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
-                oneOf(personIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(request).getAccountId();
+                will(returnValue(userAccountId));
+
+                oneOf(getPersonIdByAccountIdMapper).execute(userAccountId);
+                will(returnValue(userId));
+
+                oneOf(personIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(personModelViewsMapper).execute(mvIds);
                 will(returnValue(pmvList));
 
-                oneOf(groupIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(groupIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
@@ -315,22 +320,22 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
-                oneOf(personIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(request).getAccountId();
+                will(returnValue(userAccountId));
+
+                oneOf(getPersonIdByAccountIdMapper).execute(userAccountId);
+                will(returnValue(userId));
+
+                oneOf(personIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(personModelViewsMapper).execute(mvIds);
                 will(returnValue(pmvList));
 
-                oneOf(groupIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(groupIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(groupModelViewsMapper).execute(mvIds);
@@ -368,22 +373,22 @@ public class GetStreamsUserIsFollowingExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
                 oneOf(ac).getParams();
                 will(returnValue(request));
 
-                oneOf(personIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(request).getAccountId();
+                will(returnValue(userAccountId));
+
+                oneOf(getPersonIdByAccountIdMapper).execute(userAccountId);
+                will(returnValue(userId));
+
+                oneOf(personIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(mvIds));
 
                 oneOf(personModelViewsMapper).execute(mvIds);
                 will(returnValue(pmvList));
 
-                oneOf(groupIdsUserIsFollowingMapper).execute(currentUserId);
+                oneOf(groupIdsUserIsFollowingMapper).execute(userId);
                 will(returnValue(empty));
 
                 oneOf(groupModelViewsMapper).execute(empty);

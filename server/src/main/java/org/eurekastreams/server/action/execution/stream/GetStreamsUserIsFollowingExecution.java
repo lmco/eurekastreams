@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.StreamDTO;
@@ -34,8 +36,18 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  * Return list of StreamsDTOs representing streams a user is following.
  * 
  */
-public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<ActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
+    /**
+     * Mapper to get user id by accountid.
+     */
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
+
     /**
      * Mapper to get person ids for all persons current user is following.
      */
@@ -72,6 +84,8 @@ public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<Pri
     /**
      * Constructor.
      * 
+     * @param inGetPersonIdByAccountIdMapper
+     *            Mapper to get user id by accountid.
      * @param inPersonIdsUserIsFollowingMapper
      *            Mapper to get person ids for all persons current user is following.
      * @param inGroupIdsUserIsFollowingMapper
@@ -81,11 +95,13 @@ public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<Pri
      * @param inGroupModelViewsMapper
      *            Mapper to get group model views.
      */
-    public GetStreamsUserIsFollowingExecution(final DomainMapper<Long, List<Long>> inPersonIdsUserIsFollowingMapper,
+    public GetStreamsUserIsFollowingExecution(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
+            final DomainMapper<Long, List<Long>> inPersonIdsUserIsFollowingMapper,
             final DomainMapper<Long, List<Long>> inGroupIdsUserIsFollowingMapper,
             final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupModelViewsMapper)
     {
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         personIdsUserIsFollowingMapper = inPersonIdsUserIsFollowingMapper;
         groupIdsUserIsFollowingMapper = inGroupIdsUserIsFollowingMapper;
         personModelViewsMapper = inPersonModelViewsMapper;
@@ -93,17 +109,19 @@ public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<Pri
     }
 
     @Override
-    public PagedSet<StreamDTO> execute(final PrincipalActionContext inActionContext) throws ExecutionException
+    public PagedSet<StreamDTO> execute(final ActionContext inActionContext) throws ExecutionException
     {
-        long currentUserId = inActionContext.getPrincipal().getId();
         GetStreamsUserIsFollowingRequest request = (GetStreamsUserIsFollowingRequest) inActionContext.getParams();
+        Long userId = getPersonIdByAccountIdMapper.execute(request.getAccountId());
 
         ArrayList<StreamDTO> results = new ArrayList<StreamDTO>();
         PagedSet<StreamDTO> pagedResults = new PagedSet<StreamDTO>();
 
         // get person/group ModelViews, which implement StreamDTO, and add to results;
-        results.addAll(personModelViewsMapper.execute(personIdsUserIsFollowingMapper.execute(currentUserId)));
-        results.addAll(groupModelViewsMapper.execute(groupIdsUserIsFollowingMapper.execute(currentUserId)));
+        Long start = System.currentTimeMillis();
+        results.addAll(personModelViewsMapper.execute(personIdsUserIsFollowingMapper.execute(userId)));
+        results.addAll(groupModelViewsMapper.execute(groupIdsUserIsFollowingMapper.execute(userId)));
+        log.debug("Data retrieval time:" + (System.currentTimeMillis() - start) + "(ms).");
 
         // if no results, short-circuit here.
         if (results.isEmpty())
@@ -112,7 +130,9 @@ public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<Pri
         }
 
         // sort results;
+        start = System.currentTimeMillis();
         Collections.sort(results, STREAMDTO_DISPLAYNAME_COMPARATOR);
+        log.debug("Data sort time:" + (System.currentTimeMillis() - start) + "(ms).");
 
         // set up PagedSet result and return.
         int total = results.size();
