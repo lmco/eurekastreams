@@ -33,7 +33,6 @@ import org.eurekastreams.server.action.execution.notification.notifier.Notifier;
 import org.eurekastreams.server.action.execution.notification.translator.NotificationTranslator;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.Property;
@@ -41,7 +40,7 @@ import org.eurekastreams.server.domain.PropertyHashMap;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.persistence.LazyLoadPropertiesMap;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds;
+import org.eurekastreams.server.persistence.mappers.db.notification.GetNotificationFilterPreferencesByPeopleIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +69,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
     private DomainMapper<List<Long>, List<PersonModelView>> bulkPersonMapper;
 
     /** Provides the category for each notification type. */
-    private final Map<NotificationType, Category> notificationTypeToCategory;
+    private final Map<NotificationType, String> notificationTypeToCategory;
 
     /** Recipient filter strategies per notifier type. */
     private final Map<String, Iterable<RecipientFilter>> recipientFilters;
@@ -105,7 +104,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
             final Map<String, Notifier> inNotifiers,
             final GetNotificationFilterPreferencesByPeopleIds inPreferencesMapper,
             final DomainMapper<Long, PersonModelView> inPersonMapper,
-            final Map<NotificationType, Category> inNotificationTypeCategories,
+            final Map<NotificationType, String> inNotificationTypeCategories,
             final Map<String, Iterable<RecipientFilter>> inRecipientFilters,
             final Map<String, Property<Object>> inDefaultProperties,
             final Map<Class, DomainMapper<Serializable, Object>> inPropertyLoadMappers)
@@ -218,7 +217,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
             final Map<String, Object> properties, final List<NotificationFilterPreferenceDTO> preferences,
             final String notifierType)
     {
-        Category category = notificationTypeToCategory.get(type);
+        String category = notificationTypeToCategory.get(type);
         List<Long> recipientIds = new ArrayList<Long>(unfilteredRecipients);
 
         // remove any users who opted out of the notification (for the given transport)

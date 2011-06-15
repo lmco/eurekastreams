@@ -105,7 +105,7 @@ public class ConnectEntryPoint implements EntryPoint
                 ActionProcessorImpl.setCurrentSessionId(sessionId);
 
                 // this must be the first action called so that the session is handled correctly
-                processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelView", null),
+                processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelViewForStartup", null),
                         new AsyncCallback<PersonModelView>()
                         {
                             public void onFailure(final Throwable caught)

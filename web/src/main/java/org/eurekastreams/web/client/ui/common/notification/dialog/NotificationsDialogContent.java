@@ -94,13 +94,17 @@ public class NotificationsDialogContent extends BaseDialogContent
     @UiField
     Label unreadFilterUi;
 
+    /** Button to mark all notifications as read. */
+    @UiField
+    Label markAllReadUi;
+
     /** Current all/unread selector. */
     private Widget currentReadFilterWidget;
 
     /** Notifications. */
     private List<InAppNotificationDTO> allNotifications;
 
-    /** The IDs of the notifications currently being displayed. */
+    /** The notifications currently being displayed. */
     private final Collection<InAppNotificationDTO> notifsShowing = new ArrayList<InAppNotificationDTO>();
 
     /** Source representing all notifications. */
@@ -466,6 +470,34 @@ public class NotificationsDialogContent extends BaseDialogContent
             currentShowRead = !currentShowRead;
             displayNotifications(currentSource.getFilter(), currentShowRead);
         }
+    }
+
+    /**
+     * Marks all notifications read.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("markAllReadUi")
+    void onMarkAllReadClick(final ClickEvent ev)
+    {
+        // update on server
+        ArrayList<Long> ids = new ArrayList<Long>();
+        for (InAppNotificationDTO item : notifsShowing)
+        {
+            if (!item.isRead())
+            {
+                item.setRead(true);
+                ids.add(item.getId());
+            }
+        }
+        if (!ids.isEmpty())
+        {
+            NotificationListModel.getInstance().update(ids);
+        }
+
+        // update UI
+        // TODO: awaiting P.O. input
     }
 
     /**

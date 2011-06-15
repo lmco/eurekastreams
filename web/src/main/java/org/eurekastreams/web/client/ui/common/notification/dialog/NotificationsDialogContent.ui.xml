@@ -3,6 +3,7 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
 <ui:image field="activeBackground" src="style/images/activeBackground.png" />
+<ui:image field="markAllRead" src="style/images/verifyGoodIcon.png" />
 
 <ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
 .modal
@@ -35,7 +36,14 @@
 {
 	height: 36px;
 	border-bottom: 1px solid #666;
+	margin-right: 5px;
 }
+@sprite .mark-all-read
+{
+	gwt-image: "markAllRead";
+	float: right;
+}
+
 .no-notifications,
 .notification-list-scroll-panel
 {
@@ -83,6 +91,7 @@
 				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel}" ui:field="allFilterUi">All</g:Label>
 			</div>
 			
+			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadUi" />
 		</div>
 		<div class="{style.no-notifications}" ui:field="noNotificationsUi">No notifications</div>
 		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">

@@ -29,7 +29,9 @@
             <bean class="org.eurekastreams.server.action.execution.notification.CreateNotificationsExecution">
                 <constructor-arg ref="translators" />
                 <constructor-arg ref="notifiersByIdMap" />
-                <constructor-arg ref="getNotificationFilterPreferencesByPeopleIds" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetNotificationFilterPreferencesByPeopleIds" />
+				</constructor-arg>
                 <constructor-arg ref="getPersonByIdMapper" />
                 <constructor-arg ref="notificationTypeToCategoryMap" />
                 <constructor-arg>
@@ -74,7 +76,9 @@
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.SendMassPrebuiltNotificationExecution">
-                <constructor-arg ref="insertInAppNotificationForAllUsers" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.notification.InsertInAppNotificationForAllUsers" />
+                </constructor-arg>
 				<constructor-arg ref="getPersonIdsByLockedStatus" />
             </bean>
         </constructor-arg>
@@ -168,24 +172,20 @@
 
 	<!-- ==== FILTERING ==== -->
 
-    <util:map id="notificationTypeToCategoryMap" key-type="org.eurekastreams.server.domain.NotificationType" value-type="org.eurekastreams.server.domain.NotificationFilterPreference$Category">
+	<util:set id="notificationCategories">
+		<value>POST_TO_PERSONAL_STREAM</value>
+		<value>COMMENT</value>
+		<value>FOLLOW</value>
+		<value>LIKE</value>
+	</util:set>
+
+    <util:map id="notificationTypeToCategoryMap" key-type="org.eurekastreams.server.domain.NotificationType">
         <entry key="POST_TO_PERSONAL_STREAM" value="POST_TO_PERSONAL_STREAM" />
-        <entry key="COMMENT_TO_PERSONAL_STREAM" value="COMMENT" />
         <entry key="COMMENT_TO_PERSONAL_POST" value="COMMENT" />
         <entry key="COMMENT_TO_COMMENTED_POST" value="COMMENT" />
-        <entry key="COMMENT_TO_SAVED_POST" value="COMMENT_TO_SAVED_ACTIVITY" />
-        <entry key="FOLLOW_PERSON" value="FOLLOW_PERSON" />
-        <entry key="POST_TO_GROUP_STREAM" value="POST_TO_GROUP_STREAM" />
-        <entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
-        <entry key="COMMENT_TO_GROUP_STREAM" value="COMMENT_IN_GROUP_STREAM" />
-        <entry key="FOLLOW_GROUP" value="FOLLOW_GROUP" />
+        <entry key="FOLLOW_PERSON" value="FOLLOW" />
+        <entry key="FOLLOW_GROUP" value="FOLLOW" />
         <entry key="LIKE_ACTIVITY" value="LIKE" />
-        <entry key="FLAG_PERSONAL_ACTIVITY" value="FLAG_ACTIVITY" />
-        <entry key="FLAG_GROUP_ACTIVITY" value="FLAG_ACTIVITY" />
-        <entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
-        <entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
-        <entry key="REQUEST_GROUP_ACCESS_APPROVED" value="REQUEST_GROUP_ACCESS_RESPONSE" />
-        <entry key="REQUEST_GROUP_ACCESS_DENIED" value="REQUEST_GROUP_ACCESS_RESPONSE" />
     </util:map>
 
 	<!-- recipient filters - one list per notifier -->
@@ -252,10 +252,7 @@
 		<entry key="EMAIL" value-ref="emailNotifier" />
     </util:map>
 
-    <!--
-        names of notifiers which can be disabled, by ID, in order by columns
-        on display
-    -->
+    <!-- names of notifiers which can be disabled, by ID, in order by columns on display -->
     <util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
         <entry key="EMAIL" value="Email" />
         <entry key="APP_ALERT" value="In-App" />
@@ -316,6 +313,7 @@
 				</constructor-arg>
 				<constructor-arg ref="getPeopleByAccountIdsMapper" />
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+				<constructor-arg ref="notificationTypeToCategoryMap" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -378,6 +376,61 @@
 		</constructor-arg>	
         <constructor-arg value="true" />
     </bean>
+
+	<!-- ========== PREFERENCES ========== -->
+	
+	<bean id="getCurrentUserNotificationPreferences" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.notification.filter.GetUserNotificationFilterPreferencesExecution">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetNotificationFilterPreferencesByPersonId" />
+				</constructor-arg>
+				<constructor-arg ref="notifierIdToDisplayMap" />
+				<constructor-arg ref="notificationCategories" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+	</bean>
+
+	<bean id="setCurrentUserNotificationPreferences" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            	<constructor-arg>
+	            	<bean class="org.eurekastreams.server.action.request.transformer.notification.SetCurrentUserNotificationPreferencesTransformer">
+						<constructor-arg ref="notifierIdToDisplayMap" />
+						<constructor-arg ref="notificationCategories" />
+	            	</bean>
+            	</constructor-arg>
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.SetAllUserNotificationFilterPreferences" />
+				</constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+	</bean>
+	
+	<bean id="disableCurrentUserNotificationCategory" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg>
+        	<bean class="org.eurekastreams.server.action.validation.notification.DisableNotificationCategoryValidation">
+        		<constructor-arg ref="notificationCategories" />
+        	</bean>
+        </constructor-arg>
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.notification.filter.DisableNotificationCategoryExecution">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.SetUserNotificationFilterPreferences" />
+				</constructor-arg>
+				<constructor-arg ref="notifierIdToDisplayMap" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+	</bean>
+	
 
 	<!-- ========== CONTENT ========== -->
 

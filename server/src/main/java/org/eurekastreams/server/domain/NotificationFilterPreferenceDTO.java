@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.eurekastreams.server.domain;
 
 import java.io.Serializable;
 
-
 /**
  * Represents a kind of notification that a user wishes not to see via a given transport.
  */
@@ -33,7 +32,7 @@ public class NotificationFilterPreferenceDTO implements Serializable
     private String notifierType;
 
     /** Category of notifications to suppress. */
-    private NotificationFilterPreference.Category notificationCategory;
+    private String notificationCategory;
 
     /**
      * Constructor for serialization only.
@@ -44,7 +43,7 @@ public class NotificationFilterPreferenceDTO implements Serializable
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonId
      *            ID of person whose preference it is.
      * @param inNotifierType
@@ -53,7 +52,7 @@ public class NotificationFilterPreferenceDTO implements Serializable
      *            Category of notifications to suppress.
      */
     public NotificationFilterPreferenceDTO(final long inPersonId, final String inNotifierType,
-            final NotificationFilterPreference.Category inNotificationCategory)
+            final String inNotificationCategory)
     {
         personId = inPersonId;
         notifierType = inNotifierType;
@@ -68,8 +67,7 @@ public class NotificationFilterPreferenceDTO implements Serializable
      * @param inNotificationCategory
      *            Category of notifications to suppress.
      */
-    public NotificationFilterPreferenceDTO(final String inNotifierType,
-            final NotificationFilterPreference.Category inNotificationCategory)
+    public NotificationFilterPreferenceDTO(final String inNotifierType, final String inNotificationCategory)
     {
         notifierType = inNotifierType;
         notificationCategory = inNotificationCategory;
@@ -112,7 +110,7 @@ public class NotificationFilterPreferenceDTO implements Serializable
     /**
      * @return the notification category
      */
-    public NotificationFilterPreference.Category getNotificationCategory()
+    public String getNotificationCategory()
     {
         return notificationCategory;
     }
@@ -121,7 +119,7 @@ public class NotificationFilterPreferenceDTO implements Serializable
      * @param inNotificationCategory
      *            the notification category to set
      */
-    public void setNotificationCategory(final NotificationFilterPreference.Category inNotificationCategory)
+    public void setNotificationCategory(final String inNotificationCategory)
     {
         notificationCategory = inNotificationCategory;
     }
