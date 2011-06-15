@@ -20,9 +20,12 @@ import java.util.ArrayList;
 
 import org.eurekastreams.server.action.response.notification.GetUserNotificationFilterPreferencesResponse;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationFilterPreferencesResponseEvent;
+import org.eurekastreams.web.client.events.data.NotificationCategoryDisabledResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedNotificationFilterPreferencesResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
 /**
  * Notification filter preferences model.
@@ -56,6 +59,26 @@ public class NotificationFilterPreferencesModel extends BaseModel implements
             {
                 Session.getInstance().getEventBus()
                         .notifyObservers(new UpdatedNotificationFilterPreferencesResponseEvent());
+            }
+        });
+    }
+
+    /**
+     * Disables a category of notifications.
+     *
+     * @param category
+     *            Category to disable.
+     */
+    public void disable(final String category)
+    {
+        super.callWriteAction("disableCurrentUserNotificationCategory", category, new OnSuccessCommand<Serializable>()
+        {
+            public void onSuccess(final Serializable response)
+            {
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new NotificationCategoryDisabledResponseEvent(category));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new ShowNotificationEvent(new Notification("Notification category stopped")));
             }
         });
     }
