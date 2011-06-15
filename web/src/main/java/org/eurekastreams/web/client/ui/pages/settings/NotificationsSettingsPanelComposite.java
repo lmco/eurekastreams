@@ -15,28 +15,23 @@
  */
 package org.eurekastreams.web.client.ui.pages.settings;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
-import org.eurekastreams.server.action.response.settings.RetrieveSettingsResponse;
-import org.eurekastreams.server.domain.NotificationFilterPreference;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
+import org.eurekastreams.server.action.response.notification.GetUserNotificationFilterPreferencesResponse;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
-import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.data.GotPersonalSettingsResponseEvent;
-import org.eurekastreams.web.client.events.data.UpdatedPersonalSettingsResponseEvent;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.model.PersonalSettingsModel;
+import org.eurekastreams.web.client.events.data.GotNotificationFilterPreferencesResponseEvent;
+import org.eurekastreams.web.client.events.data.UpdatedNotificationFilterPreferencesResponseEvent;
+import org.eurekastreams.web.client.model.NotificationFilterPreferencesModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.form.FormBuilder;
-import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
-import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -45,53 +40,35 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Personal Settings Panel Composite.
- *
  */
 public class NotificationsSettingsPanelComposite extends FlowPanel
 {
-    /** Form builder. */
-    private FormBuilder form;
-
-    /** List of notification preference categories for personal activities. */
-    private static final Map<String, Category> PERSONAL_PREF_CATEGORIES = new LinkedHashMap<String, Category>();
-
-    /** List of notification preference categories for group activities. */
-    private static final Map<String, Category> GROUP_PREF_CATEGORIES = new LinkedHashMap<String, Category>();
-
-    /** List of notification preference categories for organization activities. */
-    private static final Map<String, Category> ORG_PREF_CATEGORIES = new LinkedHashMap<String, Category>();
+    /** List of notification preference categories. */
+    private static final Map<String, String> PREF_CATEGORIES = new LinkedHashMap<String, String>();
 
     static
     {
-        PERSONAL_PREF_CATEGORIES.put("Activity posted to your stream", Category.POST_TO_PERSONAL_STREAM);
-        PERSONAL_PREF_CATEGORIES.put("Colleague likes activity you posted to your stream or a group stream",
-                Category.LIKE);
-        PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity in your stream or an activity "
-                + "you posted to a group stream", Category.COMMENT);
-        PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity you saved", Category.COMMENT_TO_SAVED_ACTIVITY);
-        PERSONAL_PREF_CATEGORIES.put("New follower is added to your stream", Category.FOLLOW_PERSON);
-
-        // Note: Since group coordinators are also members by default (although they can leave), "joined" mostly covers
-        // the "coordinate" case, although it does not allow for the notifications to be different
-        GROUP_PREF_CATEGORIES.put("Activity is posted to a group you joined", Category.POST_TO_JOINED_GROUP);
-        // GROUP_PREF_CATEGORIES.put("Activity is posted to a group you coordinate", Category.POST_TO_GROUP_STREAM);
-        // GROUP_PREF_CATEGORIES.put("Comments", Category.COMMENT_IN_GROUP_STREAM);
-        GROUP_PREF_CATEGORIES.put("New member joins a group you coordinate", Category.FOLLOW_GROUP);
-        GROUP_PREF_CATEGORIES.put("Group Membership is requested in a private group you coordinate",
-                Category.REQUEST_GROUP_ACCESS);
-        GROUP_PREF_CATEGORIES.put("Your request for membership in a private group has been approved or denied",
-                Category.REQUEST_GROUP_ACCESS_RESPONSE);
-
-        ORG_PREF_CATEGORIES.put("Activity is Flagged in an organization you coordinate", Category.FLAG_ACTIVITY);
-        ORG_PREF_CATEGORIES
-                .put("New group is requested in an organization you coordinate", Category.REQUEST_NEW_GROUP);
+        PREF_CATEGORIES.put("POST_TO_PERSONAL_STREAM", "Someone posts on my stream");
+        PREF_CATEGORIES.put("LIKE", "Someone likes one of my posts");
+        PREF_CATEGORIES.put("COMMENT", "Someone comments on one of my posts or a post I've commented on");
+        PREF_CATEGORIES.put("FOLLOW", "Someone follows my stream or a group I coordinate");
     }
+
+    /** Index of all the checkboxes by controlling preference. */
+    private final Map<NotificationFilterPreferenceDTO, HasValue<Boolean>> checkboxIndex = // \n
+    new TreeMap<NotificationFilterPreferenceDTO, HasValue<Boolean>>(new Comparator<NotificationFilterPreferenceDTO>()
+    {
+        public int compare(final NotificationFilterPreferenceDTO inO1, final NotificationFilterPreferenceDTO inO2)
+        {
+            int cmp = inO1.getNotifierType().compareTo(inO2.getNotifierType());
+            return cmp != 0 ? cmp : inO1.getNotificationCategory().compareTo(inO2.getNotificationCategory());
+        }
+    });
 
     /**
      * Constructor.
@@ -102,126 +79,69 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().personalSettings());
 
         // listen for model events
-        Session.getInstance().getEventBus()
-                .addObserver(GotPersonalSettingsResponseEvent.class, new Observer<GotPersonalSettingsResponseEvent>()
+        final EventBus eventBus = Session.getInstance().getEventBus();
+
+        eventBus.addObserver(UpdatedNotificationFilterPreferencesResponseEvent.class,
+                new Observer<UpdatedNotificationFilterPreferencesResponseEvent>()
                 {
-                    public void update(final GotPersonalSettingsResponseEvent ev)
+                    public void update(final UpdatedNotificationFilterPreferencesResponseEvent arg1)
                     {
-                        generateForm(ev.getSettings(), ev.getSupport());
+                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification("Settings saved")));
+                    }
+
+                });
+
+        eventBus.addObserver(GotNotificationFilterPreferencesResponseEvent.class,
+                new Observer<GotNotificationFilterPreferencesResponseEvent>()
+                {
+                    public void update(final GotNotificationFilterPreferencesResponseEvent ev)
+                    {
+                        eventBus.removeObserver(ev, this);
+                        populatePage(ev.getResponse());
                     }
                 });
+
         // request data
-        PersonalSettingsModel.getInstance().fetch(null, true);
+        NotificationFilterPreferencesModel.getInstance().fetch(null, true);
     }
 
     /**
-     * Builds the form using the data supplied.
+     * Populates the page with preference options.
      *
-     * @param inSettings
-     *            User's settings.
-     * @param inSupport
-     *            Supporting data.
+     * @param response
+     *            The preference information response from the server.
      */
-    public void generateForm(final Map<String, Object> inSettings, final Map<String, Object> inSupport)
+    private void populatePage(final GetUserNotificationFilterPreferencesResponse response)
     {
-        form = new FormBuilder("", PersonalSettingsModel.getInstance(), Method.UPDATE);
-        form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifSettingsForm());
-        form.turnOffChangeCheck();
-        setupFormCommands();
+        // response.getNotifierTypes()
+        add(buildNotificationFilterGrid(response.getNotifierTypes(), PREF_CATEGORIES, response.getPreferences()));
 
-        buildNotificationPreferencesSection(
-                (Collection<NotificationFilterPreferenceDTO>) inSettings
-                        .get(RetrieveSettingsResponse.SETTINGS_NOTIFICATION_FILTERS),
-                (HashMap<String, String>) inSupport.get(RetrieveSettingsResponse.SUPPORT_NOTIFIER_TYPES));
-
-        add(form);
-    }
-
-    /**
-     * Builds the notification filter preference part of the form using the supplied data.
-     *
-     * @param filters
-     *            User's filter selections.
-     * @param notifiers
-     *            List of available notifiers.
-     */
-    private void buildNotificationPreferencesSection(final Collection<NotificationFilterPreferenceDTO> filters,
-            final HashMap<String, String> notifiers)
-    {
-        Label label;
-
-        Panel panel = new FlowPanel();
-        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifSettingsPanel());
-        form.addWidget(panel);
-
-        label = new Label("My Activity and Connections");
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
-        panel.add(label);
-
-        label = new Label("Eureka Streams will notify you when new activity has taken place that involves you.");
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
-        panel.add(label);
-
-        panel.add(buildNotificationFilterGrid(notifiers, PERSONAL_PREF_CATEGORIES, filters));
-
-        label = new Label("My Groups' Activity and Connections");
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
-        panel.add(label);
-
-        label = new Label("Eureka Streams will notify you when new activity has taken place in the groups that "
-                + "you coordinate or groups that you have joined.");
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
-        panel.add(label);
-
-        Grid groupGrid = buildNotificationFilterGrid(notifiers, GROUP_PREF_CATEGORIES, filters);
-        panel.add(groupGrid);
-
-        label = new Label("My Organizations' Activity and Connections");
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
-        panel.add(label);
-
-        label = new Label("Eureka Streams will notify you when new activity has "
-                + "taken place in the organizations that you coordinate.");
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
-        panel.add(label);
-
-        panel.add(buildNotificationFilterGrid(notifiers, ORG_PREF_CATEGORIES, filters));
-
-        label = new InlineLabel("Email notifications will be sent to: ");
-        panel.add(label);
-
-        label = new InlineLabel(Session.getInstance().getCurrentPerson().getEmail());
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEmailValue());
-        panel.add(label);
-
-        // add link for managing groups
-        int row = 0;
-        for (Category category : GROUP_PREF_CATEGORIES.values())
+        Label saveButton = new Label("Save Changes");
+        saveButton.addClickHandler(new ClickHandler()
         {
-            row++;
-            if (Category.POST_TO_JOINED_GROUP.equals(category))
+            public void onClick(final ClickEvent inEvent)
             {
-                String caption = groupGrid.getText(row, 0);
-                FlowPanel cellPanel = new FlowPanel();
-                cellPanel.add(new InlineLabel(caption + " "));
+                saveChanges();
+            }
+        });
+        add(saveButton);
+    }
 
-                GroupSubscriptionDialogContent dialogContent = new GroupSubscriptionDialogContent();
-                final Dialog dialog = new Dialog(dialogContent);
-
-                InlineLabel manageLink = new InlineLabel("(manage)");
-                manageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
-                manageLink.addClickHandler(new ClickHandler()
-                {
-                    public void onClick(final ClickEvent inArg0)
-                    {
-                        dialog.showCentered();
-                    }
-                });
-                cellPanel.add(manageLink);
-                groupGrid.setWidget(row, 0, cellPanel);
-                break;
+    /**
+     * Gathers settings and sends to model to send to server.
+     */
+    private void saveChanges()
+    {
+        ArrayList<NotificationFilterPreferenceDTO> selected = new ArrayList<NotificationFilterPreferenceDTO>();
+        for (Entry<NotificationFilterPreferenceDTO, HasValue<Boolean>> entry : checkboxIndex.entrySet())
+        {
+            if (!entry.getValue().getValue())
+            {
+                selected.add(entry.getKey());
             }
         }
+
+        NotificationFilterPreferencesModel.getInstance().update(selected);
     }
 
     /**
@@ -236,14 +156,14 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
      * @return Grid.
      */
     private Grid buildNotificationFilterGrid(final Map<String, String> notifiers,
-            final Map<String, Category> categories, final Collection<NotificationFilterPreferenceDTO> filters)
+            final Map<String, String> categories, final Collection<NotificationFilterPreferenceDTO> filters)
     {
         Grid grid = new Grid(1 + categories.size(), 1 + notifiers.size());
         grid.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifGrid());
 
         // display each category name (one per row)
         int row = 0;
-        for (String categoryName : categories.keySet())
+        for (String categoryName : categories.values())
         {
             row++;
             grid.setText(row, 0, categoryName);
@@ -254,6 +174,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         for (Map.Entry<String, String> entry : notifiers.entrySet())
         {
             col++;
+            final String notifierType = entry.getKey();
 
             // display the names of the notifiers
             grid.setText(0, col, entry.getValue());
@@ -261,147 +182,28 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
 
             // create the checkboxes for that notifier per category
             row = 0;
-            for (Category category : categories.values())
+            for (String category : categories.keySet())
             {
                 row++;
-                setupNotificationFilterCheckbox(grid, row, col, entry.getKey(), category, filters);
+
+                CheckBox checkBox = new CheckBox();
+                checkBox.setValue(true);
+                grid.setWidget(row, col, checkBox);
+                checkboxIndex.put(new NotificationFilterPreferenceDTO(notifierType, category), checkBox);
+            }
+        }
+
+        // uncheck checkboxes for suppressed entries
+        for (NotificationFilterPreferenceDTO pref : filters)
+        {
+            pref.setPersonId(0);
+            HasValue<Boolean> checkBox = checkboxIndex.get(pref);
+            if (checkBox != null)
+            {
+                checkBox.setValue(false);
             }
         }
 
         return grid;
     }
-
-    /**
-     * Creates an sets up a given checkbox.
-     *
-     * @param grid
-     *            The grid in which the checkbox goes.
-     * @param col
-     *            The column in which the checkbox goes.
-     * @param row
-     *            The row in which the checkbox goes.
-     * @param notifierType
-     *            The notifier type the checkbox represents.
-     * @param category
-     *            The category the checkbox represents
-     * @param prefs
-     *            The list of preferences.
-     */
-    private void setupNotificationFilterCheckbox(final Grid grid, final int row, final int col,
-            final String notifierType, final NotificationFilterPreference.Category category,
-            final Collection<NotificationFilterPreferenceDTO> prefs)
-    {
-        NotificationPreferenceFormElement elem = new NotificationPreferenceFormElement(notifierType, category);
-        grid.setWidget(row, col, elem.getWidget());
-        form.addFormElement(elem);
-
-        // determine initial state - certainly not the most efficient, but the list should be really short
-        for (NotificationFilterPreferenceDTO pref : prefs)
-        {
-            if (pref.getNotificationCategory().equals(category) && pref.getNotifierType().equals(notifierType))
-            {
-                elem.getWidget().setValue(false);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Configures the form builder for submit and cancel.
-     */
-    private void setupFormCommands()
-    {
-        if (form == null)
-        {
-            return;
-        }
-
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(UpdatedPersonalSettingsResponseEvent.class,
-                        new Observer<UpdatedPersonalSettingsResponseEvent>()
-                        {
-                            public void update(final UpdatedPersonalSettingsResponseEvent arg1)
-                            {
-                                form.onSuccess();
-                                Session.getInstance()
-                                        .getEventBus()
-                                        .notifyObservers(new ShowNotificationEvent(new Notification("Settings saved")));
-                            }
-
-                        });
-
-        form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.START)));
-    }
-
-    /**
-     * Form element specific to notification preference checkboxes to allow prefs to be set via FormBuilder approach.
-     * Does not inherit from a widget so that the FormBuilder will not try to add it to the panel.
-     */
-    public static class NotificationPreferenceFormElement implements FormElement
-    {
-        /** Notifier type. */
-        private final String notifierType;
-
-        /** Category. */
-        private final NotificationFilterPreference.Category category;
-
-        /** Checkbox. */
-        private final CheckBox checkbox = new CheckBox();
-
-        /**
-         * Constructor.
-         *
-         * @param inNotifierType
-         *            Notifier type.
-         * @param inCategory
-         *            Category.
-         */
-        public NotificationPreferenceFormElement(final String inNotifierType, final Category inCategory)
-        {
-            notifierType = inNotifierType;
-            category = inCategory;
-            checkbox.setValue(true);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public String getKey()
-        {
-            return "notif-" + notifierType + "-" + category.name();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public Serializable getValue()
-        {
-            return checkbox.getValue() ? null : new NotificationFilterPreferenceDTO(notifierType, category);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void onError(final String inErrMessage)
-        {
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void onSuccess()
-        {
-            // nothing to do
-        }
-
-        /**
-         * @return The widget.
-         */
-        CheckBox getWidget()
-        {
-            return checkbox;
-        }
-    }
-
 }

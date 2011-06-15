@@ -65,6 +65,9 @@ public class InAppNotificationDTO implements Serializable
     /** ID of the avatar to display. */
     private String avatarId;
 
+    /** Filter category. May be null. */
+    private String filterCategory;
+
     /**
      * Constructor.
      */
@@ -331,4 +334,20 @@ public class InAppNotificationDTO implements Serializable
         avatarId = inAvatarId;
     }
 
+    /**
+     * @return the filterCategory
+     */
+    public String getFilterCategory()
+    {
+        return filterCategory;
+    }
+
+    /**
+     * @param inFilterCategory
+     *            the filterCategory to set
+     */
+    public void setFilterCategory(final String inFilterCategory)
+    {
+        filterCategory = inFilterCategory;
+    }
 }

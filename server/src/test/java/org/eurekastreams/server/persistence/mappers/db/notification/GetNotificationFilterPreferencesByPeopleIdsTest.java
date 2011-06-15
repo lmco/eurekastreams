@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.db.notification;
 
 import static junit.framework.Assert.assertEquals;
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
@@ -25,11 +25,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Integration test of the mapper.
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
 {
     /** System under test. */
-    @Autowired
     private GetNotificationFilterPreferencesByPeopleIds sut;
 
     /** Id for smithers. */
@@ -50,17 +48,24 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     static final long FORDP_ID = 42L;
 
     /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new GetNotificationFilterPreferencesByPeopleIds();
+        sut.setEntityManager(getEntityManager());
+    }
+
+    /**
      * Test with multiple users preferences.
      */
     @Test
     public void testExecuteMultipleRows()
     {
-        NotificationFilterPreferenceDTO expected1 =
-         new NotificationFilterPreferenceDTO(FORDP_ID, "email", Category.FOLLOW_PERSON);
-        NotificationFilterPreferenceDTO expected2 =
-                new NotificationFilterPreferenceDTO(FORDP_ID, "email", Category.FOLLOW_GROUP);
-        NotificationFilterPreferenceDTO expected3 =
-            new NotificationFilterPreferenceDTO(BURNS_ID, "email", Category.COMMENT);
+        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(FORDP_ID, "email", "FOLLOW");
+        NotificationFilterPreferenceDTO expected2 = new NotificationFilterPreferenceDTO(FORDP_ID, "email", "LIKE");
+        NotificationFilterPreferenceDTO expected3 = new NotificationFilterPreferenceDTO(BURNS_ID, "email", "COMMENT");
 
         List<Long> peopleIds = new ArrayList<Long>();
         peopleIds.add(FORDP_ID);
@@ -80,8 +85,7 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     @Test
     public void testExecuteSingleRow()
     {
-        NotificationFilterPreferenceDTO expected1 =
-                new NotificationFilterPreferenceDTO(BURNS_ID, "email", Category.COMMENT);
+        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(BURNS_ID, "email", "COMMENT");
 
         Collection<NotificationFilterPreferenceDTO> list = sut.execute(Arrays.asList(BURNS_ID));
 
@@ -118,5 +122,4 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
         Collection<NotificationFilterPreferenceDTO> list = sut.execute(null);
         assertEquals(0, list.size());
     }
-
 }

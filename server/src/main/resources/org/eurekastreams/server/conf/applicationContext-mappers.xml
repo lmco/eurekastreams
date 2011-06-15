@@ -1816,18 +1816,6 @@
 		class="org.eurekastreams.server.persistence.mappers.db.GetTabPermissionByPersonAndTab">
 	</bean>
 
-	<bean id="getNotificationFilterPreferencesByPersonId"
-		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPersonId" />
-
-	<bean id="setUserNotificationFilterPreferences"
-		class="org.eurekastreams.server.persistence.mappers.db.SetUserNotificationFilterPreferences" />
-
-	<bean id="getNotificationFilterPreferencesByPeopleIds"
-		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
-
-	<bean id="insertInAppNotificationForAllUsers"
-		class="org.eurekastreams.server.persistence.mappers.db.notification.InsertInAppNotificationForAllUsers" />
-		
 	<bean id="getUnreadInAppNotificationCountsByUserId" 
 		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadInAppNotificationCountsByUserId">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -1924,9 +1912,6 @@
 
 	<bean id="deleteFromSearchIndex"
 		class="org.eurekastreams.server.persistence.mappers.DeleteFromSearchIndex" />
-
-	<bean id="updateNotificationsOnNameChangeMapper"
-		class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
 
     <bean id="updatePersonMapper"
         class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />

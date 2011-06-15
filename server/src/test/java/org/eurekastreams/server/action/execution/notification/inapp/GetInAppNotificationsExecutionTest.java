@@ -22,12 +22,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetItemsByPointerIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
@@ -67,8 +70,22 @@ public class GetInAppNotificationsExecutionTest
     /** Mapper to get groups. */
     private final GetItemsByPointerIds groupsMapper = context.mock(GetItemsByPointerIds.class, "groupsMapper");
 
+    /** Type-to-category mapping. */
+    private final Map<NotificationType, String> notificationTypeCategories = new HashMap<NotificationType, String>();
+
     /** SUT. */
     private ExecutionStrategy sut;
+
+    /**
+     * Constructor.
+     */
+    public GetInAppNotificationsExecutionTest()
+    {
+        notificationTypeCategories.put(NotificationType.COMMENT_TO_PERSONAL_POST, "COMMENT");
+        notificationTypeCategories.put(NotificationType.COMMENT_TO_COMMENTED_POST, "COMMENT");
+        notificationTypeCategories.put(NotificationType.FOLLOW_PERSON, "FOLLOW");
+        notificationTypeCategories.put(NotificationType.FOLLOW_GROUP, "FOLLOW");
+    }
 
     /**
      * Setup before each test.
@@ -76,7 +93,7 @@ public class GetInAppNotificationsExecutionTest
     @Before
     public void setUp()
     {
-        sut = new GetInAppNotificationsExecution(alertMapper, personsMapper, groupsMapper);
+        sut = new GetInAppNotificationsExecution(alertMapper, personsMapper, groupsMapper, notificationTypeCategories);
     }
 
     /**
@@ -88,17 +105,22 @@ public class GetInAppNotificationsExecutionTest
         final InAppNotificationDTO notif1 = new InAppNotificationDTO();
         notif1.setAvatarOwnerType(EntityType.PERSON);
         notif1.setAvatarOwnerUniqueId("knownperson");
+        notif1.setNotificationType(NotificationType.COMMENT_TO_PERSONAL_POST);
         final InAppNotificationDTO notif2 = new InAppNotificationDTO();
         notif2.setAvatarOwnerType(EntityType.GROUP);
         notif2.setAvatarOwnerUniqueId("knowngroup");
+        notif2.setNotificationType(NotificationType.REQUEST_GROUP_ACCESS);
         final InAppNotificationDTO notif3 = new InAppNotificationDTO();
         notif3.setAvatarOwnerType(EntityType.NOTSET);
+        notif3.setNotificationType(NotificationType.FOLLOW_GROUP);
         final InAppNotificationDTO notif4 = new InAppNotificationDTO();
         notif4.setAvatarOwnerType(EntityType.PERSON);
         notif4.setAvatarOwnerUniqueId("unknownperson");
+        notif4.setNotificationType(NotificationType.PASS_THROUGH);
         final InAppNotificationDTO notif5 = new InAppNotificationDTO();
         notif5.setAvatarOwnerType(EntityType.GROUP);
         notif5.setAvatarOwnerUniqueId("avatarlessgroup");
+        notif5.setNotificationType(NotificationType.COMMENT_TO_COMMENTED_POST);
 
         final PersonModelView person = new PersonModelView();
         person.setAccountId("knownperson");
@@ -131,6 +153,13 @@ public class GetInAppNotificationsExecutionTest
         context.assertIsSatisfied();
 
         assertEquals(5, result.size());
+
+        assertEquals("COMMENT", result.get(0).getFilterCategory());
+        assertNull(result.get(1).getFilterCategory());
+        assertEquals("FOLLOW", result.get(2).getFilterCategory());
+        assertNull(result.get(3).getFilterCategory());
+        assertEquals("COMMENT", result.get(4).getFilterCategory());
+
         assertEquals("avatar1", result.get(0).getAvatarId());
         assertEquals("avatar2", result.get(1).getAvatarId());
         assertNull(result.get(2).getAvatarId());
@@ -158,5 +187,4 @@ public class GetInAppNotificationsExecutionTest
         context.assertIsSatisfied();
         assertTrue(result.isEmpty());
     }
-
 }

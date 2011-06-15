@@ -27,6 +27,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.InAppNotificationDTO;
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetItemsByPointerIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
@@ -52,6 +53,9 @@ public class GetInAppNotificationsExecution implements ExecutionStrategy<Princip
     /** Mapper to get groups. */
     private final GetItemsByPointerIds<DomainGroupModelView> groupsMapper;
 
+    /** Provides the category for each notification type. */
+    private final Map<NotificationType, String> notificationTypeToCategory;
+
     /**
      * Constructor.
      *
@@ -61,14 +65,18 @@ public class GetInAppNotificationsExecution implements ExecutionStrategy<Princip
      *            Mapper to get persons.
      * @param inGroupsMapper
      *            Mapper to get groups.
+     * @param inNotificationTypeCategories
+     *            Map providing the category for each notification type.
      */
     public GetInAppNotificationsExecution(final BaseArgDomainMapper<Long, List<InAppNotificationDTO>> inAlertMapper,
             final GetItemsByPointerIdsMapper<String, PersonModelView> inPersonsMapper,
-            final GetItemsByPointerIds<DomainGroupModelView> inGroupsMapper)
+            final GetItemsByPointerIds<DomainGroupModelView> inGroupsMapper,
+            final Map<NotificationType, String> inNotificationTypeCategories)
     {
         alertMapper = inAlertMapper;
         personsMapper = inPersonsMapper;
         groupsMapper = inGroupsMapper;
+        notificationTypeToCategory = inNotificationTypeCategories;
     }
 
     /**
@@ -79,12 +87,21 @@ public class GetInAppNotificationsExecution implements ExecutionStrategy<Princip
     @SuppressWarnings("unchecked")
     public Serializable execute(final PrincipalActionContext inActionContext)
     {
+        // ---- get the notifications ----
         long userId = inActionContext.getPrincipal().getId();
         List<InAppNotificationDTO> results = alertMapper.execute(userId);
 
         if (results.isEmpty())
         {
             return (Serializable) Collections.EMPTY_LIST;
+        }
+
+        // ---- add "live" data (not stored in database) ----
+
+        // set filter category
+        for (InAppNotificationDTO item : results)
+        {
+            item.setFilterCategory(notificationTypeToCategory.get(item.getNotificationType()));
         }
 
         // -- get avatar IDs (stale ones cause a 404 so prevent that) --
