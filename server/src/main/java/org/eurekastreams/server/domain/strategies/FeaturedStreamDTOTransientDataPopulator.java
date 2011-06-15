@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -43,9 +44,9 @@ public class FeaturedStreamDTOTransientDataPopulator
     private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
-     * Mapper to get a list of PersonModelViews from a list of AccountIds.
+     * Mapper to get a list of DomainGroupModelViews from a list of group short names.
      */
-    private DomainMapper<List<String>, List<DomainGroupModelView>> getGroupModelViewsByShortNameMapper;
+    private GetItemsByPointerIds<DomainGroupModelView> getGroupModelViewsByShortNameMapper;
 
     /**
      * Constructor.
@@ -55,12 +56,12 @@ public class FeaturedStreamDTOTransientDataPopulator
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            Mapper to get a list of PersonModelViews from a list of AccountIds.
      * @param inGetGroupModelViewsByShortNameMapper
-     *            Mapper to get a list of PersonModelViews from a list of AccountIds.
+     *            Mapper to get a list of GroupModelViews from a list of group shortNames.
      */
     public FeaturedStreamDTOTransientDataPopulator(
             final FollowerStatusPopulator<FeaturedStreamDTO> inFollowerStatusPopulator,
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
-            final DomainMapper<List<String>, List<DomainGroupModelView>> inGetGroupModelViewsByShortNameMapper)
+            final GetItemsByPointerIds<DomainGroupModelView> inGetGroupModelViewsByShortNameMapper)
     {
         followerStatusPopulator = inFollowerStatusPopulator;
         getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;

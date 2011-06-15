@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -121,6 +122,9 @@ public class AddFeaturedStreamExecutionTest
 
                 allowing(actionContext).getParams();
                 will(returnValue(fsdto));
+
+                allowing(actionContext).getState();
+                will(returnValue(new HashMap()));
 
                 allowing(fsdto).getDescription();
                 will(returnValue(description));
