@@ -23,7 +23,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 /**
  * DB Mapper to get a list of stream scope ids for streams, sorted by the average daily views, descending.
  */
-public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<Long, List<Long>>
+public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<Integer, List<Long>>
 {
     /**
      * Get a list of the stream scope ids for the most viewed streams.
@@ -33,12 +33,12 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<L
      * @return list of stream scope ids
      */
     @Override
-    public List<Long> execute(final Long inStreamCount)
+    public List<Long> execute(final Integer inStreamCount)
     {
         return getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
                         + "ORDER BY SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
-                .setParameter("nowInMS", new Date().getTime()).getResultList();
+                .setParameter("nowInMS", new Date().getTime()).setMaxResults(inStreamCount).getResultList();
     }
 }

@@ -48,7 +48,7 @@ public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
     @Test
     public void test()
     {
-        List<Long> results = sut.execute(10L);
+        List<Long> results = sut.execute(10);
         Assert.assertEquals(2L, results.size());
         Assert.assertEquals(new Long(2), results.get(0));
         Assert.assertEquals(new Long(1), results.get(1));
