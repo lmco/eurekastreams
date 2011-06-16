@@ -40,19 +40,9 @@ public class SettingsContent extends Composite
     private final TabContainerPanel tabContainer;
 
     /**
-     * Personal Panel.
-     */
-    private final NotificationsSettingsPanelComposite personalPanel;
-
-    /**
      * System Panel.
      */
     private final SystemSettingsPanelComposite systemPanel;
-
-    /**
-     * processor.
-     */
-    private final ActionProcessor processor;
 
     /**
      * The root panel.
@@ -61,21 +51,18 @@ public class SettingsContent extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inProcessor
      *            for contacting the server.
      */
     public SettingsContent(final ActionProcessor inProcessor)
     {
         FlowPanel panel = new FlowPanel();
-        processor = inProcessor;
 
         rootPanel = RootPanel.get();
         rootPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settings());
 
-        personalPanel = new NotificationsSettingsPanelComposite();
-        personalPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTab());
-        systemPanel = new SystemSettingsPanelComposite(processor);
+        systemPanel = new SystemSettingsPanelComposite(inProcessor);
         systemPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTab());
 
         tabContainer = new TabContainerPanel();
@@ -91,8 +78,6 @@ public class SettingsContent extends Composite
             tabContainer.addTab(pluginsTab);
             tabContainer.addTab(new PendingGroupsAndFlaggedActivitiesPanelComposite("Pending"));
         }
-
-        tabContainer.addTab(new SimpleTab("Notifications", personalPanel));
 
         panel.add(tabContainer);
         tabContainer.init();

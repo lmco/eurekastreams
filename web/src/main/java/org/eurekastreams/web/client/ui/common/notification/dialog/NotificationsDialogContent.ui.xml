@@ -3,17 +3,13 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
 <ui:image field="activeBackground" src="style/images/activeBackground.png" />
-<ui:image field="markAllRead" src="style/images/verifyGoodIcon.png" />
+<ui:image field="markAllReadImage" src="style/images/verifyGoodIcon.png" />
+<ui:image field="settingsImage" src="style/images/notifySettingsIcon.png" />
+
 
 <ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
 .modal
 {
-}
-@if user.agent ie6 ie8 {
-	.modal
-	{
-		width: 700px;
-	}
 }
 .main
 {
@@ -36,14 +32,19 @@
 {
 	height: 36px;
 	border-bottom: 1px solid #666;
-	margin-right: 5px;
 }
 @sprite .mark-all-read
 {
-	gwt-image: "markAllRead";
+	gwt-image: "markAllReadImage";
 	float: right;
+	margin-right: 10px;
 }
-
+@sprite .settings-button
+{
+	gwt-image: "settingsImage";
+	float: right;
+	margin-right: 10px;
+}
 .no-notifications,
 .notification-list-scroll-panel
 {
@@ -73,6 +74,18 @@
 {
 	margin-left: 5px;
 }
+
+@if user.agent ie6 ie8 {
+	.modal
+	{
+		width: 700px;
+	}
+	.source-filter-selected
+	{
+		background-image: url("style/images/activeBackground.png");
+	}
+}
+
 </ui:style>
 
 
@@ -91,7 +104,8 @@
 				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel}" ui:field="allFilterUi">All</g:Label>
 			</div>
 			
-			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadUi" />
+			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" />
+			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" />
 		</div>
 		<div class="{style.no-notifications}" ui:field="noNotificationsUi">No notifications</div>
 		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">

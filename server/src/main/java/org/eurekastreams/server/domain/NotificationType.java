@@ -54,10 +54,7 @@ public enum NotificationType
     FOLLOW_GROUP,
 
     /** Someone flagged an activity. */
-    FLAG_PERSONAL_ACTIVITY,
-
-    /** Someone flagged an activity. */
-    FLAG_GROUP_ACTIVITY,
+    FLAG_ACTIVITY,
 
     /** Pending group creation request. */
     REQUEST_NEW_GROUP,

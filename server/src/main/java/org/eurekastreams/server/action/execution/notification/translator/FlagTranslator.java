@@ -22,7 +22,6 @@ import java.util.List;
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
@@ -69,13 +68,11 @@ public class FlagTranslator implements NotificationTranslator<CreateNotification
         // Get the activity
         ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inRequest.getActivityId())).get(0);
         StreamEntityDTO stream = activity.getDestinationStream();
-        NotificationType type = EntityType.PERSON == stream.getType() ? NotificationType.FLAG_PERSONAL_ACTIVITY
-                : NotificationType.FLAG_GROUP_ACTIVITY;
 
         // Get the list of admins
         List<Long> adminIds = systemAdminMapper.execute(null);
 
-        NotificationBatch batch = new NotificationBatch(type, adminIds);
+        NotificationBatch batch = new NotificationBatch(NotificationType.FLAG_ACTIVITY, adminIds);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("activity", activity);
         batch.setProperty("stream", stream);

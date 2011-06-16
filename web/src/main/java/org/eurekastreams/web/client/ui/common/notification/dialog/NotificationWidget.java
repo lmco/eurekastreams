@@ -21,8 +21,6 @@ import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.NotificationClickedEvent;
 import org.eurekastreams.web.client.events.NotificationDeleteRequestEvent;
-import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.data.NotificationCategoryDisabledResponseEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.model.NotificationFilterPreferencesModel;
 
@@ -97,9 +95,6 @@ public class NotificationWidget extends Composite
     /** Main widget. */
     private final Widget main;
 
-    /** Event for disabled category (for unwiring). */
-    private Observer<NotificationCategoryDisabledResponseEvent> disabledEvent;
-
     /**
      * Constructor.
      *
@@ -145,47 +140,6 @@ public class NotificationWidget extends Composite
         if (item.getFilterCategory() == null)
         {
             disableToplevelUi.removeFromParent();
-        }
-        else
-        {
-            disabledEvent = new Observer<NotificationCategoryDisabledResponseEvent>()
-            {
-                public void update(final NotificationCategoryDisabledResponseEvent ev)
-                {
-                    if (item.getFilterCategory().equals(ev.getRequest()))
-                    {
-                        EventBus.getInstance().removeObserver(ev, this);
-                        disabledEvent = null;
-                        disableToplevelUi.removeFromParent();
-                    }
-                }
-            };
-        }
-    }
-
-    /**
-     * Attach events when widget is added to page.
-     */
-    @Override
-    protected void onAttach()
-    {
-        super.onAttach();
-        if (disabledEvent != null)
-        {
-            EventBus.getInstance().addObserver(NotificationCategoryDisabledResponseEvent.class, disabledEvent);
-        }
-    }
-
-    /**
-     * Detach events when widget is no longer needed (prevents discarded widgets from still receiving events).
-     */
-    @Override
-    protected void onDetach()
-    {
-        super.onDetach();
-        if (disabledEvent != null)
-        {
-            EventBus.getInstance().removeObserver(NotificationCategoryDisabledResponseEvent.class, disabledEvent);
         }
     }
 
