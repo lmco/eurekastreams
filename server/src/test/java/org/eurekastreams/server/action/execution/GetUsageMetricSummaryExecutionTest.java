@@ -107,14 +107,14 @@ public class GetUsageMetricSummaryExecutionTest
         cal.add(Calendar.DATE, -4);
         final Date fourDaysAgo = cal.getTime();
 
-        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, yesterday, 80L, 91L, 101L, 111L, 121L));
-        results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, twoDaysAgo, 90L, 100L, 110L, 120L, 130L));
-        results
-                .add(new DailyUsageSummary(30L, 40L, 50L, 60L, 70L, 80L, 90L, threeDaysAgo, 100L, 110L, 120L, 130L,
-                        140L));
-        results
-                .add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, fourDaysAgo, 110L, 120L, 130L, 140L,
-                        150L));
+        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, yesterday, 1308238511000L, 80L, 91L, 101L,
+                111L, 121L));
+        results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, twoDaysAgo, 1308238511000L, 90L, 100L,
+                110L, 120L, 130L));
+        results.add(new DailyUsageSummary(30L, 40L, 50L, 60L, 70L, 80L, 90L, threeDaysAgo, 1308238511000L, 100L, 110L,
+                120L, 130L, 140L));
+        results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, fourDaysAgo, 1308238511000L, 110L, 120L,
+                130L, 140L, 150L));
 
         System.out.println(DateDayExtractor.getStartOfDay(threeDaysAgo));
         System.out.println(DateDayExtractor.getStartOfDay(new Date()));

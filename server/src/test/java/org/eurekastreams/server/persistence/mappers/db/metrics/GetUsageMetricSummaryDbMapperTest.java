@@ -86,6 +86,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
             foo.setUniqueVisitorCount(count * i);
             foo.setUsageDate(new Date(nowInMs - i * msInDay));
             foo.setAvgActivityResponseTime(count * i);
+            foo.setUsageDateTimeStampInMs(1308238511000L);
             foo.setStreamViewStreamScopeId(null);
 
             getEntityManager().persist(foo);
@@ -95,11 +96,14 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
 
         // throw in some specific stream stats that will be ignored
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 1 * msInDay), 3L, 1L, 2L, 4L, 5L));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 1 * msInDay), 1308238511000L, 3L, 1L, 2L,
+                        4L, 5L));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 1 * msInDay), 4L, 1L, 2L, 4L, 5L));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 1 * msInDay), 1308238511000L, 4L, 1L, 2L,
+                        4L, 5L));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 1 * msInDay), 5L, 1L, 2L, 4L, 5L));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 1 * msInDay), 1308238511000L, 5L, 1L, 2L,
+                        4L, 5L));
 
         getEntityManager().flush();
         getEntityManager().clear();
@@ -144,6 +148,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
             foo.setUsageDate(new Date(nowInMs - (8 * 2 + i) * msInDay));
             foo.setAvgActivityResponseTime(count * i);
             foo.setStreamViewStreamScopeId(streamViewScopeId);
+            foo.setUsageDateTimeStampInMs(1308238511000L);
 
             getEntityManager().persist(foo);
             getEntityManager().flush();
@@ -152,13 +157,14 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
 
         // throw in some stats that don't pertain to this stream that will be ignored
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 6 * msInDay), streamViewScopeId + 1, 1L,
-                        2L, 4L, 5L));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 6 * msInDay), 1308238511000L,
+                        streamViewScopeId + 1, 1L, 2L, 4L, 5L));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 7 * msInDay), streamViewScopeId + 1, 1L,
-                        2L, 4L, 5L));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 7 * msInDay), 1308238511000L,
+                        streamViewScopeId + 1, 1L, 2L, 4L, 5L));
         getEntityManager().persist(
-                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 8 * msInDay), null, 1L, 2L, 4L, 5L));
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(nowInMs - 8 * msInDay), 1308238511000L, null, 1L,
+                        2L, 4L, 5L));
 
         getEntityManager().flush();
         getEntityManager().clear();

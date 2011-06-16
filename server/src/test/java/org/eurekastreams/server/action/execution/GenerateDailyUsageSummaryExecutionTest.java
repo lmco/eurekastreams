@@ -302,6 +302,7 @@ public class GenerateDailyUsageSummaryExecutionTest
         Assert.assertEquals(avgActivityResponseTime, ds.getAvgActivityResponseTime());
         Assert.assertEquals(messageCount, ds.getMessageCount());
         Assert.assertEquals(date, ds.getUsageDate());
+        Assert.assertEquals(new Long(date.getTime()), ds.getUsageDateTimeStampInMs());
 
         context.assertIsSatisfied();
     }

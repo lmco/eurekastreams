@@ -115,6 +115,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         Date summaryDate;
         Date oldestAvailableReportDate = null;
         Date newestAvailableReportDate = null;
+
         int recordCount = 0;
         logger.debug("Looking for data between " + oldestAllowableReportDate + " and " + latestReportDate);
         for (DailyUsageSummary dus : results)

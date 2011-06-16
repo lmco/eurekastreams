@@ -127,6 +127,12 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     private Date usageDate;
 
     /**
+     * The date in epoch timestamp in milliseconds.
+     */
+    @Basic(optional = false)
+    private Long usageDateTimeStampInMs;
+
+    /**
      * Constructor for ORM.
      */
     public DailyUsageSummary()
@@ -152,6 +158,8 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
      *            Average response time for activities that have comments.
      * @param inUsageDate
      *            the date
+     * @param inUsageDateTimeStampInMs
+     *            the date in epoch ms
      * @param inStreamViewStreamScopeId
      *            the stream view that these stats apply to, or null if for all streams
      * @param inTotalActivityCount
@@ -166,8 +174,8 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final Long inStreamViewStreamScopeId, final Long inTotalActivityCount, final Long inTotalCommentCount,
-            final Long inTotalStreamViewCount, final Long inTotalContributorCount)
+            final Long inUsageDateTimeStampInMs, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
+            final Long inTotalCommentCount, final Long inTotalStreamViewCount, final Long inTotalContributorCount)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -177,6 +185,7 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
         messageCount = inMessageCount;
         avgActivityResponseTime = inAvgActivityResponseTime;
         usageDate = inUsageDate;
+        usageDateTimeStampInMs = inUsageDateTimeStampInMs;
         streamViewStreamScopeId = inStreamViewStreamScopeId;
         totalActivityCount = inTotalActivityCount;
         totalCommentCount = inTotalCommentCount;
@@ -318,6 +327,23 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     public void setUsageDate(final Date inUsageDate)
     {
         usageDate = inUsageDate;
+    }
+
+    /**
+     * @return the usageDateTimeStampInMs
+     */
+    public Long getUsageDateTimeStampInMs()
+    {
+        return usageDateTimeStampInMs;
+    }
+
+    /**
+     * @param inUsageDateTimeStampInMs
+     *            the usageDateTimeStampInMs to set
+     */
+    public void setUsageDateTimeStampInMs(final Long inUsageDateTimeStampInMs)
+    {
+        usageDateTimeStampInMs = inUsageDateTimeStampInMs;
     }
 
     /**

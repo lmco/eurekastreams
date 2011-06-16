@@ -425,8 +425,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             timerLog += "\t8: " + (System.currentTimeMillis() - start);
 
             DailyUsageSummary data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount,
-                    streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate,
-                    inStreamScopeId, totalActivityCount, totalCommentCount, totalStreamViewCount, // 
+                    streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate, inDate
+                            .getTime(), inStreamScopeId, totalActivityCount, totalCommentCount, totalStreamViewCount,
                     totalContributorCount);
 
             // store this
