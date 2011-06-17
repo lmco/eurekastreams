@@ -34,11 +34,6 @@ public class GetUsageMetricSummaryDbMapper extends
         BaseArgDomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>>
 {
     /**
-     * Number of ms in a day.
-     */
-    public static final long MS_IN_DAY = 86400000;
-
-    /**
      * Get Summary usage metrics for last X number of days.
      * 
      * @param inRequest

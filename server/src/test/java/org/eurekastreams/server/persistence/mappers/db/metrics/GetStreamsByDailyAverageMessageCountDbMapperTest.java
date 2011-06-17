@@ -23,22 +23,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test fixture for GetStreamsByDailyAverageViewsDbMapper.
+ * Test fixture for GetStreamsByDailyAverageMessageCountDbMapper.
  */
-public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
+public class GetStreamsByDailyAverageMessageCountDbMapperTest extends MapperTest
 {
     /**
      * System under test.
      */
-    private GetStreamsByDailyAverageViewsDbMapper sut;
+    private GetStreamsByDailyAverageMessageCountDbMapper sut;
 
     /**
-     * Setup method.
+     * Setup.
      */
     @Before
     public void setup()
     {
-        sut = new GetStreamsByDailyAverageViewsDbMapper(10);
+        sut = new GetStreamsByDailyAverageMessageCountDbMapper(100);
         sut.setEntityManager(getEntityManager());
     }
 
@@ -46,11 +46,11 @@ public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
      * Test execute.
      */
     @Test
-    public void test()
+    public void testExecute()
     {
-        List<Long> results = sut.execute(10);
-        Assert.assertEquals(2L, results.size());
-        Assert.assertEquals(new Long(2), results.get(0));
-        Assert.assertEquals(new Long(1), results.get(1));
+        List<Long> results = sut.execute(null);
+        Assert.assertEquals(2, results.size());
+        Assert.assertEquals(new Long(2L), results.get(0));
+        Assert.assertEquals(new Long(1L), results.get(1));
     }
 }

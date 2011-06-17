@@ -22,9 +22,9 @@ import java.util.List;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
- * DB Mapper to get a list of stream scope ids for streams, sorted by the average daily views, descending.
+ * DB Mapper to get a list of streams ordered by the daily average number of messages.
  */
-public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<Serializable, List<Long>>
+public class GetStreamsByDailyAverageMessageCountDbMapper extends BaseArgDomainMapper<Serializable, List<Long>>
 {
     /**
      * Number of streams to get.
@@ -35,27 +35,28 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
      * Constructor.
      * 
      * @param inStreamCount
-     *            the number of streams to get
+     *            the
      */
-    public GetStreamsByDailyAverageViewsDbMapper(final Integer inStreamCount)
+    public GetStreamsByDailyAverageMessageCountDbMapper(final Integer inStreamCount)
     {
         streamCount = inStreamCount;
     }
 
     /**
-     * Get a list of the stream scope ids for the most viewed streams.
+     * Get a list of the stream scope ids for the most active streams.
      * 
      * @param inIgnored
      *            ignored param - go nuts
      * @return list of stream scope ids
      */
     @Override
-    public List<Long> execute(final Serializable inIgnored)
+    public List<Long> execute(final Serializable inRequest)
     {
         return getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
-                        + "ORDER BY SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
+                        + "ORDER BY SUM(messageCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
                 .setParameter("nowInMS", new Date().getTime()).setMaxResults(streamCount).getResultList();
     }
+
 }
