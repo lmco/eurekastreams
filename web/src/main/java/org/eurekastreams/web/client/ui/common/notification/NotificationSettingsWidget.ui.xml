@@ -1,0 +1,147 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder 
+	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+<ui:image field="backButtonImage" src="style/images/back.png" />
+<ui:image field="saveButtonImage" src="style/images/saveChangesBtn.png" />
+
+
+<ui:style type="org.eurekastreams.web.client.ui.common.notification.NotificationSettingsWidget.LocalStyle">
+.main
+{
+	width: 700px;
+	height: 400px;
+	overflow: hidden;
+}
+.top-bar
+{
+	background-color: #DDD;
+	overflow: auto;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-bottom: 1px solid #666;
+}
+.top-bar > *
+{
+	/*float: left;*/
+	margin-left: 10px;
+	vertical-align: middle;
+}
+@sprite .back-button
+{
+	gwt-image: "backButtonImage";
+	cursor: pointer;
+	display: inline-block;
+}
+.tip-area
+{
+	float: right;
+	width: 200px;
+	background-color: #DDD;
+	height: 100%;
+	margin-left: 15px;
+	border-left: 1px solid #BBB;
+}
+.tip-area > h1
+{
+	font-size: 20px;
+	margin-top: 10px;
+}
+.tip-area > *
+{
+	margin: 15px;
+}
+.settings-area
+{
+	padding: 15px;
+}
+.grid
+{
+	border-collapse: collapse;
+    margin-right: 15px;
+}
+.grid tr:first-child > td
+{
+	border-bottom: 2px solid #CCC;
+	height: 50px;
+}
+.grid tr:first-child > td:first-child
+{
+	font-weight: bold;
+}
+.grid tr > td
+{
+	border-bottom: 1px dashed #CCC;
+	text-align: center;
+	height: 40px;
+}
+.grid tr > td:first-child
+{
+	text-align: left;
+}
+.grid-column
+{
+	width: 50px;
+}
+.grid-explanation
+{
+	font-weight: bold;
+}
+.buttons-row > *
+{
+	/*float: left;
+	margin-right: 5px;*/
+	display: inline-block;
+	vertical-align: middle;
+	margin-top: 15px;
+}
+@sprite .save-button
+{
+	gwt-image: "saveButtonImage";
+	cursor: pointer;
+	margin-left: 5px;
+	margin-right: 20px;
+}
+.cancel-button
+{
+	cursor: pointer;
+	color: #0066CC;
+}
+@if user.agent ie6 ie8 {
+ 	.back-button,
+	.buttons-row > *
+	{
+		display: inline;
+		zoom: 1;
+	}
+}
+</ui:style>
+
+<!-- <ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" /> -->
+<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
+
+<g:HTMLPanel addStyleNames="{style.main}">
+	<div class="{style.top-bar}">
+		<g:InlineLabel addStyleNames="{style.back-button}" ui:field="backButton" />
+		<span>Notification Settings</span>
+	</div>
+	<div class="{style.tip-area}">
+		<h1>Tips</h1>
+		<p>These options allow you to manage your notifications.</p>
+		<p>Don't worry, these selections are not permanent.  You can always change them in the future.</p>
+	</div>
+	<div class="{style.settings-area}">
+		<g:Grid addStyleNames="{style.grid}" ui:field="settingsGrid">
+			<g:row>
+				<g:cell class="{style.grid-explanation}">Below are your options for managing the type of notifications you receive:</g:cell>
+			</g:row>
+		</g:Grid>
+		<div class="{style.buttons-row}">
+			<g:Label addStyleNames="{style.save-button}" ui:field="saveButton" />
+			<g:Label addStyleNames="{style.cancel-button}" ui:field="cancelButton">Cancel</g:Label>
+		</div>
+	</div>
+</g:HTMLPanel>
+	
+</ui:UiBinder>

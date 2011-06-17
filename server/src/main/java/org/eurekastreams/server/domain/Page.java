@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 /**
  * Represents a page in our system.
- * 
+ *
  */
 public enum Page implements Serializable
 {
@@ -89,6 +89,10 @@ public enum Page implements Serializable
      */
     START(""),
     /**
+     * Notification settings.
+     */
+    NOTIFICATION_SETTINGS("notificationsettings"),
+    /**
      * Widget for displaying a stream and allowing posts to it. (The name is per the product spec.)
      */
     WIDGET_COMMENT("widget-comment"),
@@ -131,7 +135,7 @@ public enum Page implements Serializable
 
     /**
      * constructor for this enum.
-     * 
+     *
      * @param name
      *            a displayable name.
      */
@@ -149,7 +153,7 @@ public enum Page implements Serializable
     }
 
     /**
-     * 
+     *
      * @param displayableName
      *            to convert.
      * @return the enum corresponding to that string.

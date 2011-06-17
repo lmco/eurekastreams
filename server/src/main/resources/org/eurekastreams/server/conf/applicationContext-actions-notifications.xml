@@ -448,8 +448,7 @@
 		<entry key="POST_TO_JOINED_GROUP" value="$actor.displayName posted a #activityType($activity) to the $stream.displayName stream." />
 		<entry key="COMMENT_TO_GROUP_STREAM" value="$actor.displayName commented on a #activityType($activity) in the $stream.displayName stream." />
 		<entry key="FOLLOW_GROUP" value="$actor.displayName joined the $stream.displayName group." />
-		<entry key="FLAG_PERSONAL_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in $stream.displayName's stream." />
-		<entry key="FLAG_GROUP_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in the $stream.displayName stream." />
+		<entry key="FLAG_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream." />
 		<entry key="REQUEST_NEW_GROUP" value="The $group.name group is pending approval." />
 		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.name group has been approved." />
 		<entry key="REQUEST_NEW_GROUP_DENIED" value="Your request to create the $groupName group has been denied." />
@@ -530,13 +529,7 @@
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.html" />
 		</entry>
-		<entry key="FLAG_PERSONAL_ACTIVITY">
-			<bean parent="emailTemplate"
-				p:subject="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream."
-				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.html" />
-		</entry>
-		<entry key="FLAG_GROUP_ACTIVITY">
+		<entry key="FLAG_ACTIVITY">
 			<bean parent="emailTemplate"
 				p:subject="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream."
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt"

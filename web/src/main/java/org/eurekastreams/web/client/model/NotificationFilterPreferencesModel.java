@@ -22,7 +22,6 @@ import org.eurekastreams.server.action.response.notification.GetUserNotification
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationFilterPreferencesResponseEvent;
-import org.eurekastreams.web.client.events.data.NotificationCategoryDisabledResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedNotificationFilterPreferencesResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
@@ -75,8 +74,6 @@ public class NotificationFilterPreferencesModel extends BaseModel implements
         {
             public void onSuccess(final Serializable response)
             {
-                Session.getInstance().getEventBus()
-                        .notifyObservers(new NotificationCategoryDisabledResponseEvent(category));
                 Session.getInstance().getEventBus()
                         .notifyObservers(new ShowNotificationEvent(new Notification("Notification category stopped")));
             }

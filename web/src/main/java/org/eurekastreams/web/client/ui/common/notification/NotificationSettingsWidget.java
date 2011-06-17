@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.pages.settings;
+package org.eurekastreams.web.client.ui.common.notification;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.eurekastreams.server.action.response.notification.GetUserNotificationFilterPreferencesResponse;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -33,21 +32,29 @@ import org.eurekastreams.web.client.events.data.UpdatedNotificationFilterPrefere
 import org.eurekastreams.web.client.model.NotificationFilterPreferencesModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Personal Settings Panel Composite.
  */
-public class NotificationsSettingsPanelComposite extends FlowPanel
+public class NotificationSettingsWidget extends Composite
 {
+    /** Binder for building UI. */
+    private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
+
     /** List of notification preference categories. */
     private static final Map<String, String> PREF_CATEGORIES = new LinkedHashMap<String, String>();
 
@@ -70,67 +77,106 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         }
     });
 
+    /** Local styles. */
+    @UiField
+    LocalStyle style;
+
+    /** UI element acting as the back button. */
+    @UiField
+    Label backButton;
+
+    /** UI element acting as the save button. */
+    @UiField
+    Label saveButton;
+
+    /** UI element acting as the cancel button. */
+    @UiField
+    Label cancelButton;
+
+    /** Main settings grid. */
+    @UiField
+    Grid settingsGrid;
+
+    /** Command widget will invoke to request it be closed/removed. */
+    private Command closeCommand;
+
+    /** Observer (for unwiring). */
+    private final Observer<UpdatedNotificationFilterPreferencesResponseEvent> settingsSavedObserver = // \n
+    new Observer<UpdatedNotificationFilterPreferencesResponseEvent>()
+    {
+        public void update(final UpdatedNotificationFilterPreferencesResponseEvent arg1)
+        {
+            EventBus.getInstance().notifyObservers(new ShowNotificationEvent(new Notification("Settings saved")));
+            closeCommand.execute();
+        }
+    };
+    /** Observer (for unwiring). */
+    private final Observer<GotNotificationFilterPreferencesResponseEvent> gotDataObserver = // \n
+    new Observer<GotNotificationFilterPreferencesResponseEvent>()
+    {
+        public void update(final GotNotificationFilterPreferencesResponseEvent ev)
+        {
+            EventBus.getInstance().removeObserver(ev, this);
+            buildNotificationFilterGrid(ev.getResponse().getNotifierTypes(), PREF_CATEGORIES, ev.getResponse()
+                    .getPreferences());
+        }
+    };
+
     /**
      * Constructor.
+     *
+     * @param showBack
+     *            If the back button should be shown.
      */
-    public NotificationsSettingsPanelComposite()
+    public NotificationSettingsWidget(final boolean showBack)
     {
-        // UI setup
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().personalSettings());
+        initWidget(binder.createAndBindUi(this));
+        if (!showBack)
+        {
+            backButton.removeFromParent();
+        }
 
         // listen for model events
         final EventBus eventBus = Session.getInstance().getEventBus();
 
-        eventBus.addObserver(UpdatedNotificationFilterPreferencesResponseEvent.class,
-                new Observer<UpdatedNotificationFilterPreferencesResponseEvent>()
-                {
-                    public void update(final UpdatedNotificationFilterPreferencesResponseEvent arg1)
-                    {
-                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification("Settings saved")));
-                    }
-
-                });
-
-        eventBus.addObserver(GotNotificationFilterPreferencesResponseEvent.class,
-                new Observer<GotNotificationFilterPreferencesResponseEvent>()
-                {
-                    public void update(final GotNotificationFilterPreferencesResponseEvent ev)
-                    {
-                        eventBus.removeObserver(ev, this);
-                        populatePage(ev.getResponse());
-                    }
-                });
+        eventBus.addObserver(UpdatedNotificationFilterPreferencesResponseEvent.class, settingsSavedObserver);
+        eventBus.addObserver(GotNotificationFilterPreferencesResponseEvent.class, gotDataObserver);
 
         // request data
         NotificationFilterPreferencesModel.getInstance().fetch(null, true);
     }
 
     /**
-     * Populates the page with preference options.
+     * Provides the command the widget will invoke to request it be closed/removed.
      *
-     * @param response
-     *            The preference information response from the server.
+     * @param inCloseCommand
+     *            the command.
      */
-    private void populatePage(final GetUserNotificationFilterPreferencesResponse response)
+    public void setCloseCommand(final Command inCloseCommand)
     {
-        // response.getNotifierTypes()
-        add(buildNotificationFilterGrid(response.getNotifierTypes(), PREF_CATEGORIES, response.getPreferences()));
+        closeCommand = inCloseCommand;
+    }
 
-        Label saveButton = new Label("Save Changes");
-        saveButton.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent inEvent)
-            {
-                saveChanges();
-            }
-        });
-        add(saveButton);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onDetach()
+    {
+        super.onDetach();
+        final EventBus eventBus = EventBus.getInstance();
+        eventBus.removeObserver(UpdatedNotificationFilterPreferencesResponseEvent.class, settingsSavedObserver);
+        eventBus.removeObserver(GotNotificationFilterPreferencesResponseEvent.class, gotDataObserver);
     }
 
     /**
      * Gathers settings and sends to model to send to server.
+     *
+     * @param ev
+     *            Event.
      */
-    private void saveChanges()
+    @UiHandler("saveButton")
+    void saveChanges(final ClickEvent ev)
     {
         ArrayList<NotificationFilterPreferenceDTO> selected = new ArrayList<NotificationFilterPreferenceDTO>();
         for (Entry<NotificationFilterPreferenceDTO, HasValue<Boolean>> entry : checkboxIndex.entrySet())
@@ -142,6 +188,18 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         }
 
         NotificationFilterPreferencesModel.getInstance().update(selected);
+    }
+
+    /**
+     * Requests the widget be closed.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler({ "cancelButton", "backButton" })
+    void cancel(final ClickEvent ev)
+    {
+        closeCommand.execute();
     }
 
     /**
@@ -158,8 +216,10 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     private Grid buildNotificationFilterGrid(final Map<String, String> notifiers,
             final Map<String, String> categories, final Collection<NotificationFilterPreferenceDTO> filters)
     {
-        Grid grid = new Grid(1 + categories.size(), 1 + notifiers.size());
-        grid.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifGrid());
+        // Grid grid = new Grid(1 + categories.size(), 1 + notifiers.size());
+        // grid.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifGrid());
+        Grid grid = settingsGrid;
+        grid.resize(1 + categories.size(), 1 + notifiers.size());
 
         // display each category name (one per row)
         int row = 0;
@@ -178,7 +238,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
 
             // display the names of the notifiers
             grid.setText(0, col, entry.getValue());
-            grid.getColumnFormatter().addStyleName(col, "notif-selection-column");
+            grid.getColumnFormatter().addStyleName(col, style.gridColumn());
 
             // create the checkboxes for that notifier per category
             row = 0;
@@ -205,5 +265,22 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         }
 
         return grid;
+    }
+
+    /**
+     * Local styles.
+     */
+    interface LocalStyle extends CssResource
+    {
+        /** @return Settings grid column style. */
+        @ClassName("grid-column")
+        String gridColumn();
+    }
+
+    /**
+     * Binder for building UI.
+     */
+    interface LocalUiBinder extends UiBinder<Widget, NotificationSettingsWidget>
+    {
     }
 }

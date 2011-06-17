@@ -17,6 +17,7 @@ package org.eurekastreams.server.domain.dto;
 
 import java.io.Serializable;
 
+import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
@@ -275,18 +276,7 @@ public class FeaturedStreamDTO implements Serializable, FollowerStatusable
     @Override
     public EntityType getEntityType()
     {
-        // need to convert from ScopeType to EntityType here.
-        switch (streamType)
-        {
-        case PERSON:
-            return EntityType.PERSON;
-        case GROUP:
-            return EntityType.GROUP;
-        case RESOURCE:
-            return EntityType.RESOURCE;
-        default:
-            return EntityType.NOTSET;
-        }
+        return DomainConversionUtility.convertToEntityType(streamType);
     }
 
     @Override

@@ -72,12 +72,13 @@ public class AddFeaturedStreamExecutionTest
     /**
      * StreamScope mapper.
      */
-    DomainMapper<Long, StreamScope> streamScopeProxyMapper = context.mock(DomainMapper.class, "streamScopeProxyMapper");
+    private DomainMapper<Long, StreamScope> streamScopeProxyMapper = context.mock(DomainMapper.class,
+            "streamScopeProxyMapper");
 
     /**
      * Insert mapper.
      */
-    DomainMapper<PersistenceRequest<FeaturedStream>, Long> insertMapper = context.mock(DomainMapper.class,
+    private DomainMapper<PersistenceRequest<FeaturedStream>, Long> insertMapper = context.mock(DomainMapper.class,
             "insertMapper");
 
     /**

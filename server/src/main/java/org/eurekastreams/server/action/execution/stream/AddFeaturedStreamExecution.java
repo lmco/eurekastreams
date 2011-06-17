@@ -41,12 +41,12 @@ public class AddFeaturedStreamExecution implements TaskHandlerExecutionStrategy<
     /**
      * StreamScope mapper.
      */
-    DomainMapper<Long, StreamScope> streamScopeProxyMapper;
+    private DomainMapper<Long, StreamScope> streamScopeProxyMapper;
 
     /**
      * Insert mapper.
      */
-    DomainMapper<PersistenceRequest<FeaturedStream>, Long> insertMapper;
+    private DomainMapper<PersistenceRequest<FeaturedStream>, Long> insertMapper;
 
     /**
      * Mapper for deleting cache keys.

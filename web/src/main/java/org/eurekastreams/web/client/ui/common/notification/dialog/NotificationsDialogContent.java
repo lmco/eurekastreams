@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent
 import org.eurekastreams.web.client.model.NotificationListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
+import org.eurekastreams.web.client.ui.common.notification.NotificationSettingsWidget;
 import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -43,7 +44,9 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -99,7 +102,11 @@ public class NotificationsDialogContent extends BaseDialogContent
 
     /** Button to mark all notifications as read. */
     @UiField
-    Label markAllReadUi;
+    Label markAllReadButton;
+
+    /** Button to switch show settings view. */
+    @UiField
+    Label settingsButton;
 
     /** Current all/unread selector. */
     private Widget currentReadFilterWidget;
@@ -479,7 +486,7 @@ public class NotificationsDialogContent extends BaseDialogContent
      * @param ev
      *            Event.
      */
-    @UiHandler("markAllReadUi")
+    @UiHandler("markAllReadButton")
     void onMarkAllReadClick(final ClickEvent ev)
     {
         // update on server
@@ -515,6 +522,31 @@ public class NotificationsDialogContent extends BaseDialogContent
             source.setUnreadCount(source.getUnreadCount() - number);
             source.getWidget().setText(source.getDisplayString());
         }
+    }
+
+    /**
+     * Shows the settings view.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("settingsButton")
+    void showSettings(final ClickEvent ev)
+    {
+        final NotificationSettingsWidget settings = new NotificationSettingsWidget(true);
+        settings.setCloseCommand(new Command()
+        {
+            public void execute()
+            {
+                settings.removeFromParent();
+                main.setVisible(true);
+            }
+        });
+
+        // This assumes the dialog hosts the dialog content in a 1) dedicated panel which 2) allows multiple children.
+        HasWidgets parent = (HasWidgets) main.getParent();
+        main.setVisible(false);
+        parent.add(settings);
     }
 
     /**

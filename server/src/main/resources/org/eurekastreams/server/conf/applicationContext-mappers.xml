@@ -42,6 +42,7 @@
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />	
+	<util:constant id="CacheKeys.FEATURED_STREAMS" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS" />
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -243,10 +244,7 @@
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
     
     <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" /> 
-        
-    <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />         
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                 
     
 
 	<!--
@@ -796,7 +794,7 @@
             <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-                        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS"/>
+                        <constructor-arg ref="CacheKeys.FEATURED_STREAMS"/>
                         <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
                         <property name="cache" ref="memcachedCache" />
                     </bean>
@@ -810,7 +808,7 @@
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS" />
+                <constructor-arg ref="CacheKeys.FEATURED_STREAMS" />
                 <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
                 <property name="cache" ref="memcachedCache" />
             </bean> 

@@ -99,7 +99,7 @@ public class FlagTranslatorTest
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
-        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_PERSONAL_ACTIVITY, admins);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_ACTIVITY, admins);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
@@ -138,7 +138,7 @@ public class FlagTranslatorTest
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
-        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_GROUP_ACTIVITY, admins);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_ACTIVITY, admins);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();

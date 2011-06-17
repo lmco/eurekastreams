@@ -78,12 +78,18 @@ public class FollowerStatusPopulator<T extends FollowerStatusable>
             switch (fs.getEntityType())
             {
             case PERSON:
-                personIds = personIds == null ? personIdsFollowedByPrincipalMapper.execute(inCurrentUserId) : personIds;
+                if (personIds == null)
+                {
+                    personIds = personIdsFollowedByPrincipalMapper.execute(inCurrentUserId);
+                }
                 fs.setFollowerStatus(personIds.contains(fs.getEntityId()) ? FollowerStatus.FOLLOWING
                         : FollowerStatus.NOTFOLLOWING);
                 break;
             case GROUP:
-                groupIds = groupIds == null ? groupIdsFollowedByPrincipalMapper.execute(inCurrentUserId) : groupIds;
+                if (groupIds == null)
+                {
+                    groupIds = groupIdsFollowedByPrincipalMapper.execute(inCurrentUserId);
+                }
                 fs.setFollowerStatus(groupIds.contains(fs.getEntityId()) ? FollowerStatus.FOLLOWING
                         : FollowerStatus.NOTFOLLOWING);
                 break;
