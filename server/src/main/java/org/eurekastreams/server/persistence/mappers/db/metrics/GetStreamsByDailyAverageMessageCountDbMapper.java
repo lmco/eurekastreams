@@ -35,7 +35,7 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends BaseArgDomainM
      * Constructor.
      * 
      * @param inStreamCount
-     *            the
+     *            the number of streams to pull
      */
     public GetStreamsByDailyAverageMessageCountDbMapper(final Integer inStreamCount)
     {
@@ -50,7 +50,7 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends BaseArgDomainM
      * @return list of stream scope ids
      */
     @Override
-    public List<Long> execute(final Serializable inRequest)
+    public List<Long> execute(final Serializable inIgnored)
     {
         return getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "

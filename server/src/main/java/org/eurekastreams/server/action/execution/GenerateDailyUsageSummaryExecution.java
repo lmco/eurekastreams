@@ -157,6 +157,16 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     private DayOfWeekStrategy dayOfWeekStrategy;
 
     /**
+     * Mapper to regenerate the most viewed stream scope ids cache.
+     */
+    private DomainMapper<Serializable, List<Long>> generateMostViewedStreamScopeIdsMapper;
+
+    /**
+     * Mapper to regenerate the most active stream scope ids cache.
+     */
+    private DomainMapper<Serializable, List<Long>> generateMostActiveStreamScopeIdsMapper;
+
+    /**
      * Constructor.
      * 
      * @param inDaysToGenerate
@@ -201,6 +211,10 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      *            mapper to fetch & cache the stream scope's summary data
      * @param inNumberOfDaysToCacheSummaryDataFor
      *            the number of days to cache the summary data for
+     * @param inGenerateMostViewedStreamScopeIdsMapper
+     *            mapper to regenerate the most viewed stream scope ids cache
+     * @param inGenerateMostActiveStreamScopeIdsMapper
+     *            mapper to regenerate the most activestream scope ids cache
      */
     public GenerateDailyUsageSummaryExecution(
             final int inDaysToGenerate,
@@ -223,7 +237,9 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final DomainMapper<Long, Long> inGetTotalStreamContributorMapper,
             final DomainMapper<Serializable, Boolean> inClearEntityManagerMapper,
             final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> inSummaryDataMapper,
-            final int inNumberOfDaysToCacheSummaryDataFor)
+            final int inNumberOfDaysToCacheSummaryDataFor,
+            final DomainMapper<Serializable, List<Long>> inGenerateMostViewedStreamScopeIdsMapper,
+            final DomainMapper<Serializable, List<Long>> inGenerateMostActiveStreamScopeIdsMapper)
     {
         daysToGenerate = inDaysToGenerate;
         daysAgoDateStrategy = inDaysAgoDateStrategy;
@@ -246,6 +262,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         clearEntityManagerMapper = inClearEntityManagerMapper;
         summaryDataMapper = inSummaryDataMapper;
         numberOfDaysToCacheSummaryDataFor = inNumberOfDaysToCacheSummaryDataFor;
+        generateMostViewedStreamScopeIdsMapper = inGenerateMostViewedStreamScopeIdsMapper;
+        generateMostActiveStreamScopeIdsMapper = inGenerateMostActiveStreamScopeIdsMapper;
     }
 
     /**
@@ -271,6 +289,10 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         // delete old data
         logger.info("Deleting old daily usage metric data older than 2 days");
         usageMetricDataCleanupMapper.execute(null);
+
+        // regenerate the most viewed & most active streams
+        generateMostViewedStreamScopeIdsMapper.execute(null);
+        generateMostActiveStreamScopeIdsMapper.execute(null);
 
         logger.info("Completed generating usage metrics in " + (System.currentTimeMillis() - start) + "ms");
 

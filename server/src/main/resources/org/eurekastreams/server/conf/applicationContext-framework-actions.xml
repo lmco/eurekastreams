@@ -154,6 +154,7 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
+    
 
     <bean id="persistUserMetricAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4467,8 +4468,8 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.DeleteOldUsageMetricDataDbMapper">
-                <!-- keep 2 days of metric data -->
-                <constructor-arg value="2" />
+                <!-- keep 4 days of metric data -->
+                <constructor-arg value="4" />
                 <!-- keey 30 days of summary data -->
                 <constructor-arg value="30" />
             </bean>
@@ -4491,6 +4492,9 @@
         <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
         <!-- 30 days of summary data caching -->
         <constructor-arg value="30" />
+        <!-- Mappers -->
+        <constructor-arg ref="getStreamsByDailyAverageViewsMapper_FORCE_REFRESH" />
+        <constructor-arg ref="getStreamsByDailyAverageMessageCountMapper_FORCE_REFRESH" />
     </bean>
 
     <!--

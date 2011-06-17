@@ -166,6 +166,18 @@ public class GenerateDailyUsageSummaryExecutionTest
     private final int numberOfDaysToCacheSummaryDataFor = 38;
 
     /**
+     * Mapper to regenerate the most viewed stream scope ids cache.
+     */
+    private DomainMapper<Serializable, List<Long>> generateMostViewedStreamScopeIdsMapper = context.mock(
+            DomainMapper.class, "generateMostViewedStreamScopeIdsMapper");
+
+    /**
+     * Mapper to regenerate the most active stream scope ids cache.
+     */
+    private DomainMapper<Serializable, List<Long>> generateMostActiveStreamScopeIdsMapper = context.mock(
+            DomainMapper.class, "generateMostActiveStreamScopeIdsMapper");
+
+    /**
      * Input to mapper.
      */
     private final TaskHandlerActionContext actionContext = context.mock(TaskHandlerActionContext.class);
@@ -182,7 +194,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
                 insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
                 getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper,
-                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
+                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor,
+                generateMostViewedStreamScopeIdsMapper, generateMostActiveStreamScopeIdsMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date(2011, 1, 22);
@@ -204,6 +217,10 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(usageMetricDataCleanupMapper).execute(null);
 
                 allowing(clearEntityManagerMapper).execute(null);
+
+                oneOf(generateMostViewedStreamScopeIdsMapper).execute(null);
+
+                oneOf(generateMostActiveStreamScopeIdsMapper).execute(null);
             }
         });
 
@@ -224,7 +241,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
                 insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
                 getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper,
-                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
+                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor,
+                generateMostViewedStreamScopeIdsMapper, generateMostActiveStreamScopeIdsMapper);
 
         final Date dateRaw = new Date(2011, 1, 22);
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
@@ -287,6 +305,10 @@ public class GenerateDailyUsageSummaryExecutionTest
                                 numberOfDaysToCacheSummaryDataFor, null))));
 
                 allowing(clearEntityManagerMapper).execute(null);
+
+                oneOf(generateMostViewedStreamScopeIdsMapper).execute(null);
+
+                oneOf(generateMostActiveStreamScopeIdsMapper).execute(null);
             }
         });
 
