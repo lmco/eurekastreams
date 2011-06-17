@@ -181,7 +181,7 @@
             <bean class="org.eurekastreams.server.action.execution.stream.AddFeaturedStreamExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
-                        <constructor-arg value="org.eurekastreams.server.domain.Theme" />
+                        <constructor-arg value="org.eurekastreams.server.domain.stream.StreamScope" />
                     </bean>
                 </constructor-arg>
                 <constructor-arg>
