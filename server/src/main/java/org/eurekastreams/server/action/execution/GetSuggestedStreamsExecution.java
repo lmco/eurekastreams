@@ -17,16 +17,15 @@ package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
+import org.eurekastreams.server.persistence.strategies.StreamDTOFollowerCountComparator;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -86,48 +85,10 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
         suggestions.addAll(suggestedGroupMapper.execute(mapperRequest));
 
         // sort the list
-        Collections.sort(suggestions, new FollowerCountComparator());
+        Collections.sort(suggestions, new StreamDTOFollowerCountComparator());
 
         // return those requested
         suggestions = new ArrayList<StreamDTO>(suggestions.subList(0, suggestionCount));
         return suggestions;
-    }
-
-    /**
-     * Comparator to sort based on the higher follower count, descending.
-     */
-    public class FollowerCountComparator implements Comparator<StreamDTO>
-    {
-        /**
-         * Compare the input StreamDTOs, based on follower count, descending, returning groups before people on tie.
-         * 
-         * @param inA
-         *            the first to compare
-         * @param inB
-         *            the second to compare
-         * @return -1 if A < B, 0 if equal, or 1 if B > A
-         */
-        @Override
-        public int compare(final StreamDTO inA, final StreamDTO inB)
-        {
-            if (inA.getFollowersCount() == inB.getFollowersCount())
-            {
-                // sort groups ahead of people
-                if (inA.getEntityType() == EntityType.GROUP && inB.getEntityType() == EntityType.PERSON)
-                {
-                    return -1;
-                }
-                if (inA.getEntityType() == EntityType.PERSON && inB.getEntityType() == EntityType.GROUP)
-                {
-                    return 1;
-                }
-                return 0;
-            }
-            if (inA.getFollowersCount() > inB.getFollowersCount())
-            {
-                return -1;
-            }
-            return 1;
-        }
     }
 }

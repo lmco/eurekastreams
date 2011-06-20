@@ -312,7 +312,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     * Constructor.
+     * Constructor suitable for StreamDTO.
      * 
      * @param inId
      *            the person id
@@ -327,6 +327,29 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
             final String inLastName, final Long inFollowerCount)
+    {
+        setEntityId(inId);
+        setAccountId(inAccountId);
+        setDisplayName(inPreferredName + " " + inLastName);
+        setFollowersCount(inFollowerCount.intValue());
+    }
+
+    /**
+     * Constructor suitable for StreamDTO.
+     * 
+     * @param inId
+     *            the person id
+     * @param inAccountId
+     *            the person account id
+     * @param inPreferredName
+     *            the person preferred name
+     * @param inLastName
+     *            the person last name
+     * @param inFollowerCount
+     *            the number of followers
+     */
+    public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
+            final String inLastName, final Integer inFollowerCount)
     {
         setEntityId(inId);
         setAccountId(inAccountId);

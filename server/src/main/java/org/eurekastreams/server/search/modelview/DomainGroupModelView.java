@@ -257,6 +257,27 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     }
 
     /**
+     * Constructor.
+     * 
+     * @param inId
+     *            the domain group id
+     * @param inShortName
+     *            the domain group short name
+     * @param inName
+     *            the domain group name
+     * @param inFollowerCount
+     *            the number of followers
+     */
+    public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
+            final Integer inFollowerCount)
+    {
+        setEntityId(inId);
+        setShortName(inShortName);
+        setName(inName);
+        setFollowersCount(inFollowerCount.intValue());
+    }
+
+    /**
      * Follower status.
      */
     private FollowerStatus followerStatus;
