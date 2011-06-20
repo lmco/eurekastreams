@@ -15,8 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
-import java.util.List;
-
+import org.eurekastreams.server.domain.dto.SublistWithResultCount;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,9 +47,9 @@ public class GetStreamsByDailyAverageMessageCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        List<Long> results = sut.execute(null);
-        Assert.assertEquals(2, results.size());
-        Assert.assertEquals(new Long(2L), results.get(0));
-        Assert.assertEquals(new Long(1L), results.get(1));
+        SublistWithResultCount<Long> results = sut.execute(null);
+        Assert.assertEquals(new Long(2), results.getTotalResultsCount());
+        Assert.assertEquals(new Long(2L), results.getResultsSublist().get(0));
+        Assert.assertEquals(new Long(1L), results.getResultsSublist().get(1));
     }
 }

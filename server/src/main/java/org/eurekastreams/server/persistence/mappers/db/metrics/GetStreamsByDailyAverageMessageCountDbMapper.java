@@ -19,12 +19,16 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Query;
+
+import org.eurekastreams.server.domain.dto.SublistWithResultCount;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * DB Mapper to get a list of streams ordered by the daily average number of messages.
  */
-public class GetStreamsByDailyAverageMessageCountDbMapper extends BaseArgDomainMapper<Serializable, List<Long>>
+public class GetStreamsByDailyAverageMessageCountDbMapper extends
+        BaseArgDomainMapper<Serializable, SublistWithResultCount<Long>>
 {
     /**
      * Number of streams to get.
@@ -50,13 +54,21 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends BaseArgDomainM
      * @return list of stream scope ids
      */
     @Override
-    public List<Long> execute(final Serializable inIgnored)
+    public SublistWithResultCount<Long> execute(final Serializable inIgnored)
     {
-        return getEntityManager().createQuery(
+        Query q = getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
                         + "ORDER BY SUM(messageCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
-                .setParameter("nowInMS", new Date().getTime()).setMaxResults(streamCount).getResultList();
+                .setParameter("nowInMS", new Date().getTime());
+
+        List<Long> resultList = q.getResultList();
+        int resultCount = resultList.size();
+        if (streamCount > 0 && resultCount > streamCount)
+        {
+            q.setMaxResults(streamCount);
+        }
+        return new SublistWithResultCount<Long>(resultList, new Long(resultCount));
     }
 
 }
