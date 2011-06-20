@@ -32,17 +32,19 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.Identifiable;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.StreamDTO;
 
 /**
  * A lightweight view of a Person containing everything needed for display of a search result of an Person.
  */
 public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable,
-        ActivityRestrictionEntity, AvatarEntity, Bannerable, Identifiable
+        ActivityRestrictionEntity, AvatarEntity, Bannerable, Identifiable, StreamDTO
 {
     /**
      * Serial version uid.
      */
-    private static final long serialVersionUID = -9138290551061823903L;
+    private static final long serialVersionUID = -9056680427782118919L;
 
     /**
      * The key for the title.
@@ -87,7 +89,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Role in the system.
-     *
      */
     public enum Role implements Serializable
     {
@@ -288,8 +289,13 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private String companyName;
 
     /**
+     * Follower status.
+     */
+    private FollowerStatus followerStatus;
+
+    /**
      * Get the name of this entity.
-     *
+     * 
      * @return the name of this entity
      */
     @Override
@@ -306,8 +312,31 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
+     * Constructor.
+     * 
+     * @param inId
+     *            the person id
+     * @param inAccountId
+     *            the person account id
+     * @param inPreferredName
+     *            the person preferred name
+     * @param inLastName
+     *            the person last name
+     * @param inFollowerCount
+     *            the number of followers
+     */
+    public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
+            final String inLastName, final Long inFollowerCount)
+    {
+        setEntityId(inId);
+        setAccountId(inAccountId);
+        setDisplayName(inPreferredName + " " + inLastName);
+        setFollowersCount(inFollowerCount.intValue());
+    }
+
+    /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -483,7 +512,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the date the person was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -493,7 +522,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the date the person was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -504,7 +533,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's account id.
-     *
+     * 
      * @return the accountId
      */
     public String getAccountId()
@@ -514,7 +543,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's account id.
-     *
+     * 
      * @param inAccountId
      *            the accountId to set
      */
@@ -525,7 +554,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's OpenSocial id.
-     *
+     * 
      * @return the openSocialId
      */
     public String getOpenSocialId()
@@ -535,7 +564,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's OpenSocial id.
-     *
+     * 
      * @param inOpenSocialId
      *            the openSocialId to set
      */
@@ -546,7 +575,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's title.
-     *
+     * 
      * @return the title
      */
     public String getTitle()
@@ -556,7 +585,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's title.
-     *
+     * 
      * @param inTitle
      *            the title to set
      */
@@ -567,7 +596,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's description.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -577,7 +606,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's description.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -588,7 +617,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the number of people following this person.
-     *
+     * 
      * @return the followersCount
      */
     @Override
@@ -616,7 +645,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of people following this person.
-     *
+     * 
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -627,7 +656,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's display name.
-     *
+     * 
      * @return the displayName
      */
     @Override
@@ -638,7 +667,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's display name.
-     *
+     * 
      * @param inDisplayName
      *            the displayName to set
      */
@@ -649,7 +678,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's avatar id.
-     *
+     * 
      * @return the avatarId
      */
     @Override
@@ -660,7 +689,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's avatar id.
-     *
+     * 
      * @param inAvatarId
      *            the avatarId to set
      */
@@ -672,7 +701,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the entity id.
-     *
+     * 
      * @param inEntityId
      *            the entity id of the person.
      */
@@ -685,7 +714,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The the number of updates for this person.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -695,7 +724,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of updates for this person.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -757,7 +786,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the roles.
-     *
+     * 
      * @param inRoles
      *            the roles.
      */
@@ -768,7 +797,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Gets the roles.
-     *
+     * 
      * @return the roles.
      */
     public Set<Role> getRoles()
@@ -865,7 +894,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     *
+     * 
      * @return videos the person has opted out of.
      */
     public HashSet<Long> getOptOutVideos()
@@ -875,10 +904,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * set the set of videos a person has opted out of.
-     *
+     * 
      * @param inOptOutVideos
      *            the set of videos.
-     *
+     * 
      */
     public void setOptOutVideos(final HashSet<Long> inOptOutVideos)
     {
@@ -905,7 +934,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the last date the person accepted the terms of service.
-     *
+     * 
      * @return the last date the person accepted the terms of service
      */
     public Date getLastAcceptedTermsOfService()
@@ -915,7 +944,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the last date the person accepted the terms of service.
-     *
+     * 
      * @param inLastAcceptedTermsOfService
      *            the last date the person accepted the terms of service.
      */
@@ -926,7 +955,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties setter.
-     *
+     * 
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -937,7 +966,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties getter.
-     *
+     * 
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()
@@ -1216,7 +1245,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the company name.
-     *
+     * 
      * @return the company name.
      */
     public String getCompanyName()
@@ -1226,7 +1255,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the company name.
-     *
+     * 
      * @param inCompanyName
      *            the company name.
      */
@@ -1242,5 +1271,17 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public EntityType getEntityType()
     {
         return EntityType.PERSON;
+    }
+
+    @Override
+    public FollowerStatus getFollowerStatus()
+    {
+        return followerStatus;
+    }
+
+    @Override
+    public void setFollowerStatus(final FollowerStatus inFollowerStatus)
+    {
+        followerStatus = inFollowerStatus;
     }
 }

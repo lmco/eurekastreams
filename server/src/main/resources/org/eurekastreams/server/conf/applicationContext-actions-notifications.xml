@@ -7,6 +7,16 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	<!-- ========== CONFIGURATION ========== -->
+	<!--  TODO:  These should probably be in the .properties file, but that's not part of the server project.  
+		Probably should have a properties file that is part of the server project, and put them there. -->
+	<bean id="MAX_NOTIFICATION_MESSAGE_LENGTH" class="java.lang.Integer">
+        <constructor-arg value="250" />
+  	</bean>
+	<bean id="MAX_NOTIFICATION_URL_LENGTH" class="java.lang.Integer">
+        <constructor-arg value="2048" />
+  	</bean>
+
 	<!-- ========== GENERATION ========== -->
 
 	  <bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
@@ -19,7 +29,9 @@
             <bean class="org.eurekastreams.server.action.execution.notification.CreateNotificationsExecution">
                 <constructor-arg ref="translators" />
                 <constructor-arg ref="notifiersByIdMap" />
-                <constructor-arg ref="getNotificationFilterPreferencesByPeopleIds" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetNotificationFilterPreferencesByPeopleIds" />
+				</constructor-arg>
                 <constructor-arg ref="getPersonByIdMapper" />
                 <constructor-arg ref="notificationTypeToCategoryMap" />
                 <constructor-arg>
@@ -40,6 +52,8 @@
         <constructor-arg>
 			<bean class="org.eurekastreams.server.action.validation.notification.SendPrebuiltNotificationValidation">
 				<constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+				<constructor-arg ref="MAX_NOTIFICATION_MESSAGE_LENGTH" />
+				<constructor-arg ref="MAX_NOTIFICATION_URL_LENGTH" />
 			</bean>
 		</constructor-arg>
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -54,12 +68,17 @@
 
     <bean id="sendMassPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation" />
+			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation">
+				<constructor-arg ref="MAX_NOTIFICATION_MESSAGE_LENGTH" />
+				<constructor-arg ref="MAX_NOTIFICATION_URL_LENGTH" />
+			</bean>
 		</constructor-arg>
         <constructor-arg ref="isSystemAdminAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.SendMassPrebuiltNotificationExecution">
-                <constructor-arg ref="insertInAppNotificationForAllUsers" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.notification.InsertInAppNotificationForAllUsers" />
+                </constructor-arg>
 				<constructor-arg ref="getPersonIdsByLockedStatus" />
             </bean>
         </constructor-arg>
@@ -153,24 +172,20 @@
 
 	<!-- ==== FILTERING ==== -->
 
-    <util:map id="notificationTypeToCategoryMap" key-type="org.eurekastreams.server.domain.NotificationType" value-type="org.eurekastreams.server.domain.NotificationFilterPreference$Category">
+	<util:set id="notificationCategories">
+		<value>POST_TO_PERSONAL_STREAM</value>
+		<value>COMMENT</value>
+		<value>FOLLOW</value>
+		<value>LIKE</value>
+	</util:set>
+
+    <util:map id="notificationTypeToCategoryMap" key-type="org.eurekastreams.server.domain.NotificationType">
         <entry key="POST_TO_PERSONAL_STREAM" value="POST_TO_PERSONAL_STREAM" />
-        <entry key="COMMENT_TO_PERSONAL_STREAM" value="COMMENT" />
         <entry key="COMMENT_TO_PERSONAL_POST" value="COMMENT" />
         <entry key="COMMENT_TO_COMMENTED_POST" value="COMMENT" />
-        <entry key="COMMENT_TO_SAVED_POST" value="COMMENT_TO_SAVED_ACTIVITY" />
-        <entry key="FOLLOW_PERSON" value="FOLLOW_PERSON" />
-        <entry key="POST_TO_GROUP_STREAM" value="POST_TO_GROUP_STREAM" />
-        <entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
-        <entry key="COMMENT_TO_GROUP_STREAM" value="COMMENT_IN_GROUP_STREAM" />
-        <entry key="FOLLOW_GROUP" value="FOLLOW_GROUP" />
+        <entry key="FOLLOW_PERSON" value="FOLLOW" />
+        <entry key="FOLLOW_GROUP" value="FOLLOW" />
         <entry key="LIKE_ACTIVITY" value="LIKE" />
-        <entry key="FLAG_PERSONAL_ACTIVITY" value="FLAG_ACTIVITY" />
-        <entry key="FLAG_GROUP_ACTIVITY" value="FLAG_ACTIVITY" />
-        <entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
-        <entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
-        <entry key="REQUEST_GROUP_ACCESS_APPROVED" value="REQUEST_GROUP_ACCESS_RESPONSE" />
-        <entry key="REQUEST_GROUP_ACCESS_DENIED" value="REQUEST_GROUP_ACCESS_RESPONSE" />
     </util:map>
 
 	<!-- recipient filters - one list per notifier -->
@@ -237,10 +252,7 @@
 		<entry key="EMAIL" value-ref="emailNotifier" />
     </util:map>
 
-    <!--
-        names of notifiers which can be disabled, by ID, in order by columns
-        on display
-    -->
+    <!-- names of notifiers which can be disabled, by ID, in order by columns on display -->
     <util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
         <entry key="EMAIL" value="Email" />
         <entry key="APP_ALERT" value="In-App" />
@@ -301,6 +313,7 @@
 				</constructor-arg>
 				<constructor-arg ref="getPeopleByAccountIdsMapper" />
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+				<constructor-arg ref="notificationTypeToCategoryMap" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -364,6 +377,61 @@
         <constructor-arg value="true" />
     </bean>
 
+	<!-- ========== PREFERENCES ========== -->
+	
+	<bean id="getCurrentUserNotificationPreferences" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.notification.filter.GetUserNotificationFilterPreferencesExecution">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetNotificationFilterPreferencesByPersonId" />
+				</constructor-arg>
+				<constructor-arg ref="notifierIdToDisplayMap" />
+				<constructor-arg ref="notificationCategories" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+	</bean>
+
+	<bean id="setCurrentUserNotificationPreferences" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            	<constructor-arg>
+	            	<bean class="org.eurekastreams.server.action.request.transformer.notification.SetCurrentUserNotificationPreferencesTransformer">
+						<constructor-arg ref="notifierIdToDisplayMap" />
+						<constructor-arg ref="notificationCategories" />
+	            	</bean>
+            	</constructor-arg>
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.SetAllUserNotificationFilterPreferences" />
+				</constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+	</bean>
+	
+	<bean id="disableCurrentUserNotificationCategory" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg>
+        	<bean class="org.eurekastreams.server.action.validation.notification.DisableNotificationCategoryValidation">
+        		<constructor-arg ref="notificationCategories" />
+        	</bean>
+        </constructor-arg>
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.notification.filter.DisableNotificationCategoryExecution">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.SetUserNotificationFilterPreferences" />
+				</constructor-arg>
+				<constructor-arg ref="notifierIdToDisplayMap" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+	</bean>
+	
+
 	<!-- ========== CONTENT ========== -->
 
 	<!-- ==== IN-APP ==== -->
@@ -380,8 +448,7 @@
 		<entry key="POST_TO_JOINED_GROUP" value="$actor.displayName posted a #activityType($activity) to the $stream.displayName stream." />
 		<entry key="COMMENT_TO_GROUP_STREAM" value="$actor.displayName commented on a #activityType($activity) in the $stream.displayName stream." />
 		<entry key="FOLLOW_GROUP" value="$actor.displayName joined the $stream.displayName group." />
-		<entry key="FLAG_PERSONAL_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in $stream.displayName's stream." />
-		<entry key="FLAG_GROUP_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in the $stream.displayName stream." />
+		<entry key="FLAG_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream." />
 		<entry key="REQUEST_NEW_GROUP" value="The $group.name group is pending approval." />
 		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.name group has been approved." />
 		<entry key="REQUEST_NEW_GROUP_DENIED" value="Your request to create the $groupName group has been denied." />
@@ -462,13 +529,7 @@
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.html" />
 		</entry>
-		<entry key="FLAG_PERSONAL_ACTIVITY">
-			<bean parent="emailTemplate"
-				p:subject="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream."
-				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.html" />
-		</entry>
-		<entry key="FLAG_GROUP_ACTIVITY">
+		<entry key="FLAG_ACTIVITY">
 			<bean parent="emailTemplate"
 				p:subject="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream."
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt"
@@ -509,6 +570,12 @@
 				p:subject="Request to join the $group.displayName private group has been denied"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.html" />
+		</entry>
+		<entry key="PASS_THROUGH">
+			<bean parent="emailTemplate"
+				p:subject="$message"
+				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.txt"
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.html" />
 		</entry>
 	</util:map>
 

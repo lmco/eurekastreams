@@ -27,11 +27,11 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class SendPrebuiltNotificationValidation implements ValidationStrategy<ClientPrincipalActionContext>
 {
-    /** Max length. */
-    private static final int MAX_MESSAGE_LENGTH = 250;
+    /** Max length of message. */
+    private final int maxMessageLength;
 
-    /** Max length. */
-    private static final int MAX_URL_LENGTH = 2048;
+    /** Max length of attached link. */
+    private final int maxUrlLength;
 
     /** Mapper to get recipient id. */
     private final DomainMapper<String, PersonModelView> personMapper;
@@ -41,11 +41,19 @@ public class SendPrebuiltNotificationValidation implements ValidationStrategy<Cl
      *
      * @param inPersonMapper
      *            Person mapper.
+     * @param inMaxMessageLength
+     *            Max length of message.
+     * @param inMaxUrlLength
+     *            Max length of attached link
      */
-    public SendPrebuiltNotificationValidation(final DomainMapper<String, PersonModelView> inPersonMapper)
+    public SendPrebuiltNotificationValidation(final DomainMapper<String, PersonModelView> inPersonMapper,
+            final int inMaxMessageLength, final int inMaxUrlLength)
     {
         personMapper = inPersonMapper;
+        maxMessageLength = inMaxMessageLength;
+        maxUrlLength = inMaxUrlLength;
     }
+
 
     /**
      * {@inheritDoc}
@@ -76,16 +84,16 @@ public class SendPrebuiltNotificationValidation implements ValidationStrategy<Cl
         {
             ve.addError("message", "Message must be provided.");
         }
-        else if (params.getMessage().length() > MAX_MESSAGE_LENGTH)
+        else if (params.getMessage().length() > maxMessageLength)
         {
-            ve.addError("message", "Message must be no more than " + MAX_MESSAGE_LENGTH + " characters.");
+            ve.addError("message", "Message must be no more than " + maxMessageLength + " characters.");
         }
         // TODO: Should we check content of message?
 
         // URL
-        if (params.getUrl() != null && params.getUrl().length() > MAX_URL_LENGTH)
+        if (params.getUrl() != null && params.getUrl().length() > maxUrlLength)
         {
-            ve.addError("url", "URL must be no more than " + MAX_URL_LENGTH + " characters.");
+            ve.addError("url", "URL must be no more than " + maxUrlLength + " characters.");
         }
         // TODO: Should we check format of URL?
 

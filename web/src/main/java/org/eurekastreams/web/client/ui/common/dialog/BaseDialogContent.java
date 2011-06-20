@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.common.dialog;
 
 
+
 /**
  * Base dialog content. Allows boilerplate code to not need to be reimplemented.
  */
@@ -61,4 +62,13 @@ public abstract class BaseDialogContent implements DialogContent
     public void beforeHide()
     {
     }
+
+    /**
+     * @return Returns a do-nothing implementation for dialogs which do not need to add a style.
+     */
+    public String getCssName()
+    {
+        return null;
+    }
+
 }

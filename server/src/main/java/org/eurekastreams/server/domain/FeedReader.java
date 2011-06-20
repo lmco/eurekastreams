@@ -26,6 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.eurekastreams.commons.model.DomainEntityIdentifiable;
 import org.hibernate.annotations.NaturalId;
 
 //TODO must be brought out into the feed reader project.
@@ -35,7 +36,7 @@ import org.hibernate.annotations.NaturalId;
  */
 @SuppressWarnings("serial")
 @Entity
-public class FeedReader implements Serializable
+public class FeedReader implements Serializable, DomainEntityIdentifiable
 {
     // ///////////////////////////////////////////////////////////////////
     // ATTRIBUTES
@@ -89,7 +90,7 @@ public class FeedReader implements Serializable
 
     /**
      * Public constructor for API.
-     *
+     * 
      * @param inModuleId
      *            The application id for the instance of the gadget.
      * @param inOpenSocialId

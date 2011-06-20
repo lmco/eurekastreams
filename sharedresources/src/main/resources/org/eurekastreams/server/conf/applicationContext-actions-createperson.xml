@@ -17,14 +17,5 @@
         </property>
     </bean>
     
-    <!-- List of the tabs to be added for a new user's start page, ordered -->
-    <bean id="newPersonStartPageTabs" class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">
-            <list>
-                <value>WELCOME</value>
-            </list>
-        </property>
-    </bean>
-    
 </beans>
  

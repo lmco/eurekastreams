@@ -42,6 +42,7 @@
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />	
+	<util:constant id="CacheKeys.FEATURED_STREAMS" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS" />
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -243,7 +244,7 @@
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
     
     <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                 
     
 
 	<!--
@@ -787,6 +788,33 @@
             </bean> 
         </constructor-arg>       
     </bean>      
+    
+    <bean id="getFeaturedStreamsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="CacheKeys.FEATURED_STREAMS"/>
+                        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFeaturedStreamsDbMapper"/>         
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="CacheKeys.FEATURED_STREAMS" />
+                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>       
+    </bean>    
     
     <bean id="getPersonPagePropertiesById" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -1787,18 +1815,6 @@
 		class="org.eurekastreams.server.persistence.mappers.db.GetTabPermissionByPersonAndTab">
 	</bean>
 
-	<bean id="getNotificationFilterPreferencesByPersonId"
-		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPersonId" />
-
-	<bean id="setUserNotificationFilterPreferences"
-		class="org.eurekastreams.server.persistence.mappers.db.SetUserNotificationFilterPreferences" />
-
-	<bean id="getNotificationFilterPreferencesByPeopleIds"
-		class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
-
-	<bean id="insertInAppNotificationForAllUsers"
-		class="org.eurekastreams.server.persistence.mappers.db.notification.InsertInAppNotificationForAllUsers" />
-		
 	<bean id="getUnreadInAppNotificationCountsByUserId" 
 		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadInAppNotificationCountsByUserId">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -1895,9 +1911,6 @@
 
 	<bean id="deleteFromSearchIndex"
 		class="org.eurekastreams.server.persistence.mappers.DeleteFromSearchIndex" />
-
-	<bean id="updateNotificationsOnNameChangeMapper"
-		class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
 
     <bean id="updatePersonMapper"
         class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />
@@ -2109,6 +2122,8 @@
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
 
     <bean id="flushMapper" class="org.eurekastreams.server.persistence.mappers.db.FlushMapper" />
+    
+    <bean id="clearMapper" class="org.eurekastreams.server.persistence.mappers.db.ClearEntityManagerMapper" />
 
     <bean id="createGalleryTabTemplateMapper" class="org.eurekastreams.server.action.execution.gallery.GalleryTabTemplateFactory" />
     
@@ -2116,14 +2131,185 @@
 
     <bean id="membershipCriteriaDTODbMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
         <constructor-arg ref="membershipCriteriaDbMapper" />
-        <constructor-arg ref="membershipCriteriaToMembershipCriteriaDTOTransformer" />
+        <constructor-arg ref="membershipCriteriaListToMembershipCriteriaDTOListTransformer" />
     </bean>
 
-    <bean id="membershipCriteriaToMembershipCriteriaDTOTransformer"
-        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaToMembershipCriteriaDTOTransformer" /> 
+    <bean id="membershipCriteriaListToMembershipCriteriaDTOListTransformer"
+        class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaListToMembershipCriteriaDTOListTransformer" /> 
+        
+    <bean id="getFeaturedStreamsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFeaturedStreamDTOsDbMapper" />
 
     <!-- Metrics -->
     <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />
+    <bean id="usageMetricStreamSummaryRequestToStreamScopeIdTransformer" class="org.eurekastreams.server.persistence.mappers.db.metrics.UsageMetricStreamSummaryRequestToStreamScopeIdTransformer" />
+    <bean id="getUsageMetricSummaryMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+               <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg>
+                            <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_METRICS_BY_STREAM_SCOPE_ID" />
+                        </constructor-arg>
+                        <constructor-arg ref="usageMetricStreamSummaryRequestToStreamScopeIdTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper -->
+        <constructor-arg ref="getUsageMetricSummaryDbMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_METRICS_BY_STREAM_SCOPE_ID" />
+                </constructor-arg>
+                <constructor-arg ref="usageMetricStreamSummaryRequestToStreamScopeIdTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    <bean id="getUsageMetricSummaryMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper - always returns null, which forces refresh -->
+        <constructor-arg ref="nullResultPartialMapper"/>
+        <!-- Database mapper -->
+        <constructor-arg ref="getUsageMetricSummaryDbMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_METRICS_BY_STREAM_SCOPE_ID" />
+                </constructor-arg>
+                <constructor-arg ref="usageMetricStreamSummaryRequestToStreamScopeIdTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    
+    
+    <!-- ************************************* **** -->
+    <!-- **** GET MOST VIEWED STREAM SCOPE IDS **** -->
+    <bean id="getStreamsByDailyAverageViewsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByDailyAverageViewsDbMapper">
+        <constructor-arg value="10" />
+    </bean> 
+    <bean id="getStreamsByDailyAverageViewsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg>
+                            <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_IDS_OF_MOST_VIEWED_STREAMS" />
+                        </constructor-arg>
+                        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper -->
+        <constructor-arg ref="getStreamsByDailyAverageViewsDbMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_IDS_OF_MOST_VIEWED_STREAMS" />
+                </constructor-arg>
+                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    <bean id="getStreamsByDailyAverageViewsMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper - always returns null, which forces refresh -->
+        <constructor-arg ref="nullResultPartialMapper"/>
+        <!-- Database mapper -->
+        <constructor-arg ref="getStreamsByDailyAverageViewsDbMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_IDS_OF_MOST_VIEWED_STREAMS" />
+                </constructor-arg>
+                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    
+    <!-- ************************************************************* -->
+    <!-- **** GET MOST ACTIVE (MOST DAILY POSTS) STREAM SCOPE IDS **** -->
+    <bean id="getStreamsByDailyAverageMessageCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByDailyAverageMessageCountDbMapper">
+        <constructor-arg value="1000" />
+    </bean> 
+    <bean id="getStreamsByDailyAverageMessageCountMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg>
+                            <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_IDS_OF_MOST_ACTIVE_STREAMS" />
+                        </constructor-arg>
+                        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper -->
+        <constructor-arg ref="getStreamsByDailyAverageMessageCountDbMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_IDS_OF_MOST_ACTIVE_STREAMS" />
+                </constructor-arg>
+                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    <bean id="getStreamsByDailyAverageMessageCountMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper - always returns null, which forces refresh -->
+        <constructor-arg ref="nullResultPartialMapper"/>
+        <!-- Database mapper -->
+        <constructor-arg ref="getStreamsByDailyAverageMessageCountDbMapper" />
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg>
+                    <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_IDS_OF_MOST_ACTIVE_STREAMS" />
+                </constructor-arg>
+                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <bean id="getDailyMessageCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyMessageCountDbMapper" />
     <bean id="getDailyMessageResponseTime" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyMessageResponseTime" />
     <bean id="getDailyPageViewCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyPageViewCountDbMapper" />

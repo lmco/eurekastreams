@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 import com.ibm.icu.util.Calendar;
@@ -28,19 +29,27 @@ import com.ibm.icu.util.Calendar;
 public class DeleteOldUsageMetricDataDbMapper extends BaseArgDomainMapper<Serializable, Serializable>
 {
     /**
-     * The number of days of archive data to store.
+     * The number of days of archive metric data to store.
      */
-    private int daysOfDataToRetain;
+    private int daysOfMetricDataToRetain;
+
+    /**
+     * The number of days to archive summary data for.
+     */
+    private int daysOfSummaryDataToRetain;
 
     /**
      * Constructor.
      * 
-     * @param inDaysOfDataToRetain
-     *            the number of days of archive data to store
+     * @param inDaysOfMetricDataToRetain
+     *            number of days of archive metric data to store
+     * @param inDaysOfSummaryDataToRetain
+     *            number of days to archive summary data for
      */
-    public DeleteOldUsageMetricDataDbMapper(final int inDaysOfDataToRetain)
+    public DeleteOldUsageMetricDataDbMapper(final int inDaysOfMetricDataToRetain, final int inDaysOfSummaryDataToRetain)
     {
-        daysOfDataToRetain = inDaysOfDataToRetain;
+        daysOfMetricDataToRetain = inDaysOfMetricDataToRetain;
+        daysOfSummaryDataToRetain = inDaysOfSummaryDataToRetain;
     }
 
     /**
@@ -53,11 +62,21 @@ public class DeleteOldUsageMetricDataDbMapper extends BaseArgDomainMapper<Serial
     @Override
     public Serializable execute(final Serializable inRequest)
     {
-        Calendar day = Calendar.getInstance();
-        day.add(Calendar.DATE, -daysOfDataToRetain);
-        Date lastRetainDate = new Date(day.getTimeInMillis());
+        Calendar day;
+        Date lastRetainDate;
 
+        // clean out metric data
+        day = Calendar.getInstance();
+        day.add(Calendar.DATE, -daysOfMetricDataToRetain);
+        lastRetainDate = DateDayExtractor.getStartOfDay(new Date(day.getTimeInMillis()));
         getEntityManager().createQuery("DELETE FROM UsageMetric WHERE created < :lastRetainDate").setParameter(
+                "lastRetainDate", lastRetainDate).executeUpdate();
+
+        // clean out summary data
+        day = Calendar.getInstance();
+        day.add(Calendar.DATE, -daysOfSummaryDataToRetain);
+        lastRetainDate = DateDayExtractor.getStartOfDay(new Date(day.getTimeInMillis()));
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary WHERE usageDate < :lastRetainDate").setParameter(
                 "lastRetainDate", lastRetainDate).executeUpdate();
 
         return Boolean.TRUE;

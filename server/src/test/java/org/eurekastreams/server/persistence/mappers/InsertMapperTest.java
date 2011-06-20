@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import javax.persistence.EntityManager;
 
@@ -29,46 +29,49 @@ import org.junit.Test;
 
 /**
  * Test class for InsertMapper class.
- *
+ * 
  */
 public class InsertMapperTest
 {
-   /**
-    * mock context.
-    */
-   private final Mockery context = new JUnit4Mockery()
-   {
-       {
-           setImposteriser(ClassImposteriser.INSTANCE);
-       }
-   };
-   
-   /**
-    * Test execute method.
-    */
-   @SuppressWarnings("unchecked")
-   @Test
-   public void testExecute()
-   {
-       final EntityManager entityManager = context.mock(EntityManager.class);
-       final PersistenceRequest req = context.mock(PersistenceRequest.class);
-       final Activity msg = context.mock(Activity.class);
-       
-       InsertMapper sut = new InsertMapper();
-       sut.setEntityManager(entityManager);
-       
-       context.checking(new Expectations()
-       {
-           {
-               oneOf(req).getDomainEnity();
-               will(returnValue(msg));
-               
-               oneOf(entityManager).persist(msg);               
-           }
-       });
-       
-       assertTrue(sut.execute(req));
-       context.assertIsSatisfied();
-   }
+    /**
+     * mock context.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /**
+     * Test execute method.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExecute()
+    {
+        final EntityManager entityManager = context.mock(EntityManager.class);
+        final PersistenceRequest req = context.mock(PersistenceRequest.class);
+        final Activity msg = context.mock(Activity.class);
+
+        InsertMapper sut = new InsertMapper();
+        sut.setEntityManager(entityManager);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(req).getDomainEnity();
+                will(returnValue(msg));
+
+                oneOf(entityManager).persist(msg);
+
+                oneOf(msg).getId();
+                will(returnValue(2L));
+            }
+        });
+
+        assertEquals(2L, sut.execute(req).longValue());
+        context.assertIsSatisfied();
+    }
 
 }

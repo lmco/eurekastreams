@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -44,7 +43,7 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
      * Person to receive the notification. (optional in DB to allow a template notification to be created and cloned for
      * mass notifying - see InsertInAppNotificationForAllUsers.)
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = true, cascade = { CascadeType.PERSIST })
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "recipientId")
     private Person recipient;
 

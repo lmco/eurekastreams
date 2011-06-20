@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog;
 
+
 /**
  * Represents a UI device which may act as a host for dialog content. Generally this will be a Dialog.
  */

@@ -2752,9 +2752,13 @@ body .previous-arrow:hover {
 }
 
 .access-groups {
-	width: 425px;
+	width: 890px;
 	margin-top: 5px;
 	border-top: 1px solid #bbbbbb;
+}
+
+.form-user-association.form-element{
+	width: 890px;	
 }
 
 body .form-user-association .access-groups>div>div.form-small-delete-button
@@ -2769,13 +2773,41 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	color: #666;
 	height: 20px;
 	margin-top: 10px;
-	width: 425px;
+	width: 890px;
 	border-bottom: 1px solid white;
 }
 
 .form-user-association .access-groups>div:hover {
 	border-bottom: 1px solid #bbbbbb;
 }
+
+.form-user-association .dropdownWrapper{
+	margin-top:10px;
+	margin-bottom:10px;	
+}
+
+.membershipcriteria-criteria{
+	display:inline-block;
+	word-wrap:break-word;
+	width:345px;
+}
+	
+.membershipcriteria-theme{
+	display:inline-block;
+	word-wrap:break-word;
+	width:250px;
+}
+    
+.membershipcriteria-tab{
+	display:inline-block;
+	word-wrap:break-word;
+	width:250px;
+}
+
+.membershipcriteria-headers{
+	margin-top:10px;
+	font-weight:bold;
+}	
 
 .form-checkBox {
 	font-style: italic;
@@ -3455,7 +3487,6 @@ body .shortname-form-element input {
 
 @sprite .add-button-submit {
 	gwt-image: "addBtnLarge";
-	text-indent: -100px;
 	overflow: hidden;
 	vertical-align: middle;
 	cursor: pointer;
@@ -6376,116 +6407,6 @@ body .user-bar li div.notif-count:hover {
 	cursor: pointer;
 }
 
-.notif-modal {
-	width: 620px;
-	height: 425px;
-}
-
-.notif-dialog-main {
-	
-}
-
-.notif-dialog-main a {
-	text-decoration: none;
-}
-
-.notif-edit-settings-link {
-	text-align: right;
-}
-
-.notif-edit-settings-link a {
-	padding-left: 20px;
-	background: transparent url(style/images/notifySettingsIcon.png)
-		no-repeat left center;
-	margin-right: 10px;
-}
-
-.notif-scroll-list {
-	width: 600px;
-	height: 350px;
-	margin: 10px;
-	margin-top: 5px;
-	border-top: 1px solid #999;
-}
-
-@sprite .notif-wait {
-	gwt-image: "waitSpinner";
-	width: 600px;
-	height: 350px;
-}
-
-.notif-entry {
-	border-top: 1px solid #CCC;
-	background-color: #e6e6e6;
-}
-
-.notif-entry:first-child {
-	border-top: none;
-}
-
-.notif-entry>.icon {
-	float: left;
-	width: 24px;
-	height: 25px;
-	margin-left: 4px;
-	background-color: transparent;
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	padding-left: 0;
-	min-height: 0;
-	margin-top: 10px;
-}
-
-.notif-entry .notif-text-side {
-	background-color: white;
-	padding: 10px;
-	margin-left: 30px;
-}
-
-.notif-entry.notif-entry-unread .notif-text-side {
-	background-color: #FFFFB8;
-}
-
-.notif-entry-post .icon {
-	background-image: url(style/images/notificationsIconsSprite.png);
-	background-position: 0px 0px;
-}
-
-.notif-entry-comment .icon {
-	background-image: url(style/images/notificationsIconsSprite.png);
-	background-position: 0px -25px;
-}
-
-.notif-entry-flag .icon {
-	background-image: url(style/images/notificationsIconsSprite.png);
-	background-position: 0px -75px;
-}
-
-.notif-entry-follow .icon {
-	background-image: url(style/images/notificationsIconsSprite.png);
-	background-position: 0px -50px;
-}
-
-.notif-entry-new-group .icon {
-	background-image: url(style/images/notificationsIconsSprite.png);
-	background-position: 0px -100px;
-}
-
-.notif-entry-like .icon {
-	background-image: url(style/images/notificationsIconsSprite.png);
-	background-position: 0px -120px;
-}
-
-.notif-no-notifications {
-	margin-top: 20px;
-	text-align: center;
-}
-
-.notif-timestamp {
-	font-size: 11px;
-	color: #666666;
-}
-
 .modal-content-panel {
 	background: #EEEEEE url(style/images/globalNavshadow.png) repeat-x
 		scroll 0 0;
@@ -8069,6 +7990,24 @@ IE SPECIFIC CSS.
 	.stream-plugins-settings-container .filter .gwt-Image {
 		float: left;
 	}
+	
+	.membershipcriteria-criteria{
+	    display:inline;
+	    word-wrap:break-word;
+	    width:345px;
+	}
+	    
+	.membershipcriteria-theme{
+	    display:inline;
+	    word-wrap:break-word;
+	    width:250px;
+	}
+	    
+	.membershipcriteria-tab{
+	    display:inline;
+	    word-wrap:break-word;
+	    width:250px;
+	}	
 	
 	.unseen-activity a {
 		display: inline;

@@ -17,18 +17,18 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 
 import org.eurekastreams.server.domain.InAppNotificationDTO;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.user.client.Window;
 
 /**
  * Model for handling the list of application alert notifications.
  */
-public class NotificationListModel extends BaseModel implements Fetchable<Serializable>, Updateable<Date>
+public class NotificationListModel extends BaseModel implements Fetchable<Serializable>, Updateable<ArrayList<Long>>,
+        Deletable<Long>
 {
     /**
      * Singleton.
@@ -61,25 +61,35 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
     }
 
     /**
-     * Marks all notifications up through the given date as read.
+     * Marks the given notifications as read.
      *
-     * @param inRequest
-     *            Date of newest notification to mark as read (to avoid marking ones not shown to user).
+     * @param notifIds
+     *            List of IDs of notifications to mark as read.
      */
-    public void update(final Date inRequest)
+    public void update(final ArrayList<Long> notifIds)
     {
-        Window.alert("NotificationListModel.update needs to be replaced");
-        // super.callWriteAction("setAllApplicationAlertsAsRead", inRequest, new OnSuccessCommand<Integer>()
-        // {
-        // public void onSuccess(final Integer inResponse)
-        // {
-        // // this affects the data held by the count model, so clear the count model's cache
-        // NotificationCountModel.getInstance().clearCache();
-        //
-        // // announce the new count
-        // // (Would be ideal if we could hand it in to the count model and let it do this + cache it.)
-        // Session.getInstance().getEventBus().notifyObservers(new NotificationCountAvailableEvent(inResponse));
-        // }
-        // });
+        super.callWriteAction("markInAppNotificationsRead", notifIds, null);
+    }
+
+    /**
+     * Marks a single notification as read.
+     *
+     * @param notifId
+     *            ID of notification to mark as read.
+     */
+    public void update(final long notifId)
+    {
+        super.callWriteAction("markInAppNotificationsRead", (Serializable) Collections.singletonList(notifId), null);
+    }
+
+    /**
+     * Deletes a notification.
+     *
+     * @param notifId
+     *            ID of notification to delete.
+     */
+    public void delete(final Long notifId)
+    {
+        super.callWriteAction("deleteInAppNotifications", (Serializable) Collections.singletonList(notifId), null);
     }
 }

@@ -1,0 +1,125 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder 
+	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+<ui:image field="deletePlaceholder" src="style/images/modalCloseBtn.png" />
+<ui:image field="disablePlaceholder" src="style/images/validationWarning.png" />
+<!-- <ui:image field="deleteFloat" src="style/images/modalCloseBtnSmallHover.png" /> -->
+
+
+<ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationWidget.LocalStyle">
+/* Externalize all-read so the parent can apply it on the entire list. */ 
+@external all-read;
+
+.highPriority
+{
+	border-right: 10px solid red;
+}
+.read,
+.all-read .main
+{
+	background-color: #CCC;
+}
+.main
+{
+	padding: 5px;
+	border-bottom: 1px solid #CCC;
+}
+.main-link
+{
+	display: block;
+	overflow: auto;
+}
+.message-text
+{
+	overflow: hidden;
+	margin: 5px 0px 5px 55px;
+	color: black;
+	display: block;
+}
+.timestamp
+{
+	font-size: 11px;
+	color: #666666;
+	margin-left: 55px;
+	display: block;
+}
+.actions-panel
+{
+	float: right;
+}
+.avatar
+{
+	float: left;
+	border: none;
+}
+.action:hover
+{
+	position: relative;
+}
+@sprite .delete-placeholder
+{
+	gwt-image: "deletePlaceholder";
+	margin-top: 2px;
+}
+@sprite .disable-placeholder
+{
+	gwt-image: "disablePlaceholder";
+	margin-top: 2px;
+}
+.floating-panel
+{
+	display: none;
+}
+.action:hover > .floating-panel
+{
+	display: block;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	/*
+	background-color: #7A7A7A;
+	background-position: right center;
+	gwt-image: "deleteFloat";
+	width: auto;
+	*/
+	padding-left: 5px;
+	padding-right: 29px;
+	height: 28px;
+	line-height: 28px;
+	color: white;
+	cursor: pointer;
+}
+.delete-floating-panel
+{
+	background: #7A7A7A url('style/images/modalCloseBtnHover.png') no-repeat scroll right center;
+}
+.disable-floating-panel
+{
+	background: #7A7A7A url('style/images/warningIconLarge.png') no-repeat scroll right center;
+}
+</ui:style>
+
+<!-- <ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" /> -->
+<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
+
+<g:HTMLPanel addStyleNames="{style.main}">
+	<div class="{style.actions-panel}">
+		<div class="{style.action}">
+			<div class="{style.delete-placeholder}"/>
+			<g:Label addStyleNames="{style.floating-panel} {style.delete-floating-panel}" ui:field="deleteUi">Delete&nbsp;Notification</g:Label>
+		</div>
+		<div class="{style.action}" ui:field="disableToplevelUi">
+			<div class="{style.disable-placeholder}"/>
+			<g:Label addStyleNames="{style.floating-panel} {style.disable-floating-panel} " ui:field="disableUi">Stop&nbsp;Notifications&nbsp;Like&nbsp;This</g:Label>
+		</div>
+	</div>
+	<g:Anchor addStyleNames="{style.main-link}" ui:field="mainLinkUi">
+		<img class="{style.avatar}" ui:field="avatarUi" />
+		<span class="{style.message-text}" ui:field="messageTextUi" />
+		<span class="{style.timestamp}" ui:field="timestampUi" />
+	</g:Anchor>
+</g:HTMLPanel>
+	
+</ui:UiBinder>

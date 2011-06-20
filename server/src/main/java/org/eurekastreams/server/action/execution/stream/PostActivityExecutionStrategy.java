@@ -29,6 +29,7 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
@@ -197,7 +198,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         // Setup the queued requests.
         if (requestType != null)
         {
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(requestType, actorId,
+            CreateNotificationsRequest notificationRequest = new ActivityNotificationsRequest(requestType, actorId,
                     destinationId, persistedActivityDTO.getEntityId());
             queueRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
         }

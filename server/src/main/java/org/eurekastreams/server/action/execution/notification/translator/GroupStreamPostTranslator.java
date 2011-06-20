@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -29,7 +29,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone posting to a group stream to appropriate notifications.
  */
-public class GroupStreamPostTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class GroupStreamPostTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
     /** Mapper to get list of members of a group. */
     private final DomainMapper<Long, List<Long>> memberMapper;
@@ -49,7 +49,7 @@ public class GroupStreamPostTranslator implements NotificationTranslator<CreateN
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
         // NOTE: This code assumes that the mapper returns a list which can be safely altered, specificially that it is
         // not used elsewhere (e.g. stored off) and supports removing elements.

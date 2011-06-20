@@ -189,6 +189,14 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     private Person owner;
 
     /**
+     * List of MembershipCritera using this theme.
+     */
+    @SuppressWarnings("unused")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "themeId")
+    private List<MembershipCriteria> membershipCriteria;
+
+    /**
      * Empty Constructor.
      */
     public Theme()

@@ -15,30 +15,30 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-import org.eurekastreams.commons.model.DomainEntity;
+import org.eurekastreams.commons.model.DomainEntityIdentifiable;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
  * Mapper used for inserting DomainEntities.
- *
+ * 
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
-public class InsertMapper<TDomainEntityType extends DomainEntity> extends
-        BaseArgDomainMapper<PersistenceRequest<TDomainEntityType>, Boolean>
+public class InsertMapper<TDomainEntityType extends DomainEntityIdentifiable> extends
+        BaseArgDomainMapper<PersistenceRequest<TDomainEntityType>, Long>
 {
     /**
      * Inserts the DomainEntity.
-     *
+     * 
      * @param inRequest
      *            The MapperRequest.
      * @return true if inserted.
      */
     @Override
-    public Boolean execute(final PersistenceRequest<TDomainEntityType> inRequest)
+    public Long execute(final PersistenceRequest<TDomainEntityType> inRequest)
     {
         getEntityManager().persist(inRequest.getDomainEnity());
-        return true;
+        return inRequest.getDomainEnity().getId();
     }
 
 }

@@ -1,0 +1,11 @@
+#siteLabelText()
+$source.title sent the following notification:
+
+"$message"
+
+#if (($url) && ($url != ''))
+To see the details follow this link:
+$url
+#end
+
+#parse('Footer.txt')

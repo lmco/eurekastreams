@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -48,9 +49,9 @@ public class StreamPostTranslatorTest
     @Test
     public void testTranslatePersonalStreamPost()
     {
-        StreamPostTranslator sut = new StreamPostTranslator();
+        NotificationTranslator sut = new StreamPostTranslator();
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, STREAM_OWNER_ID,
+        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, STREAM_OWNER_ID,
                 ACTIVITY_ID);
         NotificationBatch results = sut.translate(request);
 
@@ -73,9 +74,9 @@ public class StreamPostTranslatorTest
     @Test
     public void testTranslateOwnPersonalStreamPost()
     {
-        StreamPostTranslator sut = new StreamPostTranslator();
+        NotificationTranslator sut = new StreamPostTranslator();
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, ACTOR_ID, ACTIVITY_ID);
+        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, ACTOR_ID, ACTIVITY_ID);
         NotificationBatch results = sut.translate(request);
 
         assertNull(results);

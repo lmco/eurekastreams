@@ -208,4 +208,25 @@ public final class CacheKeys
      * Key for getting a SharedResource by unique key (lower-cased).
      */
     public static final String SHARED_RESOURCE_BY_UNIQUE_KEY = "SRBUK:";
+
+    /**
+     * Key for getting list of FeaturedStreamDTOs.
+     */
+    public static final String FEATURED_STREAMS = "FeaturedStreams:";
+
+    /**
+     * Key prefix for stream metrics by stream scope id.
+     */
+    public static final String STREAM_METRICS_BY_STREAM_SCOPE_ID = "Metrics:";
+
+    /**
+     * Key for a list of the stream scope ids by most viewed, by daily average.
+     */
+    public static final String STREAM_SCOPE_IDS_OF_MOST_VIEWED_STREAMS = "StreamScopeIdsByDailyViews";
+
+    /**
+     * Key for a list of the stream scope ids by daily average message count.
+     */
+    public static final String STREAM_SCOPE_IDS_OF_MOST_ACTIVE_STREAMS = "StreamScopeIdsByDailyMessageCount";
+
 }

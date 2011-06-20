@@ -29,6 +29,7 @@ import javax.persistence.TemporalType;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.domain.Person;
+import org.hibernate.annotations.Table;
 import org.hibernate.validator.Length;
 
 /**
@@ -36,6 +37,14 @@ import org.hibernate.validator.Length;
  * 
  */
 @Entity
+@Table(appliesTo = "Comment", indexes = {
+// NOTE: ("timesent") is used on its own, so order is important
+        @org.hibernate.annotations.Index(name = "comment_timesent_activityid_idx", columnNames = { "timesent",
+                "activityid" }),
+
+        @org.hibernate.annotations.Index(name = "comment_activityid_idx", columnNames = { "activityid" })
+//
+})
 public class Comment extends DomainEntity implements Serializable
 {
 
@@ -84,13 +93,13 @@ public class Comment extends DomainEntity implements Serializable
     @Length(min = 0, max = MAX_BODY_LENGTH, message = MAX_BODY_LENGTH_MESSAGE)
     @Basic(optional = false)
     private String body;
-    
+
     /**
      * Private constructor for ORM.
      */
     private Comment()
     {
-        //no-op.
+        // no-op.
     }
 
     /**

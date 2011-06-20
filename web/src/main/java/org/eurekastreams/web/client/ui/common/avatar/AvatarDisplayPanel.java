@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.ui.common.avatar;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -54,12 +53,9 @@ public class AvatarDisplayPanel extends Composite
      *            the entity type.
      * @param size
      *            the avatar size.
-     * @param bg
-     *            the background color.
      */
-    public AvatarDisplayPanel(final EntityType entityType, final long entityId, final String avatarId, final Size size,
-            final Background bg)
+    public AvatarDisplayPanel(final EntityType entityType, final long entityId, final String avatarId, final Size size)
     {
-        this(new AvatarWidget(entityId, avatarId, entityType, size, bg));
+        this(new AvatarWidget(entityId, avatarId, entityType, size));
     }
 }

@@ -28,12 +28,20 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.eurekastreams.commons.model.DomainEntityIdentifiable;
+import org.hibernate.annotations.Index;
+
 /**
  * Entity representing a day's usage metrics.
  */
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "streamViewStreamScopeId", "usageDate" }) })
-public class DailyUsageSummary implements Serializable
+@org.hibernate.annotations.Table(appliesTo = "DailyUsageSummary", //
+indexes = {
+// Note: ("usageDate") is queried on its own, so it should be listed first
+@Index(name = "dailyusagesummary_usagedate_streamviewstreamscopeid_idx", columnNames = { "usageDate",
+        "streamViewStreamScopeId" }) })
+public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
 {
     /**
      * Serial version uid.
@@ -119,9 +127,10 @@ public class DailyUsageSummary implements Serializable
     private Date usageDate;
 
     /**
-     * Whether this is a weekday.
+     * The date in epoch timestamp in milliseconds.
      */
-    private boolean isWeekday;
+    @Basic(optional = false)
+    private Long usageDateTimeStampInMs;
 
     /**
      * Constructor for ORM.
@@ -149,8 +158,8 @@ public class DailyUsageSummary implements Serializable
      *            Average response time for activities that have comments.
      * @param inUsageDate
      *            the date
-     * @param inIsWeekday
-     *            whether this date is a weekday
+     * @param inUsageDateTimeStampInMs
+     *            the date in epoch ms
      * @param inStreamViewStreamScopeId
      *            the stream view that these stats apply to, or null if for all streams
      * @param inTotalActivityCount
@@ -165,7 +174,7 @@ public class DailyUsageSummary implements Serializable
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final boolean inIsWeekday, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
+            final Long inUsageDateTimeStampInMs, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
             final Long inTotalCommentCount, final Long inTotalStreamViewCount, final Long inTotalContributorCount)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
@@ -176,12 +185,12 @@ public class DailyUsageSummary implements Serializable
         messageCount = inMessageCount;
         avgActivityResponseTime = inAvgActivityResponseTime;
         usageDate = inUsageDate;
-        isWeekday = inIsWeekday;
+        usageDateTimeStampInMs = inUsageDateTimeStampInMs;
         streamViewStreamScopeId = inStreamViewStreamScopeId;
         totalActivityCount = inTotalActivityCount;
         totalCommentCount = inTotalCommentCount;
         totalStreamViewCount = inTotalStreamViewCount;
-        totalContributorCount = inTotalActivityCount;
+        totalContributorCount = inTotalContributorCount;
     }
 
     /**
@@ -321,6 +330,23 @@ public class DailyUsageSummary implements Serializable
     }
 
     /**
+     * @return the usageDateTimeStampInMs
+     */
+    public Long getUsageDateTimeStampInMs()
+    {
+        return usageDateTimeStampInMs;
+    }
+
+    /**
+     * @param inUsageDateTimeStampInMs
+     *            the usageDateTimeStampInMs to set
+     */
+    public void setUsageDateTimeStampInMs(final Long inUsageDateTimeStampInMs)
+    {
+        usageDateTimeStampInMs = inUsageDateTimeStampInMs;
+    }
+
+    /**
      * @return the avgActivityResponseTime
      */
     public long getAvgActivityResponseTime()
@@ -335,23 +361,6 @@ public class DailyUsageSummary implements Serializable
     public void setAvgActivityResponseTime(final long inAvgActivityResponseTime)
     {
         avgActivityResponseTime = inAvgActivityResponseTime;
-    }
-
-    /**
-     * @return the isWeekday
-     */
-    public boolean isWeekday()
-    {
-        return isWeekday;
-    }
-
-    /**
-     * @param inIsWeekday
-     *            the isWeekday to set
-     */
-    public void setWeekday(final boolean inIsWeekday)
-    {
-        isWeekday = inIsWeekday;
     }
 
     /**

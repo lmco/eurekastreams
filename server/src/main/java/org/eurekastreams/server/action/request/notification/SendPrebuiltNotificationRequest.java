@@ -23,6 +23,9 @@ import java.io.Serializable;
  */
 public class SendPrebuiltNotificationRequest implements Serializable
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = -7529117400667817628L;
+
     /** If high priority. */
     private boolean highPriority;
 

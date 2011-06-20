@@ -57,9 +57,9 @@ public class GalleryTabTemplateModel extends BaseModel implements Insertable<Has
      */
     public void insert(final HashMap<String, Serializable> inRequest)
     {
-        super.callWriteAction("createGalleryTabTemplate", inRequest, new OnSuccessCommand<Boolean>()
+        super.callWriteAction("createGalleryTabTemplate", inRequest, new OnSuccessCommand<Long>()
         {
-            public void onSuccess(final Boolean response)
+            public void onSuccess(final Long response)
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new InsertedGalleryTabTempalateResponseEvent(response));

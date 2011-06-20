@@ -1354,51 +1354,51 @@ public interface CoreCss extends CssResource
     @ClassName("notif-count-list-item")
     String notifCountListItem();
 
-    @ClassName("notif-dialog-main")
-    String notifDialogMain();
-
-    @ClassName("notif-edit-settings-link")
-    String notifEditSettingsLink();
-
+    // @ClassName("notif-dialog-main")
+    // String notifDialogMain();
+    //
+    // @ClassName("notif-edit-settings-link")
+    // String notifEditSettingsLink();
+    //
     @ClassName("notif-email-value")
     String notifEmailValue();
 
-    @ClassName("notif-entry")
-    String notifEntry();
-
-    @ClassName("notif-entry-comment")
-    String notifEntryComment();
-
-    @ClassName("notif-entry-flag")
-    String notifEntryFlag();
-
-    @ClassName("notif-entry-follow")
-    String notifEntryFollow();
-
-    @ClassName("notif-entry-like")
-    String notifEntryLike();
-
-    @ClassName("notif-entry-new-group")
-    String notifEntryNewGroup();
-
-    @ClassName("notif-entry-post")
-    String notifEntryPost();
-
-    @ClassName("notif-entry-unread")
-    String notifEntryUnread();
-
+    // @ClassName("notif-entry")
+    // String notifEntry();
+    //
+    // @ClassName("notif-entry-comment")
+    // String notifEntryComment();
+    //
+    // @ClassName("notif-entry-flag")
+    // String notifEntryFlag();
+    //
+    // @ClassName("notif-entry-follow")
+    // String notifEntryFollow();
+    //
+    // @ClassName("notif-entry-like")
+    // String notifEntryLike();
+    //
+    // @ClassName("notif-entry-new-group")
+    // String notifEntryNewGroup();
+    //
+    // @ClassName("notif-entry-post")
+    // String notifEntryPost();
+    //
+    // @ClassName("notif-entry-unread")
+    // String notifEntryUnread();
+    //
     @ClassName("notif-grid")
     String notifGrid();
 
-    @ClassName("notif-modal")
-    String notifModal();
+    // @ClassName("notif-modal")
+    // String notifModal();
 
-    @ClassName("notif-no-notifications")
-    String notifNoNotifications();
-
-    @ClassName("notif-scroll-list")
-    String notifScrollList();
-
+    // @ClassName("notif-no-notifications")
+    // String notifNoNotifications();
+    //
+    // @ClassName("notif-scroll-list")
+    // String notifScrollList();
+    //
     @ClassName("notif-selection-column")
     String notifSelectionColumn();
 
@@ -1408,14 +1408,15 @@ public interface CoreCss extends CssResource
     @ClassName("notif-settings-panel")
     String notifSettingsPanel();
 
-    @ClassName("notif-text-side")
-    String notifTextSide();
-
-    @ClassName("notif-timestamp")
-    String notifTimestamp();
-
-    @ClassName("notif-wait")
-    String notifWait();
+    //
+    // @ClassName("notif-text-side")
+    // String notifTextSide();
+    //
+    // @ClassName("notif-timestamp")
+    // String notifTimestamp();
+    //
+    // @ClassName("notif-wait")
+    // String notifWait();
 
     @ClassName("notification-bar")
     String notificationBar();
@@ -2292,4 +2293,19 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-show-all-users-who-liked-activity")
     String eurekaConnectShowAllUsersWhoLikedActivity();
+
+    @ClassName("membershipcriteria-criteria")
+    String membershipCriteriaCriteria();
+
+    @ClassName("membershipcriteria-tab")
+    String membershipCriteriaTab();
+
+    @ClassName("membershipcriteria-theme")
+    String membershipCriteriaTheme();
+
+    @ClassName("dropdownWrapper")
+    String dropdownWrapper();
+
+    @ClassName("membershipcriteria-headers")
+    String membershipCriteriaHeader();
 }

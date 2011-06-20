@@ -148,11 +148,13 @@
             <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution">
                 <constructor-arg ref="getStreamScopeIdForPersonByUniqueKeyMapper" />
                 <constructor-arg ref="getStreamScopeIdForGroupTypeByUniqueKeyMapper" />
+                <constructor-arg ref="dayOfWeekStrategy" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
+    
 
     <bean id="persistUserMetricAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -161,6 +163,66 @@
                 <constructor-arg>
 		            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
 		        </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="addFeaturedStream" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.validation.stream.AddFeaturedStreamValidation">
+                <constructor-arg value="250"/>
+                <constructor-arg ref="findByIdMapper" />
+            </bean>
+        </constructor-arg>
+        <!-- Authorization -->
+        <constructor-arg ref="isSystemAdminAuthorization" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.AddFeaturedStreamExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+                        <constructor-arg value="org.eurekastreams.server.domain.stream.StreamScope" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+                </constructor-arg>
+                <constructor-arg ref="deleteCacheKeys" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>  
+    
+    <bean id="deleteFeaturedStream" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="isSystemAdminAuthorization" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.DeleteFeaturedStreamExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.db.DeleteEntityByIdDbMapper">
+                        <constructor-arg value="org.eurekastreams.server.domain.stream.FeaturedStream" />
+                    </bean>                        
+                </constructor-arg>
+                <constructor-arg ref="deleteCacheKeys" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>  
+    
+    <bean id="getFeaturedStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.GetFeaturedStreamsExecution">                
+                <constructor-arg ref="getFeaturedStreamsMapper" />
+                <constructor-arg ref="featuredStreamDTOTransientDataPopulator" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -457,7 +519,18 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
                 <constructor-arg >
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer" />
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ActionContextMembershipCriteriaDTOToMembershipCriteriaPersistenceRequestTransformer">
+                        <constructor-arg>
+	                        <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+						        <constructor-arg value="org.eurekastreams.server.domain.Theme" />
+						    </bean>
+						</constructor-arg>
+						<constructor-arg>
+						    <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+	                            <constructor-arg value="org.eurekastreams.server.domain.GalleryTabTemplate" />
+	                        </bean>
+                        </constructor-arg>
+                    </bean>
                 </constructor-arg>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
@@ -1199,6 +1272,10 @@
         <constructor-arg value="true" />
     </bean>
 
+    <!-- ** NOTE: Currently GetFollowingExecution is just a shell class. Not exactly sure why it's here but think
+    it was something in-progress or being refactored before Rob was out. Found this when config'ing actual functionality 
+    of getting all streams a user is following, which is done by "getStreamsUserIsFollowing". Should verify status of this with Rob
+    when he gets back and delete if needed or consolidate the two actions. -->
     <bean id="getFollowing" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1212,11 +1289,31 @@
                 </constructor-arg>
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
-                <constructor-arg ref="getGroupsByIdsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />                               
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="getStreamsUserIsFollowing" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.GetStreamsUserIsFollowingExecution">  
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />              
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
+                        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />
+                <constructor-arg ref="followerStatusPopulator" /> 
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>       
 
     <bean id="getPersonFollowers" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1585,7 +1682,19 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.GetPersonModelViewExecution">
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            	<constructor-arg ref="passThruRequestTransformer" />
+                <constructor-arg ref="getPersonByAccountIdMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+
+    <bean id="getPersonModelViewForStartup" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetCurrentPersonModelViewForStartupExecution">
                 <constructor-arg ref="getSystemAdministratorIds" />
                 <constructor-arg ref="getPersonByAccountIdMapper" />
                 <constructor-arg>
@@ -1593,8 +1702,6 @@
                         <constructor-arg ref="findSystemSettings"/>
                     </bean>
                 </constructor-arg>
-				<constructor-arg ref="serviceActionController" />
-		        <constructor-arg ref="createPersonFromLdap" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1674,54 +1781,6 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>
-
-    <bean id="getPersonalSettings" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.settings.GetPersonalSettingsExecution">
-                <constructor-arg>
-                    <util:list>
-                        <bean
-                            class="org.eurekastreams.server.action.execution.settings.NotificationFilterPreferencesRetriever">
-                            <constructor-arg ref="notifierIdToDisplayMap" />
-                            <constructor-arg ref="getNotificationFilterPreferencesByPersonId" />
-                        </bean>
-                    </util:list>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="updatePersonalSettings" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.validation.settings.UpdateSettingsValidation">
-                <constructor-arg>
-                    <util:list>
-                    </util:list>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.settings.UpdateSettingsExecution">
-                <constructor-arg>
-                    <util:list>
-                        <bean
-                            class="org.eurekastreams.server.action.execution.settings.NotificationFilterPreferencesUpdater">
-                            <constructor-arg ref="notifierIdToDisplayMap" />
-                            <constructor-arg ref="setUserNotificationFilterPreferences" />
-                        </bean>
-                    </util:list>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
     </bean>
 
     <bean id="securityTrimmer"
@@ -3302,7 +3361,6 @@
         <constructor-arg ref="getReadOnlyStreamsDbMapper" />
         <constructor-arg ref="newPersonDefaultStreamOrder" />
         <constructor-arg ref="membershipCriteriaPersonPropertyGenerator" />
-        <!-- <constructor-arg ref="newPersonStartPageTabs" /> -->
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">
@@ -4122,6 +4180,17 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
+    
+    <bean id="followerStatusPopulator" class="org.eurekastreams.server.domain.strategies.FollowerStatusPopulator">
+        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
+        <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
+    </bean>
+    
+    <bean id="featuredStreamDTOTransientDataPopulator" class="org.eurekastreams.server.domain.strategies.FeaturedStreamDTOTransientDataPopulator">
+        <constructor-arg ref="followerStatusPopulator"/>
+        <constructor-arg ref="getPeopleByAccountIdsMapper"/>
+        <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
+    </bean>
 
     <bean id="documentCreator" class="org.eurekastreams.server.service.actions.strategies.DocumentCreator">
         <constructor-arg>
@@ -4313,8 +4382,11 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean parent="baseParamExecuteDomainMapperExecution">
-                <constructor-arg ref="getUsageMetricSummaryDbMapper" />
+            <bean class="org.eurekastreams.server.action.execution.GetUsageMetricSummaryExecution">
+                <constructor-arg ref="getUsageMetricSummaryMapper" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy" />
+                </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -4395,8 +4467,12 @@
     <!-- Execution strategy to generate a daily usage summary record for the previous day - takes no input
 -->
     <bean id="generateDailyUsageSummaryExecution" class="org.eurekastreams.server.action.execution.GenerateDailyUsageSummaryExecution">
+        <constructor-arg value="7" />
         <constructor-arg ref="getDateFromDaysAgoStrategy"/>
         <constructor-arg ref="getDailyUsageSummaryByDateDbMapper" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetPreviousDailyUsageSummaryByDateDbMapper" />
+        </constructor-arg>
         <constructor-arg ref="getDailyMessageCountDbMapper" />
         <constructor-arg ref="getDailyPageViewCountDbMapper" />
         <constructor-arg ref="getDailyStreamContributorCountDbMapper" />
@@ -4409,8 +4485,10 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.DeleteOldUsageMetricDataDbMapper">
-                <!-- keep 7 days of data -->
-                <constructor-arg value="7" />
+                <!-- keep 4 days of metric data -->
+                <constructor-arg value="4" />
+                <!-- keey 30 days of summary data -->
+                <constructor-arg value="30" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="dayOfWeekStrategy" />
@@ -4426,6 +4504,14 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetTotalStreamContributorCountDbMapper" />
         </constructor-arg>
+        <constructor-arg ref="clearMapper" />
+        <!-- Generate the usage metrics and dump into cache -->
+        <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
+        <!-- 30 days of summary data caching -->
+        <constructor-arg value="30" />
+        <!-- Mappers -->
+        <constructor-arg ref="getStreamsByDailyAverageViewsMapper_FORCE_REFRESH" />
+        <constructor-arg ref="getStreamsByDailyAverageMessageCountMapper_FORCE_REFRESH" />
     </bean>
 
     <!--

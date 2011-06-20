@@ -17,7 +17,7 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -25,13 +25,13 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone posting to a stream to appropriate notifications.
  */
-public class StreamPostTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class StreamPostTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
     /**
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
         if (inRequest.getActorId() == inRequest.getDestinationId())
         {

@@ -23,186 +23,273 @@ import java.io.Serializable;
  */
 public class UsageMetricSummaryDTO implements Serializable
 {
-
     /**
      * Serial version id.
      */
-    private static final long serialVersionUID = 5547126202116017950L;
+    private static final long serialVersionUID = -5235759907279186759L;
 
     /**
-     * Number of daily records this summary is based on.
+     * Number of weekday records this summary is based on.
      */
-    private long recordCount;
+    private long weekdayRecordCount;
 
     /**
-     * The number of unique visitors.
+     * average daily number of unique visitors.
      */
-    private long uniqueVisitorCount;
+    private long averageDailyUniqueVisitorCount;
 
     /**
-     * Number of page views.
+     * average daily number of page views.
      */
-    private long pageViewCount;
+    private long averageDailyPageViewCount;
 
     /**
-     * Number of people viewing streams.
+     * average daily number of people viewing streams.
      */
-    private long streamViewerCount;
+    private long averageDailyStreamViewerCount;
 
     /**
-     * Number of streams viewed.
+     * average daily number of streams viewed.
      */
-    private long streamViewCount;
+    private long averageDailyStreamViewCount;
 
     /**
-     * Number of people contributing to streams (comment and activities).
+     * average daily number of people contributing to streams (comment and activities).
      */
-    private long streamContributorCount;
+    private long averageDailyStreamContributorCount;
 
     /**
-     * Number of activities and comments posted.
+     * average daily number of activities and comments posted.
      */
-    private long messageCount;
+    private long averageDailyMessageCount;
 
     /**
      * Avg time (mins) to first comment (for activities that have comments).
      */
-    private long avgActivityResponseTime;
+    private long averageDailyActivityResponseTime;
 
     /**
-     * @return the uniqueVisitorCount
+     * Total number of views of streams for all time.
      */
-    public long getUniqueVisitorCount()
+    private Long totalStreamViewCount;
+
+    /**
+     * Total activity count for all time.
+     */
+    private Long totalActivityCount;
+
+    /**
+     * Total comment count for all time.
+     */
+    private Long totalCommentCount;
+
+    /**
+     * Total contributor count - for all time - applies to streams only.
+     */
+    private Long totalContributorCount;
+
+    /**
+     * @return the weekdayRecordCount
+     */
+    public long getWeekdayRecordCount()
     {
-        return uniqueVisitorCount;
+        return weekdayRecordCount;
     }
 
     /**
-     * @param inUniqueVisitorCount
-     *            the uniqueVisitorCount to set
+     * @param inWeekdayRecordCount
+     *            the weekdayRecordCount to set
      */
-    public void setUniqueVisitorCount(final long inUniqueVisitorCount)
+    public void setWeekdayRecordCount(final long inWeekdayRecordCount)
     {
-        uniqueVisitorCount = inUniqueVisitorCount;
+        weekdayRecordCount = inWeekdayRecordCount;
     }
 
     /**
-     * @return the pageViewCount
+     * @return the averageDailyUniqueVisitorCount
      */
-    public long getPageViewCount()
+    public long getAverageDailyUniqueVisitorCount()
     {
-        return pageViewCount;
+        return averageDailyUniqueVisitorCount;
     }
 
     /**
-     * @param inPageViewCount
-     *            the pageViewCount to set
+     * @param inAverageDailyUniqueVisitorCount
+     *            the averageDailyUniqueVisitorCount to set
      */
-    public void setPageViewCount(final long inPageViewCount)
+    public void setAverageDailyUniqueVisitorCount(final long inAverageDailyUniqueVisitorCount)
     {
-        pageViewCount = inPageViewCount;
+        averageDailyUniqueVisitorCount = inAverageDailyUniqueVisitorCount;
     }
 
     /**
-     * @return the streamViewerCount
+     * @return the averageDailyPageViewCount
      */
-    public long getStreamViewerCount()
+    public long getAverageDailyPageViewCount()
     {
-        return streamViewerCount;
+        return averageDailyPageViewCount;
     }
 
     /**
-     * @param inStreamViewerCount
-     *            the streamViewerCount to set
+     * @param inAverageDailyPageViewCount
+     *            the averageDailyPageViewCount to set
      */
-    public void setStreamViewerCount(final long inStreamViewerCount)
+    public void setAverageDailyPageViewCount(final long inAverageDailyPageViewCount)
     {
-        streamViewerCount = inStreamViewerCount;
+        averageDailyPageViewCount = inAverageDailyPageViewCount;
     }
 
     /**
-     * @return the streamViewCount
+     * @return the averageDailyStreamViewerCount
      */
-    public long getStreamViewCount()
+    public long getAverageDailyStreamViewerCount()
     {
-        return streamViewCount;
+        return averageDailyStreamViewerCount;
     }
 
     /**
-     * @param inStreamViewCount
-     *            the streamViewCount to set
+     * @param inAverageDailyStreamViewerCount
+     *            the averageDailyStreamViewerCount to set
      */
-    public void setStreamViewCount(final long inStreamViewCount)
+    public void setAverageDailyStreamViewerCount(final long inAverageDailyStreamViewerCount)
     {
-        streamViewCount = inStreamViewCount;
+        averageDailyStreamViewerCount = inAverageDailyStreamViewerCount;
     }
 
     /**
-     * @return the streamContributorCount
+     * @return the averageDailyStreamViewCount
      */
-    public long getStreamContributorCount()
+    public long getAverageDailyStreamViewCount()
     {
-        return streamContributorCount;
+        return averageDailyStreamViewCount;
     }
 
     /**
-     * @param inStreamContributorCount
-     *            the streamContributorCount to set
+     * @param inAverageDailyStreamViewCount
+     *            the averageDailyStreamViewCount to set
      */
-    public void setStreamContributorCount(final long inStreamContributorCount)
+    public void setAverageDailyStreamViewCount(final long inAverageDailyStreamViewCount)
     {
-        streamContributorCount = inStreamContributorCount;
+        averageDailyStreamViewCount = inAverageDailyStreamViewCount;
     }
 
     /**
-     * @return the messageCount
+     * @return the averageDailyStreamContributorCount
      */
-    public long getMessageCount()
+    public long getAverageDailyStreamContributorCount()
     {
-        return messageCount;
+        return averageDailyStreamContributorCount;
     }
 
     /**
-     * @param inMessageCount
-     *            the messageCount to set
+     * @param inAverageDailyStreamContributorCount
+     *            the averageDailyStreamContributorCount to set
      */
-    public void setMessageCount(final long inMessageCount)
+    public void setAverageDailyStreamContributorCount(final long inAverageDailyStreamContributorCount)
     {
-        messageCount = inMessageCount;
+        averageDailyStreamContributorCount = inAverageDailyStreamContributorCount;
     }
 
     /**
-     * @return the recordCount
+     * @return the averageDailyMessageCount
      */
-    public long getRecordCount()
+    public long getAverageDailyMessageCount()
     {
-        return recordCount;
+        return averageDailyMessageCount;
     }
 
     /**
-     * @param inRecordCount
-     *            the recordCount to set
+     * @param inAverageDailyMessageCount
+     *            the averageDailyMessageCount to set
      */
-    public void setRecordCount(final long inRecordCount)
+    public void setAverageDailyMessageCount(final long inAverageDailyMessageCount)
     {
-        recordCount = inRecordCount;
+        averageDailyMessageCount = inAverageDailyMessageCount;
     }
 
     /**
-     * @return the avgActivityResponseTime
+     * @return the averageDailyActivityResponseTime
      */
-    public long getAvgActivityResponseTime()
+    public long getAverageDailyActivityResponseTime()
     {
-        return avgActivityResponseTime;
+        return averageDailyActivityResponseTime;
     }
 
     /**
-     * @param inAvgActivityResponseTime
-     *            the avgActivityResponseTime to set
+     * @param inAverageDailyActivityResponseTime
+     *            the averageDailyActivityResponseTime to set
      */
-    public void setAvgActivityResponseTime(final long inAvgActivityResponseTime)
+    public void setAverageDailyActivityResponseTime(final long inAverageDailyActivityResponseTime)
     {
-        avgActivityResponseTime = inAvgActivityResponseTime;
+        averageDailyActivityResponseTime = inAverageDailyActivityResponseTime;
+    }
+
+    /**
+     * @return the totalStreamViewCount
+     */
+    public Long getTotalStreamViewCount()
+    {
+        return totalStreamViewCount;
+    }
+
+    /**
+     * @param inTotalStreamViewCount
+     *            the totalStreamViewCount to set
+     */
+    public void setTotalStreamViewCount(final Long inTotalStreamViewCount)
+    {
+        totalStreamViewCount = inTotalStreamViewCount;
+    }
+
+    /**
+     * @return the totalActivityCount
+     */
+    public Long getTotalActivityCount()
+    {
+        return totalActivityCount;
+    }
+
+    /**
+     * @param inTotalActivityCount
+     *            the totalActivityCount to set
+     */
+    public void setTotalActivityCount(final Long inTotalActivityCount)
+    {
+        totalActivityCount = inTotalActivityCount;
+    }
+
+    /**
+     * @return the totalCommentCount
+     */
+    public Long getTotalCommentCount()
+    {
+        return totalCommentCount;
+    }
+
+    /**
+     * @param inTotalCommentCount
+     *            the totalCommentCount to set
+     */
+    public void setTotalCommentCount(final Long inTotalCommentCount)
+    {
+        totalCommentCount = inTotalCommentCount;
+    }
+
+    /**
+     * @return the totalContributorCount
+     */
+    public Long getTotalContributorCount()
+    {
+        return totalContributorCount;
+    }
+
+    /**
+     * @param inTotalContributorCount
+     *            the totalContributorCount to set
+     */
+    public void setTotalContributorCount(final Long inTotalContributorCount)
+    {
+        totalContributorCount = inTotalContributorCount;
     }
 
 }

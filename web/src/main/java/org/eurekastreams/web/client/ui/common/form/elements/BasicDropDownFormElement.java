@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * Makes a basic form element with a drop down.
- *
+ * 
  */
 public class BasicDropDownFormElement extends FlowPanel implements FormElement
 {
@@ -56,7 +56,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
     /**
      * Common setup for a basic text area form element.
-     *
+     * 
      * @param labelVal
      *            the label (i.e. "Quote").
      * @param inKey
@@ -82,7 +82,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
         instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
-        
+
         instructions.setVisible(inInstructions.length() > 0);
 
         this.add(label);
@@ -93,7 +93,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
     /**
      * Creates a basic text area form element.
-     *
+     * 
      * @param labelVal
      *            the label (i.e. "Quote").
      * @param inKey
@@ -156,7 +156,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets the key.
-     *
+     * 
      * @return the key.
      */
     public String getKey()
@@ -166,7 +166,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets the value of the text box.
-     *
+     * 
      * @return the value.
      */
     public String getValue()
@@ -178,7 +178,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
     /**
      * Disables an item so it cannot be selected.
-     *
+     * 
      * @param value
      *            Value of item to disable.
      */
@@ -192,8 +192,16 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
     }
 
     /**
+     * Reset selected index to first item in list.
+     */
+    public void reset()
+    {
+        dropDown.setSelectedIndex(0);
+    }
+
+    /**
      * Finds an item in the drop-down by value.
-     *
+     * 
      * @param value
      *            Value to search for.
      * @return The DOM element for the item.
@@ -214,7 +222,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets called if this element has an error.
-     *
+     * 
      * @param errMessage
      *            the error Message.
      */

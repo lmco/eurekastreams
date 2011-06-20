@@ -27,7 +27,6 @@ import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
 import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -148,7 +147,7 @@ public class PostCommentPanel extends FlowPanel
         this.clear();
         this.setVisible(true);
         Widget avatar = new AvatarWidget(Session.getInstance().getCurrentPerson().getId(), Session.getInstance()
-                .getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.VerySmall, Background.White);
+                .getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.VerySmall);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         this.add(avatar);
 

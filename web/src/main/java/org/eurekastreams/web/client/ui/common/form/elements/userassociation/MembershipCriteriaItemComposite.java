@@ -15,8 +15,10 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements.userassociation;
 
+import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
 import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -36,21 +38,32 @@ public class MembershipCriteriaItemComposite extends FlowPanel
      * The edit controls.
      */
     private EditPanel editControls;
-    
+
     /**
      * Constructor.
      * 
      * @param inCriteria
      *            the membership criteria.
      */
-    public MembershipCriteriaItemComposite(final String inCriteria)
+    public MembershipCriteriaItemComposite(final MembershipCriteriaDTO inCriteria)
     {
-        criteria = inCriteria;
-        
+        criteria = inCriteria.getCriteria();
+
         editControls = new EditPanel(this, Mode.DELETE);
-        
+
         this.add(editControls);
-        this.add(new Label(criteria));
+        Label criteriaLabel = new Label(criteria);
+        Label themeLabel = new Label(inCriteria.getThemeName() == null ? "None" : inCriteria.getThemeName());
+        Label tabLabel = new Label(inCriteria.getGalleryTabTemplateName() == null ? "None" : inCriteria
+                .getGalleryTabTemplateName());
+
+        criteriaLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaCriteria());
+        themeLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaTheme());
+        tabLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().membershipCriteriaTab());
+
+        this.add(criteriaLabel);
+        this.add(themeLabel);
+        this.add(tabLabel);
     }
 
     /**

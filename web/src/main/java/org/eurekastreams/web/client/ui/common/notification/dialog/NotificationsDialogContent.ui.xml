@@ -1,0 +1,117 @@
+<ui:UiBinder 
+	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+<ui:image field="activeBackground" src="style/images/activeBackground.png" />
+<ui:image field="markAllReadImage" src="style/images/verifyGoodIcon.png" />
+<ui:image field="settingsImage" src="style/images/notifySettingsIcon.png" />
+
+
+<ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
+.modal
+{
+}
+.main
+{
+	width: 700px;
+	height: 400px;
+	/*overflow: auto;*/
+}
+.source-filters-scroll-panel
+{
+	float: left;
+	height: 100%;
+	width: 250px;
+}
+.right-side
+{
+	margin-left: 250px;
+	border-left: 1px solid #666;
+}
+.controls-bar
+{
+	height: 36px;
+	border-bottom: 1px solid #666;
+}
+@sprite .mark-all-read
+{
+	gwt-image: "markAllReadImage";
+	float: right;
+	margin-right: 10px;
+}
+@sprite .settings-button
+{
+	gwt-image: "settingsImage";
+	float: right;
+	margin-right: 10px;
+}
+.no-notifications,
+.notification-list-scroll-panel
+{
+	height: 366px;
+}
+
+.source-filter
+{
+	height: 33px;
+	line-height: 33px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-bottom: 1px solid #CCC;
+}
+@sprite .source-filter-selected
+{
+	gwt-image: "activeBackground";
+	background-repeat: repeat-x;
+	width: auto;
+}
+.source-filter-indented
+{
+	padding-left: 25px;
+}
+
+.read-filter-options
+{
+	margin-left: 5px;
+}
+
+@if user.agent ie6 ie8 {
+	.modal
+	{
+		width: 700px;
+	}
+	.source-filter-selected
+	{
+		background-image: url("style/images/activeBackground.png");
+	}
+}
+
+</ui:style>
+
+
+<ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
+
+<g:HTMLPanel addStyleNames="{style.main}">
+	<g:ScrollPanel addStyleNames="{style.source-filters-scroll-panel}">
+		<g:FlowPanel ui:field="sourceFiltersPanel" />
+	</g:ScrollPanel>
+	
+	<div class="{style.right-side}">
+		<div class="{style.controls-bar}">
+			<div class="{coreCss.options} {style.read-filter-options}">
+				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel} {coreCss.active}" ui:field="unreadFilterUi">Unread</g:Label>
+				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel}" ui:field="allFilterUi">All</g:Label>
+			</div>
+			
+			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" />
+			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" />
+		</div>
+		<div class="{style.no-notifications}" ui:field="noNotificationsUi">No notifications</div>
+		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">
+			<g:FlowPanel ui:field="notificationListPanel" />
+		</g:ScrollPanel>
+	</div>
+</g:HTMLPanel>
+	
+</ui:UiBinder>

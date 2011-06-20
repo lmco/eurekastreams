@@ -33,7 +33,7 @@ public class GetStreamTotalCommentCountDbMapper extends BaseArgDomainMapper<Long
     public Long execute(final Long inRecipientStreamScopeId)
     {
         return (Long) getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM Comment WHERE target.recipientStreamScope.id = :recipientStreamScopeId")
+                "SELECT COUNT(id) FROM Comment WHERE target.recipientStreamScope.id = :recipientStreamScopeId")
                 .setParameter("recipientStreamScopeId", inRecipientStreamScopeId).getSingleResult();
     }
 

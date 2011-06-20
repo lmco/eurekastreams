@@ -15,30 +15,43 @@
  */
 package org.eurekastreams.server.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Generates URLs for images. Should be renamed to ImageUrlGenerator.
  */
 public class AvatarUrlGenerator
 {
-    /**
-     * Default avatar image.
-     */
-    private final String defaultPersonAvatar = "/style/images/noPhoto75.png";
+    /** Fallback normal size avatar. */
+    private static final String FALLBACK_NORMAL_AVATAR = "/style/images/noPhoto75-system.png";
 
-    /**
-     * Default small avatar image.
-     */
-    private final String defaultPersonAvatarSmall = "/style/images/noPhoto50.png";
+    /** Fallback small size avatar. */
+    private static final String FALLBACK_SMALL_AVATAR = "/style/images/noPhoto50-system.png";
 
-    /**
-     * Default avatar image.
-     */
-    private final String defaultGroupAvatar = "/style/images/noPhoto75-group.png";
+    /** Default avatars - normal size. */
+    private static final Map<EntityType, String> DEFAULT_NORMAL_AVATARS_BY_TYPE = new HashMap<EntityType, String>()
+    {
+        {
+            put(EntityType.PERSON, "/style/images/noPhoto75.png");
+            put(EntityType.GROUP, "/style/images/noPhoto75-group.png");
+            put(EntityType.APPLICATION, "/style/images/noPhoto75-app.png");
+            put(EntityType.NOTSET, "/style/images/noPhoto75-system.png");
+            put(null, FALLBACK_NORMAL_AVATAR);
+        }
+    };
 
-    /**
-     * Default small avatar image.
-     */
-    private final String defaultGroupAvatarSmall = "/style/images/noPhoto50-group.png";
+    /** Default avatars - small size. */
+    private static final Map<EntityType, String> DEFAULT_SMALL_AVATARS_BY_TYPE = new HashMap<EntityType, String>()
+    {
+        {
+            put(EntityType.PERSON, "/style/images/noPhoto50.png");
+            put(EntityType.GROUP, "/style/images/noPhoto50-group.png");
+            put(EntityType.APPLICATION, "/style/images/noPhoto50-app.png");
+            put(EntityType.NOTSET, "/style/images/noPhoto50-system.png");
+            put(null, FALLBACK_SMALL_AVATAR);
+        }
+    };
 
     /**
      * the default avatar for the specified type.
@@ -62,7 +75,7 @@ public class AvatarUrlGenerator
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inEntityType
      *            the type of the entity whose avatar will be displayed
      */
@@ -70,31 +83,28 @@ public class AvatarUrlGenerator
     {
         entityType = inEntityType;
 
-        if (entityType == EntityType.GROUP)
+        defaultAvatar = DEFAULT_NORMAL_AVATARS_BY_TYPE.get(inEntityType);
+        if (defaultAvatar == null)
         {
-            defaultAvatar = defaultGroupAvatar;
-            defaultAvatarSmall = defaultGroupAvatarSmall;
+            defaultAvatar = DEFAULT_NORMAL_AVATARS_BY_TYPE.get(null);
         }
-        else
+
+        defaultAvatarSmall = DEFAULT_SMALL_AVATARS_BY_TYPE.get(inEntityType);
+        if (defaultAvatarSmall == null)
         {
-            // Using Person as the catch-all, just in case.
-            defaultAvatar = defaultPersonAvatar;
-            defaultAvatarSmall = defaultPersonAvatarSmall;
+            defaultAvatarSmall = DEFAULT_SMALL_AVATARS_BY_TYPE.get(null);
         }
     }
 
     /**
      * Generates a url.
-     * 
-     * @param entityId
-     *            the id of the entity.
      * @param avatarId
      *            the id of the image.
      * @param prefix
      *            the prefix.
      * @return the url.
      */
-    private String generateUrl(final Long entityId, final String avatarId, final String prefix)
+    private String generateUrl(final String avatarId, final String prefix)
     {
         if (avatarId == null)
         {
@@ -109,7 +119,7 @@ public class AvatarUrlGenerator
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(getImageDirectory(entityId));
+        sb.append(getImageDirectory());
         sb.append("?img=");
         sb.append(prefix);
         sb.append(avatarId);
@@ -118,22 +128,17 @@ public class AvatarUrlGenerator
 
     /**
      * gets the image directory.
-     * 
-     * @param id
-     *            the entity id.
-     * @return the image director.
+     *
+     * @return the image directory.
      */
-    public String getImageDirectory(final Long id)
+    public String getImageDirectory()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("/eurekastreams/photos");
-
-        return sb.toString();
+        return "/eurekastreams/photos";
     }
 
     /**
      * Gets the original avatar url.
-     * 
+     *
      * @param entityId
      *            the entity id.
      * @param avatarId
@@ -142,12 +147,12 @@ public class AvatarUrlGenerator
      */
     public String getOriginalAvatarUrl(final Long entityId, final String avatarId)
     {
-        return generateUrl(entityId, avatarId, "o");
+        return generateUrl(avatarId, "o");
     }
 
     /**
      * Gets the normal avatar url.
-     * 
+     *
      * @param entityId
      *            the entity id.
      * @param avatarId
@@ -156,12 +161,12 @@ public class AvatarUrlGenerator
      */
     public String getNormalAvatarUrl(final Long entityId, final String avatarId)
     {
-        return generateUrl(entityId, avatarId, "n");
+        return generateUrl(avatarId, "n");
     }
 
     /**
      * Gets the small avatar url.
-     * 
+     *
      * @param entityId
      *            the entity id.
      * @param avatarId
@@ -170,12 +175,12 @@ public class AvatarUrlGenerator
      */
     public String getSmallAvatarUrl(final Long entityId, final String avatarId)
     {
-        return generateUrl(entityId, avatarId, "s");
+        return generateUrl(avatarId, "s");
     }
 
     /**
      * Gets the banner url.
-     * 
+     *
      * @param bannerId
      *            the banner id.
      * @return the banner url.
@@ -188,6 +193,6 @@ public class AvatarUrlGenerator
         }
 
         // TODO: passing null in for the org id because it isn't needed anymore. This signature needs to be cleaned up.
-        return generateUrl(null, bannerId, "n");
+        return generateUrl(bannerId, "n");
     }
 }
