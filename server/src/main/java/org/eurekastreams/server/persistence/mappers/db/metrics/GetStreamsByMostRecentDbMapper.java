@@ -63,7 +63,8 @@ public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializ
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, followersCount, dateAdded) FROM Person ORDER BY dateAdded DESC");
+                        + "preferredName, lastName, followersCount, dateAdded, streamScope.id) "
+                        + "FROM Person ORDER BY dateAdded DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();
@@ -72,7 +73,8 @@ public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializ
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
-                        + "shortName, name, followersCount, dateAdded) FROM DomainGroup ORDER BY dateAdded DESC");
+                        + "shortName, name, followersCount, dateAdded, streamScope.id) "
+                        + "FROM DomainGroup ORDER BY dateAdded DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();

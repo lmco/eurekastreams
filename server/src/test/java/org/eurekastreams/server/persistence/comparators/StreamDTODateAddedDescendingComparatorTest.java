@@ -41,8 +41,8 @@ public class StreamDTODateAddedDescendingComparatorTest
     public void testCompareWhenEqualGroupAndPerson()
     {
         Date sharedDate = new Date();
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate);
-        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, sharedDate);
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate, 1L);
+        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, sharedDate, 2L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
         Assert.assertTrue(sut.compare(gmv, pmv) < 0);
@@ -55,8 +55,8 @@ public class StreamDTODateAddedDescendingComparatorTest
     public void testCompareWhenTwoPeopleEqual()
     {
         Date sharedDate = new Date();
-        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate);
-        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, sharedDate);
+        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate, 3L);
+        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, sharedDate, 4L);
 
         Assert.assertEquals(0, sut.compare(pmv1, pmv2));
     }
@@ -68,8 +68,8 @@ public class StreamDTODateAddedDescendingComparatorTest
     public void testCompareWhenTwoGroupsEqual()
     {
         Date sharedDate = new Date();
-        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L, sharedDate);
-        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L, sharedDate);
+        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L, sharedDate, 5L);
+        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L, sharedDate, 6L);
 
         Assert.assertEquals(0, sut.compare(gmv1, gmv2));
     }
@@ -86,8 +86,8 @@ public class StreamDTODateAddedDescendingComparatorTest
         cal.add(Calendar.HOUR, -1);
         Date earlier = cal.getTime();
 
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, earlier);
-        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, newer);
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, earlier, 7L);
+        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, newer, 8L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
         Assert.assertTrue(sut.compare(gmv, pmv) < 0);

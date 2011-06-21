@@ -38,8 +38,8 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenEqualGroupAndPerson()
     {
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date());
-        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, new Date());
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date(), 4L);
+        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, new Date(), 5L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
         Assert.assertTrue(sut.compare(gmv, pmv) < 0);
@@ -51,8 +51,8 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenTwoPeopleEqual()
     {
-        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date());
-        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, new Date());
+        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date(), 6L);
+        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, new Date(), 7L);
 
         Assert.assertEquals(0, sut.compare(pmv1, pmv2));
     }
@@ -63,8 +63,8 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenTwoGroupsEqual()
     {
-        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L, new Date());
-        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L, new Date());
+        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L, new Date(), 8L);
+        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L, new Date(), 9L);
 
         Assert.assertEquals(0, sut.compare(gmv1, gmv2));
     }
@@ -75,8 +75,8 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenGroupAndPersonHaveDifferentFollowerCounts()
     {
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, new Date());
-        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, new Date());
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, new Date(), 10L);
+        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, new Date(), 11L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
         Assert.assertTrue(sut.compare(gmv, pmv) < 0);

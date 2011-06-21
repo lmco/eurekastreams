@@ -45,4 +45,9 @@ public interface StreamDTO extends FollowerStatusable, Followable
      * @return the date added.
      */
     Date getDateAdded();
+
+    /**
+     * @return the stream scope id.
+     */
+    Long getStreamScopeId();
 }

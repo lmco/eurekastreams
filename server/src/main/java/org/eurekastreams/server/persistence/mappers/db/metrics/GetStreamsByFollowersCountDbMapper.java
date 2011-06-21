@@ -63,8 +63,8 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, followersCount, dateAdded) FROM Person WHERE followersCount > 0 "
-                        + "ORDER BY followersCount DESC");
+                        + "preferredName, lastName, followersCount, dateAdded, streamScope.id) "
+                        + "FROM Person WHERE followersCount > 0 ORDER BY followersCount DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();
@@ -73,8 +73,8 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
-                        + "shortName, name, followersCount, dateAdded) FROM DomainGroup WHERE followersCount > 0 "
-                        + "ORDER BY followersCount DESC");
+                        + "shortName, name, followersCount, dateAdded, streamScope.id) "
+                        + "FROM DomainGroup WHERE followersCount > 0 ORDER BY followersCount DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();

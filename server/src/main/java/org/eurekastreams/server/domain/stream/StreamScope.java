@@ -39,7 +39,7 @@ public class StreamScope extends DomainEntity implements Serializable
     private static final long serialVersionUID = -8038373583543778383L;
 
     /**
-     * Max unique key lenght.
+     * Max unique key length.
      */
     private static final int MAX_UNIQUEKEY_LENGTH = 2000;
 
