@@ -44,6 +44,16 @@ public class StreamDiscoverListsMapper
     private DomainMapper<Serializable, List<StreamDTO>> mostViewedStreamsMapper;
 
     /**
+     * Mapper to retrieve the most followed stream DTOs.
+     */
+    private DomainMapper<Serializable, List<StreamDTO>> mostFollowedStreamsMapper;
+
+    /**
+     * Mapper to retrieve the most recent stream DTOs.
+     */
+    private DomainMapper<Serializable, List<StreamDTO>> mostRecentStreamsMapper;
+
+    /**
      * Temporary method to avoid checkstyle complaint.
      */
     public void doNothing()
