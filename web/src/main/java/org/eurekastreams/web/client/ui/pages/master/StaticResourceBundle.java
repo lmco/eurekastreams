@@ -140,6 +140,10 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/moveBtnActive.png")
     ImageResource moveBtnActive();
 
+    @Source("style/images/titleBarBackground.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource titleBarBg();
+
     @Source("style/images/modalCloseBtn.png")
     ImageResource modalCloseBtn();
 

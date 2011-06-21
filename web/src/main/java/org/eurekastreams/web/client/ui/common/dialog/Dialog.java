@@ -25,7 +25,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -80,7 +79,7 @@ public class Dialog implements DialogContentHost
         FlowPanel titlePanel = new FlowPanel();
         titlePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalTitle());
 
-        Anchor closeButton = new Anchor("Close");
+        Label closeButton = new Label("Close");
         closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalClose());
         titlePanel.add(closeButton);
         closeButton.addClickHandler(new ClickHandler()
@@ -92,6 +91,7 @@ public class Dialog implements DialogContentHost
         });
 
         Label title = new Label(dialogContent.getTitle());
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalTitleText());
         titlePanel.add(title);
 
         modalPanel.add(titlePanel);
