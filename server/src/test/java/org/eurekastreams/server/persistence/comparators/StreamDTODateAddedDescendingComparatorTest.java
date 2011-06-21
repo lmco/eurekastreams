@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.strategies;
+package org.eurekastreams.server.persistence.comparators;
+
+import java.util.Date;
 
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.icu.util.Calendar;
+
 /**
- * Test fixture for StreamDTOFollowerCountComparator.
+ * Test fixture for StreamDTODateAddedDescendingComparator.
  */
-public class StreamDTOFollowerCountComparatorTest
+public class StreamDTODateAddedDescendingComparatorTest
 {
     /**
      * System under test.
      */
-    private StreamDTOFollowerCountComparator sut = new StreamDTOFollowerCountComparator();
+    private StreamDTODateAddedDescendingComparator sut = new StreamDTODateAddedDescendingComparator();
 
     /**
      * Test compare when PersonModelView and DomainGroupModelView are passed in with the same follower count.
@@ -36,8 +40,9 @@ public class StreamDTOFollowerCountComparatorTest
     @Test
     public void testCompareWhenEqualGroupAndPerson()
     {
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L);
-        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L);
+        Date sharedDate = new Date();
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate);
+        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, sharedDate);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
         Assert.assertTrue(sut.compare(gmv, pmv) < 0);
@@ -49,8 +54,9 @@ public class StreamDTOFollowerCountComparatorTest
     @Test
     public void testCompareWhenTwoPeopleEqual()
     {
-        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L);
-        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L);
+        Date sharedDate = new Date();
+        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate);
+        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, sharedDate);
 
         Assert.assertEquals(0, sut.compare(pmv1, pmv2));
     }
@@ -61,8 +67,9 @@ public class StreamDTOFollowerCountComparatorTest
     @Test
     public void testCompareWhenTwoGroupsEqual()
     {
-        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L);
-        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L);
+        Date sharedDate = new Date();
+        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L, sharedDate);
+        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L, sharedDate);
 
         Assert.assertEquals(0, sut.compare(gmv1, gmv2));
     }
@@ -71,12 +78,18 @@ public class StreamDTOFollowerCountComparatorTest
      * Test compare when PersonModelView and DomainGroupModelView are passed in with different follower counts.
      */
     @Test
-    public void testCompareWhenGroupAndPersonHaveDifferentFollowerCounts()
+    public void testCompareWhenGroupAndPersonHaveDifferentDates()
     {
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L);
-        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L);
+        Calendar cal = Calendar.getInstance();
+        Date newer = cal.getTime();
 
-        Assert.assertTrue(sut.compare(pmv, gmv) > 0);
-        Assert.assertTrue(sut.compare(gmv, pmv) < 0);
+        cal.add(Calendar.HOUR, -1);
+        Date earlier = cal.getTime();
+
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, earlier);
+        DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, newer);
+
+        Assert.assertTrue(sut.compare(pmv, gmv) < 0);
+        Assert.assertTrue(sut.compare(gmv, pmv) > 0);
     }
 }

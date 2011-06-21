@@ -22,15 +22,15 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.dto.StreamDTO;
-import org.eurekastreams.server.persistence.comparators.StreamDTOFollowerCountDescendingComparator;
+import org.eurekastreams.server.persistence.comparators.StreamDTODateAddedDescendingComparator;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
- * DB mapper to get the top N streams sorted by follower count.
+ * DB Mapper to get the top N stream sorted by most recent.
  */
-public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Serializable, List<StreamDTO>>
+public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializable, List<StreamDTO>>
 {
     /**
      * Number of streams to get.
@@ -43,17 +43,17 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
      * @param inStreamCount
      *            the number of streams to fetch
      */
-    public GetStreamsByFollowersCountDbMapper(final Integer inStreamCount)
+    public GetStreamsByMostRecentDbMapper(final Integer inStreamCount)
     {
         streamCount = inStreamCount;
     }
 
     /**
-     * Get the top N streams sorted by follower count.
+     * Get the top N streams sorted by most recent.
      * 
      * @param inIgnored
      *            I don't personally care what you pass in here
-     * @return a list of StreamDTOs of the most followed streams
+     * @return a list of StreamDTOs of the most recent streams
      */
     @Override
     public List<StreamDTO> execute(final Serializable inIgnored)
@@ -63,8 +63,7 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, followersCount, dateAdded) FROM Person WHERE followersCount > 0 "
-                        + "ORDER BY followersCount DESC");
+                        + "preferredName, lastName, followersCount, dateAdded) FROM Person ORDER BY dateAdded DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();
@@ -73,8 +72,7 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
-                        + "shortName, name, followersCount, dateAdded) FROM DomainGroup WHERE followersCount > 0 "
-                        + "ORDER BY followersCount DESC");
+                        + "shortName, name, followersCount, dateAdded) FROM DomainGroup ORDER BY dateAdded DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();
@@ -82,7 +80,7 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
         results.addAll(q.getResultList());
 
         // sort the list
-        Collections.sort(results, new StreamDTOFollowerCountDescendingComparator());
+        Collections.sort(results, new StreamDTODateAddedDescendingComparator());
         if (results.size() > streamCount)
         {
             results = results.subList(0, streamCount);

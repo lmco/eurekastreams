@@ -45,15 +45,15 @@ public class GetSuggestedPeopleForPersonDbMapper extends
         Query query = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(peopleTheyFollow.pk.followingId, "
                         + "person.accountId, person.preferredName, person.lastName, "
-                        + "COUNT(peopleTheyFollow.pk.followingId)) "
+                        + "COUNT(peopleTheyFollow.pk.followingId), person.dateAdded) "
                         + "FROM Follower peopleIFollow, Follower peopleTheyFollow, Person person "
                         + "WHERE peopleIFollow.pk.followingId = peopleTheyFollow.pk.followerId "
                         + "AND peopleIFollow.pk.followerId = :personId AND peopleTheyFollow.pk.followingId NOT IN "
                         + "(SELECT pk.followingId FROM Follower WHERE followerId = :personId) "
                         + "AND person.id = peopleTheyFollow.pk.followingId "
                         + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
-                        + "person.lastName ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC").setParameter(
-                "personId", inRequest.getPersonId());
+                        + "person.lastName, person.dateAdded ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC")
+                .setParameter("personId", inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());
         return query.getResultList();
     }

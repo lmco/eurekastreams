@@ -324,14 +324,17 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the person last name
      * @param inFollowerCount
      *            the number of followers
+     * @param inDateAdded
+     *            the date this stream was created
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final Long inFollowerCount)
+            final String inLastName, final Long inFollowerCount, final Date inDateAdded)
     {
         setEntityId(inId);
         setAccountId(inAccountId);
         setDisplayName(inPreferredName + " " + inLastName);
         setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
     }
 
     /**
@@ -347,14 +350,17 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the person last name
      * @param inFollowerCount
      *            the number of followers
+     * @param inDateAdded
+     *            the date this stream was created
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final Integer inFollowerCount)
+            final String inLastName, final Integer inFollowerCount, final Date inDateAdded)
     {
         setEntityId(inId);
         setAccountId(inAccountId);
         setDisplayName(inPreferredName + " " + inLastName);
         setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
     }
 
     /**

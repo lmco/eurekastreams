@@ -246,14 +246,17 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      *            the domain group name
      * @param inFollowerCount
      *            the number of followers
+     * @param inDateAdded
+     *            the date added
      */
     public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
-            final Long inFollowerCount)
+            final Long inFollowerCount, final Date inDateAdded)
     {
         setEntityId(inId);
         setShortName(inShortName);
         setName(inName);
         setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
     }
 
     /**
@@ -267,14 +270,17 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      *            the domain group name
      * @param inFollowerCount
      *            the number of followers
+     * @param inDateAdded
+     *            the date added
      */
     public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
-            final Integer inFollowerCount)
+            final Integer inFollowerCount, final Date inDateAdded)
     {
         setEntityId(inId);
         setShortName(inShortName);
         setName(inName);
         setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
     }
 
     /**

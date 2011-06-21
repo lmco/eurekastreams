@@ -44,13 +44,13 @@ public class GetSuggestedGroupsForPersonDbMapper extends
     {
         Query query = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(g.id, "
-                        + "g.shortName, g.name, COUNT(theirGroups.pk.followingId)) "
+                        + "g.shortName, g.name, COUNT(theirGroups.pk.followingId), g.dateAdded) "
                         + "FROM Follower peopleIFollow, GroupFollower theirGroups, DomainGroup g "
                         + "WHERE peopleIFollow.pk.followingId = theirGroups.pk.followerId "
                         + "AND theirGroups.pk.followingId = g.id "
                         + "AND peopleIFollow.pk.followerId = :personId AND theirGroups.pk.followingId NOT IN "
                         + "(SELECT pk.followingId FROM GroupFollower WHERE followerId = :personId) "
-                        + "GROUP BY theirGroups.pk.followingId, g.id, g.shortName, g.name "
+                        + "GROUP BY theirGroups.pk.followingId, g.id, g.shortName, g.name, g.dateAdded "
                         + "ORDER BY COUNT(theirGroups.pk.followingId) DESC").setParameter("personId",
                 inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());

@@ -23,9 +23,9 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.persistence.comparators.StreamDTOFollowerCountDescendingComparator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
-import org.eurekastreams.server.persistence.strategies.StreamDTOFollowerCountComparator;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -85,7 +85,7 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
         suggestions.addAll(suggestedGroupMapper.execute(mapperRequest));
 
         // sort the list
-        Collections.sort(suggestions, new StreamDTOFollowerCountComparator());
+        Collections.sort(suggestions, new StreamDTOFollowerCountDescendingComparator());
 
         // return those requested
         suggestions = new ArrayList<StreamDTO>(suggestions.subList(0, suggestionCount));

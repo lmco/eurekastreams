@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.strategies;
+package org.eurekastreams.server.persistence.comparators;
 
 import java.util.Comparator;
 
@@ -24,7 +24,7 @@ import org.eurekastreams.server.domain.dto.StreamDTO;
  * Comparator to compare two StreamDTOs based on following count, descending, sorting groups before people when there's
  * a tie.
  */
-public class StreamDTOFollowerCountComparator implements Comparator<StreamDTO>
+public class StreamDTOFollowerCountDescendingComparator implements Comparator<StreamDTO>
 {
     /**
      * Compare the input StreamDTOs, based on follower count, descending, returning groups before people on tie.
