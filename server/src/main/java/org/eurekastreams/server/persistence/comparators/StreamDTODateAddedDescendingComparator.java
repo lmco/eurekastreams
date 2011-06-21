@@ -38,7 +38,7 @@ public class StreamDTODateAddedDescendingComparator implements Comparator<Stream
     @Override
     public int compare(final StreamDTO inA, final StreamDTO inB)
     {
-        if (inA.getDateAdded() == inB.getDateAdded())
+        if (inA.getDateAdded().compareTo(inB.getDateAdded()) == 0)
         {
             // sort groups ahead of people
             if (inA.getEntityType() == EntityType.GROUP && inB.getEntityType() == EntityType.PERSON)
@@ -51,6 +51,6 @@ public class StreamDTODateAddedDescendingComparator implements Comparator<Stream
             }
             return 0;
         }
-        return inA.getDateAdded().compareTo(inB.getDateAdded());
+        return inB.getDateAdded().compareTo(inA.getDateAdded());
     }
 }
