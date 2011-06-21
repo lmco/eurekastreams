@@ -89,7 +89,7 @@ public class StreamDTODateAddedDescendingComparatorTest
         PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, earlier);
         DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, newer);
 
-        Assert.assertTrue(sut.compare(pmv, gmv) < 0);
-        Assert.assertTrue(sut.compare(gmv, pmv) > 0);
+        Assert.assertTrue(sut.compare(pmv, gmv) > 0);
+        Assert.assertTrue(sut.compare(gmv, pmv) < 0);
     }
 }
