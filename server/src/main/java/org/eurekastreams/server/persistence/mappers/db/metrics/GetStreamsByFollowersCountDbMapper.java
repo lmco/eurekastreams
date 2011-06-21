@@ -38,7 +38,10 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
     private Integer streamCount;
 
     /**
+     * Constructor.
+     * 
      * @param inStreamCount
+     *            the number of streams to fetch
      */
     public GetStreamsByFollowersCountDbMapper(final Integer inStreamCount)
     {
@@ -50,6 +53,7 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
      * 
      * @param inIgnored
      *            I don't personally care what you pass in here
+     * @return a list of StreamDTOs of the most followed streams
      */
     @Override
     public List<StreamDTO> execute(final Serializable inIgnored)
