@@ -2,10 +2,11 @@
 	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-<ui:image field="activeBackground" src="style/images/activeBackground.png" />
-<ui:image field="markAllReadImage" src="style/images/verifyGoodIcon.png" />
-<ui:image field="settingsImage" src="style/images/notifySettingsIcon.png" />
-
+<ui:image field="activeBackground" src="style/images/activeBackground.png" repeatStyle="Horizontal" />
+<ui:image field="markAllReadImage" src="style/images/notifications/MarkAsRead.png" />
+<ui:image field="markAllReadHoverImage" src="style/images/notifications/MarkAsReadHover.png" />
+<ui:image field="settingsImage" src="style/images/notifications/settings.png" />
+<ui:image field="settingsHoverImage" src="style/images/notifications/settingsHover.png" />
 
 <ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
 .modal
@@ -15,7 +16,6 @@
 {
 	width: 700px;
 	height: 400px;
-	/*overflow: auto;*/
 }
 .source-filters-scroll-panel
 {
@@ -38,12 +38,24 @@
 	gwt-image: "markAllReadImage";
 	float: right;
 	margin-right: 10px;
+	margin-top: 8px;
+	cursor: pointer;
+}
+@sprite .mark-all-read:hover
+{
+	gwt-image: "markAllReadHoverImage";
 }
 @sprite .settings-button
 {
 	gwt-image: "settingsImage";
 	float: right;
 	margin-right: 10px;
+	margin-top: 8px;
+	cursor: pointer;
+}
+@sprite .settings-button:hover
+{
+	gwt-image: "settingsHoverImage";
 }
 .no-notifications,
 .notification-list-scroll-panel
@@ -62,8 +74,6 @@
 @sprite .source-filter-selected
 {
 	gwt-image: "activeBackground";
-	background-repeat: repeat-x;
-	width: auto;
 }
 .source-filter-indented
 {
@@ -80,17 +90,16 @@
 	{
 		width: 700px;
 	}
-	.source-filter-selected
+	.no-notifications,
+	.notification-list-scroll-panel
 	{
-		background-image: url("style/images/activeBackground.png");
+		height: 363px;
 	}
 }
-
 </ui:style>
 
 
 <ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
-<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
 
 <g:HTMLPanel addStyleNames="{style.main}">
 	<g:ScrollPanel addStyleNames="{style.source-filters-scroll-panel}">

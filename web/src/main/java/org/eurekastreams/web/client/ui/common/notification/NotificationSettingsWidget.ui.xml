@@ -24,7 +24,6 @@
 }
 .top-bar > *
 {
-	/*float: left;*/
 	margin-left: 10px;
 	vertical-align: middle;
 }
@@ -69,6 +68,7 @@
 .grid tr:first-child > td:first-child
 {
 	font-weight: bold;
+	padding-right: 20px;
 }
 .grid tr > td
 {
@@ -90,8 +90,6 @@
 }
 .buttons-row > *
 {
-	/*float: left;
-	margin-right: 5px;*/
 	display: inline-block;
 	vertical-align: middle;
 	margin-top: 15px;
@@ -117,9 +115,6 @@
 	}
 }
 </ui:style>
-
-<!-- <ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" /> -->
-<!-- <ui:with field="globalResources" type="org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle" /> -->
 
 <g:HTMLPanel addStyleNames="{style.main}">
 	<div class="{style.top-bar}">

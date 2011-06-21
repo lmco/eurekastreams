@@ -1289,6 +1289,9 @@ public interface CoreCss extends CssResource
     @ClassName("modal-title")
     String modalTitle();
 
+    @ClassName("modal-title-text")
+    String modalTitleText();
+
     @ClassName("more-button")
     String moreButton();
 
@@ -1407,6 +1410,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("notif-settings-panel")
     String notifSettingsPanel();
+
+    @ClassName("notification-settings-modal")
+    String notificationSettingsModal();
 
     //
     // @ClassName("notif-text-side")

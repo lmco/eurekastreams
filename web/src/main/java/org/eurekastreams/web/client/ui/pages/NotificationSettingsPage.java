@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.notification.NotificationSettingsWidget;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -63,6 +64,12 @@ public class NotificationSettingsPage extends SimplePanel
             public Widget getBody()
             {
                 return settingsWidget;
+            }
+
+            @Override
+            public String getCssName()
+            {
+                return StaticResourceBundle.INSTANCE.coreCss().notificationSettingsModal();
             }
         };
         Dialog newDialog = new Dialog(dialogContent)
