@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
@@ -52,10 +54,17 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
     @Override
     public List<Long> execute(final Serializable inIgnored)
     {
-        return getEntityManager().createQuery(
+        Query q = getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
                         + "ORDER BY SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
-                .setParameter("nowInMS", new Date().getTime()).setMaxResults(streamCount).getResultList();
+                .setParameter("nowInMS", new Date().getTime());
+
+        if (streamCount > 0)
+        {
+            q.setMaxResults(streamCount);
+        }
+
+        return q.getResultList();
     }
 }
