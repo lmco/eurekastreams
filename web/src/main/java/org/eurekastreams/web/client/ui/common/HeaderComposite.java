@@ -75,7 +75,7 @@ public class HeaderComposite extends Composite
     FlowPanel siteLabelingContainer = new FlowPanel();
 
     /** The search box. */
-    private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("search profiles");
+    private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("Find a Stream");
 
     /**
      * Notification Count widget.
@@ -120,17 +120,17 @@ public class HeaderComposite extends Composite
         FlowPanel panel = new FlowPanel();
         FlowPanel navPanel = new FlowPanel();
 
-        Anchor externalLink = new Anchor("Eureka Streams", "http://www.eurekastreams.org", "_blank");
+        Anchor externalLink = new Anchor("EurekaStreams.org", "http://www.eurekastreams.org", "_blank");
         externalLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
-        Hyperlink startPageLink = new Hyperlink("Start Page", Session.getInstance().generateUrl(
+        Hyperlink startPageLink = new Hyperlink("Start", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.START)));
         startPageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
         Hyperlink activityLink = new Hyperlink("Activity", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ACTIVITY)));
         activityLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
-        Hyperlink directoryLink = new Hyperlink("Profiles", Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ORGANIZATIONS)));
+        Hyperlink directoryLink = new Hyperlink("Discover", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.DISCOVER)));
         directoryLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         Hyperlink settingsLink = new Hyperlink("Settings", Session.getInstance().generateUrl(
@@ -139,8 +139,6 @@ public class HeaderComposite extends Composite
         Hyperlink myProfileLink = new Hyperlink("My Profile", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PEOPLE, viewer.getAccountId())));
         myProfileLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
-        Hyperlink helpLink = new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP)));
-        helpLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         externalPageLinkPanel.add(externalLink);
         externalPageLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().externalHeaderButton());
@@ -149,7 +147,7 @@ public class HeaderComposite extends Composite
         activityLinkPanel.add(activityLink);
         activityLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityHeaderButton());
         directoryLinkPanel.add(directoryLink);
-        directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().directoryHeaderButton());
+        directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverHeaderButton());
         settingsLinkPanel.add(settingsLink);
         settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
 
@@ -157,13 +155,12 @@ public class HeaderComposite extends Composite
 
         linkMap.put(Page.START, startPageLink);
         linkMap.put(Page.ACTIVITY, activityLink);
-        linkMap.put(Page.ORGANIZATIONS, directoryLink);
+        linkMap.put(Page.DISCOVER, directoryLink);
         linkMap.put(Page.GROUPS, directoryLink);
         linkMap.put(Page.PEOPLE, directoryLink);
         linkMap.put(Page.GROUP_SETTINGS, directoryLink);
         linkMap.put(Page.PERSONAL_SETTINGS, directoryLink);
         linkMap.put(Page.SETTINGS, settingsLink);
-        linkMap.put(Page.HELP, helpLink);
         // linkMap.put(HeaderLink.GALLERY, galleryLinkPanel);
 
         HorizontalULPanel mainNav = new HorizontalULPanel();
@@ -175,8 +172,6 @@ public class HeaderComposite extends Composite
 
         if (null == viewer) // The user is NOT logged in.
         {
-            userNav.add(new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP))));
-
             final Dialog loginDialog = DialogFactory.getDialog("login");
 
             Hyperlink loginLink = new Hyperlink();
@@ -204,15 +199,9 @@ public class HeaderComposite extends Composite
 
             FlowPanel myProfileLinkPanel = new FlowPanel();
             myProfileLinkPanel.add(myProfileLink);
-            myProfileLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().myProfileHeaderButton());
             userNav.add(myProfileLinkPanel);
 
             userNav.add(settingsLinkPanel);
-
-            FlowPanel helpLinkPanel = new FlowPanel();
-            helpLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpHeaderButton());
-            helpLinkPanel.add(helpLink);
-            userNav.add(helpLinkPanel);
 
             if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
             {

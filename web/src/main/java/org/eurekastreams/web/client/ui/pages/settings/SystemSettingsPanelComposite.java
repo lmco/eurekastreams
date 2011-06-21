@@ -380,10 +380,6 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormElement(promptInterval);
         form.addFormDivider();
 
-        // Help Page
-        addHelpPageElementsToForm(systemSettingValues, form);
-        form.addFormDivider();
-
         form.addFormElement(activityExp);
         form.addFormDivider();
 
@@ -409,60 +405,6 @@ public class SystemSettingsPanelComposite extends FlowPanel
         this.add(form);
 
         tosElement.addCheckBoxClickListener(hideTOSIntPanel);
-    }
-
-    /**
-     * Add the help page elements to the form builder.
-     *
-     * @param systemSettingValues
-     *            the system settings
-     * @param form
-     *            the form builder to add the help page elements to
-     */
-    private void addHelpPageElementsToForm(final SystemSettings systemSettingValues, final FormBuilder form)
-    {
-        FlowPanel container = new FlowPanel();
-        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
-        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpPageSettings());
-
-        Label helpPageHeaderLabel = new Label("Help Page");
-        helpPageHeaderLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
-        container.add(helpPageHeaderLabel);
-
-        FlowPanel instructionsPanel = new FlowPanel();
-        instructionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
-        instructionsPanel.add(new InlineLabel("The information listed below will appear on the "));
-        instructionsPanel.add(new InlineHyperlink("help", Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.HELP))));
-        instructionsPanel.add(new InlineLabel(" page."));
-        container.add(instructionsPanel);
-
-        form.addWidget(container);
-
-        BasicTextBoxFormElement helpSupportPhoneNumber = new BasicTextBoxFormElement(MAX_PHONE, false,
-                "Support Phone Number", "supportPhoneNumber", "", "", false);
-        helpSupportPhoneNumber.setValue(systemSettingValues.getSupportPhoneNumber() == null ? "" : systemSettingValues
-                .getSupportPhoneNumber());
-
-        BasicTextBoxFormElement helpSupportEmailAddress = new BasicTextBoxFormElement(MAX_EMAIL, false,
-                "Support Email Address", "supportEmailAddress", "", "", false);
-        helpSupportEmailAddress.setValue(systemSettingValues.getSupportEmailAddress() == null ? ""
-                : systemSettingValues.getSupportEmailAddress());
-
-        helpSupportPhoneNumber.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpFormElement());
-        helpSupportEmailAddress.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpFormElement());
-
-        if (systemSettingValues.getSupportStreamGroupShortName() != null)
-        {
-            StreamScope scope = new StreamScope(ScopeType.GROUP, systemSettingValues.getSupportStreamGroupShortName());
-            scope.setDisplayName(systemSettingValues.getSupportStreamGroupDisplayName());
-            scopes.add(scope);
-        }
-        form.addFormElement(new StreamScopeFormElement("supportStreamGroupShortName", scopes, "Support Stream",
-                "Enter the name of the stream you want to display on the help page", false, false,
-                "/resources/autocomplete/groups/", MAX_GROUP_NAME, 1));
-        form.addFormElement(helpSupportPhoneNumber);
-        form.addFormElement(helpSupportEmailAddress);
     }
 
     /**

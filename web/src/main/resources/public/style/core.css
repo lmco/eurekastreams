@@ -178,8 +178,8 @@ body .main-contents .header-container {
 }
 
 .header-bar .site-labeling {
-	position: relative;
-	top: 2px;
+	position: absolute;
+	top: 53px;
 }
 
 @sprite .header-bar .search-list {
@@ -187,6 +187,7 @@ body .main-contents .header-container {
 	background-repeat: repeat-x;
 	height: 24px;
 	width: auto;
+	overflow: visible;
 }
 
 .header-bar {
@@ -202,101 +203,78 @@ body .main-contents .header-container {
 	width: 100%;
 	position: relative;
 	color: white;
-}
-
-@if user.agent ie6 ie8 {
-	.main-nav .active {
-		background-position-y: -35px;
-	}
-} @else {
-	.main-nav .active {
-		background-position: 0 -35px;
-	}	
-}
-
-.external-header-button,.nav-bar-button {
-	height: 35px;
-	overflow: hidden;
+	overflow: visible;
 }
 
 .nav-bar-button {
-	width: 50px;
 }
 
-.header-bar .nav-bar .nav-bar-button a {
-	font-size: 12px;
-	display: block;
-	height: 35px;
+.header-bar .nav-bar .main-nav .nav-bar-button a {
 	overflow: hidden;
-	padding-top: 35px;
+	text-indent: 1000em;
+	display: block;
+	height: 50px;
 }
 
 @sprite .external-header-button {
 	gwt-image: "navLogo";
 	cursor: pointer;
+	cursor: pointer;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 13px !important;
+    overflow: hidden;
+    width: 28px;
 }
 
 .external-header-button a {
 	display: block;
-	height: 35px;
 	overflow: hidden;
-	padding-top: 35px;
+	text-indent: 1000em;
 }
 
-@sprite .start-header-button>div {
+@sprite .start-header-button > div > a{
 	gwt-image: "navStartPage";
 }
 
-@sprite .activity-header-button>div {
+@sprite .activity-header-button > div  > a {
 	gwt-image: "navActivity";
 }
 
-@sprite .directory-header-button>div {
-	gwt-image: "navProfiles";
+@sprite .discover-header-button > div  > a {
+	gwt-image: "navDiscover";
 }
 
-@sprite .my-profile-header-button>div {
-	gwt-image: "navMyProfile";
+@sprite .start-header-button > div.active > a{
+	gwt-image: "navStartPageActive";
 }
 
-@sprite .settings-header-button>div {
-	gwt-image: "navSettings";
+@sprite .activity-header-button > div.active  > a {
+	gwt-image: "navActivityActive";
 }
 
-@sprite .help-header-button>div {
-	gwt-image: "navHelp";
+@sprite .discover-header-button > div.active  > a {
+	gwt-image: "navDiscoverActive";
 }
+
+.settings-header-button>div {
+}
+
 
 .nav-bar ul.horizontal li div {
 	display: inline-block;
 	margin-top: 0px;
 }
 
-.nav-bar ul.horizontal li div.gwt-HTML {
-	padding-top: 10px;
-}
-
-.main-nav {
-	height: 35px;
-}
-
 .main-nav>li,.user-bar>li>div {
-	height: 35px;
 	overflow: hidden;
 }
 
 .header-bar a,.header-bar a:link,.header-bar a:visited,.header-bar a:hover,.header-bar a:active
 	{
-	padding-left: 15px;
-	color: black;
+	color: white;
 	text-decoration: none;
 	font-size: 11px;
-}
-
-body .main-nav  a,body .main-nav a:link,body .main-nav a:visited,body .main-nav a:hover,body .main-nav a:active
-	{
-	color: #bbb;
-	padding-right: 15px;
 }
 
 body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a:visited,body .main-nav .active a:hover,body .main-nav .active a:active
@@ -321,10 +299,12 @@ body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a
 
 .header-bar ul.user-bar {
 	float: right;
-	margin-top: 0;
+	margin-top: 15px;
 	padding-top: 0;
 	margin-bottom: 0;
-	height: 25px;
+	height: 50px;
+	color: white;
+	
 }
 
 .header-bar ul.user-bar li {
@@ -354,6 +334,8 @@ ul.horizontal li div {
 	color: #999999;
 	padding-right: 0px;
 }
+
+
 
 ul.barred li {
 	padding-left: 0px;
@@ -1578,9 +1560,53 @@ body .post-expanded-panel .content-warning {
 
 .header-bar .search-list {
 	position: relative;
-	top: 5px;
+	top: -3px;
 	margin-left: 1px;
 	margin-right: 3px;
+}
+
+.searchResultsAutocompleteResults
+{
+	position: absolute;
+	background-color: white;
+	top: 38px;
+	padding-left: 0;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	width: 228px;
+	z-index: 1001;
+	border-bottom: 1px solid #999;
+	border-right: 1px solid #999;
+	border-left: 1px solid #999;
+}
+
+.searchResultsAutocompleteResults > div > div
+{
+	padding-bottom: 5px;
+	padding-top: 5px;
+	width: 228px;
+}
+
+.searchResultsAutocompleteResults > div > div:hover
+{
+	background-color: #5EACD7;
+}
+
+.header-bar .search-list .searchResultsAutocompleteResults .avatar
+{
+	float: left;
+}
+
+.header-bar .search-list .searchResultsAutocompleteResults a, 
+	.header-bar .search-list .searchResultsAutocompleteResults a:link, 
+	.header-bar .search-list .searchResultsAutocompleteResults a:visited, 
+	.header-bar .search-list .searchResultsAutocompleteResults a:hover, 
+	.header-bar .search-list .searchResultsAutocompleteResults a:active
+{
+	color: black;
+	float: left;
+    font-size: 12px;
+    margin-left: 10px;
 }
 
 @sprite .header-bar .search-list .search-list-button {
@@ -1589,10 +1615,12 @@ body .post-expanded-panel .content-warning {
 }
 
 .header-bar .search-list input {
-	background-color: #E2E2E2;
-	color: #666;
-	border-top: 1px solid #999;
-	padding: 3px;
+    background-image: url("style/images/searchBackground.png");
+    border-width: 0;
+    color: black;
+    padding: 3px 22px;
+    width: 182px;
+    background-color: transparent;
 }
 
 .search-list input {
@@ -3069,11 +3097,6 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	margin-top: -10px;
 }
 
-.help-form-element {
-	padding-top: 0;
-	margin-top: 0;
-}
-
 .access-list-refresh-button {
 	width: 87px;
 	height: 25px;
@@ -4064,10 +4087,6 @@ body .options>li>.option-title:hover {
 
 .system-settings .add-button-submit {
 	vertical-align: bottom;
-}
-
-.system-settings .help-form-element>.form-label {
-	color: #666;
 }
 
 .date-picker-form-element {
@@ -6390,20 +6409,12 @@ li.notif-count-list-item {
 }
 
 body .user-bar li div.notif-count {
-	background-image: url('style/images/navNotification.png');
-	height: 35px;
+	height: 50px;
 	display: inline-block;
-	padding-left: 31px;
-	padding-right: 5px;
-	padding-top: 9px;
-	margin-top: 0 !important;
 	width: auto;
-	color: #F0C020 !important;
-	background-repeat: repeat-y;
 }
 
 body .user-bar li div.notif-count:hover {
-	background-position: 0 35px;
 	cursor: pointer;
 }
 
@@ -6909,215 +6920,6 @@ body .stream-view-dialog .delete-button {
 .add-tab {
     background: url("style/images/addTabBtn.png") repeat scroll 0 0
         transparent;
-}
-
-.help-page-settings {
-	padding-top: 0px;
-	padding-left: 10px;
-	padding-bottom: 10px;
-}
-
-.help-page-settings .form-label {
-	margin-top: 10px;
-}
-
-.help-page-settings+.scope-form-element>.auto-complete {
-	margin-left: 0px;
-	width: 418px;
-}
-
-.help-page-settings+.scope-form-element>.auto-complete .yui-ac-input {
-	width: 400px;
-	position: relative;
-}
-
-.help-page-settings+.scope-form-element .stream-scope-container {
-	margin-left: 0px;
-}
-
-.help-page-settings+.scope-form-element>.form-label {
-	color: #666666;
-}
-
-.help-page-settings+.scope-form-element {
-	margin-bottom: 0px;
-	overflow: visible;
-}
-
-.help-page-settings+.scope-form-element>.auto-complete.yui-skin-sam .yui-ac-container
-	{
-	top: auto;
-	margin-top: -2px;
-	z-index: 2001;
-}
-
-.help {
-	width: 100%;
-	height: 600px;
-	padding-top: 20px;
-}
-
-.help .header {
-	font-weight: bold;
-	border-bottom: 1px solid #BBB;
-	margin-bottom: 5px;
-	padding-bottom: 3px;
-	color: #666666;
-}
-
-.help .gwt-Label {
-	color: #333333;
-}
-
-.help .header .gwt-Label {
-	color: #666666;
-}
-
-.help .display-name {
-	font-weight: bold;
-	display: block;
-	margin-bottom: 3px;
-	color: #666666;
-}
-
-.help .left-panel {
-	display: inline-block;
-	margin: 20px;
-	padding-left: 20px;
-	padding-right: 20px;
-	width: 350px;
-	vertical-align: top;
-}
-
-.help-documentation-wrapper {
-	min-height: 200px;
-	border: 1px solid #bbbbbb;
-	margin: 0px;
-	background-color: white;
-	padding: 20px;
-}
-
-.help-app-version {
-	color: #666 !important;
-	margin-top: 20px;
-	text-align: center;
-}
-
-.help .right-panel,.help .center-panel {
-	width: 490px;
-	margin: 20px;
-}
-
-.help .right-panel {
-	display: inline-block;
-}
-
-.help .center-panel {
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.help .help-documentation-panel .header-description-component {
-	margin-left: 4px;
-	display: inline-block;
-}
-
-.help .help-documentation-panel .getting-started-help-image-box,.help .help-documentation-panel .instructional-videos-help-image-box,.help .help-documentation-panel .faqs-help-image-box
-	{
-	width: 50px;
-	height: 50px;
-	margin-right: 10px;
-	display: inline-block;
-}
-
-.help .help-documentation-panel .getting-started-help-image-box {
-	background: url('style/images/gettingStartedIcon.png') repeat scroll
-		40px 0 transparent;
-}
-
-.help .help-documentation-panel .instructional-videos-help-image-box {
-	background: url('style/images/tourIcon.png') repeat scroll 40px 0
-		transparent;
-}
-
-.help .help-documentation-panel .faqs-help-image-box {
-	background: url('style/images/faqIcon.png') repeat scroll 40px 0
-		transparent;
-}
-
-.help .help-documentation-panel .help-documentation-text-block {
-	display: inline-block;
-	vertical-align: top;
-	padding-top: 3px;
-}
-
-.help-documentation-text-block .gwt-Label {
-	width: 350px;
-}
-
-.help .help-documentation-panel .documentation-bullet {
-	padding-top: 0px;
-	margin-bottom: 15px;
-}
-
-.help .help-documentation-panel .go-to-eureka-streams-image-label {
-	width: 202px;
-	height: 29px;
-	margin-top: 5px;
-	margin-left: auto;
-	margin-right: auto;
-	background: url('style/images/launchEurekaStreamsOrgBtn.png');
-	overflow: hidden;
-	text-indent: -1000em;
-}
-
-.help .help-documentation-panel .go-to-eureka-streams-image-label a {
-	display: block;
-	height: 29px;
-	width: 202px;
-}
-
-.help .help-documentation-panel .documentation-bullet-block {
-	width: 440px;
-	margin-left: 20px;
-}
-
-.help .support-stream-help-panel {
-	margin-bottom: 35px;
-}
-
-.help .support-stream-help-panel .content-panel {
-	vertical-align: top;
-}
-
-.help .support-stream-help-panel .support-group-logo-panel {
-	vertical-align: top;
-	padding-top: 4px;
-	display: inline-block;
-}
-
-.help .support-stream-help-panel .support-group-description-panel {
-	display: inline-block;
-	width: 250px;
-	margin-left: 10px;
-}
-
-.help .support-stream-help-panel .go-to-support-group-stream-link {
-	margin-top: 10px;
-}
-
-.help .support-stream-contact-panel .support-phone-number-label {
-	margin-top: 10px;
-	height: 15px;
-	background: url('style/images/phoneIcon.png') no-repeat;
-	padding-left: 35px;
-}
-
-.help .support-stream-contact-panel .support-email-label {
-	margin-top: 10px;
-	height: 15px;
-	background: url('style/images/emailIcon.png') no-repeat;
-	padding-left: 35px;
 }
 
 .manage-flagged-links-panel {

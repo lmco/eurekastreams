@@ -117,7 +117,7 @@ public class CreateGroupPanel extends SettingsPanel
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         this.clearContentPanel();
-        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, ""), "< Return to Profile");
+        this.setPreviousPage(new CreateUrlRequest(Page.DISCOVER, ""), "< Return to Profile");
 
         final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.INSERT);
 
@@ -129,7 +129,7 @@ public class CreateGroupPanel extends SettingsPanel
 
                 // destination depends on whether org allows immediate creation of groups
                 CreateUrlRequest urlRqst = !group.isPending() ? new CreateUrlRequest(Page.GROUPS, group.getShortName())
-                        : new CreateUrlRequest(Page.ORGANIZATIONS, "");
+                        : new CreateUrlRequest(Page.DISCOVER, "");
                 eventBus.notifyObservers(new UpdateHistoryEvent(urlRqst));
 
                 // tell the user what just happened

@@ -64,10 +64,8 @@ public class AvatarLinkPanel extends Composite
             // this should never happen
             return;
         }
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("tab", "Stream");
-
-        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId, params));
+        
+        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId));
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
         main.add(link);
