@@ -61,4 +61,15 @@ public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
         Assert.assertEquals("fordp2", dto1.getUniqueId());
         Assert.assertEquals("fordp", dto2.getUniqueId());
     }
+
+    /**
+     * Test with no metrics data in the database.
+     */
+    @Test
+    public void testWithNoMetricsData()
+    {
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
+        getEntityManager().clear();
+        Assert.assertEquals(0, sut.execute(10).size());
+    }
 }
