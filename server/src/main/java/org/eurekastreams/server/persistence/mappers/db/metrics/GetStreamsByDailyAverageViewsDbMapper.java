@@ -59,9 +59,12 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
     @Override
     public List<StreamDTO> execute(final Serializable inIgnored)
     {
+        List<StreamDTO> results = new ArrayList<StreamDTO>();
+
         // get the stream scope ids along with the counts
         Query q = getEntityManager().createQuery(
-                "SELECT streamViewStreamScopeId, SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
+                "SELECT streamViewStreamScopeId, "
+                        + "SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
                         + "ORDER BY SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
@@ -77,6 +80,11 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
         for (Object[] streamObj : streamObjs)
         {
             streamScopeIds.add((Long) streamObj[0]);
+        }
+
+        if (streamScopeIds.size() == 0)
+        {
+            return results;
         }
 
         // List of object arrays [streamScopeId, StreamDTO]
@@ -97,7 +105,6 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
         streamDtos.addAll(q.getResultList());
 
         // put the list back together, sorting the list
-        List<StreamDTO> results = new ArrayList<StreamDTO>();
         Long streamScopeId, viewCount;
         for (Object[] streamObj : streamObjs)
         {

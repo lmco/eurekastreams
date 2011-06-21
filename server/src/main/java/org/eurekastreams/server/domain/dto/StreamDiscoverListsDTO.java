@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * DTO to contain different lists of StreamDTOs
+ * DTO to contain different lists of StreamDTOs for the Streams Discover page.
  */
 public class StreamDiscoverListsDTO implements Serializable
 {
