@@ -16,6 +16,7 @@
 package org.eurekastreams.server.domain.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,27 +37,27 @@ public class StreamDiscoverListsDTO implements Serializable
     /**
      * The top 10 most viewed streams.
      */
-    private List<StreamDTO> mostViewedStreams;
+    private ArrayList<StreamDTO> mostViewedStreams;
 
     /**
      * The top 10 most followed streams.
      */
-    private List<StreamDTO> mostFollowedStreams;
+    private ArrayList<StreamDTO> mostFollowedStreams;
 
     /**
      * The top 10 most recent streams.
      */
-    private List<StreamDTO> mostRecentStreams;
+    private ArrayList<StreamDTO> mostRecentStreams;
 
     /**
      * A list of the top 10 suggested streams for a specific person - this is populated after this is pulled from cache.
      */
-    private List<StreamDTO> suggestedStreams;
+    private ArrayList<StreamDTO> suggestedStreams;
 
     /**
      * A list of all of the currently featured streams.
      */
-    private List<FeaturedStreamDTO> featuredStreams;
+    private ArrayList<FeaturedStreamDTO> featuredStreams;
 
     /**
      * @return the mostActiveStreams
@@ -73,6 +74,9 @@ public class StreamDiscoverListsDTO implements Serializable
     public void setMostActiveStreams(final SublistWithResultCount<StreamDTO> inMostActiveStreams)
     {
         mostActiveStreams = inMostActiveStreams;
+
+        // convert the list to ArrayList for serialization
+        mostActiveStreams.setResultsSublist(new ArrayList<StreamDTO>(mostActiveStreams.getResultsSublist()));
     }
 
     /**
@@ -89,7 +93,7 @@ public class StreamDiscoverListsDTO implements Serializable
      */
     public void setMostViewedStreams(final List<StreamDTO> inMostViewedStreams)
     {
-        mostViewedStreams = inMostViewedStreams;
+        mostViewedStreams = new ArrayList<StreamDTO>(inMostViewedStreams);
     }
 
     /**
@@ -106,7 +110,7 @@ public class StreamDiscoverListsDTO implements Serializable
      */
     public void setMostFollowedStreams(final List<StreamDTO> inMostFollowedStreams)
     {
-        mostFollowedStreams = inMostFollowedStreams;
+        mostFollowedStreams = new ArrayList<StreamDTO>(inMostFollowedStreams);
     }
 
     /**
@@ -123,7 +127,7 @@ public class StreamDiscoverListsDTO implements Serializable
      */
     public void setMostRecentStreams(final List<StreamDTO> inMostRecentStreams)
     {
-        mostRecentStreams = inMostRecentStreams;
+        mostRecentStreams = new ArrayList<StreamDTO>(inMostRecentStreams);
     }
 
     /**
@@ -140,7 +144,7 @@ public class StreamDiscoverListsDTO implements Serializable
      */
     public void setSuggestedStreams(final List<StreamDTO> inSuggestedStreams)
     {
-        suggestedStreams = inSuggestedStreams;
+        suggestedStreams = new ArrayList<StreamDTO>(inSuggestedStreams);
     }
 
     /**
@@ -157,7 +161,7 @@ public class StreamDiscoverListsDTO implements Serializable
      */
     public void setFeaturedStreams(final List<FeaturedStreamDTO> inFeaturedStreams)
     {
-        featuredStreams = inFeaturedStreams;
+        featuredStreams = new ArrayList<FeaturedStreamDTO>(inFeaturedStreams);
     }
 
 }

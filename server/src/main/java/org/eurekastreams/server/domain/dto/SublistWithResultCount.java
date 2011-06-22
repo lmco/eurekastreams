@@ -42,6 +42,13 @@ public class SublistWithResultCount<ElementType> implements Serializable
     private List<ElementType> resultsSublist;
 
     /**
+     * Empty constructor for serialization.
+     */
+    public SublistWithResultCount()
+    {
+    }
+
+    /**
      * Constructor.
      * 
      * @param inResultsSublist
