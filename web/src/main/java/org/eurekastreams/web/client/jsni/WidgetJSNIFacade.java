@@ -196,11 +196,6 @@ public interface WidgetJSNIFacade
     String getHistoryToken();
 
     /**
-     * Shows the login dialog.
-     */
-    void showLogin();
-
-    /**
      * Prompt for confirmation.
      *
      * @param prompt

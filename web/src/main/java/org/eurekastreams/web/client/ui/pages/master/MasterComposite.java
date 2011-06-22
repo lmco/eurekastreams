@@ -204,7 +204,7 @@ public class MasterComposite extends Composite
                                                     OptOutableVideoDialogContent.DIALOG_HEIGHT_OFFSET);
                                         }
                                     };
-                                    dialog.show();
+                                    dialog.showUncentered();
                                 }
                                 break;
                             }

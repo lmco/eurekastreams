@@ -24,24 +24,18 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 import org.eurekastreams.web.client.ui.common.notification.NotificationCountWidget;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HeaderComposite draws the header bar for the user.
- * 
+ *
  */
 public class HeaderComposite extends Composite
 {
@@ -92,8 +86,8 @@ public class HeaderComposite extends Composite
      */
     public HeaderComposite()
     {
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent eventArg)
                     {
@@ -110,7 +104,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     * 
+     *
      * @param viewer
      *            - user to display.
      */
@@ -173,58 +167,36 @@ public class HeaderComposite extends Composite
 
         mainNav.add(externalPageLinkPanel);
 
-        if (null == viewer) // The user is NOT logged in.
+        // The user IS logged in
+        mainNav.add(startPageLinkPanel);
+        mainNav.add(activityLinkPanel);
+        mainNav.add(directoryLinkPanel);
+        mainNav.add(galleryLinkPanel);
+        notif.init();
+        userNav.add(notif, "notif-count-list-item");
+
+        FlowPanel myProfileLinkPanel = new FlowPanel();
+        myProfileLinkPanel.add(myProfileLink);
+        myProfileLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().myProfileHeaderButton());
+        userNav.add(myProfileLinkPanel);
+
+        userNav.add(settingsLinkPanel);
+
+        FlowPanel helpLinkPanel = new FlowPanel();
+        helpLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpHeaderButton());
+        helpLinkPanel.add(helpLink);
+        userNav.add(helpLinkPanel);
+
+        if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
         {
-            userNav.add(new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP))));
-
-            final Dialog loginDialog = DialogFactory.getDialog("login");
-
-            Hyperlink loginLink = new Hyperlink();
-            loginLink.setText("Login");
-            loginLink.addClickListener(new ClickListener()
-            {
-                public void onClick(final Widget arg0)
-                {
-                    loginDialog.show();
-                }
-            });
-            loginLink.setTargetHistoryToken(History.getToken());
-
-            userNav.add(loginLink);
+            userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
         }
-        else
-        {
-            // The user IS logged in
-            mainNav.add(startPageLinkPanel);
-            mainNav.add(activityLinkPanel);
-            mainNav.add(directoryLinkPanel);
-            mainNav.add(galleryLinkPanel);
-            notif.init();
-            userNav.add(notif, "notif-count-list-item");
 
-            FlowPanel myProfileLinkPanel = new FlowPanel();
-            myProfileLinkPanel.add(myProfileLink);
-            myProfileLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().myProfileHeaderButton());
-            userNav.add(myProfileLinkPanel);
-
-            userNav.add(settingsLinkPanel);
-
-            FlowPanel helpLinkPanel = new FlowPanel();
-            helpLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpHeaderButton());
-            helpLinkPanel.add(helpLink);
-            userNav.add(helpLinkPanel);
-
-            if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
-            {
-                userNav.add(new HTML("<a href='/j_spring_security_logout'>Logout</a>"));
-            }
-
-            // Note: The profile search box is created at constructor time because it registers listeners on the event
-            // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
-            // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
-            // page change.
-            userNav.add(profileSearchBox);
-        }
+        // Note: The profile search box is created at constructor time because it registers listeners on the event
+        // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
+        // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
+        // page change.
+        userNav.add(profileSearchBox);
 
         // Style the Elements
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
@@ -246,7 +218,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Sets Site labeling.
-     * 
+     *
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -261,7 +233,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     * 
+     *
      * @param page
      *            the page to activate.
      */

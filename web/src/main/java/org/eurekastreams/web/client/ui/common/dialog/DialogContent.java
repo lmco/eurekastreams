@@ -57,6 +57,11 @@ public interface DialogContent
     void show();
 
     /**
+     * Provides a hook to fire off events when the dialog is fully visible.
+     */
+    void afterShow();
+
+    /**
      * Provides a hook to fire off events when the dialog is hidden.
      */
     void beforeHide();

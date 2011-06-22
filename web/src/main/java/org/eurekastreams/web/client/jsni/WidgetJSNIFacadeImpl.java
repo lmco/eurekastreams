@@ -15,9 +15,6 @@
  */
 package org.eurekastreams.web.client.jsni;
 
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
-
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -195,15 +192,6 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     public String getHistoryToken()
     {
         return History.getToken();
-    }
-
-    /**
-     * Shows the login dialog.
-     */
-    public void showLogin()
-    {
-        final Dialog loginDialog = DialogFactory.getDialog("login");
-        loginDialog.show();
     }
 
     /**
