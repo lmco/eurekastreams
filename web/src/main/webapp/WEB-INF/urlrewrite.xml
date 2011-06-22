@@ -8,24 +8,10 @@
 
 <!-- ### TEST START -->
 	<rule>
-		<from>^/api/0/full/sendMassPrebuiltNotification/(.*)$</from>
-		<to last="true">/resources/api/0/full/sendMassPrebuiltNotificationAction/org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest/$1</to>
-	</rule>
-
-	<rule>
-		<from>^/api/0/full/markInAppNotificationsRead/(.*)$</from>
-		<to last="true">/resources/api/0/full/markInAppNotificationsRead/java.util.ArrayList/$1</to>
-	</rule>
-	<rule>
-		<from>^/api/0/full/deleteInAppNotifications/(.*)$</from>
-		<to last="true">/resources/api/0/full/deleteInAppNotifications/java.util.ArrayList/$1</to>
-	</rule>
-	<rule>
 		<from>^/api/0/full/deleteOldApplicationAlerts/(.*)$</from>
 		<to last="true">/resources/api/0/full/deleteOldApplicationAlerts/null/null</to>
 	</rule>
-	
-	<!-- ### TEST END -->
+<!-- ### TEST END -->
 
 
 	<!-- FULL API -->
