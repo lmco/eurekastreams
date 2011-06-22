@@ -22,14 +22,11 @@ import java.io.Serializable;
  */
 public class CreateNotificationsRequest implements Serializable
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = -6688115503640212460L;
+
     /** Action used to process this request. */
     public static final String ACTION_NAME = "createNotificationsAction";
-
-    /**
-     * Serial version uid.
-     */
-    private static final long serialVersionUID = -5690584323772486383L;
-
 
     /**
      * Types of events for which a notification may be requested.
@@ -52,13 +49,13 @@ public class CreateNotificationsRequest implements Serializable
          * Someone posted to a stream. Actor=person id of who posted, Destination=id of person whose stream was posted
          * to, Activity=id of the new post.
          */
-        STREAM_POST,
+        POST_PERSON_STREAM,
 
         /**
-         * Someone began following. Actor=person id who began following, Destination=id of person being followed,
-         * Activity=(not used).
+         * Someone began following a person. Actor=person id who began following, Destination=id of person being
+         * followed, Activity=(not used).
          */
-        FOLLOWER,
+        FOLLOW_PERSON,
 
         /**
          * Someone posted a comment to an activity on a group stream. Actor=person id of who commented, Destination=id
@@ -70,13 +67,13 @@ public class CreateNotificationsRequest implements Serializable
          * Someone posted to a group stream. Actor=person id of who posted, Destination=id of group whose stream was
          * posted to, Activity=id of the new post.
          */
-        GROUP_STREAM_POST,
+        POST_GROUP_STREAM,
 
         /**
          * Someone began following a group. Actor=person id who began following, Destination=id of group being followed,
          * Activity=(not used).
          */
-        GROUP_FOLLOWER,
+        FOLLOW_GROUP,
 
         /**
          * Someone flagged an activity (as inappropriate). Actor=person id who flagged, Destination=id of person or
@@ -125,34 +122,21 @@ public class CreateNotificationsRequest implements Serializable
     }
 
     /** Type of event that occurred. */
-    private RequestType type;
+    private final RequestType type;
 
     /** ID of the entity (person) who performed the action which the notification is about. */
-    private long actorId;
-
-    /** ID of the entity (person or group) upon whom or upon whose stream that the action acted. */
-    private long destinationId;
-
-    /** ID of the "activity" the event pertained to. See comment on getter for more detail. */
-    private long activityId;
+    private final long actorId;
 
     /**
      * @param inType
      *            Type of event that occurred.
      * @param inActorId
      *            ID of the entity (person) who performed the action which the notification is about.
-     * @param inDestinationId
-     *            ID of the entity (person or stream) that the action acted upon.
-     * @param inActivityId
-     *            ID of the activity the event pertained to.
      */
-    public CreateNotificationsRequest(final RequestType inType, final long inActorId, final long inDestinationId,
-            final long inActivityId)
+    public CreateNotificationsRequest(final RequestType inType, final long inActorId)
     {
         type = inType;
         actorId = inActorId;
-        destinationId = inDestinationId;
-        activityId = inActivityId;
     }
 
     /**
@@ -164,65 +148,10 @@ public class CreateNotificationsRequest implements Serializable
     }
 
     /**
-     * @param inType
-     *            Type of event that occurred.
-     */
-    public void setType(final RequestType inType)
-    {
-        type = inType;
-    }
-
-    /**
      * @return ID of the entity (person) who performed the action which the notification is about.
      */
     public long getActorId()
     {
         return actorId;
-    }
-
-    /**
-     * @param inActorId
-     *            ID of the entity (person) who performed the action which the notification is about.
-     */
-    public void setActorId(final long inActorId)
-    {
-        actorId = inActorId;
-    }
-
-    /**
-     * @return ID of the entity (person or stream) that the action acted upon.
-     */
-    public long getDestinationId()
-    {
-        return destinationId;
-    }
-
-    /**
-     * @param inDestinationId
-     *            ID of the entity (person or stream) that the action acted upon.
-     */
-    public void setDestinationId(final long inDestinationId)
-    {
-        destinationId = inDestinationId;
-    }
-
-    /**
-     * @return ID of the "activity" the event pertained to. In the case of requesting creation of a new group,
-     *         "activity" is used in a loose sense, namely the object being acted on. Using a linguistic analogy, this
-     *         is the direct object of the sentence. For commenting, this is the ID of the comment (not of the activity
-     *         which was commented on).
-     */
-    public long getActivityId()
-    {
-        return activityId;
-    }
-
-    /**
-     * @param inActivityId
-     *            ID of the activity the event pertained to.
-     */
-    public void setActivityId(final long inActivityId)
-    {
-        activityId = inActivityId;
     }
 }

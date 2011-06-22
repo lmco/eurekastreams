@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,19 @@ package org.eurekastreams.server.action.execution.profile;
 import static junit.framework.Assert.assertEquals;
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.DomainGroupShortNameRequest;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.db.InsertRequestForGroupMembership;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -79,7 +76,7 @@ public class SendGroupAccessRequestExecutionTest
     private final DomainGroup groupMock = context.mock(DomainGroup.class);
 
     /** Mapper. */
-    private InsertRequestForGroupMembership insertMembershipRequestMapper = context
+    private final InsertRequestForGroupMembership insertMembershipRequestMapper = context
             .mock(InsertRequestForGroupMembership.class);
 
     /**
@@ -98,7 +95,7 @@ public class SendGroupAccessRequestExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     * 
+     *
      * @throws Exception
      *             should not occur
      */
@@ -124,19 +121,18 @@ public class SendGroupAccessRequestExecutionTest
 
         UserActionRequest uaRequest = uaRequests.get(0);
         assertEquals("createNotificationsAction", uaRequest.getActionKey());
-        CreateNotificationsRequest request = (CreateNotificationsRequest) uaRequest.getParams();
+        TargetEntityNotificationsRequest request = (TargetEntityNotificationsRequest) uaRequest.getParams();
         assertEquals(RequestType.REQUEST_GROUP_ACCESS, request.getType());
         assertEquals(USER_ID, request.getActorId());
-        assertEquals(GROUP_ID, request.getDestinationId());
-        assertEquals(0L, request.getActivityId());
+        assertEquals(GROUP_ID, request.getTargetEntityId());
     }
 
     /**
      * Make sure that sending bad arguments results in the expected exception.
-     * 
+     *
      * @throws Exception
      *             Throws an Exception.
-     * 
+     *
      */
     @Test(expected = IllegalArgumentException.class)
     public final void testPerformActionNoGroupError() throws Exception
@@ -155,67 +151,18 @@ public class SendGroupAccessRequestExecutionTest
 
     /**
      * Executes the SUT with the proper action context setup.
-     * 
+     *
      * @return List with any async requests made by the SUT.
      */
     private List<UserActionRequest> callExecute()
     {
-        List<UserActionRequest> asyncRequests = new ArrayList<UserActionRequest>();
-
-        sut.execute(new TaskHandlerActionContext<PrincipalActionContext>(new PrincipalActionContext()
-        {
-            public Map<String, Object> getState()
-            {
-                return null;
-            }
-
-            public Serializable getParams()
-            {
-                return new DomainGroupShortNameRequest(GROUP_SHORTNAME);
-            }
-
-            @Override
-            public String getActionId()
-            {
-                return null;
-            }
-
-            @Override
-            public void setActionId(final String inActionId)
-            {
-
-            }
-
-            public Principal getPrincipal()
-            {
-                return new Principal()
-                {
-                    public String getAccountId()
-                    {
-                        return USER_ACCOUNTID;
-                    }
-
-                    public Long getId()
-                    {
-                        return USER_ID;
-                    }
-
-                    public String getOpenSocialId()
-                    {
-                        return null;
-                    }
-
-                    @Override
-                    public String getSessionId()
-                    {
-                        return "";
-                    }
-                };
-            }
-        }, asyncRequests));
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(new DomainGroupShortNameRequest(GROUP_SHORTNAME),
+                        USER_ACCOUNTID, USER_ID);
+        sut.execute(actionContext);
 
         context.assertIsSatisfied();
 
-        return asyncRequests;
+        return actionContext.getUserActionRequests();
     }
 }

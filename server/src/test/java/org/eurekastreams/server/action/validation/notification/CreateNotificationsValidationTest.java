@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package org.eurekastreams.server.action.validation.notification;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eurekastreams.commons.actions.ValidationStrategy;
+import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.execution.notification.translator.CommentTranslator;
-import org.eurekastreams.server.action.execution.notification.translator.FollowerTranslator;
+import org.eurekastreams.server.action.execution.notification.translator.FollowPersonTranslator;
 import org.eurekastreams.server.action.execution.notification.translator.NotificationTranslator;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
@@ -40,7 +42,7 @@ public class CreateNotificationsValidationTest
     /**
      * System under test.
      */
-    private CreateNotificationsValidation sut;
+    private ValidationStrategy<ActionContext> sut;
 
     /**
      * Context for building mock objects.
@@ -55,12 +57,12 @@ public class CreateNotificationsValidationTest
     /**
      * Mock comment translator.
      */
-    private CommentTranslator commentTranslator = context.mock(CommentTranslator.class);
+    private final CommentTranslator commentTranslator = context.mock(CommentTranslator.class);
 
     /**
      * Mock follower translator.
      */
-    private FollowerTranslator followerTranslator = context.mock(FollowerTranslator.class);
+    private final FollowPersonTranslator followerTranslator = context.mock(FollowPersonTranslator.class);
 
     /**
      * This method prepares the sut.
@@ -69,7 +71,7 @@ public class CreateNotificationsValidationTest
     public void setup()
     {
         Map<RequestType, NotificationTranslator> translators = new HashMap<RequestType, NotificationTranslator>();
-        translators.put(RequestType.FOLLOWER, followerTranslator);
+        translators.put(RequestType.FOLLOW_PERSON, followerTranslator);
         translators.put(RequestType.COMMENT, commentTranslator);
 
         sut = new CreateNotificationsValidation(translators);
@@ -78,12 +80,19 @@ public class CreateNotificationsValidationTest
     /**
      * Tests performAction with exception.
      */
+    @Test
+    public void testValidateValid()
+    {
+        sut.validate(new AsyncActionContext(new CreateNotificationsRequest(RequestType.FOLLOW_PERSON, 0)));
+    }
+
+    /**
+     * Tests performAction with exception.
+     */
     @Test(expected = ValidationException.class)
-    public void testPerformActionWithInvalidTranslatorType()
+    public void testValidateWithInvalidTranslatorType()
     {
         // Intentionally left out STREAM_POST from translators to be able to test this.
-        CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.STREAM_POST, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        sut.validate(currentContext);
+        sut.validate(new AsyncActionContext(new CreateNotificationsRequest(RequestType.POST_PERSON_STREAM, 0)));
     }
 }

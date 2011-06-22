@@ -629,7 +629,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.PostActivityCommentExecution">
                     <constructor-arg ref="insertActivityComment" />
-                    <constructor-arg ref="bulkActivitiesMapper" />
+                    <constructor-arg ref="activityDTOMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2892,7 +2892,6 @@
                 class="org.eurekastreams.server.action.execution.stream.SetActivityLikeExecution">
                 <constructor-arg ref="insertLikedActivity" />
                 <constructor-arg ref="deleteLikedActivity" />
-                <constructor-arg ref="bulkActivitiesMapper" />
                 <constructor-arg ref="indexEntity" />
                 <constructor-arg ref="findByIdMapper" />
             </bean>

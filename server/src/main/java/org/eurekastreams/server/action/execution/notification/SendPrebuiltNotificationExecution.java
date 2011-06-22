@@ -21,6 +21,7 @@ import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ClientPrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.notification.PrebuiltNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest;
@@ -64,7 +65,7 @@ public class SendPrebuiltNotificationExecution implements TaskHandlerExecutionSt
         PrebuiltNotificationsRequest notifRequest = new PrebuiltNotificationsRequest(RequestType.EXTERNAL_PRE_BUILT,
                 params.isHighPriority(), clientId, recipientId, params.getMessage(), params.getUrl());
         inWrapperContext.getUserActionRequests().add(
-                new UserActionRequest("createNotificationsAction", null, notifRequest));
+                new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null, notifRequest));
 
         return null;
     }

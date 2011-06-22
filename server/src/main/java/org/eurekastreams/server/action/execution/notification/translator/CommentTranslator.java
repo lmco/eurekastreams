@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
@@ -25,7 +24,6 @@ import org.eurekastreams.server.action.request.notification.CommentNotifications
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -34,39 +32,25 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class CommentTranslator implements NotificationTranslator<CommentNotificationsRequest>
 {
-    /** Mapper to get commentors. */
-    private final GetCommentorIdsByActivityId commentorsMapper;
+    /** DAO to get commentors. */
+    private final DomainMapper<Long, List<Long>> commentorsDAO;
 
-    /** Mapper to get activity details. */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
-
-    /** Mapper to get the comment. */
-    private final DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
-
-    /** Mapper to get people who saved an activity. */
-    private final DomainMapper<Long, List<Long>> saversMapper;
+    /** DAO to get activity details. */
+    private final DomainMapper<Long, ActivityDTO> activityDAO;
 
     /**
      * Constructor.
      *
-     * @param inCommentorsMapper
-     *            commentors mapper to set.
-     * @param inActivitiesMapper
-     *            activities mapper to set.
-     * @param inCommentsMapper
-     *            Mapper to get the comment.
-     * @param inSavedMapper
-     *            Mapper to get people who saved an activity.
+     * @param inCommentorsDAO
+     *            DAO to get commentors.
+     * @param inActivityDAO
+     *            DAO to get activity details.
      */
-    public CommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
-            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
-            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper,
-            final DomainMapper<Long, List<Long>> inSavedMapper)
+    public CommentTranslator(final DomainMapper<Long, List<Long>> inCommentorsDAO,
+            final DomainMapper<Long, ActivityDTO> inActivityDAO)
     {
-        commentorsMapper = inCommentorsMapper;
-        activitiesMapper = inActivitiesMapper;
-        commentsMapper = inCommentsMapper;
-        saversMapper = inSavedMapper;
+        commentorsDAO = inCommentorsDAO;
+        activityDAO = inActivityDAO;
     }
 
     /**
@@ -79,75 +63,42 @@ public class CommentTranslator implements NotificationTranslator<CommentNotifica
     @Override
     public NotificationBatch translate(final CommentNotificationsRequest inRequest)
     {
-        // get activity ID from comment
-        List<CommentDTO> commentList = commentsMapper.execute(Collections.singletonList(inRequest.getCommentId()));
-        if (commentList.isEmpty())
+        final long activityId = inRequest.getActivityId();
+        ActivityDTO activity = activityDAO.execute(activityId);
+        if (activity == null)
         {
             return null;
         }
-        final CommentDTO comment = commentList.get(0);
-        final long activityId = comment.getActivityId();
-        List<ActivityDTO> activities = activitiesMapper.execute(Collections.singletonList(activityId));
-        if (activities.isEmpty())
-        {
-            return null;
-        }
-        final ActivityDTO activity = activities.get(0);
         final long actorId = inRequest.getActorId();
-        final long destinationId = inRequest.getDestinationId();
 
         NotificationBatch batch = new NotificationBatch();
-        List<Long> allRecipients = new ArrayList<Long>();
 
         // Adds post author as recipient
         long postAuthor = activity.getActor().getId();
         if (postAuthor != actorId)
         {
             batch.setRecipient(NotificationType.COMMENT_TO_PERSONAL_POST, postAuthor);
-            allRecipients.add(postAuthor);
-        }
-
-        // Adds stream owner as a recipient
-        if (destinationId != postAuthor && destinationId != actorId)
-        {
-            batch.setRecipient(NotificationType.COMMENT_TO_PERSONAL_STREAM, destinationId);
-            allRecipients.add(destinationId);
         }
 
         // Adds recipient who previously commented on this post
         List<Long> commentToCommentedRecipients = new ArrayList<Long>();
-        for (long commentorId : commentorsMapper.execute(activityId))
+        for (long commentorId : commentorsDAO.execute(activityId))
         {
-            if (commentorId != postAuthor && commentorId != destinationId && commentorId != actorId)
+            if (commentorId != postAuthor && commentorId != actorId)
             {
                 commentToCommentedRecipients.add(commentorId);
-                allRecipients.add(commentorId);
 
                 // this recipient list will keep replacing the old value in the map when new recipients are found
                 batch.getRecipients().put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
             }
         }
 
-        // Add people who saved post as recipients
-        List<Long> commentToSaversRecipients = new ArrayList<Long>();
-        for (long saverId : saversMapper.execute(activityId))
-        {
-            if (saverId != actorId && !allRecipients.contains(saverId))
-            {
-                commentToSaversRecipients.add(saverId);
-                allRecipients.add(saverId);
-
-                // this recipient list will keep replacing the old value in the map when new recipients are found
-                batch.getRecipients().put(NotificationType.COMMENT_TO_SAVED_POST, commentToSaversRecipients);
-            }
-        }
-
         // Add properties
-        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, actorId);
         batch.setProperty("stream", activity.getDestinationStream());
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         batch.setProperty("activity", activity);
-        batch.setProperty("comment", comment);
+        batch.setProperty("comment", CommentDTO.class, inRequest.getCommentId());
 
         return batch;
     }

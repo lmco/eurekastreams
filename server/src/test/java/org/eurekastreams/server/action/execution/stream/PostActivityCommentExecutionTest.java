@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.EntityType;
@@ -30,6 +27,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -42,6 +40,12 @@ import org.junit.Test;
  */
 public class PostActivityCommentExecutionTest
 {
+    /** Test data. */
+    private static final long ACTIVITY_ID = 4444L;
+
+    /** Test data. */
+    private static final long USER_ID = 200L;
+
     /**
      * Context for building mock objects.
      */
@@ -60,42 +64,25 @@ public class PostActivityCommentExecutionTest
     /**
      * InsertActivityComment mock.
      */
-    private InsertActivityComment insertActivityCommentMock = context.mock(InsertActivityComment.class);
+    private final InsertActivityComment insertActivityCommentMock = context.mock(InsertActivityComment.class);
 
     /**
      * CommentDTO mock.
      */
-    private CommentDTO commentDTOMock = context.mock(CommentDTO.class);
+    private final CommentDTO commentDTOMock = context.mock(CommentDTO.class);
 
     /**
      * Stream entity DTO mock.
      */
-    private StreamEntityDTO destinationStreamMock = context.mock(StreamEntityDTO.class);
+    private final StreamEntityDTO destinationStreamMock = context.mock(StreamEntityDTO.class);
 
     /**
      * ActivityDTO mock.
      */
-    private ActivityDTO activityDTOMock = context.mock(ActivityDTO.class);
+    private final ActivityDTO activityDTOMock = context.mock(ActivityDTO.class);
 
-    /**
-     * Mock activities mapper.
-     */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapperMock = context.mock(DomainMapper.class);
-
-    /**
-     * {@link PrincipalActionContext}.
-     */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
-
-    /**
-     * Mocked instance of {@link TaskHandlerActionContext}.
-     */
-    private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
-
-    /**
-     * {@link Principal}.
-     */
-    private Principal principal = context.mock(Principal.class);
+    /** Mock activities mapper. */
+    private final DomainMapper<Long, ActivityDTO> activityDAO = context.mock(DomainMapper.class, "activityDAO");
 
     /**
      * Setup sut before each test.
@@ -103,7 +90,7 @@ public class PostActivityCommentExecutionTest
     @Before
     public void setUp()
     {
-        sut = new PostActivityCommentExecution(insertActivityCommentMock, activitiesMapperMock);
+        sut = new PostActivityCommentExecution(insertActivityCommentMock, activityDAO);
     }
 
     /**
@@ -113,31 +100,20 @@ public class PostActivityCommentExecutionTest
      *             not expected.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testPerformActionPersonalStream() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(actionContext).getParams();
-                will(returnValue(commentDTOMock));
-
-                oneOf(principal).getId();
-
                 oneOf(commentDTOMock).getActivityId();
+                will(returnValue(ACTIVITY_ID));
 
                 oneOf(commentDTOMock).getBody();
 
                 oneOf(insertActivityCommentMock).execute(with(any(InsertActivityCommentRequest.class)));
 
-                oneOf(activitiesMapperMock).execute(with(any(List.class)));
-                will(returnValue(Arrays.asList(activityDTOMock)));
+                oneOf(activityDAO).execute(with(ACTIVITY_ID));
+                will(returnValue(activityDTOMock));
 
                 oneOf(activityDTOMock).getDestinationStream();
                 will(returnValue(destinationStreamMock));
@@ -147,13 +123,15 @@ public class PostActivityCommentExecutionTest
 
                 oneOf(destinationStreamMock).getType();
                 will(returnValue(EntityType.PERSON));
-
-                allowing(taskHandlerActionContext).getUserActionRequests();
             }
         });
 
-        assertNotNull(sut.execute(taskHandlerActionContext));
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(commentDTOMock, null, USER_ID);
+        assertNotNull(sut.execute(actionContext));
+
         context.assertIsSatisfied();
+        assertEquals(1, actionContext.getUserActionRequests().size());
     }
 
     /**
@@ -163,31 +141,20 @@ public class PostActivityCommentExecutionTest
      *             not expected.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testPerformActionGroupStream() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(actionContext).getParams();
-                will(returnValue(commentDTOMock));
-
-                oneOf(principal).getId();
-
                 allowing(commentDTOMock).getActivityId();
+                will(returnValue(ACTIVITY_ID));
 
                 allowing(commentDTOMock).getBody();
 
                 oneOf(insertActivityCommentMock).execute(with(any(InsertActivityCommentRequest.class)));
 
-                oneOf(activitiesMapperMock).execute(with(any(List.class)));
-                will(returnValue(Arrays.asList(activityDTOMock)));
+                oneOf(activityDAO).execute(with(ACTIVITY_ID));
+                will(returnValue(activityDTOMock));
 
                 allowing(activityDTOMock).getDestinationStream();
                 will(returnValue(destinationStreamMock));
@@ -197,13 +164,14 @@ public class PostActivityCommentExecutionTest
 
                 allowing(destinationStreamMock).getType();
                 will(returnValue(EntityType.GROUP));
-
-                allowing(taskHandlerActionContext).getUserActionRequests();
             }
         });
 
-        assertNotNull(sut.execute(taskHandlerActionContext));
-        context.assertIsSatisfied();
-    }
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(commentDTOMock, null, USER_ID);
+        assertNotNull(sut.execute(actionContext));
 
+        context.assertIsSatisfied();
+        assertEquals(1, actionContext.getUserActionRequests().size());
+    }
 }

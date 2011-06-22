@@ -37,118 +37,118 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
  */
 public class InAppNotificationNotifier implements Notifier
 {
-	/** Apache Velocity templating engine. */
-	private final VelocityEngine velocityEngine;
+    /** Apache Velocity templating engine. */
+    private final VelocityEngine velocityEngine;
 
-	/** Global context for Apache Velocity templating engine. (Holds system-wide properties.) */
-	private final Context velocityGlobalContext;
+    /** Global context for Apache Velocity templating engine. (Holds system-wide properties.) */
+    private final Context velocityGlobalContext;
 
-	/** Message templates by notification type. */
-	private final Map<NotificationType, String> templates;
+    /** Message templates by notification type. */
+    private final Map<NotificationType, String> templates;
 
-	/** Mapper to persist the notification. */
-	private final DomainMapper<PersistenceRequest<InAppNotificationEntity>, Boolean> insertMapper;
+    /** Mapper to persist the notification. */
+    private final DomainMapper<PersistenceRequest<InAppNotificationEntity>, Boolean> insertMapper;
 
-	/** Mapper to sync unread alert count in cache. */
-	private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper;
+    /** Mapper to sync unread alert count in cache. */
+    private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper;
 
-	/** Provides a dummy person object for persisting the in-app entity. */
-	private final DomainMapper<Long, Person> placeholderPersonMapper;
+    /** Provides a dummy person object for persisting the in-app entity. */
+    private final DomainMapper<Long, Person> placeholderPersonMapper;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param inVelocityEngine
-	 *            Apache Velocity templating engine.
-	 * @param inVelocityGlobalContext
-	 *            Global context for Apache Velocity templating engine.
-	 * @param inTemplates
-	 *            Message templates by notification type.
-	 * @param inInsertMapper
-	 *            Mapper to persist the notification.
-	 * @param inSyncMapper
-	 *            Mapper to sync unread alert count in cache.
-	 * @param inPlaceholderPersonMapper
-	 *            Provides a dummy person object for persisting the in-app entity.
-	 */
-	public InAppNotificationNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
-			final Map<NotificationType, String> inTemplates,
-			final DomainMapper<PersistenceRequest<InAppNotificationEntity>, Boolean> inInsertMapper,
-			final DomainMapper<Long, UnreadInAppNotificationCountDTO> inSyncMapper,
-			final DomainMapper<Long, Person> inPlaceholderPersonMapper)
-	{
-		velocityEngine = inVelocityEngine;
-		velocityGlobalContext = inVelocityGlobalContext;
-		templates = inTemplates;
-		insertMapper = inInsertMapper;
-		syncMapper = inSyncMapper;
-		placeholderPersonMapper = inPlaceholderPersonMapper;
-	}
+    /**
+     * Constructor.
+     *
+     * @param inVelocityEngine
+     *            Apache Velocity templating engine.
+     * @param inVelocityGlobalContext
+     *            Global context for Apache Velocity templating engine.
+     * @param inTemplates
+     *            Message templates by notification type.
+     * @param inInsertMapper
+     *            Mapper to persist the notification.
+     * @param inSyncMapper
+     *            Mapper to sync unread alert count in cache.
+     * @param inPlaceholderPersonMapper
+     *            Provides a dummy person object for persisting the in-app entity.
+     */
+    public InAppNotificationNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
+            final Map<NotificationType, String> inTemplates,
+            final DomainMapper<PersistenceRequest<InAppNotificationEntity>, Boolean> inInsertMapper,
+            final DomainMapper<Long, UnreadInAppNotificationCountDTO> inSyncMapper,
+            final DomainMapper<Long, Person> inPlaceholderPersonMapper)
+    {
+        velocityEngine = inVelocityEngine;
+        velocityGlobalContext = inVelocityGlobalContext;
+        templates = inTemplates;
+        insertMapper = inInsertMapper;
+        syncMapper = inSyncMapper;
+        placeholderPersonMapper = inPlaceholderPersonMapper;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
-			final Map<String, Object> inProperties) throws Exception
-			{
-		String template = templates.get(inType);
-		if (template == null)
-		{
-			return null;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
+            final Map<String, Object> inProperties) throws Exception
+    {
+        String template = templates.get(inType);
+        if (template == null)
+        {
+            return null;
+        }
 
-		Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
-		velocityContext.put("context", velocityContext);
-		// velocityContext.put("notificationProperties", inProperties);
+        Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
+        velocityContext.put("context", velocityContext);
+        // velocityContext.put("notificationProperties", inProperties);
 
-		StringWriter writer = new StringWriter();
-		velocityEngine.evaluate(velocityContext, writer, "InAppNotification-" + inType, template);
+        StringWriter writer = new StringWriter();
+        velocityEngine.evaluate(velocityContext, writer, "InAppNotification-" + inType, template);
 
-		String message = writer.toString();
+        String message = writer.toString();
 
-		InAppNotificationEntity dbNotif = null;
-		for (long recipientId : inRecipients)
-		{
-			Person recipient = placeholderPersonMapper.execute(recipientId);
-			if (recipient != null)
-			{
-				// build or clone notification
-				if (dbNotif == null)
-				{
-					dbNotif = new InAppNotificationEntity();
-					dbNotif.setNotificationType(inType);
-					dbNotif.setMessage(message);
-					dbNotif.setUrl((String) inProperties.get(NotificationPropertyKeys.URL));
-					dbNotif.setHighPriority(Boolean.TRUE.equals(inProperties
-							.get(NotificationPropertyKeys.HIGH_PRIORITY)));
+        InAppNotificationEntity dbNotif = null;
+        for (long recipientId : inRecipients)
+        {
+            Person recipient = placeholderPersonMapper.execute(recipientId);
+            if (recipient != null)
+            {
+                // build or clone notification
+                if (dbNotif == null)
+                {
+                    dbNotif = new InAppNotificationEntity();
+                    dbNotif.setNotificationType(inType);
+                    dbNotif.setMessage(message);
+                    dbNotif.setUrl((String) inProperties.get(NotificationPropertyKeys.URL));
+                    dbNotif.setHighPriority(Boolean.TRUE.equals(inProperties
+                            .get(NotificationPropertyKeys.HIGH_PRIORITY)));
 
-					Object obj = inProperties.get(NotificationPropertyKeys.SOURCE);
-					if (obj instanceof Identifiable)
-					{
-						Identifiable source = (Identifiable) obj;
-						dbNotif.setSourceType(source.getEntityType());
-						dbNotif.setSourceUniqueId(source.getUniqueId());
-						dbNotif.setSourceName(source.getDisplayName());
-					}
-					obj = inProperties.get(NotificationPropertyKeys.ACTOR);
-					if (obj instanceof Identifiable)
-					{
-						Identifiable actor = (Identifiable) obj;
-						dbNotif.setAvatarOwnerType(actor.getEntityType());
-						dbNotif.setAvatarOwnerUniqueId(actor.getUniqueId());
-					}
-				}
-				else
-				{
-					dbNotif = new InAppNotificationEntity(dbNotif);
-				}
-				dbNotif.setRecipient(recipient);
+                    Object obj = inProperties.get(NotificationPropertyKeys.SOURCE);
+                    if (obj instanceof Identifiable)
+                    {
+                        Identifiable source = (Identifiable) obj;
+                        dbNotif.setSourceType(source.getEntityType());
+                        dbNotif.setSourceUniqueId(source.getUniqueId());
+                        dbNotif.setSourceName(source.getDisplayName());
+                    }
+                    obj = inProperties.get(NotificationPropertyKeys.ACTOR);
+                    if (obj instanceof Identifiable)
+                    {
+                        Identifiable actor = (Identifiable) obj;
+                        dbNotif.setAvatarOwnerType(actor.getEntityType());
+                        dbNotif.setAvatarOwnerUniqueId(actor.getUniqueId());
+                    }
+                }
+                else
+                {
+                    dbNotif = new InAppNotificationEntity(dbNotif);
+                }
+                dbNotif.setRecipient(recipient);
 
-				insertMapper.execute(new PersistenceRequest<InAppNotificationEntity>(dbNotif));
-				syncMapper.execute(recipientId);
-			}
-		}
-		return null;
-			}
+                insertMapper.execute(new PersistenceRequest<InAppNotificationEntity>(dbNotif));
+                syncMapper.execute(recipientId);
+            }
+        }
+        return null;
+    }
 }

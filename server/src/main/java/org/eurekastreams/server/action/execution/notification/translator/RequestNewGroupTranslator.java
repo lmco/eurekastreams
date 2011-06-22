@@ -19,7 +19,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -30,46 +31,44 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone requesting creation of a group to appropriate notifications.
  */
-public class RequestNewGroupTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class RequestNewGroupTranslator implements NotificationTranslator<TargetEntityNotificationsRequest>
 {
     /** For getting the group. Need to use this mapper, since the bulk group mapper excludes pending groups. */
     // TODO: Should use GetDomainGroupsByIds, but it excludes pending groups, which are the only ones we want.
-    private final FindByIdMapper<DomainGroup> groupMapper;
+    private final FindByIdMapper<DomainGroup> groupDAO;
 
     /** For getting the org coordinators. */
-    private final DomainMapper<Serializable, List<Long>> systemAdminIdsMapper;
+    private final DomainMapper<Serializable, List<Long>> systemAdminIdsDAO;
 
     /**
      * Constructor.
      *
-     * @param inGroupMapper
+     * @param inGroupDAO
      *            For getting the group.
-     * @param inSystemAdminIdsMapper
+     * @param inSystemAdminIdsDAO
      *            Mapper for getting system admin ids
      */
-    public RequestNewGroupTranslator(final FindByIdMapper<DomainGroup> inGroupMapper,
-            final DomainMapper<Serializable, List<Long>> inSystemAdminIdsMapper)
+    public RequestNewGroupTranslator(final FindByIdMapper<DomainGroup> inGroupDAO,
+            final DomainMapper<Serializable, List<Long>> inSystemAdminIdsDAO)
     {
-        groupMapper = inGroupMapper;
-        systemAdminIdsMapper = inSystemAdminIdsMapper;
+        groupDAO = inGroupDAO;
+        systemAdminIdsDAO = inSystemAdminIdsDAO;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final TargetEntityNotificationsRequest inRequest)
     {
-        // TODO: The "activityId" is being used loosely as the "thing being acted on", hence the group being created.
-        // Should refactor notifications for more flexible parameters.
-        DomainGroup group = groupMapper.execute(new FindByIdRequest("DomainGroup", inRequest.getActivityId()));
+        DomainGroup group = groupDAO.execute(new FindByIdRequest("DomainGroup", inRequest.getTargetEntityId()));
 
-        List<Long> admins = systemAdminIdsMapper.execute(null);
+        List<Long> admins = systemAdminIdsDAO.execute(null);
 
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP, admins);
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("group", group);
-        // TODO: add appropriate properties
+        batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
         return batch;
     }
 }

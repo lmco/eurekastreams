@@ -16,15 +16,15 @@
 package org.eurekastreams.server.action.request.notification;
 
 /**
- * Request to generate notifications for an action on an activity.
+ * Request to generate notifications for an action pertaining to a stream or stream's entity.
  */
-public class ActivityNotificationsRequest extends TargetEntityNotificationsRequest
+public class TargetEntityNotificationsRequest extends CreateNotificationsRequest
 {
     /** Fingerprint. */
-    private static final long serialVersionUID = 1346493618164101287L;
+    private static final long serialVersionUID = 7293258744162957736L;
 
-    /** ID of the activity the event pertained to. */
-    private final long activityId;
+    /** ID of the entity (person, group, etc.) who was acted upon or whose stream was affected. */
+    private final long targetEntityId;
 
     /**
      * Constructor.
@@ -33,23 +33,20 @@ public class ActivityNotificationsRequest extends TargetEntityNotificationsReque
      *            Type of event that occurred.
      * @param inActorId
      *            ID of the entity (person) who performed the action which the notification is about.
-     * @param inStreamEntityId
-     *            ID of the entity (person or group) who owns the stream containing the activity.
-     * @param inActivityId
-     *            ID of the activity the event pertained to.
+     * @param inTargetEntityId
+     *            ID of the entity (person, group, etc.) who was acted upon or whose stream was affected.
      */
-    public ActivityNotificationsRequest(final RequestType inType, final long inActorId, final long inStreamEntityId,
-            final long inActivityId)
+    public TargetEntityNotificationsRequest(final RequestType inType, final long inActorId, final long inTargetEntityId)
     {
-        super(inType, inActorId, inStreamEntityId);
-        activityId = inActivityId;
+        super(inType, inActorId);
+        targetEntityId = inTargetEntityId;
     }
 
     /**
-     * @return ID of the activity the event pertained to.
+     * @return ID of the entity (person, group, etc.) who was acted upon or whose stream was affected.
      */
-    public long getActivityId()
+    public long getTargetEntityId()
     {
-        return activityId;
+        return targetEntityId;
     }
 }

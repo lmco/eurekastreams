@@ -15,22 +15,19 @@
  */
 package org.eurekastreams.server.action.execution;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -63,14 +60,14 @@ public class GetUsageMetricSummaryExecutionTest
     /**
      * Mapper to get the summary data for a stream, or all streams.
      */
-    private DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper = context.mock(
-            DomainMapper.class, "summaryDataMapper");
+    private final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper = context
+            .mock(DomainMapper.class, "summaryDataMapper");
 
     /**
      * Strategy to get the number of weekdays between two dates.
      */
-    private WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy = context.mock(WeekdaysInDateRangeStrategy.class,
-            "weekdaysInDateRangeStrategy");
+    private final WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy = context.mock(
+            WeekdaysInDateRangeStrategy.class, "weekdaysInDateRangeStrategy");
 
     /**
      * Setup method.
@@ -107,8 +104,8 @@ public class GetUsageMetricSummaryExecutionTest
         cal.add(Calendar.DATE, -4);
         final Date fourDaysAgo = cal.getTime();
 
-        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, yesterday, 1308238511000L, 80L, 91L, 101L,
-                111L, 121L));
+        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, yesterday, 1308238511000L, 80L, 91L,
+                101L, 111L, 121L));
         results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, twoDaysAgo, 1308238511000L, 90L, 100L,
                 110L, 120L, 130L));
         results.add(new DailyUsageSummary(30L, 40L, 50L, 60L, 70L, 80L, 90L, threeDaysAgo, 1308238511000L, 100L, 110L,
@@ -132,37 +129,8 @@ public class GetUsageMetricSummaryExecutionTest
         });
 
         // invoke
-        UsageMetricSummaryDTO result = (UsageMetricSummaryDTO) sut.execute(new PrincipalActionContext()
-        {
-            @Override
-            public Principal getPrincipal()
-            {
-                return null;
-            }
-
-            @Override
-            public String getActionId()
-            {
-                return null;
-            }
-
-            @Override
-            public Serializable getParams()
-            {
-                return request;
-            }
-
-            @Override
-            public Map<String, Object> getState()
-            {
-                return null;
-            }
-
-            @Override
-            public void setActionId(final String inActionId)
-            {
-            }
-        });
+        UsageMetricSummaryDTO result = (UsageMetricSummaryDTO) sut.execute(TestContextCreator
+                .createPrincipalActionContext(request, null));
 
         Assert.assertEquals(10, result.getWeekdayRecordCount());
         Assert.assertEquals(6, result.getAverageDailyUniqueVisitorCount());

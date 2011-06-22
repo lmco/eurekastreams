@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +30,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
@@ -54,7 +55,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -103,7 +104,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     * 
+     *
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inGetPersonByIdMapper
@@ -122,7 +123,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *            post executor.
      * @param inDeleteCacheKeyMapper
      *            Delete cache key mapper.
-     * 
+     *
      */
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
             final DomainMapper<Long, PersonModelView> inGetPersonByIdMapper,
@@ -146,7 +147,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -161,9 +162,9 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         String followerAccountId = null;
         Long targetId;
         FollowerStatus followerStatus;
-        List<UserActionRequest> taskRequests = new ArrayList<UserActionRequest>();
         String targetName;
         boolean isPending = false;
+        List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
 
         // this switching here is a hold over until the GroupCreator can be refactored to call this strategy
         // and not fail because of additional mapper calls on the DomainGroupModelView and PersonModelView objects.
@@ -207,26 +208,25 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             addCachedGroupFollowerMapper.execute(followerId, targetId);
 
             // Queue async action to remove the newly followed group from cache (to sync follower counts)
-            taskRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+            asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
 
             // remove any requests from the user for group membership
-            if (deleteRequestForGroupMembershipMapper
-                    .execute(new RequestForGroupMembershipRequest(targetId, followerId)))
+            if (deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId,
+                    followerId)))
             {
                 // if any requests were present, then user was just approved for access
-                taskRequests.add(new UserActionRequest("createNotificationsAction", null,
-                        new CreateNotificationsRequest(RequestType.REQUEST_GROUP_ACCESS_APPROVED, inActionContext
-                                .getActionContext().getPrincipal().getId(), targetId, followerId)));
+                asyncRequests.add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                        new GroupMembershipResponseNotificationsRequest(RequestType.REQUEST_GROUP_ACCESS_APPROVED,
+                                inActionContext.getActionContext().getPrincipal().getId(), targetId, followerId)));
             }
 
             // remove person modelview from cache as groupstreamhiddenlineindex will be changed.
             deleteCacheKeyMapper.execute(Collections.singleton(CacheKeys.PERSON_BY_ID + followerId));
 
             // Sends new follower notifications.
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.GROUP_FOLLOWER,
-                    followerId, targetId, 0);
-            taskRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+            asyncRequests.add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                    new TargetEntityNotificationsRequest(RequestType.FOLLOW_GROUP, followerId, targetId)));
 
             // Posts a message to the user's personal stream unless this is a new pending group
             if (!isPending)
@@ -258,18 +258,18 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             domainGroupMapper.removeFollower(followerId, targetId);
 
             // Queue async action to remove the newly followed group from cache (to sync follower counts)
-            taskRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+            asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
 
             // Remove the current user that is severing a relationship with the target group
             // from the list of followers for that target group.
-            taskRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
+            asyncRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
                     Collections.singletonList(CacheKeys.FOLLOWERS_BY_GROUP + targetId), Collections
                             .singletonList(followerId))));
 
             // Remove the target group the current user is now following from the list of
             // groups that the current user is already following.
-            taskRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
+            asyncRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
                     Collections.singletonList(CacheKeys.GROUPS_FOLLOWED_BY_PERSON + followerId), Collections
                             .singletonList(targetId))));
 
@@ -278,13 +278,12 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // nothing to do here.
         }
 
-        inActionContext.getUserActionRequests().addAll(taskRequests);
         return followerIdsMapper.execute(targetId).size();
     }
 
     /**
      * Creates a principal for the given user's id and account id.
-     * 
+     *
      * @param followerId
      *            Person id.
      * @param followerAccountId
@@ -312,13 +311,12 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             {
                 return followerAccountId;
             }
-            
 
             @Override
             public String getSessionId()
             {
                 return "";
-            }            
+            }
         };
     }
 }

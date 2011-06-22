@@ -18,7 +18,8 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -27,38 +28,39 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone requesting access to a private group to appropriate notifications.
  */
-public class RequestGroupAccessTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class RequestGroupAccessTranslator implements NotificationTranslator<TargetEntityNotificationsRequest>
 {
     /**
      * Mapper to get group coordinator ids.
      */
-    private final DomainMapper<Long, List<Long>> coordinatorMapper;
+    private final DomainMapper<Long, List<Long>> coordinatorDAO;
 
     /**
      * Constructor.
-     *
-     * @param inCoordinatorMapper
+     * 
+     * @param inCoordinatorDAO
      *            coordinator mapper to set.
      */
-    public RequestGroupAccessTranslator(final DomainMapper<Long, List<Long>> inCoordinatorMapper)
+    public RequestGroupAccessTranslator(final DomainMapper<Long, List<Long>> inCoordinatorDAO)
     {
-        coordinatorMapper = inCoordinatorMapper;
+        coordinatorDAO = inCoordinatorDAO;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final TargetEntityNotificationsRequest inRequest)
     {
-        List<Long> coordinatorIds = coordinatorMapper.execute(inRequest.getDestinationId());
+        List<Long> coordinatorIds = coordinatorDAO.execute(inRequest.getTargetEntityId());
         // actor cannot be a recipient - if they were a group coordinator, they wouldn't and couldn't be asking for
         // access, hence we don't need to filter
 
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_GROUP_ACCESS, coordinatorIds);
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("group", DomainGroupModelView.class, inRequest.getDestinationId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("group", DomainGroupModelView.class, inRequest.getTargetEntityId());
         // TODO: add appropriate properties
+        batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
         return batch;
     }
 }

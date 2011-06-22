@@ -1650,7 +1650,13 @@
                 <constructor-arg ref="memcachedCache" />        
             </bean>
         </constructor-arg>
-    </bean>	
+    </bean>
+    
+    <!-- gets single comment DTO by id, returns null if exactly one result not found. -->
+    <bean id="getCommentByIdAllowNoneDAO" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+        <constructor-arg ref="getCommentsById" />
+        <constructor-arg value="false" />
+    </bean>
 
 	<bean id="deleteActivityComment"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityComment">

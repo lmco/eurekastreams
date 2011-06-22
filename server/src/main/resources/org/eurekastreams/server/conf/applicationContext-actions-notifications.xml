@@ -89,49 +89,38 @@
 
 	<!-- ==== TRANSLATION ==== -->
 
+	<bean id="commentTranslator" class="org.eurekastreams.server.action.execution.notification.translator.CommentTranslator">
+		<constructor-arg ref="getCommentorIdsByActivityId" />
+		<constructor-arg ref="activityDTOMapper" />
+	</bean>
+
     <util:map id="translators">
-        <entry key="FOLLOWER">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowerTranslator" />
+        <entry key="FOLLOW_PERSON">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowPersonTranslator" />
         </entry>
-        <entry key="LIKE">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.LikeTranslator">
-            	<constructor-arg ref="bulkActivitiesMapper" />
-            </bean>
-        </entry>
-        <entry key="COMMENT">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.CommentTranslator">
-				<constructor-arg ref="getCommentorIdsByActivityId" />
-				<constructor-arg ref="bulkActivitiesMapper" />
-				<constructor-arg ref="getCommentsById" />
-				<constructor-arg ref="getPersonIdsWithStarredActivity" />
-            </bean>
-        </entry>
-        <entry key="STREAM_POST">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.StreamPostTranslator" />
-        </entry>
-        <entry key="GROUP_FOLLOWER">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupFollowerTranslator">
+        <entry key="FOLLOW_GROUP">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowGroupTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
             </bean>
         </entry>
-        <entry key="GROUP_COMMENT">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupCommentTranslator">
-				<constructor-arg ref="getCommentorIdsByActivityId" />
-				<constructor-arg ref="bulkActivitiesMapper" />
-				<constructor-arg><null /></constructor-arg>
-				<!-- Replace above with <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" /> to notify group coordinators when comments are posted to group streams. -->
-				<constructor-arg ref="getCommentsById" />
-				<constructor-arg ref="getPersonIdsWithStarredActivity" />
+        <entry key="POST_PERSON_STREAM">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PostPersonStreamTranslator" />
+        </entry>
+        <entry key="POST_GROUP_STREAM">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PostGroupStreamTranslator">
+                <constructor-arg ref="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
             </bean>
         </entry>
-        <entry key="GROUP_STREAM_POST">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
+        <entry key="COMMENT" value-ref="commentTranslator" />
+        <entry key="GROUP_COMMENT" value-ref="commentTranslator" />
+        <entry key="LIKE">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.LikeTranslator">
+            	<constructor-arg ref="activityDTOMapper" />
             </bean>
         </entry>
         <entry key="FLAG_ACTIVITY">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.FlagTranslator">
-                <constructor-arg ref="bulkActivitiesMapper"/>
+                <constructor-arg ref="activityDTOMapper"/>
                 <constructor-arg ref="getSystemAdministratorIds" />
             </bean>
         </entry>

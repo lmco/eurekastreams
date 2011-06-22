@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
@@ -29,17 +30,15 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the group follower notification translator.
- *
+ * Tests FollowGroupTranslator.
  */
-public class GroupFollowerTranslatorTest
+public class FollowGroupTranslatorTest
 {
     /** Test data. */
     private static final long ACTOR_ID = 1111L;
@@ -51,24 +50,21 @@ public class GroupFollowerTranslatorTest
     private static final long COORDINATOR1_ID = 42;
 
     /** Test data. */
-    private static final long COORDINATOR2_ID = ACTOR_ID;
+    private static final long COORDINATOR2_ID = 98;
 
-    /** Test data. */
-    private static final long COORDINATOR3_ID = 98;
-
-    /** System under test. */
-    private GroupFollowerTranslator sut;
-
-    /** Context for building mock objects. */
-    private final Mockery context = new JUnit4Mockery()
+    /** Used for mocking objects. */
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
-    /** Mock coordinator mapper. */
-    private final DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class);
+    /** DAO to get group coordinator ids. */
+    private final DomainMapper<Long, List<Long>> coordinatorDAO = context.mock(DomainMapper.class, "coordinatorDAO");
+
+    /** System under test. */
+    private NotificationTranslator<TargetEntityNotificationsRequest> sut;
 
     /**
      * Setup test.
@@ -76,37 +72,35 @@ public class GroupFollowerTranslatorTest
     @Before
     public void setup()
     {
-        sut = new GroupFollowerTranslator(mapper);
+        sut = new FollowGroupTranslator(coordinatorDAO);
     }
 
+
     /**
-     * Test creating the notification for the event of following a person.
+     * Test translating.
      */
     @Test
     public void testTranslateFollowGroup()
     {
-        final List<Long> coordinators = new ArrayList<Long>();
-        coordinators.add(COORDINATOR1_ID);
-        coordinators.add(COORDINATOR2_ID);
-        coordinators.add(COORDINATOR3_ID);
+        final List<Long> coordinators = Arrays.asList(COORDINATOR1_ID, COORDINATOR2_ID);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).execute(GROUP_FOLLOWED_ID);
+                oneOf(coordinatorDAO).execute(GROUP_FOLLOWED_ID);
                 will(returnValue(coordinators));
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_FOLLOWED_ID, 0L);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(null, ACTOR_ID,
+                GROUP_FOLLOWED_ID));
 
         context.assertIsSatisfied();
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
         TranslatorTestHelper
-                .assertRecipients(results, NotificationType.FOLLOW_GROUP, COORDINATOR1_ID, COORDINATOR3_ID);
+                .assertRecipients(results, NotificationType.FOLLOW_GROUP, COORDINATOR1_ID, COORDINATOR2_ID);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
@@ -117,38 +111,25 @@ public class GroupFollowerTranslatorTest
     }
 
     /**
-     * Test creating the notification for the event of following a person.
+     * Test translating.
      */
     @Test
-    public void testTranslateFollowGroupNotCoord()
+    public void testTranslateFollowGroupByCoordinator()
     {
-        final List<Long> coordinators = new ArrayList<Long>();
-        coordinators.add(COORDINATOR1_ID);
-        coordinators.add(COORDINATOR3_ID);
+        final List<Long> coordinators = Arrays.asList(COORDINATOR1_ID, ACTOR_ID, COORDINATOR2_ID);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).execute(GROUP_FOLLOWED_ID);
+                oneOf(coordinatorDAO).execute(GROUP_FOLLOWED_ID);
                 will(returnValue(coordinators));
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_FOLLOWED_ID, 0L);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(null, ACTOR_ID,
+                GROUP_FOLLOWED_ID));
 
         context.assertIsSatisfied();
-
-        // check recipients
-        assertEquals(1, results.getRecipients().size());
-        TranslatorTestHelper
-                .assertRecipients(results, NotificationType.FOLLOW_GROUP, COORDINATOR1_ID, COORDINATOR3_ID);
-
-        // check properties
-        PropertyMap<Object> props = results.getProperties();
-        assertEquals(3, props.size());
-        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
-        PropertyMapTestHelper.assertPlaceholder(props, "stream", DomainGroupModelView.class, GROUP_FOLLOWED_ID);
-        PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        assertNull(results);
     }
 }

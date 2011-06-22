@@ -31,10 +31,9 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.AnonymousClassInterceptor;
 import org.eurekastreams.server.action.execution.notification.notifier.Notifier;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
-import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.GroupRemovedNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
@@ -172,7 +171,7 @@ public class ReviewPendingGroupExecutionTest
 
         assertEquals(1, asyncRequests.size());
         assertEquals("createNotificationsAction", asyncRequests.get(0).getActionKey());
-        CreateNotificationsRequest expected = new GroupActionNotificationsRequest(
+        TargetEntityNotificationsRequest expected = new TargetEntityNotificationsRequest(
                 RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, GROUP_ID);
         assertTrue(IsEqualInternally.areEqualInternally(expected, asyncRequests.get(0).getParams()));
     }
@@ -210,7 +209,7 @@ public class ReviewPendingGroupExecutionTest
 
         assertEquals(1, asyncRequests.size());
         assertEquals("createNotificationsAction", asyncRequests.get(0).getActionKey());
-        CreateNotificationsRequest expected = new GroupActionNotificationsRequest(
+        TargetEntityNotificationsRequest expected = new TargetEntityNotificationsRequest(
                 RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, GROUP_ID);
         assertTrue(IsEqualInternally.areEqualInternally(expected, asyncRequests.get(0).getParams()));
     }

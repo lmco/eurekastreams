@@ -36,6 +36,7 @@ import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
@@ -69,7 +70,7 @@ public class GroupCreatorTest
     /**
      * The current user's account id.
      */
-    private String accountId = "sdlkfjsdlfjs";
+    private final String accountId = "sdlkfjsdlfjs";
 
     /**
      * The current user's id.
@@ -79,32 +80,32 @@ public class GroupCreatorTest
     /**
      * The current user's open social id.
      */
-    private String openSocialId = "sdflkjsd-sdlfk-sdflkj-lskdf";
+    private final String openSocialId = "sdflkjsd-sdlfk-sdflkj-lskdf";
 
     /**
      * The mock for the person mapper.
      */
-    private PersonMapper personMapperMock = context.mock(PersonMapper.class);
+    private final PersonMapper personMapperMock = context.mock(PersonMapper.class);
     /**
      * The mock group.
      */
-    private DomainGroup groupMock = context.mock(DomainGroup.class);
+    private final DomainGroup groupMock = context.mock(DomainGroup.class);
 
     /**
      * The mock group mapper to be used by the action.
      */
-    private DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
+    private final DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
 
     /**
      * task handler action context.
      */
-    private TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = context
+    private final TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = context
             .mock(TaskHandlerActionContext.class);
 
     /**
      * Action context.
      */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * Collection to hold action requests queued up for async processing.
@@ -114,7 +115,7 @@ public class GroupCreatorTest
     /**
      * Current user principal.
      */
-    private Principal userPrincipal = context.mock(Principal.class);
+    private final Principal userPrincipal = context.mock(Principal.class);
 
     /**
      * Mocked following group strategy to add new group followers.
@@ -131,7 +132,7 @@ public class GroupCreatorTest
     /**
      * Mapper to get system settings.
      */
-    private DomainMapper<MapperRequest, SystemSettings> getSystemSettingsMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<MapperRequest, SystemSettings> getSystemSettingsMapper = context.mock(DomainMapper.class,
             "getSystemSettings");
 
     /**
@@ -173,7 +174,7 @@ public class GroupCreatorTest
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -192,7 +193,7 @@ public class GroupCreatorTest
     /**
      * Build a group based on the input form being fully filled out with valid data. Group will be put into pending
      * because the org requires approval.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -279,8 +280,8 @@ public class GroupCreatorTest
 
         assertEquals("Second request has wrong key", "createNotificationsAction", userActionRequests.get(1)
                 .getActionKey());
-        CreateNotificationsRequest request2 = new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP, personId,
-                0, id);
+        CreateNotificationsRequest request2 = new TargetEntityNotificationsRequest(RequestType.REQUEST_NEW_GROUP,
+                personId, id);
         assertTrue("Second request has wrong content", IsEqualInternally.areEqualInternally(request2,
                 userActionRequests.get(1).getParams()));
     }
@@ -288,7 +289,7 @@ public class GroupCreatorTest
     /**
      * Build an group based on the input form being fully filled out with valid data. group should be automatically
      * approved if user is an admin.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -380,7 +381,7 @@ public class GroupCreatorTest
     /**
      * Build an group based on the input form being fully filled out with valid data. Group should be automatically
      * approved because the org does not require approval.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -465,7 +466,7 @@ public class GroupCreatorTest
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -515,7 +516,7 @@ public class GroupCreatorTest
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */

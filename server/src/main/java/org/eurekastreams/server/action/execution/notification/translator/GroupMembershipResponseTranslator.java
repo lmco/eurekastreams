@@ -17,16 +17,16 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Translates the event of a coordinator approving or denying a private group membership request to to the appropriate
  * notification.
  */
-public class GroupMembershipResponseTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class GroupMembershipResponseTranslator implements
+        NotificationTranslator<GroupMembershipResponseNotificationsRequest>
 {
     /** Notification type to generate. */
     private final NotificationType type;
@@ -46,14 +46,12 @@ public class GroupMembershipResponseTranslator implements NotificationTranslator
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final GroupMembershipResponseNotificationsRequest inRequest)
     {
-        // TODO: Make sense out of the inputs by using a specific request type.
-
-        NotificationBatch batch = new NotificationBatch(type, inRequest.getActivityId());
-        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("group", DomainGroupModelView.class, inRequest.getDestinationId());
-        // TODO: add appropriate properties
+        NotificationBatch batch = new NotificationBatch(type, inRequest.getRequestorId());
+        batch.setProperty("group", DomainGroupModelView.class, inRequest.getTargetEntityId());
+        batch.setPropertyAlias(NotificationPropertyKeys.ACTOR, "group");
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "group");
         return batch;
     }
 }

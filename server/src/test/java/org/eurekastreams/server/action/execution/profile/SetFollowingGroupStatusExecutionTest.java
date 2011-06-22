@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,15 @@ import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.ActionTestHelper;
 import org.eurekastreams.server.action.execution.stream.PostActivityExecutionStrategy;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
@@ -54,7 +53,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Test class for the {@link SetFollowingGroupStatusExecution} class.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecutionTest
 {
@@ -182,7 +181,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -228,7 +227,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -319,12 +318,14 @@ public class SetFollowingGroupStatusExecutionTest
 
         context.assertIsSatisfied();
         assertEquals(5, result);
-        assertEquals(3, actionContext.getUserActionRequests().size());
+
+        ActionTestHelper.assertAsyncActionRequests(actionContext, "deleteCacheKeysAction",
+                CreateNotificationsRequest.ACTION_NAME, CreateNotificationsRequest.ACTION_NAME);
     }
 
     /**
      * Test the setFollowing method when a group is unfollowed.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -360,7 +361,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test a failure case.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -377,17 +378,14 @@ public class SetFollowingGroupStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, null, 0));
 
         context.assertIsSatisfied();
     }
 
     /**
      * Test an unexpected following status.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */

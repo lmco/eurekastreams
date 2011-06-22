@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 
@@ -58,9 +59,10 @@ public class DeleteRequestForGroupMembershipExecution implements TaskHandlerExec
 
         // send notification
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("createNotificationsAction", null, new CreateNotificationsRequest(
-                        RequestType.REQUEST_GROUP_ACCESS_DENIED, inActionContext.getActionContext().getPrincipal()
-                                .getId(), request.getGroupId(), request.getPersonId())));
+                new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                        new GroupMembershipResponseNotificationsRequest(RequestType.REQUEST_GROUP_ACCESS_DENIED,
+                                inActionContext.getActionContext().getPrincipal().getId(), request.getGroupId(),
+                                request.getPersonId())));
 
         return null;
     }
