@@ -16,7 +16,7 @@
 package org.eurekastreams.server.domain.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO to contain different lists of StreamDTOs for the Streams Discover page.
@@ -29,61 +29,39 @@ public class StreamDiscoverListsDTO implements Serializable
     private static final long serialVersionUID = -4114921089517370773L;
 
     /**
-     * The number of streams with activities.
-     */
-    private Integer totalStreamCountWithActivities;
-
-    /**
      * The top 10 most active streams by message count.
      */
-    private ArrayList<StreamDTO> mostActiveStreams;
+    private SublistWithResultCount<StreamDTO> mostActiveStreams;
 
     /**
      * The top 10 most viewed streams.
      */
-    private ArrayList<StreamDTO> mostViewedStreams;
+    private List<StreamDTO> mostViewedStreams;
 
     /**
      * The top 10 most followed streams.
      */
-    private ArrayList<StreamDTO> mostFollowedStreams;
+    private List<StreamDTO> mostFollowedStreams;
 
     /**
      * The top 10 most recent streams.
      */
-    private ArrayList<StreamDTO> mostRecentStreams;
+    private List<StreamDTO> mostRecentStreams;
 
     /**
      * A list of the top 10 suggested streams for a specific person - this is populated after this is pulled from cache.
      */
-    private ArrayList<StreamDTO> suggestedStreams;
+    private List<StreamDTO> suggestedStreams;
 
     /**
      * A list of all of the currently featured streams.
      */
-    private ArrayList<FeaturedStreamDTO> featuredStreams;
-
-    /**
-     * @return the totalStreamCountWithActivities
-     */
-    public Integer getTotalStreamCountWithActivities()
-    {
-        return totalStreamCountWithActivities;
-    }
-
-    /**
-     * @param inTotalStreamCountWithActivities
-     *            the totalStreamCountWithActivities to set
-     */
-    public void setTotalStreamCountWithActivities(final Integer inTotalStreamCountWithActivities)
-    {
-        totalStreamCountWithActivities = inTotalStreamCountWithActivities;
-    }
+    private List<FeaturedStreamDTO> featuredStreams;
 
     /**
      * @return the mostActiveStreams
      */
-    public ArrayList<StreamDTO> getMostActiveStreams()
+    public SublistWithResultCount<StreamDTO> getMostActiveStreams()
     {
         return mostActiveStreams;
     }
@@ -92,7 +70,7 @@ public class StreamDiscoverListsDTO implements Serializable
      * @param inMostActiveStreams
      *            the mostActiveStreams to set
      */
-    public void setMostActiveStreams(final ArrayList<StreamDTO> inMostActiveStreams)
+    public void setMostActiveStreams(final SublistWithResultCount<StreamDTO> inMostActiveStreams)
     {
         mostActiveStreams = inMostActiveStreams;
     }
@@ -100,7 +78,7 @@ public class StreamDiscoverListsDTO implements Serializable
     /**
      * @return the mostViewedStreams
      */
-    public ArrayList<StreamDTO> getMostViewedStreams()
+    public List<StreamDTO> getMostViewedStreams()
     {
         return mostViewedStreams;
     }
@@ -109,7 +87,7 @@ public class StreamDiscoverListsDTO implements Serializable
      * @param inMostViewedStreams
      *            the mostViewedStreams to set
      */
-    public void setMostViewedStreams(final ArrayList<StreamDTO> inMostViewedStreams)
+    public void setMostViewedStreams(final List<StreamDTO> inMostViewedStreams)
     {
         mostViewedStreams = inMostViewedStreams;
     }
@@ -117,7 +95,7 @@ public class StreamDiscoverListsDTO implements Serializable
     /**
      * @return the mostFollowedStreams
      */
-    public ArrayList<StreamDTO> getMostFollowedStreams()
+    public List<StreamDTO> getMostFollowedStreams()
     {
         return mostFollowedStreams;
     }
@@ -126,7 +104,7 @@ public class StreamDiscoverListsDTO implements Serializable
      * @param inMostFollowedStreams
      *            the mostFollowedStreams to set
      */
-    public void setMostFollowedStreams(final ArrayList<StreamDTO> inMostFollowedStreams)
+    public void setMostFollowedStreams(final List<StreamDTO> inMostFollowedStreams)
     {
         mostFollowedStreams = inMostFollowedStreams;
     }
@@ -134,7 +112,7 @@ public class StreamDiscoverListsDTO implements Serializable
     /**
      * @return the mostRecentStreams
      */
-    public ArrayList<StreamDTO> getMostRecentStreams()
+    public List<StreamDTO> getMostRecentStreams()
     {
         return mostRecentStreams;
     }
@@ -143,7 +121,7 @@ public class StreamDiscoverListsDTO implements Serializable
      * @param inMostRecentStreams
      *            the mostRecentStreams to set
      */
-    public void setMostRecentStreams(final ArrayList<StreamDTO> inMostRecentStreams)
+    public void setMostRecentStreams(final List<StreamDTO> inMostRecentStreams)
     {
         mostRecentStreams = inMostRecentStreams;
     }
@@ -151,7 +129,7 @@ public class StreamDiscoverListsDTO implements Serializable
     /**
      * @return the suggestedStreams
      */
-    public ArrayList<StreamDTO> getSuggestedStreams()
+    public List<StreamDTO> getSuggestedStreams()
     {
         return suggestedStreams;
     }
@@ -160,7 +138,7 @@ public class StreamDiscoverListsDTO implements Serializable
      * @param inSuggestedStreams
      *            the suggestedStreams to set
      */
-    public void setSuggestedStreams(final ArrayList<StreamDTO> inSuggestedStreams)
+    public void setSuggestedStreams(final List<StreamDTO> inSuggestedStreams)
     {
         suggestedStreams = inSuggestedStreams;
     }
@@ -168,7 +146,7 @@ public class StreamDiscoverListsDTO implements Serializable
     /**
      * @return the featuredStreams
      */
-    public ArrayList<FeaturedStreamDTO> getFeaturedStreams()
+    public List<FeaturedStreamDTO> getFeaturedStreams()
     {
         return featuredStreams;
     }
@@ -177,7 +155,7 @@ public class StreamDiscoverListsDTO implements Serializable
      * @param inFeaturedStreams
      *            the featuredStreams to set
      */
-    public void setFeaturedStreams(final ArrayList<FeaturedStreamDTO> inFeaturedStreams)
+    public void setFeaturedStreams(final List<FeaturedStreamDTO> inFeaturedStreams)
     {
         featuredStreams = inFeaturedStreams;
     }
