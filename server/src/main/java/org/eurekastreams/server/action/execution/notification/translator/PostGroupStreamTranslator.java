@@ -29,20 +29,20 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone posting to a group stream to appropriate notifications.
  */
-public class GroupStreamPostTranslator implements NotificationTranslator<ActivityNotificationsRequest>
+public class PostGroupStreamTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
-    /** Mapper to get list of members of a group. */
-    private final DomainMapper<Long, List<Long>> memberMapper;
+    /** DAO to get list of members of a group. */
+    private final DomainMapper<Long, List<Long>> memberDAO;
 
     /**
      * Constructor.
      *
-     * @param inMemberMapper
-     *            Mapper to get list of members of a group.
+     * @param inMemberDAO
+     *            DAO to get list of members of a group.
      */
-    public GroupStreamPostTranslator(final DomainMapper<Long, List<Long>> inMemberMapper)
+    public PostGroupStreamTranslator(final DomainMapper<Long, List<Long>> inMemberDAO)
     {
-        memberMapper = inMemberMapper;
+        memberDAO = inMemberDAO;
     }
 
     /**
@@ -51,9 +51,9 @@ public class GroupStreamPostTranslator implements NotificationTranslator<Activit
     @Override
     public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
-        // NOTE: This code assumes that the mapper returns a list which can be safely altered, specificially that it is
-        // not used elsewhere (e.g. stored off) and supports removing elements.
-        List<Long> memberIdsToNotify = memberMapper.execute(inRequest.getDestinationId());
+        // NOTE: This code assumes that the DAO returns a list which can be safely altered, specifically that it
+        // supports removing elements and is not used elsewhere (e.g. stored off).
+        List<Long> memberIdsToNotify = memberDAO.execute(inRequest.getTargetEntityId());
         memberIdsToNotify.remove(inRequest.getActorId());
 
         if (memberIdsToNotify.isEmpty())
@@ -62,11 +62,10 @@ public class GroupStreamPostTranslator implements NotificationTranslator<Activit
         }
 
         NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_JOINED_GROUP, memberIdsToNotify);
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("stream", DomainGroupModelView.class, inRequest.getDestinationId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("stream", DomainGroupModelView.class, inRequest.getTargetEntityId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
-        // TODO: add appropriate properties
         return batch;
     }
 }

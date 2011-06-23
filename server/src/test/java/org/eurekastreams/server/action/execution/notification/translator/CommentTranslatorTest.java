@@ -30,7 +30,6 @@ import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -53,25 +52,21 @@ public class CommentTranslatorTest
         }
     };
 
-    /** Mock commentors mapper. */
-    private final GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
+    /** Mock commentors DAO. */
+    private final DomainMapper<Long, List<Long>> commentorsMapper = context.mock(DomainMapper.class,
+            "commentorsMapper");
 
-    /** Mock activities mapper. */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class,
-            "activitiesMapper");
-
-    /** Mapper to get the comment. */
-    private final DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class,
-            "commentsMapper");
-
-    /** Mapper to get the savers. */
-    private final DomainMapper<Long, List<Long>> saversMapper = context.mock(DomainMapper.class, "saversMapper");
+    /** Fixture: activity DAO. */
+    private final DomainMapper<Long, ActivityDTO> activityDAO = context.mock(DomainMapper.class, "activityDAO");
 
     /** System under test. */
-    private NotificationTranslator sut;
+    private NotificationTranslator<CommentNotificationsRequest> sut;
 
     /** Test data. */
     private static final long ACTOR_ID = 1111L;
+
+    /** Test data. */
+    private static final long AUTHOR_ID = 1112L;
 
     /** Test data. */
     private static final long STREAM_OWNER_ID = 2222L;
@@ -86,10 +81,10 @@ public class CommentTranslatorTest
     private static final long COMMENT_ID = 4545L;
 
     /** Test data. */
-    private static final long COMMENTOR = 5555L;
+    private static final long COMMENTOR1 = 1131L;
 
     /** Test data. */
-    private static final long SAVER = 7777L;
+    private static final long COMMENTOR2 = 1132L;
 
     /**
      * Setup test.
@@ -97,7 +92,7 @@ public class CommentTranslatorTest
     @Before
     public void setup()
     {
-        sut = new CommentTranslator(commentorsMapper, activitiesMapper, commentsMapper, saversMapper);
+        sut = new CommentTranslator(commentorsMapper, activityDAO);
     }
 
     /**
@@ -107,28 +102,19 @@ public class CommentTranslatorTest
     public void testTranslate()
     {
         final StreamEntityDTO actor = new StreamEntityDTO();
-        actor.setId(STREAM_OWNER_ID);
+        actor.setId(AUTHOR_ID);
 
         final ActivityDTO activity = new ActivityDTO();
         activity.setActor(actor);
 
-        final CommentDTO comment = new CommentDTO();
-        comment.setActivityId(ACTIVITY_ID);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
-                will(returnValue(Collections.singletonList(comment)));
-
-                oneOf(activitiesMapper).execute(Collections.singletonList(ACTIVITY_ID));
-                will(returnValue(Collections.singletonList(activity)));
+                oneOf(activityDAO).execute(ACTIVITY_ID);
+                will(returnValue(activity));
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
-                will(returnValue(Collections.singletonList(COMMENTOR)));
-
-                oneOf(saversMapper).execute(ACTIVITY_ID);
-                will(returnValue(Arrays.asList(ACTOR_ID, STREAM_OWNER_ID, COMMENTOR, SAVER)));
+                will(returnValue(Arrays.asList(ACTOR_ID, AUTHOR_ID, STREAM_OWNER_ID, COMMENTOR1, COMMENTOR2)));
             }
         });
 
@@ -139,8 +125,10 @@ public class CommentTranslatorTest
         context.assertIsSatisfied();
 
         // check recipients
-        assertEquals(4, results.getRecipients().size());
-        TranslatorTestHelper.assertRecipients(results, NotificationType.COMMENT_TO_SAVED_POST, SAVER);
+        assertEquals(2, results.getRecipients().size());
+        TranslatorTestHelper.assertRecipients(results, NotificationType.COMMENT_TO_PERSONAL_POST, AUTHOR_ID);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.COMMENT_TO_COMMENTED_POST, STREAM_OWNER_ID,
+                COMMENTOR1, COMMENTOR2);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
@@ -149,38 +137,46 @@ public class CommentTranslatorTest
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
-        PropertyMapTestHelper.assertValue(props, "comment", comment);
+        PropertyMapTestHelper.assertPlaceholder(props, "comment", CommentDTO.class, COMMENT_ID);
     }
-
 
     /**
      * Test the translator.
      */
     @Test
-    @SuppressWarnings("unchecked")
-    public void testTranslateCommentNotFound()
+    public void testTranslateActorIsPostAuthor()
     {
+        final StreamEntityDTO actor = new StreamEntityDTO();
+        actor.setId(AUTHOR_ID);
+
+        final ActivityDTO activity = new ActivityDTO();
+        activity.setActor(actor);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
+                oneOf(activityDAO).execute(ACTIVITY_ID);
+                will(returnValue(activity));
+
+                oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.EMPTY_LIST));
             }
         });
 
-        CommentNotificationsRequest request = new CommentNotificationsRequest(null, ACTOR_ID, DESTINATION_ID,
+        CommentNotificationsRequest request = new CommentNotificationsRequest(null, AUTHOR_ID, DESTINATION_ID,
                 ACTIVITY_ID, COMMENT_ID);
         NotificationBatch results = sut.translate(request);
 
         context.assertIsSatisfied();
-        assertNull(results);
+
+        // check recipients
+        assertEquals(0, results.getRecipients().size());
     }
 
     /**
      * Test the translator.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testTranslateActivityNotFound()
     {
         final CommentDTO comment = new CommentDTO();
@@ -189,11 +185,8 @@ public class CommentTranslatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
-                will(returnValue(Collections.singletonList(comment)));
-
-                oneOf(activitiesMapper).execute(Collections.singletonList(ACTIVITY_ID));
-                will(returnValue(Collections.EMPTY_LIST));
+                oneOf(activityDAO).execute(ACTIVITY_ID);
+                will(returnValue(null));
             }
         });
 

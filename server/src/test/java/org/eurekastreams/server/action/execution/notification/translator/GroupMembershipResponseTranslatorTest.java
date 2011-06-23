@@ -18,12 +18,12 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static junit.framework.Assert.assertEquals;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.junit.Test;
 
 /**
@@ -46,11 +46,11 @@ public class GroupMembershipResponseTranslatorTest
     @Test
     public void testTranslate()
     {
-        GroupMembershipResponseTranslator sut = new GroupMembershipResponseTranslator(
+        NotificationTranslator<GroupMembershipResponseNotificationsRequest> sut = new GroupMembershipResponseTranslator(
                 NotificationType.REQUEST_GROUP_ACCESS_APPROVED);
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, FOLLOWER_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new GroupMembershipResponseNotificationsRequest(null, ACTOR_ID,
+                GROUP_ID, FOLLOWER_ID));
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
@@ -58,8 +58,9 @@ public class GroupMembershipResponseTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(2, props.size());
-        PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
+        assertEquals(3, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "group", DomainGroupModelView.class, GROUP_ID);
+        PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.ACTOR, "group");
+        PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "group");
     }
 }

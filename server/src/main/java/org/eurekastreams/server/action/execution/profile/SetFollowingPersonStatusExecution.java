@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -38,7 +38,7 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * This class provides the Following Strategy for a Person object.
- * 
+ *
  */
 public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -69,7 +69,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
     /**
      * Constructor for the FollowingPersonStrategy.
-     * 
+     *
      * @param inMapper
      *            - instance of the PersonMapper for this class.
      * @param inGetPersonIdByAccountIdMapper
@@ -92,7 +92,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method performs the concrete implementation for the setting the Following status of a person following
      * another person.
      */
@@ -100,7 +100,6 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
     public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
             throws ExecutionException
     {
-        List<UserActionRequest> currentRequests = new ArrayList<UserActionRequest>();
         SetFollowingStatusRequest request = (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
         if (logger.isTraceEnabled())
         {
@@ -108,6 +107,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
                     + " targetid: " + request.getTargetUniqueId() + " and status " + request.getFollowerStatus());
         }
 
+        List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
         int followingCount;
 
         Long followerPersonId = getPersonIdByAccountIdMapper.execute(request.getFollowerUniqueId());
@@ -121,17 +121,19 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
             addCachedFollowerMapper.execute(followerPersonId, followedPersonId);
 
             // Queue async action to remove the newly followed person from cache (to sync follower counts)
-            currentRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+            asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.PERSON_BY_ID + followedPersonId)));
 
             logger.trace("Submit async action to update all cached activities.");
 
             // Post an async action to update the cache for the user's list of following activity ids.
-            currentRequests.add(new UserActionRequest("refreshFollowedByActivities", null, followerPersonId));
+            asyncRequests.add(new UserActionRequest("refreshFollowedByActivities", null, followerPersonId));
 
             // queues up new follower notifications.
-            currentRequests.add(new UserActionRequest("createNotificationsAction", null,
-                    new CreateNotificationsRequest(RequestType.FOLLOWER, followerPersonId, followedPersonId, 0)));
+            asyncRequests
+                    .add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                            new TargetEntityNotificationsRequest(RequestType.FOLLOW_PERSON, followerPersonId,
+                                    followedPersonId)));
 
             break;
         case NOTFOLLOWING:
@@ -140,23 +142,23 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
             mapper.removeFollower(followerPersonId, followedPersonId);
 
             // Queue async action to remove the newly followed person from cache (to sync follower counts)
-            currentRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+            asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.PERSON_BY_ID + followedPersonId)));
 
             // Remove the current user that is severing a relationship with the target
             // from the list of followers for that target user.
-            currentRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
+            asyncRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
                     Collections.singletonList(CacheKeys.FOLLOWERS_BY_PERSON + followedPersonId), Collections
                             .singletonList(followerPersonId))));
 
             // Remove the target user the current user is no longer following from the list of
             // users that the current is already following.
-            currentRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
+            asyncRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
                     Collections.singletonList(CacheKeys.PEOPLE_FOLLOWED_BY_PERSON + followerPersonId), Collections
                             .singletonList(followedPersonId))));
 
             // Post an async action to update the cache for the user's list of following activity ids.
-            currentRequests.add(new UserActionRequest("refreshFollowedByActivities", null, followerPersonId));
+            asyncRequests.add(new UserActionRequest("refreshFollowedByActivities", null, followerPersonId));
             break;
         default:
             // do nothing.
@@ -164,7 +166,6 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
         followingCount = followerIdsMapper.execute(followedPersonId).size();
 
-        inActionContext.getUserActionRequests().addAll(currentRequests);
         return new Integer(followingCount);
     }
 

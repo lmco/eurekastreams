@@ -16,15 +16,15 @@
 package org.eurekastreams.server.action.request.notification;
 
 /**
- * Request to generate notifications for an action on an activity.
+ * Request to generate notifications for group membership approved or denied.
  */
-public class ActivityNotificationsRequest extends TargetEntityNotificationsRequest
+public class GroupMembershipResponseNotificationsRequest extends TargetEntityNotificationsRequest
 {
     /** Fingerprint. */
-    private static final long serialVersionUID = 1346493618164101287L;
+    private static final long serialVersionUID = 1209883127626523554L;
 
-    /** ID of the activity the event pertained to. */
-    private final long activityId;
+    /** ID of person whose request was dispositioned. */
+    private final long requestorId;
 
     /**
      * Constructor.
@@ -33,23 +33,23 @@ public class ActivityNotificationsRequest extends TargetEntityNotificationsReque
      *            Type of event that occurred.
      * @param inActorId
      *            ID of the entity (person) who performed the action which the notification is about.
-     * @param inStreamEntityId
-     *            ID of the entity (person or group) who owns the stream containing the activity.
-     * @param inActivityId
-     *            ID of the activity the event pertained to.
+     * @param inTargetEntityId
+     *            ID of group in which membership was requested.
+     * @param inRequestorId
+     *            ID of person whose request was dispositioned.
      */
-    public ActivityNotificationsRequest(final RequestType inType, final long inActorId, final long inStreamEntityId,
-            final long inActivityId)
+    public GroupMembershipResponseNotificationsRequest(final RequestType inType, final long inActorId,
+            final long inTargetEntityId, final long inRequestorId)
     {
-        super(inType, inActorId, inStreamEntityId);
-        activityId = inActivityId;
+        super(inType, inActorId, inTargetEntityId);
+        requestorId = inRequestorId;
     }
 
     /**
-     * @return ID of the activity the event pertained to.
+     * @return the requestorId
      */
-    public long getActivityId()
+    public long getRequestorId()
     {
-        return activityId;
+        return requestorId;
     }
 }

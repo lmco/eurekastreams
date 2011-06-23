@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
@@ -57,7 +58,7 @@ public class RequestGroupAccessTranslatorTest
     private static final long COORDINATOR3_ID = 98;
 
     /** System under test. */
-    private RequestGroupAccessTranslator sut;
+    private NotificationTranslator<TargetEntityNotificationsRequest> sut;
 
     /** Context for building mock objects. */
     private final Mockery context = new JUnit4Mockery()
@@ -97,8 +98,7 @@ public class RequestGroupAccessTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, GROUP_ID, 0L);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(null, ACTOR_ID, GROUP_ID));
 
         context.assertIsSatisfied();
 
@@ -109,9 +109,10 @@ public class RequestGroupAccessTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(2, props.size());
+        assertEquals(3, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertPlaceholder(props, "group", DomainGroupModelView.class, GROUP_ID);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
     }
 
 }

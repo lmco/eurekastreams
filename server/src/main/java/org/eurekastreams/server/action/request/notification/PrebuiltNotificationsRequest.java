@@ -20,6 +20,9 @@ package org.eurekastreams.server.action.request.notification;
  */
 public class PrebuiltNotificationsRequest extends CreateNotificationsRequest
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = -8520072342860286458L;
+
     /** If high priority. */
     private final boolean highPriority;
 
@@ -37,7 +40,7 @@ public class PrebuiltNotificationsRequest extends CreateNotificationsRequest
 
     /**
      * Constructor.
-     * 
+     *
      * @param inType
      *            Type of event.
      * @param inHighPriority
@@ -54,7 +57,7 @@ public class PrebuiltNotificationsRequest extends CreateNotificationsRequest
     public PrebuiltNotificationsRequest(final RequestType inType, final boolean inHighPriority,
             final String inClientId, final long inRecipientId, final String inMessage, final String inUrl)
     {
-        super(inType, 0L, 0L, 0L);
+        super(inType, 0L);
         highPriority = inHighPriority;
         clientId = inClientId;
         recipientId = inRecipientId;

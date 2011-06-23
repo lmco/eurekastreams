@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNull;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
@@ -30,9 +29,8 @@ import org.junit.Test;
 
 /**
  * Tests the stream post notification translator.
- *
  */
-public class StreamPostTranslatorTest
+public class PostPersonStreamTranslatorTest
 {
     /** Test data. */
     private static final long ACTOR_ID = 1111L;
@@ -49,11 +47,10 @@ public class StreamPostTranslatorTest
     @Test
     public void testTranslatePersonalStreamPost()
     {
-        NotificationTranslator sut = new StreamPostTranslator();
+        NotificationTranslator<ActivityNotificationsRequest> sut = new PostPersonStreamTranslator();
 
-        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, STREAM_OWNER_ID,
-                ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, STREAM_OWNER_ID,
+                ACTIVITY_ID));
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
@@ -74,10 +71,10 @@ public class StreamPostTranslatorTest
     @Test
     public void testTranslateOwnPersonalStreamPost()
     {
-        NotificationTranslator sut = new StreamPostTranslator();
+        NotificationTranslator<ActivityNotificationsRequest> sut = new PostPersonStreamTranslator();
 
-        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, ACTOR_ID, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, ACTOR_ID,
+                ACTIVITY_ID));
 
         assertNull(results);
     }

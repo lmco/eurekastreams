@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,16 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
 import org.eurekastreams.server.domain.stream.Activity;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LikedActivity;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DeleteLikedActivity;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.IndexEntity;
 import org.eurekastreams.server.persistence.mappers.InsertLikedActivity;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -41,11 +32,9 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 /**
  * Test suite for the {@link SetActivityLikeExecution} class.
- * 
+ *
  */
 public class SetActivityLikeExecutionTest
 {
@@ -67,42 +56,22 @@ public class SetActivityLikeExecutionTest
     /**
      * DeleteLikedActivity mapper mock.
      */
-    private InsertLikedActivity likeMapperMock = context.mock(InsertLikedActivity.class);
+    private final InsertLikedActivity likeMapperMock = context.mock(InsertLikedActivity.class);
 
     /**
      * DeleteLikedActivity mapper mock.
      */
-    private DeleteLikedActivity unlikeMapperMock = context.mock(DeleteLikedActivity.class);
-
-    /**
-     * Mocked instance of the principal object.
-     */
-    private PrincipalActionContext principalActionContextMock = context.mock(PrincipalActionContext.class);
-
-    /**
-     * Principal mock.
-     */
-    private Principal principalMock = context.mock(Principal.class);
-
-    /**
-     * Action Context mock.
-     */
-    private TaskHandlerActionContext<PrincipalActionContext> contextMock = context.mock(TaskHandlerActionContext.class);
-
-    /**
-     * Mapper mock.
-     */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper = context.mock(DomainMapper.class);
+    private final DeleteLikedActivity unlikeMapperMock = context.mock(DeleteLikedActivity.class);
 
     /**
      * Indexer mock.
      */
-    private IndexEntity<Activity> activityIndexer = context.mock(IndexEntity.class);
+    private final IndexEntity<Activity> activityIndexer = context.mock(IndexEntity.class);
 
     /**
      * Find Activity by id mock.
      */
-    private FindByIdMapper<Activity> activityEntityMapper = context.mock(FindByIdMapper.class);
+    private final FindByIdMapper<Activity> activityEntityMapper = context.mock(FindByIdMapper.class);
 
     /**
      * Prepare the sut.
@@ -110,8 +79,7 @@ public class SetActivityLikeExecutionTest
     @Before
     public void setup()
     {
-        sut = new SetActivityLikeExecution(likeMapperMock, unlikeMapperMock, activityMapper, activityIndexer,
-                activityEntityMapper);
+        sut = new SetActivityLikeExecution(likeMapperMock, unlikeMapperMock, activityIndexer, activityEntityMapper);
     }
 
     /**
@@ -120,43 +88,12 @@ public class SetActivityLikeExecutionTest
     @Test
     public void testAddLike()
     {
-        final ActivityDTO activity = context.mock(ActivityDTO.class);
         final Activity activityEntity = context.mock(Activity.class);
-        final StreamEntityDTO actor = context.mock(StreamEntityDTO.class);
-        final List<ActivityDTO> activities = Collections.singletonList(activity);
-        final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         final SetActivityLikeRequest currentRequest = new SetActivityLikeRequest(1L, LikeActionType.ADD_LIKE);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(activityMapper).execute(with(any(List.class)));
-                will(returnValue(activities));
-
-                allowing(activity).getId();
-                will(returnValue(1L));
-
-                allowing(activity).getActor();
-                will(returnValue(actor));
-
-                allowing(actor).getId();
-                will(returnValue(1L));
-
-                allowing(contextMock).getUserActionRequests();
-                will(returnValue(requests));
-
-                allowing(contextMock).getActionContext();
-                will(returnValue(principalActionContextMock));
-
-                allowing(principalActionContextMock).getPrincipal();
-                will(returnValue(principalMock));
-
-                allowing(principalActionContextMock).getParams();
-                will(returnValue(currentRequest));
-
-                allowing(principalMock).getId();
-                will(returnValue(5L));
-
                 oneOf(likeMapperMock).execute(with(any(LikedActivity.class)));
 
                 oneOf(activityEntityMapper).execute(with(any(FindByIdRequest.class)));
@@ -166,7 +103,7 @@ public class SetActivityLikeExecutionTest
             }
         });
 
-        sut.execute(contextMock);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, null, 5L));
         context.assertIsSatisfied();
     }
 
@@ -176,32 +113,12 @@ public class SetActivityLikeExecutionTest
     @Test
     public void testRemoveLike()
     {
-        final ActivityDTO activity = context.mock(ActivityDTO.class);
         final Activity activityEntity = context.mock(Activity.class);
-        final List<ActivityDTO> activities = Collections.singletonList(activity);
         final SetActivityLikeRequest currentRequest = new SetActivityLikeRequest(1L, LikeActionType.REMOVE_LIKE);
 
         context.checking(new Expectations()
         {
             {
-                allowing(contextMock).getActionContext();
-                will(returnValue(principalActionContextMock));
-
-                allowing(activity).getId();
-                will(returnValue(1L));
-
-                oneOf(principalActionContextMock).getPrincipal();
-                will(returnValue(principalMock));
-
-                oneOf(principalActionContextMock).getParams();
-                will(returnValue(currentRequest));
-
-                oneOf(principalMock).getId();
-                will(returnValue(5L));
-
-                oneOf(activityMapper).execute(with(any(List.class)));
-                will(returnValue(activities));
-
                 oneOf(unlikeMapperMock).execute(with(any(LikedActivity.class)));
 
                 oneOf(activityEntityMapper).execute(with(any(FindByIdRequest.class)));
@@ -211,8 +128,7 @@ public class SetActivityLikeExecutionTest
             }
         });
 
-        sut.execute(contextMock);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, null, 5L));
         context.assertIsSatisfied();
-
     }
 }

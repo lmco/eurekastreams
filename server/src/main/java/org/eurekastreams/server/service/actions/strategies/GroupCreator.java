@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -31,6 +32,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
@@ -53,7 +55,7 @@ public class GroupCreator extends GroupPersister
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Key value for group shortName.
@@ -68,7 +70,7 @@ public class GroupCreator extends GroupPersister
     /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
-    private TaskHandlerExecutionStrategy followStrategy;
+    private final TaskHandlerExecutionStrategy followStrategy;
 
     /**
      * used to lookup person creating the group.
@@ -78,16 +80,16 @@ public class GroupCreator extends GroupPersister
     /**
      * Mapper to get all the system administrator ids.
      */
-    private DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsMapper;
+    private final DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsMapper;
 
     /**
      * Mapper to get system settings.
      */
-    private DomainMapper<MapperRequest, SystemSettings> getSystemSettingsMapper;
+    private final DomainMapper<MapperRequest, SystemSettings> getSystemSettingsMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            The Group Mapper
      * @param inPersonMapper
@@ -114,7 +116,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Returns DomainGroup based on id passed in inFields.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -139,7 +141,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Persists new group object.
-     * 
+     *
      * @param inGroup
      *            The group.
      * @param inFields
@@ -153,9 +155,10 @@ public class GroupCreator extends GroupPersister
     public void persist(final TaskHandlerActionContext<PrincipalActionContext> inActionContext,
             final Map<String, Serializable> inFields, final DomainGroup inGroup) throws Exception
     {
+        final Principal principal = inActionContext.getActionContext().getPrincipal();
         ValidationException ve = new ValidationException();
-        String creatorUserName = inActionContext.getActionContext().getPrincipal().getAccountId();
-        Long creatorPersonId = inActionContext.getActionContext().getPrincipal().getId();
+        String creatorUserName = principal.getAccountId();
+        final Long creatorPersonId = principal.getId();
         SystemSettings settings = getSystemSettingsMapper.execute(null);
 
         // Verify that group with given short name doesn't already exist.
@@ -201,22 +204,20 @@ public class GroupCreator extends GroupPersister
                     coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(),
                     isPending);
             ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
-                    creatorUserName, inActionContext.getActionContext().getPrincipal().getOpenSocialId(),
-                    inActionContext.getActionContext().getPrincipal().getId()));
-            TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            // line break
-            new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
-                    .getUserActionRequests());
+                    creatorUserName, principal.getOpenSocialId(), creatorPersonId));
+            TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = // \n
+            new TaskHandlerActionContext<PrincipalActionContext>(currentContext,
+                    inActionContext.getUserActionRequests());
             followStrategy.execute(currentTaskHandlerActionContext);
         }
 
         // trigger notification if group will be pending approval
         if (isPending)
         {
-            CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP,
-                    inActionContext.getActionContext().getPrincipal().getId(), 0, inGroup.getId());
             inActionContext.getUserActionRequests().add(
-                    new UserActionRequest("createNotificationsAction", null, request));
+                    new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                            new TargetEntityNotificationsRequest(RequestType.REQUEST_NEW_GROUP, creatorPersonId,
+                                    inGroup.getId())));
         }
     }
 }

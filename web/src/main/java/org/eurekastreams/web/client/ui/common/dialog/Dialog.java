@@ -120,20 +120,11 @@ public class Dialog implements DialogContentHost
     /**
      * Show the dialog.
      */
-    public void show()
+    @Deprecated
+    public void showUncentered()
     {
         popupPanel.show();
         dialogContent.show();
-    }
-
-    /**
-     * Returns the content.
-     *
-     * @return the dialog's content.
-     */
-    public DialogContent getContent()
-    {
-        return dialogContent;
     }
 
     /**
@@ -142,13 +133,15 @@ public class Dialog implements DialogContentHost
     public void showCentered()
     {
         popupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-        show();
+        popupPanel.show();
+        dialogContent.show();
         Scheduler.get().scheduleDeferred(new ScheduledCommand()
         {
             public void execute()
             {
                 center();
                 popupPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                dialogContent.afterShow();
             }
         });
     }
@@ -161,6 +154,16 @@ public class Dialog implements DialogContentHost
         int offsetTop = (Window.getClientHeight() - popupPanel.getElement().getScrollHeight()) / 2;
         int offsetLeft = (Window.getClientWidth() - popupPanel.getElement().getScrollWidth()) / 2;
         popupPanel.setPopupPosition(offsetLeft, offsetTop);
+    }
+
+    /**
+     * Returns the content.
+     * 
+     * @return the dialog's content.
+     */
+    public DialogContent getContent()
+    {
+        return dialogContent;
     }
 
     /**

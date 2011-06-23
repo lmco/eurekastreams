@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.notification.GroupRemovedNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
@@ -42,7 +43,7 @@ public class PendingGroupDeniedTranslatorTest
         final String groupName = "Group Name";
         final Collection<Long> coordinators = Arrays.asList(1L, 3L);
 
-        PendingGroupDeniedTranslator sut = new PendingGroupDeniedTranslator();
+        NotificationTranslator<GroupRemovedNotificationsRequest> sut = new PendingGroupDeniedTranslator();
         GroupRemovedNotificationsRequest request = new GroupRemovedNotificationsRequest(
                 RequestType.REQUEST_NEW_GROUP_DENIED, 0, groupName, coordinators);
 
@@ -54,7 +55,8 @@ public class PendingGroupDeniedTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(1, props.size());
+        assertEquals(2, props.size());
         PropertyMapTestHelper.assertValue(props, "groupName", groupName);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
     }
 }

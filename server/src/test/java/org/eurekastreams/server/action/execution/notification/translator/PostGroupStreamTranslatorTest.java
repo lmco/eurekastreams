@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -44,7 +43,7 @@ import org.junit.Test;
  * Tests the group stream post notification translator.
  */
 @SuppressWarnings("unchecked")
-public class GroupStreamPostTranslatorTest
+public class PostGroupStreamTranslatorTest
 {
     /** Test data. */
     private static final long ACTOR_ID = 1111L;
@@ -76,10 +75,10 @@ public class GroupStreamPostTranslatorTest
     };
 
     /** Fixture: Mapper to get list of members of a group. */
-    private final DomainMapper<Long, List<Long>> memberMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, List<Long>> memberDAO = context.mock(DomainMapper.class);
 
     /** System under test. */
-    private NotificationTranslator sut;
+    private NotificationTranslator<ActivityNotificationsRequest> sut;
 
     /** Test list of coordinators. */
     private final List<Long> coordinators = Arrays.asList(COORDINATOR1_ID, COORDINATOR2_ID);
@@ -96,7 +95,7 @@ public class GroupStreamPostTranslatorTest
     @Before
     public void setup()
     {
-        sut = new GroupStreamPostTranslator(memberMapper);
+        sut = new PostGroupStreamTranslator(memberDAO);
     }
 
     /**
@@ -108,13 +107,13 @@ public class GroupStreamPostTranslatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(memberMapper).execute(GROUP_ID);
+                oneOf(memberDAO).execute(GROUP_ID);
                 will(returnValue(members));
             }
         });
 
-        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, GROUP_ID,
+                ACTIVITY_ID));
 
         context.assertIsSatisfied();
 
@@ -141,13 +140,13 @@ public class GroupStreamPostTranslatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(memberMapper).execute(GROUP_ID);
+                oneOf(memberDAO).execute(GROUP_ID);
                 will(returnValue(Collections.EMPTY_LIST));
             }
         });
 
-        CreateNotificationsRequest request = new ActivityNotificationsRequest(null, ACTOR_ID, GROUP_ID, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, GROUP_ID,
+                ACTIVITY_ID));
 
         context.assertIsSatisfied();
         assertNull(results);

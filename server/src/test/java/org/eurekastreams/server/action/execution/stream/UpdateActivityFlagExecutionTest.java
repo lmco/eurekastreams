@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateActivityFlagRequest;
 import org.eurekastreams.server.persistence.mappers.stream.UpdateActivityFlag;
@@ -44,7 +44,7 @@ import org.junit.Test;
 public class UpdateActivityFlagExecutionTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -57,19 +57,19 @@ public class UpdateActivityFlagExecutionTest
     private static final long USER_ID = 4321L;
 
     /** Fixture: mapper mock. */
-    private UpdateActivityFlag setFlagMapper = context.mock(UpdateActivityFlag.class);
+    private final UpdateActivityFlag setFlagMapper = context.mock(UpdateActivityFlag.class);
 
     /** Fixture: action context. */
-    private TaskHandlerActionContext contextOuter = context.mock(TaskHandlerActionContext.class, "contextOuter");
+    private final TaskHandlerActionContext contextOuter = context.mock(TaskHandlerActionContext.class, "contextOuter");
 
     /** Fixture: action context. */
-    private PrincipalActionContext contextInner = context.mock(PrincipalActionContext.class, "contextInner");
+    private final PrincipalActionContext contextInner = context.mock(PrincipalActionContext.class, "contextInner");
 
     /** Fixture: request list. */
-    private List<UserActionRequest> userActionRequests = new ArrayList<UserActionRequest>();
+    private final List<UserActionRequest> userActionRequests = new ArrayList<UserActionRequest>();
 
     /** Fixture: principal. */
-    private Principal principal = context.mock(Principal.class);
+    private final Principal principal = context.mock(Principal.class);
 
     /** SUT. */
     private UpdateActivityFlagExecution sut;
@@ -122,7 +122,7 @@ public class UpdateActivityFlagExecutionTest
         assertEquals(1, userActionRequests.size());
         UserActionRequest actualQueueRqst = userActionRequests.get(0);
         assertEquals("createNotificationsAction", actualQueueRqst.getActionKey());
-        assertTrue(areEqualInternally(new CreateNotificationsRequest(RequestType.FLAG_ACTIVITY, USER_ID, 0L,
+        assertTrue(areEqualInternally(new ActivityNotificationsRequest(RequestType.FLAG_ACTIVITY, USER_ID, 0L,
                 ACTIVITY_ID), actualQueueRqst.getParams()));
     }
 

@@ -18,11 +18,9 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -59,9 +57,8 @@ public class LikeTranslatorTest
         }
     };
 
-    /** Fixture: For getting activity info. */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activityMapper = context.mock(DomainMapper.class,
-            "activityMapper");
+    /** Fixture: activity DAO. */
+    private final DomainMapper<Long, ActivityDTO> activityDAO = context.mock(DomainMapper.class, "activityDAO");
 
     /** Fixture: activity. */
     private final ActivityDTO activity = context.mock(ActivityDTO.class);
@@ -71,7 +68,7 @@ public class LikeTranslatorTest
     private final StreamEntityDTO originalAuthor = context.mock(StreamEntityDTO.class, "originalAuthor");
 
     /** SUT. */
-    LikeTranslator sut;
+    NotificationTranslator<ActivityNotificationsRequest> sut;
 
     /**
      * Setup before each test.
@@ -79,15 +76,15 @@ public class LikeTranslatorTest
     @Before
     public void setUp()
     {
-        sut = new LikeTranslator(activityMapper);
+        sut = new LikeTranslator(activityDAO);
 
         final StreamEntityDTO destination = context.mock(StreamEntityDTO.class, "destination");
 
         context.checking(new Expectations()
         {
             {
-                allowing(activityMapper).execute(Collections.singletonList(ACTIVITY_ID));
-                will(returnValue(Collections.singletonList(activity)));
+                allowing(activityDAO).execute(ACTIVITY_ID);
+                will(returnValue(activity));
                 allowing(activity).getDestinationStream();
                 will(returnValue(destination));
 
@@ -123,8 +120,7 @@ public class LikeTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, ACTIVITY_ID));
 
         context.assertIsSatisfied();
 
@@ -134,10 +130,11 @@ public class LikeTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(3, props.size());
+        assertEquals(4, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertValue(props, "activity", activity);
+        PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "stream");
     }
 
     /**
@@ -156,8 +153,7 @@ public class LikeTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, AUTHOR_ID, 0L, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, AUTHOR_ID, 0L, ACTIVITY_ID));
 
         context.assertIsSatisfied();
         assertNull(results);
@@ -179,8 +175,7 @@ public class LikeTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, ACTIVITY_ID));
 
         context.assertIsSatisfied();
         assertNull(results);
@@ -204,8 +199,7 @@ public class LikeTranslatorTest
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, ACTIVITY_ID);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, ACTIVITY_ID));
 
         context.assertIsSatisfied();
 
@@ -215,9 +209,10 @@ public class LikeTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(3, props.size());
+        assertEquals(4, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertValue(props, "activity", activity);
+        PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "stream");
     }
 }

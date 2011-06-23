@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateActivityFlagRequest;
@@ -33,10 +34,10 @@ import org.eurekastreams.server.persistence.mappers.stream.UpdateActivityFlag;
 public class UpdateActivityFlagExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /** Desired state. */
-    private boolean toFlag;
+    private final boolean toFlag;
 
     /** Update mapper. */
-    private UpdateActivityFlag setFlagMapper;
+    private final UpdateActivityFlag setFlagMapper;
 
     /**
      * Constructor.
@@ -66,14 +67,10 @@ public class UpdateActivityFlagExecution implements TaskHandlerExecutionStrategy
         // trigger notification on activity being flagged
         if (toFlag && updated)
         {
-            CreateNotificationsRequest notificationRequest =
-                    new CreateNotificationsRequest(RequestType.FLAG_ACTIVITY, inActionContext.getActionContext()
-                            .getPrincipal().getId(), 0L /*
-                                                         * TODO: determine what to use for destination ID (if anything)
-                                                         */,
-                            activityId);
             inActionContext.getUserActionRequests().add(
-                    new UserActionRequest("createNotificationsAction", null, notificationRequest));
+                    new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                            new ActivityNotificationsRequest(RequestType.FLAG_ACTIVITY, inActionContext
+                                    .getActionContext().getPrincipal().getId(), 0L, activityId)));
         }
 
         return toFlag;

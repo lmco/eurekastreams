@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -87,10 +88,10 @@ public class RequestNewGroupTranslatorTest
             }
         });
 
-        RequestNewGroupTranslator sut = new RequestNewGroupTranslator(groupMapper, systemAdminIdsMapper);
+        NotificationTranslator<TargetEntityNotificationsRequest> sut = new RequestNewGroupTranslator(groupMapper,
+                systemAdminIdsMapper);
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, actorId, 0L, groupId);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(null, actorId, groupId));
 
         context.assertIsSatisfied();
 
@@ -100,9 +101,10 @@ public class RequestNewGroupTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(2, props.size());
+        assertEquals(3, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, actorId);
         PropertyMapTestHelper.assertValue(props, "group", group);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
     }
 
 }

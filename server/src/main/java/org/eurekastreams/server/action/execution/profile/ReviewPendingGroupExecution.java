@@ -30,8 +30,8 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
-import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.GroupRemovedNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.ReviewPendingGroupRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
@@ -172,7 +172,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
         CreateNotificationsRequest notifRequest;
         if (request.getApproved())
         {
-            notifRequest = new GroupActionNotificationsRequest(RequestType.REQUEST_NEW_GROUP_APPROVED, 0L,
+            notifRequest = new TargetEntityNotificationsRequest(RequestType.REQUEST_NEW_GROUP_APPROVED, 0L,
                     group.getId());
         }
         else
@@ -186,6 +186,6 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
                     group.getName(), recipients);
         }
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("createNotificationsAction", null, notifRequest));
+                new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null, notifRequest));
     }
 }

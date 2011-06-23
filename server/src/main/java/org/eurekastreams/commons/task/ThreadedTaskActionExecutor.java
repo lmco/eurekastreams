@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,26 +22,21 @@ import org.eurekastreams.commons.server.UserActionRequest;
 /**
  * This will, while implementing {@link TaskHandler}, executes the given task in a new thread.
  */
-public class ThreadedTaskActionExecutor extends TaskActionExecutor implements Runnable
+public class ThreadedTaskActionExecutor extends TaskActionExecutor
 {
     /**
      * The logger.
      */
-    private Logger logger = Logger.getLogger(ThreadedTaskActionExecutor.class);
-
-    /**
-     * the user action request to share with the thread.
-     */
-    private UserActionRequest userActionRequest = null;
+    private final Logger logger = Logger.getLogger(ThreadedTaskActionExecutor.class);
 
     /**
      * the task executor to use in the threaded mode.
      */
-    private TaskExecutor taskExecutor;
+    private final TaskExecutor taskExecutor;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTaskExecutor  the task executor to use.
      */
     public ThreadedTaskActionExecutor(final TaskExecutor inTaskExecutor)
@@ -51,7 +46,7 @@ public class ThreadedTaskActionExecutor extends TaskActionExecutor implements Ru
 
     /**
      * Submit method taking in a UserActionRequest.
-     * 
+     *
      * @param inUserActionRequest
      *            the user action request.
      */
@@ -63,8 +58,14 @@ public class ThreadedTaskActionExecutor extends TaskActionExecutor implements Ru
             logger.debug("threaded submit called...");
         }
 
-        userActionRequest = inUserActionRequest;
-        Thread thread = new Thread(this);
+        Thread thread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                taskExecutor.execute(inUserActionRequest);
+            }
+        });
         thread.start();
         try
         {
@@ -79,16 +80,4 @@ public class ThreadedTaskActionExecutor extends TaskActionExecutor implements Ru
             logger.debug("threaded submit finished (thread joined).");
         }
     }
-
-    /*
-     * execute action on another thread.
-     * 
-     * @see java.lang.Runnable#run()
-     */
-    @Override
-    public void run()
-    {
-        taskExecutor.execute(userActionRequest);
-    }
-
 }
