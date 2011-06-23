@@ -41,7 +41,7 @@ public class ExecutingTaskHandler implements TaskHandler, BeanFactoryAware
 
     /**
      * Constructor.
-     * 
+     *
      * @param inActionController
      *            Action controller used to execute the actions.
      */
@@ -95,9 +95,9 @@ public class ExecutingTaskHandler implements TaskHandler, BeanFactoryAware
                 throw new IllegalArgumentException("Supplied bean is not an executable async action.");
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            logger.error("exception invoking action " + inUserActionRequest.getActionKey() + "Exception is " + e);
+            logger.error("Exception invoking action " + inUserActionRequest.getActionKey(), ex);
         }
     }
 }

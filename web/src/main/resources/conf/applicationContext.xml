@@ -74,5 +74,20 @@
     
     <!-- AOP support  -->
     <import resource="classpath:conf/applicationContext-aop.xml" />
-    		
+    
+	<!-- Part of the GWT RPC implementation (seems too little to merit its own file) -->
+	<!-- 
+		Notes:
+		* If the need for persistentBeanManager is ever eliminated (removal of Gilead), then this should move to
+		applicationContext-framework-actions.xml where it better fits.
+		* autowire="constructor" is used to provide the BeanFactory without having to make ActionExecutor implement
+		BeanFactoryAware.  All other constructor arguments are explicitly specified, since we don't want Spring to
+		autowire them. 
+	 -->    
+    <bean id="actionExecutor" class="org.eurekastreams.commons.server.ActionExecutor" autowire="constructor">
+    	<constructor-arg ref="serviceActionController" />
+   		<constructor-arg ref="principalPopulator" />
+ 		<constructor-arg ref="persistentBeanManager" />
+    </bean>
+    
 </beans>
