@@ -299,7 +299,7 @@ body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a
 
 .header-bar ul.user-bar {
 	float: right;
-	margin-top: 15px;
+	margin-top: 0;
 	padding-top: 0;
 	margin-bottom: 0;
 	height: 50px;
@@ -309,6 +309,7 @@ body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a
 
 .header-bar ul.user-bar li {
 	padding-right: 10px;
+	padding-top: 15px;
 }
 
 .header-bar ul.barred li:first-child {
@@ -322,6 +323,7 @@ ul.horizontal {
 ul.horizontal,ul.horizontal li {
 	list-style: none;
 	display: inline-block;
+	font-size: 11px;
 }
 
 ul.horizontal li {
@@ -331,11 +333,19 @@ ul.horizontal li {
 ul.horizontal li div {
 	display: inline;
 	margin-top: 10px;
-	color: #999999;
 	padding-right: 0px;
 }
 
+.globalSearchBoxNav
+{
+	height: 35px;
+	padding-left: 10px;
+}
 
+.globalSearchBoxActive
+{
+	background-image: url(style/images/navActive.png);
+}
 
 ul.barred li {
 	padding-left: 0px;
@@ -1561,8 +1571,6 @@ body .post-expanded-panel .content-warning {
 .header-bar .search-list {
 	position: relative;
 	top: -3px;
-	margin-left: 1px;
-	margin-right: 3px;
 }
 
 .searchResultsAutocompleteResults
@@ -3883,6 +3891,7 @@ body .options>li>.option-title:hover {
 .settings div.tab-container-parent {
 	margin: 0px 10px 0;
 	padding-bottom: 10px;
+	clear: both;
 }
 
 .settings div.tab-container div.active {
@@ -6408,13 +6417,15 @@ li.notif-count-list-item {
 	position: relative;
 }
 
-body .user-bar li div.notif-count {
-	height: 50px;
-	display: inline-block;
-	width: auto;
+@sprite body .user-bar li div.notif-count {
+	gwt-image: "notifBg";
+	color: black;
+	text-align: center;
+	margin-left: 5px;
+	vertical-align: top;
 }
 
-body .user-bar li div.notif-count:hover {
+body .user-bar li div.notif-count-container:hover {
 	cursor: pointer;
 }
 

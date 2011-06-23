@@ -1292,6 +1292,9 @@ public interface CoreCss extends CssResource
     @ClassName("notif-count")
     String notifCount();
 
+    @ClassName("notif-count-container")
+    String notifCountContainer();
+
     @ClassName("notif-count-list-item")
     String notifCountListItem();
 
@@ -2230,4 +2233,9 @@ public interface CoreCss extends CssResource
     String membershipCriteriaHeader();
 
     String searchResultsAutocompleteResults();
+
+    String globalSearchBoxNav();
+    
+    String globalSearchBoxActive();
+
 }

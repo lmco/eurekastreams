@@ -13,7 +13,7 @@
 		.main
 		{
 		overflow: hidden;
-		margin-top: 40px;
+		margin-top: 60px;
 		}
 
 		.stream-option-list {

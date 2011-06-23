@@ -20,6 +20,7 @@ import java.util.HashMap;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -148,11 +149,13 @@ public class HeaderComposite extends Composite
         activityLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityHeaderButton());
         directoryLinkPanel.add(directoryLink);
         directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverHeaderButton());
-        settingsLinkPanel.add(settingsLink);
-        settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
 
-        // galleryLinkPanel.add(galleryLink);
-
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            settingsLinkPanel.add(settingsLink);
+            settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
+        }
+        
         linkMap.put(Page.START, startPageLink);
         linkMap.put(Page.ACTIVITY, activityLink);
         linkMap.put(Page.DISCOVER, directoryLink);
@@ -161,8 +164,7 @@ public class HeaderComposite extends Composite
         linkMap.put(Page.GROUP_SETTINGS, directoryLink);
         linkMap.put(Page.PERSONAL_SETTINGS, directoryLink);
         linkMap.put(Page.SETTINGS, settingsLink);
-        // linkMap.put(HeaderLink.GALLERY, galleryLinkPanel);
-
+        
         HorizontalULPanel mainNav = new HorizontalULPanel();
 
         userNav = new HorizontalULPanel();
@@ -195,7 +197,7 @@ public class HeaderComposite extends Composite
             mainNav.add(directoryLinkPanel);
             mainNav.add(galleryLinkPanel);
             notif.init();
-            userNav.add(notif, "notif-count-list-item");
+            userNav.add(notif);
 
             FlowPanel myProfileLinkPanel = new FlowPanel();
             myProfileLinkPanel.add(myProfileLink);
@@ -212,7 +214,7 @@ public class HeaderComposite extends Composite
             // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
             // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
             // page change.
-            userNav.add(profileSearchBox);
+            userNav.add(profileSearchBox, StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxNav());
         }
 
         // Style the Elements

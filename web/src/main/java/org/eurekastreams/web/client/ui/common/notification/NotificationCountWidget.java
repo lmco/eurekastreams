@@ -25,32 +25,44 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * Widget displaying the notification count in the nav bar.
  */
-public class NotificationCountWidget extends Composite
+public class NotificationCountWidget extends FocusPanel
 {
     /** Additional style for when there are unread notifications. */
     private static final String UNREAD_STYLE = "notif-count-unread";
 
     /** The label. */
     private final Label countLabel = new Label();
+    
+    /**
+     * The container panel.
+     */
+    private final FlowPanel container = new FlowPanel();
 
     /**
      * Constructor.
      */
     public NotificationCountWidget()
     {
+        countLabel.setVisible(false);
+        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountContainer());
+        add(container);
+        
+        countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());        
+        
         // -- UI setup --
-        countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());
-        initWidget(countLabel);
+        container.add(new Label("Notifications"));
+        container.add(countLabel);
 
         // -- MVC setup --
 
-        countLabel.addClickHandler(new ClickHandler()
+        addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent inEvent)
             {
@@ -58,12 +70,13 @@ public class NotificationCountWidget extends Composite
             }
         });
 
-        Session.getInstance().getEventBus()
-                .addObserver(NotificationCountsAvailableEvent.class, new Observer<NotificationCountsAvailableEvent>()
+        Session.getInstance().getEventBus().addObserver(NotificationCountsAvailableEvent.class,
+                new Observer<NotificationCountsAvailableEvent>()
                 {
                     public void update(final NotificationCountsAvailableEvent ev)
                     {
                         int total = ev.getNormalCount() + ev.getHighPriorityCount();
+                        countLabel.setVisible(total > 0);
                         if (total > 0)
                         {
                             String text = (ev.getHighPriorityCount() > 0 ? total + "!" : Integer.toString(total));
@@ -84,8 +97,8 @@ public class NotificationCountWidget extends Composite
      */
     public void init()
     {
-        Session.getInstance().getTimer()
-                .addTimerJob("getNotificationCountTimerJob", 1, NotificationCountModel.getInstance(), null, true);
+        Session.getInstance().getTimer().addTimerJob("getNotificationCountTimerJob", 1,
+                NotificationCountModel.getInstance(), null, true);
 
         NotificationCountModel.getInstance().fetch(null, true);
     }

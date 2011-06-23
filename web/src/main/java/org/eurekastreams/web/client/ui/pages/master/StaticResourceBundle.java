@@ -53,6 +53,9 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/navLogo.png")
     ImageResource navLogo();
 
+    @Source("style/images/notificationBackground.png")
+    ImageResource notifBg();
+    
     @Source("style/images/navStartPage.png")
     ImageResource navStartPage();
 

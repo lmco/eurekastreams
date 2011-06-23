@@ -91,6 +91,8 @@ public class GlobalSearchComposite extends FlowPanel
         resultsPanelContainer.add(resultsPanel);
 
         final EventBus eventBus = Session.getInstance().getEventBus();
+        
+        final GlobalSearchComposite thisClass = this;
 
         searchTerm.addKeyUpHandler(new KeyUpHandler()
         {
@@ -109,12 +111,14 @@ public class GlobalSearchComposite extends FlowPanel
                     {
                         resultsPanelContainer.setVisible(false);
                         resultsPanel.clear();
+                        thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
                     }
                     else
                     {
                         GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(searchTerm
                                 .getText(), "", 0, 4);
                         SearchResultsModel.getInstance().fetch(request, true);
+                        thisClass.addStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
                     }
                 }
             }
@@ -126,6 +130,7 @@ public class GlobalSearchComposite extends FlowPanel
             {
                 resultsPanelContainer.setVisible(false);
                 resultsPanel.clear();
+                thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
             }
         });
 
