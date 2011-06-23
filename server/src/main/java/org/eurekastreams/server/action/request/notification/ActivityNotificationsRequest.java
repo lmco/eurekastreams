@@ -18,25 +18,38 @@ package org.eurekastreams.server.action.request.notification;
 /**
  * Request to generate notifications for an action on an activity.
  */
-public class ActivityNotificationsRequest extends CreateNotificationsRequest
+public class ActivityNotificationsRequest extends TargetEntityNotificationsRequest
 {
-    // NOTE: Currently empty, but several of the fields will move down from CreateNotificationsRequest eventually.
+    /** Fingerprint. */
+    private static final long serialVersionUID = 1346493618164101287L;
+
+    /** ID of the activity the event pertained to. */
+    private final long activityId;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inType
      *            Type of event that occurred.
      * @param inActorId
      *            ID of the entity (person) who performed the action which the notification is about.
-     * @param inDestinationId
+     * @param inStreamEntityId
      *            ID of the entity (person or group) who owns the stream containing the activity.
      * @param inActivityId
      *            ID of the activity the event pertained to.
      */
-    public ActivityNotificationsRequest(final RequestType inType, final long inActorId, final long inDestinationId,
+    public ActivityNotificationsRequest(final RequestType inType, final long inActorId, final long inStreamEntityId,
             final long inActivityId)
     {
-        super(inType, inActorId, inDestinationId, inActivityId);
+        super(inType, inActorId, inStreamEntityId);
+        activityId = inActivityId;
+    }
+
+    /**
+     * @return ID of the activity the event pertained to.
+     */
+    public long getActivityId()
+    {
+        return activityId;
     }
 }

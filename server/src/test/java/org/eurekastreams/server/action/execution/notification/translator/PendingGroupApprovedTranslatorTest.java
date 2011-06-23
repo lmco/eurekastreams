@@ -21,8 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
-import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
@@ -61,9 +62,7 @@ public class PendingGroupApprovedTranslatorTest
     public void testTranslate()
     {
         final long groupId = 50L;
-        GroupActionNotificationsRequest request = new GroupActionNotificationsRequest(
-                RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, groupId);
-        NotificationTranslator sut = new PendingGroupApprovedTranslator(groupMapper,
+        NotificationTranslator<TargetEntityNotificationsRequest> sut = new PendingGroupApprovedTranslator(groupMapper,
                 groupCoordinatorMapper);
         final DomainGroupModelView group = context.mock(DomainGroupModelView.class);
 
@@ -77,7 +76,8 @@ public class PendingGroupApprovedTranslatorTest
             }
         });
 
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(
+                RequestType.REQUEST_NEW_GROUP_APPROVED, 0L, groupId));
 
         context.assertIsSatisfied();
 
@@ -87,7 +87,8 @@ public class PendingGroupApprovedTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(1, props.size());
+        assertEquals(2, props.size());
         PropertyMapTestHelper.assertValue(props, "group", group);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
     }
 }

@@ -228,6 +228,11 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private boolean suppressPostNotifToMember;
 
     /**
+     * The stream scope id.
+     */
+    private Long streamScopeId;
+
+    /**
      * Constructor.
      */
     public DomainGroupModelView()
@@ -246,14 +251,47 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      *            the domain group name
      * @param inFollowerCount
      *            the number of followers
+     * @param inDateAdded
+     *            the date added
+     * @param inStreamScopeId
+     *            the stream scope id
      */
     public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
-            final Long inFollowerCount)
+            final Long inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
     {
         setEntityId(inId);
         setShortName(inShortName);
         setName(inName);
         setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
+        setStreamScopeId(inStreamScopeId);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inId
+     *            the domain group id
+     * @param inShortName
+     *            the domain group short name
+     * @param inName
+     *            the domain group name
+     * @param inFollowerCount
+     *            the number of followers
+     * @param inDateAdded
+     *            the date added
+     * @param inStreamScopeId
+     *            the stream scope id
+     */
+    public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
+            final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
+    {
+        setEntityId(inId);
+        setShortName(inShortName);
+        setName(inName);
+        setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
+        setStreamScopeId(inStreamScopeId);
     }
 
     /**
@@ -915,6 +953,23 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public void setFollowerStatus(final FollowerStatus inFollowerStatus)
     {
         followerStatus = inFollowerStatus;
+    }
+
+    /**
+     * @return the streamScopeId
+     */
+    public Long getStreamScopeId()
+    {
+        return streamScopeId;
+    }
+
+    /**
+     * @param inStreamScopeId
+     *            the streamScopeId to set
+     */
+    public void setStreamScopeId(final Long inStreamScopeId)
+    {
+        streamScopeId = inStreamScopeId;
     }
 
 }

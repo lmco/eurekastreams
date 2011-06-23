@@ -35,7 +35,7 @@ public class ShareActivityWidget extends Composite
 {
     /**
      * Constructor.
-     *
+     * 
      * @param activityId
      *            ID of activity to share.
      */

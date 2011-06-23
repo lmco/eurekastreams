@@ -16,11 +16,11 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -31,20 +31,20 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone liking an activity to appropriate notifications.
  */
-public class LikeTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class LikeTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
     /** For getting activity info. */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+    private final DomainMapper<Long, ActivityDTO> activityDAO;
 
     /**
      * Constructor.
      *
-     * @param inActivitiesMapper
-     *            Mapper for fetching activity info.
+     * @param inActivityDAO
+     *            For getting activity info.
      */
-    public LikeTranslator(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
+    public LikeTranslator(final DomainMapper<Long, ActivityDTO> inActivityDAO)
     {
-        activitiesMapper = inActivitiesMapper;
+        activityDAO = inActivityDAO;
     }
 
     /**
@@ -69,11 +69,11 @@ public class LikeTranslator implements NotificationTranslator<CreateNotification
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
-        ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inRequest.getActivityId())).get(0);
-        List<Long> recipients = new ArrayList<Long>();
+        ActivityDTO activity = activityDAO.execute(inRequest.getActivityId());
 
+        List<Long> recipients = new ArrayList<Long>();
         addAuthorIfAppropriate(activity.getActor(), inRequest.getActorId(), recipients);
         addAuthorIfAppropriate(activity.getOriginalActor(), inRequest.getActorId(), recipients);
         if (recipients.isEmpty())
@@ -82,10 +82,10 @@ public class LikeTranslator implements NotificationTranslator<CreateNotification
         }
 
         NotificationBatch batch = new NotificationBatch(NotificationType.LIKE_ACTIVITY, recipients);
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", activity.getDestinationStream());
         batch.setProperty("activity", activity);
-        // TODO: add appropriate properties
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         return batch;
     }
 }

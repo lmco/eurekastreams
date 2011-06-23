@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.SublistWithResultCount;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Assert;
@@ -47,9 +48,31 @@ public class GetStreamsByDailyAverageMessageCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        SublistWithResultCount<Long> results = sut.execute(null);
+        SublistWithResultCount<StreamDTO> results = sut.execute(null);
         Assert.assertEquals(new Long(2), results.getTotalResultsCount());
-        Assert.assertEquals(new Long(2L), results.getResultsSublist().get(0));
-        Assert.assertEquals(new Long(1L), results.getResultsSublist().get(1));
+        Assert.assertEquals(2, results.getResultsSublist().size());
+
+        StreamDTO fordp2 = results.getResultsSublist().get(0);
+        StreamDTO fordp = results.getResultsSublist().get(1);
+
+        Assert.assertEquals("fordp2", fordp2.getUniqueId());
+        Assert.assertEquals("fordp", fordp.getUniqueId());
+
+        Assert.assertTrue(fordp2.getFollowersCount() >= 0);
+        Assert.assertTrue(fordp.getFollowersCount() >= 0);
+    }
+
+    /**
+     * Test execute with no data.
+     */
+    @Test
+    public void testExecuteWhenNoData()
+    {
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
+        getEntityManager().clear();
+
+        SublistWithResultCount<StreamDTO> results = sut.execute(null);
+        Assert.assertEquals(new Long(0L), results.getTotalResultsCount());
+        Assert.assertEquals(0, results.getResultsSublist().size());
     }
 }

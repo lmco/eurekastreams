@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,9 +49,27 @@ public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
     @Test
     public void test()
     {
-        List<Long> results = sut.execute(10);
+        List<StreamDTO> results = sut.execute(10);
         Assert.assertEquals(2L, results.size());
-        Assert.assertEquals(new Long(2), results.get(0));
-        Assert.assertEquals(new Long(1), results.get(1));
+
+        // PERSON: fordp2
+        StreamDTO dto1 = results.get(0);
+
+        // PERSON: fordp
+        StreamDTO dto2 = results.get(1);
+
+        Assert.assertEquals("fordp2", dto1.getUniqueId());
+        Assert.assertEquals("fordp", dto2.getUniqueId());
+    }
+
+    /**
+     * Test with no metrics data in the database.
+     */
+    @Test
+    public void testWithNoMetricsData()
+    {
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
+        getEntityManager().clear();
+        Assert.assertEquals(0, sut.execute(10).size());
     }
 }

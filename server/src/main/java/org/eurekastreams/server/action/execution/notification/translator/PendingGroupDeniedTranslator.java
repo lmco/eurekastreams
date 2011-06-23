@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.GroupRemovedNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 
@@ -33,6 +34,7 @@ public class PendingGroupDeniedTranslator implements NotificationTranslator<Grou
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP_DENIED,
                 inRequest.getCoordinatorIds());
         batch.setProperty("groupName", inRequest.getGroupName());
+        batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
         return batch;
     }
 }

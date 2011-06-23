@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.testing.TestContextCreator;
@@ -94,11 +94,11 @@ public class DeleteRequestForGroupMembershipExecutionTest
         context.assertIsSatisfied();
 
         assertEquals(1, actionCtx.getUserActionRequests().size());
-        CreateNotificationsRequest notifRqst = (CreateNotificationsRequest) (actionCtx.getUserActionRequests().get(0)
-                .getParams());
+        GroupMembershipResponseNotificationsRequest notifRqst = (GroupMembershipResponseNotificationsRequest) (actionCtx
+                .getUserActionRequests().get(0).getParams());
         assertEquals(RequestType.REQUEST_GROUP_ACCESS_DENIED, notifRqst.getType());
         assertEquals(USER_ID, notifRqst.getActorId());
-        assertEquals(GROUP_ID, notifRqst.getDestinationId());
-        assertEquals(PERSON_ID, notifRqst.getActivityId());
+        assertEquals(GROUP_ID, notifRqst.getTargetEntityId());
+        assertEquals(PERSON_ID, notifRqst.getRequestorId());
     }
 }

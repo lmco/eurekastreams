@@ -23,6 +23,9 @@ import java.util.Collection;
  */
 public class GroupRemovedNotificationsRequest extends CreateNotificationsRequest
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = 2682368016001395381L;
+
     /** Group acted on. */
     private final String groupName;
 
@@ -31,7 +34,7 @@ public class GroupRemovedNotificationsRequest extends CreateNotificationsRequest
 
     /**
      * Constructor.
-     * 
+     *
      * @param inType
      *            Event type.
      * @param inActorId
@@ -44,7 +47,7 @@ public class GroupRemovedNotificationsRequest extends CreateNotificationsRequest
     public GroupRemovedNotificationsRequest(final RequestType inType, final long inActorId, final String inGroupName,
             final Collection<Long> inCoordinatorIds)
     {
-        super(inType, inActorId, 0L, 0L);
+        super(inType, inActorId);
         groupName = inGroupName;
         coordinatorIds = inCoordinatorIds;
     }

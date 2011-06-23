@@ -186,13 +186,12 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         // Sends notifications for new personal stream posts.
         if (destinationType == EntityType.PERSON)
         {
-            requestType = RequestType.STREAM_POST;
+            requestType = RequestType.POST_PERSON_STREAM;
         }
-
         // Sends notifications for new group stream posts.
         else if (destinationType == EntityType.GROUP)
         {
-            requestType = RequestType.GROUP_STREAM_POST;
+            requestType = RequestType.POST_GROUP_STREAM;
         }
 
         // Setup the queued requests.
@@ -200,7 +199,8 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         {
             CreateNotificationsRequest notificationRequest = new ActivityNotificationsRequest(requestType, actorId,
                     destinationId, persistedActivityDTO.getEntityId());
-            queueRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+            queueRequests
+                    .add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null, notificationRequest));
         }
         // TODO: fix this so activityDTO fields related to specific user
         // are not saved in cache.

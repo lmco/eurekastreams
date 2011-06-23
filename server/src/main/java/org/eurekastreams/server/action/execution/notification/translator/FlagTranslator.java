@@ -16,12 +16,11 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
@@ -31,52 +30,53 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Translates the event of someone flagging an activity to appropriate notifications.
  */
-public class FlagTranslator implements NotificationTranslator<CreateNotificationsRequest>
+public class FlagTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
     /** For getting activity details. */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+    private final DomainMapper<Long, ActivityDTO> activityDAO;
 
     /**
      * Mapper to get a list of system admin ids.
      */
-    private final DomainMapper<Serializable, List<Long>> systemAdminMapper;
+    private final DomainMapper<Serializable, List<Long>> systemAdminsDAO;
 
     /**
      * Constructor.
      *
-     * @param inActivitiesMapper
+     * @param inActivityDAO
      *            For getting activity details.
-     * @param inSystemAdminMapper
-     *            mapper to get all the system admin ids
+     * @param inSystemAdminsDAO
+     *            For getting the system admin ids.
      */
-    public FlagTranslator(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
-            final DomainMapper<Serializable, List<Long>> inSystemAdminMapper)
+    public FlagTranslator(final DomainMapper<Long, ActivityDTO> inActivityDAO,
+            final DomainMapper<Serializable, List<Long>> inSystemAdminsDAO)
     {
-        activitiesMapper = inActivitiesMapper;
-        systemAdminMapper = inSystemAdminMapper;
+        activityDAO = inActivityDAO;
+        systemAdminsDAO = inSystemAdminsDAO;
     }
 
     /**
-     * This method takes the activity and gets a list of all the admins (since they have authority over the person or
+     * This method takes the activity and gets a list of all the admins since they have authority over the person or
      * group stream where the activity was posted. Those will be the recipients.
      *
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final CreateNotificationsRequest inRequest)
+    public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
         // Get the activity
-        ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inRequest.getActivityId())).get(0);
+        ActivityDTO activity = activityDAO.execute(inRequest.getActivityId());
         StreamEntityDTO stream = activity.getDestinationStream();
 
         // Get the list of admins
-        List<Long> adminIds = systemAdminMapper.execute(null);
+        List<Long> adminIds = systemAdminsDAO.execute(null);
 
         NotificationBatch batch = new NotificationBatch(NotificationType.FLAG_ACTIVITY, adminIds);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("activity", activity);
         batch.setProperty("stream", stream);
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+        batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
         return batch;
     }
 }

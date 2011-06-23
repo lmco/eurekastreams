@@ -20,6 +20,9 @@ package org.eurekastreams.server.action.request.notification;
  */
 public class CommentNotificationsRequest extends ActivityNotificationsRequest
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = 7153700033574364680L;
+
     /** ID of the comment. */
     private final long commentId;
 
@@ -30,17 +33,17 @@ public class CommentNotificationsRequest extends ActivityNotificationsRequest
      *            Type of event that occurred.
      * @param inActorId
      *            ID of the entity (person) who performed the action which the notification is about.
-     * @param inDestinationId
+     * @param inStreamEntityId
      *            ID of the entity (person or group) who owns the stream containing the activity.
      * @param inActivityId
      *            ID of the activity containing the comment.
      * @param inCommentId
      *            ID of the comment the event pertained to.
      */
-    public CommentNotificationsRequest(final RequestType inType, final long inActorId, final long inDestinationId,
+    public CommentNotificationsRequest(final RequestType inType, final long inActorId, final long inStreamEntityId,
             final long inActivityId, final long inCommentId)
     {
-        super(inType, inActorId, inDestinationId, inActivityId);
+        super(inType, inActorId, inStreamEntityId, inActivityId);
         commentId = inCommentId;
     }
 

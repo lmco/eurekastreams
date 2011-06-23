@@ -39,7 +39,7 @@ public class PreBuiltNotificationTranslatorTest
     @Test
     public void testTranslate()
     {
-        PreBuiltNotificationTranslator sut = new PreBuiltNotificationTranslator();
+        NotificationTranslator<PrebuiltNotificationsRequest> sut = new PreBuiltNotificationTranslator();
 
         final String clientId = "CLIENT_ID";
         final long recipientId = 80L;

@@ -25,24 +25,18 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 import org.eurekastreams.web.client.ui.common.notification.NotificationCountWidget;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HeaderComposite draws the header bar for the user.
- * 
+ *
  */
 public class HeaderComposite extends Composite
 {
@@ -93,8 +87,8 @@ public class HeaderComposite extends Composite
      */
     public HeaderComposite()
     {
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent eventArg)
                     {
@@ -111,7 +105,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     * 
+     *
      * @param viewer
      *            - user to display.
      */
@@ -175,9 +169,11 @@ public class HeaderComposite extends Composite
         if (null == viewer) // The user is NOT logged in.
         {
             final Dialog loginDialog = DialogFactory.getDialog("login");
-
+            userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
+            final Dialog loginDialog = DialogFactory.getDialog("login");
             Hyperlink loginLink = new Hyperlink();
             loginLink.setText("Login");
+
             loginLink.addClickListener(new ClickListener()
             {
                 public void onClick(final Widget arg0)
@@ -185,9 +181,10 @@ public class HeaderComposite extends Composite
                     loginDialog.show();
                 }
             });
-            loginLink.setTargetHistoryToken(History.getToken());
 
+            loginLink.setTargetHistoryToken(History.getToken());
             userNav.add(loginLink);
+
         }
         else
         {
@@ -207,7 +204,7 @@ public class HeaderComposite extends Composite
 
             if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
             {
-                userNav.add(new HTML("<a href='/j_spring_security_logout'>Logout</a>"));
+                userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
             }
 
             // Note: The profile search box is created at constructor time because it registers listeners on the event
@@ -215,29 +212,39 @@ public class HeaderComposite extends Composite
             // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
             // page change.
             userNav.add(profileSearchBox, StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxNav());
-        }
 
-        // Style the Elements
-        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
-        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBar());
-        siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
-        mainNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainNav());
-        userNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().userBar());
+            if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
+            {
+                userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
+            }
 
-        // Add the elements to the main panel
-        navPanel.add(mainNav);
-        navPanel.add(userNav);
-        panel.add(navPanel);
+            // Note: The profile search box is created at constructor time because it registers listeners on the event
+            // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
+            // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
+            // page change.
+            userNav.add(profileSearchBox);
 
-        panel.add(siteLabelingContainer);
+            // Style the Elements
+            panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
+            navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBar());
+            siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
+            mainNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainNav());
+            userNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().userBar());
 
-        initWidget(panel);
-        setActive(Session.getInstance().getUrlPage());
+            // Add the elements to the main panel
+            navPanel.add(mainNav);
+            navPanel.add(userNav);
+            panel.add(navPanel);
+
+            panel.add(siteLabelingContainer);
+    
+            initWidget(panel);
+            setActive(Session.getInstance().getUrlPage());
     }
 
     /**
      * Sets Site labeling.
-     * 
+     *
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -252,7 +259,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     * 
+     *
      * @param page
      *            the page to activate.
      */

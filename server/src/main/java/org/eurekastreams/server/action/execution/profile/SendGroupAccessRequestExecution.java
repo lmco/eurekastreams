@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.DomainGroupShortNameRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
@@ -37,13 +38,13 @@ import org.eurekastreams.server.persistence.mappers.db.InsertRequestForGroupMemb
 public class SendGroupAccessRequestExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /** Class logger. */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /** The GroupMapper used for looking up the coordinators of the group. */
-    private DomainGroupMapper groupMapper;
+    private final DomainGroupMapper groupMapper;
 
     /** Mapper to insert membership requests. */
-    private InsertRequestForGroupMembership insertMembershipRequestMapper;
+    private final InsertRequestForGroupMembership insertMembershipRequestMapper;
 
     /**
      * Constructor.
@@ -70,8 +71,8 @@ public class SendGroupAccessRequestExecution implements TaskHandlerExecutionStra
     @Override
     public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
     {
-        DomainGroupShortNameRequest request =
-                (DomainGroupShortNameRequest) inActionContext.getActionContext().getParams();
+        DomainGroupShortNameRequest request = (DomainGroupShortNameRequest) inActionContext.getActionContext()
+                .getParams();
         DomainGroup target = groupMapper.findByShortName(request.getGroupShortName());
         if (null == target)
         {
@@ -88,8 +89,9 @@ public class SendGroupAccessRequestExecution implements TaskHandlerExecutionStra
         // Note: doesn't check whether the request was freshly added or whether it was already found, thus allowing a
         // user to "nag" the coordinators for access
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("createNotificationsAction", null, new CreateNotificationsRequest(
-                        RequestType.REQUEST_GROUP_ACCESS, personId, target.getId(), 0L)));
+                new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
+                        new TargetEntityNotificationsRequest(RequestType.REQUEST_GROUP_ACCESS, personId, target
+                                .getId())));
 
         return null;
     }

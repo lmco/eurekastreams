@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.domain.dto;
 
+import java.util.Date;
+
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.FollowerStatusable;
 
@@ -38,4 +40,14 @@ public interface StreamDTO extends FollowerStatusable, Followable
      * @return Avatar id.
      */
     String getAvatarId();
+
+    /**
+     * @return the date added.
+     */
+    Date getDateAdded();
+
+    /**
+     * @return the stream scope id.
+     */
+    Long getStreamScopeId();
 }

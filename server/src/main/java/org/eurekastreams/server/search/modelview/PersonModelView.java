@@ -294,6 +294,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private FollowerStatus followerStatus;
 
     /**
+     * Stream Scope Id.
+     */
+    private Long streamScopeId;
+
+    /**
      * Get the name of this entity.
      * 
      * @return the name of this entity
@@ -312,7 +317,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     * Constructor.
+     * Constructor suitable for StreamDTO.
      * 
      * @param inId
      *            the person id
@@ -324,14 +329,49 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the person last name
      * @param inFollowerCount
      *            the number of followers
+     * @param inDateAdded
+     *            the date this stream was created
+     * @param inStreamScopeId
+     *            the stream scope id
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final Long inFollowerCount)
+            final String inLastName, final Long inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
     {
         setEntityId(inId);
         setAccountId(inAccountId);
         setDisplayName(inPreferredName + " " + inLastName);
         setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
+        setStreamScopeId(inStreamScopeId);
+    }
+
+    /**
+     * Constructor suitable for StreamDTO.
+     * 
+     * @param inId
+     *            the person id
+     * @param inAccountId
+     *            the person account id
+     * @param inPreferredName
+     *            the person preferred name
+     * @param inLastName
+     *            the person last name
+     * @param inFollowerCount
+     *            the number of followers
+     * @param inDateAdded
+     *            the date this stream was created
+     * @param inStreamScopeId
+     *            the stream scope id
+     */
+    public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
+            final String inLastName, final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
+    {
+        setEntityId(inId);
+        setAccountId(inAccountId);
+        setDisplayName(inPreferredName + " " + inLastName);
+        setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
+        setStreamScopeId(inStreamScopeId);
     }
 
     /**
@@ -1284,4 +1324,22 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         followerStatus = inFollowerStatus;
     }
+
+    /**
+     * @return the streamScopeId
+     */
+    public Long getStreamScopeId()
+    {
+        return streamScopeId;
+    }
+
+    /**
+     * @param inStreamScopeId
+     *            the streamScopeId to set
+     */
+    public void setStreamScopeId(final Long inStreamScopeId)
+    {
+        streamScopeId = inStreamScopeId;
+    }
+
 }

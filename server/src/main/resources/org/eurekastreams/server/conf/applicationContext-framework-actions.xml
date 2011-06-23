@@ -629,7 +629,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.PostActivityCommentExecution">
                     <constructor-arg ref="insertActivityComment" />
-                    <constructor-arg ref="bulkActivitiesMapper" />
+                    <constructor-arg ref="activityDTOMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2892,7 +2892,6 @@
                 class="org.eurekastreams.server.action.execution.stream.SetActivityLikeExecution">
                 <constructor-arg ref="insertLikedActivity" />
                 <constructor-arg ref="deleteLikedActivity" />
-                <constructor-arg ref="bulkActivitiesMapper" />
                 <constructor-arg ref="indexEntity" />
                 <constructor-arg ref="findByIdMapper" />
             </bean>
@@ -4509,9 +4508,6 @@
         <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
         <!-- 30 days of summary data caching -->
         <constructor-arg value="30" />
-        <!-- Mappers -->
-        <constructor-arg ref="getStreamsByDailyAverageViewsMapper_FORCE_REFRESH" />
-        <constructor-arg ref="getStreamsByDailyAverageMessageCountMapper_FORCE_REFRESH" />
     </bean>
 
     <!--
@@ -4534,5 +4530,20 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+
+
+    <!-- WBC: Temporary action for testing -->
+    <bean id="generateStreamDiscoverLists" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="passThruRequestTransformer" />
+                <constructor-arg ref="streamDiscoverListsMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+
 
 </beans>

@@ -220,13 +220,8 @@ public final class CacheKeys
     public static final String STREAM_METRICS_BY_STREAM_SCOPE_ID = "Metrics:";
 
     /**
-     * Key for a list of the stream scope ids by most viewed, by daily average.
+     * Key to get the cached discovery page lists.
      */
-    public static final String STREAM_SCOPE_IDS_OF_MOST_VIEWED_STREAMS = "StreamScopeIdsByDailyViews";
-
-    /**
-     * Key for a list of the stream scope ids by daily average message count.
-     */
-    public static final String STREAM_SCOPE_IDS_OF_MOST_ACTIVE_STREAMS = "StreamScopeIdsByDailyMessageCount";
+    public static final String DISCOVERY_PAGE_LISTS = "DiscoveryPageLists";
 
 }

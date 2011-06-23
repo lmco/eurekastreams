@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
@@ -80,22 +81,22 @@ public class GetSuggestedStreamsExecutionTest
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
         final Principal principal = context.mock(Principal.class);
 
-        people.add(new PersonModelView(1L, "a", "foo", "bar", 100L));
-        people.add(new PersonModelView(2L, "b", "foo", "bar", 900L)); // 3
-        people.add(new PersonModelView(3L, "c", "foo", "bar", 200L));
-        people.add(new PersonModelView(4L, "d", "foo", "bar", 800L)); // 5
-        people.add(new PersonModelView(5L, "e", "foo", "bar", 300L)); // 9
-        people.add(new PersonModelView(6L, "f", "foo", "bar", 200L));
-        people.add(new PersonModelView(7L, "g", "foo", "bar", 700L)); // 7
+        people.add(new PersonModelView(1L, "a", "foo", "bar", 100L, new Date(), 1L));
+        people.add(new PersonModelView(2L, "b", "foo", "bar", 900L, new Date(), 2L)); // 3
+        people.add(new PersonModelView(3L, "c", "foo", "bar", 200L, new Date(), 3L));
+        people.add(new PersonModelView(4L, "d", "foo", "bar", 800L, new Date(), 4L)); // 5
+        people.add(new PersonModelView(5L, "e", "foo", "bar", 300L, new Date(), 5L)); // 9
+        people.add(new PersonModelView(6L, "f", "foo", "bar", 200L, new Date(), 6L));
+        people.add(new PersonModelView(7L, "g", "foo", "bar", 700L, new Date(), 7L)); // 7
 
-        groups.add(new DomainGroupModelView(8L, "h", "foobar", 50L));
-        groups.add(new DomainGroupModelView(9L, "i", "foobar", 250L)); // 10
-        groups.add(new DomainGroupModelView(10L, "j", "foobar", 200L));
-        groups.add(new DomainGroupModelView(11L, "k", "foobar", 300L)); // 8
-        groups.add(new DomainGroupModelView(12L, "l", "foobar", 700L)); // 6
-        groups.add(new DomainGroupModelView(13L, "m", "foobar", 900L)); // 2
-        groups.add(new DomainGroupModelView(14L, "n", "foobar", 800L)); // 4
-        groups.add(new DomainGroupModelView(15L, "o", "foobar", 950L)); // 1
+        groups.add(new DomainGroupModelView(8L, "h", "foobar", 50L, new Date(), 8L));
+        groups.add(new DomainGroupModelView(9L, "i", "foobar", 250L, new Date(), 9L)); // 10
+        groups.add(new DomainGroupModelView(10L, "j", "foobar", 200L, new Date(), 10L));
+        groups.add(new DomainGroupModelView(11L, "k", "foobar", 300L, new Date(), 11L)); // 8
+        groups.add(new DomainGroupModelView(12L, "l", "foobar", 700L, new Date(), 12L)); // 6
+        groups.add(new DomainGroupModelView(13L, "m", "foobar", 900L, new Date(), 13L)); // 2
+        groups.add(new DomainGroupModelView(14L, "n", "foobar", 800L, new Date(), 14L)); // 4
+        groups.add(new DomainGroupModelView(15L, "o", "foobar", 950L, new Date(), 15L)); // 1
 
         context.checking(new Expectations()
         {

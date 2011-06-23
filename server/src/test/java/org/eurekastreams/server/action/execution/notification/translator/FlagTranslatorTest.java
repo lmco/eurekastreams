@@ -22,7 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -30,6 +31,7 @@ import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -50,15 +52,15 @@ public class FlagTranslatorTest
         }
     };
 
-    /** Fixture: mapper. */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class);
+    /** Fixture: activity DAO. */
+    private final DomainMapper<Long, ActivityDTO> activityDAO = context.mock(DomainMapper.class, "activityDAO");
 
     /** Fixture: mapper. */
     private final DomainMapper<Serializable, List<Long>> systemAdminIdsMapper = context.mock(DomainMapper.class,
             "systemAdminIdsMapper");
 
     /** SUT. */
-    private FlagTranslator sut;
+    private NotificationTranslator<ActivityNotificationsRequest> sut;
 
     /**
      * Setup before each test.
@@ -66,7 +68,7 @@ public class FlagTranslatorTest
     @Before
     public void setUp()
     {
-        sut = new FlagTranslator(activitiesMapper, systemAdminIdsMapper);
+        sut = new FlagTranslator(activityDAO, systemAdminIdsMapper);
     }
 
     /**
@@ -85,15 +87,14 @@ public class FlagTranslatorTest
         context.checking(new Expectations()
         {
             {
-                allowing(activitiesMapper).execute(Arrays.asList(3L));
-                will(returnValue(Arrays.asList(activity)));
+                allowing(activityDAO).execute(3L);
+                will(returnValue(activity));
                 allowing(systemAdminIdsMapper).execute(null);
                 will(returnValue(admins));
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, 3L);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, 3L));
 
         context.assertIsSatisfied();
 
@@ -103,9 +104,11 @@ public class FlagTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
+        PropertyMapTestHelper.assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
     }
 
     /**
@@ -124,15 +127,14 @@ public class FlagTranslatorTest
         context.checking(new Expectations()
         {
             {
-                allowing(activitiesMapper).execute(Arrays.asList(3L));
-                will(returnValue(Arrays.asList(activity)));
+                allowing(activityDAO).execute(3L);
+                will(returnValue(activity));
                 allowing(systemAdminIdsMapper).execute(null);
                 will(returnValue(admins));
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, 1L, 0L, 3L);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, 3L));
 
         context.assertIsSatisfied();
 
@@ -142,8 +144,10 @@ public class FlagTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
+        PropertyMapTestHelper.assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
     }
 }

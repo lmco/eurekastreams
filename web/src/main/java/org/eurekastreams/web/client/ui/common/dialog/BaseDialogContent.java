@@ -57,6 +57,13 @@ public abstract class BaseDialogContent implements DialogContent
     }
 
     /**
+     * Provides a do-nothing implementation of show for dialogs which do not need to take any action on after show.
+     */
+    public void afterShow()
+    {
+    }
+
+    /**
      * Provides a do-nothing implementation of show for dialogs which do not need to take any action on hide.
      */
     public void beforeHide()
@@ -70,5 +77,4 @@ public abstract class BaseDialogContent implements DialogContent
     {
         return null;
     }
-
 }

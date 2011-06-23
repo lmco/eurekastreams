@@ -123,7 +123,6 @@ public class LoginDialogContent extends BaseDialogContent
         returnTo.setName("spring-security-redirect");
         loginPanel.add(returnTo);
 
-
         rememberMe.setName("_spring_security_remember_me");
 
         loginPanel.add(passwordPanel);
@@ -230,6 +229,7 @@ public class LoginDialogContent extends BaseDialogContent
      *
      * @return the name of the CSS class to use.
      */
+    @Override
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().loginDialog();
@@ -244,6 +244,14 @@ public class LoginDialogContent extends BaseDialogContent
         username.setText("");
         password.setText("");
         errorMessage.setVisible(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void afterShow()
+    {
         username.setFocus(true);
     }
 }

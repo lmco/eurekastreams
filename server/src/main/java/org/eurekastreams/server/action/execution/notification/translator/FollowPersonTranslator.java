@@ -17,34 +17,25 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
-import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Translates the event of someone posting to a stream to appropriate notifications.
+ * Translates the event of someone beginning to follow a stream to appropriate notifications.
  */
-public class StreamPostTranslator implements NotificationTranslator<ActivityNotificationsRequest>
+public class FollowPersonTranslator implements NotificationTranslator<TargetEntityNotificationsRequest>
 {
     /**
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
+    public NotificationBatch translate(final TargetEntityNotificationsRequest inRequest)
     {
-        if (inRequest.getActorId() == inRequest.getDestinationId())
-        {
-            return null;
-        }
-
-        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_PERSONAL_STREAM,
-                inRequest.getDestinationId());
-        batch.setProperty("actor", PersonModelView.class, inRequest.getActorId());
-        batch.setProperty("stream", PersonModelView.class, inRequest.getDestinationId());
-        batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
+        NotificationBatch batch = new NotificationBatch(NotificationType.FOLLOW_PERSON, inRequest.getTargetEntityId());
+        batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
+        batch.setProperty("stream", PersonModelView.class, inRequest.getTargetEntityId());
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
-        // TODO: add appropriate properties
         return batch;
     }
 }

@@ -19,7 +19,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.GroupActionNotificationsRequest;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -27,27 +28,27 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 /**
  * Translates pending group approval events.
  */
-public class PendingGroupApprovedTranslator implements NotificationTranslator<GroupActionNotificationsRequest>
+public class PendingGroupApprovedTranslator implements NotificationTranslator<TargetEntityNotificationsRequest>
 {
-    /** Group mapper. */
-    private final DomainMapper<Long, DomainGroupModelView> groupMapper;
+    /** Group DAO. */
+    private final DomainMapper<Long, DomainGroupModelView> groupDAO;
 
-    /** Group coordinator mapper. */
-    private final DomainMapper<Long, List<Long>> groupCoordinatorMapper;
+    /** Group coordinator DAO. */
+    private final DomainMapper<Long, List<Long>> groupCoordinatorDAO;
 
     /**
      * Constructor.
-     * 
-     * @param inGroupMapper
-     *            Group mapper.
-     * @param inGroupCoordinatorMapper
-     *            Group coordinator mapper.
+     *
+     * @param inGroupDAO
+     *            Group DAO.
+     * @param inGroupCoordinatorDAO
+     *            Group coordinator DAO.
      */
-    public PendingGroupApprovedTranslator(final DomainMapper<Long, DomainGroupModelView> inGroupMapper,
-            final DomainMapper<Long, List<Long>> inGroupCoordinatorMapper)
+    public PendingGroupApprovedTranslator(final DomainMapper<Long, DomainGroupModelView> inGroupDAO,
+            final DomainMapper<Long, List<Long>> inGroupCoordinatorDAO)
     {
-        groupMapper = inGroupMapper;
-        groupCoordinatorMapper = inGroupCoordinatorMapper;
+        groupDAO = inGroupDAO;
+        groupCoordinatorDAO = inGroupCoordinatorDAO;
     }
 
 
@@ -55,13 +56,14 @@ public class PendingGroupApprovedTranslator implements NotificationTranslator<Gr
      * {@inheritDoc}
      */
     @Override
-    public NotificationBatch translate(final GroupActionNotificationsRequest inRequest)
+    public NotificationBatch translate(final TargetEntityNotificationsRequest inRequest)
     {
-        DomainGroupModelView group = groupMapper.execute(inRequest.getGroupId());
-        Collection<Long> recipientIds = groupCoordinatorMapper.execute(inRequest.getGroupId());
+        DomainGroupModelView group = groupDAO.execute(inRequest.getTargetEntityId());
+        Collection<Long> recipientIds = groupCoordinatorDAO.execute(inRequest.getTargetEntityId());
 
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP_APPROVED, recipientIds);
         batch.setProperty("group", group);
+        batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
         return batch;
     }
 }

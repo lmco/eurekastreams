@@ -452,7 +452,7 @@ div.banner-container {
 }
 
 .gwt-PopupPanel {
-	border: 5px solid #808080;
+	border: 5px solid #666;
 	padding: 0px;
 	z-index: 1000;
 	position: fixed !important;
@@ -498,38 +498,25 @@ div.banner-container {
 	gwt-image: "modalCloseBtn";
 	float: right;
 	margin-right: 4px;
-	position: relative;
+	margin-top: 5px;
 	z-index: 1001;
 	overflow: hidden;
 	text-indent: -1000em;
+	cursor: pointer;
 }
 
 @sprite .modal-close:hover {
 	gwt-image: "modalCloseBtnHover";
 }
 
-.modal-close a {
-	display: inline-block;
-	overflow: hidden;
-	height: 25px;
-	width: 25px;
-	text-indent: -1000px;
-	float: right;
-}
-
-@sprite .modal-close a:hover {
-	gwt-image: "modalCloseBtn";
-}
-
 @sprite .modal-title {
-	gwt-image: "globalNavBg";
-	background-color: #eeeeee;
-	background-image-repeat: repeat-x;
-	display: block;
-	padding: 5px 3px;
+	gwt-image: "titleBarBg";
+	line-height: 33px;
+	border-bottom: 2px solid #555;
+	width: auto;
 }
 
-.modal-title .gwt-Label {
+.modal-title-text {
 	color: white;
 	font-size: 17px;
 	white-space: nowrap;
@@ -6429,13 +6416,6 @@ body .user-bar li div.notif-count-container:hover {
 	cursor: pointer;
 }
 
-.modal-content-panel {
-	background: #EEEEEE url(style/images/globalNavshadow.png) repeat-x
-		scroll 0 0;
-	margin-top: -15px;
-	padding-top: 10px;
-}
-
 .modal-content-panel .form-submit-button,.modal-content-panel .form-update-button
 	{
 	margin-left: 0;
@@ -7593,6 +7573,8 @@ html,body {
 	gwt-image: "unsubscribeButton"; 
 }
 
+.notification-settings-modal {}
+
 .eureka-connect-badge-avatar {
 	float: left;
 	margin-right: 10px;
@@ -7859,9 +7841,9 @@ IE SPECIFIC CSS.
 		vertical-align: middle;
 	}
 	
-	.modal-content-panel {
-		margin-top: -20px;
-		padding-top: 15px;
+	.notification-settings-modal
+	{
+		width: 700px;
 	}
 	
 	.message-comment>.body {
@@ -7942,10 +7924,6 @@ IE SPECIFIC CSS.
 	.login-button,.cancel-button {
 		display: inline;
         zoom: 1;
-	}
-	
-	.modal-title {
-		padding-bottom: 10px;
 	}
 	
 	.footer-bar .horizontal {

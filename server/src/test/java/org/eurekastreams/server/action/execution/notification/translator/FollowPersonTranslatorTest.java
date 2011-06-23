@@ -18,7 +18,7 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
@@ -27,9 +27,8 @@ import org.junit.Test;
 
 /**
  * Tests the follower notification translator.
- *
  */
-public class FollowerTranslatorTest
+public class FollowPersonTranslatorTest
 {
     /** Test data. */
     private static final long ACTOR_ID = 1111L;
@@ -43,10 +42,9 @@ public class FollowerTranslatorTest
     @Test
     public void testTranslateFollowPerson()
     {
-        FollowerTranslator sut = new FollowerTranslator();
+        NotificationTranslator<TargetEntityNotificationsRequest> sut = new FollowPersonTranslator();
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(null, ACTOR_ID, FOLLOWED_ID, 0L);
-        NotificationBatch results = sut.translate(request);
+        NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(null, ACTOR_ID, FOLLOWED_ID));
 
         // check recipients
         assertEquals(1, results.getRecipients().size());

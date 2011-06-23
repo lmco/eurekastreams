@@ -16,8 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -48,28 +46,27 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
     private final Log logger = LogFactory.make();
 
     /**
-     * Comment insert mapper.
+     * Comment insert DAO.
      */
     private final InsertActivityComment insertCommentDAO;
 
-    /**
-     * Mapper to get activity dto.
-     */
-    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+    /** DAO to get activity details. */
+    private final DomainMapper<Long, ActivityDTO> activityDAO;
+
 
     /**
      * Constructor.
      *
      * @param inInsertCommentDAO
-     *            The comment insert DAO.
-     * @param inActivitiesMapper
-     *            The activities mapper.
+     *            Comment insert DAO.
+     * @param inActivityDAO
+     *            DAO to get activity details.
      */
     public PostActivityCommentExecution(final InsertActivityComment inInsertCommentDAO,
-            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
+            final DomainMapper<Long, ActivityDTO> inActivityDAO)
     {
         insertCommentDAO = inInsertCommentDAO;
-        activitiesMapper = inActivitiesMapper;
+        activityDAO = inActivityDAO;
     }
 
     /**
@@ -111,7 +108,7 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
             final Collection<UserActionRequest> queuedRequests)
     {
         // need to get activity info to decide about notifying
-        ActivityDTO activityDTO = activitiesMapper.execute(Collections.singletonList(activityId)).get(0);
+        ActivityDTO activityDTO = activityDAO.execute(activityId);
 
         // Sends notifications for new personal stream comments.
         StreamEntityDTO destination = activityDTO.getDestinationStream();
@@ -138,6 +135,6 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
                 destinationId, activityId, commentId);
 
         // add request to queued request list
-        queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+        queuedRequests.add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null, notificationRequest));
     }
 }
