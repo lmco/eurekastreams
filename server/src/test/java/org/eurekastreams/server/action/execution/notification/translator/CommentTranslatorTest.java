@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.CommentNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -132,12 +133,13 @@ public class CommentTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(5, props.size());
+        assertEquals(6, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
         PropertyMapTestHelper.assertPlaceholder(props, "comment", CommentDTO.class, COMMENT_ID);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/" + ACTIVITY_ID);
     }
 
     /**

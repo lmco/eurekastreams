@@ -26,6 +26,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone flagging an activity to appropriate notifications.
@@ -77,6 +78,7 @@ public class FlagTranslator implements NotificationTranslator<ActivityNotificati
         batch.setProperty("stream", stream);
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForFlaggedActivity());
         return batch;
     }
 }

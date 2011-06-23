@@ -27,6 +27,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone requesting creation of a group to appropriate notifications.
@@ -69,6 +70,7 @@ public class RequestNewGroupTranslator implements NotificationTranslator<TargetE
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("group", group);
         batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForPendingGroupRequest());
         return batch;
     }
 }

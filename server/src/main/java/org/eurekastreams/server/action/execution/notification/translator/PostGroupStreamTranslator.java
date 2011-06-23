@@ -25,6 +25,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone posting to a group stream to appropriate notifications.
@@ -66,6 +67,7 @@ public class PostGroupStreamTranslator implements NotificationTranslator<Activit
         batch.setProperty("stream", DomainGroupModelView.class, inRequest.getTargetEntityId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForActivity(inRequest.getActivityId()));
         return batch;
     }
 }

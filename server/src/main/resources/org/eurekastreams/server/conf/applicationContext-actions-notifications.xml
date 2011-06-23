@@ -96,7 +96,9 @@
 
     <util:map id="translators">
         <entry key="FOLLOW_PERSON">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowPersonTranslator" />
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowPersonTranslator">
+            	<constructor-arg ref="getPersonAccountIdByIdMapper" />
+            </bean>
         </entry>
         <entry key="FOLLOW_GROUP">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowGroupTranslator">
@@ -147,11 +149,13 @@
         <entry key="REQUEST_GROUP_ACCESS_APPROVED">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupMembershipResponseTranslator">
                 <constructor-arg value="REQUEST_GROUP_ACCESS_APPROVED" />
+                <constructor-arg ref="getGroupUniqueIdByIdMapper" />
             </bean>
         </entry>
         <entry key="REQUEST_GROUP_ACCESS_DENIED">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupMembershipResponseTranslator">
                 <constructor-arg value="REQUEST_GROUP_ACCESS_DENIED" />
+                <constructor-arg ref="getGroupUniqueIdByIdMapper" />
             </bean>
         </entry>
 		<entry key="EXTERNAL_PRE_BUILT">

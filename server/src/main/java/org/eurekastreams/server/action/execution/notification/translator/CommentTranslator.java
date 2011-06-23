@@ -26,6 +26,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone commenting on a post to appropriate notifications.
@@ -99,6 +100,7 @@ public class CommentTranslator implements NotificationTranslator<CommentNotifica
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
         batch.setProperty("activity", activity);
         batch.setProperty("comment", CommentDTO.class, inRequest.getCommentId());
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForActivity(activityId));
 
         return batch;
     }

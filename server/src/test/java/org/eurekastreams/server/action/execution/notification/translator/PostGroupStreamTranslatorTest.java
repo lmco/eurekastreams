@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.NotificationType;
@@ -123,11 +124,12 @@ public class PostGroupStreamTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(4, props.size());
+        assertEquals(5, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertPlaceholder(props, "stream", DomainGroupModelView.class, GROUP_ID);
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertPlaceholder(props, "activity", ActivityDTO.class, ACTIVITY_ID);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/" + ACTIVITY_ID);
     }
 
     /**

@@ -21,9 +21,11 @@ import java.util.List;
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates pending group approval events.
@@ -51,7 +53,6 @@ public class PendingGroupApprovedTranslator implements NotificationTranslator<Ta
         groupCoordinatorDAO = inGroupCoordinatorDAO;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -64,6 +65,8 @@ public class PendingGroupApprovedTranslator implements NotificationTranslator<Ta
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP_APPROVED, recipientIds);
         batch.setProperty("group", group);
         batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
+        batch.setProperty(NotificationPropertyKeys.URL,
+                UiUrlBuilder.relativeUrlForEntity(EntityType.GROUP, group.getUniqueId()));
         return batch;
     }
 }

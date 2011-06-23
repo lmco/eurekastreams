@@ -27,6 +27,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone liking an activity to appropriate notifications.
@@ -86,6 +87,7 @@ public class LikeTranslator implements NotificationTranslator<ActivityNotificati
         batch.setProperty("stream", activity.getDestinationStream());
         batch.setProperty("activity", activity);
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForActivity(inRequest.getActivityId()));
         return batch;
     }
 }

@@ -37,7 +37,7 @@ public class RequestGroupAccessTranslator implements NotificationTranslator<Targ
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCoordinatorDAO
      *            coordinator mapper to set.
      */
@@ -59,8 +59,9 @@ public class RequestGroupAccessTranslator implements NotificationTranslator<Targ
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_GROUP_ACCESS, coordinatorIds);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("group", DomainGroupModelView.class, inRequest.getTargetEntityId());
-        // TODO: add appropriate properties
+        // TODO: add appropriate SOURCE property
         batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
+        // TODO: add URL property for whatever page pending group access requests go on
         return batch;
     }
 }
