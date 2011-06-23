@@ -29,25 +29,15 @@
     <!-- TaskHandler configuration -->
     <!-- ************************* -->
 
-    <!-- A task action executor executing the action request in-method and in-thread.
--->
     <bean id="applicationContextHolder" class="org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder" />
 
-    <bean id="taskActionExecutor" class="org.eurekastreams.commons.task.TaskActionExecutor" />
-
-    <!-- A threaded task action executor executing the action request in a single new thread.
--->
-    <bean id="threadedTaskActionExecutor" class="org.eurekastreams.commons.task.ThreadedTaskActionExecutor">
-            <constructor-arg ref="taskActionExecutor" />
+	<!-- Executes the action in-line -->
+    <bean id="executingTaskHandler" class="org.eurekastreams.commons.task.ExecutingTaskHandler">
+    	<constructor-arg ref="asyncActionController" />
     </bean>
 
-    <!--  A null version of the task handler.  It does nothing.   -->
+    <!-- Does not execute the action, only logs -->
     <bean id="nullTaskHandler" class="org.eurekastreams.commons.task.NullTaskHandler" />
-
-    <!-- This task handler executes the action inline. -->
-    <bean id="inlineTaskHandler" class="org.eurekastreams.commons.task.InlineTaskHandler">
-        <constructor-arg ref="threadedTaskActionExecutor" />
-    </bean>
 
     <!-- ****************************** -->
     <!-- Action Framework configuration -->
