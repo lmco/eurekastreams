@@ -4507,14 +4507,12 @@
     </bean>
 
 
-    <!-- WBC: Temporary action for testing -->
-    <bean id="generateStreamDiscoverLists" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <!-- Action to regenerate the cache for the Stream discovery page -->
+    <bean id="regenerateStreamDiscoverListsAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg ref="passThruRequestTransformer" />
-                <constructor-arg ref="streamDiscoverListsMapper" />
+            <bean class="org.eurekastreams.server.action.execution.RegenerateStreamDiscoverListsExecution">
+                <constructor-arg ref="streamDiscoverListsMapper_FORCE_REFRESH" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
