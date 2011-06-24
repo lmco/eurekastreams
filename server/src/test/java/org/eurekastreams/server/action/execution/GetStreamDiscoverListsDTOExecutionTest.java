@@ -37,9 +37,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test fixture for GetSuggestedStreamsExecution.
+ * Test fixture for GetStreamDiscoverListsDTOExecution.
  */
-public class GetSuggestedStreamsExecutionTest
+public class GetStreamDiscoverListsDTOExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -72,7 +72,7 @@ public class GetSuggestedStreamsExecutionTest
     /**
      * System under test.
      */
-    private GetSuggestedStreamsExecution sut = new GetSuggestedStreamsExecution(suggestedPersonMapper,
+    private GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
             suggestedGroupMapper, streamDiscoveryListsMapper);
 
     /**

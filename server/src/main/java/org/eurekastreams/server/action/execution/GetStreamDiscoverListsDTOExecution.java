@@ -35,7 +35,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 /**
  * Execution strategy to get suggested group and people streams for a user.
  */
-public class GetSuggestedStreamsExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Mapper to get suggested people streams.
@@ -62,7 +62,7 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
      * @param inStreamDiscoveryListsMapper
      *            mapper to get the stream discovery lists that are the same for everyone
      */
-    public GetSuggestedStreamsExecution(
+    public GetStreamDiscoverListsDTOExecution(
             final DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> inSuggestedPersonMapper,
             final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> inSuggestedGroupMapper,
             final DomainMapper<Serializable, StreamDiscoverListsDTO> inStreamDiscoveryListsMapper)
@@ -73,8 +73,8 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
     }
 
     /**
-     * Get the suggested people and groups as StreamDTOs that represent the suggested streams to follow. Mapper takes an
-     * Integer representing how many suggestions to get
+     * Get the StreamDiscoverListsDTO for the current user, which includes data for all users along with suggestions for
+     * the current user. Integer representing how many suggestions to get
      * 
      * @param inActionContext
      *            the action context
