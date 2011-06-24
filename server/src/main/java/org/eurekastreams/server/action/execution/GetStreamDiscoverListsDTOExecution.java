@@ -22,10 +22,12 @@ import java.util.List;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.persistence.comparators.StreamDTOFollowerCountDescendingComparator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -53,6 +55,11 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
     private DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper;
 
     /**
+     * Mapper to retrieve featured stream DTOs.
+     */
+    private DomainMapper<MapperRequest, List<FeaturedStreamDTO>> featuredStreamDTOMapper;
+
+    /**
      * Constructor.
      * 
      * @param inSuggestedPersonMapper
@@ -61,15 +68,19 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
      *            mapper to get suggested group streams
      * @param inStreamDiscoveryListsMapper
      *            mapper to get the stream discovery lists that are the same for everyone
+     * @param inFeaturedStreamDTOMapper
+     *            mapper to retrieve featured stream DTOs
      */
     public GetStreamDiscoverListsDTOExecution(
             final DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> inSuggestedPersonMapper,
             final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> inSuggestedGroupMapper,
-            final DomainMapper<Serializable, StreamDiscoverListsDTO> inStreamDiscoveryListsMapper)
+            final DomainMapper<Serializable, StreamDiscoverListsDTO> inStreamDiscoveryListsMapper,
+            final DomainMapper<MapperRequest, List<FeaturedStreamDTO>> inFeaturedStreamDTOMapper)
     {
         suggestedPersonMapper = inSuggestedPersonMapper;
         suggestedGroupMapper = inSuggestedGroupMapper;
         streamDiscoveryListsMapper = inStreamDiscoveryListsMapper;
+        featuredStreamDTOMapper = inFeaturedStreamDTOMapper;
     }
 
     /**
@@ -90,6 +101,11 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
 
         StreamDiscoverListsDTO result = streamDiscoveryListsMapper.execute(null);
         getSuggestionsForPerson(personId, suggestionCount, result);
+
+        List<FeaturedStreamDTO> featuredStreams = featuredStreamDTOMapper.execute(null);
+        result.setFeaturedStreams(featuredStreams);
+
+        // fill in the avatars and display names of all of the StreamDTOs
 
         return result;
     }

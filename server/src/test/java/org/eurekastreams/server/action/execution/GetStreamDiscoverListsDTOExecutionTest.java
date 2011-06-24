@@ -23,9 +23,12 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
+import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -70,10 +73,16 @@ public class GetStreamDiscoverListsDTOExecutionTest
             DomainMapper.class, "streamDiscoveryListsMapper");
 
     /**
+     * Mapper to retrieve featured stream DTOs.
+     */
+    private DomainMapper<MapperRequest, List<FeaturedStreamDTO>> featuredStreamDTOMapper = context.mock(
+            DomainMapper.class, "featuredStreamDTOMapper");
+
+    /**
      * System under test.
      */
     private GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
-            suggestedGroupMapper, streamDiscoveryListsMapper);
+            suggestedGroupMapper, streamDiscoveryListsMapper, featuredStreamDTOMapper);
 
     /**
      * Test execute.
@@ -90,6 +99,8 @@ public class GetStreamDiscoverListsDTOExecutionTest
         final Principal principal = context.mock(Principal.class);
 
         final StreamDiscoverListsDTO result = new StreamDiscoverListsDTO();
+        final List<FeaturedStreamDTO> featured = new ArrayList<FeaturedStreamDTO>();
+        featured.add(new FeaturedStreamDTO(5L, "HI", 6L, ScopeType.PERSON, "key", 7L));
 
         people.add(new PersonModelView(1L, "a", "foo", "bar", 100L, new Date(), 1L));
         people.add(new PersonModelView(2L, "b", "foo", "bar", 900L, new Date(), 2L)); // 3
@@ -128,10 +139,15 @@ public class GetStreamDiscoverListsDTOExecutionTest
 
                 oneOf(streamDiscoveryListsMapper).execute(null);
                 will(returnValue(result));
+
+                oneOf(featuredStreamDTOMapper).execute(null);
+                will(returnValue(featured));
             }
         });
 
         Assert.assertSame(result, sut.execute(actionContext));
+        Assert.assertEquals(1, result.getFeaturedStreams().size());
+        Assert.assertEquals(7, result.getFeaturedStreams().get(0).getEntityId());
 
         List<StreamDTO> suggestions = result.getSuggestedStreams();
 

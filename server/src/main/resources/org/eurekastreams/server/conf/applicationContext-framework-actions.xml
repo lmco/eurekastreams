@@ -205,20 +205,6 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>  
-    
-    <bean id="getFeaturedStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <!-- Validation -->
-        <constructor-arg ref="noValidationStrategy" />
-        <!-- Authorization -->
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.stream.GetFeaturedStreamsExecution">                
-                <constructor-arg ref="getFeaturedStreamsMapper" />
-                <constructor-arg ref="featuredStreamDTOTransientDataPopulator" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
 
     <bean id="updateMembershipTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
