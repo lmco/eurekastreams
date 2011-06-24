@@ -65,7 +65,7 @@ public class DeleteStarredActivityTest extends MapperTest
         //delete entry that's not there.
         assertTrue(deleteStarredActivity.execute(new StarredActivity(5L, 5L))); 
         
-        //verify count hasn't changed.
+        //verify count hasn't changed. 
         assertTrue(q.getResultList().size() == initialSize);
     }
     

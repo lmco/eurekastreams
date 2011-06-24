@@ -23,6 +23,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.persistence.comparators.StreamDTOFollowerCountDescendingComparator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
@@ -47,19 +48,28 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
     private DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> suggestedGroupMapper;
 
     /**
+     * Mapper to get the stream discovery lists that are the same for everyone.
+     */
+    private DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper;
+
+    /**
      * Constructor.
      * 
      * @param inSuggestedPersonMapper
      *            mapper to get suggested people streams
      * @param inSuggestedGroupMapper
      *            mapper to get suggested group streams
+     * @param inStreamDiscoveryListsMapper
+     *            mapper to get the stream discovery lists that are the same for everyone
      */
     public GetSuggestedStreamsExecution(
             final DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> inSuggestedPersonMapper,
-            final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> inSuggestedGroupMapper)
+            final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> inSuggestedGroupMapper,
+            final DomainMapper<Serializable, StreamDiscoverListsDTO> inStreamDiscoveryListsMapper)
     {
         suggestedPersonMapper = inSuggestedPersonMapper;
         suggestedGroupMapper = inSuggestedGroupMapper;
+        streamDiscoveryListsMapper = inStreamDiscoveryListsMapper;
     }
 
     /**
@@ -68,7 +78,7 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
      * 
      * @param inActionContext
      *            the action context
-     * @return ArrayList of StreamDTO representing the streams suggested for the current user to follow
+     * @return StreamDiscoverListsDTO representing all of the discover page lists and the featured streams.
      * @throws ExecutionException
      *             (never)
      */
@@ -78,7 +88,26 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
         Long personId = inActionContext.getPrincipal().getId();
         Integer suggestionCount = (Integer) inActionContext.getParams();
 
-        SuggestedStreamsRequest mapperRequest = new SuggestedStreamsRequest(personId, suggestionCount.intValue());
+        StreamDiscoverListsDTO result = streamDiscoveryListsMapper.execute(null);
+        getSuggestionsForPerson(personId, suggestionCount, result);
+
+        return result;
+    }
+
+    /**
+     * Get the suggested streams for the current user, and populate them in the input StreamDiscoverListsDTO.
+     * 
+     * @param inPersonId
+     *            the person id to fetch suggested streams for
+     * @param inSuggestionCount
+     *            the number of suggestions to fetch
+     * @param inStreamDiscoverLists
+     *            the StreamDiscoverListsDTO to add the results to
+     */
+    private void getSuggestionsForPerson(final Long inPersonId, final Integer inSuggestionCount,
+            final StreamDiscoverListsDTO inStreamDiscoverLists)
+    {
+        SuggestedStreamsRequest mapperRequest = new SuggestedStreamsRequest(inPersonId, inSuggestionCount.intValue());
         ArrayList<StreamDTO> suggestions = new ArrayList<StreamDTO>();
 
         suggestions.addAll(suggestedPersonMapper.execute(mapperRequest));
@@ -88,7 +117,7 @@ public class GetSuggestedStreamsExecution implements ExecutionStrategy<Principal
         Collections.sort(suggestions, new StreamDTOFollowerCountDescendingComparator());
 
         // return those requested
-        suggestions = new ArrayList<StreamDTO>(suggestions.subList(0, suggestionCount));
-        return suggestions;
+        suggestions = new ArrayList<StreamDTO>(suggestions.subList(0, inSuggestionCount));
+        inStreamDiscoverLists.setSuggestedStreams(suggestions);
     }
 }

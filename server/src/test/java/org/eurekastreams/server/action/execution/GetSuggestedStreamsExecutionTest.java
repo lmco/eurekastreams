@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -62,10 +64,16 @@ public class GetSuggestedStreamsExecutionTest
             DomainMapper.class, "suggestedGroupMapper");
 
     /**
+     * Mapper to get the stream discovery lists that are the same for everyone.
+     */
+    private DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper = context.mock(
+            DomainMapper.class, "streamDiscoveryListsMapper");
+
+    /**
      * System under test.
      */
     private GetSuggestedStreamsExecution sut = new GetSuggestedStreamsExecution(suggestedPersonMapper,
-            suggestedGroupMapper);
+            suggestedGroupMapper, streamDiscoveryListsMapper);
 
     /**
      * Test execute.
@@ -80,6 +88,8 @@ public class GetSuggestedStreamsExecutionTest
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
         final Principal principal = context.mock(Principal.class);
+
+        final StreamDiscoverListsDTO result = new StreamDiscoverListsDTO();
 
         people.add(new PersonModelView(1L, "a", "foo", "bar", 100L, new Date(), 1L));
         people.add(new PersonModelView(2L, "b", "foo", "bar", 900L, new Date(), 2L)); // 3
@@ -115,10 +125,15 @@ public class GetSuggestedStreamsExecutionTest
 
                 oneOf(suggestedGroupMapper).execute(with(IsEqualInternally.equalInternally(request)));
                 will(returnValue(groups));
+
+                oneOf(streamDiscoveryListsMapper).execute(null);
+                will(returnValue(result));
             }
         });
 
-        List<StreamDTO> suggestions = (List<StreamDTO>) sut.execute(actionContext);
+        Assert.assertSame(result, sut.execute(actionContext));
+
+        List<StreamDTO> suggestions = result.getSuggestedStreams();
 
         Assert.assertEquals(10, suggestions.size());
 
