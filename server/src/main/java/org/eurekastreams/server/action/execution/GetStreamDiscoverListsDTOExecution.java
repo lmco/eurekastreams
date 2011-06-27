@@ -19,15 +19,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
+import org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator;
+import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.comparators.StreamDTOFollowerCountDescendingComparator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -39,6 +43,11 @@ import edu.emory.mathcs.backport.java.util.Collections;
  */
 public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Mapper to get suggested people streams.
      */
@@ -55,9 +64,14 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
     private DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper;
 
     /**
-     * Mapper to retrieve featured stream DTOs.
+     * Data populator for setting the DisplayName and avatar id on DisplayInfoSettables.
      */
-    private DomainMapper<MapperRequest, List<FeaturedStreamDTO>> featuredStreamDTOMapper;
+    private DisplayInfoSettableDataPopulator displayInfoSettableDataPopulator;
+
+    /**
+     * {@link FollowerStatusPopulator}.
+     */
+    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator;
 
     /**
      * Constructor.
@@ -68,19 +82,23 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
      *            mapper to get suggested group streams
      * @param inStreamDiscoveryListsMapper
      *            mapper to get the stream discovery lists that are the same for everyone
-     * @param inFeaturedStreamDTOMapper
-     *            mapper to retrieve featured stream DTOs
+     * @param inDisplayInfoSettableDataPopulator
+     *            data populator for setting the DisplayName and avatar id on DisplayInfoSettables
+     * @param inFollowerStatusPopulator
+     *            list of DisplayInfoSettable.
      */
     public GetStreamDiscoverListsDTOExecution(
             final DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> inSuggestedPersonMapper,
             final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> inSuggestedGroupMapper,
             final DomainMapper<Serializable, StreamDiscoverListsDTO> inStreamDiscoveryListsMapper,
-            final DomainMapper<MapperRequest, List<FeaturedStreamDTO>> inFeaturedStreamDTOMapper)
+            final DisplayInfoSettableDataPopulator inDisplayInfoSettableDataPopulator,
+            final FollowerStatusPopulator<DisplayInfoSettable> inFollowerStatusPopulator)
     {
         suggestedPersonMapper = inSuggestedPersonMapper;
         suggestedGroupMapper = inSuggestedGroupMapper;
         streamDiscoveryListsMapper = inStreamDiscoveryListsMapper;
-        featuredStreamDTOMapper = inFeaturedStreamDTOMapper;
+        displayInfoSettableDataPopulator = inDisplayInfoSettableDataPopulator;
+        followerStatusPopulator = inFollowerStatusPopulator;
     }
 
     /**
@@ -99,14 +117,36 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
         Long personId = inActionContext.getPrincipal().getId();
         Integer suggestionCount = (Integer) inActionContext.getParams();
 
+        log.info("BEGIN getting the lists of streams that apply to all users.");
         StreamDiscoverListsDTO result = streamDiscoveryListsMapper.execute(null);
-        getSuggestionsForPerson(personId, suggestionCount, result);
+        log.info("END getting the lists of streams that apply to all users.");
 
-        List<FeaturedStreamDTO> featuredStreams = featuredStreamDTOMapper.execute(null);
-        result.setFeaturedStreams(featuredStreams);
+        log.info("BEGIN getting the list of suggested streams for user " + personId);
+        getSuggestionsForPerson(personId, suggestionCount, result);
+        log.info("END getting the list of suggested streams for user " + personId);
+
+        // put all of the streams in a single list for transient data population
+        List<DisplayInfoSettable> displayInfoSettables = new ArrayList<DisplayInfoSettable>();
+        displayInfoSettables.addAll(result.getFeaturedStreams());
+        displayInfoSettables.addAll(result.getMostFollowedStreams());
+        displayInfoSettables.addAll(result.getMostRecentStreams());
+        displayInfoSettables.addAll(result.getMostViewedStreams());
+        displayInfoSettables.addAll(result.getSuggestedStreams());
+        displayInfoSettables.addAll(result.getMostActiveStreams().getResultsSublist());
 
         // fill in the avatars and display names of all of the StreamDTOs
+        log.info("BEGIN setting the display info on " + displayInfoSettables.size()
+                + " GroupModelViews and PersonModelViews");
+        displayInfoSettableDataPopulator.execute(personId, displayInfoSettables);
+        log.info("END setting the display info on " + displayInfoSettables.size()
+                + " GroupModelViews and PersonModelViews");
 
+        // Set follower status on all dtos.
+        log.info("BEGIN setting the follower statuses on " + displayInfoSettables.size()
+                + " GroupModelViews and PersonModelViews");
+        followerStatusPopulator.execute(personId, displayInfoSettables, FollowerStatus.NOTFOLLOWING);
+        log.info("END setting the follower statuses on " + displayInfoSettables.size()
+                + " GroupModelViews and PersonModelViews");
         return result;
     }
 
