@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
-import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
+import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Populate transient data in {@link FeaturedStreamDTO}s.
+ * Populate transient data for DisplayInfoSettable.
  * 
  */
 public class FeaturedStreamDTOTransientDataPopulator
@@ -36,7 +36,7 @@ public class FeaturedStreamDTOTransientDataPopulator
     /**
      * {@link FollowerStatusPopulator}.
      */
-    private FollowerStatusPopulator<FeaturedStreamDTO> followerStatusPopulator;
+    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator;
 
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
@@ -52,14 +52,14 @@ public class FeaturedStreamDTOTransientDataPopulator
      * Constructor.
      * 
      * @param inFollowerStatusPopulator
-     *            {@link FollowerStatusPopulator}.
+     *            list of DisplayInfoSettable.
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            Mapper to get a list of PersonModelViews from a list of AccountIds.
      * @param inGetGroupModelViewsByShortNameMapper
      *            Mapper to get a list of GroupModelViews from a list of group shortNames.
      */
     public FeaturedStreamDTOTransientDataPopulator(
-            final FollowerStatusPopulator<FeaturedStreamDTO> inFollowerStatusPopulator,
+            final FollowerStatusPopulator<DisplayInfoSettable> inFollowerStatusPopulator,
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetItemsByPointerIds<DomainGroupModelView> inGetGroupModelViewsByShortNameMapper)
     {
@@ -69,33 +69,33 @@ public class FeaturedStreamDTOTransientDataPopulator
     }
 
     /**
-     * Populate transient data in {@link FeaturedStreamDTO}s.
+     * Populate transient data in DisplaySettables.
      * 
      * @param inCurrentUserId
      *            Current user id.
-     * @param inFeaturedStreamDTOs
-     *            {@link FeaturedStreamDTO} to populate.
-     * @return Populated {@link FeaturedStreamDTO}.
+     * @param inDisplaySettables
+     *            the DTOs to update display settings for
+     * @return Populated DisplayInfoSettable.
      */
-    public List<FeaturedStreamDTO> execute(final long inCurrentUserId,
-            final List<FeaturedStreamDTO> inFeaturedStreamDTOs)
+    public List<DisplayInfoSettable> execute(final long inCurrentUserId,
+            final List<DisplayInfoSettable> inDisplaySettables)
     {
         // Set follower status on all dtos.
-        followerStatusPopulator.execute(inCurrentUserId, inFeaturedStreamDTOs, FollowerStatus.NOTFOLLOWING);
+        followerStatusPopulator.execute(inCurrentUserId, inDisplaySettables, FollowerStatus.NOTFOLLOWING);
 
         // sort by entity type to optimize calls to cache.
-        Map<String, FeaturedStreamDTO> personStreams = new HashMap<String, FeaturedStreamDTO>();
-        Map<String, FeaturedStreamDTO> groupStreams = new HashMap<String, FeaturedStreamDTO>();
+        Map<String, DisplayInfoSettable> personStreams = new HashMap<String, DisplayInfoSettable>();
+        Map<String, DisplayInfoSettable> groupStreams = new HashMap<String, DisplayInfoSettable>();
 
-        for (FeaturedStreamDTO fs : inFeaturedStreamDTOs)
+        for (DisplayInfoSettable ds : inDisplaySettables)
         {
-            switch (fs.getEntityType())
+            switch (ds.getEntityType())
             {
             case PERSON:
-                personStreams.put(fs.getStreamUniqueKey(), fs);
+                personStreams.put(ds.getStreamUniqueKey(), ds);
                 break;
             case GROUP:
-                groupStreams.put(fs.getStreamUniqueKey(), fs);
+                groupStreams.put(ds.getStreamUniqueKey(), ds);
                 break;
             default:
                 break;
@@ -109,7 +109,7 @@ public class FeaturedStreamDTOTransientDataPopulator
                 groupStreams.keySet()));
 
         // set transient data in DTOs for group and people.
-        FeaturedStreamDTO tempStream;
+        DisplayInfoSettable tempStream;
         for (PersonModelView pmv : personDTOs)
         {
             tempStream = personStreams.get(pmv.getAccountId());
@@ -124,6 +124,6 @@ public class FeaturedStreamDTOTransientDataPopulator
             tempStream.setDisplayName(dgmv.getDisplayName());
         }
 
-        return inFeaturedStreamDTOs;
+        return inDisplaySettables;
     }
 }

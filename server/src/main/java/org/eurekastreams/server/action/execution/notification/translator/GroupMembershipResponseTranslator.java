@@ -17,9 +17,13 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of a coordinator approving or denying a private group membership request to to the appropriate
@@ -31,15 +35,22 @@ public class GroupMembershipResponseTranslator implements
     /** Notification type to generate. */
     private final NotificationType type;
 
+    /** DAO to get the group's unique id. */
+    private final DomainMapper<Long, String> idToUniqueIdDAO;
+
     /**
      * Constructor.
      *
      * @param inType
      *            Notification type to generate.
+     * @param inIdToUniqueIdDAO
+     *            DAO to get the group's unique id.
      */
-    public GroupMembershipResponseTranslator(final NotificationType inType)
+    public GroupMembershipResponseTranslator(final NotificationType inType,
+            final DomainMapper<Long, String> inIdToUniqueIdDAO)
     {
         type = inType;
+        idToUniqueIdDAO = inIdToUniqueIdDAO;
     }
 
     /**
@@ -52,6 +63,15 @@ public class GroupMembershipResponseTranslator implements
         batch.setProperty("group", DomainGroupModelView.class, inRequest.getTargetEntityId());
         batch.setPropertyAlias(NotificationPropertyKeys.ACTOR, "group");
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "group");
+
+        if (inRequest.getType() == RequestType.REQUEST_GROUP_ACCESS_APPROVED)
+        {
+            batch.setProperty(
+                    NotificationPropertyKeys.URL,
+                    UiUrlBuilder.relativeUrlForEntity(EntityType.GROUP,
+                            idToUniqueIdDAO.execute(inRequest.getTargetEntityId())));
+        }
+
         return batch;
     }
 }

@@ -18,14 +18,31 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone beginning to follow a stream to appropriate notifications.
  */
 public class FollowPersonTranslator implements NotificationTranslator<TargetEntityNotificationsRequest>
 {
+    /** DAO to get the person's account id. */
+    private final DomainMapper<Long, String> idToUniqueIdDAO;
+
+    /**
+     * Constructor.
+     *
+     * @param inIdToUniqueIdDAO
+     *            DAO to get the person's account id.
+     */
+    public FollowPersonTranslator(final DomainMapper<Long, String> inIdToUniqueIdDAO)
+    {
+        idToUniqueIdDAO = inIdToUniqueIdDAO;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -36,6 +53,10 @@ public class FollowPersonTranslator implements NotificationTranslator<TargetEnti
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", PersonModelView.class, inRequest.getTargetEntityId());
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForEntity(EntityType.PERSON,
+                idToUniqueIdDAO.execute(inRequest.getActorId())));
+
         return batch;
     }
 }

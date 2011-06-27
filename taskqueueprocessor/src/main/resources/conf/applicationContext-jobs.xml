@@ -109,6 +109,12 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!-- Job to rebuild the cache for the Streams Discovery page -->
+	<bean id="regenerateStreamDiscoverListsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="regenerateStreamDiscoverListsAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
     
     <!-- Define Jobs Triggers -->
     <!-- this is intended to run every day at 1:00am -->
@@ -166,6 +172,12 @@
         <property name="cronExpression" value="0 15 2 * * ?" />
     </bean> 
     
+    <!-- Update the cache that powers the Streams Discovery page - runs every 30 minutes -->
+    <bean id="regenerateStreamDiscoverListsJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="regenerateStreamDiscoverListsJob" />
+        <property name="repeatInterval" value="${eureka.jobs.regenerateStreamDiscoverListsJobTrigger.repeatInterval}"/>
+    </bean> 
+    
     <!-- take any feeds that have been stored in the database and memcached and propogate
          them to denormalized memcached lists
 -->
@@ -190,6 +202,7 @@
                 <ref bean="expiredActivitiesCleanupJobTrigger" />
 				<ref bean="pluginDefUserIndexJobTrigger" />
                 <ref bean="generateDailyUsageSummaryJobTrigger" />
+                <ref bean="regenerateStreamDiscoverListsJobTrigger" />
             </list> 
         </property>
     </bean>	

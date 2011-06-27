@@ -25,9 +25,8 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 
 /**
  * Featured Stream DTO.
- * 
  */
-public class FeaturedStreamDTO implements Serializable, FollowerStatusable
+public class FeaturedStreamDTO implements Serializable, FollowerStatusable, DisplayInfoSettable
 {
     /**
      * Serial version id.

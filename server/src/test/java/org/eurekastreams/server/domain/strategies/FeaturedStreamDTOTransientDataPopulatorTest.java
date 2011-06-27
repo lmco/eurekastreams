@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -54,7 +55,7 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
     /**
      * {@link FollowerStatusPopulator}.
      */
-    private FollowerStatusPopulator<FeaturedStreamDTO> followerStatusPopulator = context
+    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator = context
             .mock(FollowerStatusPopulator.class);
 
     /**
@@ -111,8 +112,8 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
         g.setShortName(groupUniqueKey);
         g.setAvatarId(groupAvatarId);
 
-        final List<FeaturedStreamDTO> fsList = new ArrayList<FeaturedStreamDTO>(Arrays
-                .asList(personStream, groupStream));
+        final List<DisplayInfoSettable> fsList = new ArrayList<DisplayInfoSettable>(Arrays.asList(personStream,
+                groupStream));
 
         context.checking(new Expectations()
         {
@@ -127,13 +128,13 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
             }
         });
 
-        List<FeaturedStreamDTO> results = sut.execute(currentUserId, fsList);
+        List<DisplayInfoSettable> results = sut.execute(currentUserId, fsList);
         assertEquals(2, results.size());
         assertEquals(personDisplayName, results.get(0).getDisplayName());
-        assertEquals(personAvatarId, results.get(0).getAvatarId());
+        assertEquals(personAvatarId, ((FeaturedStreamDTO) results.get(0)).getAvatarId());
 
         assertEquals(groupDisplayName, results.get(1).getDisplayName());
-        assertEquals(groupAvatarId, results.get(1).getAvatarId());
+        assertEquals(groupAvatarId, ((FeaturedStreamDTO) results.get(1)).getAvatarId());
 
         context.assertIsSatisfied();
     }

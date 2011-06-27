@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,21 +22,20 @@ import org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction;
 import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.server.async.AsyncActionController;
-import org.eurekastreams.commons.task.TaskActionExecutor;
+import org.eurekastreams.commons.task.ExecutingTaskHandler;
+import org.eurekastreams.commons.task.TaskHandler;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-
+import org.springframework.beans.factory.BeanFactory;
 
 /**
- * Test for RealTimeExecuter class.
- *
+ * Tests ExecutingTaskHandler.
  */
-public class TaskActionExecutorTest
+public class ExecutingTaskHandlerTest
 {
     /**
      * Context for building mock objects.
@@ -47,79 +46,50 @@ public class TaskActionExecutorTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    /**
-     * Mock objects.
-     */
 
-    /**
-     * The application context mock object.
-     */
-    private ApplicationContext applicationContextMock = context.mock(ApplicationContext.class);
+    /** Fixture: mock of Spring bean factory. */
+    private final BeanFactory beanFactory = context.mock(BeanFactory.class);
 
     /**
      * The asnyc action to mock.
      */
-    private AsyncAction asyncActionMock = context.mock(AsyncAction.class);
+    private final AsyncAction asyncActionMock = context.mock(AsyncAction.class);
 
     /**
      * The AsyncSubmitterAsyncAction to mock.
      */
-    private TaskHandlerAsyncAction asyncSubmitterAsyncActionMock = context.mock(TaskHandlerAsyncAction.class);
+    private final TaskHandlerAsyncAction asyncSubmitterAsyncActionMock = context.mock(TaskHandlerAsyncAction.class);
 
     /**
-     * The user aciton request mock object.
+     * The user action request mock object.
      */
-    private UserActionRequest userActionRequestMock = context.mock(UserActionRequest.class);
+    private final UserActionRequest userActionRequestMock = context.mock(UserActionRequest.class);
 
     /**
      * Mocked instance of the AsyncActionController for this test suite.
      */
-    private AsyncActionController asyncActionControllerMock = context.mock(AsyncActionController.class);
+    private final AsyncActionController asyncActionControllerMock = context.mock(AsyncActionController.class);
 
     /**
      * SUT.
      */
-    private TaskActionExecutor sut = null;
+    private TaskHandler sut = null;
 
     /**
-	 * @return the system under test
-	 */
-	public TaskActionExecutor getSut()
-	{
-		return sut;
-	}
-
-	/**
-	 * @param inSut  the system under test
-	 */
-	public void setSut(final TaskActionExecutor inSut)
-	{
-		this.sut = inSut;
-	}
-
-	/**
      * Setup.
      */
     @Before
     public void setup()
     {
-        setSut(new TaskActionExecutor());
-        getSut().setApplicationContext(applicationContextMock);
-
-        final String asyncControllerKey = "asyncActionController";
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(applicationContextMock).getBean(asyncControllerKey);
-                will(returnValue(asyncActionControllerMock));
-            }
-        });
+        sut = new ExecutingTaskHandler(asyncActionControllerMock);
+        ((ExecutingTaskHandler) sut).setBeanFactory(beanFactory);
     }
 
     /**
      * Test submit when the user request is pointing to an AsyncAction.
-     * @throws Exception  not expected
+     *
+     * @throws Exception
+     *             not expected
      */
     @Test
     public void testSubmitForAsyncAction() throws Exception
@@ -134,7 +104,7 @@ public class TaskActionExecutorTest
                 oneOf(userActionRequestMock).getActionKey();
                 will(returnValue(actionKey));
 
-                oneOf(applicationContextMock).getBean(actionKey);
+                oneOf(beanFactory).getBean(actionKey);
                 will(returnValue(asyncActionMock));
 
                 oneOf(userActionRequestMock).getParams();
@@ -148,14 +118,16 @@ public class TaskActionExecutorTest
             }
         });
 
-        getSut().execute(userActionRequestMock);
+        sut.handleTask(userActionRequestMock);
 
         context.assertIsSatisfied();
     }
 
     /**
      * Test submit when the user request is pointing to an AsyncSubmitterAsyncAction.
-     * @throws Exception  not expected
+     *
+     * @throws Exception
+     *             not expected
      */
     @Test
     public void testSubmitForAsyncSubmitterAsyncAction() throws Exception
@@ -170,7 +142,7 @@ public class TaskActionExecutorTest
                 oneOf(userActionRequestMock).getActionKey();
                 will(returnValue(actionKey));
 
-                oneOf(applicationContextMock).getBean(actionKey);
+                oneOf(beanFactory).getBean(actionKey);
                 will(returnValue(asyncSubmitterAsyncActionMock));
 
                 oneOf(userActionRequestMock).getParams();
@@ -184,9 +156,8 @@ public class TaskActionExecutorTest
             }
         });
 
-        getSut().execute(userActionRequestMock);
+        sut.handleTask(userActionRequestMock);
 
         context.assertIsSatisfied();
     }
-
 }

@@ -973,6 +973,17 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
+     * Get the unique key for this stream.
+     * 
+     * @return the person's account id
+     */
+    @Override
+    public String getStreamUniqueKey()
+    {
+        return accountId;
+    }
+
+    /**
      * Get the last date the person accepted the terms of service.
      * 
      * @return the last date the person accepted the terms of service
@@ -1341,5 +1352,4 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         streamScopeId = inStreamScopeId;
     }
-
 }

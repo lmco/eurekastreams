@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,91 +31,71 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
- * 
  * The Action Executor class. This class will look up in Spring for the action key. Once the action is found, it will
  * confirm the action requires User Details and the User Details are present. Next, the params will be validated, the
  * user will be authorized, and the action executed.
  */
 public class ActionExecutor
 {
-    /**
-     * Logger.
-     */
+    /** Logger. */
     private final Log log = LogFactory.getLog(ActionExecutor.class);
 
-    /**
-     * The context from which this service can load action beans.
-     */
-    private ApplicationContext springContext = null;
+    /** The context from which this service can load action beans. */
+    private final BeanFactory beanFactory;
 
-    /**
-     * The action object.
-     */
-    @SuppressWarnings("unchecked")
-    private final ActionRequest actionRequest;
+    /** Instance of {@link ActionController} used within this executor. */
+    private final ActionController serviceActionController;
 
-    /**
-     * The user details for this action request.
-     */
-    private final UserDetails userDetails;
+    /** Principal populator. */
+    private final PrincipalPopulator principalPopulator;
 
-    /**
-     * Persistent bean manager for serialization.
-     */
+    /** Persistent bean manager for serialization. */
     private final PersistentBeanManager persistentBeanManager;
 
     /**
-     * Principal Populator.
+     * Constructor.
+     *
+     * @param inBeanFactory
+     *            The context from which this service can load action beans.
+     * @param inServiceActionController
+     *            Instance of {@link ActionController} used within this executor.
+     * @param inPrincipalPopulator
+     *            Principal populator.
+     * @param inPersistentBeanManager
+     *            Persistent bean manager for serialization.
      */
-    private final PrincipalPopulator principalPopulator;
-
-    /**
-     * Instance of {@link ActionController} used within this executor.
-     */
-    private final ActionController serviceActionController;
-
-    /**
-     * Constructor for the executor class.
-     * 
-     * @param inSpringContext
-     *            the Spring application context.
-     * @param inUserDetails
-     *            the user details for this action request.
-     * @param inActionRequest
-     *            the action to execute.
-     */
-    @SuppressWarnings("unchecked")
-    public ActionExecutor(final ApplicationContext inSpringContext, final UserDetails inUserDetails,
-            final ActionRequest inActionRequest)
+    public ActionExecutor(final BeanFactory inBeanFactory, final ActionController inServiceActionController,
+            final PrincipalPopulator inPrincipalPopulator, final PersistentBeanManager inPersistentBeanManager)
     {
-        userDetails = inUserDetails;
-        actionRequest = inActionRequest;
-        springContext = inSpringContext;
-
-        persistentBeanManager = (PersistentBeanManager) springContext.getBean("persistentBeanManager");
-        principalPopulator = (PrincipalPopulator) springContext.getBean("principalPopulator");
-        serviceActionController = (ActionController) springContext.getBean("serviceActionController");
+        beanFactory = inBeanFactory;
+        serviceActionController = inServiceActionController;
+        principalPopulator = inPrincipalPopulator;
+        persistentBeanManager = inPersistentBeanManager;
     }
 
     /**
      * Execute method for the class.
-     * 
+     *
+     * @param actionRequest
+     *            the action to execute.
+     * @param userDetails
+     *            the user details for this action request.
      * @return The result as a serializable object.
      */
     @SuppressWarnings("unchecked")
-    public ActionRequest execute()
+    public ActionRequest execute(final ActionRequest actionRequest, final UserDetails userDetails)
     {
         log.debug("Starting Action: " + actionRequest.getActionKey());
 
-        String userName = getUserName();
+        String userName = getUserName(userDetails);
 
         try
         {
-            Object springBean = springContext.getBean(actionRequest.getActionKey());
+            Object springBean = beanFactory.getBean(actionRequest.getActionKey());
 
             // ////////////////////////////////////////////////
             // actually perform the action
@@ -133,8 +113,8 @@ public class ActionExecutor
                 // grab serializable parameter object.
                 Serializable actionParameter = actionRequest.getParam();
 
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(userDetails.getUsername(), actionRequest.getSessionId()));
+                ServiceActionContext actionContext = new ServiceActionContext(actionParameter,
+                        principalPopulator.getPrincipal(userDetails.getUsername(), actionRequest.getSessionId()));
                 actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -145,8 +125,8 @@ public class ActionExecutor
                 // grab serializable parameter object.
                 Serializable actionParameter = actionRequest.getParam();
 
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(userDetails.getUsername(), actionRequest.getSessionId()));
+                ServiceActionContext actionContext = new ServiceActionContext(actionParameter,
+                        principalPopulator.getPrincipal(userDetails.getUsername(), actionRequest.getSessionId()));
                 actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -224,45 +204,21 @@ public class ActionExecutor
 
     /**
      * Helper for getting userName.
-     * 
+     *
+     * @param userDetails
+     *            User details.
      * @return user name.
      */
-    private String getUserName()
+    private String getUserName(final UserDetails userDetails)
     {
-        String userName = "";
         try
         {
-            userName = userDetails.getUsername();
+            return userDetails.getUsername();
         }
         catch (Exception e)
         {
-            // necessary in case getUserName() throws exception
-            userName = "unavailable";
+            return "unavailable";
         }
-        return userName;
     }
 
-    /**
-     * @return Logger.
-     */
-    protected Log getLog()
-    {
-        return log;
-    }
-
-    /**
-     * @return Spring context.
-     */
-    protected ApplicationContext getSpringContext()
-    {
-        return springContext;
-    }
-
-    /**
-     * @return Requesting user.
-     */
-    protected UserDetails getUserDetails()
-    {
-        return userDetails;
-    }
 }

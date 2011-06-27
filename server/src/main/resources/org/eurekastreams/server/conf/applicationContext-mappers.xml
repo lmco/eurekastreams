@@ -570,6 +570,23 @@
         <constructor-arg value="false" />
     </bean>
 
+	<!-- Mappers to get person's account id by id. -->
+	<bean id="getPersonAccountIdByIdMapper" class="org.eurekastreams.server.persistence.mappers.transform.UniqueIdFromIdMapper">
+		<constructor-arg ref="getPersonByIdMapper" />
+	</bean>
+	<bean id="getPersonAccountIdByIdMapperAllowNull" class="org.eurekastreams.server.persistence.mappers.transform.UniqueIdFromIdMapper">
+		<constructor-arg ref="getPersonByIdMapperAllowNullResult" />
+	</bean>
+	
+	<!-- Mappers to get group's unique id by id. -->
+	<bean id="getGroupUniqueIdByIdMapper" class="org.eurekastreams.server.persistence.mappers.transform.UniqueIdFromIdMapper">
+		<constructor-arg ref="getGroupByIdMapper" />
+	</bean>
+	<bean id="getGroupUniqueIdByIdMapperAllowNull" class="org.eurekastreams.server.persistence.mappers.transform.UniqueIdFromIdMapper">
+		<constructor-arg ref="getGroupByIdMapperAllowNullResult" />
+	</bean>
+
+
 	<bean id="findSystemSettings"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>

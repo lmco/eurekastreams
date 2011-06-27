@@ -151,7 +151,7 @@
         <build.lucene.sourcedir>/tmp</build.lucene.sourcedir>
         <build.lucene.slave.refresh>60</build.lucene.slave.refresh>
         <build.jms.servername>localhost</build.jms.servername>
-        <build.jms.taskhandler>inlineTaskHandler</build.jms.taskhandler>
+        <build.jms.taskhandler>executingTaskHandler</build.jms.taskhandler>
         <build.queue.activity.name>queue/eurekaActivity</build.queue.activity.name>
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>

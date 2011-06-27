@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,48 +21,56 @@ import org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction;
 import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.server.async.AsynchronousActionController;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 
 /**
- * This will, while implementing {@link TaskHandler}, executes the given task in a new thread.
+ * Executes the given task on the current thread.
  */
-public class TaskActionExecutor implements TaskExecutor, ApplicationContextAware
+public class ExecutingTaskHandler implements TaskHandler, BeanFactoryAware
 {
-    /**
-     * The logger.
-     */
-    private Logger logger = Logger.getLogger(TaskActionExecutor.class);
+    /** The logger. */
+    private final Logger logger = Logger.getLogger(ExecutingTaskHandler.class);
+
+    /** Spring bean factory from which to retrieve action beans. */
+    private BeanFactory beanFactory;
+
+    /** Action controller to use to execute the actions. */
+    private final AsynchronousActionController actionController;
 
     /**
-     * The application context auto-set by Spring when defined as a bean.
+     * Constructor.
+     *
+     * @param inActionController
+     *            Action controller used to execute the actions.
      */
-    private static ApplicationContext ctx;
-
-    /**
-     * Setter called by Spring because of implementing ApplicationContextAware.
-     * 
-     * @param inApplicationContext
-     *            the application context
-     */
-    public void setApplicationContext(final ApplicationContext inApplicationContext)
+    public ExecutingTaskHandler(final AsynchronousActionController inActionController)
     {
-        ctx = inApplicationContext;
+        actionController = inActionController;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBeanFactory(final BeanFactory inBeanFactory) throws BeansException
+    {
+        beanFactory = inBeanFactory;
     }
 
     /**
      * Handle the action, this means executing it real time on the same thread.
-     * 
+     *
      * @param inUserActionRequest
      *            the users action request
+     * @throws Exception
+     *             Possibly.
      */
     @Override
-    public void execute(final UserActionRequest inUserActionRequest)
+    public void handleTask(final UserActionRequest inUserActionRequest) throws Exception
     {
-        AsynchronousActionController actionController = (AsynchronousActionController) ctx
-                .getBean("asyncActionController");
-
-        Object springBean = ctx.getBean(inUserActionRequest.getActionKey());
+        Object springBean = beanFactory.getBean(inUserActionRequest.getActionKey());
 
         logger.debug("RealTimeExecuter about to performAction...");
 
@@ -87,10 +95,9 @@ public class TaskActionExecutor implements TaskExecutor, ApplicationContextAware
                 throw new IllegalArgumentException("Supplied bean is not an executable async action.");
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            logger.error("exception invoking action " + inUserActionRequest.getActionKey() + "Exception is " + e);
+            logger.error("Exception invoking action " + inUserActionRequest.getActionKey(), ex);
         }
     }
-
 }

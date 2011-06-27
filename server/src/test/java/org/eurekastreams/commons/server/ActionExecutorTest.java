@@ -16,7 +16,6 @@
 package org.eurekastreams.commons.server;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +42,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
@@ -69,7 +68,7 @@ public class ActionExecutorTest
     /**
      * Mocked Application Spring context.
      */
-    ApplicationContext springContextMock = mockContext.mock(ApplicationContext.class);
+    private final BeanFactory springContextMock = mockContext.mock(BeanFactory.class);
 
     /**
      * Mocked UserDetails that is a valid user details object.
@@ -126,12 +125,13 @@ public class ActionExecutorTest
     private final Serializable genericClonedResult = mockContext.mock(Serializable.class, "genericClonedResult");
 
     /**
-     * .
+     * Setup before each test.
      */
-    @SuppressWarnings("unchecked")
     @Before
-    public final void setup()
+    public void setUp()
     {
+        sut = new ActionExecutor(springContextMock, serviceActionController, principalPopulator, persistentBeanManager);
+
         params = new String[] { "echo me" };
 
         // set up requests
@@ -141,20 +141,10 @@ public class ActionExecutorTest
         mockContext.checking(new Expectations()
         {
             {
-                allowing(springContextMock).getBean("persistentBeanManager");
-                will(returnValue(persistentBeanManager));
-
-                allowing(springContextMock).getBean("principalPopulator");
-                will(returnValue(principalPopulator));
-
-                allowing(springContextMock).getBean("serviceActionController");
-                will(returnValue(serviceActionController));
-
                 allowing(validUserDetailsMock).getUsername();
                 will(returnValue(USERNAME));
             }
         });
-
     }
 
     /**
@@ -177,28 +167,6 @@ public class ActionExecutorTest
                 will(returnValue(genericClonedResult));
             }
         });
-    }
-
-    /**
-     * Tests the getters.
-     */
-    @Test
-    public void testGetters()
-    {
-        mockContext.checking(new Expectations()
-        {
-            {
-                ignoring(springContextMock);
-            }
-        });
-
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
-
-        assertNotNull("Log should not be null.", sut.getLog());
-        assertSame(springContextMock, sut.getSpringContext());
-        assertSame(validUserDetailsMock, sut.getUserDetails());
-
-        mockContext.assertIsSatisfied();
     }
 
     /**
@@ -226,10 +194,8 @@ public class ActionExecutorTest
 
         Assert.assertEquals(request.getParam(), "anotherTestParam");
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, request);
-
         // Execute the request.
-        sut.execute();
+        sut.execute(request, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
     }
@@ -259,10 +225,8 @@ public class ActionExecutorTest
 
         Assert.assertEquals(request.getParam(), "anotherTestParam");
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, request);
-
         // Execute the request.
-        sut.execute();
+        sut.execute(request, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
     }
@@ -282,14 +246,11 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
-
         // Execute the request.
-        ActionRequest results = sut.execute();
-
-        Assert.assertTrue(results.getResponse() instanceof GeneralException);
+        ActionRequest results = sut.execute(defaultRequest, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
+        Assert.assertTrue(results.getResponse() instanceof GeneralException);
     }
 
     /* ---- Test with a null parameter ---- */
@@ -310,9 +271,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
-
-        ActionRequest results = sut.execute();
+        ActionRequest results = sut.execute(nullParmRequest, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         assertSame(genericClonedResult, results.getResponse());
@@ -339,9 +298,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
-
-        ActionRequest results = sut.execute();
+        ActionRequest results = sut.execute(nullParmRequest, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         assertTrue(results.getResponse() instanceof GeneralException);
@@ -364,9 +321,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
-
-        ActionRequest results = sut.execute();
+        ActionRequest results = sut.execute(nullParmRequest, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         assertSame(genericClonedResult, results.getResponse());
@@ -388,9 +343,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
-
-        ActionRequest results = sut.execute();
+        ActionRequest results = sut.execute(nullParmRequest, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         assertTrue(results.getResponse() instanceof GeneralException);
@@ -417,10 +370,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, new ActionRequestImpl(ACTION_KEY,
-                requestParm));
-
-        ActionRequest results = sut.execute();
+        ActionRequest results = sut.execute(new ActionRequestImpl(ACTION_KEY, requestParm), validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         assertSame(genericClonedResult, results.getResponse());
@@ -451,10 +401,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, new ActionRequestImpl(ACTION_KEY,
-                requestParm));
-
-        ActionRequest results = sut.execute();
+        ActionRequest results = sut.execute(new ActionRequestImpl(ACTION_KEY, requestParm), validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         assertTrue(results.getResponse() instanceof GeneralException);
@@ -480,8 +427,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
-        ActionRequest result = sut.execute();
+        ActionRequest result = sut.execute(defaultRequest, validUserDetailsMock);
 
         mockContext.assertIsSatisfied();
         Serializable response = result.getResponse();

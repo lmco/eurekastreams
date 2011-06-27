@@ -21,6 +21,7 @@ import org.eurekastreams.server.action.request.notification.ActivityNotification
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone posting to a stream to appropriate notifications.
@@ -44,6 +45,7 @@ public class PostPersonStreamTranslator implements NotificationTranslator<Activi
         batch.setProperty("stream", PersonModelView.class, inRequest.getTargetEntityId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
         batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "stream");
+        batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForActivity(inRequest.getActivityId()));
         return batch;
     }
 }

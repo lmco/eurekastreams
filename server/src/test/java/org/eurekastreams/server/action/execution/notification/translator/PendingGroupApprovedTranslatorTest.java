@@ -73,6 +73,8 @@ public class PendingGroupApprovedTranslatorTest
                 will(returnValue(group));
                 allowing(groupCoordinatorMapper).execute(groupId);
                 will(returnValue(Arrays.asList(4L, 2L)));
+                allowing(group).getUniqueId();
+                will(returnValue("somegroup"));
             }
         });
 
@@ -87,8 +89,9 @@ public class PendingGroupApprovedTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(2, props.size());
+        assertEquals(3, props.size());
         PropertyMapTestHelper.assertValue(props, "group", group);
         PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/group/somegroup");
     }
 }

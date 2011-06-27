@@ -104,11 +104,13 @@ public class FlagTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
+        assertEquals(6, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
         PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
+        PropertyMapTestHelper.assertSetNonNull(props, NotificationPropertyKeys.URL);
     }
 
     /**
@@ -144,10 +146,12 @@ public class FlagTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
+        assertEquals(6, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
         PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
+        PropertyMapTestHelper.assertSetNonNull(props, NotificationPropertyKeys.URL);
     }
 }

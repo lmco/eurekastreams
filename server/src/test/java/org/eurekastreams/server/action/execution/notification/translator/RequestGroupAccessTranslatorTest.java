@@ -113,6 +113,7 @@ public class RequestGroupAccessTranslatorTest
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertPlaceholder(props, "group", DomainGroupModelView.class, GROUP_ID);
         PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
+        // TODO PropertyMapTestHelper.assertSetNonNull(props, NotificationPropertyKeys.URL);
     }
 
 }

@@ -37,7 +37,7 @@ public final class PropertyMapTestHelper
 
     /**
      * Asserts that a placeholder property exists as described.
-     * 
+     *
      * @param props
      *            Property map to check.
      * @param key
@@ -92,4 +92,18 @@ public final class PropertyMapTestHelper
         Assert.assertSame(prop1, prop2);
     }
 
+    /**
+     * Asserts that an actual value property exists and is set to a non-null value.
+     * 
+     * @param props
+     *            Property map to check.
+     * @param key
+     *            Key in map.
+     */
+    public static void assertSetNonNull(final PropertyMap<Object> props, final String key)
+    {
+        Property<Object> prop = props.get(key);
+        assertNotNull(prop);
+        assertNotNull(prop.getValue());
+    }
 }

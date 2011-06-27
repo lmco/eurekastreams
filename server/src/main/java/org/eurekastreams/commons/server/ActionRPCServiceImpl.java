@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(ActionRPCServiceImpl.class);
+    private final Log log = LogFactory.getLog(ActionRPCServiceImpl.class);
 
     /**
      * The context from which this service can load action beans.
@@ -52,13 +52,13 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     private ApplicationContext springContext = null;
 
     /**
-     * Local instance of the {@link ActionExecutorFactory}.
+     * Local instance of the {@link ActionExecutor}.
      */
-    private ActionExecutorFactory actionExecutorFactory;
+    private ActionExecutor actionExecutor;
 
     /**
      * As a servlet, this class' init() method is called automatically. This is how we get context.
-     * 
+     *
      * @param config
      *            the configuration describing the run-time environment.
      */
@@ -78,7 +78,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
 
         springContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
-        actionExecutorFactory = (ActionExecutorFactory) springContext.getBean("actionExecutorFactory");
+        actionExecutor = (ActionExecutor) springContext.getBean("actionExecutor");
     }
 
     /**
@@ -90,28 +90,13 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     }
 
     /**
-     * Executes the request. This method should contain no logic and act solely as an interface to creating and invoking
-     * the action executor.
-     * 
-     * @param user
-     *            User making the request.
-     * @param request
-     *            The request.
-     * @return Response to return to the client.
-     */
-    @SuppressWarnings("unchecked")
-    protected ActionRequest executeAction(final UserDetails user, final ActionRequest request)
-    {
-        return actionExecutorFactory.getActionExecutor(springContext, user, request).execute();
-    }
-
-    /**
      * Execute a single ActionRequest.
-     * 
+     *
      * @param request
      *            the request specification to execute
      * @return the action response encapsulated with the request
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final ActionRequest execute(final ActionRequest request)
     {
@@ -122,11 +107,12 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     /**
      * Execute multiple ActionRequests. We don't specify a type for ActionRequst because the types will likely be
      * different for each request.
-     * 
+     *
      * @param requests
      *            the request specifications to execute
      * @return the action response encapsulated with the request
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final ActionRequest[] execute(final ActionRequest[] requests)
     {
@@ -143,7 +129,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
 
     /**
      * Execute a single ActionRequest.
-     * 
+     *
      * @param request
      *            the request specification to execute
      * @param user
@@ -167,13 +153,13 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
         }
         else
         {
-            return executeAction(user, request);
+            return actionExecutor.execute(request, user);
         }
     }
 
     /**
      * Try to get the User information from the session.
-     * 
+     *
      * @return represents the user currently in session
      */
     private UserDetails getUserDetails()
@@ -202,7 +188,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     /**
      * Overridden checkPermutationStrongName - disabled to avoid failure due to firefox bug that prevents GWT XSRF
      * request headers.
-     * 
+     *
      * @throws SecurityException
      *             will never be thrown.
      */

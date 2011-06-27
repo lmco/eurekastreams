@@ -10,7 +10,7 @@
 
     <!-- Eureka Activity Queue Consumer -->
     <bean id="asyncActionProcessorMDB" class="org.eurekastreams.commons.messaging.AsyncActionProcessorMDB">
-        <property name="taskExecutor" ref="taskActionExecutor" />
+    	<constructor-arg ref="executingTaskHandler" />
     </bean>
 
     <!-- Eureka Lucene Search Master Indexer -->

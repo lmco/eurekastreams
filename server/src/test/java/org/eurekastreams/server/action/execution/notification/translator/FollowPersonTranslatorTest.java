@@ -18,12 +18,18 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
+
 
 /**
  * Tests the follower notification translator.
@@ -36,13 +42,32 @@ public class FollowPersonTranslatorTest
     /** Test data. */
     private static final long FOLLOWED_ID = 2222L;
 
+    /** Used for mocking objects. */
+    private final JUnit4Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /** DAO to get the person's account id. */
+    private final DomainMapper<Long, String> idToUniqueIdDAO = context.mock(DomainMapper.class);
+
     /**
      * Test creating the notification for the event of following a person.
      */
     @Test
     public void testTranslateFollowPerson()
     {
-        NotificationTranslator<TargetEntityNotificationsRequest> sut = new FollowPersonTranslator();
+        NotificationTranslator<TargetEntityNotificationsRequest> sut = new FollowPersonTranslator(idToUniqueIdDAO);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(idToUniqueIdDAO).execute(ACTOR_ID);
+                will(returnValue("somebody"));
+            }
+        });
 
         NotificationBatch results = sut.translate(new TargetEntityNotificationsRequest(null, ACTOR_ID, FOLLOWED_ID));
 
@@ -52,9 +77,10 @@ public class FollowPersonTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(3, props.size());
+        assertEquals(4, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertPlaceholder(props, "stream", PersonModelView.class, FOLLOWED_ID);
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/person/somebody");
     }
 }

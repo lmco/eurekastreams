@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +23,12 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
+import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -35,9 +40,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test fixture for GetSuggestedStreamsExecution.
+ * Test fixture for GetStreamDiscoverListsDTOExecution.
  */
-public class GetSuggestedStreamsExecutionTest
+public class GetStreamDiscoverListsDTOExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -62,10 +67,22 @@ public class GetSuggestedStreamsExecutionTest
             DomainMapper.class, "suggestedGroupMapper");
 
     /**
+     * Mapper to get the stream discovery lists that are the same for everyone.
+     */
+    private DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper = context.mock(
+            DomainMapper.class, "streamDiscoveryListsMapper");
+
+    /**
+     * Mapper to retrieve featured stream DTOs.
+     */
+    private DomainMapper<MapperRequest, List<FeaturedStreamDTO>> featuredStreamDTOMapper = context.mock(
+            DomainMapper.class, "featuredStreamDTOMapper");
+
+    /**
      * System under test.
      */
-    private GetSuggestedStreamsExecution sut = new GetSuggestedStreamsExecution(suggestedPersonMapper,
-            suggestedGroupMapper);
+    private GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
+            suggestedGroupMapper, streamDiscoveryListsMapper, featuredStreamDTOMapper);
 
     /**
      * Test execute.
@@ -80,6 +97,10 @@ public class GetSuggestedStreamsExecutionTest
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
         final Principal principal = context.mock(Principal.class);
+
+        final StreamDiscoverListsDTO result = new StreamDiscoverListsDTO();
+        final List<FeaturedStreamDTO> featured = new ArrayList<FeaturedStreamDTO>();
+        featured.add(new FeaturedStreamDTO(5L, "HI", 6L, ScopeType.PERSON, "key", 7L));
 
         people.add(new PersonModelView(1L, "a", "foo", "bar", 100L, new Date(), 1L));
         people.add(new PersonModelView(2L, "b", "foo", "bar", 900L, new Date(), 2L)); // 3
@@ -115,10 +136,20 @@ public class GetSuggestedStreamsExecutionTest
 
                 oneOf(suggestedGroupMapper).execute(with(IsEqualInternally.equalInternally(request)));
                 will(returnValue(groups));
+
+                oneOf(streamDiscoveryListsMapper).execute(null);
+                will(returnValue(result));
+
+                oneOf(featuredStreamDTOMapper).execute(null);
+                will(returnValue(featured));
             }
         });
 
-        List<StreamDTO> suggestions = (List<StreamDTO>) sut.execute(actionContext);
+        Assert.assertSame(result, sut.execute(actionContext));
+        Assert.assertEquals(1, result.getFeaturedStreams().size());
+        Assert.assertEquals(7, result.getFeaturedStreams().get(0).getEntityId());
+
+        List<StreamDTO> suggestions = result.getSuggestedStreams();
 
         Assert.assertEquals(10, suggestions.size());
 

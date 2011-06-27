@@ -43,11 +43,11 @@
 	<!--
 		can be of value: 
 			nullTaskHandler // does not execute the action, only logs 
-			inlineTaskHandler // executes the task inline (non-async)
+			executingTaskHandler // executes the task inline (non-async)
 			queueTaskHandler // submits the task to the Queue 
 		// must have the applicationContext-jms.xml file active
 	-->
-	<alias alias="taskHandler" name="inlineTaskHandler" />
+	<alias alias="taskHandler" name="executingTaskHandler" />
 	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@ package org.eurekastreams.commons.messaging;
 
 import java.io.Serializable;
 
+import javax.jms.Message;
+import javax.jms.ObjectMessage;
+
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.commons.task.TaskExecutor;
+import org.eurekastreams.commons.task.TaskHandler;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -26,88 +29,77 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-
-
 /**
- * Test for MessageConsumer class.
- *
+ * Test for message consumer.
  */
-public class TaskExecutorTest 
+public class AsyncActionProcessorMDBTest
 {
     /**
-     * Context for building mock objects. 
+     * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
-    }; 
-    /**
-     * Mock objects.
-     */
-    
-    /**
-     * The message mock object.
-     */
-    private Message messageMock = context.mock(ObjectMessage.class);
-        
-    /**
-     * The real time executer mock.
-     */
-    private TaskExecutor taskExecuterMock = context.mock(TaskExecutor.class);
-    
+    };
+
+    /** The message mock object. */
+    private final Message messageMock = context.mock(ObjectMessage.class);
+
+    /** Task handler mock. */
+    /** Fixture: taskHandler. */
+    private final TaskHandler taskHandler = context.mock(TaskHandler.class);
+
     /**
      * The user aciton request mock object.
      */
-    private UserActionRequest userActionRequestMock = context.mock(UserActionRequest.class);
-    
+    private final UserActionRequest userActionRequestMock = context.mock(UserActionRequest.class);
+
     /**
      * SUT.
      */
     private AsyncActionProcessorMDB sut = null;
-    
+
     /**
      * Setup.
      */
     @Before
     public void setup()
     {
-        sut = new AsyncActionProcessorMDB();
-        sut.setTaskExecutor(taskExecuterMock);
+        sut = new AsyncActionProcessorMDB(taskHandler);
     }
-    
+
     /**
      * Test onMessage(message).
-     * @throws Exception  not expected
+     *
+     * @throws Exception
+     *             not expected
      */
-	@Test
+    @Test
     public void testOnMessage() throws Exception
     {
-    	final Serializable param1 = null;
-    	final Serializable[] params = new Serializable[1];
-    	params[0] = param1;
-    	
-//    	final UserDetails userDetails = null;
-    	final String actionKey = "TestAction";
-    	
+        final Serializable param1 = null;
+        final Serializable[] params = new Serializable[1];
+        params[0] = param1;
+
+        // final UserDetails userDetails = null;
+        final String actionKey = "TestAction";
+
         context.checking(new Expectations()
         {
             {
-            	oneOf((ObjectMessage) messageMock).getObject();
-            	will(returnValue(userActionRequestMock));
-            	
-            	oneOf(userActionRequestMock).getActionKey();
-            	will(returnValue(actionKey));
-            	            	
-            	oneOf(taskExecuterMock).execute(userActionRequestMock);
+                oneOf((ObjectMessage) messageMock).getObject();
+                will(returnValue(userActionRequestMock));
+
+                oneOf(userActionRequestMock).getActionKey();
+                will(returnValue(actionKey));
+
+                oneOf(taskHandler).handleTask(userActionRequestMock);
             }
         });
-        
+
         sut.onMessage(messageMock);
         context.assertIsSatisfied();
-    }    
-    
+    }
 }

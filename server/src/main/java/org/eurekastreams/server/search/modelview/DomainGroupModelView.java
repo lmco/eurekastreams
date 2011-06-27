@@ -972,4 +972,27 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         streamScopeId = inStreamScopeId;
     }
 
+    /**
+     * Get the unique key for this stream.
+     * 
+     * @return the short name
+     */
+    @Override
+    public String getStreamUniqueKey()
+    {
+        return shortName;
+    }
+
+    /**
+     * Set the display name.
+     * 
+     * @param inDisplayName
+     *            the display name to set
+     */
+    @Override
+    public void setDisplayName(final String inDisplayName)
+    {
+        setName(inDisplayName);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,50 +21,46 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Logger;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.commons.task.TaskExecutor;
+import org.eurekastreams.commons.task.TaskHandler;
 
 /**
  * This class takes a message off the queue, gets the request out of the message, gets the action, and calls the action,
  * passing the request to it.
- * 
  */
 public class AsyncActionProcessorMDB implements MessageListener
 {
-    /**
-     * The logger.
-     */
-    private Logger log = Logger.getLogger(AsyncActionProcessorMDB.class);
-    
-    /**
-     * The real time executer to run the action.
-     */
-    private TaskExecutor taskExecutor;
+    /** The logger. */
+    private final Logger log = Logger.getLogger(AsyncActionProcessorMDB.class);
+
+    /** The task handler which will execute the action. */
+    private final TaskHandler taskHandler;
 
     /**
-     * Setting for task executer.
-     * 
-     * @param inTaskExecuter
-     * 			the task executer to use.
+     * Constructor.
+     *
+     * @param inTaskHandler
+     *            The task handler which will execute the action.
      */
-    public void setTaskExecutor(final TaskExecutor inTaskExecuter)
+    public AsyncActionProcessorMDB(final TaskHandler inTaskHandler)
     {
-    	this.taskExecutor = inTaskExecuter;
+        taskHandler = inTaskHandler;
     }
-    
+
     /**
      * Receives a request off the queue and hands it to an action.
-     * 
+     *
      * @param message
      *            the message containing the request
      */
-	public void onMessage(final Message message)
+    @Override
+    public void onMessage(final Message message)
     {
         try
         {
             if (message instanceof ObjectMessage)
             {
                 log.debug("message received is of ObjectMessage type.");
-                
+
                 // get the message containing the request off the queue
                 ObjectMessage objectMessage = (ObjectMessage) message;
 
@@ -72,9 +68,9 @@ public class AsyncActionProcessorMDB implements MessageListener
                 UserActionRequest userActionRequest = (UserActionRequest) objectMessage.getObject();
 
                 log.debug("found action " + userActionRequest.getActionKey());
-                
+
                 // run the action.
-                taskExecutor.execute(userActionRequest);
+                taskHandler.handleTask(userActionRequest);
             }
             else
             {

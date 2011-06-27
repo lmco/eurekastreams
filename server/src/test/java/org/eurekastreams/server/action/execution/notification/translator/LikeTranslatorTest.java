@@ -130,11 +130,12 @@ public class LikeTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(4, props.size());
+        assertEquals(5, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertValue(props, "activity", activity);
         PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "stream");
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/" + ACTIVITY_ID);
     }
 
     /**
@@ -209,10 +210,11 @@ public class LikeTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(4, props.size());
+        assertEquals(5, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, 1L);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertValue(props, "activity", activity);
         PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "stream");
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/" + ACTIVITY_ID);
     }
 }

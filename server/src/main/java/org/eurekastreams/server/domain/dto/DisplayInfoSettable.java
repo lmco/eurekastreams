@@ -15,39 +15,43 @@
  */
 package org.eurekastreams.server.domain.dto;
 
-import java.util.Date;
+import java.io.Serializable;
 
-import org.eurekastreams.server.domain.Followable;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.FollowerStatusable;
 
 /**
- * Interface for StreamDTO implementations.
- * 
+ * Interface for an entity that can have its display info updated.
  */
-public interface StreamDTO extends FollowerStatusable, Followable, DisplayInfoSettable
+public interface DisplayInfoSettable extends Serializable, FollowerStatusable
 {
     /**
-     * @return stream entity id.
+     * Get the stream's unique key.
+     * 
+     * @return the stream's unique key
      */
-    long getStreamId();
+    String getStreamUniqueKey();
 
     /**
-     * @return Title.
+     * Set the avatar id.
+     * 
+     * @param inAvatarId
+     *            the avatard id to set
      */
-    String getTitle();
+    void setAvatarId(String inAvatarId);
 
     /**
-     * @return Avatar id.
+     * Set the display name.
+     * 
+     * @param inDisplayName
+     *            the display name to set
      */
-    String getAvatarId();
+    void setDisplayName(String inDisplayName);
 
     /**
-     * @return the date added.
+     * Get the entity type.
+     * 
+     * @return the entity type
      */
-    Date getDateAdded();
-
-    /**
-     * @return the stream scope id.
-     */
-    Long getStreamScopeId();
+    EntityType getEntityType();
 }
