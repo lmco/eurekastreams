@@ -69,17 +69,13 @@ public enum Page implements Serializable
      */
     GROUP_SETTINGS("groupsettings"),
     /**
-     * Organization profile.
+     * Discover.
      */
-    ORGANIZATIONS("organizations"),
+    DISCOVER("discover"),
     /**
      * New group page.
      */
     NEW_GROUP("newgroup"),
-    /**
-     * Help page.
-     */
-    HELP("help"),
     /**
      * metrics page.
      */

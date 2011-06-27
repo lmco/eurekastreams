@@ -84,6 +84,11 @@ public class PersonTest
     private final Date lastAcceptedTos = new Date();
 
     /**
+     * Bookmarks.
+     */
+    private List<StreamScope> bookmarks;
+
+    /**
      *
      */
     @Before
@@ -100,6 +105,7 @@ public class PersonTest
         sut.setEmail("homer@gmail.com");
         sut.setLocation("90210");
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
+        sut.setBookmarks(bookmarks);
         message = null;
     }
 
@@ -143,6 +149,7 @@ public class PersonTest
         assertEquals(aDate, sut.getDateAdded());
         assertEquals("Doe", sut.getLastName());
         assertEquals("John", sut.getPreferredName());
+        assertEquals(bookmarks, sut.getBookmarks());
         assertEquals(EntityType.PERSON, sut.getEntityType());
     }
 
@@ -176,6 +183,7 @@ public class PersonTest
         assertEquals(aDate, mv.getDateAdded());
         assertEquals(EntityType.PERSON, sut.getEntityType());
         assertEquals(7L, sut.getEntityId());
+        assertEquals(bookmarks, sut.getBookmarks());
 
         assertEquals(1, mv.getOptOutVideos().size());
         assertEquals((Long) 5L, mv.getOptOutVideos().iterator().next());
@@ -272,6 +280,7 @@ public class PersonTest
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         sut.setStreamScope(streamScopeMock);
         sut.setSourceList(source);
+        sut.setBookmarks(bookmarks);
 
         assertTrue(0 == sut.getStreamViewHiddenLineIndex());
         assertTrue(0 == sut.getGroupStreamHiddenLineIndex());
@@ -301,6 +310,8 @@ public class PersonTest
         assertEquals(updatesCount, sut.getUpdatesCount());
         assertEquals(3, sut.getGroupCount());
         assertEquals(lastAcceptedTos, sut.getLastAcceptedTermsOfService());
+        assertEquals(bookmarks, sut.getBookmarks());
+
 
         // verify getProperties() method.
         HashMap<String, Serializable> props = sut.getProperties();

@@ -190,9 +190,6 @@ public interface CoreCss extends CssResource
 
     String center();
 
-    @ClassName("center-panel")
-    String centerPanel();
-
     @ClassName("characters-remaining")
     String charactersRemaining();
 
@@ -321,9 +318,6 @@ public interface CoreCss extends CssResource
 
     String content();
 
-    @ClassName("content-panel")
-    String contentPanel();
-
     @ClassName("content-warning")
     String contentWarning();
 
@@ -385,8 +379,8 @@ public interface CoreCss extends CssResource
     @ClassName("directory-header")
     String directoryHeader();
 
-    @ClassName("directory-header-button")
-    String directoryHeaderButton();
+    @ClassName("discover-header-button")
+    String discoverHeaderButton();
 
     @ClassName("directory-item")
     String directoryItem();
@@ -402,12 +396,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("display-none")
     String displayNone();
-
-    @ClassName("documentation-bullet")
-    String documentationBullet();
-
-    @ClassName("documentation-bullet-block")
-    String documentationBulletBlock();
 
     @ClassName("done-button")
     String doneButton();
@@ -531,9 +519,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("external-header-button")
     String externalHeaderButton();
-
-    @ClassName("faqs-help-image-box")
-    String faqsHelpImageBox();
 
     String filter();
 
@@ -834,15 +819,6 @@ public interface CoreCss extends CssResource
     @ClassName("gallery-upload-note")
     String galleryUploadNote();
 
-    @ClassName("getting-started-help-image-box")
-    String gettingStartedHelpImageBox();
-
-    @ClassName("go-to-eureka-streams-image-label")
-    String goToEurekaStreamsImageLabel();
-
-    @ClassName("go-to-support-group-stream-link")
-    String goToSupportGroupStreamLink();
-
     @ClassName("go-to-stream-link")
     String goToStreamLink();
 
@@ -943,34 +919,8 @@ public interface CoreCss extends CssResource
     @ClassName("header-container")
     String headerContainer();
 
-    @ClassName("header-description-component")
-    String headerDescriptionComponent();
-
     @ClassName("header-zone")
     String headerZone();
-
-    String help();
-
-    @ClassName("help-app-version")
-    String helpAppVersion();
-
-    @ClassName("help-documentation-panel")
-    String helpDocumentationPanel();
-
-    @ClassName("help-documentation-text-block")
-    String helpDocumentationTextBlock();
-
-    @ClassName("help-documentation-wrapper")
-    String helpDocumentationWrapper();
-
-    @ClassName("help-form-element")
-    String helpFormElement();
-
-    @ClassName("help-header-button")
-    String helpHeaderButton();
-
-    @ClassName("help-page-settings")
-    String helpPageSettings();
 
     String hidden();
 
@@ -1067,9 +1017,6 @@ public interface CoreCss extends CssResource
     @ClassName("input-wrapper")
     String inputWrapper();
 
-    @ClassName("instructional-videos-help-image-box")
-    String instructionalVideosHelpImageBox();
-
     String instructions();
 
     String label();
@@ -1117,9 +1064,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("left-column")
     String leftColumn();
-
-    @ClassName("left-panel")
-    String leftPanel();
 
     String light();
 
@@ -1307,9 +1251,6 @@ public interface CoreCss extends CssResource
     @ClassName("my-lists")
     String myLists();
 
-    @ClassName("my-profile-header-button")
-    String myProfileHeaderButton();
-
     @ClassName("nav-bar")
     String navBar();
 
@@ -1353,6 +1294,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("notif-count")
     String notifCount();
+
+    @ClassName("notif-count-container")
+    String notifCountContainer();
 
     @ClassName("notif-count-list-item")
     String notifCountListItem();
@@ -1782,9 +1726,6 @@ public interface CoreCss extends CssResource
     @ClassName("right-carousel-button")
     String rightCarouselButton();
 
-    @ClassName("right-panel")
-    String rightPanel();
-
     @ClassName("save-search")
     String saveSearch();
 
@@ -1996,24 +1937,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("sub-title")
     String subTitle();
-
-    @ClassName("support-email-label")
-    String supportEmailLabel();
-
-    @ClassName("support-group-description-panel")
-    String supportGroupDescriptionPanel();
-
-    @ClassName("support-group-logo-panel")
-    String supportGroupLogoPanel();
-
-    @ClassName("support-phone-number-label")
-    String supportPhoneNumberLabel();
-
-    @ClassName("support-stream-contact-panel")
-    String supportStreamContactPanel();
-
-    @ClassName("support-stream-help-panel")
-    String supportStreamHelpPanel();
 
     @ClassName("system-settings")
     String systemSettings();
@@ -2314,4 +2237,11 @@ public interface CoreCss extends CssResource
 
     @ClassName("membershipcriteria-headers")
     String membershipCriteriaHeader();
+
+    String searchResultsAutocompleteResults();
+
+    String globalSearchBoxNav();
+    
+    String globalSearchBoxActive();
+
 }

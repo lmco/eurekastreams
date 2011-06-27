@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.avatar;
 
-import java.util.HashMap;
-
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -64,10 +62,8 @@ public class AvatarLinkPanel extends Composite
             // this should never happen
             return;
         }
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("tab", "Stream");
-
-        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId, params));
+        
+        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId));
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
         main.add(link);

@@ -23,7 +23,6 @@ import org.eurekastreams.web.client.ui.ActionExecutorPanel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.NotificationSettingsPage;
 import org.eurekastreams.web.client.ui.pages.activity.ActivityContent;
-import org.eurekastreams.web.client.ui.pages.help.HelpContent;
 import org.eurekastreams.web.client.ui.pages.metrics.MetricsSummaryContent;
 import org.eurekastreams.web.client.ui.pages.oauth.OAuthAuthorizeContent;
 import org.eurekastreams.web.client.ui.pages.profile.settings.CreateGroupPanel;
@@ -180,19 +179,6 @@ public class PageFactory
                 public void onSuccess()
                 {
                     contentPanel.add(new CreateGroupPanel(view));
-                }
-            });
-            break;
-        case HELP:
-            GWT.runAsync(new RunAsyncCallback()
-            {
-                public void onFailure(final Throwable reason)
-                {
-                }
-
-                public void onSuccess()
-                {
-                    contentPanel.add(new HelpContent());
                 }
             });
             break;

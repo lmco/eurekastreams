@@ -5,7 +5,7 @@
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
     <name>Eureka Streams Parent</name>
     <url>http://www.eurekastreams.org</url>
     <mailingLists>
@@ -157,7 +157,7 @@
         <build.log.showsql>true</build.log.showsql>
         <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
-        <build.maven.sharedresources.version>1.1-SNAPSHOT</build.maven.sharedresources.version>
+        <build.maven.sharedresources.version>1.5-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
         <build.infosite.url>http://eurekastreams.org</build.infosite.url>
         <build.infosite.text>eurekastreams.org</build.infosite.text>
@@ -487,6 +487,7 @@
 								  <exclude>org/eurekastreams/server/service/restlets/FeedReaderWritableResource.class</exclude>
 		                          <exclude>org/eurekastreams/server/service/restlets/GadgetUserPrefsResource.class</exclude>
                                   <!--  Commons exclusions -->
+                                  <exclude>**/Session.class</exclude>
                                   <exclude>**/*Test.class</exclude>
                                   <exclude>**/*Fake.class</exclude>
                                   <exclude>**/*MockSupport.class</exclude>

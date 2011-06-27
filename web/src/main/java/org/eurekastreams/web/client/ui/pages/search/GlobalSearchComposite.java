@@ -17,15 +17,23 @@ package org.eurekastreams.web.client.ui.pages.search;
 
 import java.util.HashMap;
 
+import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotSearchResultsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.model.SearchResultsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,7 +41,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -47,6 +58,21 @@ public class GlobalSearchComposite extends FlowPanel
     private final LabeledTextBox searchTerm;
 
     /**
+     * Results panel.
+     */
+    private final FlowPanel resultsPanel = new FlowPanel();
+
+    /**
+     * Results panel container.
+     */
+    private final FocusPanel resultsPanelContainer = new FocusPanel();
+
+    /**
+     * Last length of search term.
+     */
+    private int termLength = -1;
+
+    /**
      * Constructor.
      * 
      * @param label
@@ -55,26 +81,19 @@ public class GlobalSearchComposite extends FlowPanel
     public GlobalSearchComposite(final String label)
     {
         searchTerm = new LabeledTextBox(label);
+        resultsPanelContainer.setVisible(false);
 
-        Label searchButton = new Label("Search");
-        searchButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListButton());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
         add(searchTerm);
-        add(searchButton);
+
+        resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsAutocompleteResults());
+
+        add(resultsPanelContainer);
+        resultsPanelContainer.add(resultsPanel);
 
         final EventBus eventBus = Session.getInstance().getEventBus();
 
-        searchButton.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                if (searchTerm.getText().length() > 0)
-                {
-                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
-                            generateParams(searchTerm.getText()), false)));
-                }
-            }
-        });
+        final GlobalSearchComposite thisClass = this;
 
         searchTerm.addKeyUpHandler(new KeyUpHandler()
         {
@@ -86,6 +105,88 @@ public class GlobalSearchComposite extends FlowPanel
                     eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
                             generateParams(searchTerm.getText()), false)));
                 }
+                else if (termLength != searchTerm.getText().length())
+                {
+                    termLength = searchTerm.getText().length();
+                    if (termLength == 0)
+                    {
+                        resultsPanelContainer.setVisible(false);
+                        resultsPanel.clear();
+                        thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
+                    }
+                    else
+                    {
+                        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(searchTerm
+                                .getText(), "", 0, 4);
+                        SearchResultsModel.getInstance().fetch(request, true);
+                        thisClass.addStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
+                    }
+                }
+            }
+        });
+
+        resultsPanelContainer.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                searchTerm.reset();
+                resultsPanelContainer.setVisible(false);
+                resultsPanel.clear();
+                thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
+            }
+        });
+
+        eventBus.addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
+        {
+            public void update(final GotSearchResultsResponseEvent event)
+            {
+                resultsPanel.clear();
+                resultsPanelContainer.setVisible(event.getResponse().getPagedSet().size() > 0);
+
+                for (ModelView result : event.getResponse().getPagedSet())
+                {
+                    final FocusPanel itemContainer = new FocusPanel();
+                    final FlowPanel itemPanel = new FlowPanel();
+                    final Anchor name = new Anchor();
+                    final Label desc = new Label();
+
+                    if (result instanceof PersonModelView)
+                    {
+                        PersonModelView person = (PersonModelView) result;
+                        itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
+                                .getEntityId(), person.getAvatarId(), Size.Small));
+                        name.setText(person.getDisplayName());
+                        name.setHref("#"
+                                + Session.getInstance().generateUrl(
+                                        new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));
+                        desc.setText(person.getDescription());
+                    }
+                    else if (result instanceof DomainGroupModelView)
+                    {
+                        DomainGroupModelView group = (DomainGroupModelView) result;
+                        itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group.getEntityId(),
+                                group.getAvatarId(), Size.Small));
+                        name.setText(group.getName());
+                        name.setHref("#"
+                                + Session.getInstance().generateUrl(
+                                        new CreateUrlRequest(Page.GROUPS, group.getShortName())));
+                        desc.setText(group.getDescription());
+                    }
+
+                    itemPanel.add(name);
+                    itemPanel.add(desc);
+
+                    itemContainer.addClickHandler(new ClickHandler()
+                    {
+                        public void onClick(final ClickEvent event)
+                        {
+                            Window.Location.assign(name.getHref());
+                        }
+                    });
+
+                    itemContainer.add(itemPanel);
+                    resultsPanel.add(itemContainer);
+                }
             }
         });
 
@@ -94,18 +195,6 @@ public class GlobalSearchComposite extends FlowPanel
             public void update(final SwitchedHistoryViewEvent event)
             {
                 if (event.getPage() != Page.SEARCH)
-                {
-                    searchTerm.reset();
-                }
-            }
-        });
-
-        // clear search box on successful search
-        eventBus.addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
-        {
-            public void update(final GotSearchResultsResponseEvent event)
-            {
-                if (event.getResponse().getTotal() > 0)
                 {
                     searchTerm.reset();
                 }

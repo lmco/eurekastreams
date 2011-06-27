@@ -20,6 +20,7 @@ import java.util.HashMap;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -35,7 +36,6 @@ import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
  * HeaderComposite draws the header bar for the user.
- *
  */
 public class HeaderComposite extends Composite
 {
@@ -69,7 +69,7 @@ public class HeaderComposite extends Composite
     FlowPanel siteLabelingContainer = new FlowPanel();
 
     /** The search box. */
-    private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("search profiles");
+    private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("Find a Stream");
 
     /**
      * Notification Count widget.
@@ -86,8 +86,8 @@ public class HeaderComposite extends Composite
      */
     public HeaderComposite()
     {
-        Session.getInstance().getEventBus()
-                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent eventArg)
                     {
@@ -104,7 +104,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     *
+     * 
      * @param viewer
      *            - user to display.
      */
@@ -114,17 +114,17 @@ public class HeaderComposite extends Composite
         FlowPanel panel = new FlowPanel();
         FlowPanel navPanel = new FlowPanel();
 
-        Anchor externalLink = new Anchor("Eureka Streams", "http://www.eurekastreams.org", "_blank");
+        Anchor externalLink = new Anchor("EurekaStreams.org", "http://www.eurekastreams.org", "_blank");
         externalLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
-        Hyperlink startPageLink = new Hyperlink("Start Page", Session.getInstance().generateUrl(
+        Hyperlink startPageLink = new Hyperlink("Start", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.START)));
         startPageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
         Hyperlink activityLink = new Hyperlink("Activity", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ACTIVITY)));
         activityLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
-        Hyperlink directoryLink = new Hyperlink("Profiles", Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ORGANIZATIONS)));
+        Hyperlink directoryLink = new Hyperlink("Discover", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.DISCOVER)));
         directoryLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         Hyperlink settingsLink = new Hyperlink("Settings", Session.getInstance().generateUrl(
@@ -133,8 +133,6 @@ public class HeaderComposite extends Composite
         Hyperlink myProfileLink = new Hyperlink("My Profile", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PEOPLE, viewer.getAccountId())));
         myProfileLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
-        Hyperlink helpLink = new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP)));
-        helpLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         externalPageLinkPanel.add(externalLink);
         externalPageLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().externalHeaderButton());
@@ -143,22 +141,22 @@ public class HeaderComposite extends Composite
         activityLinkPanel.add(activityLink);
         activityLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityHeaderButton());
         directoryLinkPanel.add(directoryLink);
-        directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().directoryHeaderButton());
-        settingsLinkPanel.add(settingsLink);
-        settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
+        directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverHeaderButton());
 
-        // galleryLinkPanel.add(galleryLink);
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            settingsLinkPanel.add(settingsLink);
+            settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
+        }
 
         linkMap.put(Page.START, startPageLink);
         linkMap.put(Page.ACTIVITY, activityLink);
-        linkMap.put(Page.ORGANIZATIONS, directoryLink);
+        linkMap.put(Page.DISCOVER, directoryLink);
         linkMap.put(Page.GROUPS, directoryLink);
         linkMap.put(Page.PEOPLE, directoryLink);
         linkMap.put(Page.GROUP_SETTINGS, directoryLink);
         linkMap.put(Page.PERSONAL_SETTINGS, directoryLink);
         linkMap.put(Page.SETTINGS, settingsLink);
-        linkMap.put(Page.HELP, helpLink);
-        // linkMap.put(HeaderLink.GALLERY, galleryLinkPanel);
 
         HorizontalULPanel mainNav = new HorizontalULPanel();
 
@@ -173,19 +171,13 @@ public class HeaderComposite extends Composite
         mainNav.add(directoryLinkPanel);
         mainNav.add(galleryLinkPanel);
         notif.init();
-        userNav.add(notif, "notif-count-list-item");
+        userNav.add(notif);
 
         FlowPanel myProfileLinkPanel = new FlowPanel();
         myProfileLinkPanel.add(myProfileLink);
-        myProfileLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().myProfileHeaderButton());
         userNav.add(myProfileLinkPanel);
 
         userNav.add(settingsLinkPanel);
-
-        FlowPanel helpLinkPanel = new FlowPanel();
-        helpLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpHeaderButton());
-        helpLinkPanel.add(helpLink);
-        userNav.add(helpLinkPanel);
 
         if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
         {
@@ -196,7 +188,7 @@ public class HeaderComposite extends Composite
         // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
         // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
         // page change.
-        userNav.add(profileSearchBox);
+        userNav.add(profileSearchBox, StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxNav());
 
         // Style the Elements
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
@@ -218,7 +210,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Sets Site labeling.
-     *
+     * 
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -233,7 +225,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     *
+     * 
      * @param page
      *            the page to activate.
      */
