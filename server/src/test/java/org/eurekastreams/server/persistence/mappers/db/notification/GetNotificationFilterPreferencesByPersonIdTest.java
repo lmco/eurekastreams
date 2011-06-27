@@ -54,8 +54,8 @@ public class GetNotificationFilterPreferencesByPersonIdTest extends MapperTest
     {
         final long id = 42L;
 
-        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(id, "email", "FOLLOW");
-        NotificationFilterPreferenceDTO expected2 = new NotificationFilterPreferenceDTO(id, "email", "FOLLOW");
+        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(id, "email", "COMMENT");
+        NotificationFilterPreferenceDTO expected2 = new NotificationFilterPreferenceDTO(id, "email", "LIKE");
 
         Collection<NotificationFilterPreferenceDTO> list = sut.execute(id);
 

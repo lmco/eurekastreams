@@ -1,5 +1,5 @@
 #siteLabelText()
-$actor.displayName posted a #activityType($activity) to the $stream.displayName stream.
+$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream.
 
 #activityContent_txt($activity)
 

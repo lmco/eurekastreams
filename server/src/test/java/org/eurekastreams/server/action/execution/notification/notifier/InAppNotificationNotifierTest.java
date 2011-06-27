@@ -131,8 +131,7 @@ public class InAppNotificationNotifierTest
     @Test
     public void testNotifyUnknownTemplate() throws Exception
     {
-        UserActionRequest result = sut
-                .notify(NotificationType.POST_TO_GROUP_STREAM, recipients, Collections.EMPTY_MAP);
+        UserActionRequest result = sut.notify(NotificationType.PASS_THROUGH, recipients, Collections.EMPTY_MAP, null);
 
         context.assertIsSatisfied();
 
@@ -233,7 +232,7 @@ public class InAppNotificationNotifierTest
         });
 
         UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST, recipients,
-                Collections.EMPTY_MAP);
+                Collections.EMPTY_MAP, null);
 
         context.assertIsSatisfied();
 
@@ -305,7 +304,7 @@ public class InAppNotificationNotifierTest
         properties.put(NotificationPropertyKeys.ACTOR, actor);
 
         UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST,
-                Collections.singletonList(RECIPIENT1), properties);
+                Collections.singletonList(RECIPIENT1), properties, null);
 
         context.assertIsSatisfied();
 
@@ -332,7 +331,7 @@ public class InAppNotificationNotifierTest
         });
 
         UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST,
-                Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP);
+                Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP, null);
 
         context.assertIsSatisfied();
 

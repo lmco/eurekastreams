@@ -1,8 +1,0 @@
-#siteLabelText()
-$actor.displayName commented on a #activityType($activity) in your stream.
-
-"$comment.body"
-
-To see the post and comments follow this link:
-#activityUrl($stream,$activity)
-#parse('Footer.txt')

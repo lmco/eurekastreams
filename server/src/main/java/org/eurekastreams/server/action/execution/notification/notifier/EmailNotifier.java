@@ -30,7 +30,6 @@ import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 
@@ -48,9 +47,6 @@ public class EmailNotifier implements Notifier
     /** Message templates by notification type. */
     private final Map<NotificationType, EmailNotificationTemplate> templates;
 
-    /** To fetch people for email addresses. */
-    private final DomainMapper<List<Long>, List<PersonModelView>> personsMapper;
-
     /** Prefix to use on email subjects. */
     private final String subjectPrefix;
 
@@ -63,19 +59,15 @@ public class EmailNotifier implements Notifier
      *            Global context for Apache Velocity templating engine.
      * @param inTemplates
      *            Message templates by notification type.
-     * @param inPersonsMapper
-     *            To fetch people for email addresses.
      * @param inSubjectPrefix
      *            Prefix to use on email subjects.
      */
     public EmailNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
-            final Map<NotificationType, EmailNotificationTemplate> inTemplates,
-            final DomainMapper<List<Long>, List<PersonModelView>> inPersonsMapper, final String inSubjectPrefix)
+            final Map<NotificationType, EmailNotificationTemplate> inTemplates, final String inSubjectPrefix)
     {
         velocityEngine = inVelocityEngine;
         velocityGlobalContext = inVelocityGlobalContext;
         templates = inTemplates;
-        personsMapper = inPersonsMapper;
         subjectPrefix = inSubjectPrefix;
     }
 
@@ -84,7 +76,8 @@ public class EmailNotifier implements Notifier
      */
     @Override
     public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
-            final Map<String, Object> inProperties) throws Exception
+            final Map<String, Object> inProperties, final Map<Long, PersonModelView> inRecipientIndex)
+            throws Exception
     {
         EmailNotificationTemplate template = templates.get(inType);
         if (template == null)
@@ -121,17 +114,21 @@ public class EmailNotifier implements Notifier
         email.setHtmlBody(writer.toString());
 
         // set the recipients
-        List<PersonModelView> persons = personsMapper.execute(new ArrayList<Long>(inRecipients));
-        if (persons.size() == 1)
+        if (inRecipients.size() == 1)
         {
-            email.setToRecipient(persons.get(0).getEmail());
+            email.setToRecipient(inRecipientIndex.get(inRecipients.iterator().next()).getEmail());
         }
         else
         {
+            List<PersonModelView> persons = new ArrayList<PersonModelView>();
+            for (Long recipientId : inRecipients)
+            {
+                persons.add(inRecipientIndex.get(recipientId));
+            }
             email.setBccRecipients(EmailerFactory.buildEmailList(persons));
         }
 
-        email.setDescription(inType + " to " + persons.size() + " recipients");
+        email.setDescription(inType + " to " + inRecipients.size() + " recipients");
 
         return new UserActionRequest("sendEmailNotificationAction", null, email);
     }

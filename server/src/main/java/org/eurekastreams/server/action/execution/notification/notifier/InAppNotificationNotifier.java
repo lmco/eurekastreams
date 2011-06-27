@@ -31,6 +31,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Notifier for in-app notifications. Builds the messages and stores them in the database.
@@ -90,7 +91,7 @@ public class InAppNotificationNotifier implements Notifier
      */
     @Override
     public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
-            final Map<String, Object> inProperties) throws Exception
+            final Map<String, Object> inProperties, final Map<Long, PersonModelView> recipientIndex) throws Exception
     {
         String template = templates.get(inType);
         if (template == null)
