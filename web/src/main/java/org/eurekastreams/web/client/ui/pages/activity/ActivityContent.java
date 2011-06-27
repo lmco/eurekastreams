@@ -143,9 +143,12 @@ public class ActivityContent extends Composite
     @UiField
     UListElement bookmarkList;
 
+    /**
+     * UI element for stream container.
+     */
     @UiField
     HTMLPanel streamContainerPanel;
-    
+
     /**
      * UI element for filters.
      */
@@ -284,6 +287,9 @@ public class ActivityContent extends Composite
     @UiField
     Label moreLink;
 
+    /**
+     * UI element for adding a bookmark.
+     */
     @UiField
     Label addBookmark;
 
@@ -328,6 +334,9 @@ public class ActivityContent extends Composite
     @UiField
     TextBox searchBox;
 
+    /**
+     * Current stream scope.
+     */
     private StreamScope currentStream;
 
     /**
@@ -359,6 +368,7 @@ public class ActivityContent extends Composite
         final StreamAnalyticsChart chart = new StreamAnalyticsChart();
 
         addEventHandlers();
+        addObservers();
 
         defaultList.appendChild(createLI("Following", "following"));
         defaultList.appendChild(createLI("Everyone", "everyone"));
@@ -380,16 +390,8 @@ public class ActivityContent extends Composite
     /**
      * Add events.
      */
-    private void addEventHandlers()
+    private void addObservers()
     {
-        toggleDetails.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                detailsContainerAnimation.toggle();
-            }
-        });
-
         EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
         {
 
@@ -467,18 +469,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        moreLink.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                moreSpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-
-                JSONObject moreItemsRequest = StreamJsonRequestFactory.setMaxId(longOldestActivityId,
-                        StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
-
-                StreamModel.getInstance().fetch(moreItemsRequest.toString(), false);
-            }
-        });
         EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
@@ -632,15 +622,43 @@ public class ActivityContent extends Composite
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
 
-                    public void update(UpdatedHistoryParametersEvent event)
+                    public void update(final UpdatedHistoryParametersEvent event)
                     {
                         loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
                     }
                 });
 
+    }
+
+    /**
+     * Add events.
+     */
+    private void addEventHandlers()
+    {
+        toggleDetails.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                detailsContainerAnimation.toggle();
+            }
+        });
+
+        moreLink.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                moreSpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+
+                JSONObject moreItemsRequest = StreamJsonRequestFactory.setMaxId(longOldestActivityId,
+                        StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
+
+                StreamModel.getInstance().fetch(moreItemsRequest.toString(), false);
+            }
+        });
+
         searchBox.addKeyUpHandler(new KeyUpHandler()
         {
-            public void onKeyUp(KeyUpEvent event)
+            public void onKeyUp(final KeyUpEvent event)
             {
                 if (searchBox.getText().length() > 3 || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER
                         || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_BACKSPACE
@@ -654,11 +672,11 @@ public class ActivityContent extends Composite
 
         addBookmark.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 HashMap<String, Serializable> request = new HashMap<String, Serializable>();
                 request.put("bookmark", currentStream);
-                
+
                 StreamBookmarksModel.getInstance().insert(request);
             }
         });
@@ -727,8 +745,7 @@ public class ActivityContent extends Composite
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         Session.getInstance().getActionProcessor().setQueueRequests(true);
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
-        currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
-                .getAccountId());
+        currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {

@@ -41,7 +41,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -128,7 +127,7 @@ public class GlobalSearchComposite extends FlowPanel
 
         resultsPanelContainer.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 searchTerm.reset();
                 resultsPanelContainer.setVisible(false);
@@ -139,7 +138,7 @@ public class GlobalSearchComposite extends FlowPanel
 
         eventBus.addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
         {
-            public void update(GotSearchResultsResponseEvent event)
+            public void update(final GotSearchResultsResponseEvent event)
             {
                 resultsPanel.clear();
                 resultsPanelContainer.setVisible(event.getResponse().getPagedSet().size() > 0);
@@ -179,7 +178,7 @@ public class GlobalSearchComposite extends FlowPanel
 
                     itemContainer.addClickHandler(new ClickHandler()
                     {
-                        public void onClick(ClickEvent event)
+                        public void onClick(final ClickEvent event)
                         {
                             Window.Location.assign(name.getHref());
                         }

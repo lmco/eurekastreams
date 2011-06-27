@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,27 +88,44 @@ public class BookmarkStreamFilterTransformer implements Transformer<List<StreamS
             }
         }
 
-        final List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(personIds);
-        final List<DomainGroupModelView> groups = groupMapper.execute(groupIds);
+        List<PersonModelView> people = null;
+
+        if (personIds.size() > 0)
+        {
+            people = getPersonModelViewsByAccountIdsMapper.execute(personIds);
+        }
+
+        List<DomainGroupModelView> groups = null;
+
+        if (groupIds.size() > 0)
+        {
+            groups = groupMapper.execute(groupIds);
+        }
 
         final List<StreamFilter> filters = new ArrayList<StreamFilter>();
 
-        for (PersonModelView person : people)
+        if (people != null)
         {
-            final String name = person.getDisplayName();
-            final String request = "{\"query\":{\"recipient\":[{\"type\":\"PERSON\",\"name\":\""
-                    + person.getAccountId() + "\"}]}}";
+            for (PersonModelView person : people)
+            {
+                final String name = person.getDisplayName();
+                final String request = "{\"query\":{\"recipient\":[{\"type\":\"PERSON\",\"name\":\""
+                        + person.getAccountId() + "\"}]}}";
 
-            filters.add(new BookmarkFilter(0L, name, request));
+                filters.add(new BookmarkFilter(0L, name, request));
+            }
         }
 
-        for (DomainGroupModelView group : groups)
+        if (groups != null)
         {
-            final String name = group.getName();
-            final String request = "{\"query\":{\"recipient\":[{\"type\":\"GROUP\",\"name\":\"" + group.getShortName()
-                    + "\"}]}}";
+            for (DomainGroupModelView group : groups)
+            {
+                final String name = group.getName();
+                final String request = "{\"query\":{\"recipient\":[{\"type\":\"GROUP\",\"name\":\""
+                        + group.getShortName() + "\"}]}}";
 
-            filters.add(new BookmarkFilter(0L, name, request));
+                filters.add(new BookmarkFilter(0L, name, request));
+            }
         }
 
         return filters;

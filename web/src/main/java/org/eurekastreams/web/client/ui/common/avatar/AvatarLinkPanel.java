@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.avatar;
 
-import java.util.HashMap;
-
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;

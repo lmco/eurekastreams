@@ -181,6 +181,9 @@
 	<Person_Stream personid="42" streamid="2" />
 	<Person_Stream personid="42" streamid="1" />
 
+	<Person_Bookmark personid="42" scopeid="1" />
+	<Person_Bookmark personid="42" scopeid="2" />
+
 	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON" requestorId="42" />
 	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON" requestorId="42" />
 	<FeedSubscriber id="3" version="1" feedId="3" entityId="42" type="PERSON" requestorId="42" />

@@ -232,7 +232,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     // unique constraints
     uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "streamId" }) })
     private List<Stream> streams;
-    
+
     /**
      * List of Bookmarks for this person.
      */
@@ -247,7 +247,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     // unique constraints
     uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "scopeId" }) })
     private List<StreamScope> bookmarks;
-
 
     // ///////////////////////////////////////////////////////////////////
     // ATTRIBUTES
@@ -1872,11 +1871,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * @param bookmarks the bookmarks to set.
+     * @param inBookmarks
+     *            the bookmarks to set.
      */
-    public void setBookmarks(final List<StreamScope> bookmarks)
+    public void setBookmarks(final List<StreamScope> inBookmarks)
     {
-        this.bookmarks = bookmarks;
+        this.bookmarks = inBookmarks;
     }
 
     /**
