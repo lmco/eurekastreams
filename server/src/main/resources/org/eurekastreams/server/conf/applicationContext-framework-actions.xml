@@ -4146,8 +4146,7 @@
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
     </bean>
     
-    <bean id="featuredStreamDTOTransientDataPopulator" class="org.eurekastreams.server.domain.strategies.FeaturedStreamDTOTransientDataPopulator">
-        <constructor-arg ref="followerStatusPopulator"/>
+    <bean id="displayInfoSettableDataPopulator" class="org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator">
         <constructor-arg ref="getPeopleByAccountIdsMapper"/>
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
     </bean>
