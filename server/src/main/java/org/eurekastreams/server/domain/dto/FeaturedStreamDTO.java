@@ -19,14 +19,13 @@ import java.io.Serializable;
 
 import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 
 /**
  * Featured Stream DTO.
  */
-public class FeaturedStreamDTO implements Serializable, FollowerStatusable, DisplayInfoSettable
+public class FeaturedStreamDTO implements Serializable, DisplayInfoSettable
 {
     /**
      * Serial version id.

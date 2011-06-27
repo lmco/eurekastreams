@@ -88,7 +88,7 @@ public class ActivityDetailPanel extends FlowPanel
             linkPanel.add(new InlineLabel("|"));
 
             String url = Session.getInstance()
-                    .generateUrl(new CreateUrlRequest(Page.ORGANIZATIONS, "", "tab", "Admin"));
+                    .generateUrl(new CreateUrlRequest(Page.DISCOVER, "", "tab", "Admin"));
             linkPanel.add(new InlineHyperlink("Manage flagged content", url));
         }
     }

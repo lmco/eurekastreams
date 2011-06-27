@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
@@ -29,15 +29,10 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Populate transient data for DisplayInfoSettable.
- * 
  */
-public class FeaturedStreamDTOTransientDataPopulator
+public class DisplayInfoSettableDataPopulator implements
+        DomainMapper<List<DisplayInfoSettable>, List<DisplayInfoSettable>>
 {
-    /**
-     * {@link FollowerStatusPopulator}.
-     */
-    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator;
-
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
@@ -51,19 +46,15 @@ public class FeaturedStreamDTOTransientDataPopulator
     /**
      * Constructor.
      * 
-     * @param inFollowerStatusPopulator
-     *            list of DisplayInfoSettable.
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            Mapper to get a list of PersonModelViews from a list of AccountIds.
      * @param inGetGroupModelViewsByShortNameMapper
      *            Mapper to get a list of GroupModelViews from a list of group shortNames.
      */
-    public FeaturedStreamDTOTransientDataPopulator(
-            final FollowerStatusPopulator<DisplayInfoSettable> inFollowerStatusPopulator,
+    public DisplayInfoSettableDataPopulator(
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetItemsByPointerIds<DomainGroupModelView> inGetGroupModelViewsByShortNameMapper)
     {
-        followerStatusPopulator = inFollowerStatusPopulator;
         getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         getGroupModelViewsByShortNameMapper = inGetGroupModelViewsByShortNameMapper;
     }
@@ -71,31 +62,33 @@ public class FeaturedStreamDTOTransientDataPopulator
     /**
      * Populate transient data in DisplaySettables.
      * 
-     * @param inCurrentUserId
-     *            Current user id.
      * @param inDisplaySettables
      *            the DTOs to update display settings for
      * @return Populated DisplayInfoSettable.
      */
-    public List<DisplayInfoSettable> execute(final long inCurrentUserId,
-            final List<DisplayInfoSettable> inDisplaySettables)
+    public List<DisplayInfoSettable> execute(final List<DisplayInfoSettable> inDisplaySettables)
     {
-        // Set follower status on all dtos.
-        followerStatusPopulator.execute(inCurrentUserId, inDisplaySettables, FollowerStatus.NOTFOLLOWING);
-
         // sort by entity type to optimize calls to cache.
-        Map<String, DisplayInfoSettable> personStreams = new HashMap<String, DisplayInfoSettable>();
-        Map<String, DisplayInfoSettable> groupStreams = new HashMap<String, DisplayInfoSettable>();
+        List<String> personAccountIds = new ArrayList<String>();
+        List<String> groupShortNames = new ArrayList<String>();
 
+        String uniqueKey;
         for (DisplayInfoSettable ds : inDisplaySettables)
         {
+            uniqueKey = ds.getStreamUniqueKey();
             switch (ds.getEntityType())
             {
             case PERSON:
-                personStreams.put(ds.getStreamUniqueKey(), ds);
+                if (!personAccountIds.contains(uniqueKey))
+                {
+                    personAccountIds.add(uniqueKey);
+                }
                 break;
             case GROUP:
-                groupStreams.put(ds.getStreamUniqueKey(), ds);
+                if (!groupShortNames.contains(uniqueKey))
+                {
+                    groupShortNames.add(uniqueKey);
+                }
                 break;
             default:
                 break;
@@ -103,25 +96,47 @@ public class FeaturedStreamDTOTransientDataPopulator
         }
 
         // get group/person dtos from cache/db
-        List<PersonModelView> personDTOs = getPersonModelViewsByAccountIdsMapper.execute(new ArrayList<String>(
-                personStreams.keySet()));
-        List<DomainGroupModelView> groupDTOs = getGroupModelViewsByShortNameMapper.execute(new ArrayList<String>(
-                groupStreams.keySet()));
+        List<PersonModelView> personDTOs = getPersonModelViewsByAccountIdsMapper.execute(personAccountIds);
+        List<DomainGroupModelView> groupDTOs = getGroupModelViewsByShortNameMapper.execute(groupShortNames);
 
-        // set transient data in DTOs for group and people.
-        DisplayInfoSettable tempStream;
-        for (PersonModelView pmv : personDTOs)
+        // map the people and groups by short names
+        Map<String, PersonModelView> peopleByAccountIdsMap = new HashMap<String, PersonModelView>();
+        Map<String, DomainGroupModelView> domainGroupsByShortNamesMap = new HashMap<String, DomainGroupModelView>();
+
+        for (PersonModelView person : personDTOs)
         {
-            tempStream = personStreams.get(pmv.getAccountId());
-            tempStream.setAvatarId(pmv.getAvatarId());
-            tempStream.setDisplayName(pmv.getDisplayName());
+            peopleByAccountIdsMap.put(person.getAccountId(), person);
+        }
+        for (DomainGroupModelView domainGroup : groupDTOs)
+        {
+            domainGroupsByShortNamesMap.put(domainGroup.getShortName(), domainGroup);
         }
 
-        for (DomainGroupModelView dgmv : groupDTOs)
+        // set transient data in DTOs for group and people.
+        PersonModelView pmv;
+        DomainGroupModelView gmv;
+
+        // there could be duplicates in the input list, so loop across the input list
+        for (DisplayInfoSettable ds : inDisplaySettables)
         {
-            tempStream = groupStreams.get(dgmv.getShortName());
-            tempStream.setAvatarId(dgmv.getAvatarId());
-            tempStream.setDisplayName(dgmv.getDisplayName());
+            if (ds.getEntityType() == EntityType.PERSON)
+            {
+                pmv = peopleByAccountIdsMap.get(ds.getStreamUniqueKey());
+                if (pmv != null)
+                {
+                    ds.setAvatarId(pmv.getAvatarId());
+                    ds.setDisplayName(pmv.getDisplayName());
+                }
+            }
+            else if (ds.getEntityType() == EntityType.GROUP)
+            {
+                gmv = domainGroupsByShortNamesMap.get(ds.getStreamUniqueKey());
+                if (gmv != null)
+                {
+                    ds.setAvatarId(gmv.getAvatarId());
+                    ds.setDisplayName(gmv.getDisplayName());
+                }
+            }
         }
 
         return inDisplaySettables;

@@ -5,14 +5,21 @@
 	<ui:image field="activityHeaderBackground" src="style/images/activityHeaderBackground.png" />
 	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
 	<ui:image field="viewDetails" src="style/images/viewDetailsBtn.png" />
+	<ui:image field="subscribeNormal" src="style/images/subscribeNormal.png" />
+	<ui:image field="subscribeActive" src="style/images/subscribeActive.png" />
 	<ui:image field="spinner" src="style/images/wait-spinner.gif" />
+	<ui:image field="searchActive" src="style/images/searchActive.png" />
+	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
 
+	<ui:image field="everyoneHeader" src="style/images/everyoneHeader.png" />
+	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
+	
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
 		.main
 		{
 		overflow: hidden;
-		margin-top: 40px;
+		margin-top: 60px;
 		}
 
 		.stream-option-list {
@@ -81,7 +88,6 @@
 		none;
 		}
 
-
 		.activeSort
 		{
 		background-image:
@@ -94,7 +100,8 @@
 		padding: 1px;
 		border: 1px solid
 		#c6c6c6;
-		overflow: hidden;
+		overflow: visible;
+		height: 33px;
 		}
 
 		.sort-option, .sort-option:hover,
@@ -153,8 +160,8 @@
 		.stream-name
 		{
 		display: block;
-		height: 16px;
 		font-weight: bold;
+		font-size: 24px;
 		}
 
 		.stream-details-container
@@ -233,15 +240,94 @@
 		padding: 0 10px;
 		}
 
-		.search-box
+		.search-container
 		{
-		float: right;
+		margin-right: 1px;
 		}
 
+		.search-container .search-box
+		{
+			display: none;
+		}
+
+		.search-container:hover .search-box
+		{
+			display: block;
+		}
+		
+		.search-container:hover .search-box-button
+		{		
+			display: none;
+		}
+
+		@sprite .search-box
+		{
+		gwt-image: "searchActive";
+		border: 0 none;
+		float: right;
+		height: 20px;
+		padding-left: 35px;
+		padding-right: 21px;
+		width: 160px;
+		padding-top: 6px;
+		padding-bottom: 6px;
+		}
+		
+		@sprite .search-box-button
+		{
+		gwt-image: "searchNormal";			
+		float: right;
+		}
+		
+		@sprite .subscribe-box 
+		{
+		gwt-image: "subscribeNormal";
+		float: right;
+		position:relative;
+		overflow: visible;
+		}
+		
+		@sprite .subscribe-box:hover 
+		{
+		gwt-image: "subscribeActive";
+		float: right;
+		position:relative;
+		overflow: visible;
+		}
+		
+		
+		.subscribe-options 
+		{
+		background-color: #BDBDBD;
+		display: none;
+		margin-left: -126px;
+		position: absolute;
+		top: 32px;
+		width: 186px;
+		padding: 2px;
+		}
+		
+		.subscribe-box:hover .subscribe-options
+		{
+			display: block;
+		}
+		
+		.subscribe-options > div
+		{
+			padding: 5px;
+		}
+		
+		.subscribe-options > div:hover
+		{
+			cursor: pointer;
+			background-color: #e4e4e4;
+		}
+		
 		@sprite .stream-loading-spinner
 		{
 		gwt-image: "spinner";
-		margin: 0 auto;
+		margin: 0
+		auto;
 		position:
 		relative;
 		top: 30px;
@@ -267,6 +353,30 @@
 		cursor: pointer;
 		color: #0066CC;
 		}
+		
+		.condensedStream .toggle-details-link, .condensedStream .follow-info-container, .condensedStream .stream-meta, .condensedStream .stream-avatar  
+		{
+			display: none;
+		}
+		
+		.condensedStream .header
+		{
+			height: 77px;
+		}
+		
+		.condensedAvatar
+		{
+			display: none;
+			float: left;
+			padding: 5px;
+			margin: 10px;
+		}		
+		
+		@sprite .condensedStream .condensedAvatar
+		{
+			gwt-image: "everyoneHeader";
+			display: block;
+		}
 
 	</ui:style>
 
@@ -274,12 +384,13 @@
 		<g:HTMLPanel addStyleNames="{style.stream-container-panel}"
 			ui:field="streamContainerPanel">
 			<div class="{style.header}">
+				<div class="{style.condensedAvatar}"></div>
 				<g:HTMLPanel addStyleNames="{style.stream-avatar}"
 					ui:field="streamAvatar">
 				</g:HTMLPanel>
 				<div class="{style.stream-info-container}">
 					<span class="{style.stream-name}" ui:field="streamName"></span>
-					<span ui:field="streamMeta"></span>
+					<span class="{style.stream-meta}" ui:field="streamMeta"></span>
 				</div>
 				<div class="{style.follow-info-container}">
 					<span ui:field="followerCount"></span>
@@ -325,7 +436,15 @@
 					Popular</g:Anchor>
 				<g:Anchor addStyleNames="{style.sort-option}" ui:field="activeSort">
 					Active</g:Anchor>
-				<g:TextBox addStyleNames="{style.search-box}" ui:field="searchBox"></g:TextBox>
+				<g:FlowPanel addStyleNames="{style.subscribe-box}">
+					<g:FlowPanel addStyleNames="{style.subscribe-options}">
+						<g:Label ui:field="addBookmark">Bookmark</g:Label>
+					</g:FlowPanel>
+				</g:FlowPanel>
+				<div class="{style.search-container}">
+					<div class="{style.search-box-button}"></div>
+					<g:TextBox addStyleNames="{style.search-box}" ui:field="searchBox"></g:TextBox>
+				</div>
 			</div>
 			<div class="{style.stream-panel}">
 				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>

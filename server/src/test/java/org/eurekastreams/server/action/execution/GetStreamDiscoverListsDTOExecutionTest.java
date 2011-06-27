@@ -17,18 +17,22 @@ package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.test.IsEqualInternally;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.domain.dto.SublistWithResultCount;
+import org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator;
+import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -73,16 +77,23 @@ public class GetStreamDiscoverListsDTOExecutionTest
             DomainMapper.class, "streamDiscoveryListsMapper");
 
     /**
-     * Mapper to retrieve featured stream DTOs.
+     * Data populator for setting the DisplayName and avatar id on DisplayInfoSettables.
      */
-    private DomainMapper<MapperRequest, List<FeaturedStreamDTO>> featuredStreamDTOMapper = context.mock(
-            DomainMapper.class, "featuredStreamDTOMapper");
+    private DisplayInfoSettableDataPopulator displayInfoSettableDataPopulator = context
+            .mock(DisplayInfoSettableDataPopulator.class);
+
+    /**
+     * Data populator for setting the follower status on DisplayInfoSettables.
+     */
+    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator = context
+            .mock(FollowerStatusPopulator.class);
 
     /**
      * System under test.
      */
     private GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
-            suggestedGroupMapper, streamDiscoveryListsMapper, featuredStreamDTOMapper);
+            suggestedGroupMapper, streamDiscoveryListsMapper, displayInfoSettableDataPopulator, //
+            followerStatusPopulator);
 
     /**
      * Test execute.
@@ -99,8 +110,6 @@ public class GetStreamDiscoverListsDTOExecutionTest
         final Principal principal = context.mock(Principal.class);
 
         final StreamDiscoverListsDTO result = new StreamDiscoverListsDTO();
-        final List<FeaturedStreamDTO> featured = new ArrayList<FeaturedStreamDTO>();
-        featured.add(new FeaturedStreamDTO(5L, "HI", 6L, ScopeType.PERSON, "key", 7L));
 
         people.add(new PersonModelView(1L, "a", "foo", "bar", 100L, new Date(), 1L));
         people.add(new PersonModelView(2L, "b", "foo", "bar", 900L, new Date(), 2L)); // 3
@@ -118,6 +127,57 @@ public class GetStreamDiscoverListsDTOExecutionTest
         groups.add(new DomainGroupModelView(13L, "m", "foobar", 900L, new Date(), 13L)); // 2
         groups.add(new DomainGroupModelView(14L, "n", "foobar", 800L, new Date(), 14L)); // 4
         groups.add(new DomainGroupModelView(15L, "o", "foobar", 950L, new Date(), 15L)); // 1
+
+        // displayInfoSettables.addAll(result.getFeaturedStreams());
+        // displayInfoSettables.addAll(result.getMostFollowedStreams());
+        // displayInfoSettables.addAll(result.getMostRecentStreams());
+        // displayInfoSettables.addAll(result.getMostViewedStreams());
+        // displayInfoSettables.addAll(result.getSuggestedStreams());
+        // displayInfoSettables.addAll(result.getMostActiveStreams().getResultsSublist());
+
+        FeaturedStreamDTO featured = new FeaturedStreamDTO();
+
+        result.setFeaturedStreams(Collections.singletonList(featured));
+        result.setMostFollowedStreams(Collections.singletonList((StreamDTO) people.get(0)));
+        result.setMostRecentStreams(Collections.singletonList((StreamDTO) people.get(0)));
+        result.setMostViewedStreams(Collections.singletonList((StreamDTO) people.get(2)));
+
+        result.setMostActiveStreams(new SublistWithResultCount<StreamDTO>(Collections.singletonList((StreamDTO) groups
+                .get(0)), 3L));
+
+        final List<DisplayInfoSettable> combinedList = new ArrayList<DisplayInfoSettable>();
+
+        // featured list
+        combinedList.add(featured);
+
+        // most followed
+        combinedList.add(people.get(0));
+
+        // most recent
+        combinedList.add(people.get(0));
+
+        // most viewed
+        combinedList.add(people.get(2));
+
+        // suggestions
+        combinedList.add(groups.get(7));
+        combinedList.add(groups.get(5));
+        combinedList.add(people.get(1));
+        combinedList.add(groups.get(6));
+        combinedList.add(people.get(3));
+        combinedList.add(groups.get(4));
+        combinedList.add(people.get(6));
+        combinedList.add(groups.get(3));
+        combinedList.add(people.get(4));
+        combinedList.add(groups.get(1));
+
+        // most active
+        combinedList.add(groups.get(0));
+
+        if (displayInfoSettableDataPopulator == null)
+        {
+            throw new RuntimeException("WTH?");
+        }
 
         context.checking(new Expectations()
         {
@@ -140,14 +200,16 @@ public class GetStreamDiscoverListsDTOExecutionTest
                 oneOf(streamDiscoveryListsMapper).execute(null);
                 will(returnValue(result));
 
-                oneOf(featuredStreamDTOMapper).execute(null);
-                will(returnValue(featured));
+                oneOf(displayInfoSettableDataPopulator).execute(with(IsEqualInternally.equalInternally(combinedList)));
+                will(returnValue(combinedList));
+
+                oneOf(followerStatusPopulator).execute(with(personId), with(combinedList),
+                        with(FollowerStatus.NOTFOLLOWING));
+                will(returnValue(combinedList));
             }
         });
 
         Assert.assertSame(result, sut.execute(actionContext));
-        Assert.assertEquals(1, result.getFeaturedStreams().size());
-        Assert.assertEquals(7, result.getFeaturedStreams().get(0).getEntityId());
 
         List<StreamDTO> suggestions = result.getSuggestedStreams();
 

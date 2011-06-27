@@ -132,7 +132,7 @@ public class ConnectEntryPoint implements EntryPoint
                                                 {
                                                 case PEOPLE:
                                                 case GROUPS:
-                                                case ORGANIZATIONS:
+                                                case DISCOVER:
                                                     String url = mainAppLaunchUrl + Window.Location.getHash();
                                                     Window.open(url, "_blank", "");
                                                     History.back();

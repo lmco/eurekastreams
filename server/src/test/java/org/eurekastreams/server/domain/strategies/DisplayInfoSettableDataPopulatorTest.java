@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -36,11 +35,11 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for FeaturedStreamDTOTransientDataPopulator.
+ * Test for DisplayInfoSettableDataPopulator.
  * 
  */
 @SuppressWarnings("unchecked")
-public class FeaturedStreamDTOTransientDataPopulatorTest
+public class DisplayInfoSettableDataPopulatorTest
 {
     /**
      * Context for building mock objects.
@@ -51,12 +50,6 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    /**
-     * {@link FollowerStatusPopulator}.
-     */
-    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator = context
-            .mock(FollowerStatusPopulator.class);
 
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
@@ -73,13 +66,8 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
     /**
      * System under test.
      */
-    private FeaturedStreamDTOTransientDataPopulator sut = new FeaturedStreamDTOTransientDataPopulator(
-            followerStatusPopulator, getPersonModelViewsByAccountIdsMapper, getGroupModelViewsByShortNameMapper);
-
-    /**
-     * User Id.
-     */
-    private long currentUserId = 5L;
+    private DisplayInfoSettableDataPopulator sut = new DisplayInfoSettableDataPopulator(
+            getPersonModelViewsByAccountIdsMapper, getGroupModelViewsByShortNameMapper);
 
     /**
      * Test.
@@ -118,8 +106,6 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(followerStatusPopulator).execute(currentUserId, fsList, FollowerStatus.NOTFOLLOWING);
-
                 oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
                 will(returnValue(new ArrayList<PersonModelView>(Arrays.asList(p))));
 
@@ -128,7 +114,7 @@ public class FeaturedStreamDTOTransientDataPopulatorTest
             }
         });
 
-        List<DisplayInfoSettable> results = sut.execute(currentUserId, fsList);
+        List<DisplayInfoSettable> results = sut.execute(fsList);
         assertEquals(2, results.size());
         assertEquals(personDisplayName, results.get(0).getDisplayName());
         assertEquals(personAvatarId, ((FeaturedStreamDTO) results.get(0)).getAvatarId());

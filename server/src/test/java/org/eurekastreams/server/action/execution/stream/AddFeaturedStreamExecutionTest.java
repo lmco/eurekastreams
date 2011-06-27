@@ -18,7 +18,6 @@ package org.eurekastreams.server.action.execution.stream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -27,8 +26,6 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.FeaturedStream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.DeleteCacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -82,11 +79,6 @@ public class AddFeaturedStreamExecutionTest
             "insertMapper");
 
     /**
-     * Mapper for deleting cache keys.
-     */
-    private DeleteCacheKeys deleteCacheKeyDAO = context.mock(DeleteCacheKeys.class, "deleteCacheKeyDAO");
-
-    /**
      * Description.
      */
     private String description = "description";
@@ -104,8 +96,7 @@ public class AddFeaturedStreamExecutionTest
     /**
      * System under test.
      */
-    private AddFeaturedStreamExecution sut = new AddFeaturedStreamExecution(streamScopeProxyMapper, insertMapper,
-            deleteCacheKeyDAO);
+    private AddFeaturedStreamExecution sut = new AddFeaturedStreamExecution(streamScopeProxyMapper, insertMapper);
 
     /**
      * Test.
@@ -139,8 +130,6 @@ public class AddFeaturedStreamExecutionTest
                 allowing(insertMapper).execute(with(any(PersistenceRequest.class)));
                 will(returnValue(9L));
 
-                oneOf(deleteCacheKeyDAO).execute(with(any(Set.class)));
-
                 allowing(taskHandlerConext).getUserActionRequests();
                 will(returnValue(requests));
             }
@@ -148,10 +137,9 @@ public class AddFeaturedStreamExecutionTest
 
         sut.execute(taskHandlerConext);
 
-        // check to make sure the right cache keys will be cleared
-        Set<String> keysToDelete = (Set<String>) (requests.get(0)).getParams();
-        Assert.assertEquals(1, keysToDelete.size());
-        Assert.assertTrue(keysToDelete.contains(CacheKeys.FEATURED_STREAMS));
+        // make sure the discover lists cache is rebuilt
+        Assert.assertEquals(1, requests.size());
+        Assert.assertEquals("regenerateStreamDiscoverListsJob", requests.get(0).getActionKey());
 
         context.assertIsSatisfied();
     }

@@ -21,11 +21,8 @@ import java.util.List;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 
 /**
@@ -39,23 +36,14 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
     private DomainMapper<Long, List<StreamFilter>> getUserStreamsMapper;
 
     /**
-     * Person mapper.
-     */
-    private FindByIdMapper<Person> personMapper;
-
-    /**
      * Constructor.
      * 
      * @param inGetUserStreamsMapper
      *            stream mapper.
-     * @param inPersonMapper
-     *            person mapper.
      */
-    public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper,
-            final FindByIdMapper<Person> inPersonMapper)
+    public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper)
     {
         getUserStreamsMapper = inGetUserStreamsMapper;
-        personMapper = inPersonMapper;
     }
 
     /**
@@ -69,9 +57,7 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
-
         final List<StreamFilter> streams = getUserStreamsMapper.execute(inActionContext.getPrincipal().getId());
-        return new GetCurrentUserStreamFiltersResponse(person.getStreamViewHiddenLineIndex(), streams);
+        return new GetCurrentUserStreamFiltersResponse(streams.size(), streams);
     }
 }

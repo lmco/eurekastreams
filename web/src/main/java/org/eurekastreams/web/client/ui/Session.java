@@ -32,6 +32,10 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.log.Log;
 import org.eurekastreams.web.client.timer.Timer;
 
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
+
 /**
  * The current session.
  */
@@ -81,6 +85,16 @@ public class Session
     private static Session instance;
 
     /**
+     * Mouse X position.
+     */
+    private int mouseX = -1;
+
+    /**
+     * Mouse Y position.
+     */
+    private int mouseY = -1;
+
+    /**
      * Handles invoking events periodically.
      */
     private PeriodicEventManager periodicEventManager;
@@ -100,6 +114,42 @@ public class Session
                         currentPerson.setOptOutVideos(videoList);
                     }
                 });
+
+        /*
+         * This event will be called A LOT. Do not add anything to it. This is used to track mouse position to determine
+         * inactivity.
+         */
+        Event.addNativePreviewHandler(new NativePreviewHandler()
+        {
+            public void onPreviewNativeEvent(final NativePreviewEvent event)
+            {
+                if (event.getTypeInt() == Event.ONMOUSEMOVE)
+                {
+                    mouseX = event.getNativeEvent().getClientX();
+                    mouseY = event.getNativeEvent().getClientY();
+                }
+            }
+        });
+    }
+
+    /**
+     * Get mouse X position.
+     * 
+     * @return mouse X position.
+     */
+    public int getMouseX()
+    {
+        return mouseX;
+    }
+
+    /**
+     * Get mouse Y position.
+     * 
+     * @return mouse Y position.
+     */
+    public int getMouseY()
+    {
+        return mouseY;
     }
 
     /**

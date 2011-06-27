@@ -46,6 +46,7 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BulkEntityModel;
+import org.eurekastreams.web.client.model.SessionEstablishModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.UsageMetricModel;
@@ -63,6 +64,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -130,6 +133,11 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /** Employee lookup modal. */
     private static EmployeeLookupContent dialogContent;
+
+    /**
+     * 10 minutes.
+     */
+    private static final int SESSION_POLLING_TIME = 900000;
 
     /**
      * Shows the login.
@@ -211,10 +219,19 @@ public class ApplicationEntryPoint implements EntryPoint
                     public void onSuccess(final Serializable sessionId)
                     {
                         ActionProcessorImpl.setCurrentSessionId((String) sessionId);
-
                         loadPerson();
                     }
                 });
+
+        // Keep session alive.
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+        {
+            public boolean execute()
+            {
+                SessionEstablishModel.getInstance().fetch(null, false);
+                return true;
+            }
+        }, SESSION_POLLING_TIME);
     }
 
     /**

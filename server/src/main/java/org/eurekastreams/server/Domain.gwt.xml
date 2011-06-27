@@ -5,6 +5,8 @@
 	<source path="service/actions/response" />
 	<source path="action/request" />
 	<source path="action/response" />
+	<source path="stream/response" />
+	<source path="stream/plugins" />
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name='org.eurekastreams.commons.Commons' />

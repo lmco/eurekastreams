@@ -53,23 +53,26 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/navLogo.png")
     ImageResource navLogo();
 
+    @Source("style/images/notificationBackground.png")
+    ImageResource notifBg();
+    
     @Source("style/images/navStartPage.png")
     ImageResource navStartPage();
 
     @Source("style/images/navActivity.png")
     ImageResource navActivity();
 
-    @Source("style/images/navProfiles.png")
-    ImageResource navProfiles();
+    @Source("style/images/navDiscover.png")
+    ImageResource navDiscover();
 
-    @Source("style/images/navMyProfile.png")
-    ImageResource navMyProfile();
+    @Source("style/images/navStartPageActive.png")
+    ImageResource navStartPageActive();
 
-    @Source("style/images/navSettings.png")
-    ImageResource navSettings();
+    @Source("style/images/navActivityActive.png")
+    ImageResource navActivityActive();
 
-    @Source("style/images/navHelp.png")
-    ImageResource navHelp();
+    @Source("style/images/navDiscoverActive.png")
+    ImageResource navDiscoverActive();
 
     @Source("style/images/red-error-icon-sm.png")
     ImageResource redErrorIconSmall();

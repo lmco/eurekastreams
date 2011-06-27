@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +33,11 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
+import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
@@ -45,6 +48,7 @@ import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
+import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
@@ -68,7 +72,11 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -79,6 +87,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -107,6 +116,13 @@ public class ActivityContent extends Composite
          * @return Active stream style.
          */
         String activeStream();
+
+        /**
+         * Condensed Stream view.
+         * 
+         * @return Condensed Stream view.
+         */
+        String condensedStream();
     }
 
     /**
@@ -126,6 +142,12 @@ public class ActivityContent extends Composite
      */
     @UiField
     UListElement bookmarkList;
+
+    /**
+     * UI element for stream container.
+     */
+    @UiField
+    HTMLPanel streamContainerPanel;
 
     /**
      * UI element for filters.
@@ -266,6 +288,12 @@ public class ActivityContent extends Composite
     Label moreLink;
 
     /**
+     * UI element for adding a bookmark.
+     */
+    @UiField
+    Label addBookmark;
+
+    /**
      * Expand/Collapse animation.
      */
     private ExpandCollapseAnimation detailsContainerAnimation;
@@ -301,6 +329,17 @@ public class ActivityContent extends Composite
     private static final int DEFAULT_STREAM_DETAILS_CONTAINER_SIZE = 330;
 
     /**
+     * Search Box.
+     */
+    @UiField
+    TextBox searchBox;
+
+    /**
+     * Current stream scope.
+     */
+    private StreamScope currentStream;
+
+    /**
      * Expand animation duration.
      */
     private static final int EXPAND_ANIMATION_DURATION = 500;
@@ -329,16 +368,18 @@ public class ActivityContent extends Composite
         final StreamAnalyticsChart chart = new StreamAnalyticsChart();
 
         addEventHandlers();
+        addObservers();
 
         defaultList.appendChild(createLI("Following", "following"));
         defaultList.appendChild(createLI("Everyone", "everyone"));
 
-        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getPreferredName(), "person/"
+        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
                 + Session.getInstance().getCurrentPerson().getAccountId()));
 
         streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
 
         CustomStreamModel.getInstance().fetch(null, true);
+        StreamBookmarksModel.getInstance().fetch(null, true);
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         analyticsChartContainer.add(chart);
@@ -349,16 +390,8 @@ public class ActivityContent extends Composite
     /**
      * Add events.
      */
-    private void addEventHandlers()
+    private void addObservers()
     {
-        toggleDetails.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                detailsContainerAnimation.toggle();
-            }
-        });
-
         EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
         {
 
@@ -436,18 +469,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        moreLink.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                moreSpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-
-                JSONObject moreItemsRequest = StreamJsonRequestFactory.setMaxId(longOldestActivityId,
-                        StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
-
-                StreamModel.getInstance().fetch(moreItemsRequest.toString(), false);
-            }
-        });
         EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
@@ -524,6 +545,42 @@ public class ActivityContent extends Composite
                     }
                 });
 
+        EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
+                new Observer<GotCurrentUserStreamBookmarks>()
+                {
+                    public void update(final GotCurrentUserStreamBookmarks event)
+                    {
+
+                        for (StreamFilter filter : event.getResponse())
+                        {
+                            JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
+                            String uniqueId = null;
+                            String entityType = null;
+
+                            if (req.containsKey("query"))
+                            {
+                                JSONObject query = req.get("query").isObject();
+                                if (query.containsKey(StreamJsonRequestFactory.RECIPIENT_KEY))
+                                {
+                                    JSONArray recipient = query.get(StreamJsonRequestFactory.RECIPIENT_KEY).isArray();
+                                    if (recipient.size() > 0)
+                                    {
+                                        JSONObject recipientObj = recipient.get(0).isObject();
+                                        uniqueId = recipientObj.get("name").isString().stringValue();
+                                        entityType = recipientObj.get("type").isString().stringValue().toLowerCase();
+                                    }
+                                }
+
+                            }
+
+                            if (uniqueId != null && entityType != null)
+                            {
+                                bookmarkList.appendChild(createLI(filter.getName(), entityType + "/" + uniqueId));
+                            }
+                        }
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
                 new Observer<GotGroupModelViewInformationResponseEvent>()
                 {
@@ -558,6 +615,69 @@ public class ActivityContent extends Composite
                 longNewestActivityId = event.getMessage().getId();
                 appendActivity(event.getMessage());
 
+            }
+        });
+
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                    }
+                });
+
+    }
+
+    /**
+     * Add events.
+     */
+    private void addEventHandlers()
+    {
+        toggleDetails.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                detailsContainerAnimation.toggle();
+            }
+        });
+
+        moreLink.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                moreSpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+
+                JSONObject moreItemsRequest = StreamJsonRequestFactory.setMaxId(longOldestActivityId,
+                        StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
+
+                StreamModel.getInstance().fetch(moreItemsRequest.toString(), false);
+            }
+        });
+
+        searchBox.addKeyUpHandler(new KeyUpHandler()
+        {
+            public void onKeyUp(final KeyUpEvent event)
+            {
+                if (searchBox.getText().length() > 3 || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER
+                        || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_BACKSPACE
+                        || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_DELETE)
+                {
+                    EventBus.getInstance().notifyObservers(
+                            new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
+                }
+            }
+        });
+
+        addBookmark.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                HashMap<String, Serializable> request = new HashMap<String, Serializable>();
+                request.put("bookmark", currentStream);
+
+                StreamBookmarksModel.getInstance().insert(request);
             }
         });
 
@@ -606,19 +726,32 @@ public class ActivityContent extends Composite
      */
     private void loadStream(final List<String> views)
     {
+        loadStream(views, "");
+    }
+
+    /**
+     * Load a stream.
+     * 
+     * @param views
+     *            the stream history link.
+     * @param searchTerm
+     *            the search term.
+     */
+    private void loadStream(final List<String> views, final String searchTerm)
+    {
         boolean singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         moreLink.setVisible(false);
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         Session.getInstance().getActionProcessor().setQueueRequests(true);
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
-        StreamScope currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
-                .getAccountId());
+        currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             streamName.setInnerHTML("Following");
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -627,6 +760,7 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
+            streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -635,20 +769,29 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
+            streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             streamName.setInnerHTML("Custom Stream");
             currentStream.setScopeType(null);
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("everyone"))
         {
             streamName.setInnerHTML("Everyone");
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.size() == 1)
         {
             singleActivityMode = true;
+            streamContainerPanel.addStyleName(style.condensedStream());
+        }
+
+        if (searchTerm.length() > 0)
+        {
+            currentRequestObj = StreamJsonRequestFactory.setSearchTerm(searchTerm, currentRequestObj);
         }
 
         if (!singleActivityMode)
