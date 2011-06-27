@@ -43,16 +43,21 @@ public class StreamsDiscoveryModel extends BaseModel implements Fetchable<Serial
 
     /**
      * Fetch a StreamDiscoverListsDTO response from the server, fire a GotStreamDiscoverListsDTOResponseEvent.
+     * 
+     * @param inRequest
+     *            the request - ignored
+     * @param inUseClientCacheIfAvailable
+     *            whether to use cache
      */
-    public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
+    public void fetch(final Serializable inRequest, final boolean inUseClientCacheIfAvailable)
     {
-        super.callReadAction("getStreamDiscoverListsDTOAction", request, new OnSuccessCommand<StreamDiscoverListsDTO>()
+        super.callReadAction("getStreamDiscoverListsDTOAction", null, new OnSuccessCommand<StreamDiscoverListsDTO>()
         {
             public void onSuccess(final StreamDiscoverListsDTO response)
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new GotStreamDiscoverListsDTOResponseEvent(response));
             }
-        }, useClientCacheIfAvailable);
+        }, inUseClientCacheIfAvailable);
     }
 }
