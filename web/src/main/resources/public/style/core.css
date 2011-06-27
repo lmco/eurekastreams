@@ -182,10 +182,9 @@ body .main-contents .header-container {
 	top: 52px;
 }
 
-@sprite .header-bar .search-list {
-	gwt-image: "globalNavBar5px";
+.header-bar .search-list {
 	background-repeat: repeat-x;
-	height: 24px;
+	height: 50px;
 	width: auto;
 	overflow: visible;
 }
@@ -338,8 +337,9 @@ ul.horizontal li div {
 
 .globalSearchBoxNav
 {
-	height: 35px;
-	padding-left: 10px;
+	height: 50px;
+	padding-top: 0 ! important;
+	padding-right: 0px ! important;
 }
 
 .globalSearchBoxActive
@@ -1556,35 +1556,45 @@ body .post-expanded-panel .content-warning {
 }
 
 .header-bar .search-list {
-	position: relative;
-	top: -3px;
+	padding-top: 15px;
+	height: 35px;
+	padding-left: 10px;
+	padding-right: 10px;	
 }
 
 .searchResultsAutocompleteResults
 {
-	position: absolute;
 	background-color: white;
-	top: 38px;
-	padding-left: 0;
-	padding-bottom: 5px;
-	padding-top: 5px;
-	width: 228px;
-	z-index: 1001;
-	border-bottom: 1px solid #999;
-	border-right: 1px solid #999;
-	border-left: 1px solid #999;
+	 border-bottom: 1px solid #999999;
+	 border-left: 1px solid #999999;
+	 border-right: 1px solid #999999;
+	 margin-left: -10px;
+	 padding-bottom: 5px;
+	 padding-left: 0;
+	 padding-top: 5px;
+	 position: absolute;
+	 top: 50px;
+	 width: 244px;
+	 z-index: 1001;
+}
+
+.searchResultsAutocompleteResults > div
+{
+	display: block ! important;
 }
 
 .searchResultsAutocompleteResults > div > div
 {
 	padding-bottom: 5px;
 	padding-top: 5px;
-	width: 228px;
+	cursor: pointer;
+	display: block ! important;
+	overflow: hidden;
 }
 
 .searchResultsAutocompleteResults > div > div:hover
 {
-	background-color: #5EACD7;
+	background-image: url(style/images/searchResultsBackground.png);
 }
 
 .header-bar .search-list .searchResultsAutocompleteResults .avatar

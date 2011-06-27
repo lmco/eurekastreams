@@ -25,18 +25,22 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 import org.eurekastreams.web.client.ui.common.notification.NotificationCountWidget;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HeaderComposite draws the header bar for the user.
- *
  */
 public class HeaderComposite extends Composite
 {
@@ -87,8 +91,8 @@ public class HeaderComposite extends Composite
      */
     public HeaderComposite()
     {
-        Session.getInstance().getEventBus()
-                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent eventArg)
                     {
@@ -105,7 +109,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     *
+     * 
      * @param viewer
      *            - user to display.
      */
@@ -149,7 +153,7 @@ public class HeaderComposite extends Composite
             settingsLinkPanel.add(settingsLink);
             settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
         }
-        
+
         linkMap.put(Page.START, startPageLink);
         linkMap.put(Page.ACTIVITY, activityLink);
         linkMap.put(Page.DISCOVER, directoryLink);
@@ -158,7 +162,7 @@ public class HeaderComposite extends Composite
         linkMap.put(Page.GROUP_SETTINGS, directoryLink);
         linkMap.put(Page.PERSONAL_SETTINGS, directoryLink);
         linkMap.put(Page.SETTINGS, settingsLink);
-        
+
         HorizontalULPanel mainNav = new HorizontalULPanel();
 
         userNav = new HorizontalULPanel();
@@ -166,85 +170,52 @@ public class HeaderComposite extends Composite
 
         mainNav.add(externalPageLinkPanel);
 
-        if (null == viewer) // The user is NOT logged in.
+        // The user IS logged in
+        mainNav.add(startPageLinkPanel);
+        mainNav.add(activityLinkPanel);
+        mainNav.add(directoryLinkPanel);
+        mainNav.add(galleryLinkPanel);
+        notif.init();
+        userNav.add(notif);
+
+        FlowPanel myProfileLinkPanel = new FlowPanel();
+        myProfileLinkPanel.add(myProfileLink);
+        userNav.add(myProfileLinkPanel);
+
+        userNav.add(settingsLinkPanel);
+
+        if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
         {
-            final Dialog loginDialog = DialogFactory.getDialog("login");
             userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
-            final Dialog loginDialog = DialogFactory.getDialog("login");
-            Hyperlink loginLink = new Hyperlink();
-            loginLink.setText("Login");
-
-            loginLink.addClickListener(new ClickListener()
-            {
-                public void onClick(final Widget arg0)
-                {
-                    loginDialog.show();
-                }
-            });
-
-            loginLink.setTargetHistoryToken(History.getToken());
-            userNav.add(loginLink);
-
         }
-        else
-        {
-            // The user IS logged in
-            mainNav.add(startPageLinkPanel);
-            mainNav.add(activityLinkPanel);
-            mainNav.add(directoryLinkPanel);
-            mainNav.add(galleryLinkPanel);
-            notif.init();
-            userNav.add(notif);
 
-            FlowPanel myProfileLinkPanel = new FlowPanel();
-            myProfileLinkPanel.add(myProfileLink);
-            userNav.add(myProfileLinkPanel);
+        // Note: The profile search box is created at constructor time because it registers listeners on the event
+        // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
+        // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
+        // page change.
+        userNav.add(profileSearchBox, StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxNav());
 
-            userNav.add(settingsLinkPanel);
+        // Style the Elements
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
+        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBar());
+        siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
+        mainNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainNav());
+        userNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().userBar());
 
-            if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
-            {
-                userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
-            }
+        // Add the elements to the main panel
+        navPanel.add(mainNav);
+        navPanel.add(userNav);
+        panel.add(navPanel);
 
-            // Note: The profile search box is created at constructor time because it registers listeners on the event
-            // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
-            // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
-            // page change.
-            userNav.add(profileSearchBox, StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxNav());
+        panel.add(siteLabelingContainer);
 
-            if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
-            {
-                userNav.add(new Anchor("Logout", "/j_spring_security_logout"));
-            }
-
-            // Note: The profile search box is created at constructor time because it registers listeners on the event
-            // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
-            // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
-            // page change.
-            userNav.add(profileSearchBox);
-
-            // Style the Elements
-            panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
-            navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBar());
-            siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
-            mainNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainNav());
-            userNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().userBar());
-
-            // Add the elements to the main panel
-            navPanel.add(mainNav);
-            navPanel.add(userNav);
-            panel.add(navPanel);
-
-            panel.add(siteLabelingContainer);
-    
-            initWidget(panel);
-            setActive(Session.getInstance().getUrlPage());
+        initWidget(panel);
+        setActive(Session.getInstance().getUrlPage());
     }
 
     /**
      * Sets Site labeling.
-     *
+     * 
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -259,7 +230,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     *
+     * 
      * @param page
      *            the page to activate.
      */

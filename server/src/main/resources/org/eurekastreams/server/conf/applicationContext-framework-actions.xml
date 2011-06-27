@@ -2841,6 +2841,21 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
+    
+    <bean id="insertStreamBookmark" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.stream.InsertStreamBookmarkExecution">
+                <constructor-arg>
+                    <ref bean="findByIdMapper" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
 
     <bean id="undeleteGadget" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -3657,7 +3672,7 @@
             <bean class="org.eurekastreams.server.action.execution.stream.GetCurrentUsersBookmarksExecution">
                 <constructor-arg ref="getUserBookmarksMapper" />
 		        <constructor-arg>
-        			<bean class="org.eurekastreams.server.domain.strategies.BookmarkStreamFilterAdapter">
+        			<bean class="org.eurekastreams.server.domain.strategies.BookmarkStreamFilterTransformer">
                         <constructor-arg ref="getPeopleByAccountIdsMapper" />   
 						<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
             		</bean>

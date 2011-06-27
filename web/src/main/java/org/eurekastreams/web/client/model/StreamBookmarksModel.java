@@ -23,9 +23,6 @@ import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
-import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * Custom stream model.
@@ -68,7 +65,12 @@ public class StreamBookmarksModel extends BaseModel implements Fetchable<Seriali
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-
+        super.callWriteAction("insertStreamBookmark", request.get("bookmark"), new OnSuccessCommand<StreamScope>()
+        {
+            public void onSuccess(final StreamScope response)
+            {
+            }
+        });
     }
 
     /**

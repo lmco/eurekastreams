@@ -41,6 +41,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -91,7 +93,7 @@ public class GlobalSearchComposite extends FlowPanel
         resultsPanelContainer.add(resultsPanel);
 
         final EventBus eventBus = Session.getInstance().getEventBus();
-        
+
         final GlobalSearchComposite thisClass = this;
 
         searchTerm.addKeyUpHandler(new KeyUpHandler()
@@ -128,6 +130,7 @@ public class GlobalSearchComposite extends FlowPanel
         {
             public void onClick(ClickEvent event)
             {
+                searchTerm.reset();
                 resultsPanelContainer.setVisible(false);
                 resultsPanel.clear();
                 thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
@@ -143,9 +146,10 @@ public class GlobalSearchComposite extends FlowPanel
 
                 for (ModelView result : event.getResponse().getPagedSet())
                 {
-                    FlowPanel itemPanel = new FlowPanel();
-                    Anchor name = new Anchor();
-                    Label desc = new Label();
+                    final FocusPanel itemContainer = new FocusPanel();
+                    final FlowPanel itemPanel = new FlowPanel();
+                    final Anchor name = new Anchor();
+                    final Label desc = new Label();
 
                     if (result instanceof PersonModelView)
                     {
@@ -173,7 +177,16 @@ public class GlobalSearchComposite extends FlowPanel
                     itemPanel.add(name);
                     itemPanel.add(desc);
 
-                    resultsPanel.add(itemPanel);
+                    itemContainer.addClickHandler(new ClickHandler()
+                    {
+                        public void onClick(ClickEvent event)
+                        {
+                            Window.Location.assign(name.getHref());
+                        }
+                    });
+
+                    itemContainer.add(itemPanel);
+                    resultsPanel.add(itemContainer);
                 }
             }
         });

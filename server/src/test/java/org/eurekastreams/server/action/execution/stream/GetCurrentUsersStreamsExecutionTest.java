@@ -92,7 +92,7 @@ public class GetCurrentUsersStreamsExecutionTest
     @BeforeClass
     public static final void setup()
     {
-        sut = new GetCurrentUsersStreamsExecution(getUserStreamsMapper, personMapper);
+        sut = new GetCurrentUsersStreamsExecution(getUserStreamsMapper);
     }
 
     /**

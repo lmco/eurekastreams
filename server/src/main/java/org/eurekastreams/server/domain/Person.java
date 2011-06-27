@@ -1871,4 +1871,20 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         sourceList = inSourceList;
     }
 
+    /**
+     * @param bookmarks the bookmarks to set.
+     */
+    public void setBookmarks(final List<StreamScope> bookmarks)
+    {
+        this.bookmarks = bookmarks;
+    }
+
+    /**
+     * @return the bookmarks.
+     */
+    public List<StreamScope> getBookmarks()
+    {
+        return bookmarks;
+    }
+
 }

@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -45,8 +44,10 @@ public class GetCurrentUsersBookmarksExecution implements ExecutionStrategy<Prin
     /**
      * Constructor.
      * 
-     * @param inGetUserBookmarksTransformer
-     *            bookmarks transformer.
+     * @param inGetUserBookmarksMapper
+     *            mapper for user bookmarks.
+     * @param inBookmarkTransformer
+     *            transformer for bookmarks.
      */
     public GetCurrentUsersBookmarksExecution(final DomainMapper<Long, List<StreamScope>> inGetUserBookmarksMapper,
             final Transformer<List<StreamScope>, List<StreamFilter>> inBookmarkTransformer)

@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -142,6 +143,9 @@ public class ActivityContent extends Composite
     @UiField
     UListElement bookmarkList;
 
+    @UiField
+    HTMLPanel streamContainerPanel;
+    
     /**
      * UI element for filters.
      */
@@ -280,6 +284,9 @@ public class ActivityContent extends Composite
     @UiField
     Label moreLink;
 
+    @UiField
+    Label addBookmark;
+
     /**
      * Expand/Collapse animation.
      */
@@ -320,6 +327,8 @@ public class ActivityContent extends Composite
      */
     @UiField
     TextBox searchBox;
+
+    private StreamScope currentStream;
 
     /**
      * Expand animation duration.
@@ -643,6 +652,17 @@ public class ActivityContent extends Composite
             }
         });
 
+        addBookmark.addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent event)
+            {
+                HashMap<String, Serializable> request = new HashMap<String, Serializable>();
+                request.put("bookmark", currentStream);
+                
+                StreamBookmarksModel.getInstance().insert(request);
+            }
+        });
+
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
             public boolean execute()
@@ -707,14 +727,14 @@ public class ActivityContent extends Composite
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         Session.getInstance().getActionProcessor().setQueueRequests(true);
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
-        StreamScope currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
+        currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson()
                 .getAccountId());
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             streamName.setInnerHTML("Following");
-            streamDetailsContainer.addClassName(style.condensedStream());
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -723,7 +743,7 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
-            streamDetailsContainer.removeClassName(style.condensedStream());
+            streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -732,24 +752,24 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
-            streamDetailsContainer.removeClassName(style.condensedStream());
+            streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             streamName.setInnerHTML("Custom Stream");
             currentStream.setScopeType(null);
-            streamDetailsContainer.addClassName(style.condensedStream());
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("everyone"))
         {
             streamName.setInnerHTML("Everyone");
-            streamDetailsContainer.addClassName(style.condensedStream());
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.size() == 1)
         {
             singleActivityMode = true;
-            streamDetailsContainer.addClassName(style.condensedStream());
+            streamContainerPanel.addStyleName(style.condensedStream());
         }
 
         if (searchTerm.length() > 0)
