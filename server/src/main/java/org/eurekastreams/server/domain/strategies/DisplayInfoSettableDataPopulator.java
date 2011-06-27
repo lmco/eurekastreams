@@ -30,7 +30,8 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * Populate transient data for DisplayInfoSettable.
  */
-public class DisplayInfoSettableDataPopulator
+public class DisplayInfoSettableDataPopulator implements
+        DomainMapper<List<DisplayInfoSettable>, List<DisplayInfoSettable>>
 {
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
@@ -61,14 +62,11 @@ public class DisplayInfoSettableDataPopulator
     /**
      * Populate transient data in DisplaySettables.
      * 
-     * @param inCurrentUserId
-     *            Current user id.
      * @param inDisplaySettables
      *            the DTOs to update display settings for
      * @return Populated DisplayInfoSettable.
      */
-    public List<DisplayInfoSettable> execute(final long inCurrentUserId,
-            final List<DisplayInfoSettable> inDisplaySettables)
+    public List<DisplayInfoSettable> execute(final List<DisplayInfoSettable> inDisplaySettables)
     {
         // sort by entity type to optimize calls to cache.
         List<String> personAccountIds = new ArrayList<String>();

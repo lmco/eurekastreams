@@ -137,7 +137,7 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
         // fill in the avatars and display names of all of the StreamDTOs
         log.info("BEGIN setting the display info on " + displayInfoSettables.size()
                 + " GroupModelViews and PersonModelViews");
-        displayInfoSettableDataPopulator.execute(personId, displayInfoSettables);
+        displayInfoSettableDataPopulator.execute(displayInfoSettables);
         log.info("END setting the display info on " + displayInfoSettables.size()
                 + " GroupModelViews and PersonModelViews");
 

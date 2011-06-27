@@ -42,7 +42,6 @@
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />	
-	<util:constant id="CacheKeys.FEATURED_STREAMS" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FEATURED_STREAMS" />
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -805,33 +804,6 @@
         </constructor-arg>       
     </bean>      
     
-    <bean id="getFeaturedStreamsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-        <!-- Cache Mapper -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-                        <constructor-arg ref="CacheKeys.FEATURED_STREAMS"/>
-                        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
-                        <property name="cache" ref="memcachedCache" />
-                    </bean>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <!-- Database mapper to fall back on if not found in cache -->
-        <constructor-arg ref="getFeaturedStreamsDbMapper"/>         
-        <!-- Results combiner:  return whichever is not null -->
-        <constructor-arg ref="nonNullResultsCombiner" />
-        <!-- Cache refresher -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-                <constructor-arg ref="CacheKeys.FEATURED_STREAMS" />
-                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
-                <property name="cache" ref="memcachedCache" />
-            </bean> 
-        </constructor-arg>       
-    </bean>    
-    
     <bean id="getPersonPagePropertiesById" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
         <constructor-arg>
@@ -1494,7 +1466,7 @@
 		<constructor-arg value="10000" />
 	</bean>
 
-	<bean
+    <bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
@@ -2156,11 +2128,22 @@
         <constructor-arg ref="membershipCriteriaListToMembershipCriteriaDTOListTransformer" />
     </bean>
 
+    <bean id="displayInfoSettableDataPopulator" class="org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator">
+        <constructor-arg ref="getPeopleByAccountIdsMapper"/>
+        <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
+    </bean>
+
     <bean id="membershipCriteriaListToMembershipCriteriaDTOListTransformer"
         class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaListToMembershipCriteriaDTOListTransformer" /> 
         
-    <bean id="getFeaturedStreamsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFeaturedStreamDTOsDbMapper" />
-
+    <!-- Mapper to get the featured streams from the database, then fill in the display info from cache/db -->
+    <bean id="getFeaturedStreamsMapper" class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetFeaturedStreamDTOsDbMapper" />
+        </constructor-arg>
+        <constructor-arg ref="displayInfoSettableDataPopulator" />
+    </bean>
+        
     <!-- Metrics -->
     <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />
     <bean id="usageMetricStreamSummaryRequestToStreamScopeIdTransformer" class="org.eurekastreams.server.persistence.mappers.db.metrics.UsageMetricStreamSummaryRequestToStreamScopeIdTransformer" />
@@ -2433,10 +2416,7 @@
     <!-- This will be refreshed hourly -->
     <!-- DB mapper to get all of the lists from the database -->
     <bean id="streamDiscoverListsDbMapper" class="org.eurekastreams.server.persistence.mappers.StreamDiscoverListsMapper">
-        <constructor-arg>
-            <!-- Featured streams -->
-            <bean class="org.eurekastreams.server.persistence.mappers.db.GetFeaturedStreamDTOsDbMapper" />
-        </constructor-arg>
+        <constructor-arg ref="getFeaturedStreamsMapper" />
         <constructor-arg>
             <!-- Most Active Streams (sorted by average daily message count) -->
 	        <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByDailyAverageMessageCountDbMapper">

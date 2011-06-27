@@ -200,8 +200,7 @@ public class GetStreamDiscoverListsDTOExecutionTest
                 oneOf(streamDiscoveryListsMapper).execute(null);
                 will(returnValue(result));
 
-                oneOf(displayInfoSettableDataPopulator).execute(with(IsEqualInternally.equalInternally(personId)),
-                        with(IsEqualInternally.equalInternally(combinedList)));
+                oneOf(displayInfoSettableDataPopulator).execute(with(IsEqualInternally.equalInternally(combinedList)));
                 will(returnValue(combinedList));
 
                 oneOf(followerStatusPopulator).execute(with(personId), with(combinedList),

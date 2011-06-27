@@ -17,14 +17,11 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.DeleteCacheKeys;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -65,11 +62,6 @@ public class DeleteFeaturedStreamExecutionTest
     private DomainMapper<Long, Void> deleteMapper = context.mock(DomainMapper.class, "deleteMapper");
 
     /**
-     * Mapper for deleting cache keys.
-     */
-    private DeleteCacheKeys deleteCacheKeyDAO = context.mock(DeleteCacheKeys.class, "deleteCacheKeyDAO");
-
-    /**
      * FeaturedStream id.
      */
     private Long featuredStreamId = 5L;
@@ -77,7 +69,7 @@ public class DeleteFeaturedStreamExecutionTest
     /**
      * System under test.
      */
-    private DeleteFeaturedStreamExecution sut = new DeleteFeaturedStreamExecution(deleteMapper, deleteCacheKeyDAO);
+    private DeleteFeaturedStreamExecution sut = new DeleteFeaturedStreamExecution(deleteMapper);
 
     /**
      * Test.
@@ -98,8 +90,6 @@ public class DeleteFeaturedStreamExecutionTest
 
                 allowing(deleteMapper).execute(featuredStreamId);
 
-                oneOf(deleteCacheKeyDAO).execute(with(any(Set.class)));
-
                 allowing(taskHandlerConext).getUserActionRequests();
                 will(returnValue(requests));
             }
@@ -107,10 +97,9 @@ public class DeleteFeaturedStreamExecutionTest
 
         sut.execute(taskHandlerConext);
 
-        // check to make sure the right cache keys will be cleared
-        Set<String> keysToDelete = (Set<String>) (requests.get(0)).getParams();
-        Assert.assertEquals(1, keysToDelete.size());
-        Assert.assertTrue(keysToDelete.contains(CacheKeys.FEATURED_STREAMS));
+        // make sure the discover lists cache is rebuilt
+        Assert.assertEquals(1, requests.size());
+        Assert.assertEquals("regenerateStreamDiscoverListsJob", requests.get(0).getActionKey());
 
         context.assertIsSatisfied();
     }

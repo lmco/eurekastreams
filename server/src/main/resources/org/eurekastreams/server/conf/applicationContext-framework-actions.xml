@@ -160,6 +160,17 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="getFeaturedStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getFeaturedStreamsMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
     <bean id="addFeaturedStream" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg>
@@ -180,7 +191,6 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
                 </constructor-arg>
-                <constructor-arg ref="deleteCacheKeys" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -199,7 +209,6 @@
                         <constructor-arg value="org.eurekastreams.server.domain.stream.FeaturedStream" />
                     </bean>                        
                 </constructor-arg>
-                <constructor-arg ref="deleteCacheKeys" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -4146,11 +4155,6 @@
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
     </bean>
     
-    <bean id="displayInfoSettableDataPopulator" class="org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator">
-        <constructor-arg ref="getPeopleByAccountIdsMapper"/>
-        <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
-    </bean>
-
     <bean id="documentCreator" class="org.eurekastreams.server.service.actions.strategies.DocumentCreator">
         <constructor-arg>
             <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
