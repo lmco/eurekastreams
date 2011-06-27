@@ -2133,7 +2133,12 @@
         <constructor-arg ref="getPeopleByAccountIdsMapper"/>
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
     </bean>
-
+    
+    <bean id="followerStatusPopulator" class="org.eurekastreams.server.domain.strategies.FollowerStatusPopulator">
+        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
+        <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
+    </bean>
+    
     <bean id="membershipCriteriaListToMembershipCriteriaDTOListTransformer"
         class="org.eurekastreams.server.persistence.mappers.cache.MembershipCriteriaListToMembershipCriteriaDTOListTransformer" /> 
         
@@ -2414,7 +2419,7 @@
 
 
     <!-- **** STREAM DISCOVERY PAGE **** -->
-    <!-- This will be refreshed hourly -->
+    <!-- This will be refreshed on a crontab -->
     <!-- DB mapper to get all of the lists from the database -->
     <bean id="streamDiscoverListsDbMapper" class="org.eurekastreams.server.persistence.mappers.StreamDiscoverListsMapper">
         <constructor-arg ref="getFeaturedStreamsMapper" />
@@ -2492,6 +2497,9 @@
             </bean>
         </constructor-arg>
     </bean>
+    
+    <bean id="getSuggestedPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSuggestedPeopleForPersonDbMapper" />
+    <bean id="getSuggestedGroupsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSuggestedGroupsForPersonDbMapper" />
     
     
 </beans>
