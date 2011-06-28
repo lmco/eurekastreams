@@ -19,13 +19,13 @@ import static junit.framework.Assert.assertEquals;
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.requests.notification.GetNotificationFilterPreferenceRequest;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,10 +33,10 @@ import org.junit.Test;
 /**
  * Integration test of the mapper.
  */
-public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
+public class GetNotificationFilterPreferencesByPersonIdsAndCategoriesTest extends MapperTest
 {
     /** System under test. */
-    private GetNotificationFilterPreferencesByPeopleIds sut;
+    private GetNotificationFilterPreferencesByPersonIdsAndCategories sut;
 
     /** Id for smithers. */
     static final long SMITHERS_ID = 98L;
@@ -53,7 +53,7 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     @Before
     public void setUp()
     {
-        sut = new GetNotificationFilterPreferencesByPeopleIds();
+        sut = new GetNotificationFilterPreferencesByPersonIdsAndCategories();
         sut.setEntityManager(getEntityManager());
     }
 
@@ -63,19 +63,33 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     @Test
     public void testExecuteMultipleRows()
     {
-        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(FORDP_ID, "email", "FOLLOW");
+        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(FORDP_ID, "email", "COMMENT");
         NotificationFilterPreferenceDTO expected2 = new NotificationFilterPreferenceDTO(FORDP_ID, "email", "LIKE");
         NotificationFilterPreferenceDTO expected3 = new NotificationFilterPreferenceDTO(BURNS_ID, "email", "COMMENT");
 
-        List<Long> peopleIds = new ArrayList<Long>();
-        peopleIds.add(FORDP_ID);
-        peopleIds.add(BURNS_ID);
-
-        Collection<NotificationFilterPreferenceDTO> list = sut.execute(peopleIds);
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Arrays.asList(FORDP_ID, BURNS_ID), Arrays.asList("COMMENT", "LIKE")));
 
         assertEquals(3, list.size());
         assertTrue(Matchers.hasItem(equalInternally(expected1)).matches(list));
         assertTrue(Matchers.hasItem(equalInternally(expected2)).matches(list));
+        assertTrue(Matchers.hasItem(equalInternally(expected3)).matches(list));
+    }
+
+    /**
+     * Test with multiple users preferences.
+     */
+    @Test
+    public void testExecuteLimitByCategory()
+    {
+        NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(FORDP_ID, "email", "COMMENT");
+        NotificationFilterPreferenceDTO expected3 = new NotificationFilterPreferenceDTO(BURNS_ID, "email", "COMMENT");
+
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Arrays.asList(FORDP_ID, BURNS_ID), Arrays.asList("COMMENT")));
+
+        assertEquals(2, list.size());
+        assertTrue(Matchers.hasItem(equalInternally(expected1)).matches(list));
         assertTrue(Matchers.hasItem(equalInternally(expected3)).matches(list));
     }
 
@@ -87,7 +101,8 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     {
         NotificationFilterPreferenceDTO expected1 = new NotificationFilterPreferenceDTO(BURNS_ID, "email", "COMMENT");
 
-        Collection<NotificationFilterPreferenceDTO> list = sut.execute(Arrays.asList(BURNS_ID));
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Arrays.asList(BURNS_ID), Arrays.asList("COMMENT", "LIKE")));
 
         assertEquals(1, list.size());
         assertTrue(Matchers.hasItem(equalInternally(expected1)).matches(list));
@@ -99,7 +114,8 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     @Test
     public void testExecuteZeroRows()
     {
-        Collection<NotificationFilterPreferenceDTO> list = sut.execute(Arrays.asList(SMITHERS_ID));
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Arrays.asList(SMITHERS_ID), Arrays.asList("COMMENT", "LIKE")));
         assertEquals(0, list.size());
     }
 
@@ -109,7 +125,8 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     @Test
     public void testExecuteWithEmptyRecipients()
     {
-        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new ArrayList<Long>());
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Collections.EMPTY_LIST, Collections.singleton("category")));
         assertEquals(0, list.size());
     }
 
@@ -119,7 +136,30 @@ public class GetNotificationFilterPreferencesByPeopleIdsTest extends MapperTest
     @Test
     public void testExecuteWithNullRecipients()
     {
-        Collection<NotificationFilterPreferenceDTO> list = sut.execute(null);
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                null, Collections.singleton("category")));
+        assertEquals(0, list.size());
+    }
+
+    /**
+     * Test empty Categories.
+     */
+    @Test
+    public void testExecuteWithEmptyCategories()
+    {
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Collections.singleton(BURNS_ID), Collections.EMPTY_LIST));
+        assertEquals(0, list.size());
+    }
+
+    /**
+     * Test null Categories.
+     */
+    @Test
+    public void testExecuteWithNullCategories()
+    {
+        Collection<NotificationFilterPreferenceDTO> list = sut.execute(new GetNotificationFilterPreferenceRequest(
+                Collections.singleton(BURNS_ID), null));
         assertEquals(0, list.size());
     }
 }

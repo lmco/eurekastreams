@@ -62,7 +62,7 @@ public class PostGroupStreamTranslator implements NotificationTranslator<Activit
             return null;
         }
 
-        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_JOINED_GROUP, memberIdsToNotify);
+        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_FOLLOWED_STREAM, memberIdsToNotify);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", DomainGroupModelView.class, inRequest.getTargetEntityId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());

@@ -17,19 +17,19 @@ $activity.BaseObjectType##
 #end
 
 #macro( activityUrl $stream $activity )
-#prop('eureka.web.baseurl')$pound#streamPage($stream)/$stream.uniqueId?activityId=${activity.id}##
+#prop('eureka.web.baseurl')#activity/${activity.id}##
 #end
 
 #macro( profileUrl $whom )
-#prop('eureka.web.baseurl')$pound#streamPage($whom)/${whom.uniqueId}##
+#prop('eureka.web.baseurl')#activity/#streamPage($whom)/${whom.uniqueId}##
 #end
 
 
 #macro( streamPage $stream )
 #if ($stream.EntityType == 'PERSON')
-people##
+person##
 #elseif ($stream.EntityType == 'GROUP')
-groups##
+group##
 #else
 UNKNOWN##
 #end

@@ -24,7 +24,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.velocity.Template;
@@ -34,7 +34,6 @@ import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
@@ -106,10 +105,6 @@ public class EmailNotifierTest
     /** Fixture: velocity template. */
     private final Template htmlBodyTemplate = context.mock(Template.class, "htmlBodyTemplate");
 
-    /** To fetch people for email addresses. */
-    private final DomainMapper<List<Long>, List<PersonModelView>> personsMapper = context.mock(DomainMapper.class,
-            "personsMapper");
-
     /** Dummy person. */
     private final PersonModelView person1 = context.mock(PersonModelView.class, "person1");
 
@@ -124,6 +119,9 @@ public class EmailNotifierTest
 
     /** Recipients. */
     private final Collection<Long> recipients = Collections.unmodifiableList(Arrays.asList(RECIPIENT1, RECIPIENT2));
+
+    /** Recipient index. */
+    private final Map<Long, PersonModelView> recipientIndex = new HashMap<Long, PersonModelView>();
 
     /**
      * One-time setup.
@@ -144,7 +142,11 @@ public class EmailNotifierTest
     @Before
     public void setUp()
     {
-        sut = new EmailNotifier(velocityEngine, velocityGlobalContext, templates, personsMapper, PREFIX);
+        sut = new EmailNotifier(velocityEngine, velocityGlobalContext, templates, PREFIX);
+
+        recipientIndex.clear();
+        recipientIndex.put(RECIPIENT1, person1);
+        recipientIndex.put(RECIPIENT2, person2);
     }
 
     /**
@@ -156,8 +158,8 @@ public class EmailNotifierTest
     @Test
     public void testNotifyUnknownTemplate() throws Exception
     {
-        UserActionRequest result = sut
-                .notify(NotificationType.POST_TO_GROUP_STREAM, recipients, Collections.EMPTY_MAP);
+        UserActionRequest result = sut.notify(NotificationType.PASS_THROUGH, recipients, Collections.EMPTY_MAP,
+                recipientIndex);
 
         context.assertIsSatisfied();
 
@@ -248,15 +250,8 @@ public class EmailNotifierTest
     {
         commonSetup();
 
-        context.checking(new Expectations()
-        {
-            {
-                allowing(personsMapper).execute(Collections.singletonList(RECIPIENT1));
-                will(returnValue(Collections.singletonList(person1)));
-            }
-        });
-
-        UserActionRequest result = sut.notify(OK_TYPE, Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP);
+        UserActionRequest result = sut.notify(OK_TYPE, Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP,
+                recipientIndex);
         context.assertIsSatisfied();
 
         assertNotNull(result);
@@ -281,15 +276,8 @@ public class EmailNotifierTest
     {
         commonSetup();
 
-        context.checking(new Expectations()
-        {
-            {
-                allowing(personsMapper).execute(Arrays.asList(RECIPIENT1, RECIPIENT2));
-                will(returnValue(Arrays.asList(person1, person2)));
-            }
-        });
-
-        UserActionRequest result = sut.notify(OK_TYPE, Arrays.asList(RECIPIENT1, RECIPIENT2), Collections.EMPTY_MAP);
+        UserActionRequest result = sut.notify(OK_TYPE, Arrays.asList(RECIPIENT1, RECIPIENT2), Collections.EMPTY_MAP,
+                recipientIndex);
         context.assertIsSatisfied();
 
         assertNotNull(result);

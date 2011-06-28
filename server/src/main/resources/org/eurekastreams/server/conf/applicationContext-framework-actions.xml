@@ -160,6 +160,17 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="getFeaturedStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getFeaturedStreamsMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
     <bean id="addFeaturedStream" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg>
@@ -180,7 +191,6 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
                 </constructor-arg>
-                <constructor-arg ref="deleteCacheKeys" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -199,7 +209,6 @@
                         <constructor-arg value="org.eurekastreams.server.domain.stream.FeaturedStream" />
                     </bean>                        
                 </constructor-arg>
-                <constructor-arg ref="deleteCacheKeys" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -4173,16 +4182,6 @@
         <constructor-arg value="false" />
     </bean>
     
-    <bean id="followerStatusPopulator" class="org.eurekastreams.server.domain.strategies.FollowerStatusPopulator">
-        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
-        <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper"/>
-    </bean>
-    
-    <bean id="displayInfoSettableDataPopulator" class="org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator">
-        <constructor-arg ref="getPeopleByAccountIdsMapper"/>
-        <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
-    </bean>
-
     <bean id="documentCreator" class="org.eurekastreams.server.service.actions.strategies.DocumentCreator">
         <constructor-arg>
             <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
@@ -4535,5 +4534,21 @@
         <constructor-arg value="true" />
     </bean>
 
-
+    <!-- Action to get the stream discover page lists -->
+    <bean id="getStreamDiscoverListsDTOAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean id="getStreamDiscoverListsDTO" class="org.eurekastreams.server.action.execution.GetStreamDiscoverListsDTOExecution">
+		         <constructor-arg ref="getSuggestedPeopleMapper" />
+		         <constructor-arg ref="getSuggestedGroupsMapper" />
+		         <constructor-arg value="10" />  <!-- Number of suggested streams -->
+		         <constructor-arg ref="streamDiscoverListsMapper" />
+		         <constructor-arg ref="displayInfoSettableDataPopulator" />
+		         <constructor-arg ref="followerStatusPopulator" />
+		    </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
 </beans>

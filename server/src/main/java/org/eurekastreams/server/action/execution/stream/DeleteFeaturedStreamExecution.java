@@ -16,16 +16,12 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.DeleteCacheKeys;
 
 /**
  * Action to delete a featured stream.
@@ -38,36 +34,33 @@ public class DeleteFeaturedStreamExecution implements TaskHandlerExecutionStrate
     DomainMapper<Long, Void> deleteMapper;
 
     /**
-     * Mapper for deleting cache keys.
-     */
-    private DeleteCacheKeys deleteCacheKeyDAO;
-
-    /**
      * Constructor.
      * 
      * @param inDeleteMapper
      *            Delete mapper.
-     * @param inDeleteCacheKeyDAO
-     *            Mapper for deleting cache keys.
      */
-    public DeleteFeaturedStreamExecution(final DomainMapper<Long, Void> inDeleteMapper,
-            final DeleteCacheKeys inDeleteCacheKeyDAO)
+    public DeleteFeaturedStreamExecution(final DomainMapper<Long, Void> inDeleteMapper)
     {
         deleteMapper = inDeleteMapper;
-        deleteCacheKeyDAO = inDeleteCacheKeyDAO;
     }
 
+    /**
+     * Delete the featured stream, and kick off a task to rebuild the discovery page.
+     * 
+     * @param inActionContext
+     *            the action context
+     * @return truth
+     */
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
         // delete featured stream.
         deleteMapper.execute((Long) inActionContext.getActionContext().getParams());
 
-        // Delete FeaturedStreams from cache both now and async to prevent unlikely, but possible, race condition.
-        Set<String> keysToDelete = Collections.singleton(CacheKeys.FEATURED_STREAMS);
-        deleteCacheKeyDAO.execute(keysToDelete);
+        // kick off the action to rebuild the Discover Page cache - but don't delete the key now, because it takes
+        // seconds to rebuild
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("deleteCacheKeysAction", null, (Serializable) keysToDelete));
+                new UserActionRequest("regenerateStreamDiscoverListsJob", null, null));
 
         return true;
     }

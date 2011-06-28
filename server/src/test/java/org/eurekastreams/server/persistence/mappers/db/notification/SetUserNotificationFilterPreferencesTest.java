@@ -88,7 +88,7 @@ public class SetUserNotificationFilterPreferencesTest extends MapperTest
     {
         final long personId = 42L;
         NotificationFilterPreferenceDTO dto1 = new NotificationFilterPreferenceDTO("SMS", "FOLLOW");
-        NotificationFilterPreferenceDTO dto2 = new NotificationFilterPreferenceDTO("email", "FOLLOW");
+        NotificationFilterPreferenceDTO dto2 = new NotificationFilterPreferenceDTO("email", "LIKE");
         SetUserNotificationFilterPreferencesRequest rqst = new SetUserNotificationFilterPreferencesRequest(personId,
                 Arrays.asList(dto1, dto2));
         sut.execute(rqst);
@@ -96,7 +96,7 @@ public class SetUserNotificationFilterPreferencesTest extends MapperTest
         dto1.setPersonId(personId);
         dto2.setPersonId(personId);
         checkAgainstDb(personId,
-                Arrays.asList(dto1, dto2, new NotificationFilterPreferenceDTO(personId, "email", "LIKE")));
+                Arrays.asList(dto1, dto2, new NotificationFilterPreferenceDTO(personId, "email", "COMMENT")));
     }
 
     /**
@@ -106,8 +106,8 @@ public class SetUserNotificationFilterPreferencesTest extends MapperTest
     public void testExecuteCompleteOverlap()
     {
         final long personId = 42L;
-        NotificationFilterPreferenceDTO dto1 = new NotificationFilterPreferenceDTO("email", "LIKE");
-        NotificationFilterPreferenceDTO dto2 = new NotificationFilterPreferenceDTO("email", "FOLLOW");
+        NotificationFilterPreferenceDTO dto1 = new NotificationFilterPreferenceDTO("email", "COMMENT");
+        NotificationFilterPreferenceDTO dto2 = new NotificationFilterPreferenceDTO("email", "LIKE");
         SetUserNotificationFilterPreferencesRequest rqst = new SetUserNotificationFilterPreferencesRequest(personId,
                 Arrays.asList(dto1, dto2));
         sut.execute(rqst);

@@ -1,5 +1,5 @@
 The $group.displayName group is pending approval.
 
 To see the pending group request follow this link to the Pending Groups view of the settings Pending tab:
-#prop('eureka.web.baseurl')#settings?tab=Pending&listFilter=Group+Requests
+#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForPendingGroupRequest()
 #parse('Footer.txt')

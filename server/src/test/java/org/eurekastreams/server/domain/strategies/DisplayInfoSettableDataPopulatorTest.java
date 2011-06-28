@@ -70,11 +70,6 @@ public class DisplayInfoSettableDataPopulatorTest
             getPersonModelViewsByAccountIdsMapper, getGroupModelViewsByShortNameMapper);
 
     /**
-     * User Id.
-     */
-    private long currentUserId = 5L;
-
-    /**
      * Test.
      */
     @Test
@@ -119,7 +114,7 @@ public class DisplayInfoSettableDataPopulatorTest
             }
         });
 
-        List<DisplayInfoSettable> results = sut.execute(currentUserId, fsList);
+        List<DisplayInfoSettable> results = sut.execute(fsList);
         assertEquals(2, results.size());
         assertEquals(personDisplayName, results.get(0).getDisplayName());
         assertEquals(personAvatarId, ((FeaturedStreamDTO) results.get(0)).getAvatarId());

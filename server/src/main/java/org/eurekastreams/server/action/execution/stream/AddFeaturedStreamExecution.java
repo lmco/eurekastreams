@@ -16,8 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
@@ -27,8 +25,6 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.FeaturedStream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.DeleteCacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
@@ -49,29 +45,27 @@ public class AddFeaturedStreamExecution implements TaskHandlerExecutionStrategy<
     private DomainMapper<PersistenceRequest<FeaturedStream>, Long> insertMapper;
 
     /**
-     * Mapper for deleting cache keys.
-     */
-    private DeleteCacheKeys deleteCacheKeyDAO;
-
-    /**
      * Constructor.
      * 
      * @param inStreamScopeProxyMapper
      *            StreamScope mapper.
      * @param inInsertMapper
      *            Insert mapper.
-     * @param inDeleteCacheKeyDAO
-     *            Mapper for deleting cache keys.
      */
     public AddFeaturedStreamExecution(final DomainMapper<Long, StreamScope> inStreamScopeProxyMapper,
-            final DomainMapper<PersistenceRequest<FeaturedStream>, Long> inInsertMapper,
-            final DeleteCacheKeys inDeleteCacheKeyDAO)
+            final DomainMapper<PersistenceRequest<FeaturedStream>, Long> inInsertMapper)
     {
         streamScopeProxyMapper = inStreamScopeProxyMapper;
         insertMapper = inInsertMapper;
-        deleteCacheKeyDAO = inDeleteCacheKeyDAO;
     }
 
+    /**
+     * Feature a stream, then kick off a task to rebuild the discover page cache.
+     * 
+     * @param inActionContext
+     *            the action context
+     * @return the new entity id
+     */
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
@@ -87,11 +81,10 @@ public class AddFeaturedStreamExecution implements TaskHandlerExecutionStrategy<
         // insert into datastore.
         Long entityId = insertMapper.execute(new PersistenceRequest<FeaturedStream>(entity));
 
-        // Delete FeaturedStreams from cache both now and async to prevent unlikely, but possible, race condition.
-        Set<String> keysToDelete = Collections.singleton(CacheKeys.FEATURED_STREAMS);
-        deleteCacheKeyDAO.execute(keysToDelete);
+        // kick off the action to rebuild the Discover Page cache - but don't delete the key now, because it takes
+        // seconds to rebuild
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("deleteCacheKeysAction", null, (Serializable) keysToDelete));
+                new UserActionRequest("regenerateStreamDiscoverListsJob", null, null));
 
         return entityId;
     }

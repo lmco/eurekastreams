@@ -74,12 +74,19 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
     private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator;
 
     /**
+     * The number of stream suggestions to get.
+     */
+    final int suggestionCount;
+
+    /**
      * Constructor.
      * 
      * @param inSuggestedPersonMapper
      *            mapper to get suggested people streams
      * @param inSuggestedGroupMapper
      *            mapper to get suggested group streams
+     * @param inSuggestionCount
+     *            the number of suggested streams to get
      * @param inStreamDiscoveryListsMapper
      *            mapper to get the stream discovery lists that are the same for everyone
      * @param inDisplayInfoSettableDataPopulator
@@ -90,12 +97,14 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
     public GetStreamDiscoverListsDTOExecution(
             final DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> inSuggestedPersonMapper,
             final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> inSuggestedGroupMapper,
+            final int inSuggestionCount,
             final DomainMapper<Serializable, StreamDiscoverListsDTO> inStreamDiscoveryListsMapper,
             final DisplayInfoSettableDataPopulator inDisplayInfoSettableDataPopulator,
             final FollowerStatusPopulator<DisplayInfoSettable> inFollowerStatusPopulator)
     {
         suggestedPersonMapper = inSuggestedPersonMapper;
         suggestedGroupMapper = inSuggestedGroupMapper;
+        suggestionCount = inSuggestionCount;
         streamDiscoveryListsMapper = inStreamDiscoveryListsMapper;
         displayInfoSettableDataPopulator = inDisplayInfoSettableDataPopulator;
         followerStatusPopulator = inFollowerStatusPopulator;
@@ -115,14 +124,13 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         Long personId = inActionContext.getPrincipal().getId();
-        Integer suggestionCount = (Integer) inActionContext.getParams();
 
         log.info("BEGIN getting the lists of streams that apply to all users.");
         StreamDiscoverListsDTO result = streamDiscoveryListsMapper.execute(null);
         log.info("END getting the lists of streams that apply to all users.");
 
         log.info("BEGIN getting the list of suggested streams for user " + personId);
-        getSuggestionsForPerson(personId, suggestionCount, result);
+        getSuggestionsForPerson(personId, result);
         log.info("END getting the list of suggested streams for user " + personId);
 
         // put all of the streams in a single list for transient data population
@@ -137,7 +145,7 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
         // fill in the avatars and display names of all of the StreamDTOs
         log.info("BEGIN setting the display info on " + displayInfoSettables.size()
                 + " GroupModelViews and PersonModelViews");
-        displayInfoSettableDataPopulator.execute(personId, displayInfoSettables);
+        displayInfoSettableDataPopulator.execute(displayInfoSettables);
         log.info("END setting the display info on " + displayInfoSettables.size()
                 + " GroupModelViews and PersonModelViews");
 
@@ -155,15 +163,12 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
      * 
      * @param inPersonId
      *            the person id to fetch suggested streams for
-     * @param inSuggestionCount
-     *            the number of suggestions to fetch
      * @param inStreamDiscoverLists
      *            the StreamDiscoverListsDTO to add the results to
      */
-    private void getSuggestionsForPerson(final Long inPersonId, final Integer inSuggestionCount,
-            final StreamDiscoverListsDTO inStreamDiscoverLists)
+    private void getSuggestionsForPerson(final Long inPersonId, final StreamDiscoverListsDTO inStreamDiscoverLists)
     {
-        SuggestedStreamsRequest mapperRequest = new SuggestedStreamsRequest(inPersonId, inSuggestionCount.intValue());
+        SuggestedStreamsRequest mapperRequest = new SuggestedStreamsRequest(inPersonId, suggestionCount);
         ArrayList<StreamDTO> suggestions = new ArrayList<StreamDTO>();
 
         suggestions.addAll(suggestedPersonMapper.execute(mapperRequest));
@@ -173,7 +178,10 @@ public class GetStreamDiscoverListsDTOExecution implements ExecutionStrategy<Pri
         Collections.sort(suggestions, new StreamDTOFollowerCountDescendingComparator());
 
         // return those requested
-        suggestions = new ArrayList<StreamDTO>(suggestions.subList(0, inSuggestionCount));
+        if (suggestions.size() > suggestionCount)
+        {
+            suggestions = new ArrayList<StreamDTO>(suggestions.subList(0, suggestionCount));
+        }
         inStreamDiscoverLists.setSuggestedStreams(suggestions);
     }
 }

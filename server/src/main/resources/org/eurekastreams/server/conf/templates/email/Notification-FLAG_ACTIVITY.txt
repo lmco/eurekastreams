@@ -1,5 +1,5 @@
 $actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream.
 
-To see the flagged activity follow this link to the Flagged Activities view of the settings Pending tab:
-#prop('eureka.web.baseurl')#settings?tab=Pending&listFilter=Flagged+Activities
+To see the flagged activity follow this link to the Flagged Activities view:
+#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForFlaggedActivity()
 #parse('Footer.txt')

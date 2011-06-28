@@ -120,7 +120,7 @@ public class PostGroupStreamTranslatorTest
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
-        TranslatorTestHelper.assertRecipients(results, NotificationType.POST_TO_JOINED_GROUP, members);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.POST_TO_FOLLOWED_STREAM, members);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
