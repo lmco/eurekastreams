@@ -216,7 +216,6 @@ public class ActivityContent extends Composite
      */
     private StreamScope currentStream;
 
-
     /**
      * New activity polling.
      */
@@ -244,7 +243,6 @@ public class ActivityContent extends Composite
 
         bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
                 + Session.getInstance().getCurrentPerson().getAccountId()));
-
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -334,7 +332,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
             public void update(final HistoryViewsChangedEvent event)
@@ -360,7 +357,6 @@ public class ActivityContent extends Composite
 
             }
         }, true);
-
 
         EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
                 new Observer<GotCurrentUserStreamBookmarks>()
@@ -398,7 +394,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
             public void update(final MessageStreamAppendEvent event)
@@ -426,7 +421,6 @@ public class ActivityContent extends Composite
      */
     private void addEventHandlers()
     {
-
 
         moreLink.addClickHandler(new ClickHandler()
         {
@@ -466,26 +460,26 @@ public class ActivityContent extends Composite
             }
         });
 
-//        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
-//        {
-//            public boolean execute()
-//            {
-//                if (null != currentRequestObj
-//                        && "date".equals(currentRequestObj.get("query").isObject().get("sortBy").isString()
-//                                .stringValue()))
-//                {
-//                    if (Document.get().getScrollTop() < streamDetailsContainer.getAbsoluteTop())
-//                    {
-//                        JSONObject newItemsRequest = StreamJsonRequestFactory.setMinId(longNewestActivityId,
-//                                StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
-//
-//                        StreamModel.getInstance().fetch(newItemsRequest.toString(), false);
-//                    }
-//                }
-//
-//                return Session.getInstance().getUrlPage().equals(Page.ACTIVITY);
-//            }
-//        }, NEW_ACTIVITY_POLLING_DELAY);
+        // Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+        // {
+        // public boolean execute()
+        // {
+        // if (null != currentRequestObj
+        // && "date".equals(currentRequestObj.get("query").isObject().get("sortBy").isString()
+        // .stringValue()))
+        // {
+        // if (Document.get().getScrollTop() < streamDetailsContainer.getAbsoluteTop())
+        // {
+        // JSONObject newItemsRequest = StreamJsonRequestFactory.setMinId(longNewestActivityId,
+        // StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
+        //
+        // StreamModel.getInstance().fetch(newItemsRequest.toString(), false);
+        // }
+        // }
+        //
+        // return Session.getInstance().getUrlPage().equals(Page.ACTIVITY);
+        // }
+        // }, NEW_ACTIVITY_POLLING_DELAY);
 
     }
 
@@ -556,6 +550,10 @@ public class ActivityContent extends Composite
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             currentStream.setScopeType(null);
+        }
+        else if (views.get(0).equals("everyone"))
+        {
+            currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
         }
         else if (views.size() == 1)
         {
