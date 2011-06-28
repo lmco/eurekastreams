@@ -21,13 +21,28 @@ package org.eurekastreams.web.client.ui.common.pager;
  */
 public interface PagerStrategy
 {
-    public boolean hasNext();
+    /**
+     * @return if there is a next page.
+     */
+    boolean hasNext();
 
-    public boolean hasPrev();
+    /**
+     * @return if there is a previous page.
+     */
+    boolean hasPrev();
     
-    public void next();
+    /**
+     * Page next.
+     */
+    void next();
     
-    public void prev();
+    /**
+     * Page prev.
+     */
+    void prev();
     
-    public void init();
+    /**
+     * Initialize.
+     */
+    void init();
 }

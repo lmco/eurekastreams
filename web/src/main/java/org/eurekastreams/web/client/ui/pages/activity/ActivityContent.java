@@ -535,7 +535,6 @@ public class ActivityContent extends Composite
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
-            //streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -544,7 +543,6 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
-            //streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -553,22 +551,15 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
-            //streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             currentStream.setScopeType(null);
-            //streamContainerPanel.addStyleName(style.condensedStream());
-        }
-        else if (views.get(0).equals("everyone"))
-        {
-            //streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.size() == 1)
         {
             singleActivityMode = true;
-            //streamContainerPanel.addStyleName(style.condensedStream());
         }
 
         if (searchTerm.length() > 0)

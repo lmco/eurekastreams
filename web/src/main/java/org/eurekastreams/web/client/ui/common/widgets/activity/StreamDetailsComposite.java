@@ -86,6 +86,11 @@ public class StreamDetailsComposite extends Composite
          */
         String condensedStream();
 
+        /**
+         * Unfollow style.
+         * 
+         * @return Unfollow style.
+         */
         String unFollowLink();
     }
 
@@ -434,6 +439,14 @@ public class StreamDetailsComposite extends Composite
         });
     }
 
+    /**
+     * Update the following element.
+     * 
+     * @param entityId
+     *            the id of the entity.
+     * @param type
+     *            the type.
+     */
     public void updateFollowLink(final String entityId, final EntityType type)
     {
         if (!entityId.equals(Session.getInstance().getCurrentPerson().getAccountId()))

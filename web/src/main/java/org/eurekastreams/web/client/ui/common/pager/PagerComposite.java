@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.pager;
 
-import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -63,7 +61,7 @@ public class PagerComposite extends Composite
      */
     private PagerStrategy pagerStrategy = null;
 
-    /*
+    /**
      * Default constructor.
      */
     public PagerComposite()
@@ -72,10 +70,16 @@ public class PagerComposite extends Composite
         buildPage();
     }
 
+    /**
+     * Initialize with strategy.
+     * 
+     * @param inPagerStrategy
+     *            the strategy.
+     */
     public void init(final PagerStrategy inPagerStrategy)
     {
         pagerStrategy = inPagerStrategy;
-        pagerStrategy.init();        
+        pagerStrategy.init();
     }
 
     /**
@@ -85,12 +89,12 @@ public class PagerComposite extends Composite
     {
         prevButton.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 if (pagerStrategy.hasNext())
                 {
                     pagerStrategy.next();
-                    
+
                     if (!pagerStrategy.hasNext())
                     {
                         nextButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().nextArrowDisabled());
@@ -101,12 +105,12 @@ public class PagerComposite extends Composite
 
         nextButton.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 if (pagerStrategy.hasPrev())
                 {
                     pagerStrategy.prev();
-                    
+
                     if (!pagerStrategy.hasPrev())
                     {
                         prevButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().previousArrowDisabled());

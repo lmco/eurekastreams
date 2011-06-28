@@ -47,7 +47,7 @@ public class GotSearchResultsResponseEvent extends BaseDataResponseEvent<PagedSe
      * @param inCallerKey
      *            the callerKey to set
      */
-    public void setCallerKey(String inCallerKey)
+    public void setCallerKey(final String inCallerKey)
     {
         this.callerKey = inCallerKey;
     }

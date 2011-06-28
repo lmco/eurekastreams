@@ -36,7 +36,6 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -137,8 +136,7 @@ public class PagedListPanel extends FlowPanel
      * @param inListId
      *            the list id.
      */
-    public @UiConstructor
-    PagedListPanel(final String inListId)
+    public PagedListPanel(final String inListId)
     {
         this(inListId, null, null);
     }
