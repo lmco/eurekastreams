@@ -92,7 +92,7 @@ public class GetStreamDiscoverListsDTOExecutionTest
      * System under test.
      */
     private GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
-            suggestedGroupMapper, streamDiscoveryListsMapper, displayInfoSettableDataPopulator, //
+            suggestedGroupMapper, 10, streamDiscoveryListsMapper, displayInfoSettableDataPopulator, //
             followerStatusPopulator);
 
     /**
@@ -187,9 +187,6 @@ public class GetStreamDiscoverListsDTOExecutionTest
 
                 oneOf(principal).getId();
                 will(returnValue(personId));
-
-                oneOf(actionContext).getParams();
-                will(returnValue(10));
 
                 oneOf(suggestedPersonMapper).execute(with(IsEqualInternally.equalInternally(request)));
                 will(returnValue(people));

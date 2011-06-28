@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.ui.ActionExecutorPanel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.NotificationSettingsPage;
 import org.eurekastreams.web.client.ui.pages.activity.ActivityContent;
+import org.eurekastreams.web.client.ui.pages.discover.DiscoverContent;
 import org.eurekastreams.web.client.ui.pages.metrics.MetricsSummaryContent;
 import org.eurekastreams.web.client.ui.pages.oauth.OAuthAuthorizeContent;
 import org.eurekastreams.web.client.ui.pages.profile.settings.CreateGroupPanel;
@@ -41,13 +42,13 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Creates a page given a page and view.
- *
+ * 
  */
 public class PageFactory
 {
     /**
      * Creates a page given a page and view.
-     *
+     * 
      * @param page
      *            the page.
      * @param views
@@ -192,6 +193,19 @@ public class PageFactory
                 public void onSuccess()
                 {
                     contentPanel.add(new MetricsSummaryContent(view));
+                }
+            });
+            break;
+        case DISCOVER:
+            GWT.runAsync(new RunAsyncCallback()
+            {
+                public void onFailure(final Throwable reason)
+                {
+                }
+
+                public void onSuccess()
+                {
+                    contentPanel.add(new DiscoverContent());
                 }
             });
             break;

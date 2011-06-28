@@ -4542,6 +4542,7 @@
             <bean id="getStreamDiscoverListsDTO" class="org.eurekastreams.server.action.execution.GetStreamDiscoverListsDTOExecution">
 		         <constructor-arg ref="getSuggestedPeopleMapper" />
 		         <constructor-arg ref="getSuggestedGroupsMapper" />
+		         <constructor-arg value="10" />  <!-- Number of suggested streams -->
 		         <constructor-arg ref="streamDiscoverListsMapper" />
 		         <constructor-arg ref="displayInfoSettableDataPopulator" />
 		         <constructor-arg ref="followerStatusPopulator" />
