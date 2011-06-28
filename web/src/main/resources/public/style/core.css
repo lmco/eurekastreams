@@ -182,7 +182,7 @@ body .main-contents .header-container {
 	top: 52px;
 }
 
-.header-bar .search-list {
+..search-list {
 	background-repeat: repeat-x;
 	height: 50px;
 	width: auto;
@@ -773,126 +773,6 @@ div.close-button {
 
 .modal-content-panel .form-element {
 	width: auto;
-}
-
-.org-lookup-form-element .form-lookup-button {
-	margin-left: 15px;
-	display: block;
-}
-
-.org-lookup-form-element {
-	width: 600px;
-}
-
-.org-lookup-form-element .form-instructions {
-	width: auto;
-	max-width: 400px;
-	margin-bottom: 5px;
-	margin-top: 2px;
-	margin-left: 15px;
-	padding-right: 7px;
-	padding-bottom: 5px;
-	border-bottom: 1px solid #BBBBBB;
-	display: inline-block;
-}
-
-.org-lookup-form-element .required-form-label {
-	position: relative;
-}
-
-.multi-org-form-element-item {
-	margin-left: 15px;
-}
-
-.selected-org-name {
-	width: 250px;
-	display: inline-block;
-}
-
-.org-lookup-form-element .selected-org-name {
-	color: #525252;
-}
-
-.org-lookup-dialog {
-	width: 730px;
-}
-
-.org-name
-{
-}
-
-.org-lookup-container {
-	height: 275px;
-	padding: 5px 20px 20px;
-}
-
-.org-lookup-container  .lookup 
-{
-	margin-bottom: 10px;
-}
-
-.org-lookup-container .search-list {
-	margin: 10px 0;
-}
-
-.org-lookup-container .button-area {
-	clear: both;
-}
-
-.org-description-text .org-overview {
-	font-size: 11px;
-	color: #666;
-}
-
-.org-description {
-	float: right;
-	width: 260px;
-	margin-top: 42px;
-}
-
-.org-description .avatar {
-	float: left;
-	margin-right: 10px;
-}
-
-.org-tree-container
-{
-	width: 400px;
-	height: 160px;
-	background-color: white;
-	border: 1px solid #BBB;
-}
-.org-tree .gwt-TreeItem
-{
-	cursor: pointer;
-}
-.org-tree .gwt-TreeItem-selected
-{
-	background-color: #FFE488;
-}
-
-.multi-org-form-element-item,.org-lookup-form-element .editable-item {
-	width: 300px;
-	border-bottom: 1px solid white;
-	margin-top: 3px;
-	padding-bottom: 2px;
-	word-wrap: break-word;
-	margin-bottom: 3px;
-}
-
-.multi-org-form-element-item:hover,.org-lookup-form-element .editable-item:hover
-	{
-	border-bottom: 1px solid #bbbbbb;
-}
-
-.org-lookup-form-element .editable-item {
-	margin-left: 15px;
-}
-
-.multi-org-form-element-item>.gwt-Label {
-	display: inline-block;
-	zoom: 1;
-	width: 250px;
 }
 
 .portal-boundary div.tab-container {
@@ -1562,9 +1442,17 @@ body .post-expanded-panel .content-warning {
 	padding-right: 10px;	
 }
 
+.header-bar .searchResultsAutocompleteResults
+{
+	 position: absolute;
+	 top: 50px;
+	 width: 244px;
+	 z-index: 1001;
+}
+
 .searchResultsAutocompleteResults
 {
-	background-color: white;
+	 background-color: white;
 	 border-bottom: 1px solid #999999;
 	 border-left: 1px solid #999999;
 	 border-right: 1px solid #999999;
@@ -1572,10 +1460,6 @@ body .post-expanded-panel .content-warning {
 	 padding-bottom: 5px;
 	 padding-left: 0;
 	 padding-top: 5px;
-	 position: absolute;
-	 top: 50px;
-	 width: 244px;
-	 z-index: 1001;
 }
 
 .searchResultsAutocompleteResults > div
@@ -1597,16 +1481,16 @@ body .post-expanded-panel .content-warning {
 	background-image: url(style/images/searchResultsBackground.png);
 }
 
-.header-bar .search-list .searchResultsAutocompleteResults .avatar
+.search-list .searchResultsAutocompleteResults .avatar
 {
 	float: left;
 }
 
-.header-bar .search-list .searchResultsAutocompleteResults a, 
-	.header-bar .search-list .searchResultsAutocompleteResults a:link, 
-	.header-bar .search-list .searchResultsAutocompleteResults a:visited, 
-	.header-bar .search-list .searchResultsAutocompleteResults a:hover, 
-	.header-bar .search-list .searchResultsAutocompleteResults a:active
+.search-list .searchResultsAutocompleteResults a, 
+	.search-list .searchResultsAutocompleteResults a:link, 
+	.search-list .searchResultsAutocompleteResults a:visited, 
+	.search-list .searchResultsAutocompleteResults a:hover, 
+	.search-list .searchResultsAutocompleteResults a:active
 {
 	color: black;
 	float: left;
@@ -1617,6 +1501,41 @@ body .post-expanded-panel .content-warning {
 @sprite .header-bar .search-list .search-list-button {
 	gwt-image: "globalNavSearchBtn";
 	border-top: 1px solid #999;
+}
+
+body .bookmarkSearch
+{
+	background-image: url("style/images/bookmarkGradient.png");
+   	background-repeat: repeat-x;
+   	background-color: #c0c0c0;
+   	clear: left;
+   	margin-left: 10px;
+    padding-left: 0;
+    width: 220px;
+}
+
+body .bookmarkSearch input {
+    background-image: url("style/images/bookmarkSearch.png");
+    border-width: 0;
+    color: black;
+    padding: 3px 22px;
+    width: 149px;
+    background-color: transparent;
+}
+
+.bookmarkSearch .searchResultsAutocompleteResults
+{
+	border-width: 0;
+	background-color: #c0c0c0;
+}
+
+.bookmarkSearch .searchResultsAutocompleteResults > div > div:hover
+{
+	background: #E4E4E4;
+}
+
+.bookmarkSearch .searchResultsAutocompleteResults {
+	margin-left: 0;	
 }
 
 .header-bar .search-list input {
@@ -2874,24 +2793,6 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	line-height: 16px;
 }
 
-.parent-org-lookup .form-instructions {
-	float: left;
-	position: relative;
-	margin-right: 22px;
-	margin-top: 20px;
-}
-
-.parent-org-lookup .form-label {
-	height: auto;
-}
-
-.parent-org-lookup .selected-org-name {
-	clear: left;
-	float: left;
-	margin-top: 10px;
-	margin-left: 210px;
-}
-
 .form-avatar-upload {
 	width: auto;
 }
@@ -3059,21 +2960,6 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-delete-group-button+.form-submit-spinny {
-	margin-left: 100px;
-	margin-top: 10px;
-	padding-left: 40px;
-	padding-top: 7px;
-}
-
-.form-delete-org-button a,a.form-delete-org-button {
-	background: transparent url(style/images/deleteOrgBtn.png) no-repeat;
-	width: 99px;
-	height: 26px;
-	margin-left: 100px;
-	margin-top: 20px;
-}
-
-.form-delete-org-button+.form-submit-spinny {
 	margin-left: 100px;
 	margin-top: 10px;
 	padding-left: 40px;
@@ -3813,12 +3699,6 @@ body .options>li>.option-title:hover {
 	margin: 2px 0px;
 }
 
-.connection-item-organization a {
-	display: block;
-	text-decoration: none;
-	font-size: 11px;
-}
-
 .connection-item-followers {
 	color: #333333;
 	font-family: verdana;
@@ -4246,28 +4126,6 @@ body .extended-view .extended-info {
 	display: block;
 }
 
-body .organization-title {
-	font-weight: bold;
-	display: inline-block;
-}
-
-body .organization-suborgs {
-	display: inline-block;
-	margin-left: 10px;
-	position: relative;
-	top: 2px;
-	width: 18px;
-	height: 14px;
-	cursor: pointer;
-	background: transparent url(style/images/drill-down-inactive.png)
-		no-repeat scroll 0 0;
-}
-
-body .organization-suborgs:hover {
-	background: transparent url(style/images/drill-down-active.png)
-		no-repeat scroll 0 0;
-}
-
 .create-link {
 	float: right;
 	position: relative;
@@ -4281,10 +4139,6 @@ body .organization-suborgs:hover {
 	margin-right: 20px;
 	top: 20px;
 	z-index: 100;
-}
-
-@sprite body .create-organization-link {
-	gwt-image: "createOrganizationBtn";
 }
 
 @sprite body .create-group-link {
@@ -4598,13 +4452,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	margin-top: 20px;
 }
 
-@sprite .profile-add-sub-org {
-	gwt-image: "createSubOrgBtn";
-	margin: 0px 20px -27px 765px;
-	position: relative;
-	z-index: 100;
-}
-
 @sprite .profile-add-group {
 	gwt-image: "createGroupBtn";
 	margin: 0px 20px -27px 871px;
@@ -4636,20 +4483,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	color: #666666;
 	text-align: left;
 	clear: both;
-}
-
-.profile-org {
-	font-family: Verdana;
-	font-size: 12px;
-	color: #0000ff;
-	text-align: left;
-	clear: both;
-	margin-left: 10px;
-}
-
-.also-supporting-org {
-	margin: 10px 0 0;
-	font-size: 11px;
 }
 
 .profile-quote {
@@ -4907,7 +4740,7 @@ div.profile-settings-tab-container div.tab-container {
 	margin-top: 0;
 }
 
-.profile-settings-tab-content .form-container,.org-profile-settings-panel .form-container,.group-profile-settings-panel .form-container
+.profile-settings-tab-content .form-container,.group-profile-settings-panel .form-container
 	{
 	border: none;
 }
@@ -4921,28 +4754,15 @@ div.profile-settings-tab-container div.tab-container {
 	margin-top: 0px;
 }
 
-.org-profile-settings-panel .form-container,.group-profile-settings-panel .form-container
+.group-profile-settings-panel .form-container
 	{
 	margin-top: 0px;
 	padding-top: 10px;
 }
 
-.org-profile-settings-panel .form-title,.group-profile-settings-panel .form-container
+.group-profile-settings-panel .form-container
 	{
 	margin-top: 0px;
-}
-
-.org-group-policy {
-	float: left;
-}
-
-.org-group-policy .form-instructions {
-	margin-top: 0px;
-	margin-bottom: 5px;
-}
-
-.org-group-policy .form-checkBox label {
-	font-size: 11px;
 }
 
 .privacy-settings .privacy-settings-value {
@@ -5117,7 +4937,7 @@ div.tab-container {
 	top: 1px;
 }
 
-.profile-settings-tab-content>div>.form-container>.form-submit-button,.stream-settings-tab-content>div>div>div>.form-container>.form-submit-button,.stream-plugins-feed-subscriptions-container-edit a.form-submit-button,body .edit-position a.form-submit-button,body .edit-school a.form-submit-button,.group-profile-settings-panel a.form-submit-button,.org-profile-settings-panel a.form-submit-button,.list-edit-modal a.form-submit-button,.stream-search-dialog-body-edit a.form-submit-button,.notif-settings-form a.form-submit-button,.system-settings a.form-submit-button
+.profile-settings-tab-content>div>.form-container>.form-submit-button,.stream-settings-tab-content>div>div>div>.form-container>.form-submit-button,.stream-plugins-feed-subscriptions-container-edit a.form-submit-button,body .edit-position a.form-submit-button,body .edit-school a.form-submit-button,.group-profile-settings-panel a.form-submit-button,.form-submit-button,.list-edit-modal a.form-submit-button,.stream-search-dialog-body-edit a.form-submit-button,.notif-settings-form a.form-submit-button,.system-settings a.form-submit-button
 	{
 	background-image: url(style/images/saveChangesBtn.png);
 	width: 103px;
@@ -5235,16 +5055,6 @@ div.stream-container div.layout-container {
 
 .portal-boundary {
 	clear: none;
-}
-
-.profile-org-title {
-	font-size: 13px;
-	font-weight: bold;
-	margin-bottom: 10px;
-	text-align: left;
-	color: black;
-	clear: both;
-	margin-top: 10px;
 }
 
 .profile-page .no-value {
@@ -7419,10 +7229,6 @@ body .url-validator .required-form-label {
 	display: none;
 }
 
-.profile .connection-master .org-overview {
-	display: none;
-}
-
 .profile .connection-master .display-name.private {
 	background: url(style/images/private-icon-small.png) no-repeat scroll 0
 		3px transparent;
@@ -7926,11 +7732,7 @@ IE SPECIFIC CSS.
 		display: inline;
 		margin-top: 1px;
 	}
-	
-	.org-lookup-form-element .form-lookup-button {
-		float: left;
-	}
-	
+		
 	.login-button,.cancel-button {
 		display: inline;
         zoom: 1;
@@ -8015,25 +7817,7 @@ IE SPECIFIC CSS.
 		{
 		display: inline;
 	}
-	
-	.multi-org-form-element-item>.gwt-Label {
-		display: inline;
-	}
-	
-	.selected-org-name {
-		display: inline;
-	}
-	
-	.org-lookup-form-element .required-form-label {
-		top: -20px;
-	}
-	
-	.org-lookup-form-element .form-instructions {
-		margin-bottom: -10px !important;
-		display: inline;
-		zoom: 1;
-	}
-	
+		
 	.search-description {
 		overflow: auto;
 		padding-bottom: 7px;
@@ -8482,16 +8266,6 @@ IE SPECIFIC CSS.
 		border: none;
 	}
 	
-	body .organization-suborgs {
-		display: inline;
-		zoom: 1;
-	}
-	
-	body .organization-title {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.list-item .avatar {
 		display: inline;
 		zoom: 1;
@@ -8580,11 +8354,6 @@ IE SPECIFIC CSS.
 	
 	.profile-photo {
 		margin-bottom: 10px;
-	}
-	
-	.profile-add-sub-org {
-		display: block;
-		zoom: 1;
 	}
 	
 	.left-bar-container {
@@ -8963,18 +8732,8 @@ IE SPECIFIC CSS.
 		margin-top: 5px;
 	}
 	
-	.org-lookup-form-element .form-instructions {
-		margin-bottom: -15px;
-		position: relative;
-		top: -15px;
-	}
-	
 	.settings-header {
 		margin-top: 40px;
-	}
-	
-	.org-lookup-form-element .form-instructions {
-		margin-top: 20px;
 	}
 	
 	.stream-view-dialog-body .form-element:first-child .form-instructions {

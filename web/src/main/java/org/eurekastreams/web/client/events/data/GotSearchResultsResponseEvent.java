@@ -20,18 +20,44 @@ import org.eurekastreams.server.domain.PagedSet;
 
 /**
  * Search results response event.
- *
+ * 
  */
 public class GotSearchResultsResponseEvent extends BaseDataResponseEvent<PagedSet<ModelView>>
 {
+    /**
+     * The caller key.
+     */
+    private String callerKey = "";
 
     /**
      * Default constructor.
-     * @param inResponse response.
+     * 
+     * @param inCallerKey
+     *            the caller key.
+     * @param inResponse
+     *            response.
      */
-    public GotSearchResultsResponseEvent(final PagedSet<ModelView> inResponse)
+    public GotSearchResultsResponseEvent(final String inCallerKey, final PagedSet<ModelView> inResponse)
     {
         super(inResponse);
+        setCallerKey(inCallerKey);
+    }
+
+    /**
+     * @param inCallerKey
+     *            the callerKey to set
+     */
+    public void setCallerKey(String inCallerKey)
+    {
+        this.callerKey = inCallerKey;
+    }
+
+    /**
+     * @return the callerKey
+     */
+    public String getCallerKey()
+    {
+        return callerKey;
     }
 
 }

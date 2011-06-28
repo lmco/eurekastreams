@@ -1,0 +1,18 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+
+	<ui:style>
+		.pagerContainer
+		{
+		}
+	</ui:style>
+
+	<g:HTMLPanel addStyleNames="{style.pagerContainer}" ui:field="pagerContainer">
+	Pager
+	
+		<g:Label ui:field="prevButton">Prev</g:Label>
+		<g:Label ui:field="nextButton">Next</g:Label>
+	</g:HTMLPanel>
+</ui:UiBinder>
+	

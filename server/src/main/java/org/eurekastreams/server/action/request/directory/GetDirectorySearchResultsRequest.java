@@ -57,6 +57,11 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
     ResourceSortCriteria sortCriteria;
 
     /**
+     * Caller key.
+     */
+    private String callerKey = "";
+
+    /**
      * This is a default constructor for passage through GWT.
      */
     public GetDirectorySearchResultsRequest()
@@ -75,14 +80,22 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      *            - instance of the count to start with for paging on this request.
      * @param inPagingTo
      *            - instance of the count to end with for paging on this request.
+     * @param inCallerKey
+     *            the caller key.
      */
     public GetDirectorySearchResultsRequest(final String inSearchTerm, final String inWeightedField,
-            final int inPagingFrom, final int inPagingTo)
+            final int inPagingFrom, final int inPagingTo, final String inCallerKey)
     {
         searchTerm = inSearchTerm;
+        searchTerm.replace(" ", "* ");
+        searchTerm += "*";
+        searchTerm.replace("OR", "or");
+        searchTerm.replace("AND", "and");
+        
         weightedField = inWeightedField;
         pagingFrom = inPagingFrom;
         pagingTo = inPagingTo;
+        setCallerKey(inCallerKey);
     }
 
     /**
@@ -186,5 +199,22 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
     public void setSortCriteria(final ResourceSortCriteria inSortCriteria)
     {
         sortCriteria = inSortCriteria;
+    }
+
+    /**
+     * @param inCallerKey
+     *            the callerKey to set
+     */
+    public void setCallerKey(final String inCallerKey)
+    {
+        this.callerKey = inCallerKey;
+    }
+
+    /**
+     * @return the callerKey
+     */
+    public String getCallerKey()
+    {
+        return callerKey;
     }
 }

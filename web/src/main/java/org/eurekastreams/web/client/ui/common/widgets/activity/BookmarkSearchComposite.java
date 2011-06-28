@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.pages.search;
+package org.eurekastreams.web.client.ui.common.widgets.activity;
 
 import java.util.HashMap;
 
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * Global search composite. TODO break this out for testability.
  */
-public class GlobalSearchComposite extends FlowPanel
+public class BookmarkSearchComposite extends FlowPanel
 {
     /**
      * The search term.
@@ -74,26 +74,26 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Constructor.
-     * 
-     * @param label
-     *            the label for the uninitialized textbox.
      */
-    public GlobalSearchComposite(final String label)
+    public BookmarkSearchComposite()
     {
-        searchTerm = new LabeledTextBox(label);
+        searchTerm = new LabeledTextBox("add a bookmark");
         resultsPanelContainer.setVisible(false);
-
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
-        add(searchTerm);
-
+        
         resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsAutocompleteResults());
+
+        Label bookmarkTitle = new Label("Bookmark a Stream");
+        
+        add(bookmarkTitle);
+        
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearch());
+        add(searchTerm);
 
         add(resultsPanelContainer);
         resultsPanelContainer.add(resultsPanel);
 
         final EventBus eventBus = Session.getInstance().getEventBus();
-
-        final GlobalSearchComposite thisClass = this;
 
         searchTerm.addKeyUpHandler(new KeyUpHandler()
         {
@@ -112,14 +112,12 @@ public class GlobalSearchComposite extends FlowPanel
                     {
                         resultsPanelContainer.setVisible(false);
                         resultsPanel.clear();
-                        thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
                     }
                     else
                     {
                         GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(searchTerm
-                                .getText(), "", 0, 4, "global");
+                                .getText(), "", 0, 4, "bookmark");
                         SearchResultsModel.getInstance().fetch(request, true);
-                        thisClass.addStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
                     }
                 }
             }
@@ -132,7 +130,6 @@ public class GlobalSearchComposite extends FlowPanel
                 searchTerm.reset();
                 resultsPanelContainer.setVisible(false);
                 resultsPanel.clear();
-                thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
             }
         });
 
@@ -140,7 +137,7 @@ public class GlobalSearchComposite extends FlowPanel
         {
             public void update(final GotSearchResultsResponseEvent event)
             {
-                if ("global".equals(event.getCallerKey()))
+                if ("bookmark".equals(event.getCallerKey()))
                 {
                     resultsPanel.clear();
                     resultsPanelContainer.setVisible(event.getResponse().getPagedSet().size() > 0);
@@ -150,39 +147,28 @@ public class GlobalSearchComposite extends FlowPanel
                         final FocusPanel itemContainer = new FocusPanel();
                         final FlowPanel itemPanel = new FlowPanel();
                         final Anchor name = new Anchor();
-                        final Label desc = new Label();
 
                         if (result instanceof PersonModelView)
                         {
                             PersonModelView person = (PersonModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
-                                    .getEntityId(), person.getAvatarId(), Size.Small));
+                                    .getEntityId(), person.getAvatarId(), Size.VerySmall));
                             name.setText(person.getDisplayName());
-                            name.setHref("#"
-                                    + Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));
-                            desc.setText(person.getDescription());
                         }
                         else if (result instanceof DomainGroupModelView)
                         {
                             DomainGroupModelView group = (DomainGroupModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
-                                    .getEntityId(), group.getAvatarId(), Size.Small));
+                                    .getEntityId(), group.getAvatarId(), Size.VerySmall));
                             name.setText(group.getName());
-                            name.setHref("#"
-                                    + Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.GROUPS, group.getShortName())));
-                            desc.setText(group.getDescription());
                         }
 
                         itemPanel.add(name);
-                        itemPanel.add(desc);
 
                         itemContainer.addClickHandler(new ClickHandler()
                         {
                             public void onClick(final ClickEvent event)
                             {
-                                Window.Location.assign(name.getHref());
                             }
                         });
 

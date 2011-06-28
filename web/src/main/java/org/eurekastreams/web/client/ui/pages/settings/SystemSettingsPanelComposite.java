@@ -388,7 +388,6 @@ public class SystemSettingsPanelComposite extends FlowPanel
         // these are opposites, the value needs to be reversed when the form gets submitted.
         groupCreationPolicy.setReverseValue(true);
 
-        groupCreationPolicy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgGroupPolicy());
         form.addFormElement(groupCreationPolicy);
         form.addFormDivider();
 

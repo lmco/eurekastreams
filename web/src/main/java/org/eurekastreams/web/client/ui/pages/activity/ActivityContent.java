@@ -27,8 +27,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
@@ -38,8 +36,6 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
-import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
-import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -51,24 +47,17 @@ import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
-import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
-import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -116,13 +105,6 @@ public class ActivityContent extends Composite
          * @return Active stream style.
          */
         String activeStream();
-
-        /**
-         * Condensed Stream view.
-         * 
-         * @return Condensed Stream view.
-         */
-        String condensedStream();
     }
 
     /**
@@ -162,48 +144,6 @@ public class ActivityContent extends Composite
     UListElement defaultList;
 
     /**
-     * UI element for stream name.
-     */
-    @UiField
-    SpanElement streamName;
-
-    /**
-     * UI element for stream meta info.
-     */
-    @UiField
-    SpanElement streamMeta;
-
-    /**
-     * UI element for stream avatar.
-     */
-    @UiField
-    HTMLPanel streamAvatar;
-
-    /**
-     * UI element for stream description.
-     */
-    @UiField
-    DivElement streamDescription;
-
-    /**
-     * UI element for stream interests.
-     */
-    @UiField
-    DivElement streamInterests;
-
-    /**
-     * UI element for stream hash tags.
-     */
-    @UiField
-    DivElement streamHashtags;
-
-    /**
-     * UI element for stream connections.
-     */
-    @UiField
-    HTMLPanel streamConnections;
-
-    /**
      * UI element for recent sort.
      */
     @UiField
@@ -220,54 +160,6 @@ public class ActivityContent extends Composite
      */
     @UiField
     Anchor activeSort;
-
-    /**
-     * UI element for toggling details.
-     */
-    @UiField
-    Anchor toggleDetails;
-
-    /**
-     * UI element for stream about panel.
-     */
-    @UiField
-    HTMLPanel streamAbout;
-
-    /**
-     * UI element for follower count.
-     */
-    @UiField
-    SpanElement followerCount;
-
-    /**
-     * UI element for following count.
-     */
-    @UiField
-    SpanElement followingCount;
-
-    /**
-     * UI element for stream details.
-     */
-    @UiField
-    DivElement streamDetailsContainer;
-
-    /**
-     * UI element for chart.
-     */
-    @UiField
-    HTMLPanel analyticsChartContainer;
-
-    /**
-     * UI element for about link.
-     */
-    @UiField
-    Anchor aboutLink;
-
-    /**
-     * UI element for followers link.
-     */
-    @UiField
-    Anchor followersLink;
 
     /**
      * UI element for activity loading spinner.
@@ -294,11 +186,6 @@ public class ActivityContent extends Composite
     Label addBookmark;
 
     /**
-     * Expand/Collapse animation.
-     */
-    private ExpandCollapseAnimation detailsContainerAnimation;
-
-    /**
      * Message Renderer.
      */
     StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
@@ -314,19 +201,9 @@ public class ActivityContent extends Composite
     private long longOldestActivityId = 0;
 
     /**
-     * Avatar Renderer.
-     */
-    private AvatarRenderer avatarRenderer = new AvatarRenderer();
-
-    /**
      * Current Request.
      */
     private JSONObject currentRequestObj = null;
-
-    /**
-     * Default stream details container size.
-     */
-    private static final int DEFAULT_STREAM_DETAILS_CONTAINER_SIZE = 330;
 
     /**
      * Search Box.
@@ -339,10 +216,6 @@ public class ActivityContent extends Composite
      */
     private StreamScope currentStream;
 
-    /**
-     * Expand animation duration.
-     */
-    private static final int EXPAND_ANIMATION_DURATION = 500;
 
     /**
      * New activity polling.
@@ -363,10 +236,6 @@ public class ActivityContent extends Composite
      */
     private void buildPage()
     {
-        detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer,
-                DEFAULT_STREAM_DETAILS_CONTAINER_SIZE, EXPAND_ANIMATION_DURATION);
-        final StreamAnalyticsChart chart = new StreamAnalyticsChart();
-
         addEventHandlers();
         addObservers();
 
@@ -376,15 +245,11 @@ public class ActivityContent extends Composite
         bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
                 + Session.getInstance().getCurrentPerson().getAccountId()));
 
-        streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-        analyticsChartContainer.add(chart);
-        chart.update();
-        streamConnections.setVisible(false);
     }
 
     /**
@@ -469,18 +334,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        if (event.getParameters().containsKey("details"))
-                        {
-                            streamConnections.setVisible("connections".equals(event.getParameters().get("details")));
-                            streamAbout.setVisible("about".equals(event.getParameters().get("details")));
-                        }
-                    }
-                });
 
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
@@ -488,15 +341,6 @@ public class ActivityContent extends Composite
             {
                 loadStream(event.getViews());
                 List<String> views = new ArrayList<String>(event.getViews());
-
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("details", "about");
-                aboutLink.setHref("#"
-                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views, params)));
-
-                params.put("details", "connections");
-                followersLink.setHref("#"
-                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views, params)));
 
                 if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
                 {
@@ -517,33 +361,6 @@ public class ActivityContent extends Composite
             }
         }, true);
 
-        EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
-                new Observer<GotPersonalInformationResponseEvent>()
-                {
-                    public void update(final GotPersonalInformationResponseEvent event)
-                    {
-                        PersonModelView person = event.getResponse();
-                        streamName.setInnerText(person.getDisplayName());
-                        streamMeta.setInnerText(person.getTitle());
-                        streamAvatar.clear();
-                        streamAvatar.add(avatarRenderer.render(person.getEntityId(), person.getAvatarId(),
-                                EntityType.PERSON, Size.Normal));
-
-                        followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
-                        followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
-                        streamDescription.setInnerText(person.getJobDescription());
-                        String interestString = "";
-                        for (String interest : person.getInterests())
-                        {
-                            interestString += "<a href='#" + interest + "'>" + interest + "</a>";
-                        }
-                        streamInterests.setInnerHTML(interestString);
-                        streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
-
-                        streamConnections.clear();
-                        streamConnections.add(GetPersonFollowingTab.getFollowingTab(person));
-                    }
-                });
 
         EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
                 new Observer<GotCurrentUserStreamBookmarks>()
@@ -581,32 +398,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
-                new Observer<GotGroupModelViewInformationResponseEvent>()
-                {
-                    public void update(final GotGroupModelViewInformationResponseEvent event)
-                    {
-                        DomainGroupModelView group = event.getResponse();
-                        streamName.setInnerText(group.getName());
-                        // streamMeta.setInnerText(group.get);
-                        streamAvatar.clear();
-                        streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
-                                EntityType.GROUP, Size.Normal));
-
-                        followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
-                        streamDescription.setInnerText(group.getDescription());
-                        String interestString = "";
-                        for (String interest : group.getCapabilities())
-                        {
-                            interestString += "<a href='#" + interest + "'>" + interest + "</a>";
-                        }
-                        streamInterests.setInnerHTML(interestString);
-                        streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
-
-                        streamConnections.clear();
-                        // streamConnections.add(GetPersonFollowingTab.getFollowingTab(person));
-                    }
-                });
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
@@ -635,13 +426,7 @@ public class ActivityContent extends Composite
      */
     private void addEventHandlers()
     {
-        toggleDetails.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                detailsContainerAnimation.toggle();
-            }
-        });
+
 
         moreLink.addClickHandler(new ClickHandler()
         {
@@ -681,26 +466,26 @@ public class ActivityContent extends Composite
             }
         });
 
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
-        {
-            public boolean execute()
-            {
-                if (null != currentRequestObj
-                        && "date".equals(currentRequestObj.get("query").isObject().get("sortBy").isString()
-                                .stringValue()))
-                {
-                    if (Document.get().getScrollTop() < streamDetailsContainer.getAbsoluteTop())
-                    {
-                        JSONObject newItemsRequest = StreamJsonRequestFactory.setMinId(longNewestActivityId,
-                                StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
-
-                        StreamModel.getInstance().fetch(newItemsRequest.toString(), false);
-                    }
-                }
-
-                return Session.getInstance().getUrlPage().equals(Page.ACTIVITY);
-            }
-        }, NEW_ACTIVITY_POLLING_DELAY);
+//        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+//        {
+//            public boolean execute()
+//            {
+//                if (null != currentRequestObj
+//                        && "date".equals(currentRequestObj.get("query").isObject().get("sortBy").isString()
+//                                .stringValue()))
+//                {
+//                    if (Document.get().getScrollTop() < streamDetailsContainer.getAbsoluteTop())
+//                    {
+//                        JSONObject newItemsRequest = StreamJsonRequestFactory.setMinId(longNewestActivityId,
+//                                StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
+//
+//                        StreamModel.getInstance().fetch(newItemsRequest.toString(), false);
+//                    }
+//                }
+//
+//                return Session.getInstance().getUrlPage().equals(Page.ACTIVITY);
+//            }
+//        }, NEW_ACTIVITY_POLLING_DELAY);
 
     }
 
@@ -750,8 +535,7 @@ public class ActivityContent extends Composite
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
-            streamName.setInnerHTML("Following");
-            streamContainerPanel.addStyleName(style.condensedStream());
+            //streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -760,7 +544,7 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
-            streamContainerPanel.removeStyleName(style.condensedStream());
+            //streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -769,24 +553,22 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
-            streamContainerPanel.removeStyleName(style.condensedStream());
+            //streamContainerPanel.removeStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
-            streamName.setInnerHTML("Custom Stream");
             currentStream.setScopeType(null);
-            streamContainerPanel.addStyleName(style.condensedStream());
+            //streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.get(0).equals("everyone"))
         {
-            streamName.setInnerHTML("Everyone");
-            streamContainerPanel.addStyleName(style.condensedStream());
+            //streamContainerPanel.addStyleName(style.condensedStream());
         }
         else if (views.size() == 1)
         {
             singleActivityMode = true;
-            streamContainerPanel.addStyleName(style.condensedStream());
+            //streamContainerPanel.addStyleName(style.condensedStream());
         }
 
         if (searchTerm.length() > 0)
