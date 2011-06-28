@@ -29,7 +29,7 @@ public class DeleteInAppNotificationsByDate extends BaseArgDomainMapper<Date, Se
 {
     /**
      * Deletes alerts older than startDate.
-     * 
+     *
      * @param startDate
      *            Alerts with dates older than or equal to this will be removed.
      * @return Nothing.
@@ -39,9 +39,8 @@ public class DeleteInAppNotificationsByDate extends BaseArgDomainMapper<Date, Se
     {
         String q = "delete from InAppNotification where notificationDate <= :startDate";
         Query query = getEntityManager().createQuery(q).setParameter("startDate", startDate);
-        query.executeUpdate();
+        int count = query.executeUpdate();
 
-        return null;
+        return count;
     }
-
 }

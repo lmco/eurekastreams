@@ -6,14 +6,6 @@
 
 <urlrewrite decode-using="null">
 
-<!-- ### TEST START -->
-	<rule>
-		<from>^/api/0/full/deleteOldApplicationAlerts/(.*)$</from>
-		<to last="true">/resources/api/0/full/deleteOldApplicationAlerts/null/null</to>
-	</rule>
-<!-- ### TEST END -->
-
-
 	<!-- FULL API -->
 	
 	<rule>

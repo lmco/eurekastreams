@@ -57,10 +57,11 @@ public class DeleteInAppNotificationsByDateTest extends MapperTest
         long oldCount = (Long) query.getSingleResult();
 
         // test
-        sut.execute(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2010-02-03 00:00"));
+        int result = (Integer) sut.execute(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2010-02-03 00:00"));
 
         // verify
         long newCount = (Long) query.getSingleResult();
         assertEquals(oldCount - 6, newCount);
+        assertEquals(6, result);
     }
 }

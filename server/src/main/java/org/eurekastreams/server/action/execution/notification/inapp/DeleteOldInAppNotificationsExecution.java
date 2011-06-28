@@ -34,27 +34,19 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<ActionContext>
 {
-    /**
-     * Logger.
-     */
+    /** Logger. */
     private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
 
-    /**
-     * Mapper to delete alerts.
-     */
+    /** Mapper to delete alerts. */
     private final DeleteInAppNotificationsByDate deleteMapper;
 
-    /**
-     * Mapper to find user ids with old unread alerts.
-     */
+    /** Mapper to find user ids with old unread alerts. */
     private final DomainMapper<Date, List<Long>> unreadMapper;
 
     /** Mapper to sync database and cache unread alert count. */
     private final DomainMapper<Long, UnreadInAppNotificationCountDTO> syncMapper;
 
-    /**
-     * Age at which alerts can be deleted.
-     */
+    /** Age at which alerts can be deleted. */
     private final int ageInDays;
 
     /**
@@ -87,7 +79,7 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
     @Override
     public Serializable execute(final ActionContext inActionContext)
     {
-        log.info("Deleting application alerts older than {} days.", ageInDays);
+        log.debug("Deleting in-app notifications older than {} days.", ageInDays);
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.add(GregorianCalendar.DATE, ageInDays * -1);
@@ -95,7 +87,10 @@ public class DeleteOldInAppNotificationsExecution implements ExecutionStrategy<A
 
         List<Long> userIdsToSync = unreadMapper.execute(oldDate);
 
-        deleteMapper.execute(oldDate);
+        int count = (Integer) deleteMapper.execute(oldDate);
+
+        log.info("Deleted {} in-app notifications older than {} (over {} days old).  Will sync {} users' counts.",
+                new Object[] { count, oldDate, ageInDays, userIdsToSync.size() });
 
         for (long userId : userIdsToSync)
         {

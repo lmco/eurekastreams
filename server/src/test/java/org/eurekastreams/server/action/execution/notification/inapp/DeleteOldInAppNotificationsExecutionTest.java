@@ -34,7 +34,7 @@ import org.junit.Test;
 /**
  * Tests execution strategy for GetApplicationAlerts.
  */
-public class DeleteOldApplicationAlertsExecutionTest
+public class DeleteOldInAppNotificationsExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -102,6 +102,7 @@ public class DeleteOldApplicationAlertsExecutionTest
                 will(returnValue(userIds));
 
                 oneOf(deleteMapper).execute(with(any(Date.class)));
+                will(returnValue(8));
 
                 oneOf(syncMapper).execute(user1);
                 oneOf(syncMapper).execute(user2);
