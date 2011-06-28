@@ -67,7 +67,6 @@ public class GroupAboutPanel extends FlowPanel
         this.add(follow);
 
         Label title = new Label(inName);
-        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileOrgTitle());
         this.add(title);
 
         if (inDescription != null && !inDescription.equals(""))

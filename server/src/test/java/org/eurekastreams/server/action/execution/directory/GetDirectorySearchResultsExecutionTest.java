@@ -124,7 +124,7 @@ public class GetDirectorySearchResultsExecutionTest
         context.checking(new Expectations()
         {
             {
-                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT);
+                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT + "*");
                 will(returnValue(escapedSearchText));
 
                 one(principalMock).getId();
@@ -150,7 +150,7 @@ public class GetDirectorySearchResultsExecutionTest
 
         // invoke
         GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT,
-                "background", FROM, TO);
+                "background", FROM, TO, "");
 
         ServiceActionContext currentActionContext = new ServiceActionContext(currentRequest, principalMock);
 
@@ -185,7 +185,7 @@ public class GetDirectorySearchResultsExecutionTest
         context.checking(new Expectations()
         {
             {
-                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT);
+                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT + "*");
                 will(returnValue(escapedSearchText));
 
                 one(principalMock).getId();
@@ -211,7 +211,7 @@ public class GetDirectorySearchResultsExecutionTest
 
         // invoke
         GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT,
-                "background", FROM, TO);
+                "background", FROM, TO, "");
 
         ServiceActionContext currentActionContext = new ServiceActionContext(currentRequest, principalMock);
 

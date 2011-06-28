@@ -22,7 +22,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Represents search model.
- *
+ * 
  */
 public class SearchResultsModel extends BaseModel implements Fetchable<GetDirectorySearchResultsRequest>
 {
@@ -33,7 +33,7 @@ public class SearchResultsModel extends BaseModel implements Fetchable<GetDirect
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static SearchResultsModel getInstance()
@@ -50,7 +50,8 @@ public class SearchResultsModel extends BaseModel implements Fetchable<GetDirect
         {
             public void onSuccess(final PagedSet response)
             {
-                Session.getInstance().getEventBus().notifyObservers(new GotSearchResultsResponseEvent(response));
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotSearchResultsResponseEvent(request.getCallerKey(), response));
             }
         }, false);
     }

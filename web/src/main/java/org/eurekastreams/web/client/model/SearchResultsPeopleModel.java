@@ -22,7 +22,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Represents org search model.
- *
+ * 
  */
 public class SearchResultsPeopleModel extends BaseModel implements Fetchable<GetDirectorySearchResultsRequest>
 {
@@ -33,7 +33,7 @@ public class SearchResultsPeopleModel extends BaseModel implements Fetchable<Get
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static SearchResultsPeopleModel getInstance()
@@ -50,7 +50,8 @@ public class SearchResultsPeopleModel extends BaseModel implements Fetchable<Get
         {
             public void onSuccess(final PagedSet response)
             {
-                Session.getInstance().getEventBus().notifyObservers(new GotSearchResultsResponseEvent(response));
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotSearchResultsResponseEvent(request.getCallerKey(), response));
             }
         }, false);
     }

@@ -2,18 +2,12 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:ewa='urn:import:org.eurekastreams.web.client.ui.common.widgets.activity'>
 
-	<ui:image field="activityHeaderBackground" src="style/images/activityHeaderBackground.png" />
-	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
-	<ui:image field="viewDetails" src="style/images/viewDetailsBtn.png" />
 	<ui:image field="subscribeNormal" src="style/images/subscribeNormal.png" />
 	<ui:image field="subscribeActive" src="style/images/subscribeActive.png" />
 	<ui:image field="spinner" src="style/images/wait-spinner.gif" />
 	<ui:image field="searchActive" src="style/images/searchActive.png" />
 	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
 
-	<ui:image field="everyoneHeader" src="style/images/everyoneHeader.png" />
-	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
-	
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
 		.main
@@ -72,22 +66,6 @@
 		url(style/images/activeBackground.png);
 		}
 
-		.stream-avatar
-		{
-		background-image:
-		url(style/images/avatarBackground.png);
-		float: left;
-		padding: 5px;
-		margin: 10px;
-		}
-
-		.stream-avatar > img
-		{
-		padding: 0px;
-		border:
-		none;
-		}
-
 		.activeSort
 		{
 		background-image:
@@ -120,124 +98,6 @@
 		.sort-option:hover
 		{
 		color: black;
-		}
-
-		@sprite .header {
-		gwt-image: "activityHeaderBackground";
-		position:
-		relative;
-		color: white;
-		}
-
-		.stream-info-container
-		{
-		float: left;
-		margin-left: 20px;
-		margin: 10px;
-		}
-
-		.follow-info-container
-		{
-		margin: 10px;
-		float: right;
-		text-align: center;
-		}
-
-		.follow-info-link,
-		.follow-info-link:hover {
-		color: #3AB0EF;
-		display: block;
-		}
-
-		.stream-details-container > a, .stream-details-container > a:hover,
-		.stream-details-container >
-		a:link, .stream-details-container >
-		a:active
-		{
-		color: #3AB0EF;
-		}
-
-		.stream-name
-		{
-		display: block;
-		font-weight: bold;
-		font-size: 24px;
-		}
-
-		.stream-details-container
-		{
-		height: 0;
-		background-color: #252525;
-		overflow: hidden;
-		color: white;
-		position:
-		relative;
-		top: -1px;
-		}
-
-		.stream-details-container h2
-		{
-		font-weight: bold;
-		height: 16px;
-		}
-
-		.toggle-details-link
-		{
-		clear: right;
-		float: right;
-		text-indent: 1000em;
-		overflow: hidden;
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		cursor: pointer;
-		z-index: 10;
-		}
-
-		@sprite .view-details
-		{
-		gwt-image: "viewDetails";
-		}
-
-		.analyticsChartContainer {
-		float: right;
-		margin: 10px;
-		}
-
-		.analyticsChartContainer > div {
-		padding-top: 10px;
-		}
-
-		.stream-details
-		{
-		clear: left;
-		float: left;
-		margin: 0 10px;
-		width: 200px;
-		}
-
-		.stream-details-options
-		{
-		background-color: #111111;
-		border-bottom: 1px
-		solid #404040;
-		border-top: 1px solid #404040;
-		height: 37px;
-		}
-
-		.stream-details-options > a, .stream-details-options > a:hover,
-		.stream-details-options >
-		a:link, .stream-details-options > a:active
-		{
-		background-image: url("style/images/subFilterBackground.png");
-		color:
-		white;
-		display: block;
-		float: left;
-		height: 27px;
-		margin: 10px 0 10px
-		10px;
-		padding: 0 10px;
 		}
 
 		.search-container
@@ -353,81 +213,12 @@
 		cursor: pointer;
 		color: #0066CC;
 		}
-		
-		.condensedStream .toggle-details-link, .condensedStream .follow-info-container, .condensedStream .stream-meta, .condensedStream .stream-avatar  
-		{
-			display: none;
-		}
-		
-		.condensedStream .header
-		{
-			height: 77px;
-		}
-		
-		.condensedAvatar
-		{
-			display: none;
-			float: left;
-			padding: 5px;
-			margin: 10px;
-		}		
-		
-		@sprite .condensedStream .condensedAvatar
-		{
-			gwt-image: "everyoneHeader";
-			display: block;
-		}
-
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
 		<g:HTMLPanel addStyleNames="{style.stream-container-panel}"
 			ui:field="streamContainerPanel">
-			<div class="{style.header}">
-				<div class="{style.condensedAvatar}"></div>
-				<g:HTMLPanel addStyleNames="{style.stream-avatar}"
-					ui:field="streamAvatar">
-				</g:HTMLPanel>
-				<div class="{style.stream-info-container}">
-					<span class="{style.stream-name}" ui:field="streamName"></span>
-					<span class="{style.stream-meta}" ui:field="streamMeta"></span>
-				</div>
-				<div class="{style.follow-info-container}">
-					<span ui:field="followerCount"></span>
-					<g:Anchor addStyleNames="{style.follow-info-link}"
-						ui:field="showFollowers">Followers</g:Anchor>
-				</div>
-				<div class="{style.follow-info-container}">
-					<span ui:field="followingCount"></span>
-					<g:Anchor addStyleNames="{style.follow-info-link}"
-						ui:field="showFollowing">Following</g:Anchor>
-				</div>
-				<g:Anchor addStyleNames="{style.toggle-details-link} {style.view-details}"
-					ui:field="toggleDetails">Details</g:Anchor>
-			</div>
-			<div class="{style.stream-details-container}" ui:field="streamDetailsContainer">
-				<div class="{style.stream-details-options}">
-					<g:Anchor ui:field="aboutLink">About</g:Anchor>
-					<g:Anchor ui:field="followersLink">Followers</g:Anchor>
-				</div>
-				<div>
-					<g:HTMLPanel ui:field="streamAbout">
-						<div class="{style.stream-details}">
-							<h2>Description</h2>
-							<div ui:field="streamDescription"></div>
-							<h2>Interests</h2>
-							<div ui:field="streamInterests"></div>
-							<h2>Popular Hashtags</h2>
-							<div ui:field="streamHashtags"></div>
-						</div>
-						<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}"
-							ui:field="analyticsChartContainer">
-						</g:HTMLPanel>
-					</g:HTMLPanel>
-					<g:HTMLPanel ui:field="streamConnections">
-					</g:HTMLPanel>
-				</div>
-			</div>
+			<ewa:StreamDetailsComposite></ewa:StreamDetailsComposite>
 			<ewa:PostBoxComposite></ewa:PostBoxComposite>
 			<div class="{style.options-panel}">
 				<g:Anchor addStyleNames="{style.sort-option} {style.activeSort}"
@@ -460,6 +251,7 @@
 
 		<ul class="{style.stream-option-list}" ui:field="bookmarkList">
 		</ul>
+		<ewa:BookmarkSearchComposite></ewa:BookmarkSearchComposite>		
 
 		<ul class="{style.stream-option-list}" ui:field="filterList">
 		</ul>

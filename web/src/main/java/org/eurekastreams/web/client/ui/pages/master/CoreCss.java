@@ -83,9 +83,6 @@ public interface CoreCss extends CssResource
     @ClassName("agree-button-disabled")
     String agreeButtonDisabled();
 
-    @ClassName("also-supporting-org")
-    String alsoSupportingOrg();
-
     @ClassName("apply-gadget")
     String applyGadget();
 
@@ -304,9 +301,6 @@ public interface CoreCss extends CssResource
     @ClassName("connection-item-name")
     String connectionItemName();
 
-    @ClassName("connection-item-organization")
-    String connectionItemOrganization();
-
     @ClassName("connection-item-panel")
     String connectionItemPanel();
 
@@ -330,9 +324,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("create-link")
     String createLink();
-
-    @ClassName("create-organization-link")
-    String createOrganizationLink();
 
     @ClassName("date-picker-form-element")
     String datePickerFormElement();
@@ -568,9 +559,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("form-delete-group-button")
     String formDeleteGroupButton();
-
-    @ClassName("form-delete-org-button")
-    String formDeleteOrgButton();
 
     @ClassName("form-disable")
     String formDisable();
@@ -1242,9 +1230,6 @@ public interface CoreCss extends CssResource
     @ClassName("move-handle")
     String moveHandle();
 
-    @ClassName("multi-org-form-element-item")
-    String multiOrgFormElementItem();
-
     @ClassName("multi-zone")
     String multiZone();
 
@@ -1380,45 +1365,6 @@ public interface CoreCss extends CssResource
     @ClassName("optoutable-video-modal")
     String optoutableVideoModal();
 
-    @ClassName("org-description")
-    String orgDescription();
-
-    @ClassName("org-description-text")
-    String orgDescriptionText();
-
-    @ClassName("org-group-policy")
-    String orgGroupPolicy();
-
-    @ClassName("org-lookup-container")
-    String orgLookupContainer();
-
-    @ClassName("org-lookup-dialog")
-    String orgLookupDialog();
-
-    @ClassName("org-lookup-form-element")
-    String orgLookupFormElement();
-
-    @ClassName("org-name")
-    String orgName();
-
-    @ClassName("org-overview")
-    String orgOverview();
-
-    @ClassName("org-profile-settings-panel")
-    String orgProfileSettingsPanel();
-
-    @ClassName("org-tree")
-    String orgTree();
-
-    @ClassName("org-tree-container")
-    String orgTreeContainer();
-
-    @ClassName("organization-suborgs")
-    String organizationSuborgs();
-
-    @ClassName("organization-title")
-    String organizationTitle();
-
     @ClassName("over-character-limit")
     String overCharacterLimit();
 
@@ -1439,9 +1385,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("pager-range")
     String pagerRange();
-
-    @ClassName("parent-org-lookup")
-    String parentOrgLookup();
 
     @ClassName("pending-buttons")
     String pendingButtons();
@@ -1588,9 +1531,6 @@ public interface CoreCss extends CssResource
     @ClassName("profile-add-group")
     String profileAddGroup();
 
-    @ClassName("profile-add-sub-org")
-    String profileAddSubOrg();
-
     @ClassName("profile-cell-phone")
     String profileCellPhone();
 
@@ -1635,12 +1575,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("profile-name")
     String profileName();
-
-    @ClassName("profile-org")
-    String profileOrg();
-
-    @ClassName("profile-org-title")
-    String profileOrgTitle();
 
     @ClassName("profile-page")
     String profilePage();
@@ -1765,9 +1699,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("selected-option")
     String selectedOption();
-
-    @ClassName("selected-org-name")
-    String selectedOrgName();
 
     String settings();
 
@@ -2233,5 +2164,7 @@ public interface CoreCss extends CssResource
     String globalSearchBoxNav();
     
     String globalSearchBoxActive();
+
+    String bookmarkSearch();
 
 }
