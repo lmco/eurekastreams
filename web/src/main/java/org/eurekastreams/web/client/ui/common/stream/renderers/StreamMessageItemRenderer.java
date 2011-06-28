@@ -460,7 +460,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                 public void onClick(final ClickEvent event)
                 {
                     if (new WidgetJSNIFacadeImpl()
-                            .confirm("Flagged activities will be sent to the organization coordinator for review. "
+                            .confirm("Flagged activities will be sent to the system administrators for review. "
                                     + "Are you sure you want to flag this activity as inappropriate?"))
                     {
                         eventBus.addObserver(UpdatedActivityFlagResponseEvent.class,

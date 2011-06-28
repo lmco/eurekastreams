@@ -225,6 +225,9 @@
 				<entry key="helper">
 					<bean class="org.eurekastreams.server.action.execution.notification.notifier.NotificationMessageBuilderHelper" />
 				</entry>
+				<entry key="uiUrlBuilder">
+					<value type="java.lang.Class">org.eurekastreams.server.service.utility.ui.UiUrlBuilder</value>
+				</entry>
 			</map>
 		</constructor-arg>
 	</bean>
@@ -271,6 +274,7 @@
 		<entry key="org.eurekastreams.server.search.modelview.PersonModelView" value-ref="getPersonByIdMapperAllowNullResult" />
 		<entry key="org.eurekastreams.server.search.modelview.DomainGroupModelView" value-ref="getGroupByIdMapperAllowNullResult" />
 		<entry key="org.eurekastreams.server.domain.stream.ActivityDTO" value-ref="activityDTOMapper" />
+		<entry key="org.eurekastreams.server.search.modelview.CommentDTO" value-ref="getCommentByIdAllowNoneDAO" />
 		<entry key="org.eurekastreams.server.domain.OAuthConsumer" value-ref="getOAuthConsumerByConsumerKeyMapper" />
 		<entry key="org.eurekastreams.server.domain.SystemSettings" value-ref="findSystemSettings" />
     </util:map>
