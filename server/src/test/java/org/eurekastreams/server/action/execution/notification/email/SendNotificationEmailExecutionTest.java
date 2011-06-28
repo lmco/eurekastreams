@@ -108,12 +108,15 @@ public class SendNotificationEmailExecutionTest
     {
         request.setToRecipient(TO_RECIPIENT);
         request.setBccRecipients(BCC_RECIPIENTS);
+        request.setHighPriority(true);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(emailer).setTo(message, TO_RECIPIENT);
                 oneOf(emailer).setBcc(message, BCC_RECIPIENTS);
+                oneOf(message).addHeader("Importance", "high");
+                oneOf(message).addHeader("X-Priority", "1");
                 oneOf(emailer).sendMail(with(same(message)));
             }
         });

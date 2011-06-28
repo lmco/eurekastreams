@@ -37,6 +37,9 @@ public class NotificationEmailDTO implements Serializable
     /** Addresses of BCC recipients. */
     private String bccRecipients;
 
+    /** If high priority. */
+    private boolean highPriority;
+
     /** Optional description of the notification/message used for logging events about the message. */
     private String description;
 
@@ -140,5 +143,22 @@ public class NotificationEmailDTO implements Serializable
     public void setDescription(final String inDescription)
     {
         description = inDescription;
+    }
+
+    /**
+     * @return the highPriority
+     */
+    public boolean isHighPriority()
+    {
+        return highPriority;
+    }
+
+    /**
+     * @param inHighPriority
+     *            the highPriority to set
+     */
+    public void setHighPriority(final boolean inHighPriority)
+    {
+        highPriority = inHighPriority;
     }
 }

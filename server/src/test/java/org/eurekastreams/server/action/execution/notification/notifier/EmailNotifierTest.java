@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.notifier;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -33,6 +34,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hamcrest.Description;
@@ -263,6 +265,7 @@ public class EmailNotifierTest
         assertEquals(EMAIL1, request.getToRecipient());
         assertTrue(request.getBccRecipients() == null || request.getBccRecipients().isEmpty());
         assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
+        assertFalse(request.isHighPriority());
     }
 
     /**
@@ -289,6 +292,27 @@ public class EmailNotifierTest
         assertTrue(request.getToRecipient() == null || request.getToRecipient().isEmpty());
         assertEquals(EMAIL1 + "," + EMAIL2, request.getBccRecipients());
         assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
+        assertFalse(request.isHighPriority());
     }
 
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testNotifyHighPriority() throws Exception
+    {
+        commonSetup();
+
+        UserActionRequest result = sut.notify(OK_TYPE, Collections.singletonList(RECIPIENT1),
+                Collections.singletonMap(NotificationPropertyKeys.HIGH_PRIORITY, (Object) true), recipientIndex);
+        context.assertIsSatisfied();
+
+        assertNotNull(result);
+        assertEquals("sendEmailNotificationAction", result.getActionKey());
+        NotificationEmailDTO request = (NotificationEmailDTO) result.getParams();
+        assertTrue(request.isHighPriority());
+    }
 }
