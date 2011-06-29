@@ -2827,6 +2827,20 @@
         <constructor-arg value="false" />
     </bean>
     
+    <bean id="deleteStreamBookmark" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.stream.DeleteCurrentUserBookmarkExecution">
+                <constructor-arg>
+                    <ref bean="findByIdMapper" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
 
     <bean id="undeleteGadget" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />

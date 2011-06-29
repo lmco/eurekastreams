@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -81,6 +82,10 @@ public class NotificationSettingsWidget extends Composite
     @UiField
     LocalStyle style;
 
+    /** Top bar. */
+    @UiField
+    DivElement topBar;
+
     /** UI element acting as the back button. */
     @UiField
     Label backButton;
@@ -125,15 +130,15 @@ public class NotificationSettingsWidget extends Composite
     /**
      * Constructor.
      *
-     * @param showBack
-     *            If the back button should be shown.
+     * @param showTopBar
+     *            If the top bar should be shown.
      */
-    public NotificationSettingsWidget(final boolean showBack)
+    public NotificationSettingsWidget(final boolean showTopBar)
     {
         initWidget(binder.createAndBindUi(this));
-        if (!showBack)
+        if (!showTopBar)
         {
-            backButton.removeFromParent();
+            topBar.removeFromParent();
         }
 
         // listen for model events

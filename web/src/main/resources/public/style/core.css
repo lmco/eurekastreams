@@ -57,7 +57,7 @@ a {
 }
 
 body,td,div,span,p,.gwt-TextArea,.gwt-TextBox {
-	font-family: "Lucida Sans Unicode", "Lucida Sans", "Verdana", "Tahoma",
+	font-family: "Arial", "Lucida Sans Unicode", "Lucida Sans", "Verdana", "Tahoma",
 		"Geneva", "Kalimati", sans-serif;
 }
 
@@ -512,7 +512,7 @@ div.banner-container {
 @sprite .modal-title {
 	gwt-image: "titleBarBg";
 	line-height: 33px;
-	border-bottom: 2px solid #555;
+	border-bottom: 2px solid #666;
 	width: auto;
 }
 
@@ -2545,7 +2545,6 @@ body .previous-arrow:hover {
 
 .gadgets-gadget-user-prefs-dialog .label {
 	padding-right: 10px;
-	font-family: verdana;
 	font-size: 12px;
 }
 
@@ -2784,7 +2783,6 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-instructions {
-	font-family: verdana;
 	color: #666666;
 	width: 410px;
 	margin-top: 5px;
@@ -3492,7 +3490,6 @@ body .options>li>.option-title:hover {
 
 .pager-range {
 	float: left;
-	font-family: verdana;
 	text-decoration: none;
 	font-size: 12px;
 	color: #666666;
@@ -3611,7 +3608,6 @@ body .options>li>.option-title:hover {
 	padding-left: 20px;
 	vertical-align: top;
 	width: 249px;
-	font-family: verdana;
 	font-size: 12px;
 	line-height: 16px;
 	margin-top: -3px;
@@ -3700,7 +3696,6 @@ body .options>li>.option-title:hover {
 
 .connection-item-followers {
 	color: #333333;
-	font-family: verdana;
 	text-decoration: none;
 	display: block;
 	font-size: 11px;
@@ -4468,7 +4463,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 .profile-name {
 	margin-top: 10px;
-	font-family: Verdana;
 	font-size: 14px;
 	font-weight: bold;
 	color: #333333;
@@ -4477,7 +4471,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-title {
-	font-family: Verdana;
 	font-size: 12px;
 	color: #666666;
 	text-align: left;
@@ -4486,7 +4479,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 .profile-quote {
 	margin-top: 10px;
-	font-family: Verdana;
 	font-size: 12px;
 	color: #888;
 	text-align: left;
@@ -4550,7 +4542,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-subheader {
-	font-family: Verdana;
 	font-size: 12px;
 	font-weight: bold;
 	color: #666666;
@@ -4564,7 +4555,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 @sprite .profile-connection-count {
 	gwt-image: "connectionsInactiveBtn";
-	font-family: Verdana;
 	font-size: 14px;
 	font-weight: bold;
 	color: #666666;
@@ -4582,7 +4572,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-connection-label {
-	font-family: Verdana;
 	font-size: 10px;
 	color: #888;
 }
@@ -4597,7 +4586,6 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-contact-info {
-	font-family: Verdana;
 	font-size: 12px;
 	text-align: left;
 	margin-bottom: 10px;
@@ -4843,7 +4831,6 @@ div.profile-settings-tab-container div.tab-container {
 	background-color: #FFFFFF;
 	border: #bbbbbb solid 1px;
 	padding: 20px;
-	font-family: Verdana;
 	font-size: 12px;
 	margin: 0 10px;
 	display: inline-block;
@@ -4897,7 +4884,6 @@ div.profile-settings-tab-container div.tab-container {
 	border: #bbbbbb solid 1px;
 	padding: 20px;
 	width: 475px;
-	font-family: Verdana;
 	font-size: 12px;
 	margin-top: 20px;
 	margin-left: 20px;
@@ -5080,14 +5066,12 @@ div.stream-container div.layout-container {
 }
 
 .profile-mission {
-	font-family: Verdana;
 	font-size: 12px;
 	text-align: left;
 	color: #333333;
 }
 
 .profile-statistics {
-	font-family: Verdana;
 	font-size: 12px;
 	text-align: left;
 }
@@ -6251,7 +6235,6 @@ body .user-bar li div.notif-count-container:hover {
 	width: 210px;
 	margin-right: 20px;
 	margin-top: 0px;
-	font-family: Lucida Grande !important;
 	line-height: 20px;
 	font-size: 14px;
 	margin-top: -6px;

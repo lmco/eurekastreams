@@ -30,7 +30,7 @@
 }
 .controls-bar
 {
-	height: 36px;
+	height: 33px;
 	border-bottom: 1px solid #666;
 }
 @sprite .mark-all-read
@@ -76,7 +76,7 @@
 	padding-right: 10px;
 	border-bottom: 1px solid #CCC;
 }
-@sprite .source-filter-selected
+@sprite .filter-selected
 {
 	gwt-image: "activeBackground";
 }
@@ -87,7 +87,16 @@
 
 .read-filter-options
 {
-	margin-left: 5px;
+}
+.read-filter-options > div
+{
+	cursor: pointer;
+	height: 31px;
+	line-height: 31px;
+	padding-left: 10px;
+	padding-right: 10px;
+	float: left;
+	margin: 1px;
 }
 
 .wait-spinner
@@ -118,13 +127,13 @@
 	
 	<div class="{style.right-side}">
 		<div class="{style.controls-bar}">
-			<div class="{coreCss.options} {style.read-filter-options}">
-				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel} {coreCss.active}" ui:field="unreadFilterUi">Unread</g:Label>
-				<g:Label addStyleNames="{coreCss.connectionFilterButton} {coreCss.buttonLabel}" ui:field="allFilterUi">All</g:Label>
+			<div class="{style.read-filter-options}">
+				<g:Label addStyleNames="{style.filter-selected}" ui:field="unreadFilterUi">Unread</g:Label>
+				<g:Label ui:field="allFilterUi">All</g:Label>
 			</div>
 			
-			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" />
-			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" />
+			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" title="Settings" />
+			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" title="Mark All As Read" />
 		</div>
 		<div class="{style.no-notifications}" style="display: none;" ui:field="noNotificationsUi">No notifications</div>
 		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">

@@ -13,20 +13,27 @@
 /* Externalize all-read so the parent can apply it on the entire list. */ 
 @external all-read;
 
-.highPriority
+.highPriority .main-inner
 {
 	border-right: 10px solid red;
 }
-@sprite .read,
-.all-read .main
+@sprite .read.main-outer,
+.all-read .main-outer
 {
 	gwt-image: "readBackgroundImage";
+	background-color: #E1E1E1;
+	height: auto;
 }
-@sprite .main
+@sprite .main-outer
 {
-	padding: 5px;
 	border-bottom: 1px solid #CCC;
 	gwt-image: "unreadBackgroundImage";
+	background-color: #EAEAEA;
+	height: auto;
+}
+.main-inner
+{
+	padding: 10px;
 }
 .main-link
 {
@@ -36,7 +43,7 @@
 .message-text
 {
 	overflow: hidden;
-	margin: 5px 0px 5px 55px;
+	margin: 0px 0px 5px 60px;
 	color: #333;
 	display: block;
 	font-size: 12px;
@@ -45,15 +52,22 @@
 {
 	font-size: 11px;
 	color: #666666;
-	margin-left: 55px;
+	margin-left: 60px;
 	display: block;
 }
+.read .message-text,
+.read .timestamp
+{
+	color: #999999;
+}
+
 .actions-panel
 {
 	visibility: hidden;
 	float: right;
+	margin-left: 10px;
 }
-.main:hover .actions-panel
+.main-outer:hover .actions-panel
 {
 	visibility: visible;
 }
@@ -107,24 +121,39 @@
 {
 	background: #7A7A7A url('style/images/notifications/stopHover.png') no-repeat scroll right center;
 }
+
+@if user.agent ie6 ie8 {
+	.main-outer
+	{
+		background: #EAEAEA url("style/images/notifications/UnreadBackground.png") repeat-x scroll 0 0;
+	}
+	.read.main-outer,
+	.all-read .main-outer
+	{
+		background: #E1E1E1 url("style/images/notifications/ReadBackground.png") repeat-x scroll 0 0;
+	}
+}
+
 </ui:style>
 
-<g:HTMLPanel addStyleNames="{style.main}">
-	<div class="{style.actions-panel}">
-		<div class="{style.action}">
-			<g:Label addStyleNames="{style.floating-panel} {style.delete-floating-panel}" ui:field="deleteUi">Delete&nbsp;Notification</g:Label>
-			<div class="{style.delete-placeholder} {style.placeholder}"/>
+<g:HTMLPanel addStyleNames="{style.main-outer}">
+	<div class="{style.main-inner}">
+		<div class="{style.actions-panel}">
+			<div class="{style.action}">
+				<g:Label addStyleNames="{style.floating-panel} {style.delete-floating-panel}" ui:field="deleteUi">Delete&nbsp;Notification</g:Label>
+				<div class="{style.delete-placeholder} {style.placeholder}"/>
+			</div>
+			<div class="{style.action}" ui:field="disableToplevelUi">
+				<g:Label addStyleNames="{style.floating-panel} {style.disable-floating-panel} " ui:field="disableUi">Stop&nbsp;Notifications&nbsp;Like&nbsp;This</g:Label>
+				<div class="{style.disable-placeholder} {style.placeholder}"/>
+			</div>
 		</div>
-		<div class="{style.action}" ui:field="disableToplevelUi">
-			<g:Label addStyleNames="{style.floating-panel} {style.disable-floating-panel} " ui:field="disableUi">Stop&nbsp;Notifications&nbsp;Like&nbsp;This</g:Label>
-			<div class="{style.disable-placeholder} {style.placeholder}"/>
-		</div>
+		<g:Anchor addStyleNames="{style.main-link}" ui:field="mainLinkUi">
+			<img class="{style.avatar}" ui:field="avatarUi" />
+			<span class="{style.message-text}" ui:field="messageTextUi" />
+			<span class="{style.timestamp}" ui:field="timestampUi" />
+		</g:Anchor>
 	</div>
-	<g:Anchor addStyleNames="{style.main-link}" ui:field="mainLinkUi">
-		<img class="{style.avatar}" ui:field="avatarUi" />
-		<span class="{style.message-text}" ui:field="messageTextUi" />
-		<span class="{style.timestamp}" ui:field="timestampUi" />
-	</g:Anchor>
 </g:HTMLPanel>
 	
 </ui:UiBinder>
