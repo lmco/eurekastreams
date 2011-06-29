@@ -1814,7 +1814,7 @@
                     <constructor-arg>
                         <map>
                             <entry key="followedBy">
-                                <ref bean="getFollowedByActivities" />
+                                <ref bean="getAllFollowedByActivityIds" />                            
                             </entry>
                             <entry key="recipient">
                                 <ref bean="bulkActivityStreamsMapper" />
@@ -1834,8 +1834,10 @@
                         <map>
                             <entry key="followedBy">
                                 <bean
-                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedByPersistenceRequestTransformer">
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.AllFollowedByPersistenceRequestTransformer">
                                     <constructor-arg ref="getPersonIdByAccountIdMapper" />
+                                    <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
+                                    <constructor-arg ref="getGroupsByIdsMapper" />
                                 </bean>
                             </entry>
                             <entry key="recipient">
