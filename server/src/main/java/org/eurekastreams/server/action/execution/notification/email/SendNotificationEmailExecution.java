@@ -74,6 +74,12 @@ public class SendNotificationEmailExecution implements ExecutionStrategy<ActionC
             {
                 emailer.setBcc(message, request.getBccRecipients());
             }
+            if (request.isHighPriority())
+            {
+                message.addHeader("Importance", "high");
+                message.addHeader("X-Priority", "1");
+            }
+
             emailer.sendMail(message);
 
             log.debug("Sent email for notification {}", request.getDescription());

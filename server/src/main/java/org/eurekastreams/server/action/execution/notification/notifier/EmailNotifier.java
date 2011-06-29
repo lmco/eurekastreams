@@ -29,6 +29,7 @@ import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
@@ -128,6 +129,10 @@ public class EmailNotifier implements Notifier
             email.setBccRecipients(EmailerFactory.buildEmailList(persons));
         }
 
+        // set the priority
+        email.setHighPriority(Boolean.TRUE.equals(inProperties.get(NotificationPropertyKeys.HIGH_PRIORITY)));
+
+        // set the description (for logging / debugging)
         email.setDescription(inType + " to " + inRecipients.size() + " recipients");
 
         return new UserActionRequest("sendEmailNotificationAction", null, email);

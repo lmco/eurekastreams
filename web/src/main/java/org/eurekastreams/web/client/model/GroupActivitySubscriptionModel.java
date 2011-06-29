@@ -19,7 +19,7 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionRequest;
+import org.eurekastreams.server.action.request.stream.ChangeStreamActivitySubscriptionRequest;
 import org.eurekastreams.web.client.events.data.GotGroupActivitySubscriptionsResponseEvent;
 import org.eurekastreams.web.client.events.data.GroupActivitySubscriptionChangedEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -37,7 +37,7 @@ public class GroupActivitySubscriptionModel extends BaseModel implements Fetchab
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static GroupActivitySubscriptionModel getInstance()
@@ -48,7 +48,7 @@ public class GroupActivitySubscriptionModel extends BaseModel implements Fetchab
     /**
      * Get a list of the ids of the groups this user is subscribed to new activity notifications for. The user would
      * have to belong to these groups.
-     * 
+     *
      * @param ignoredParameter
      *            ignored
      * @param useClientCacheIfAvailable
@@ -68,19 +68,19 @@ public class GroupActivitySubscriptionModel extends BaseModel implements Fetchab
 
     /**
      * Subscribe to new activity notifications for the group with the input short name.
-     * 
+     *
      * @param inGroupShortName
      *            the short name of the group to subsribe notifications from
      */
     public void insert(final String inGroupShortName)
     {
-        final ChangeGroupActivitySubscriptionRequest request = new ChangeGroupActivitySubscriptionRequest(
+        final ChangeStreamActivitySubscriptionRequest request = new ChangeStreamActivitySubscriptionRequest(
                 inGroupShortName, true);
         super.callWriteAction("changeGroupNewActivityNotificationPreference", request, new OnSuccessCommand<Boolean>()
         {
             public void onSuccess(final Boolean response)
             {
-                GroupActivitySubscriptionModel.getInstance().clearCache();
+                clearCache();
                 Session.getInstance().getEventBus().notifyObservers(new GroupActivitySubscriptionChangedEvent(request));
             }
         });
@@ -88,13 +88,13 @@ public class GroupActivitySubscriptionModel extends BaseModel implements Fetchab
 
     /**
      * Unsubscribe to new activity notifications for the group with the input short name.
-     * 
+     *
      * @param inGroupShortName
      *            the short name of the group to unsubsribe notifications from
      */
     public void delete(final String inGroupShortName)
     {
-        final ChangeGroupActivitySubscriptionRequest request = new ChangeGroupActivitySubscriptionRequest(
+        final ChangeStreamActivitySubscriptionRequest request = new ChangeStreamActivitySubscriptionRequest(
                 inGroupShortName, false);
 
         super.callWriteAction("changeGroupNewActivityNotificationPreference", request, new OnSuccessCommand<Boolean>()

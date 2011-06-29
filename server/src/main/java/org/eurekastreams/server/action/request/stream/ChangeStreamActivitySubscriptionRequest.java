@@ -19,9 +19,9 @@ package org.eurekastreams.server.action.request.stream;
 import java.io.Serializable;
 
 /**
- * Request for ChangeGroupActivitySubscriptionExecution.
+ * Request for changing stream activity subscription notifications.
  */
-public class ChangeGroupActivitySubscriptionRequest implements Serializable
+public class ChangeStreamActivitySubscriptionRequest implements Serializable
 {
     /**
      * Serial version uid.
@@ -29,9 +29,9 @@ public class ChangeGroupActivitySubscriptionRequest implements Serializable
     private static final long serialVersionUID = -3057266450773584546L;
 
     /**
-     * The short name of the group.
+     * The unique ID of the stream entity.
      */
-    private String groupShortName;
+    private String streamEntityUniqueId;
 
     /**
      * Whether the user wants to receive new activity notifications.
@@ -41,40 +41,23 @@ public class ChangeGroupActivitySubscriptionRequest implements Serializable
     /**
      * Default constructor.
      */
-    public ChangeGroupActivitySubscriptionRequest()
+    public ChangeStreamActivitySubscriptionRequest()
     {
     }
 
     /**
      * Constructor.
-     * 
-     * @param inGroupShortName
-     *            The short name of the group.
+     *
+     * @param inStreamEntityUniqueId
+     *            The unique ID of the stream entity.
      * @param inReceiveNewActivityNotifications
      *            Whether the user wants to receive new activity notifications.
      */
-    public ChangeGroupActivitySubscriptionRequest(final String inGroupShortName,
+    public ChangeStreamActivitySubscriptionRequest(final String inStreamEntityUniqueId,
             final Boolean inReceiveNewActivityNotifications)
     {
-        groupShortName = inGroupShortName;
+        streamEntityUniqueId = inStreamEntityUniqueId;
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
-    }
-
-    /**
-     * @return the groupShortName
-     */
-    public String getGroupShortName()
-    {
-        return groupShortName;
-    }
-
-    /**
-     * @param inGroupShortName
-     *            the groupShortName to set
-     */
-    public void setGroupShortName(final String inGroupShortName)
-    {
-        groupShortName = inGroupShortName;
     }
 
     /**
@@ -94,4 +77,20 @@ public class ChangeGroupActivitySubscriptionRequest implements Serializable
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
 
+    /**
+     * @return the streamEntityUniqueId
+     */
+    public String getStreamEntityUniqueId()
+    {
+        return streamEntityUniqueId;
+    }
+
+    /**
+     * @param inStreamEntityUniqueId
+     *            the streamEntityUniqueId to set
+     */
+    public void setStreamEntityUniqueId(final String inStreamEntityUniqueId)
+    {
+        streamEntityUniqueId = inStreamEntityUniqueId;
+    }
 }

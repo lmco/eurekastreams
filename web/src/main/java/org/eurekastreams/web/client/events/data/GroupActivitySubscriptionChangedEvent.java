@@ -15,13 +15,13 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionRequest;
+import org.eurekastreams.server.action.request.stream.ChangeStreamActivitySubscriptionRequest;
 
 /**
  * Event that's fired after a successful ChangeGroupActivitySubscriptionRequest.
  */
 public class GroupActivitySubscriptionChangedEvent extends
-        BaseDataResponseEvent<ChangeGroupActivitySubscriptionRequest>
+        BaseDataResponseEvent<ChangeStreamActivitySubscriptionRequest>
 {
     /**
      * Constructor.
@@ -29,7 +29,7 @@ public class GroupActivitySubscriptionChangedEvent extends
      * @param inResponse
      *            the original request
      */
-    public GroupActivitySubscriptionChangedEvent(final ChangeGroupActivitySubscriptionRequest inResponse)
+    public GroupActivitySubscriptionChangedEvent(final ChangeStreamActivitySubscriptionRequest inResponse)
     {
         super(inResponse);
     }

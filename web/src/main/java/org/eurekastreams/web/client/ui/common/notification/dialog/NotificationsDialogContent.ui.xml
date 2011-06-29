@@ -60,11 +60,11 @@
 .no-notifications,
 .notification-list-scroll-panel
 {
-	height: 366px;
+	height: 363px;
 }
 .no-notifications
 {
-	line-height: 366px;
+	line-height: 363px;
 	text-align: center;
 }
 
@@ -88,6 +88,11 @@
 .read-filter-options
 {
 	margin-left: 5px;
+}
+
+.wait-spinner
+{
+	margin-top: 166px;
 }
 
 @if user.agent ie6 ie8 {
@@ -121,9 +126,11 @@
 			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" />
 			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" />
 		</div>
-		<div class="{style.no-notifications}" ui:field="noNotificationsUi">No notifications</div>
+		<div class="{style.no-notifications}" style="display: none;" ui:field="noNotificationsUi">No notifications</div>
 		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">
-			<g:FlowPanel ui:field="notificationListPanel" />
+			<g:FlowPanel ui:field="notificationListPanel">
+				<g:Label addStyleNames="{style.wait-spinner} {coreCss.waitSpinner}" />
+			</g:FlowPanel>
 		</g:ScrollPanel>
 	</div>
 </g:HTMLPanel>

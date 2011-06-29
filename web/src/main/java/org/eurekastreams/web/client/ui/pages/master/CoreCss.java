@@ -1343,16 +1343,6 @@ public interface CoreCss extends CssResource
     @ClassName("notification-settings-modal")
     String notificationSettingsModal();
 
-    //
-    // @ClassName("notif-text-side")
-    // String notifTextSide();
-    //
-    // @ClassName("notif-timestamp")
-    // String notifTimestamp();
-    //
-    // @ClassName("notif-wait")
-    // String notifWait();
-
     @ClassName("notification-bar")
     String notificationBar();
 

@@ -162,25 +162,10 @@ public class NotificationsDialogContent extends BaseDialogContent
      */
     public NotificationsDialogContent()
     {
+        // -- build UI --
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
         main = binder.createAndBindUi(this);
         currentReadFilterWidget = unreadFilterUi;
-
-        // // -- build UI --
-        // main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifDialogMain());
-        //
-        // Hyperlink editSettings =
-        // new Hyperlink("edit settings", Session.getInstance().generateUrl(
-        // new CreateUrlRequest(Page.SETTINGS, null, "tab", "Notifications")));
-        // editSettings.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEditSettingsLink());
-        // main.add(editSettings);
-        //
-        // scrollPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifScrollList());
-        //
-        // scrollPanel.add(listPanel);
-        //
-        // main.add(scrollPanel);
-        // listPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
 
         // -- setup events --
         final EventBus eventBus = Session.getInstance().getEventBus();
@@ -194,41 +179,9 @@ public class NotificationsDialogContent extends BaseDialogContent
                 selectSource(currentSource);
             }
         });
-        // eventBus.addObserver(CloseModalRequestEvent.class, new Observer<CloseModalRequestEvent>()
-        // {
-        // public void update(final CloseModalRequestEvent ev)
-        // {
-        // eventBus.removeObserver(ev, this);
-        // close();
-        // }
-        // });
-
         eventBus.addObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
         eventBus.addObserver(NotificationClickedEvent.class, notificationClickedObserver);
         eventBus.addObserver(NotificationDeleteRequestEvent.class, notificationDeleteRequestObserver);
-
-        // Since none of the links cause a full page load (which would annihilate the dialog), we must explicitly close
-        // the dialog. We cannot count on a history change event (or any of the related events) because the user may
-        // already be on the exact page to which the link would send them. (If clicking a link would cause no change to
-        // the URL, the GWT does not raise the event.) So we close the dialog on a link being clicked. We directly
-        // listen on the "edit settings" link, and have the links in notifications raise an event we listen to.
-
-        // editSettings.addClickHandler(new ClickHandler()
-        // {
-        // public void onClick(final ClickEvent inArg0)
-        // {
-        // close();
-        // }
-        // });
-        //
-        // linkClickedObserver = new Observer<DialogLinkClickedEvent>()
-        // {
-        // public void update(final DialogLinkClickedEvent inArg1)
-        // {
-        // close();
-        // }
-        // };
-        // Session.getInstance().getEventBus().addObserver(DialogLinkClickedEvent.class, linkClickedObserver);
 
         // -- request data --
         NotificationListModel.getInstance().fetch(null, false);
