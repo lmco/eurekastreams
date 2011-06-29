@@ -33,37 +33,19 @@
 	cursor: pointer;
 	display: inline-block;
 }
-.tip-area
-{
-	float: right;
-	width: 200px;
-	background-color: #DDD;
-	height: 100%;
-	margin-left: 15px;
-	border-left: 1px solid #BBB;
-}
-.tip-area > h1
-{
-	font-size: 20px;
-	margin-top: 10px;
-}
-.tip-area > *
-{
-	margin: 15px;
-}
 .settings-area
 {
-	padding: 15px;
+	padding: 25px;
+	padding-top: 15px;
 }
 .grid
 {
 	border-collapse: collapse;
-    margin-right: 15px;
+	width: 100%;
 }
 .grid tr:first-child > td
 {
 	border-bottom: 2px solid #CCC;
-	height: 50px;
 }
 .grid tr:first-child > td:first-child
 {
@@ -117,21 +99,18 @@
 </ui:style>
 
 <g:HTMLPanel addStyleNames="{style.main}">
-	<div class="{style.top-bar}">
+	<div class="{style.top-bar}" ui:field="topBar">
 		<g:InlineLabel addStyleNames="{style.back-button}" ui:field="backButton" />
 		<span>Notification Settings</span>
 	</div>
-	<div class="{style.tip-area}">
-		<h1>Tips</h1>
-		<p>These options allow you to manage your notifications.</p>
-		<p>Don't worry, these selections are not permanent.  You can always change them in the future.</p>
-	</div>
 	<div class="{style.settings-area}">
-		<g:Grid addStyleNames="{style.grid}" ui:field="settingsGrid">
-			<g:row>
-				<g:cell class="{style.grid-explanation}">Below are your options for managing the type of notifications you receive:</g:cell>
-			</g:row>
-		</g:Grid>
+		<div>
+			<g:Grid addStyleNames="{style.grid}" ui:field="settingsGrid">
+				<g:row>
+					<g:cell class="{style.grid-explanation}">Below are your options for managing the type of notifications you receive:</g:cell>
+				</g:row>
+			</g:Grid>
+		</div>
 		<div class="{style.buttons-row}">
 			<g:Label addStyleNames="{style.save-button}" ui:field="saveButton" />
 			<g:Label addStyleNames="{style.cancel-button}" ui:field="cancelButton">Cancel</g:Label>
