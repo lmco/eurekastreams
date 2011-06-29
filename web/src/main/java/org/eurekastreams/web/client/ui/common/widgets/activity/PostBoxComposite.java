@@ -205,8 +205,7 @@ public class PostBoxComposite extends Composite
      */
     private void buildPage()
     {
-        postBoxAnimation = new ExpandCollapseAnimation(postBox.getElement(), POST_BOX_DEFAULT_HEIGHT,
-                POST_BOX_EXPAND_ANIMATION_DURATION);
+        postBoxAnimation = new ExpandCollapseAnimation(postBox.getElement(), POST_BOX_EXPAND_ANIMATION_DURATION);
         posterAvatar.add(avatarRenderer.render(Session.getInstance().getCurrentPerson().getEntityId(), Session
                 .getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.Small));
         postCharCount.setInnerText(POST_MAX.toString());

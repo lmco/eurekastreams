@@ -7,6 +7,7 @@
 		.pagerContainer
 		{
 		clear: both;
+		overflow: hidden;
 		}
 
 		.buttons
@@ -29,18 +30,30 @@
 			background-color: black;
 			cursor: auto;
 		}
+		
+		.pageResults
+		{
+			overflow: auto;
+			width: 250%;
+			position: relative;
+		}
+		
+		.pageResults > *
+		{
+			float: left;
+		}
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.pagerContainer}"
 		ui:field="pagerContainer">
 
-		<g:FlowPanel ui:field="pageResults"></g:FlowPanel>
-		<div class="{style.buttons}">
+		<g:FlowPanel addStyleNames="{style.pageResults}" ui:field="pageResults"></g:FlowPanel>
+		<g:FlowPanel addStyleNames="{style.buttons}" ui:field="buttonContainer">
 			<g:Label addStyleNames="{style.prevButton}" ui:field="prevButton">Prev
 			</g:Label>
 			<g:Label addStyleNames="{style.nextButton}" ui:field="nextButton">Next
 			</g:Label>
-		</div>
+		</g:FlowPanel>
 	</g:HTMLPanel>
 </ui:UiBinder>
 	

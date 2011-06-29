@@ -3619,7 +3619,7 @@ body .options>li>.option-title:hover {
 
 .connection-item {
 	display: block;
-	width: 325px;
+	width: 345px;
 	margin-bottom: 20px;
 }
 
@@ -3694,7 +3694,6 @@ body .options>li>.option-title:hover {
 
 .connection-item-title {
 	font-size: 11px;
-	color: #333333;
 	line-height: 13px;
 	margin: 2px 0px;
 }

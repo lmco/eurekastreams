@@ -91,16 +91,6 @@
 		height: 16px;
 		}
 
-		.stream-details-container > a, .stream-details-container
-		> a:hover,
-		.stream-details-container >
-		a:link, .stream-details-container
-		>
-		a:active
-		{
-		color: #3AB0EF;
-		}
-
 		@sprite .followLink
 		{
 		margin-top: 10px;
@@ -121,11 +111,17 @@
 		@sprite .unFollowLink:hover
 		{
 		gwt-image: "unFollowBtn";
-		}		
+		}
+		
+		.configureLink
+		{
+		display: block;		
+		margin-top: 10px;
+		}
 
 		.condensedStream .toggle-details-link, .condensedStream .follow-info-container,
 		.condensedStream .stream-meta, .condensedStream .stream-avatar,
-		.condensedStream .followLink
+		.condensedStream .followLink, .condensedStream .configureLink
 		{
 		display: none;
 		}
@@ -173,8 +169,7 @@
 
 		.follow-info-link,
 		.follow-info-link:hover {
-		color:
-		#3AB0EF;
+		color: #0066CC;
 		display: block;
 		}
 
@@ -203,6 +198,12 @@
 		gwt-image: "viewDetails";
 		}
 		
+		.stream-details-content 
+		{
+			overflow: hidden;
+			width: 100%;
+		}
+		
 	</ui:style>
 
 	<g:HTMLPanel>
@@ -215,6 +216,7 @@
 				<span class="{style.stream-name}" ui:field="streamName"></span>
 				<span class="{style.stream-meta}" ui:field="streamMeta"></span>
 				<g:Label addStyleNames="{style.followLink}" ui:field="followLink"></g:Label>
+				<g:Anchor addStyleNames="{style.configureLink}" ui:field="configureLink">Configure</g:Anchor>
 			</div>
 			<div class="{style.follow-info-container}">
 				<span ui:field="followerCount"></span>
@@ -237,7 +239,7 @@
 				<g:Label ui:field="followersLink">Followers</g:Label>
 				<g:Label ui:field="followingLink">Following</g:Label>
 			</div>
-			<div>
+			<div class="{style.stream-details-content}">
 				<g:HTMLPanel ui:field="streamAbout">
 					<div class="{style.stream-details}">
 						<h2>Description</h2>

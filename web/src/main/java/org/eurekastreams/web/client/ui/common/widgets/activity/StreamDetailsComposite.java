@@ -16,26 +16,21 @@
 package org.eurekastreams.web.client.ui.common.widgets.activity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
-import org.eurekastreams.web.client.events.data.GotPersonFollowersResponseEvent;
-import org.eurekastreams.web.client.events.data.GotPersonFollowingResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.Deletable;
@@ -162,6 +157,12 @@ public class StreamDetailsComposite extends Composite
     Anchor toggleDetails;
 
     /**
+     * UI element for configure link.
+     */
+    @UiField
+    Anchor configureLink;
+
+    /**
      * UI element for follower count.
      */
     @UiField
@@ -267,10 +268,13 @@ public class StreamDetailsComposite extends Composite
      */
     private void buildPage()
     {
+        // Default style. Prevent flashing.
+        streamName.setInnerText("Following");
+        this.addStyleName(style.condensedStream());
+
         final StreamDetailsComposite thisClass = this;
 
-        detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer,
-                DEFAULT_STREAM_DETAILS_CONTAINER_SIZE, EXPAND_ANIMATION_DURATION);
+        detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, EXPAND_ANIMATION_DURATION);
         final StreamAnalyticsChart chart = new StreamAnalyticsChart();
 
         streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
@@ -282,6 +286,7 @@ public class StreamDetailsComposite extends Composite
 
         streamFollowers.setVisible(false);
         streamFollowing.setVisible(false);
+        configureLink.setVisible(false);
 
         followersLink.addClickHandler(new ClickHandler()
         {
@@ -292,6 +297,7 @@ public class StreamDetailsComposite extends Composite
                 streamAbout.setVisible(false);
                 streamFollowers.setVisible(true);
                 streamFollowers.load();
+                detailsContainerAnimation.expand(475);
             }
         });
 
@@ -304,7 +310,7 @@ public class StreamDetailsComposite extends Composite
                 streamAbout.setVisible(false);
                 streamFollowing.setVisible(true);
                 streamFollowing.load();
-
+                detailsContainerAnimation.expand(475);
             }
         });
 
@@ -316,7 +322,7 @@ public class StreamDetailsComposite extends Composite
                 streamFollowing.setVisible(false);
                 streamAbout.setVisible(true);
                 streamFollowers.setVisible(false);
-
+                detailsContainerAnimation.expandWithPadding(20);
             }
         });
 
@@ -326,6 +332,16 @@ public class StreamDetailsComposite extends Composite
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
                         PersonModelView person = event.getResponse();
+
+                        if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+                        {
+                            configureLink.setVisible(true);
+                            configureLink.setHref("#personalsettings/" + person.getAccountId());
+                        }
+                        else
+                        {
+                            configureLink.setVisible(false);
+                        }
 
                         updateFollowLink(person.getAccountId(), EntityType.PERSON);
 
@@ -356,6 +372,28 @@ public class StreamDetailsComposite extends Composite
                     {
                         DomainGroupModelView group = event.getResponse();
 
+                        boolean isCoordinator = false;
+
+                        for (PersonModelView coordinator : group.getCoordinators())
+                        {
+                            if (coordinator.getAccountId().equals(
+                                    Session.getInstance().getCurrentPerson().getAccountId()))
+                            {
+                                isCoordinator = true;
+                                break;
+                            }
+                        }
+
+                        if (isCoordinator || Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+                        {
+                            configureLink.setVisible(true);
+                            configureLink.setHref("#groupsettings/" + group.getShortName());
+                        }
+                        else
+                        {
+                            configureLink.setVisible(false);
+                        }
+
                         updateFollowLink(group.getShortName(), EntityType.GROUP);
 
                         streamName.setInnerText(group.getName());
@@ -380,6 +418,8 @@ public class StreamDetailsComposite extends Composite
         {
             public void update(final HistoryViewsChangedEvent event)
             {
+                detailsContainerAnimation.collapse();
+
                 List<String> views = new ArrayList<String>(event.getViews());
 
                 if (views == null || views.size() == 0 || views.get(0).equals("following"))
@@ -416,7 +456,7 @@ public class StreamDetailsComposite extends Composite
         {
             public void onClick(final ClickEvent event)
             {
-                detailsContainerAnimation.toggle();
+                detailsContainerAnimation.toggleWithPadding(20);
             }
         });
     }

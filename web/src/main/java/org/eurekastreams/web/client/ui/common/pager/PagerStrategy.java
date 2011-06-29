@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.pager;
 
-import org.eurekastreams.web.client.events.PagerResponseEvent;
 
 /**
  * Pager Strategy.

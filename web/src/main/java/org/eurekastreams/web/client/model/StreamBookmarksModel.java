@@ -69,6 +69,7 @@ public class StreamBookmarksModel extends BaseModel implements Fetchable<Seriali
         {
             public void onSuccess(final StreamScope response)
             {
+                StreamBookmarksModel.getInstance().fetch(null, true);
             }
         });
     }

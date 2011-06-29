@@ -213,6 +213,15 @@
 		cursor: pointer;
 		color: #0066CC;
 		}
+		
+		.createFilter
+		{
+	    clear: left;
+	    float: left;
+	    cursor: pointer;
+    	display: inline-block;
+    	margin-left: 140px;
+		}
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
@@ -255,6 +264,7 @@
 
 		<ul class="{style.stream-option-list}" ui:field="filterList">
 		</ul>
+		<g:Label addStyleNames="{style.createFilter}" ui:field="createFilter">Create a Filter</g:Label>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

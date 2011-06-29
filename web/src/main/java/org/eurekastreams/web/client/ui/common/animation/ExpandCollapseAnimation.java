@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,23 +54,37 @@ public class ExpandCollapseAnimation extends Animation
      * 
      * @param inElement
      *            the element.
-     * @param inDefaultHeight
-     *            default height to expand to.
      * @param inMilliseconds
      *            duration.
      */
-    public ExpandCollapseAnimation(final Element inElement, final int inDefaultHeight, final int inMilliseconds)
+    public ExpandCollapseAnimation(final Element inElement, final int inMilliseconds)
     {
         element = inElement;
-        height = inDefaultHeight;
         milliseconds = inMilliseconds;
+    }
+
+    public void expand()
+    {
+        expandWithPadding(0);
     }
 
     /**
      * Expand.
+     * 
+     * @param padding
+     *            the amount of padding to use.
      */
-    public void expand()
+    public void expandWithPadding(final int padding)
     {
+        height = padding;
+        Element child = element.getFirstChildElement();
+
+        while (child != null)
+        {
+            height += child.getClientHeight();
+            child = child.getNextSiblingElement();
+        }
+
         isExpanding = true;
         run(milliseconds);
     }
@@ -80,8 +94,11 @@ public class ExpandCollapseAnimation extends Animation
      */
     public void collapse()
     {
-        isExpanding = false;
-        run(milliseconds);
+        if (isExpanded())
+        {
+            isExpanding = false;
+            run(milliseconds);
+        }
     }
 
     /**
@@ -93,7 +110,8 @@ public class ExpandCollapseAnimation extends Animation
     public void expand(final int inHeight)
     {
         height = inHeight;
-        expand();
+        isExpanding = true;
+        run(milliseconds);
     }
 
     /**
@@ -139,13 +157,33 @@ public class ExpandCollapseAnimation extends Animation
      */
     public void toggle()
     {
-        if (element.getClientHeight() > 0)
+        toggleWithPadding(0);
+
+    }
+
+    /**
+     * Get is expanded.
+     */
+    public boolean isExpanded()
+    {
+        return element.getClientHeight() > 0;
+    }
+
+    /**
+     * Toggle with padding.
+     * 
+     * @param padding
+     *            padding.
+     */
+    public void toggleWithPadding(final int padding)
+    {
+        if (isExpanded())
         {
             collapse();
         }
         else
         {
-            expand();
+            expandWithPadding(padding);
         }
 
     }

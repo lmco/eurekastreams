@@ -27,6 +27,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
@@ -47,8 +48,10 @@ import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
+import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -186,6 +189,12 @@ public class ActivityContent extends Composite
     Label addBookmark;
 
     /**
+     * Create Filter.
+     */
+    @UiField
+    Label createFilter;
+
+    /**
      * Message Renderer.
      */
     StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
@@ -240,9 +249,6 @@ public class ActivityContent extends Composite
 
         defaultList.appendChild(createLI("Following", "following"));
         defaultList.appendChild(createLI("Everyone", "everyone"));
-
-        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
-                + Session.getInstance().getCurrentPerson().getAccountId()));
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -320,6 +326,7 @@ public class ActivityContent extends Composite
                 {
                     public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
+                        filterList.setInnerHTML("");
                         for (StreamFilter filter : event.getResponse().getStreamFilters())
                         {
 
@@ -363,6 +370,9 @@ public class ActivityContent extends Composite
                 {
                     public void update(final GotCurrentUserStreamBookmarks event)
                     {
+                        bookmarkList.setInnerHTML("");
+                        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(),
+                                "person/" + Session.getInstance().getCurrentPerson().getAccountId()));
 
                         for (StreamFilter filter : event.getResponse())
                         {
@@ -404,12 +414,20 @@ public class ActivityContent extends Composite
             }
         });
 
+        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
+        {
+            public void update(final CustomStreamCreatedEvent event)
+            {
+                CustomStreamModel.getInstance().fetch(null, true);
+            }
+        });
+
         EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        //loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
                     }
                 });
 
@@ -456,6 +474,14 @@ public class ActivityContent extends Composite
                 request.put("bookmark", currentStream);
 
                 StreamBookmarksModel.getInstance().insert(request);
+            }
+        });
+
+        createFilter.addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent event)
+            {
+                Dialog.showCentered(new CustomStreamDialogContent());
             }
         });
 
@@ -602,7 +628,13 @@ public class ActivityContent extends Composite
         }
         else
         {
-            ActivityModel.getInstance().fetch(Long.parseLong(views.get(0)), true);
+            try
+            {
+                ActivityModel.getInstance().fetch(Long.parseLong(views.get(0)), true);
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         Session.getInstance().getActionProcessor().fireQueuedRequests();

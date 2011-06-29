@@ -18,6 +18,8 @@ package org.eurekastreams.web.client.ui.common.pager;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
+import org.eurekastreams.web.client.ui.common.animation.SlideAnimation;
+import org.eurekastreams.web.client.ui.common.animation.SlideAnimation.Direction;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -83,9 +86,25 @@ public class PagerComposite extends Composite
     Label nextButton;
 
     /**
+     * Button container.
+     */
+    @UiField
+    FlowPanel buttonContainer;
+
+    /**
+     * Slide left animation.
+     */
+    private SlideAnimation slideAnimation = new SlideAnimation();
+
+    /**
      * Pager strategy.
      */
     private PagerStrategy pagerStrategy = null;
+
+    /**
+     * Current direction.
+     */
+    protected Direction direction;
 
     /**
      * Default constructor.
@@ -93,6 +112,7 @@ public class PagerComposite extends Composite
     public PagerComposite()
     {
         initWidget(binder.createAndBindUi(this));
+        buttonContainer.setVisible(false);
 
         buildPage();
 
@@ -114,8 +134,16 @@ public class PagerComposite extends Composite
             {
                 if (event.getKey().equals(pagerStrategy.getKey()))
                 {
-                    pageResults.clear();
-                    pageResults.add(event.getWidget());
+                    buttonContainer.setVisible(true);
+
+                    if (pageResults.getWidgetCount() != 0)
+                    {
+                        slideAnimation.slide(direction, event.getWidget(), pageResults, 500);
+                    }
+                    else
+                    {
+                        pageResults.add(event.getWidget());
+                    }
 
                     if (!pagerStrategy.hasNext())
                     {
@@ -141,6 +169,8 @@ public class PagerComposite extends Composite
 
     public void load()
     {
+        buttonContainer.setVisible(false);
+        pageResults.clear();
         pagerStrategy.init();
     }
 
@@ -155,6 +185,7 @@ public class PagerComposite extends Composite
             {
                 if (pagerStrategy.hasNext())
                 {
+                    direction = Direction.Left;
                     pagerStrategy.next();
                 }
             }
@@ -166,6 +197,7 @@ public class PagerComposite extends Composite
             {
                 if (pagerStrategy.hasPrev())
                 {
+                    direction = Direction.Right;
                     pagerStrategy.prev();
                 }
             }
