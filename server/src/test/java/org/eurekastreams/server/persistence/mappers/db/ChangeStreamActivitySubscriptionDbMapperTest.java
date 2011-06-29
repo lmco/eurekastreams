@@ -20,20 +20,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.GroupFollower;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.requests.ChangeGroupActivitySubscriptionMapperRequest;
+import org.eurekastreams.server.persistence.mappers.requests.ChangeStreamActivitySubscriptionMapperRequest;
 import org.junit.Test;
 
 /**
- * Test fixture for ChangeGroupActivitySubscriptionDbMapper.
+ * Test fixture for ChangeStreamActivitySubscriptionDbMapper.
  */
-public class ChangeGroupActivitySubscriptionDbMapperTest extends MapperTest
+public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 {
     /**
      * System under test.
      */
-    private ChangeGroupActivitySubscriptionDbMapper sut;
+    private ChangeStreamActivitySubscriptionDbMapper sut;
 
     /**
      * Test for unsubscribing from a group.
@@ -57,9 +58,9 @@ public class ChangeGroupActivitySubscriptionDbMapperTest extends MapperTest
 
         getEntityManager().clear();
 
-        sut = new ChangeGroupActivitySubscriptionDbMapper();
+        sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
         sut.setEntityManager(getEntityManager());
-        sut.execute(new ChangeGroupActivitySubscriptionMapperRequest(personId, groupId, shouldReceiveNotifications));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(personId, groupId, shouldReceiveNotifications));
 
         follower = (GroupFollower) getEntityManager().createQuery(
                 "From GroupFollower WHERE followerId = :personId AND followingId = :groupId").setParameter("personId",
@@ -93,9 +94,9 @@ public class ChangeGroupActivitySubscriptionDbMapperTest extends MapperTest
 
         getEntityManager().clear();
 
-        sut = new ChangeGroupActivitySubscriptionDbMapper();
+        sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
         sut.setEntityManager(getEntityManager());
-        sut.execute(new ChangeGroupActivitySubscriptionMapperRequest(personId, groupId, shouldReceiveNotifications));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(personId, groupId, shouldReceiveNotifications));
 
         follower = (GroupFollower) getEntityManager().createQuery(
                 "From GroupFollower WHERE followerId = :personId AND followingId = :groupId").setParameter("personId",
@@ -123,13 +124,22 @@ public class ChangeGroupActivitySubscriptionDbMapperTest extends MapperTest
 
         getEntityManager().clear();
 
-        sut = new ChangeGroupActivitySubscriptionDbMapper();
+        sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
         sut.setEntityManager(getEntityManager());
-        sut.execute(new ChangeGroupActivitySubscriptionMapperRequest(personId, groupId, shouldReceiveNotifications));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(personId, groupId, shouldReceiveNotifications));
 
         count = getEntityManager().createQuery(
                 "From GroupFollower WHERE followerId = :personId AND followingId = :groupId").setParameter("personId",
                 personId).setParameter("groupId", groupId).getResultList().size();
         assertEquals(0, count);
+    }
+
+    /**
+     * Tests attempting to create for unsupported type.
+     */
+    @Test(expected = Exception.class)
+    public void testConstructInvalidType()
+    {
+        new ChangeStreamActivitySubscriptionDbMapper(EntityType.RESOURCE);
     }
 }

@@ -27,15 +27,23 @@ import org.eurekastreams.commons.model.WrappedLightEntity;
 /**
  * Object representing the person follower/following relationship.
  */
-@SuppressWarnings("serial")
 @Entity
 public class Follower extends WrappedLightEntity implements Serializable
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Instance of FollowerPk (Composite primary key object) for this class.
      */
     @EmbeddedId
     private FollowerPk pk = null;
+
+    /**
+     * Whether to receive notifications after new activities are posted to this stream.
+     */
+    @Basic
+    private Boolean receiveNewActivityNotifications = true;
 
     /**
      * Constructor.
@@ -79,12 +87,32 @@ public class Follower extends WrappedLightEntity implements Serializable
     }
 
     /**
+     * @return the receiveNewActivityNotifications
+     */
+    public boolean getReceiveNewActivityNotifications()
+    {
+        return receiveNewActivityNotifications;
+    }
+
+    /**
+     * @param inReceiveNewActivityNotifications
+     *            the receiveNewActivityNotifications to set
+     */
+    public void setReceiveNewActivityNotifications(final boolean inReceiveNewActivityNotifications)
+    {
+        receiveNewActivityNotifications = inReceiveNewActivityNotifications;
+    }
+
+    /**
      * Composite primary key for follower.
      *
      */
     @Embeddable
     public static class FollowerPk implements Serializable
     {
+        /** Fingerprint. */
+        private static final long serialVersionUID = 1L;
+
         /**
          * Follower id.
          */

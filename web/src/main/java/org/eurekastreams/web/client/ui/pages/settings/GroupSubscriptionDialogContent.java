@@ -159,7 +159,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
                         {
                             public void update(final GroupActivitySubscriptionChangedEvent ev)
                             {
-                                String groupName = ev.getResponse().getGroupShortName();
+                                String groupName = ev.getResponse().getStreamEntityUniqueId();
                                 boolean subscribed = ev.getResponse().getReceiveNewActivityNotifications();
                                 Widget button;
                                 button = subscribeButtons.get(groupName);

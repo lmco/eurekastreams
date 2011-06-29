@@ -542,6 +542,12 @@
         </constructor-arg>
     </bean>
 
+	<!-- Mapper to get group id by short name / unique id - throws exception when not found -->
+	<bean id="getGroupIdByShortNameMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getDomainGroupIdsByShortNamesMapper" />
+		<constructor-arg value="true" />
+	</bean>
+
 	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found -->
 	<bean id="getPersonIdByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
@@ -2070,8 +2076,15 @@
     
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />
     
-    <bean id="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" 
-        class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
+    <bean id="getFollowerPersonIdsForPersonByIdWithActivityNotificationsDbMapper" 
+        class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
+        <constructor-arg value="PERSON" />
+    </bean>
+
+	<bean id="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" 
+        class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
+        <constructor-arg value="GROUP" />
+    </bean>
     
     <bean id="getFollowerPersonIdsForGroupByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdDbMapper" />    
     
@@ -2110,7 +2123,13 @@
 
     <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
 
-    <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeGroupActivitySubscriptionDbMapper" />
+    <bean id="changePersonActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeStreamActivitySubscriptionDbMapper">
+    	<constructor-arg value="PERSON" />
+    </bean>
+
+    <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeStreamActivitySubscriptionDbMapper">
+    	<constructor-arg value="GROUP" />
+    </bean>
 
     <bean id="findOrInsertSharedResourceByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceByUniqueKeyDbMapper" />
 

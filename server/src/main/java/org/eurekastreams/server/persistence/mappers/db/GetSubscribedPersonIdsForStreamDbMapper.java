@@ -17,19 +17,42 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Get person ids that are followers of a given group and have group activity notification enabled.
- * 
+ *
  */
-public class GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper extends
-        BaseArgDomainMapper<Long, List<Long>>
+public class GetSubscribedPersonIdsForStreamDbMapper extends BaseArgDomainMapper<Long, List<Long>>
 {
+    /** Name of entity to use in query. */
+    private String entityName;
+
+    /**
+     * Constructor.
+     *
+     * @param entityType
+     *            Entity type of streams to operate on.
+     */
+    public GetSubscribedPersonIdsForStreamDbMapper(final EntityType entityType)
+    {
+        switch (entityType)
+        {
+        case PERSON:
+            entityName = "Follower";
+            break;
+        case GROUP:
+            entityName = "GroupFollower";
+            break;
+        default:
+            throw new IllegalArgumentException("Entity type " + entityType + " not allowed.  Only PERSON and GROUP.");
+        }
+    }
 
     /**
      * Get person ids that are followers of a given group and have group activity notification enabled.
-     * 
+     *
      * @param inRequest
      *            the group id.
      * @return person ids that are followers of a given group.
@@ -38,9 +61,10 @@ public class GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper e
     @Override
     public List<Long> execute(final Long inRequest)
     {
-        return getEntityManager().createQuery(
-                "SELECT gf.pk.followerId FROM GroupFollower gf WHERE gf.pk.followingId = :id"
-                        + " AND gf.receiveNewActivityNotifications = :boolean").setParameter("id", inRequest)
+        return getEntityManager()
+                .createQuery(
+                        "SELECT gf.pk.followerId FROM " + entityName + " gf WHERE gf.pk.followingId = :id"
+                                + " AND gf.receiveNewActivityNotifications = :boolean").setParameter("id", inRequest)
                 .setParameter("boolean", true).getResultList();
     }
 

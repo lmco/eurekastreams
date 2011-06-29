@@ -19,43 +19,26 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper.
- * 
+ * Tests GetSubscribedPersonIdsForStreamDbMapper.
  */
-public class GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapperTest extends MapperTest
+public class GetSubscribedPersonIdsForStreamDbMapperTest extends MapperTest
 {
-
-    /**
-     * Group id.
-     */
-    private final long groupId = 1L;
-
-    /**
-     * System under test.
-     */
-    private GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper sut = //
-    new GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper();
-
-    /**
-     * Set entitymanager.
-     */
-    @Before
-    public void setup()
-    {
-        sut.setEntityManager(getEntityManager());
-    }
-
     /**
      * test.
      */
     @Test
-    public void testExecute()
+    public void testExecuteGroup()
     {
+        final long groupId = 1L;
+
+        GetSubscribedPersonIdsForStreamDbMapper sut = new GetSubscribedPersonIdsForStreamDbMapper(EntityType.GROUP);
+        sut.setEntityManager(getEntityManager());
+
         getEntityManager().createQuery("Update GroupFollower set receiveNewActivityNotifications = :boolean")
                 .setParameter("boolean", true).executeUpdate();
 

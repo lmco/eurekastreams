@@ -17,36 +17,35 @@
 package org.eurekastreams.server.persistence.mappers.requests;
 
 /**
- * Mapper request to change a group activity subscription preference for a user's followed group.
+ * Mapper request to change a activity subscription preference for a user's followed stream.
  */
-public class ChangeGroupActivitySubscriptionMapperRequest
+public class ChangeStreamActivitySubscriptionMapperRequest
 {
     /**
-     * The id of the person.
+     * The id of the person subscribing.
      */
-    private long personId;
+    private long subscriberPersonId;
 
     /**
-     * The id of the group.
+     * The id of the stream's entity (person/group).
      */
-    private long groupId;
+    private long streamEntityId;
 
     /**
      * Constructor.
-     * 
-     * @param inPersonId
+     *
+     * @param inSubscriberPersonId
      *            the person id
-     * @param inGroupId
+     * @param inStreamEntityId
      *            the group id
      * @param inReceiveNewActivityNotifications
      *            whether to receive notifications
      */
-    public ChangeGroupActivitySubscriptionMapperRequest(final long inPersonId, final long inGroupId,
+    public ChangeStreamActivitySubscriptionMapperRequest(final long inSubscriberPersonId, final long inStreamEntityId,
             final boolean inReceiveNewActivityNotifications)
     {
-        super();
-        personId = inPersonId;
-        groupId = inGroupId;
+        subscriberPersonId = inSubscriberPersonId;
+        streamEntityId = inStreamEntityId;
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
 
@@ -58,35 +57,35 @@ public class ChangeGroupActivitySubscriptionMapperRequest
     /**
      * @return the personId
      */
-    public long getPersonId()
+    public long getSubscriberPersonId()
     {
-        return personId;
+        return subscriberPersonId;
     }
 
     /**
      * @param inPersonId
      *            the personId to set
      */
-    public void setPersonId(final long inPersonId)
+    public void setSubscriberPersonId(final long inPersonId)
     {
-        personId = inPersonId;
+        subscriberPersonId = inPersonId;
     }
 
     /**
-     * @return the groupId
+     * @return the StreamEntityId
      */
-    public long getGroupId()
+    public long getStreamEntityId()
     {
-        return groupId;
+        return streamEntityId;
     }
 
     /**
-     * @param inGroupId
-     *            the groupId to set
+     * @param inStreamEntityId
+     *            the StreamEntityID to set
      */
-    public void setGroupId(final long inGroupId)
+    public void setStreamEntityId(final long inStreamEntityId)
     {
-        groupId = inGroupId;
+        streamEntityId = inStreamEntityId;
     }
 
     /**
@@ -105,5 +104,4 @@ public class ChangeGroupActivitySubscriptionMapperRequest
     {
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
-
 }
