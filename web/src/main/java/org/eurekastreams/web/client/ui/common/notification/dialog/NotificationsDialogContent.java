@@ -369,10 +369,10 @@ public class NotificationsDialogContent extends BaseDialogContent
      */
     private void selectSource(final Source newSource)
     {
-        currentSource.getWidget().removeStyleName(style.sourceFilterSelected());
+        currentSource.getWidget().removeStyleName(style.filterSelected());
 
         currentSource = newSource;
-        currentSource.getWidget().addStyleName(style.sourceFilterSelected());
+        currentSource.getWidget().addStyleName(style.filterSelected());
         displayNotifications(currentSource.getFilter(), currentShowRead);
     }
 
@@ -425,9 +425,9 @@ public class NotificationsDialogContent extends BaseDialogContent
         Widget selector = (Widget) ev.getSource();
         if (selector != currentReadFilterWidget)
         {
-            currentReadFilterWidget.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+            currentReadFilterWidget.removeStyleName(style.filterSelected());
             currentReadFilterWidget = selector;
-            currentReadFilterWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+            currentReadFilterWidget.addStyleName(style.filterSelected());
             currentShowRead = !currentShowRead;
             displayNotifications(currentSource.getFilter(), currentShowRead);
         }
@@ -515,9 +515,9 @@ public class NotificationsDialogContent extends BaseDialogContent
         @ClassName("source-filter")
         String sourceFilter();
 
-        /** @return Added style for the selected source. */
-        @ClassName("source-filter-selected")
-        String sourceFilterSelected();
+        /** @return Added style for a selected filter (the selected source or unread/all). */
+        @ClassName("filter-selected")
+        String filterSelected();
 
         /** @return Added style for indented sources. */
         @ClassName("source-filter-indented")
