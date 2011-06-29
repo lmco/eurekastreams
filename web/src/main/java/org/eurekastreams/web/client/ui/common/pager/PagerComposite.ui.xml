@@ -2,17 +2,45 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
 
-	<ui:style>
+	<ui:style
+		type="org.eurekastreams.web.client.ui.common.pager.PagerComposite.PagerStyle">
 		.pagerContainer
 		{
+		clear: both;
+		}
+
+		.buttons
+		{
+		border-top: 1px solid #c0c0c0;
+		text-align: right;
+		}
+
+		.prevButton, .nextButton
+		{
+		background-color: #c0c0c0;
+		padding: 5px;
+		cursor: pointer;
+		display: inline-block;
+		margin-left: 10px;
+		}
+		
+		body .pagingDisabled
+		{
+			background-color: black;
+			cursor: auto;
 		}
 	</ui:style>
 
-	<g:HTMLPanel addStyleNames="{style.pagerContainer}" ui:field="pagerContainer">
-	Pager
-	
-		<g:Label ui:field="prevButton">Prev</g:Label>
-		<g:Label ui:field="nextButton">Next</g:Label>
+	<g:HTMLPanel addStyleNames="{style.pagerContainer}"
+		ui:field="pagerContainer">
+
+		<g:FlowPanel ui:field="pageResults"></g:FlowPanel>
+		<div class="{style.buttons}">
+			<g:Label addStyleNames="{style.prevButton}" ui:field="prevButton">Prev
+			</g:Label>
+			<g:Label addStyleNames="{style.nextButton}" ui:field="nextButton">Next
+			</g:Label>
+		</div>
 	</g:HTMLPanel>
 </ui:UiBinder>
 	

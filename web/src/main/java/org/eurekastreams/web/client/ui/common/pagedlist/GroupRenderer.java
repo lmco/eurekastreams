@@ -31,7 +31,7 @@ public class GroupRenderer implements ItemRenderer<DomainGroupModelView>
      */
     public Panel render(final DomainGroupModelView item)
     {
-        return new GroupPanel(item, true, true, true);
+        return new GroupPanel(item, true, false, false);
     }
 
 }

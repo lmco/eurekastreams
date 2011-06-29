@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.pager;
 
+import org.eurekastreams.web.client.events.PagerResponseEvent;
 
 /**
  * Pager Strategy.
@@ -30,19 +31,26 @@ public interface PagerStrategy
      * @return if there is a previous page.
      */
     boolean hasPrev();
-    
+
     /**
      * Page next.
      */
     void next();
-    
+
     /**
      * Page prev.
      */
     void prev();
-    
+
     /**
      * Initialize.
      */
     void init();
+
+    /**
+     * Get the event
+     * 
+     * @return the event key.
+     */
+    String getKey();
 }

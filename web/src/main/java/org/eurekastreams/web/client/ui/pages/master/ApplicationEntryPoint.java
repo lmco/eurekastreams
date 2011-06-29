@@ -229,6 +229,7 @@ public class ApplicationEntryPoint implements EntryPoint
             public boolean execute()
             {
                 SessionEstablishModel.getInstance().fetch(null, false);
+                
                 return true;
             }
         }, SESSION_POLLING_TIME);

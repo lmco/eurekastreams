@@ -46,6 +46,8 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
+import org.eurekastreams.web.client.ui.common.pager.FollowerPagerStrategy;
+import org.eurekastreams.web.client.ui.common.pager.FollowingPagerStrategy;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 
@@ -139,19 +141,19 @@ public class StreamDetailsComposite extends Composite
      * UI element for about link.
      */
     @UiField
-    Anchor aboutLink;
+    Label aboutLink;
 
     /**
      * UI element for followers link.
      */
     @UiField
-    Anchor followersLink;
+    Label followersLink;
 
     /**
      * UI element for following link.
      */
     @UiField
-    Anchor followingLink;
+    Label followingLink;
 
     /**
      * UI element for toggling details.
@@ -238,7 +240,7 @@ public class StreamDetailsComposite extends Composite
     /**
      * Default stream details container size.
      */
-    private static final int DEFAULT_STREAM_DETAILS_CONTAINER_SIZE = 330;
+    private static final int DEFAULT_STREAM_DETAILS_CONTAINER_SIZE = 550;
 
     /**
      * Avatar Renderer.
@@ -275,44 +277,48 @@ public class StreamDetailsComposite extends Composite
         analyticsChartContainer.add(chart);
         chart.update();
 
+        streamFollowers.init(new FollowerPagerStrategy());
+        streamFollowing.init(new FollowingPagerStrategy());
+
         streamFollowers.setVisible(false);
         streamFollowing.setVisible(false);
 
-        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
+        followersLink.addClickHandler(new ClickHandler()
         {
-            public void update(final HistoryViewsChangedEvent event)
+
+            public void onClick(ClickEvent event)
             {
-                List<String> views = new ArrayList<String>(event.getViews());
-
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("details", "about");
-                aboutLink.setHref("#"
-                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views, params)));
-
-                params.put("details", "followers");
-                followersLink.setHref("#"
-                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views, params)));
-
-                params.put("details", "following");
-                followingLink.setHref("#"
-                        + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views, params)));
+                streamFollowing.setVisible(false);
+                streamAbout.setVisible(false);
+                streamFollowers.setVisible(true);
+                streamFollowers.load();
             }
         });
 
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        if (event.getParameters().containsKey("details"))
-                        {
-                            streamFollowers.setVisible("followers".equals(event.getParameters().get("details")));
-                            streamFollowing.setVisible("following".equals(event.getParameters().get("details")));
-                            streamAbout.setVisible("about".equals(event.getParameters().get("details")));
+        followingLink.addClickHandler(new ClickHandler()
+        {
 
-                        }
-                    }
-                });
+            public void onClick(ClickEvent event)
+            {
+                streamFollowers.setVisible(false);
+                streamAbout.setVisible(false);
+                streamFollowing.setVisible(true);
+                streamFollowing.load();
+
+            }
+        });
+
+        aboutLink.addClickHandler(new ClickHandler()
+        {
+
+            public void onClick(ClickEvent event)
+            {
+                streamFollowing.setVisible(false);
+                streamAbout.setVisible(true);
+                streamFollowers.setVisible(false);
+
+            }
+        });
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
@@ -340,9 +346,6 @@ public class StreamDetailsComposite extends Composite
                         streamInterests.setInnerHTML(interestString);
 
                         streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
-
-                        // streamFollowers.clear();
-                        // streamFollowing.clear();
                     }
                 });
 
@@ -370,27 +373,6 @@ public class StreamDetailsComposite extends Composite
                         }
                         streamInterests.setInnerHTML(interestString);
                         streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
-
-                        // streamFollowers.clear();
-                        // streamFollowing.clear();
-                    }
-                });
-
-        EventBus.getInstance().addObserver(GotPersonFollowersResponseEvent.class,
-                new Observer<GotPersonFollowersResponseEvent>()
-                {
-                    public void update(final GotPersonFollowersResponseEvent event)
-                    {
-                        // streamFollowers.render(event.getResponse(), "No one is following this person");
-                    }
-                });
-
-        EventBus.getInstance().addObserver(GotPersonFollowingResponseEvent.class,
-                new Observer<GotPersonFollowingResponseEvent>()
-                {
-                    public void update(final GotPersonFollowingResponseEvent event)
-                    {
-                        // streamFollowing.render(event.getResponse(), "This person is not following anyone");
                     }
                 });
 

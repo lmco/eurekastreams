@@ -407,10 +407,9 @@ public class ActivityContent extends Composite
         EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
-
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                        //loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
                     }
                 });
 

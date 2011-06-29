@@ -60,9 +60,7 @@
 		}
 
 
-		.stream-details-options > a, .stream-details-options > a:hover,
-		.stream-details-options >
-		a:link, .stream-details-options > a:active
+		.stream-details-options > div
 		{
 		background-image: url("style/images/subFilterBackground.png");
 		color:
@@ -73,6 +71,7 @@
 		margin: 10px 0 10px
 		10px;
 		padding: 0 10px;
+		cursor: pointer;
 		}
 
 		.stream-details-container
@@ -234,9 +233,9 @@
 		</div>
 		<div class="{style.stream-details-container}" ui:field="streamDetailsContainer">
 			<div class="{style.stream-details-options}">
-				<g:Anchor ui:field="aboutLink">About</g:Anchor>
-				<g:Anchor ui:field="followersLink">Followers</g:Anchor>
-				<g:Anchor ui:field="followingLink">Following</g:Anchor>
+				<g:Label ui:field="aboutLink">About</g:Label>
+				<g:Label ui:field="followersLink">Followers</g:Label>
+				<g:Label ui:field="followingLink">Following</g:Label>
 			</div>
 			<div>
 				<g:HTMLPanel ui:field="streamAbout">

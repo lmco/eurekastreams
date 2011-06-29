@@ -45,6 +45,7 @@ public class SessionEstablishModel extends BaseModel implements Fetchable<String
         {
             public void onSuccess(final Integer response)
             {
+                
             }
         }, new OnFailureCommand()
         {

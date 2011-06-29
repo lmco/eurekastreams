@@ -15,20 +15,22 @@
  */
 package org.eurekastreams.web.client.events.data;
 
+import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Response event.
- *
+ * 
  */
-public class GotPersonFollowingResponseEvent extends BaseDataResponseEvent<PagedSet<PersonModelView>>
+public class GotPersonFollowingResponseEvent extends BaseDataResponseEvent<PagedSet<ModelView>>
 {
     /**
      * Default constructor.
-     * @param inResponse response.
+     * 
+     * @param inResponse
+     *            response.
      */
-    public GotPersonFollowingResponseEvent(final PagedSet<PersonModelView> inResponse)
+    public GotPersonFollowingResponseEvent(final PagedSet<ModelView> inResponse)
     {
         super(inResponse);
     }

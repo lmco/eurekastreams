@@ -15,17 +15,18 @@
  */
 package org.eurekastreams.web.client.model;
 
+import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
+import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.data.GotPersonFollowingResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Person Followering Model.
- *
+ * 
  */
-public class PersonFollowingModel extends BaseModel implements Fetchable<GetFollowersFollowingRequest>
+public class PersonFollowingModel extends BaseModel implements Fetchable<GetStreamsUserIsFollowingRequest>
 {
     /**
      * Singleton.
@@ -34,7 +35,7 @@ public class PersonFollowingModel extends BaseModel implements Fetchable<GetFoll
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static PersonFollowingModel getInstance()
@@ -45,11 +46,11 @@ public class PersonFollowingModel extends BaseModel implements Fetchable<GetFoll
     /**
      * {@inheritDoc}
      */
-    public void fetch(final GetFollowersFollowingRequest request, final boolean useClientCacheIfAvailable)
+    public void fetch(final GetStreamsUserIsFollowingRequest request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getFollowing", request, new OnSuccessCommand<PagedSet<PersonModelView>>()
+        super.callReadAction("getStreamsUserIsFollowing", request, new OnSuccessCommand<PagedSet<ModelView>>()
         {
-            public void onSuccess(final PagedSet<PersonModelView> response)
+            public void onSuccess(final PagedSet<ModelView> response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new GotPersonFollowingResponseEvent(response));
             }

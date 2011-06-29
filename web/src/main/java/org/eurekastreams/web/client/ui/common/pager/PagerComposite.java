@@ -15,14 +15,18 @@
  */
 package org.eurekastreams.web.client.ui.common.pager;
 
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.PagerResponseEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,6 +47,28 @@ public class PagerComposite extends Composite
     interface LocalUiBinder extends UiBinder<Widget, PagerComposite>
     {
     }
+
+    /**
+     * CSS resource.
+     */
+    interface PagerStyle extends CssResource
+    {
+        /**
+         * Paging disabled style.
+         * 
+         * @return paging disabled.
+         */
+        String pagingDisabled();
+    }
+
+    /**
+     * CSS style.
+     */
+    @UiField
+    PagerStyle style;
+
+    @UiField
+    FlowPanel pageResults;
 
     /**
      * Previous button.
@@ -67,7 +93,9 @@ public class PagerComposite extends Composite
     public PagerComposite()
     {
         initWidget(binder.createAndBindUi(this));
+
         buildPage();
+
     }
 
     /**
@@ -79,6 +107,40 @@ public class PagerComposite extends Composite
     public void init(final PagerStrategy inPagerStrategy)
     {
         pagerStrategy = inPagerStrategy;
+
+        EventBus.getInstance().addObserver(PagerResponseEvent.class, new Observer<PagerResponseEvent>()
+        {
+            public void update(PagerResponseEvent event)
+            {
+                if (event.getKey().equals(pagerStrategy.getKey()))
+                {
+                    pageResults.clear();
+                    pageResults.add(event.getWidget());
+
+                    if (!pagerStrategy.hasNext())
+                    {
+                        nextButton.addStyleName(style.pagingDisabled());
+                    }
+                    else
+                    {
+                        nextButton.removeStyleName(style.pagingDisabled());
+                    }
+
+                    if (!pagerStrategy.hasPrev())
+                    {
+                        prevButton.addStyleName(style.pagingDisabled());
+                    }
+                    else
+                    {
+                        prevButton.removeStyleName(style.pagingDisabled());
+                    }
+                }
+            }
+        });
+    }
+
+    public void load()
+    {
         pagerStrategy.init();
     }
 
@@ -87,34 +149,24 @@ public class PagerComposite extends Composite
      */
     private void buildPage()
     {
-        prevButton.addClickHandler(new ClickHandler()
+        nextButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
             {
                 if (pagerStrategy.hasNext())
                 {
                     pagerStrategy.next();
-
-                    if (!pagerStrategy.hasNext())
-                    {
-                        nextButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().nextArrowDisabled());
-                    }
                 }
             }
         });
 
-        nextButton.addClickHandler(new ClickHandler()
+        prevButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
             {
                 if (pagerStrategy.hasPrev())
                 {
                     pagerStrategy.prev();
-
-                    if (!pagerStrategy.hasPrev())
-                    {
-                        prevButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().previousArrowDisabled());
-                    }
                 }
             }
         });
