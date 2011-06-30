@@ -119,6 +119,6 @@ public class GetStreamActivitySubscriptionDbMapperTest extends MapperTest
     @Test(expected = Exception.class)
     public void testConstructInvalidType()
     {
-        new ChangeStreamActivitySubscriptionDbMapper(EntityType.RESOURCE);
+        new GetStreamActivitySubscriptionDbMapper(EntityType.RESOURCE);
     }
 }
