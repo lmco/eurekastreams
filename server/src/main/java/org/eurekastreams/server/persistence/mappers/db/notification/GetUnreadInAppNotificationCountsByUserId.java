@@ -27,7 +27,7 @@ public class GetUnreadInAppNotificationCountsByUserId extends ReadMapper<Long, U
 {
     /**
      * Makes the database call to get unread in-app notification counts.
-     * 
+     *
      * @param userId
      *            user to get notification count.
      * @return the count of notifications for this user.
@@ -36,7 +36,7 @@ public class GetUnreadInAppNotificationCountsByUserId extends ReadMapper<Long, U
     public UnreadInAppNotificationCountDTO execute(final Long userId)
     {
         String q = "select count(id) from InAppNotification "
-                + "where recipient.id = :userId and isRead = false and highPriority = :priority";
+                + "where recipient.id = :userId and highPriority = :priority and isRead = false";
         Query query = getEntityManager().createQuery(q).setParameter("userId", userId).setParameter("priority", false);
         int normalCount = ((Long) query.getSingleResult()).intValue();
 
