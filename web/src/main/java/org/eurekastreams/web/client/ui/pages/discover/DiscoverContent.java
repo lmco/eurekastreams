@@ -22,10 +22,10 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
-import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
-import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
+import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,14 +44,18 @@ public class DiscoverContent extends Composite
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
     /**
-     * Person renderer.
+     * CSS resource.
      */
-    private final PersonRenderer personRender = new PersonRenderer(false);
+    interface DiscoverStyle extends CssResource
+    {
+
+    }
 
     /**
-     * Group renderer.
+     * Flow Panel ot contain the stream search box.
      */
-    private final GroupRenderer groupRender = new GroupRenderer();
+    @UiField
+    FlowPanel searchFlowPanel;
 
     /**
      * UI element for streams.
@@ -133,6 +137,8 @@ public class DiscoverContent extends Composite
         mostViewedStreamsPanel.clear();
         mostFollowedStreamsPanel.clear();
         mostRecentStreamsPanel.clear();
+
+        searchFlowPanel.add(new GlobalSearchComposite("e.g., Jane Doe, Cloud Computing, etc.."));
 
         if (inDiscoverLists.getFeaturedStreams() != null)
         {
