@@ -17,9 +17,9 @@
 package org.eurekastreams.server.persistence.mappers.requests;
 
 /**
- * Mapper request to change a activity subscription preference for a user's followed stream.
+ * Mapper request to get a activity subscription preference for a user's followed stream.
  */
-public class ChangeStreamActivitySubscriptionMapperRequest
+public class GetStreamActivitySubscriptionMapperRequest
 {
     /**
      * The id of the person subscribing.
@@ -32,26 +32,17 @@ public class ChangeStreamActivitySubscriptionMapperRequest
     private long streamEntityId;
 
     /**
-     * Whether the user should receive notifications on new activity to this group.
-     */
-    private boolean receiveNewActivityNotifications;
-
-    /**
      * Constructor.
-     * 
+     *
      * @param inSubscriberPersonId
      *            the person id
      * @param inStreamEntityId
-     *            the group id
-     * @param inReceiveNewActivityNotifications
-     *            whether to receive notifications
+     *            the stream's entity's id
      */
-    public ChangeStreamActivitySubscriptionMapperRequest(final long inSubscriberPersonId, final long inStreamEntityId,
-            final boolean inReceiveNewActivityNotifications)
+    public GetStreamActivitySubscriptionMapperRequest(final long inSubscriberPersonId, final long inStreamEntityId)
     {
         subscriberPersonId = inSubscriberPersonId;
         streamEntityId = inStreamEntityId;
-        receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
 
     /**
@@ -86,22 +77,5 @@ public class ChangeStreamActivitySubscriptionMapperRequest
     public void setStreamEntityId(final long inStreamEntityId)
     {
         streamEntityId = inStreamEntityId;
-    }
-
-    /**
-     * @return the receiveNewActivityNotifications
-     */
-    public boolean getReceiveNewActivityNotifications()
-    {
-        return receiveNewActivityNotifications;
-    }
-
-    /**
-     * @param inReceiveNewActivityNotifications
-     *            the receiveNewActivityNotifications to set
-     */
-    public void setReceiveNewActivityNotifications(final boolean inReceiveNewActivityNotifications)
-    {
-        receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
 }

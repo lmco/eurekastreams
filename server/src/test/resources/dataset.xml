@@ -378,15 +378,15 @@
     <!--
        All people follow themselves first
     -->
-    <Follower followerId="42" followingId="42" />
-    <Follower followerId="99" followingId="99" />
-    <Follower followerId="98" followingId="98" />
-    <Follower followerId="142" followingId="142" />
-    <Follower followerId="4507" followingId="4507" />
+    <Follower followerId="42" followingId="42" receiveNewActivityNotifications="false" />
+    <Follower followerId="99" followingId="99" receiveNewActivityNotifications="false" />
+    <Follower followerId="98" followingId="98" receiveNewActivityNotifications="false" />
+    <Follower followerId="142" followingId="142" receiveNewActivityNotifications="false" />
+    <Follower followerId="4507" followingId="4507" receiveNewActivityNotifications="false" />
     
-	<Follower followerId="98" followingId="99" />
-	<Follower followerId="142" followingId="98" />
-	<Follower followerId="99" followingId="98" />
+	<Follower followerId="98" followingId="99" receiveNewActivityNotifications="false" />
+	<Follower followerId="142" followingId="98" receiveNewActivityNotifications="true" />
+	<Follower followerId="99" followingId="98" receiveNewActivityNotifications="false" />
 
 	<TabGroup id="5393" version="4549" />
 	<TabTemplate id="4703" version="1" tabName="Carl's First"
@@ -486,7 +486,7 @@
 	
 
 	<!-- Smithers and Burns follow group 1 -->
-	<GroupFollower followerId="99" followingId="1" receivenewactivitynotifications="false" />
+	<GroupFollower followerId="99" followingId="1" receiveNewActivityNotifications="false" />
 	<GroupFollower followerId="98" followingId="1" receiveNewActivityNotifications="true" />
 	
 	<!-- Fordp follows groups 1, 2, and 3 -->

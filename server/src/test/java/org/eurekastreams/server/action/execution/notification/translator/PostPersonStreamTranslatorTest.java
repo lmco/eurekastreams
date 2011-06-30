@@ -18,6 +18,10 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
@@ -25,8 +29,14 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
 import org.eurekastreams.server.domain.PropertyMapTestHelper;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Tests the stream post notification translator.
@@ -42,20 +52,50 @@ public class PostPersonStreamTranslatorTest
     /** Test data. */
     private static final long ACTIVITY_ID = 3333L;
 
+    /** Used for mocking objects. */
+    private final JUnit4Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /** DAO to get list of followers of a stream. */
+    private final DomainMapper<Long, List<Long>> followersDAO = context.mock(DomainMapper.class, "followersDAO");
+
+    /** SUT. */
+    private NotificationTranslator<ActivityNotificationsRequest> sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new PostPersonStreamTranslator(followersDAO);
+    }
+
     /**
      * Test creating the notification for the event of posting to a personal stream.
      */
     @Test
     public void testTranslatePersonalStreamPost()
     {
-        NotificationTranslator<ActivityNotificationsRequest> sut = new PostPersonStreamTranslator();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(followersDAO).execute(STREAM_OWNER_ID);
+                will(returnValue(new ArrayList<Long>(Arrays.asList(ACTOR_ID, STREAM_OWNER_ID, 5L, 6L, 7L))));
+            }
+        });
 
         NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, STREAM_OWNER_ID,
                 ACTIVITY_ID));
 
         // check recipients
-        assertEquals(1, results.getRecipients().size());
+        assertEquals(2, results.getRecipients().size());
         TranslatorTestHelper.assertRecipients(results, NotificationType.POST_TO_PERSONAL_STREAM, STREAM_OWNER_ID);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.POST_TO_FOLLOWED_STREAM, 5L, 6L, 7L);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
@@ -73,7 +113,13 @@ public class PostPersonStreamTranslatorTest
     @Test
     public void testTranslateOwnPersonalStreamPost()
     {
-        NotificationTranslator<ActivityNotificationsRequest> sut = new PostPersonStreamTranslator();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(followersDAO).execute(ACTOR_ID);
+                will(returnValue(new ArrayList<Long>()));
+            }
+        });
 
         NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, ACTOR_ID,
                 ACTIVITY_ID));

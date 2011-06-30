@@ -22,8 +22,10 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
+import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -36,8 +38,25 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DiscoverContent extends Composite
 {
-    /** Binder for building UI. */
+    /**
+     * Binder for building UI.
+     */
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
+
+    /**
+     * CSS resource.
+     */
+    interface DiscoverStyle extends CssResource
+    {
+
+    }
+
+    /**
+     * Flow Panel ot contain the stream search box.
+     */
+    @UiField
+    FlowPanel searchFlowPanel;
+
     /**
      * UI element for streams.
      */
@@ -101,7 +120,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     * 
+     *
      * @param inDiscoverLists
      *            the data to display
      */
@@ -119,6 +138,8 @@ public class DiscoverContent extends Composite
         mostFollowedStreamsPanel.clear();
         mostRecentStreamsPanel.clear();
 
+        searchFlowPanel.add(new GlobalSearchComposite("e.g., Jane Doe, Cloud Computing, etc.."));
+
         if (inDiscoverLists.getFeaturedStreams() != null)
         {
             for (FeaturedStreamDTO featuredStream : inDiscoverLists.getFeaturedStreams())
@@ -133,40 +154,40 @@ public class DiscoverContent extends Composite
                     + " streams"));
             for (StreamDTO stream : inDiscoverLists.getMostActiveStreams().getResultsSublist())
             {
-                mostActiveStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + stream.getEntityType().toString()
-                        + ")<BR/>"));
+                mostActiveStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + //
+                        stream.getEntityType().toString() + ")<BR/>"));
             }
         }
         if (inDiscoverLists.getSuggestedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getSuggestedStreams())
             {
-                suggestedStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + stream.getEntityType().toString()
-                        + ")<BR/>"));
+                suggestedStreamsPanel.add(new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS));
             }
         }
         if (inDiscoverLists.getMostViewedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostViewedStreams())
             {
-                mostViewedStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + stream.getEntityType().toString()
-                        + ")<BR/>"));
+                mostViewedStreamsPanel.add(new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.DAILY_VIEWERS));
             }
         }
         if (inDiscoverLists.getMostFollowedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostFollowedStreams())
             {
-                mostFollowedStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + stream.getEntityType().toString()
-                        + ")<BR/>"));
+                mostFollowedStreamsPanel.add(new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.FOLLOWERS));
             }
         }
         if (inDiscoverLists.getMostRecentStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostRecentStreams())
             {
-                mostRecentStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + stream.getEntityType().toString()
-                        + ")<BR/>"));
+                mostRecentStreamsPanel.add(new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.TIME_AGO));
             }
         }
     }

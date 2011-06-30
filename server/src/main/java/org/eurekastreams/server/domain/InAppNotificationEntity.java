@@ -29,11 +29,20 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.eurekastreams.commons.model.DomainEntity;
+import org.hibernate.annotations.Table;
 
 /**
  * A notification for display within the application.
  */
 @Entity(name = "InAppNotification")
+@Table(appliesTo = "InAppNotification", indexes = { // \n
+
+// index for use by GetUnreadInAppNotificationCountsByUserId and GetInAppNotificationsByUserId. The latter only uses
+// recipientId within a WHERE clause, so that needs to be first.
+@org.hibernate.annotations.Index(name = "InAppNotification_recipientId_highPriority_isRead", // \n
+columnNames = { "recipientId", "highPriority", "isRead" })
+
+})
 public class InAppNotificationEntity extends DomainEntity implements Serializable
 {
     /** Fingerprint. */

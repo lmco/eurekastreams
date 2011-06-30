@@ -20,7 +20,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.testing.TestHelper;
 import org.junit.Test;
 
 /**
@@ -29,24 +32,19 @@ import org.junit.Test;
 public class GetSubscribedPersonIdsForStreamDbMapperTest extends MapperTest
 {
     /**
-     * test.
+     * Test.
      */
     @Test
     public void testExecuteGroup()
     {
         final long groupId = 1L;
 
-        GetSubscribedPersonIdsForStreamDbMapper sut = new GetSubscribedPersonIdsForStreamDbMapper(EntityType.GROUP);
-        sut.setEntityManager(getEntityManager());
-
-        getEntityManager().createQuery("Update GroupFollower set receiveNewActivityNotifications = :boolean")
-                .setParameter("boolean", true).executeUpdate();
-
-        getEntityManager().flush();
-        getEntityManager().clear();
+        DomainMapper<Long, List<Long>> sut = new GetSubscribedPersonIdsForStreamDbMapper(EntityType.GROUP);
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
 
         List<Long> results = sut.execute(groupId);
-        assertEquals(3, results.size());
+        assertEquals(2, results.size());
+        TestHelper.containsExactly(results, 98L, 42L);
 
         getEntityManager().createQuery("Update GroupFollower set receiveNewActivityNotifications = :boolean")
                 .setParameter("boolean", false).executeUpdate();
@@ -58,4 +56,28 @@ public class GetSubscribedPersonIdsForStreamDbMapperTest extends MapperTest
         assertEquals(0, results.size());
     }
 
+    /**
+     * Test.
+     */
+    @Test
+    public void testExecutePerson()
+    {
+        final long personId = 98L;
+
+        DomainMapper<Long, List<Long>> sut = new GetSubscribedPersonIdsForStreamDbMapper(EntityType.PERSON);
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
+
+        List<Long> results = sut.execute(personId);
+        assertEquals(1, results.size());
+        assertEquals(142L, (long) results.get(0));
+    }
+
+    /**
+     * Tests attempting to create for unsupported type.
+     */
+    @Test(expected = Exception.class)
+    public void testConstructInvalidType()
+    {
+        new GetSubscribedPersonIdsForStreamDbMapper(EntityType.RESOURCE);
+    }
 }

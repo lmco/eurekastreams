@@ -18,6 +18,8 @@ package org.eurekastreams.server.persistence.mappers.db.notification;
 import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
+import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +29,16 @@ import org.junit.Test;
  */
 public class GetUnreadInAppNotificationCountsByUserIdTest extends MapperTest
 {
+    /** Assertion message. */
+    private static final String NORMAL_MSG = "Wrong count for normal priority";
+
+    /** Assertion message. */
+    private static final String HIGH_MSG = "Wrong count for high priority";
+
     /**
      * System under test.
      */
-    private GetUnreadInAppNotificationCountsByUserId sut;
+    private DomainMapper<Long, UnreadInAppNotificationCountDTO> sut;
 
     /**
      * Setup before each test.
@@ -39,18 +47,50 @@ public class GetUnreadInAppNotificationCountsByUserIdTest extends MapperTest
     public void setUp()
     {
         sut = new GetUnreadInAppNotificationCountsByUserId();
-        sut.setEntityManager(getEntityManager());
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
     }
 
     /**
      * Tests execute method.
      */
     @Test
-    public void testExecute()
+    public void testExecuteBoth()
     {
-        final long id42 = 42L;
-        UnreadInAppNotificationCountDTO result = sut.execute(id42);
-        assertEquals("Wrong count for normal priority", 1, result.getNormalPriority());
-        assertEquals("Wrong count for high priority", 2, result.getHighPriority());
+        UnreadInAppNotificationCountDTO result = sut.execute(42L);
+        assertEquals(NORMAL_MSG, 1, result.getNormalPriority());
+        assertEquals(HIGH_MSG, 2, result.getHighPriority());
+    }
+
+    /**
+     * Tests execute method.
+     */
+    @Test
+    public void testExecuteOnlyNormal()
+    {
+        UnreadInAppNotificationCountDTO result = sut.execute(98L);
+        assertEquals(NORMAL_MSG, 1, result.getNormalPriority());
+        assertEquals(HIGH_MSG, 0, result.getHighPriority());
+    }
+
+    /**
+     * Tests execute method.
+     */
+    @Test
+    public void testExecuteOnlyHigh()
+    {
+        UnreadInAppNotificationCountDTO result = sut.execute(99L);
+        assertEquals(NORMAL_MSG, 0, result.getNormalPriority());
+        assertEquals(HIGH_MSG, 1, result.getHighPriority());
+    }
+
+    /**
+     * Tests execute method.
+     */
+    @Test
+    public void testExecuteNeither()
+    {
+        UnreadInAppNotificationCountDTO result = sut.execute(4507L);
+        assertEquals(NORMAL_MSG, 0, result.getNormalPriority());
+        assertEquals(HIGH_MSG, 0, result.getHighPriority());
     }
 }

@@ -16,6 +16,15 @@
 	<bean id="MAX_NOTIFICATION_URL_LENGTH" class="java.lang.Integer">
         <constructor-arg value="2048" />
   	</bean>
+  	<!-- Maximum number of in-app notifications to fetch -->
+  		<bean id="MAX_NOTIFICATIONS_TO_FETCH" class="java.lang.Integer">
+        <constructor-arg value="5000" />
+  	</bean>
+  	<!-- Age (in days) at which in-app notifications should be deleted. -->
+	<bean id="MAX_NOTIFICATION_AGE" class="java.lang.Integer">
+        <constructor-arg value="14" />
+  	</bean>
+
 
 	<!-- ========== GENERATION ========== -->
 
@@ -112,11 +121,21 @@
             </bean>
         </entry>
         <entry key="POST_PERSON_STREAM">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.PostPersonStreamTranslator" />
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PostPersonStreamTranslator">
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
+ 						<constructor-arg value="PERSON" />
+    				</bean>
+                </constructor-arg>
+            </bean>
         </entry>
         <entry key="POST_GROUP_STREAM">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.PostGroupStreamTranslator">
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
+ 						<constructor-arg value="GROUP" />
+    				</bean>
+                </constructor-arg>
             </bean>
         </entry>
         <entry key="COMMENT" value-ref="commentTranslator" />
@@ -320,7 +339,7 @@
 				<constructor-arg>
 					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetInAppNotificationsByUserId">
 						<!-- Maximum number of in-app notifications to fetch -->
-						<constructor-arg value="500" />
+						<constructor-arg ref="MAX_NOTIFICATIONS_TO_FETCH" />
 					</bean>
 				</constructor-arg>
 				<constructor-arg ref="getPeopleByAccountIdsMapper" />
@@ -371,8 +390,8 @@
 				</constructor-arg>
                 <constructor-arg ref="getCachedUnreadInAppNotificationCountsByUserId_FORCE_REFRESH" />
                 <!-- Age (in days) at which in-app notifications should be deleted. -->
-                <constructor-arg type="int" value="14" />
-            </bean>
+                <constructor-arg type="int" ref="MAX_NOTIFICATION_AGE" />
+		     </bean>
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>

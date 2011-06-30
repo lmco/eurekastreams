@@ -15,11 +15,14 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
+import java.util.List;
+
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.ActivityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
@@ -28,19 +31,46 @@ import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
  */
 public class PostPersonStreamTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
+    /** DAO to get list of followers of a stream. */
+    private final DomainMapper<Long, List<Long>> followersDAO;
+
+    /**
+     * Constructor.
+     *
+     * @param inFollowersDAO
+     *            DAO to get list of followers of a stream.
+     */
+    public PostPersonStreamTranslator(final DomainMapper<Long, List<Long>> inFollowersDAO)
+    {
+        followersDAO = inFollowersDAO;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
-        if (inRequest.getActorId() == inRequest.getTargetEntityId())
+        // NOTE: This code assumes that the DAO returns a list which can be safely altered, specifically that it
+        // supports removing elements and is not used elsewhere (e.g. stored off).
+        List<Long> followerIdsToNotify = followersDAO.execute(inRequest.getTargetEntityId());
+        followerIdsToNotify.remove(inRequest.getActorId());
+        followerIdsToNotify.remove(inRequest.getTargetEntityId());
+
+        NotificationBatch batch = new NotificationBatch();
+        if (inRequest.getActorId() != inRequest.getTargetEntityId())
+        {
+            batch.setRecipient(NotificationType.POST_TO_PERSONAL_STREAM, inRequest.getTargetEntityId());
+        }
+        if (!followerIdsToNotify.isEmpty())
+        {
+            batch.getRecipients().put(NotificationType.POST_TO_FOLLOWED_STREAM, followerIdsToNotify);
+        }
+        if (batch.getRecipients().isEmpty())
         {
             return null;
         }
 
-        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_PERSONAL_STREAM,
-                inRequest.getTargetEntityId());
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", PersonModelView.class, inRequest.getTargetEntityId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());
