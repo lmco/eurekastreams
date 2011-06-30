@@ -7,7 +7,7 @@
             <g:FlowPanel ui:field="featuredStreamsPanel"/>
         </div>
         
-        <BR />
+
         <div>
             <h3>Most Active Streams</h3>
             <BR/>
@@ -16,28 +16,28 @@
             <g:FlowPanel ui:field="totalStreamCountPanel" />
         </div>
         
-        <BR />
+
         <div>
             <h3>Suggested</h3>
             <BR/>
             <g:FlowPanel ui:field="suggestedStreamsPanel" />
         </div>
         
-        <BR />
+
         <div>
             <h3>Most Viewed</h3>
             <BR/>
             <g:FlowPanel ui:field="mostViewedStreamsPanel"/>
         </div>
-
-        <BR />
+        
+        
         <div>
             <h3>Most Followed</h3>
             <BR/>
             <g:FlowPanel ui:field="mostFollowedStreamsPanel"/>
         </div>
         
-        <BR />
+        
         <div>
             <h3>Most Recent</h3>
             <BR/>
