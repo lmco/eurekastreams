@@ -21,6 +21,8 @@ import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
@@ -30,6 +32,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotSearchResultsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.SearchResultsModel;
+import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
@@ -78,13 +81,13 @@ public class BookmarkSearchComposite extends FlowPanel
     {
         searchTerm = new LabeledTextBox("add a bookmark");
         resultsPanelContainer.setVisible(false);
-        
+
         resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsAutocompleteResults());
 
         Label bookmarkTitle = new Label("Bookmark a Stream");
-        
+
         add(bookmarkTitle);
-        
+
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearch());
         add(searchTerm);
@@ -149,27 +152,35 @@ public class BookmarkSearchComposite extends FlowPanel
 
                         if (result instanceof PersonModelView)
                         {
-                            PersonModelView person = (PersonModelView) result;
+                            final PersonModelView person = (PersonModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
                                     .getEntityId(), person.getAvatarId(), Size.VerySmall));
                             name.setText(person.getDisplayName());
+                            itemContainer.addClickHandler(new ClickHandler()
+                            {
+                                public void onClick(final ClickEvent event)
+                                {
+                                    StreamBookmarksModel.getInstance().insert(person.getStreamId());
+                                }
+                            });
+
                         }
                         else if (result instanceof DomainGroupModelView)
                         {
-                            DomainGroupModelView group = (DomainGroupModelView) result;
+                            final DomainGroupModelView group = (DomainGroupModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
                                     .getEntityId(), group.getAvatarId(), Size.VerySmall));
                             name.setText(group.getName());
+                            itemContainer.addClickHandler(new ClickHandler()
+                            {
+                                public void onClick(final ClickEvent event)
+                                {
+                                    StreamBookmarksModel.getInstance().insert(group.getStreamId());
+                                }
+                            });
                         }
 
                         itemPanel.add(name);
-
-                        itemContainer.addClickHandler(new ClickHandler()
-                        {
-                            public void onClick(final ClickEvent event)
-                            {
-                            }
-                        });
 
                         itemContainer.add(itemPanel);
                         resultsPanel.add(itemContainer);

@@ -230,9 +230,6 @@ public interface CoreCss extends CssResource
     @ClassName("colored-drop-zone")
     String coloredDropZone();
 
-    @ClassName("comment-actions-area")
-    String commentActionsArea();
-
     @ClassName("comment-metadata")
     String commentMetadata();
 
@@ -241,9 +238,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("comment-timestamp")
     String commentTimestamp();
-
-    @ClassName("comment-timestamp-actions-area")
-    String commentTimestampActionsArea();
 
     @ClassName("configure-tab")
     String configureTab();
@@ -2166,5 +2160,11 @@ public interface CoreCss extends CssResource
     String globalSearchBoxActive();
 
     String bookmarkSearch();
+
+    String followDialog();
+
+    String followDialogBody();
+
+    String followDialogTips();
 
 }

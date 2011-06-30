@@ -62,9 +62,7 @@
 
 		.stream-details-options > div
 		{
-		background-image: url("style/images/subFilterBackground.png");
-		color:
-		white;
+		color: white;
 		display: block;
 		float: left;
 		height: 27px;
@@ -72,6 +70,11 @@
 		10px;
 		padding: 0 10px;
 		cursor: pointer;
+		}
+		
+		.activeOption
+		{
+		background-image: url("style/images/subFilterBackground.png");
 		}
 
 		.stream-details-container
@@ -167,10 +170,11 @@
 		text-align: center;
 		}
 
-		.follow-info-link,
-		.follow-info-link:hover {
+		.follow-info-link
+		{
 		color: #0066CC;
 		display: block;
+		cursor: pointer;
 		}
 
 		.stream-name
@@ -220,15 +224,15 @@
 			</div>
 			<div class="{style.follow-info-container}">
 				<span ui:field="followerCount"></span>
-				<g:Anchor addStyleNames="{style.follow-info-link}"
+				<g:Label addStyleNames="{style.follow-info-link}"
 					ui:field="showFollowers">
-					Followers</g:Anchor>
+					Followers</g:Label>
 			</div>
 			<div class="{style.follow-info-container}">
 				<span ui:field="followingCount"></span>
-				<g:Anchor addStyleNames="{style.follow-info-link}"
+				<g:Label addStyleNames="{style.follow-info-link}"
 					ui:field="showFollowing">
-					Following</g:Anchor>
+					Following</g:Label>
 			</div>
 			<g:Anchor addStyleNames="{style.toggle-details-link} {style.view-details}"
 				ui:field="toggleDetails">Details</g:Anchor>

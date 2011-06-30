@@ -37,14 +37,21 @@ public class InsertStreamBookmarkExecution implements ExecutionStrategy<Principa
     private final FindByIdMapper<Person> personMapper;
 
     /**
+     * Mapper used to retrieve and save the page that holds the streams.
+     */
+    private final FindByIdMapper<StreamScope> scopeMapper;
+
+    /**
      * Constructor.
      * 
      * @param inPersonMapper
      *            the person mapper.
      */
-    public InsertStreamBookmarkExecution(final FindByIdMapper<Person> inPersonMapper)
+    public InsertStreamBookmarkExecution(final FindByIdMapper<Person> inPersonMapper,
+            final FindByIdMapper<StreamScope> inScopeMapper)
     {
         personMapper = inPersonMapper;
+        scopeMapper = inScopeMapper;
     }
 
     /**
@@ -60,12 +67,13 @@ public class InsertStreamBookmarkExecution implements ExecutionStrategy<Principa
     {
 
         Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
+        StreamScope scope = scopeMapper.execute(new FindByIdRequest("StreamScope", (Long) inActionContext.getParams()));
 
         List<StreamScope> bookmarks = person.getBookmarks();
 
-        bookmarks.add((StreamScope) inActionContext.getParams());
+        bookmarks.add(scope);
+        personMapper.flush();
 
-        return (StreamScope) inActionContext.getParams();
+        return scope;
     }
-
 }

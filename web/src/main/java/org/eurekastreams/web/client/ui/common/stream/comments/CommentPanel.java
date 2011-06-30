@@ -110,7 +110,6 @@ public class CommentPanel extends Composite
         timestampActions.add(dateLink);
 
         Panel actionsPanel = new FlowPanel();
-        actionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().commentActionsArea());
         timestampActions.add(actionsPanel);
 
         if (comment.isDeletable())

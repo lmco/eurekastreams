@@ -18,13 +18,13 @@
 
 		.stream-option-list {
 		border-top: 2px solid #bbb;
-		list-style: none;
-		padding-left: 0;
-		width:
-		220px;
+		width: 220px;
 		float: left;
 		clear: left;
 		margin-left: 10px;
+		margin-bottom: 10px;
+		height: auto;
+		overflow: auto;
 		}
 
 		.stream-container-panel {
@@ -43,24 +43,43 @@
 		min-height: 100px;
 		}
 
-		.stream-option-list li a
+		.stream-option-list  > div > div
 		{
+			overflow: hidden;
+			clear: both;
+		}
+
+		.stream-option-list  > div > div > div
+		{
+			float: right;
+		}
+
+		.stream-option-list > div > div div:first-child
+		{
+			float: left;
+		}
+
+		.stream-option-list > .streamOptionChild
+		{
+		cursor: pointer;
 		display: block;
 		border-bottom: 1px solid #bbb;
 		height: 24px;
 		padding-top: 9px;
 		padding-left: 5px;
 		color: #000;
+		overflow: hidden;
+		zoom: 1;
 		}
 
-		.stream-option-list li a:hover
+		.stream-option-list > .streamOptionChild:hover
 		{
 		background-image:
 		url(style/images/activeBackground.png);
 		color: #000;
 		}
 
-		.stream-option-list li a.activeStream
+		.stream-option-list div.activeStream
 		{
 		background-image:
 		url(style/images/activeBackground.png);
@@ -221,6 +240,7 @@
 	    cursor: pointer;
     	display: inline-block;
     	margin-left: 140px;
+    	width: 100px;
 		}
 	</ui:style>
 
@@ -255,15 +275,15 @@
 			</div>
 		</g:HTMLPanel>
 
-		<ul class="{style.stream-option-list}" ui:field="defaultList">
-		</ul>
+		<g:FlowPanel addStyleNames="{style.stream-option-list}" ui:field="defaultList">
+		</g:FlowPanel>
 
-		<ul class="{style.stream-option-list}" ui:field="bookmarkList">
-		</ul>
+		<g:FlowPanel addStyleNames="{style.stream-option-list}" ui:field="bookmarkList">
+		</g:FlowPanel>
 		<ewa:BookmarkSearchComposite></ewa:BookmarkSearchComposite>		
 
-		<ul class="{style.stream-option-list}" ui:field="filterList">
-		</ul>
+		<g:FlowPanel addStyleNames="{style.stream-option-list}" ui:field="filterList">
+		</g:FlowPanel>
 		<g:Label addStyleNames="{style.createFilter}" ui:field="createFilter">Create a Filter</g:Label>
 	</g:HTMLPanel>
 

@@ -30,6 +30,7 @@
 		{
 			margin-left: 70px;
 			margin-right: 10px;
+			zoom: 1;
 		}
 		
 		.post-options
@@ -73,12 +74,14 @@
 			ui:field="posterAvatar">
 		</g:HTMLPanel>
 		<div class="{style.post-box-container}">
-			<ea:ExtendedTextArea addStyleNames="{style.post-box}"
-				ui:field="postBox"></ea:ExtendedTextArea>
-			<div ui:field="postOptions" class="{style.post-options}">
-				<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
-				<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>
-				<div ui:field="postCharCount" class="{style.post-char-count}"></div>
+			<div>
+				<ea:ExtendedTextArea addStyleNames="{style.post-box}"
+					ui:field="postBox"></ea:ExtendedTextArea>
+				<div ui:field="postOptions" class="{style.post-options}">
+					<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
+					<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>
+					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
+				</div>
 			</div>
 		</div>
 	</g:HTMLPanel>

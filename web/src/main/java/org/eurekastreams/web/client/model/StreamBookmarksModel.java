@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
@@ -28,8 +27,8 @@ import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
  * Custom stream model.
  * 
  */
-public class StreamBookmarksModel extends BaseModel implements Fetchable<Serializable>,
-        Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<StreamScope>
+public class StreamBookmarksModel extends BaseModel implements Fetchable<Serializable>, Insertable<Long>,
+        Deletable<Long>
 {
     /**
      * Singleton.
@@ -63,9 +62,9 @@ public class StreamBookmarksModel extends BaseModel implements Fetchable<Seriali
     /**
      * {@inheritDoc}
      */
-    public void insert(final HashMap<String, Serializable> request)
+    public void insert(final Long request)
     {
-        super.callWriteAction("insertStreamBookmark", request.get("bookmark"), new OnSuccessCommand<StreamScope>()
+        super.callWriteAction("insertStreamBookmark", request, new OnSuccessCommand<StreamScope>()
         {
             public void onSuccess(final StreamScope response)
             {
@@ -77,16 +76,14 @@ public class StreamBookmarksModel extends BaseModel implements Fetchable<Seriali
     /**
      * {@inheritDoc}
      */
-    public void update(final HashMap<String, Serializable> request)
+    public void delete(final Long request)
     {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void delete(final StreamScope request)
-    {
-
+        super.callWriteAction("deleteStreamBookmark", request, new OnSuccessCommand<Boolean>()
+        {
+            public void onSuccess(final Boolean response)
+            {
+                StreamBookmarksModel.getInstance().fetch(null, true);
+            }
+        });
     }
 }

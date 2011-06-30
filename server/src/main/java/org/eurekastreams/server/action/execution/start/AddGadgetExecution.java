@@ -33,6 +33,7 @@ import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
+import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
@@ -125,8 +126,13 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
         AddGadgetRequest request = (AddGadgetRequest) inActionContext.getParams();
         Long tabId = request.getTabId();
         String gadgetDefUrl = request.getGadgetDefinitionUrl();
+        Person owner = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
+        Tab tab = owner.getTabs(TabGroupType.START).get(0);
 
-        Tab tab = tabMapper.findById(tabId);
+        if (null != tabId)
+        {
+            tab = tabMapper.findById(tabId);
+        }
 
         try
         {
@@ -156,7 +162,6 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
             shiftGadget(tab.getGadgets());
 
             // get the owner
-            Person owner = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
 
             // create the new gadget at the top of the last zone
             Gadget gadget = new Gadget(gadgetDef, 0, 0, owner, "");
@@ -174,7 +179,6 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
         }
         catch (NoResultException ex)
         {
-            Person owner = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
             log.error("Could not add Gadget because tab not found: " + owner.getUniqueId());
             throw new ExecutionException("Could not add Gadget because tab not found: " + owner.getUniqueId());
         }

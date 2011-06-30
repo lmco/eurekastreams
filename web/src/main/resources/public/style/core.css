@@ -1512,6 +1512,7 @@ body .bookmarkSearch
    	margin-left: 10px;
     padding-left: 0;
     width: 220px;
+    overflow: hidden;
 }
 
 body .bookmarkSearch input {
@@ -2140,14 +2141,15 @@ body .post-to-stream .over-character-limit {
 	color: #666666;
 }
 
-.message-timestamp-actions-area,.comment-timestamp-actions-area {
+.message-timestamp-actions-area,.comment-timestamp {
 	font-size: 11px;
 	clear: both;
 	zoom: 1;
 }
 
-.comment-timestamp-actions-area {
-	margin-top: 5px;
+.comment-timestamp > div
+{
+	display: inline;
 }
 
 .comment-timestamp,.message-timestamp-link,a.message-timestamp-link:link,a.message-timestamp-link:visited,a.message-timestamp-link:active
@@ -2338,10 +2340,6 @@ body .post-to-stream .over-character-limit {
 
 .message-comment:first-child {
 	margin-top: 10px;
-}
-
-.message-comment:hover .comment-actions-area {
-	display: inline-block;
 }
 
 .action-link-separator {
@@ -2700,6 +2698,30 @@ body .previous-arrow:hover {
 .user-assoc-people-results {
 	font-color: #666;
 	font-style: italic;
+}
+
+
+.followDialog {
+}
+
+.followDialogBody {
+	background-color: white;
+	float: left;
+	width: 350px;
+}
+
+.followDialogBody .gwt-CheckBox {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.followDialogTips {
+	float: right;
+	width: 150px;
+}
+
+.followDialogTips div {
+	margin-bottom: 10px;
 }
 
 .access-groups {
@@ -3591,11 +3613,12 @@ body .options>li>.option-title:hover {
 
 .connection-col-left,.connection-col-right {
 	display: inline-block;
-	margin: 0px 10px;
+	padding: 0px 10px;
 	min-height: 30px;
 	vertical-align: top;
 }
 
+	
 .connection-item-panel {
 	display: block;
 	margin-left: 20px;
@@ -8083,17 +8106,7 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
-	
-	.message-comment:hover .comment-actions-area {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.stream-message-item:hover .message-actions-area {
-		display: inline;
-		zoom: 1;
-	}
-	
+		
 	.users-who-liked-activity-wrapper {
 		margin-left: -27px;
 		margin-top: -2px;
@@ -8404,6 +8417,12 @@ IE SPECIFIC CSS.
 		display: inline;
 	}
 	
+	.stream-message-item .message-actions-area {
+		display: inline;
+		zoom: 1;
+	}
+}
+	
 	.search-metadata div {
 		display: inline;
 		zoom: 1;
@@ -8432,6 +8451,13 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
+	
+	.searchResultsAutocompleteResults
+	{
+		margin-left: -235px;
+		zoom: 1;
+	}
+	
 	
 	.modal-content-panel .form-container>a.form-submit-button {
 		z-index: 100;
@@ -8746,7 +8772,7 @@ IE SPECIFIC CSS.
 	.login-content input.gwt-TextBox,.login-content input.gwt-PasswordTextBox
 	{
 		margin-left: -80px;
-	}
+	}	
 }
 /*/////////////////////////////////////////////////////////////////////////////
 

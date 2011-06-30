@@ -18,8 +18,10 @@ package org.eurekastreams.server.action.execution.stream;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
@@ -30,6 +32,12 @@ import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
  */
 public class DeleteCurrentUserBookmarkExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Find by id mapper.
      */
@@ -60,16 +68,20 @@ public class DeleteCurrentUserBookmarkExecution implements ExecutionStrategy<Pri
         Long ssIdToRemove = (Long) inActionContext.getParams();
         List<StreamScope> bookmarks = person.getBookmarks();
 
+        log.debug("Attempting to delete bookmark with id: " + ssIdToRemove);
+
         for (StreamScope ss : bookmarks)
         {
+            log.debug("Examinging SS with id: " + ss.getId());
             if (ss.getId() == ssIdToRemove)
             {
+                log.debug("Match found!");
                 bookmarks.remove(ss);
                 personMapper.flush();
                 break;
             }
         }
 
-        return true;
+        return Boolean.TRUE;
     }
 }

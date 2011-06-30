@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.Deletable;
@@ -41,9 +42,11 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.pager.FollowerPagerStrategy;
 import org.eurekastreams.web.client.ui.common.pager.FollowingPagerStrategy;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
+import org.eurekastreams.web.client.ui.common.stream.FollowDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 
 import com.google.gwt.core.client.GWT;
@@ -88,7 +91,12 @@ public class StreamDetailsComposite extends Composite
          * 
          * @return Unfollow style.
          */
-        String unFollowLink();
+        String unFollowLink();;
+
+        /**
+         * Active option.
+         */
+        String activeOption();
     }
 
     /**
@@ -228,6 +236,12 @@ public class StreamDetailsComposite extends Composite
     @UiField
     PagerComposite streamFollowing;
 
+    @UiField
+    Label showFollowing;
+
+    @UiField
+    Label showFollowers;
+
     /**
      * Current status.
      */
@@ -263,6 +277,10 @@ public class StreamDetailsComposite extends Composite
      */
     private BaseModel followModel;
 
+    protected String streamReq;
+
+    protected Long streamId;
+
     /**
      * Build page.
      */
@@ -293,11 +311,7 @@ public class StreamDetailsComposite extends Composite
 
             public void onClick(ClickEvent event)
             {
-                streamFollowing.setVisible(false);
-                streamAbout.setVisible(false);
-                streamFollowers.setVisible(true);
-                streamFollowers.load();
-                detailsContainerAnimation.expand(475);
+                openFollower();
             }
         });
 
@@ -306,11 +320,25 @@ public class StreamDetailsComposite extends Composite
 
             public void onClick(ClickEvent event)
             {
-                streamFollowers.setVisible(false);
-                streamAbout.setVisible(false);
-                streamFollowing.setVisible(true);
-                streamFollowing.load();
-                detailsContainerAnimation.expand(475);
+                openFollowing();
+            }
+        });
+
+        showFollowers.addClickHandler(new ClickHandler()
+        {
+
+            public void onClick(ClickEvent event)
+            {
+                openFollower();
+            }
+        });
+
+        showFollowing.addClickHandler(new ClickHandler()
+        {
+
+            public void onClick(ClickEvent event)
+            {
+                openFollowing();
             }
         });
 
@@ -319,10 +347,7 @@ public class StreamDetailsComposite extends Composite
 
             public void onClick(ClickEvent event)
             {
-                streamFollowing.setVisible(false);
-                streamAbout.setVisible(true);
-                streamFollowers.setVisible(false);
-                detailsContainerAnimation.expandWithPadding(20);
+                openAbout();
             }
         });
 
@@ -332,6 +357,7 @@ public class StreamDetailsComposite extends Composite
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
                         PersonModelView person = event.getResponse();
+                        streamId = person.getStreamId();
 
                         if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
                         {
@@ -371,6 +397,7 @@ public class StreamDetailsComposite extends Composite
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
                         DomainGroupModelView group = event.getResponse();
+                        streamId = group.getStreamId();
 
                         boolean isCoordinator = false;
 
@@ -397,6 +424,7 @@ public class StreamDetailsComposite extends Composite
                         updateFollowLink(group.getShortName(), EntityType.GROUP);
 
                         streamName.setInnerText(group.getName());
+                        streamMeta.setInnerText("");
                         // streamMeta.setInnerText(group.get);
                         streamAvatar.clear();
                         streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
@@ -413,6 +441,14 @@ public class StreamDetailsComposite extends Composite
                         streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
                     }
                 });
+
+        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        {
+            public void update(final GotStreamResponseEvent event)
+            {
+                streamReq = event.getJsonRequest();
+            }
+        });
 
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
@@ -456,7 +492,14 @@ public class StreamDetailsComposite extends Composite
         {
             public void onClick(final ClickEvent event)
             {
-                detailsContainerAnimation.toggleWithPadding(20);
+                if (detailsContainerAnimation.isExpanded())
+                {
+                    detailsContainerAnimation.collapse();
+                }
+                else
+                {
+                    openAbout();
+                }
             }
         });
     }
@@ -506,6 +549,7 @@ public class StreamDetailsComposite extends Composite
                                 Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
                                 Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
+                        Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
                         break;
                     default:
@@ -531,6 +575,44 @@ public class StreamDetailsComposite extends Composite
         {
             followLink.setVisible(false);
         }
+    }
+
+    private void openAbout()
+    {
+        aboutLink.addStyleName(style.activeOption());
+        followingLink.removeStyleName(style.activeOption());
+        followersLink.removeStyleName(style.activeOption());
+
+        streamFollowing.setVisible(false);
+        streamAbout.setVisible(true);
+        streamFollowers.setVisible(false);
+        detailsContainerAnimation.expandWithPadding(20);
+    }
+
+    private void openFollowing()
+    {
+        aboutLink.removeStyleName(style.activeOption());
+        followingLink.addStyleName(style.activeOption());
+        followersLink.removeStyleName(style.activeOption());
+
+        streamFollowers.setVisible(false);
+        streamAbout.setVisible(false);
+        streamFollowing.setVisible(true);
+        streamFollowing.load();
+        detailsContainerAnimation.expand(475);
+    }
+
+    private void openFollower()
+    {
+        aboutLink.removeStyleName(style.activeOption());
+        followingLink.removeStyleName(style.activeOption());
+        followersLink.addStyleName(style.activeOption());
+
+        streamFollowing.setVisible(false);
+        streamAbout.setVisible(false);
+        streamFollowers.setVisible(true);
+        streamFollowers.load();
+        detailsContainerAnimation.expand(475);
     }
 
     /**

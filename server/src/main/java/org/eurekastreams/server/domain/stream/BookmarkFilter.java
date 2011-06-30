@@ -40,7 +40,7 @@ public class BookmarkFilter implements StreamFilter, Serializable
     /**
      * ID.
      */
-    private long id = 0L;
+    private Long id = 0L;
 
     /**
      * Used for serialization.
@@ -60,7 +60,7 @@ public class BookmarkFilter implements StreamFilter, Serializable
      * @param inRequest
      *            the request.
      */
-    public BookmarkFilter(final long inId, final String inName, final String inRequest)
+    public BookmarkFilter(final Long inId, final String inName, final String inRequest)
     {
         id = inId;
         name = inName;
@@ -125,7 +125,7 @@ public class BookmarkFilter implements StreamFilter, Serializable
      * @param inId
      *            the id.
      */
-    public void setId(final long inId)
+    public void setId(final Long inId)
     {
         id = inId;
     }

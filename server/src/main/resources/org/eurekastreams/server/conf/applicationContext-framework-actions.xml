@@ -1897,6 +1897,7 @@
                 <list>
                     <ref bean="canCommentFilter" />
                     <ref bean="canShareFilter" />
+                    <ref bean="deleteFilter" />                    
                     <ref bean="likeFilter" />
                     <ref bean="savedFilter" />
                     <ref bean="authorLockedFilter" />
@@ -2819,6 +2820,9 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.InsertStreamBookmarkExecution">
+                <constructor-arg>
+                    <ref bean="findByIdMapper" />
+                </constructor-arg>
                 <constructor-arg>
                     <ref bean="findByIdMapper" />
                 </constructor-arg>

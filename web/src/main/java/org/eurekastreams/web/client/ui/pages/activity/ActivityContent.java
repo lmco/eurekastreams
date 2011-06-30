@@ -24,9 +24,13 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
@@ -37,10 +41,13 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
+import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GroupModel;
@@ -48,6 +55,7 @@ import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
@@ -57,25 +65,22 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItem
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -108,6 +113,8 @@ public class ActivityContent extends Composite
          * @return Active stream style.
          */
         String activeStream();
+        
+        String streamOptionChild();
     }
 
     /**
@@ -126,7 +133,7 @@ public class ActivityContent extends Composite
      * UI element for bookmarks.
      */
     @UiField
-    UListElement bookmarkList;
+    FlowPanel bookmarkList;
 
     /**
      * UI element for stream container.
@@ -138,13 +145,13 @@ public class ActivityContent extends Composite
      * UI element for filters.
      */
     @UiField
-    UListElement filterList;
+    FlowPanel filterList;
 
     /**
      * UI element for default streams.
      */
     @UiField
-    UListElement defaultList;
+    FlowPanel defaultList;
 
     /**
      * UI element for recent sort.
@@ -225,6 +232,8 @@ public class ActivityContent extends Composite
      */
     private StreamScope currentStream;
 
+    protected long currentScopeId;
+
     /**
      * New activity polling.
      */
@@ -247,8 +256,8 @@ public class ActivityContent extends Composite
         addEventHandlers();
         addObservers();
 
-        defaultList.appendChild(createLI("Following", "following"));
-        defaultList.appendChild(createLI("Everyone", "everyone"));
+        defaultList.add(createPanel("Following", "following", null));
+        defaultList.add(createPanel("Everyone", "everyone", null));
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -321,20 +330,48 @@ public class ActivityContent extends Composite
             }
         });
 
+        EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
+                new Observer<GotPersonalInformationResponseEvent>()
+                {
+                    public void update(final GotPersonalInformationResponseEvent event)
+                    {
+                        PersonModelView person = event.getResponse();
+                        currentScopeId = person.getStreamId();
+                    }
+                });
+
+        EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
+                new Observer<GotGroupModelViewInformationResponseEvent>()
+                {
+                    public void update(final GotGroupModelViewInformationResponseEvent event)
+                    {
+                        DomainGroupModelView group = event.getResponse();
+                        currentScopeId = group.getStreamId();
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
                 new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
                     public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
-                        filterList.setInnerHTML("");
-                        for (StreamFilter filter : event.getResponse().getStreamFilters())
+                        filterList.clear();
+                        for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-
-                            filterList.appendChild(createLI(filter.getName(), "custom/"
+                            filterList.add(createPanel(filter.getName(), "custom/"
                                     + filter.getId()
                                     + "/"
-                                    + URL.encodeQueryString(filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                            Session.getInstance().getCurrentPerson().getAccountId()))));
+                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                            Session.getInstance().getCurrentPerson().getAccountId()),
+                                    new ClickHandler()
+                                    {
+
+                                        public void onClick(ClickEvent event)
+                                        {
+                                            Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
+                                            event.stopPropagation();
+                                        }
+                                    }));
                         }
                     }
                 });
@@ -370,11 +407,11 @@ public class ActivityContent extends Composite
                 {
                     public void update(final GotCurrentUserStreamBookmarks event)
                     {
-                        bookmarkList.setInnerHTML("");
-                        bookmarkList.appendChild(createLI(Session.getInstance().getCurrentPerson().getDisplayName(),
-                                "person/" + Session.getInstance().getCurrentPerson().getAccountId()));
+                        bookmarkList.clear();
+                        bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(),
+                                "person/" + Session.getInstance().getCurrentPerson().getAccountId(), null));
 
-                        for (StreamFilter filter : event.getResponse())
+                        for (final StreamFilter filter : event.getResponse())
                         {
                             JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
                             String uniqueId = null;
@@ -398,7 +435,20 @@ public class ActivityContent extends Composite
 
                             if (uniqueId != null && entityType != null)
                             {
-                                bookmarkList.appendChild(createLI(filter.getName(), entityType + "/" + uniqueId));
+                                bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId,
+                                        new ClickHandler()
+                                        {
+                                            public void onClick(ClickEvent event)
+                                            {
+                                                if (new WidgetJSNIFacadeImpl()
+                                                        .confirm("Are you sure you want to delete this bookmark?"))
+                                                {
+                                                    StreamBookmarksModel.getInstance().delete(filter.getId());
+                                                }
+
+                                                event.stopPropagation();
+                                            }
+                                        }));
                             }
                         }
                     }
@@ -454,12 +504,13 @@ public class ActivityContent extends Composite
 
         searchBox.addKeyUpHandler(new KeyUpHandler()
         {
+            private int lastSearchLength = 0;
+
             public void onKeyUp(final KeyUpEvent event)
             {
-                if (searchBox.getText().length() > 3 || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER
-                        || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_BACKSPACE
-                        || event.getNativeEvent().getKeyCode() == KeyCodes.KEY_DELETE)
+                if (searchBox.getText().length() > 3 && searchBox.getText().length() != lastSearchLength)
                 {
+                    lastSearchLength = searchBox.getText().length();
                     EventBus.getInstance().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
                 }
@@ -470,10 +521,7 @@ public class ActivityContent extends Composite
         {
             public void onClick(final ClickEvent event)
             {
-                HashMap<String, Serializable> request = new HashMap<String, Serializable>();
-                request.put("bookmark", currentStream);
-
-                StreamBookmarksModel.getInstance().insert(request);
+                StreamBookmarksModel.getInstance().insert(currentScopeId);
             }
         });
 
@@ -650,16 +698,31 @@ public class ActivityContent extends Composite
      *            the history token to load.
      * @return the LI.
      */
-    private LIElement createLI(final String name, final String view)
+    private Panel createPanel(final String name, final String view, final ClickHandler modifyClickHandler)
     {
-        AnchorElement aElem = Document.get().createAnchorElement();
-        aElem.setInnerHTML(name);
-        aElem.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, view)));
+        FocusPanel panel = new FocusPanel();
+        panel.addStyleName(style.streamOptionChild());
+        panel.addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent event)
+            {
+                History.newItem(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, view)));
+            }
+        });
 
-        LIElement filterElem = Document.get().createLIElement();
-        filterElem.appendChild(aElem);
+        FlowPanel innerPanel = new FlowPanel();
+        innerPanel.add(new Label(name));
 
-        return filterElem;
+        if (modifyClickHandler != null)
+        {
+            Label modifyLink = new Label("X");
+            modifyLink.addClickHandler(modifyClickHandler);
+            innerPanel.add(modifyLink);
+        }
+
+        panel.add(innerPanel);
+
+        return panel;
     }
 
     /**

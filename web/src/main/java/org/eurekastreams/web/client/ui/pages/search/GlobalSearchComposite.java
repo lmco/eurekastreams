@@ -45,7 +45,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * Global search composite. TODO break this out for testability.
@@ -150,7 +149,6 @@ public class GlobalSearchComposite extends FlowPanel
                         final FocusPanel itemContainer = new FocusPanel();
                         final FlowPanel itemPanel = new FlowPanel();
                         final Anchor name = new Anchor();
-                        final Label desc = new Label();
 
                         if (result instanceof PersonModelView)
                         {
@@ -161,7 +159,6 @@ public class GlobalSearchComposite extends FlowPanel
                             name.setHref("#"
                                     + Session.getInstance().generateUrl(
                                             new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));
-                            desc.setText(person.getDescription());
                         }
                         else if (result instanceof DomainGroupModelView)
                         {
@@ -172,11 +169,9 @@ public class GlobalSearchComposite extends FlowPanel
                             name.setHref("#"
                                     + Session.getInstance().generateUrl(
                                             new CreateUrlRequest(Page.GROUPS, group.getShortName())));
-                            desc.setText(group.getDescription());
                         }
 
                         itemPanel.add(name);
-                        itemPanel.add(desc);
 
                         itemContainer.addClickHandler(new ClickHandler()
                         {

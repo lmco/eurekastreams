@@ -66,7 +66,12 @@ public class InsertStreamBookmarkExecutionTest
     /**
      * Find person by ID mapper.
      */
-    private FindByIdMapper findByIdMapper = context.mock(FindByIdMapper.class);
+    private FindByIdMapper personMapper = context.mock(FindByIdMapper.class, "personMapper");
+
+    /**
+     * Find Stream Scope by ID mapper.
+     */
+    private FindByIdMapper scopeMapper = context.mock(FindByIdMapper.class, "scopeMapper");
 
     /**
      * Setup Fixtures.
@@ -74,7 +79,7 @@ public class InsertStreamBookmarkExecutionTest
     @Before
     public final void setup()
     {
-        sut = new InsertStreamBookmarkExecution(findByIdMapper);
+        sut = new InsertStreamBookmarkExecution(personMapper, scopeMapper);
     }
 
     /**
@@ -84,11 +89,12 @@ public class InsertStreamBookmarkExecutionTest
     public final void executeTest()
     {
         final Long personId = 2L;
+        final Long scopeId = 3L;
 
         final Person person = context.mock(Person.class);
-        
+
         final List<StreamScope> bookmarks = new ArrayList<StreamScope>();
-        
+
         final StreamScope scopeToAdd = new StreamScope();
 
         context.checking(new Expectations()
@@ -100,19 +106,22 @@ public class InsertStreamBookmarkExecutionTest
                 oneOf(principal).getId();
                 will(returnValue(personId));
 
-                oneOf(findByIdMapper).execute(with(any(FindByIdRequest.class)));
+                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(person));
-                
+
+                oneOf(scopeMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(scopeToAdd));
+
                 oneOf(person).getBookmarks();
                 will(returnValue(bookmarks));
-                
+
                 allowing(actionContext).getParams();
-                will(returnValue(scopeToAdd));
+                will(returnValue(scopeId));
             }
         });
-        
+
         sut.execute(actionContext);
-        
+
         Assert.assertTrue(bookmarks.contains(scopeToAdd));
 
         context.assertIsSatisfied();
