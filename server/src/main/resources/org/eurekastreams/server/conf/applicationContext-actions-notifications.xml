@@ -112,11 +112,21 @@
             </bean>
         </entry>
         <entry key="POST_PERSON_STREAM">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.PostPersonStreamTranslator" />
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.PostPersonStreamTranslator">
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
+ 						<constructor-arg value="PERSON" />
+    				</bean>
+                </constructor-arg>
+            </bean>
         </entry>
         <entry key="POST_GROUP_STREAM">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.PostGroupStreamTranslator">
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
+ 						<constructor-arg value="GROUP" />
+    				</bean>
+                </constructor-arg>
             </bean>
         </entry>
         <entry key="COMMENT" value-ref="commentTranslator" />
