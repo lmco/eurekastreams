@@ -1,6 +1,19 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
     xmlns:g='urn:import:com.google.gwt.user.client.ui'>
   
+  <ui:style type="org.eurekastreams.web.client.ui.pages.discover.DiscoverContent.DiscoverStyle">
+	.discoverStreamList {
+		border-top: 2px solid #bbb;
+		list-style: none;
+		padding-left: 0;
+		width:
+		220px;
+		float: left;
+		clear: left;
+		margin-left: 10px;
+	}
+	</ui:style>
+  
     <g:HTMLPanel>
         <div>
             <h3>Featured Streams</h3>
@@ -16,29 +29,30 @@
             <g:FlowPanel ui:field="totalStreamCountPanel" />
         </div>
         
-
-        <div>
+        What are you looking for? <g:FlowPanel ui:field="searchFlowPanel" />
+        
+        <div class="{style.discoverStreamList}">
             <h3>Suggested</h3>
             <BR/>
             <g:FlowPanel ui:field="suggestedStreamsPanel" />
         </div>
         
 
-        <div>
+        <div class="{style.discoverStreamList}">
             <h3>Most Viewed</h3>
             <BR/>
             <g:FlowPanel ui:field="mostViewedStreamsPanel"/>
         </div>
         
         
-        <div>
+        <div class="{style.discoverStreamList}">
             <h3>Most Followed</h3>
             <BR/>
             <g:FlowPanel ui:field="mostFollowedStreamsPanel"/>
         </div>
         
         
-        <div>
+        <div class="{style.discoverStreamList}">
             <h3>Most Recent</h3>
             <BR/>
             <g:FlowPanel ui:field="mostRecentStreamsPanel"/>
