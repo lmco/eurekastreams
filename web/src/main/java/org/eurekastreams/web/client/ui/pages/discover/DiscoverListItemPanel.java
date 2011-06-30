@@ -42,7 +42,25 @@ public class DiscoverListItemPanel extends FlowPanel
      */
     public enum ListItemType
     {
-        MUTUAL_FOLLOWERS, DAILY_VIEWERS, FOLLOWERS, TIME_AGO
+        /**
+         * Mutual follower(s).
+         */
+        MUTUAL_FOLLOWERS,
+
+        /**
+         * Daily viewer(s).
+         */
+        DAILY_VIEWERS,
+
+        /**
+         * Follower(s).
+         */
+        FOLLOWERS,
+
+        /**
+         * Formatted time ago.
+         */
+        TIME_AGO
     };
 
     /**
@@ -50,7 +68,7 @@ public class DiscoverListItemPanel extends FlowPanel
      *
      * @param inStreamDTO
      *            the streamDTO to represent
-     * @param the
+     * @param inListItemType
      *            list item type
      */
     public DiscoverListItemPanel(final StreamDTO inStreamDTO, final ListItemType inListItemType)

@@ -148,8 +148,8 @@ public class DiscoverContent extends Composite
                     + " streams"));
             for (StreamDTO stream : inDiscoverLists.getMostActiveStreams().getResultsSublist())
             {
-                mostActiveStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + stream.getEntityType().toString()
-                        + ")<BR/>"));
+                mostActiveStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + //
+                        stream.getEntityType().toString() + ")<BR/>"));
             }
         }
         if (inDiscoverLists.getSuggestedStreams() != null)
