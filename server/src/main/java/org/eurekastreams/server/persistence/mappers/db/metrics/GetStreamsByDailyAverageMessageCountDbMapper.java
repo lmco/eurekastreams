@@ -64,12 +64,18 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
 
+        // to get an idea of how many activities were generated in the window we have on the data, look at the max
+        // number of messages we've seen - just assume that's the most recent, then look at the minimum number of
+        // messages we've seen - assume that's the earliest. Subtract the two for the delta, then divide by number of
+        // days
         Query q = getEntityManager().createQuery(
-                "SELECT streamViewStreamScopeId, (SUM(totalActivityCount) + SUM(totalCommentCount))*86400000.0/"
+                "SELECT streamViewStreamScopeId, (MAX(totalActivityCount) + MAX(totalCommentCount)"
+                        + " - MIN(totalActivityCount) + MIN(totalCommentCount))*86400000.0/"
                         + "(:nowInMS - MIN(usageDateTimeStampInMs)) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
-                        + "ORDER BY (SUM(totalActivityCount) + SUM(totalCommentCount))*86400000.0"
+                        + "ORDER BY (MAX(totalActivityCount) + MAX(totalCommentCount)"
+                        + " - MIN(totalActivityCount) + MIN(totalCommentCount))*86400000.0"
                         + "/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC").setParameter("nowInMS",
                 DateDayExtractor.getStartOfDay(new Date()).getTime());
 

@@ -55,8 +55,8 @@ public class GetStreamsByDailyAverageMessageCountDbMapperTest extends MapperTest
         StreamDTO fordp2 = results.getResultsSublist().get(0);
         StreamDTO fordp = results.getResultsSublist().get(1);
 
-        Assert.assertEquals("fordp2", fordp2.getUniqueId());
-        Assert.assertEquals("fordp", fordp.getUniqueId());
+        Assert.assertEquals("fordp", fordp2.getUniqueId());
+        Assert.assertEquals("fordp2", fordp.getUniqueId());
 
         Assert.assertTrue(fordp2.getFollowersCount() >= 0);
         Assert.assertTrue(fordp.getFollowersCount() >= 0);
