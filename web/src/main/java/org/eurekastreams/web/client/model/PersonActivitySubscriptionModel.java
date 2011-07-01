@@ -26,19 +26,19 @@ import org.eurekastreams.web.client.ui.Session;
 /**
  * Model for un/subscribing a user to group notifications for a group s/he's a member of.
  */
-public class GroupActivitySubscriptionModel extends BaseActivitySubscriptionModel implements Fetchable<Serializable>
+public class PersonActivitySubscriptionModel extends BaseActivitySubscriptionModel implements Fetchable<Serializable>
 {
     /**
      * Singleton.
      */
-    private static GroupActivitySubscriptionModel model = new GroupActivitySubscriptionModel();
+    private static PersonActivitySubscriptionModel model = new PersonActivitySubscriptionModel();
 
     /**
      * Gets the singleton.
      *
      * @return the singleton.
      */
-    public static GroupActivitySubscriptionModel getInstance()
+    public static PersonActivitySubscriptionModel getInstance()
     {
         return model;
     }
@@ -46,9 +46,9 @@ public class GroupActivitySubscriptionModel extends BaseActivitySubscriptionMode
     /**
      * Constructor.
      */
-    public GroupActivitySubscriptionModel()
+    public PersonActivitySubscriptionModel()
     {
-        super(EntityType.GROUP, "changeGroupNewActivityNotificationPreference");
+        super(EntityType.PERSON, "changePersonNewActivityNotificationPreference");
     }
 
     /**

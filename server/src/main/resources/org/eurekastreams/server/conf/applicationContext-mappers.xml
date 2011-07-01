@@ -2118,11 +2118,19 @@
 
     <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
 
-    <bean id="changePersonActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeStreamActivitySubscriptionDbMapper">
+    <bean id="getPersonActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.notification.GetStreamActivitySubscriptionDbMapper">
     	<constructor-arg value="PERSON" />
     </bean>
 
-    <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeStreamActivitySubscriptionDbMapper">
+    <bean id="getGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.notification.GetStreamActivitySubscriptionDbMapper">
+    	<constructor-arg value="GROUP" />
+    </bean>
+
+    <bean id="changePersonActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.notification.ChangeStreamActivitySubscriptionDbMapper">
+    	<constructor-arg value="PERSON" />
+    </bean>
+
+    <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.notification.ChangeStreamActivitySubscriptionDbMapper">
     	<constructor-arg value="GROUP" />
     </bean>
 

@@ -28,7 +28,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotGroupActivitySubscriptionsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonJoinedGroupsResponseEvent;
-import org.eurekastreams.web.client.events.data.GroupActivitySubscriptionChangedEvent;
+import org.eurekastreams.web.client.events.data.StreamActivitySubscriptionChangedEvent;
 import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.PersonJoinedGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -154,10 +154,10 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
 
         Session.getInstance()
                 .getEventBus()
-                .addObserver(GroupActivitySubscriptionChangedEvent.class,
-                        new Observer<GroupActivitySubscriptionChangedEvent>()
+                .addObserver(StreamActivitySubscriptionChangedEvent.class,
+                        new Observer<StreamActivitySubscriptionChangedEvent>()
                         {
-                            public void update(final GroupActivitySubscriptionChangedEvent ev)
+                            public void update(final StreamActivitySubscriptionChangedEvent ev)
                             {
                                 String groupName = ev.getResponse().getStreamEntityUniqueId();
                                 boolean subscribed = ev.getResponse().getReceiveNewActivityNotifications();

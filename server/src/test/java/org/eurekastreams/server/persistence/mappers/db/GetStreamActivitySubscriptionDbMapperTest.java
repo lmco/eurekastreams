@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.db.notification.GetStreamActivitySubscriptionDbMapper;
 import org.eurekastreams.server.persistence.mappers.requests.GetStreamActivitySubscriptionMapperRequest;
 import org.junit.Test;
 /**
