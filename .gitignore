@@ -2,6 +2,7 @@ target
 .classpath
 .project
 .settings
+.DS_Store
 Thumbs.db
 nohup.out
 server/.checkstyle
