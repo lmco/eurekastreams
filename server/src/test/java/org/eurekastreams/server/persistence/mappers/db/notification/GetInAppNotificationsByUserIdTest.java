@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.eurekastreams.server.domain.InAppNotificationDTO;
+import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +32,7 @@ import org.junit.Test;
 public class GetInAppNotificationsByUserIdTest extends MapperTest
 {
     /** SUT. */
-    private GetInAppNotificationsByUserId sut;
+    private DomainMapper<Long, List<InAppNotificationDTO>> sut;
 
     /**
      * Setup before each test.
@@ -39,7 +41,7 @@ public class GetInAppNotificationsByUserIdTest extends MapperTest
     public void setUp()
     {
         sut = new GetInAppNotificationsByUserId(5);
-        sut.setEntityManager(getEntityManager());
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
     }
 
     /**

@@ -21,6 +21,7 @@ import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.stream.ChangeStreamActivitySubscriptionRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.ChangeStreamActivitySubscriptionMapperRequest;
 import org.eurekastreams.server.testing.TestContextCreator;
@@ -114,8 +115,8 @@ public class ChangeStreamActivitySubscriptionExecutionTest
         });
 
         PrincipalActionContext actionContext = TestContextCreator.createPrincipalActionContext(
-                new ChangeStreamActivitySubscriptionRequest(STREAM_ENTITY_UNIQUE_ID, true), PERSON_ACCOUNT_ID,
-                PERSON_ID);
+                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, true),
+                PERSON_ACCOUNT_ID, PERSON_ID);
 
         sut.execute(actionContext);
 
@@ -143,8 +144,8 @@ public class ChangeStreamActivitySubscriptionExecutionTest
         });
 
         PrincipalActionContext actionContext = TestContextCreator.createPrincipalActionContext(
-                new ChangeStreamActivitySubscriptionRequest(STREAM_ENTITY_UNIQUE_ID, false), PERSON_ACCOUNT_ID,
-                PERSON_ID);
+                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, false),
+                PERSON_ACCOUNT_ID, PERSON_ID);
 
         sut.execute(actionContext);
 

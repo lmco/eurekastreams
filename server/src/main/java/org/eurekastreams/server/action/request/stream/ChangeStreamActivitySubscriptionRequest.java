@@ -18,24 +18,23 @@ package org.eurekastreams.server.action.request.stream;
 
 import java.io.Serializable;
 
+import org.eurekastreams.server.domain.EntityType;
+
 /**
  * Request for changing stream activity subscription notifications.
  */
 public class ChangeStreamActivitySubscriptionRequest implements Serializable
 {
-    /**
-     * Serial version uid.
-     */
+    /** Serial version uid. */
     private static final long serialVersionUID = -3057266450773584546L;
 
-    /**
-     * The unique ID of the stream entity.
-     */
+    /** Entity type of stream. */
+    private EntityType entityType;
+
+    /** The unique ID of the stream entity. */
     private String streamEntityUniqueId;
 
-    /**
-     * Whether the user wants to receive new activity notifications.
-     */
+    /** Whether the user wants to receive new activity notifications. */
     private Boolean receiveNewActivityNotifications;
 
     /**
@@ -48,14 +47,17 @@ public class ChangeStreamActivitySubscriptionRequest implements Serializable
     /**
      * Constructor.
      *
+     * @param inEntityType
+     *            Entity type of stream.
      * @param inStreamEntityUniqueId
      *            The unique ID of the stream entity.
      * @param inReceiveNewActivityNotifications
      *            Whether the user wants to receive new activity notifications.
      */
-    public ChangeStreamActivitySubscriptionRequest(final String inStreamEntityUniqueId,
+    public ChangeStreamActivitySubscriptionRequest(final EntityType inEntityType, final String inStreamEntityUniqueId,
             final Boolean inReceiveNewActivityNotifications)
     {
+        entityType = inEntityType;
         streamEntityUniqueId = inStreamEntityUniqueId;
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
@@ -92,5 +94,13 @@ public class ChangeStreamActivitySubscriptionRequest implements Serializable
     public void setStreamEntityUniqueId(final String inStreamEntityUniqueId)
     {
         streamEntityUniqueId = inStreamEntityUniqueId;
+    }
+
+    /**
+     * @return the entityType
+     */
+    public EntityType getEntityType()
+    {
+        return entityType;
     }
 }

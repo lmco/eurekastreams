@@ -20,7 +20,7 @@ import org.eurekastreams.server.action.request.stream.ChangeStreamActivitySubscr
 /**
  * Event that's fired after a successful ChangeGroupActivitySubscriptionRequest.
  */
-public class GroupActivitySubscriptionChangedEvent extends
+public class StreamActivitySubscriptionChangedEvent extends
         BaseDataResponseEvent<ChangeStreamActivitySubscriptionRequest>
 {
     /**
@@ -29,7 +29,7 @@ public class GroupActivitySubscriptionChangedEvent extends
      * @param inResponse
      *            the original request
      */
-    public GroupActivitySubscriptionChangedEvent(final ChangeStreamActivitySubscriptionRequest inResponse)
+    public StreamActivitySubscriptionChangedEvent(final ChangeStreamActivitySubscriptionRequest inResponse)
     {
         super(inResponse);
     }

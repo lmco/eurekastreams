@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.db.notification;
 
 import javax.persistence.Query;
 
