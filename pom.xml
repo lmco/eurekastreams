@@ -145,6 +145,7 @@
         <build.system.nonproxyhosts>*.example.com</build.system.nonproxyhosts>
         <build.db.dbname>eurekastreams</build.db.dbname>
         <build.db.dbuser>eurekastreams</build.db.dbuser>
+        <build.db.password></build.db.password>
         <build.db.servername>127.0.0.1</build.db.servername>
         <build.cache.servernames>localhost:11211</build.cache.servernames>
         <build.lucene.indexdir>/tmp</build.lucene.indexdir>
