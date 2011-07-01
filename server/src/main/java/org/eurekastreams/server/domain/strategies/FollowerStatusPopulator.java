@@ -72,6 +72,7 @@ public class FollowerStatusPopulator<T extends FollowerStatusable>
         FollowerStatus defaultStatus = inDefaultStatus == null ? FollowerStatus.NOTSPECIFIED : inDefaultStatus;
         List<Long> personIds = null;
         List<Long> groupIds = null;
+        long entityId;
 
         for (FollowerStatusable fs : inFollowerStatusables)
         {
@@ -82,8 +83,16 @@ public class FollowerStatusPopulator<T extends FollowerStatusable>
                 {
                     personIds = personIdsFollowedByPrincipalMapper.execute(inCurrentUserId);
                 }
-                fs.setFollowerStatus(personIds.contains(fs.getEntityId()) ? FollowerStatus.FOLLOWING
-                        : FollowerStatus.NOTFOLLOWING);
+                entityId = fs.getEntityId();
+                if (entityId != inCurrentUserId && personIds.contains(entityId))
+                {
+                    // don't display following status if the person is the current user - that's transparent
+                    fs.setFollowerStatus(FollowerStatus.FOLLOWING);
+                }
+                else
+                {
+                    fs.setFollowerStatus(FollowerStatus.NOTFOLLOWING);
+                }
                 break;
             case GROUP:
                 if (groupIds == null)

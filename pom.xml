@@ -168,6 +168,7 @@
         <build.user-account-tld>example.com</build.user-account-tld>
         <build.app.baseurl>http://application.com</build.app.baseurl>
         <build.app.version>${project.version}</build.app.version>
+        <checkstyle.enable.rss>false</checkstyle.enable.rss>
     </properties>
     <build>
         <plugins>

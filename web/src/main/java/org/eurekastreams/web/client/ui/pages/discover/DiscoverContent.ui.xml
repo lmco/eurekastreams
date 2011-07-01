@@ -6,12 +6,11 @@
 		border-top: 2px solid #bbb;
 		list-style: none;
 		padding-left: 0;
-		width:
-		220px;
+		width: 220px;
 		float: left;
-		clear: left;
 		margin-left: 10px;
 	}
+	
 	</ui:style>
   
     <g:HTMLPanel>
@@ -35,24 +34,15 @@
             <h3>Suggested</h3>
             <BR/>
             <g:FlowPanel ui:field="suggestedStreamsPanel" />
-        </div>
-        
-
-        <div class="{style.discoverStreamList}">
+        </div><div class="{style.discoverStreamList}">
             <h3>Most Viewed</h3>
             <BR/>
             <g:FlowPanel ui:field="mostViewedStreamsPanel"/>
-        </div>
-        
-        
-        <div class="{style.discoverStreamList}">
+        </div><div class="{style.discoverStreamList}">
             <h3>Most Followed</h3>
             <BR/>
             <g:FlowPanel ui:field="mostFollowedStreamsPanel"/>
-        </div>
-        
-        
-        <div class="{style.discoverStreamList}">
+        </div><div class="{style.discoverStreamList}">
             <h3>Most Recent</h3>
             <BR/>
             <g:FlowPanel ui:field="mostRecentStreamsPanel"/>

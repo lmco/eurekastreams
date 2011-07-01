@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import java.util.Date;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -26,6 +27,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -152,6 +154,10 @@ public class DiscoverListItemPanel extends FlowPanel
         }
         insertActionSeparator(followersPanel);
 
+        if(inStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
+        {
+        	followersPanel.add(new HTML("(FOLLOWING)"));
+        }
         infoPanel.add(followersPanel);
 
         this.add(infoPanel);
