@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
@@ -34,24 +34,24 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * FlowPanel for the "Most Active Streams" panel items.
+ * FlowPanel for the "Featured Streams" panel items.
  */
-public class ActiveStreamsItemPanel extends FlowPanel
+public class FeaturedStreamItemPanel extends FlowPanel
 {
     /**
      * Constructor.
      * 
-     * @param inStreamDTO
+     * @param inFeaturedStreamDTO
      *            the streamDTO to represent
      */
-    public ActiveStreamsItemPanel(final StreamDTO inStreamDTO)
+    public FeaturedStreamItemPanel(final FeaturedStreamDTO inFeaturedStreamDTO)
     {
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
 
-        add(new AvatarLinkPanel(inStreamDTO.getEntityType(), inStreamDTO.getUniqueId(), inStreamDTO.getId(),
-                inStreamDTO.getAvatarId(), Size.Small));
+        add(new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
+                inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
@@ -59,7 +59,7 @@ public class ActiveStreamsItemPanel extends FlowPanel
         Widget name;
 
         Page linkPage;
-        if (inStreamDTO.getEntityType() == EntityType.PERSON)
+        if (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON)
         {
             linkPage = Page.PEOPLE;
         }
@@ -69,26 +69,20 @@ public class ActiveStreamsItemPanel extends FlowPanel
             linkPage = Page.GROUPS;
         }
         String nameUrl = Session.getInstance().generateUrl(//
-                new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
+                new CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId()));
 
-        name = new Hyperlink(inStreamDTO.getDisplayName(), nameUrl);
+        name = new Hyperlink(inFeaturedStreamDTO.getDisplayName(), nameUrl);
         name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
         infoPanel.add(name);
+        insertActionSeparator(infoPanel);
+        infoPanel.add(new Label(inFeaturedStreamDTO.getDescription()));
 
         FlowPanel followersPanel = new FlowPanel();
         followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
-        if (inStreamDTO.getFollowersCount() == 1)
-        {
-            followersPanel.add(new InlineLabel("1 Daily Message"));
-        }
-        else
-        {
-            followersPanel.add(new InlineLabel(Integer.toString(inStreamDTO.getFollowersCount()) + " Daily Messages"));
-        }
         insertActionSeparator(followersPanel);
 
-        if (inStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
+        if (inFeaturedStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
         {
             followersPanel.add(new HTML("(FOLLOWING)"));
         }
