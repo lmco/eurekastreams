@@ -213,6 +213,7 @@ public class SaveAvatarExecutionTest
                 allowing(imageMock).getType();
                 allowing(imageMock).getRaster();
                 allowing(imageMock).getAccelerationPriority();
+                allowing(imageMock).getSampleModel();
 
                 oneOf(imageWriter).write(with(any(RenderedImage.class)), with(any(String.class)));
 
@@ -303,6 +304,7 @@ public class SaveAvatarExecutionTest
                 allowing(imageMock).getType();
                 allowing(imageMock).getRaster();
                 allowing(imageMock).getAccelerationPriority();
+                allowing(imageMock).getSampleModel();
 
                 oneOf(imageWriter).write(with(any(RenderedImage.class)), with(any(String.class)));
 
