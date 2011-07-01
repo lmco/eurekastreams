@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.SublistWithResultCount;
@@ -64,11 +65,13 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
         List<StreamDTO> results = new ArrayList<StreamDTO>();
 
         Query q = getEntityManager().createQuery(
-                "SELECT streamViewStreamScopeId, SUM(messageCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
+                "SELECT streamViewStreamScopeId, (SUM(totalActivityCount) + SUM(totalCommentCount))*86400000.0/"
+                        + "(:nowInMS - MIN(usageDateTimeStampInMs)) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
-                        + "ORDER BY SUM(messageCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
-                .setParameter("nowInMS", new Date().getTime());
+                        + "ORDER BY (SUM(totalActivityCount) + SUM(totalCommentCount))*86400000.0"
+                        + "/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC").setParameter("nowInMS",
+                DateDayExtractor.getStartOfDay(new Date()).getTime());
 
         List<Object[]> scopeIdAndMessageCountArray = q.getResultList();
         int resultCount = scopeIdAndMessageCountArray.size();
