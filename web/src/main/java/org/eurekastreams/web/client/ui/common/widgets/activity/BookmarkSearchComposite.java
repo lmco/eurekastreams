@@ -21,8 +21,6 @@ import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;

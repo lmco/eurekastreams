@@ -162,6 +162,13 @@ public class PersonPanel extends FlowPanel
 
     }
 
+    /**
+     * Get the follow widget.
+     * 
+     * @param person
+     *            the person.
+     * @return the widget.
+     */
     private Widget getFollowWidget(final PersonModelView person)
     {
         FollowerStatus status = person.getFollowerStatus();
@@ -181,7 +188,7 @@ public class PersonPanel extends FlowPanel
             final Label followLink = new Label("Follow");
             followLink.addClickHandler(new ClickHandler()
             {
-                public void onClick(ClickEvent event)
+                public void onClick(final ClickEvent event)
                 {
                     SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
                             .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,

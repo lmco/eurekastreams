@@ -16,10 +16,8 @@
 package org.eurekastreams.web.client.ui.common.stream;
 
 import org.eurekastreams.web.client.model.GadgetModel;
-import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
-import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -58,8 +56,12 @@ public class FollowDialogContent extends BaseDialogContent
     /**
      * Default constructor.
      * 
-     * @param inStream
-     *            the view id.
+     * @param inStreamName
+     *            the stream name.
+     * @param streamRequest
+     *            the stream request.
+     * @param inStreamId
+     *            the stream id.
      */
     public FollowDialogContent(final String inStreamName, final String streamRequest, final Long inStreamId)
     {
@@ -68,7 +70,7 @@ public class FollowDialogContent extends BaseDialogContent
 
         closeButton.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 close();
             }
@@ -88,7 +90,7 @@ public class FollowDialogContent extends BaseDialogContent
 
         saveButton.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 if (addToStartPage.getValue())
                 {
@@ -105,7 +107,8 @@ public class FollowDialogContent extends BaseDialogContent
 
                 if (notifyViaEmail.getValue())
                 {
-                    //GroupActivitySubscriptionModel.getInstance().insert(inGroupShortName);
+                    // do nothing for now.
+                    int x = 0;
                 }
 
                 close();

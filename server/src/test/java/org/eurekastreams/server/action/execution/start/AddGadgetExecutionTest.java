@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.start;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
+import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
@@ -42,6 +42,8 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Tests the AddGadgetAction.
@@ -134,6 +136,9 @@ public class AddGadgetExecutionTest
         final Long tabId = 100L;
         final Long gadgetDefinitionId = 9928L;
         final Layout tabLayout = Layout.THREECOLUMNLEFTWIDEHEADER;
+        final Person person = context.mock(Person.class);
+
+        final List<Tab> tabList = Collections.singletonList(tab);
 
         final List<Gadget> gadgets = new ArrayList<Gadget>();
 
@@ -172,7 +177,6 @@ public class AddGadgetExecutionTest
                 // -- Gadget #0 - zone 0, index 0
                 Gadget gadget0 = context.mock(Gadget.class, "gadget0");
 
-                // set the zone number - it MUST be requested once
                 exactly(1).of(gadget0).getZoneNumber();
                 will(returnValue(0));
 
@@ -203,6 +207,9 @@ public class AddGadgetExecutionTest
                 will(returnValue(0));
 
                 oneOf(gadget0).setZoneIndex(1);
+                
+                oneOf(person).getId();
+                will(returnValue(0L));
 
                 // when asked for the gadgets, return the mocked list
                 atLeast(1).of(tab).getGadgets();
@@ -216,7 +223,10 @@ public class AddGadgetExecutionTest
 
                 // action has to load the tab by ID
                 allowing(personMapper).findByAccountId("username");
-                will(returnValue(new Person()));
+                will(returnValue(person));
+
+                oneOf(person).getTabs(TabGroupType.START);
+                will(returnValue(tabList));
 
                 // will need a flush() when all done
                 exactly(1).of(tabMapper).flush();
@@ -226,15 +236,7 @@ public class AddGadgetExecutionTest
 
         });
 
-        Gadget actual = null;
-        try
-        {
-            actual = (Gadget) sut.execute(actionContext);
-        }
-        catch (Exception e)
-        {
-            fail("Caught an exception");
-        }
+        Gadget actual = (Gadget) sut.execute(actionContext);
 
         // make sure the new gadget is of the type passed in
         assertEquals(gadgetDefinitionId, (Long) actual.getGadgetDefinition().getId());
@@ -252,10 +254,13 @@ public class AddGadgetExecutionTest
      * @throws Exception
      *             thrown as replacement for NoResultException.
      */
-    @Test(expected = Exception.class)
     public void performActionWithInvalidTabId() throws Exception
     {
         final Long tabId = new Long(1000000000);
+
+        final Person person = context.mock(Person.class);
+
+        final List<Tab> tabList = Collections.singletonList(tab);
 
         // Set up expectations
         context.checking(new Expectations()
@@ -267,6 +272,13 @@ public class AddGadgetExecutionTest
                 allowing(gadgetRequest).getTabId();
                 will(returnValue(tabId));
 
+                // action has to load the tab by ID
+                allowing(personMapper).findByAccountId("username");
+                will(returnValue(person));
+
+                oneOf(person).getTabs(TabGroupType.START);
+                will(returnValue(tabList));
+
                 allowing(gadgetRequest).getGadgetDefinitionUrl();
                 will(returnValue(GADGET_DEF_URL));
 
@@ -276,5 +288,7 @@ public class AddGadgetExecutionTest
         });
 
         sut.execute(actionContext);
+        
+        context.assertIsSatisfied();
     }
 }

@@ -27,7 +27,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -70,6 +69,9 @@ public class PagerComposite extends Composite
     @UiField
     PagerStyle style;
 
+    /**
+     * Page results.
+     */
     @UiField
     FlowPanel pageResults;
 
@@ -104,7 +106,12 @@ public class PagerComposite extends Composite
     /**
      * Current direction.
      */
-    protected Direction direction;
+    private Direction direction;
+
+    /**
+     * Pager animation time.
+     */
+    private static final int PAGER_ANIMATION_TIME = 500;
 
     /**
      * Default constructor.
@@ -130,7 +137,7 @@ public class PagerComposite extends Composite
 
         EventBus.getInstance().addObserver(PagerResponseEvent.class, new Observer<PagerResponseEvent>()
         {
-            public void update(PagerResponseEvent event)
+            public void update(final PagerResponseEvent event)
             {
                 if (event.getKey().equals(pagerStrategy.getKey()))
                 {
@@ -138,7 +145,7 @@ public class PagerComposite extends Composite
 
                     if (pageResults.getWidgetCount() != 0)
                     {
-                        slideAnimation.slide(direction, event.getWidget(), pageResults, 500);
+                        slideAnimation.slide(direction, event.getWidget(), pageResults, PAGER_ANIMATION_TIME);
                     }
                     else
                     {
@@ -167,6 +174,9 @@ public class PagerComposite extends Composite
         });
     }
 
+    /**
+     * Load components.
+     */
     public void load()
     {
         buttonContainer.setVisible(false);

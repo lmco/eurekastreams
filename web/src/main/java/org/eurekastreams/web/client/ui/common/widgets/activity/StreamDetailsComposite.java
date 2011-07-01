@@ -43,8 +43,8 @@ import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.pager.FollowerPagerStrategy;
-import org.eurekastreams.web.client.ui.common.pager.FollowingPagerStrategy;
+import org.eurekastreams.web.client.ui.common.pager.FollowerPagerUiStrategy;
+import org.eurekastreams.web.client.ui.common.pager.FollowingPagerUiStrategy;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
 import org.eurekastreams.web.client.ui.common.stream.FollowDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
@@ -95,6 +95,8 @@ public class StreamDetailsComposite extends Composite
 
         /**
          * Active option.
+         * 
+         * @return active option style.
          */
         String activeOption();
     }
@@ -236,9 +238,15 @@ public class StreamDetailsComposite extends Composite
     @UiField
     PagerComposite streamFollowing;
 
+    /**
+     * Show following link.
+     */
     @UiField
     Label showFollowing;
 
+    /**
+     * Show followers link.
+     */
     @UiField
     Label showFollowers;
 
@@ -277,9 +285,15 @@ public class StreamDetailsComposite extends Composite
      */
     private BaseModel followModel;
 
-    protected String streamReq;
+    /**
+     * Stream request.
+     */
+    private String streamReq;
 
-    protected Long streamId;
+    /**
+     * Stream ID.
+     */
+    private Long streamId;
 
     /**
      * Build page.
@@ -299,8 +313,8 @@ public class StreamDetailsComposite extends Composite
         analyticsChartContainer.add(chart);
         chart.update();
 
-        streamFollowers.init(new FollowerPagerStrategy());
-        streamFollowing.init(new FollowingPagerStrategy());
+        streamFollowers.init(new FollowerPagerUiStrategy());
+        streamFollowing.init(new FollowingPagerUiStrategy());
 
         streamFollowers.setVisible(false);
         streamFollowing.setVisible(false);
@@ -309,7 +323,7 @@ public class StreamDetailsComposite extends Composite
         followersLink.addClickHandler(new ClickHandler()
         {
 
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 openFollower();
             }
@@ -318,7 +332,7 @@ public class StreamDetailsComposite extends Composite
         followingLink.addClickHandler(new ClickHandler()
         {
 
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 openFollowing();
             }
@@ -327,7 +341,7 @@ public class StreamDetailsComposite extends Composite
         showFollowers.addClickHandler(new ClickHandler()
         {
 
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 openFollower();
             }
@@ -336,7 +350,7 @@ public class StreamDetailsComposite extends Composite
         showFollowing.addClickHandler(new ClickHandler()
         {
 
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 openFollowing();
             }
@@ -345,7 +359,7 @@ public class StreamDetailsComposite extends Composite
         aboutLink.addClickHandler(new ClickHandler()
         {
 
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 openAbout();
             }
@@ -577,8 +591,12 @@ public class StreamDetailsComposite extends Composite
         }
     }
 
+    /**
+     * Open the about panel.
+     */
     private void openAbout()
     {
+        final int aboutPadding = 20;
         aboutLink.addStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
@@ -586,11 +604,15 @@ public class StreamDetailsComposite extends Composite
         streamFollowing.setVisible(false);
         streamAbout.setVisible(true);
         streamFollowers.setVisible(false);
-        detailsContainerAnimation.expandWithPadding(20);
+        detailsContainerAnimation.expandWithPadding(aboutPadding);
     }
 
+    /**
+     * Open the following panel.
+     */
     private void openFollowing()
     {
+        final int followingSize = 475;
         aboutLink.removeStyleName(style.activeOption());
         followingLink.addStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
@@ -599,11 +621,15 @@ public class StreamDetailsComposite extends Composite
         streamAbout.setVisible(false);
         streamFollowing.setVisible(true);
         streamFollowing.load();
-        detailsContainerAnimation.expand(475);
+        detailsContainerAnimation.expand(followingSize);
     }
 
+    /**
+     * Open the followers panel.
+     */
     private void openFollower()
     {
+        final int followerSize = 475;
         aboutLink.removeStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.addStyleName(style.activeOption());
@@ -612,7 +638,7 @@ public class StreamDetailsComposite extends Composite
         streamAbout.setVisible(false);
         streamFollowers.setVisible(true);
         streamFollowers.load();
-        detailsContainerAnimation.expand(475);
+        detailsContainerAnimation.expand(followerSize);
     }
 
     /**

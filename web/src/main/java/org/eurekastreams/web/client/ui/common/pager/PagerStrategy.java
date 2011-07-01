@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.pager;
 
-
 /**
  * Pager Strategy.
  */
@@ -47,7 +46,7 @@ public interface PagerStrategy
     void init();
 
     /**
-     * Get the event
+     * Get the event.
      * 
      * @return the event key.
      */

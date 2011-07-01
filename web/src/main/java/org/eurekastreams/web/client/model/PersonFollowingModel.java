@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.model;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
-import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.web.client.events.data.GotPersonFollowingResponseEvent;

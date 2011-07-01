@@ -46,6 +46,8 @@ public class InsertStreamBookmarkExecution implements ExecutionStrategy<Principa
      * 
      * @param inPersonMapper
      *            the person mapper.
+     * @param inScopeMapper
+     *            the scope mapper.
      */
     public InsertStreamBookmarkExecution(final FindByIdMapper<Person> inPersonMapper,
             final FindByIdMapper<StreamScope> inScopeMapper)

@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2011 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.eurekastreams.web.client.ui.common.pager;
 
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
@@ -15,27 +30,58 @@ import org.eurekastreams.web.client.ui.common.pagedlist.TwoColumnPagedListRender
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
-public class FollowerPagerStrategy implements PagerStrategy
+/**
+ * Follower page strategy.
+ */
+public class FollowerPagerUiStrategy implements PagerStrategy
 {
+    /**
+     * Model.
+     */
     private PersonFollowersModel model = PersonFollowersModel.getInstance();
+    
+    /**
+     * Event.
+     */
     private PagerResponseEvent responseEvent = new PagerResponseEvent();
+    
+    /**
+     * Pager.
+     */
     private BasicPager pager = new BasicPager();
 
+    /**
+     * Renders two column layout.
+     */
     private TwoColumnPagedListRenderer twoColListRenderer = new TwoColumnPagedListRenderer();
+    
+    /**
+     * Renders a person.
+     */
     private PersonRenderer personRenderer = new PersonRenderer(false);
+    
+    /**
+     * Entity type.
+     */
     private EntityType entityType;
+    
+    /**
+     * Evnet key.
+     */
     private String entityKey;
 
-    public FollowerPagerStrategy()
+    /**
+     * Constructor.
+     */
+    public FollowerPagerUiStrategy()
     {
-        pager.setPageSize(10);
         responseEvent.setKey(getKey());
 
         EventBus.getInstance().addObserver(GotPersonFollowersResponseEvent.class,
                 new Observer<GotPersonFollowersResponseEvent>()
                 {
 
-                    public void update(GotPersonFollowersResponseEvent event)
+                    public void update(final GotPersonFollowersResponseEvent event)
                     {
                         pager.setMaxCount(event.getResponse().getTotal());
 
@@ -51,7 +97,7 @@ public class FollowerPagerStrategy implements PagerStrategy
                 {
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
-                        entityKey = event.getResponse().getAccountId(); 
+                        entityKey = event.getResponse().getAccountId();
                         entityType = EntityType.PERSON;
                     }
                 });
@@ -61,28 +107,44 @@ public class FollowerPagerStrategy implements PagerStrategy
                 {
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
-                        entityKey = event.getResponse().getShortName(); 
+                        entityKey = event.getResponse().getShortName();
                         entityType = EntityType.GROUP;
                     }
                 });
     }
 
+    /**
+     * If the pager has next.
+     * 
+     * @return has next.
+     */
     public boolean hasNext()
     {
         return pager.isNextPageable();
     }
 
+    /**
+     * If the page has prev.
+     * 
+     * @return has prev.
+     */
     public boolean hasPrev()
     {
         return pager.isPreviousPageable();
     }
 
+    /**
+     * Initialize..
+     */
     public void init()
     {
         model.fetch(new GetFollowersFollowingRequest(entityType, entityKey, pager.getStartItem(), pager.getEndItem()),
                 false);
     }
 
+    /**
+     * Next.
+     */
     public void next()
     {
         pager.nextPage();
@@ -91,6 +153,9 @@ public class FollowerPagerStrategy implements PagerStrategy
 
     }
 
+    /**
+     * Prev.
+     */
     public void prev()
     {
         pager.previousPage();
@@ -98,6 +163,11 @@ public class FollowerPagerStrategy implements PagerStrategy
                 false);
     }
 
+    /**
+     * Get the key.
+     * 
+     * @return the key.
+     */
     public String getKey()
     {
         return "follower";

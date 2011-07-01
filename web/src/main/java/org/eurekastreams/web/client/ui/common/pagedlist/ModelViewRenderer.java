@@ -45,7 +45,7 @@ public class ModelViewRenderer implements ItemRenderer<ModelView>
      *            the item.
      * @return the rendered item.
      */
-    public Panel render(ModelView item)
+    public Panel render(final ModelView item)
     {
         if (item instanceof PersonModelView)
         {

@@ -15,9 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.activity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
@@ -30,7 +28,6 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
@@ -55,7 +52,6 @@ import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
@@ -76,7 +72,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -113,7 +108,12 @@ public class ActivityContent extends Composite
          * @return Active stream style.
          */
         String activeStream();
-        
+
+        /**
+         * Stream options child.
+         * 
+         * @return Stream options child.
+         */
         String streamOptionChild();
     }
 
@@ -232,7 +232,10 @@ public class ActivityContent extends Composite
      */
     private StreamScope currentStream;
 
-    protected long currentScopeId;
+    /**
+     * Current scope id.
+     */
+    private long currentScopeId;
 
     /**
      * New activity polling.
@@ -366,7 +369,7 @@ public class ActivityContent extends Composite
                                     new ClickHandler()
                                     {
 
-                                        public void onClick(ClickEvent event)
+                                        public void onClick(final ClickEvent event)
                                         {
                                             Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
                                             event.stopPropagation();
@@ -438,7 +441,7 @@ public class ActivityContent extends Composite
                                 bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId,
                                         new ClickHandler()
                                         {
-                                            public void onClick(ClickEvent event)
+                                            public void onClick(final ClickEvent event)
                                             {
                                                 if (new WidgetJSNIFacadeImpl()
                                                         .confirm("Are you sure you want to delete this bookmark?"))
@@ -527,7 +530,7 @@ public class ActivityContent extends Composite
 
         createFilter.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 Dialog.showCentered(new CustomStreamDialogContent());
             }
@@ -682,6 +685,8 @@ public class ActivityContent extends Composite
             }
             catch (Exception e)
             {
+                // Do nothing.
+                int x = 0;
             }
         }
 
@@ -696,6 +701,8 @@ public class ActivityContent extends Composite
      *            the name of the item.
      * @param view
      *            the history token to load.
+     * @param modifyClickHandler
+     *            click handler for modify.
      * @return the LI.
      */
     private Panel createPanel(final String name, final String view, final ClickHandler modifyClickHandler)
@@ -704,7 +711,7 @@ public class ActivityContent extends Composite
         panel.addStyleName(style.streamOptionChild());
         panel.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 History.newItem(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, view)));
             }

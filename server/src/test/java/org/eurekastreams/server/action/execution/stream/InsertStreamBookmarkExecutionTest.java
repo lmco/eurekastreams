@@ -117,6 +117,8 @@ public class InsertStreamBookmarkExecutionTest
 
                 allowing(actionContext).getParams();
                 will(returnValue(scopeId));
+                
+                oneOf(personMapper).flush();
             }
         });
 

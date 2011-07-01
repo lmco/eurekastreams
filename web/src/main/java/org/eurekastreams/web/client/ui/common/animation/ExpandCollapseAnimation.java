@@ -63,6 +63,9 @@ public class ExpandCollapseAnimation extends Animation
         milliseconds = inMilliseconds;
     }
 
+    /**
+     * Expand without padding.
+     */
     public void expand()
     {
         expandWithPadding(0);
@@ -163,6 +166,8 @@ public class ExpandCollapseAnimation extends Animation
 
     /**
      * Get is expanded.
+     * 
+     * @return if the animation has expanded already.
      */
     public boolean isExpanded()
     {
