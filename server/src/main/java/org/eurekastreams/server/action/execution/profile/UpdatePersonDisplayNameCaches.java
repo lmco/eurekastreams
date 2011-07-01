@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,14 +44,9 @@ public class UpdatePersonDisplayNameCaches implements CacheUpdater
     = "activityRecipientPersonNameUpdaterAsyncAction";
 
     /**
-     * The name of the action to kick off that updates notifications.
-     */
-    private static final String NOTIFICATION_UPDATE_ACTION_NAME = "updateNotificationsOnPersonNameChange";
-
-    /**
      * Mapper to get people by ids.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper;
+    private final DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper;
 
     /**
      * Constructor.
@@ -78,7 +73,6 @@ public class UpdatePersonDisplayNameCaches implements CacheUpdater
     {
         List<UserActionRequest> results = new ArrayList<UserActionRequest>(3);
         results.add(new UserActionRequest(ASYNC_ACTION_NAME, null, inPersonId));
-        results.add(new UserActionRequest(NOTIFICATION_UPDATE_ACTION_NAME, null, inPersonId));
 
         // the next async action needs the account id
         List<Long> peopleIds = new ArrayList<Long>();

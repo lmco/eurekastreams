@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,12 +49,13 @@ public class UpdatePersonDisplayNameCachesTest
     /**
      * Mapper to get people by ids.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper = // \n
+    context.mock(DomainMapper.class);
 
     /**
      * System under test.
      */
-    private UpdatePersonDisplayNameCaches sut = new UpdatePersonDisplayNameCaches(getPeopleByIdsMapper);
+    private final UpdatePersonDisplayNameCaches sut = new UpdatePersonDisplayNameCaches(getPeopleByIdsMapper);
 
     /**
      * Test execute.
@@ -82,7 +83,7 @@ public class UpdatePersonDisplayNameCachesTest
         });
 
         List<UserActionRequest> userActionRequests = sut.getUpdateCacheRequests(principal, personId);
-        assertEquals(3, userActionRequests.size());
+        assertEquals(2, userActionRequests.size());
 
         // action 1
         UserActionRequest actionRequest = userActionRequests.get(0);
@@ -90,14 +91,8 @@ public class UpdatePersonDisplayNameCachesTest
         assertNull(actionRequest.getUser());
         assertEquals(personId, actionRequest.getParams());
 
-        // action 2
-        actionRequest = userActionRequests.get(1);
-        assertEquals("updateNotificationsOnPersonNameChange", actionRequest.getActionKey());
-        assertNull(actionRequest.getUser());
-        assertEquals(personId, actionRequest.getParams());
-
         // action 3
-        actionRequest = userActionRequests.get(2);
+        actionRequest = userActionRequests.get(1);
         assertEquals("activityRecipientPersonNameUpdaterAsyncAction", actionRequest.getActionKey());
         assertNull(actionRequest.getUser());
         assertEquals(personAccountId, actionRequest.getParams());
