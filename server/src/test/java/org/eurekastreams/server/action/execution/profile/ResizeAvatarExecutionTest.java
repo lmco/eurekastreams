@@ -175,6 +175,7 @@ public class ResizeAvatarExecutionTest
                 allowing(imageMock).getType();
                 allowing(imageMock).getRaster();
                 allowing(imageMock).getAccelerationPriority();
+                allowing(imageMock).getSampleModel();
 
                 oneOf(finder).findEntity(principal, 1L);
                 will(returnValue(person));
@@ -258,6 +259,7 @@ public class ResizeAvatarExecutionTest
                 allowing(imageMock).getType();
                 allowing(imageMock).getRaster();
                 allowing(imageMock).getAccelerationPriority();
+                allowing(imageMock).getSampleModel();
 
                 oneOf(person).setAvatarCropX(1);
                 oneOf(person).setAvatarCropY(2);
