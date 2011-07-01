@@ -71,13 +71,16 @@ public class SetUserNotificationFilterPreferencesTest extends MapperTest
     public void testExecuteNoOverlap()
     {
         final long personId = 99L;
-        NotificationFilterPreferenceDTO dto = new NotificationFilterPreferenceDTO("SMS", "FOLLOW");
+        NotificationFilterPreferenceDTO dto1 = new NotificationFilterPreferenceDTO("SMS", "FOLLOW");
+        NotificationFilterPreferenceDTO dto2 = new NotificationFilterPreferenceDTO("IM", "FOLLOW");
         SetUserNotificationFilterPreferencesRequest rqst = new SetUserNotificationFilterPreferencesRequest(personId,
-                Collections.singletonList(dto));
+                Arrays.asList(dto1, dto2));
         sut.execute(rqst);
 
-        dto.setPersonId(personId);
-        checkAgainstDb(personId, Arrays.asList(dto, new NotificationFilterPreferenceDTO(personId, "email", "COMMENT")));
+        dto1.setPersonId(personId);
+        dto2.setPersonId(personId);
+        checkAgainstDb(personId,
+                Arrays.asList(dto1, dto2, new NotificationFilterPreferenceDTO(personId, "email", "COMMENT")));
     }
 
     /**
