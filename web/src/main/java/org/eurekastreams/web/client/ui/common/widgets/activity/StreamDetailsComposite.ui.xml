@@ -8,7 +8,8 @@
 	<ui:image field="followBtn" src="style/images/followBtn.png" />
 	<ui:image field="followBtnHover" src="style/images/followBtnHover.png" />
 
-	<ui:image field="unFollowBtn" src="style/images/stopFollowBtn.png" />
+	<ui:image field="unFollowBtn" src="style/images/following.png" />
+	<ui:image field="unFollowBtnHover" src="style/images/unfollow.png" />
 
 	<ui:image field="everyoneHeader" src="style/images/everyoneHeader.png" />
 	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
@@ -113,7 +114,7 @@
 
 		@sprite .unFollowLink:hover
 		{
-		gwt-image: "unFollowBtn";
+		gwt-image: "unFollowBtnHover";
 		}
 		
 		.configureLink

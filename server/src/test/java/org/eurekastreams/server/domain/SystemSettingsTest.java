@@ -121,26 +121,10 @@ public class SystemSettingsTest
         systemSettings.setContentExpiration(testContentExpiration);
         systemSettings.setMembershipCriteria(testMembershipCriteria);
         systemSettings.setSendWelcomeEmails(sendWelcomeEmails);
-        systemSettings.setSupportStreamGroupShortName(supportStreamGroupShortName);
-        systemSettings.setSupportStreamGroupDisplayName(supportStreamGroupDisplayName);
-        systemSettings.setSupportEmailAddress(supportEmailAddress);
-        systemSettings.setSupportPhoneNumber(supportPhoneNumber);
         systemSettings.setThemes(testThemes);
         systemSettings.setGalleryTabTemplates(testGalleryTabTemplates);
     }
-
-    /**
-     * Test getters of support fields.
-     */
-    @Test
-    public void testSupportFields()
-    {
-        assertSame(supportStreamGroupShortName, systemSettings.getSupportStreamGroupShortName());
-        assertSame(supportStreamGroupDisplayName, systemSettings.getSupportStreamGroupDisplayName());
-        assertEquals(supportEmailAddress, systemSettings.getSupportEmailAddress());
-        assertEquals(supportPhoneNumber, systemSettings.getSupportPhoneNumber());
-    }
-
+    
     /**
      * Test SiteLabel to setter/getter.
      */

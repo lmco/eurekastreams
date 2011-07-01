@@ -7,6 +7,9 @@
 	<ui:image field="spinner" src="style/images/wait-spinner.gif" />
 	<ui:image field="searchActive" src="style/images/searchActive.png" />
 	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
+	<ui:image field="deleteBookmarkHover" src="style/images/modalCloseBtnSmallHover.png" />
+	<ui:image field="deleteBookmark" src="style/images/modalCloseBtnSmall.png" />	
+	
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
@@ -54,7 +57,14 @@
 			float: right;
 		}
 
-		.stream-option-list > div > div div:first-child
+		.stream-option-list > div > div > img
+		{
+			float: left;
+			margin-right: 5px;
+			margin-top: -2px;
+		}
+
+		.stream-option-list > div > div > div.streamName
 		{
 			float: left;
 		}
@@ -101,16 +111,18 @@
 		height: 33px;
 		}
 
-		.sort-option, .sort-option:hover,
-		.sort-option:link,
-		.sort-option:active,
-		.sort-option:visited
+		.sort-option
 		{
-		height:
-		19px;
-		padding: 7px
-		10px;
+		height:	19px;
+		padding: 7px 10px;
 		float: left;
+		}
+		
+		.sort-option a, .sort-option a:hover,
+		.sort-option a:link,
+		.sort-option a:active,
+		.sort-option a:visited
+		{
 		color: black;
 		}
 
@@ -242,6 +254,33 @@
     	margin-left: 140px;
     	width: 100px;
 		}
+		
+		@sprite .streamOptionChild:hover .deleteBookmark
+		{
+		margin-right: 5px;
+		gwt-image: "deleteBookmark";
+		}
+
+		@sprite .streamOptionChild:hover .deleteBookmark:hover
+		{
+		gwt-image: "deleteBookmarkHover";
+		}
+		
+		.streamOptionChild .editCustomStream
+		{
+		display: none;
+		}
+		
+		.streamOptionChild:hover .editCustomStream
+		{
+		margin-right: 5px;
+		color: #0066CC;
+		}
+
+		.streamOptionChild:hover .editCustomStream:hover
+		{
+		color: #F4BD00;
+		}
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
@@ -250,12 +289,12 @@
 			<ewa:StreamDetailsComposite></ewa:StreamDetailsComposite>
 			<ewa:PostBoxComposite></ewa:PostBoxComposite>
 			<div class="{style.options-panel}">
-				<g:Anchor addStyleNames="{style.sort-option} {style.activeSort}"
-					ui:field="recentSort">Recent</g:Anchor>
-				<g:Anchor addStyleNames="{style.sort-option}" ui:field="popularSort">
-					Popular</g:Anchor>
-				<g:Anchor addStyleNames="{style.sort-option}" ui:field="activeSort">
-					Active</g:Anchor>
+				<g:Hyperlink addStyleNames="{style.sort-option} {style.activeSort}"
+					ui:field="recentSort">Recent</g:Hyperlink>
+				<g:Hyperlink addStyleNames="{style.sort-option}" ui:field="popularSort">
+					Popular</g:Hyperlink>
+				<g:Hyperlink addStyleNames="{style.sort-option}" ui:field="activeSort">
+					Active</g:Hyperlink>
 				<g:FlowPanel addStyleNames="{style.subscribe-box}">
 					<g:FlowPanel addStyleNames="{style.subscribe-options}">
 						<g:Label ui:field="addBookmark">Bookmark</g:Label>

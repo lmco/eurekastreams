@@ -90,6 +90,20 @@ public class PostBoxComposite extends Composite
          * @return Visible post box style.
          */
         String visiblePostBox();
+
+        /**
+         * Post char count over limit.
+         * 
+         * @return Post char count over limit.
+         */
+        String postCharCountOverLimit();
+
+        /**
+         * Post button inactive.
+         * 
+         * @return post button inactive.
+         */
+        String postButtonInactive();
     }
 
     /**
@@ -209,14 +223,18 @@ public class PostBoxComposite extends Composite
         posterAvatar.add(avatarRenderer.render(Session.getInstance().getCurrentPerson().getEntityId(), Session
                 .getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.Small));
         postCharCount.setInnerText(POST_MAX.toString());
+        checkPostBox();
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
             public void update(final MessageStreamAppendEvent event)
             {
+                attachment = null;
+                addLinkComposite.close();
                 postBox.setText("");
                 postBox.getElement().getStyle().clearHeight();
                 postOptions.removeClassName(style.visiblePostBox());
+                checkPostBox();
             }
         });
 
@@ -253,7 +271,7 @@ public class PostBoxComposite extends Composite
                 {
                     public void run()
                     {
-                        if (postBox.getText().length() == 0 && !addLinkComposite.inAddMode())
+                        if (postBox.getText().length() == 0 && !addLinkComposite.inAddMode() && attachment == null)
                         {
                             postOptions.removeClassName(style.visiblePostBox());
                             postBox.getElement().getStyle().clearHeight();
@@ -286,15 +304,18 @@ public class PostBoxComposite extends Composite
         {
             public void onClick(final ClickEvent event)
             {
-                ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                        : new NotePopulator();
+                if (!postButton.getStyleName().contains(style.postButtonInactive()))
+                {
+                    ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                            : new NotePopulator();
 
-                ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(), DomainConversionUtility
-                        .convertToEntityType(currentStream.getScopeType()), currentStream.getUniqueKey(),
-                        new PostPopulator(), objectStrat);
-                PostActivityRequest postRequest = new PostActivityRequest(activity);
+                    ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(), DomainConversionUtility
+                            .convertToEntityType(currentStream.getScopeType()), currentStream.getUniqueKey(),
+                            new PostPopulator(), objectStrat);
+                    PostActivityRequest postRequest = new PostActivityRequest(activity);
 
-                ActivityModel.getInstance().insert(postRequest);
+                    ActivityModel.getInstance().insert(postRequest);
+                }
             }
         });
     }
@@ -310,6 +331,24 @@ public class PostBoxComposite extends Composite
         }
 
         postCharCount.setInnerText(Integer.toString(POST_MAX - postBox.getText().length()));
+
+        if (POST_MAX - postBox.getText().length() < 0)
+        {
+            postCharCount.addClassName(style.postCharCountOverLimit());
+        }
+        else
+        {
+            postCharCount.removeClassName(style.postCharCountOverLimit());
+        }
+
+        if ((postBox.getText().length() > 0 && POST_MAX - postBox.getText().length() >= 0) || attachment != null)
+        {
+            postButton.removeStyleName(style.postButtonInactive());
+        }
+        else
+        {
+            postButton.addStyleName(style.postButtonInactive());
+        }
     }
 
 }

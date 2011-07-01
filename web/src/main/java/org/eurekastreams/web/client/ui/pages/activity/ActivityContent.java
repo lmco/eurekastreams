@@ -77,6 +77,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -115,6 +117,22 @@ public class ActivityContent extends Composite
          * @return Stream options child.
          */
         String streamOptionChild();
+
+        /**
+         * Delete bookmark.
+         * 
+         * @return delete bookmark.
+         */
+        String deleteBookmark();
+
+        /**
+         * Edit custom stream.
+         * 
+         * @return edit custom stream.
+         */
+        String editCustomStream();
+
+        String streamName();
     }
 
     /**
@@ -157,19 +175,19 @@ public class ActivityContent extends Composite
      * UI element for recent sort.
      */
     @UiField
-    Anchor recentSort;
+    Hyperlink recentSort;
 
     /**
      * UI element for popular sort.
      */
     @UiField
-    Anchor popularSort;
+    Hyperlink popularSort;
 
     /**
      * UI element for active sort.
      */
     @UiField
-    Anchor activeSort;
+    Hyperlink activeSort;
 
     /**
      * UI element for activity loading spinner.
@@ -259,8 +277,8 @@ public class ActivityContent extends Composite
         addEventHandlers();
         addObservers();
 
-        defaultList.add(createPanel("Following", "following", null));
-        defaultList.add(createPanel("Everyone", "everyone", null));
+        defaultList.add(createPanel("Following", "following", "style/images/customStream.png", null, "", ""));
+        defaultList.add(createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", ""));
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -366,7 +384,7 @@ public class ActivityContent extends Composite
                                     + "/"
                                     + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
                                             Session.getInstance().getCurrentPerson().getAccountId()),
-                                    new ClickHandler()
+                                    "style/images/customStream.png", new ClickHandler()
                                     {
 
                                         public void onClick(final ClickEvent event)
@@ -374,7 +392,7 @@ public class ActivityContent extends Composite
                                             Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
                                             event.stopPropagation();
                                         }
-                                    }));
+                                    }, style.editCustomStream(), "edit"));
                         }
                     }
                 });
@@ -393,14 +411,16 @@ public class ActivityContent extends Composite
                 }
 
                 views.set(views.size() - 1, "recent");
-                recentSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+                recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                        new CreateUrlRequest(Page.ACTIVITY, views)));
 
                 views.set(views.size() - 1, "popular");
-                popularSort
-                        .setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+                popularSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                        new CreateUrlRequest(Page.ACTIVITY, views)));
 
                 views.set(views.size() - 1, "active");
-                activeSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+                activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                        new CreateUrlRequest(Page.ACTIVITY, views)));
 
             }
         }, true);
@@ -412,7 +432,8 @@ public class ActivityContent extends Composite
                     {
                         bookmarkList.clear();
                         bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(),
-                                "person/" + Session.getInstance().getCurrentPerson().getAccountId(), null));
+                                "person/" + Session.getInstance().getCurrentPerson().getAccountId(),
+                                "style/images/customStream.png", null, "", ""));
 
                         for (final StreamFilter filter : event.getResponse())
                         {
@@ -439,7 +460,7 @@ public class ActivityContent extends Composite
                             if (uniqueId != null && entityType != null)
                             {
                                 bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId,
-                                        new ClickHandler()
+                                        "style/images/customStream.png", new ClickHandler()
                                         {
                                             public void onClick(final ClickEvent event)
                                             {
@@ -451,7 +472,7 @@ public class ActivityContent extends Composite
 
                                                 event.stopPropagation();
                                             }
-                                        }));
+                                        }, style.deleteBookmark(), ""));
                             }
                         }
                     }
@@ -703,9 +724,14 @@ public class ActivityContent extends Composite
      *            the history token to load.
      * @param modifyClickHandler
      *            click handler for modify.
+     * @param modifyClass
+     *            the class for the modify button.
+     * @param modifyText
+     *            the text for the modify button.
      * @return the LI.
      */
-    private Panel createPanel(final String name, final String view, final ClickHandler modifyClickHandler)
+    private Panel createPanel(final String name, final String view, final String imgUrl,
+            final ClickHandler modifyClickHandler, final String modifyClass, final String modifyText)
     {
         FocusPanel panel = new FocusPanel();
         panel.addStyleName(style.streamOptionChild());
@@ -718,11 +744,17 @@ public class ActivityContent extends Composite
         });
 
         FlowPanel innerPanel = new FlowPanel();
-        innerPanel.add(new Label(name));
+
+        innerPanel.add(new Image(imgUrl));
+
+        Label streamName = new Label(name);
+        streamName.addStyleName(style.streamName());
+        innerPanel.add(streamName);
 
         if (modifyClickHandler != null)
         {
-            Label modifyLink = new Label("X");
+            Label modifyLink = new Label(modifyText);
+            modifyLink.addStyleName(modifyClass);
             modifyLink.addClickHandler(modifyClickHandler);
             innerPanel.add(modifyLink);
         }

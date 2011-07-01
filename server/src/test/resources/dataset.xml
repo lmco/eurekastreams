@@ -685,7 +685,7 @@
 	<SystemSettings id="1001" version="1122" siteLabel="some site label" 
 		termsOfService="some terms of service" tosPromptInterval="1" 
 		contentWarningText="some content warning" contentExpiration="1" sendWelcomeEmails="true" 
-		supportStreamGroupShortName="group1" allUsersCanCreateGroups="true"
+		allUsersCanCreateGroups="true"
 		/>
 	<MembershipCriteria id="11" version="2" criteria="testCriterion1" />
 	<MembershipCriteria id="12" version="2" criteria="testCriterion2" />
