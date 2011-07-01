@@ -471,7 +471,7 @@
 		<entry key="LIKE_ACTIVITY" value="$actor.displayName liked your #activityType($activity)." />
 		<entry key="POST_TO_PERSONAL_STREAM" value="$actor.displayName posted a #activityType($activity) to your stream." />
 <!-- 		<entry key="POST_TO_FOLLOWED_STREAM" value="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream." /> -->
-		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your #activityType($activity) which now has $activity.commentCount comments." />
+		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your #activityType($activity)." />
 		<entry key="COMMENT_TO_COMMENTED_POST" value="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)." />
 		<entry key="FOLLOW_PERSON" value="$actor.displayName is following you." />
 		<entry key="FOLLOW_GROUP" value="$actor.displayName joined the $stream.displayName group." />

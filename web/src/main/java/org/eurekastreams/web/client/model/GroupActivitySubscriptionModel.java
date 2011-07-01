@@ -16,7 +16,6 @@
 
 package org.eurekastreams.web.client.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.eurekastreams.server.domain.EntityType;
@@ -26,7 +25,7 @@ import org.eurekastreams.web.client.ui.Session;
 /**
  * Model for un/subscribing a user to group notifications for a group s/he's a member of.
  */
-public class GroupActivitySubscriptionModel extends BaseActivitySubscriptionModel implements Fetchable<Serializable>
+public class GroupActivitySubscriptionModel extends BaseActivitySubscriptionModel
 {
     /**
      * Singleton.
@@ -48,26 +47,25 @@ public class GroupActivitySubscriptionModel extends BaseActivitySubscriptionMode
      */
     public GroupActivitySubscriptionModel()
     {
-        super(EntityType.GROUP, "changeGroupNewActivityNotificationPreference");
+        super(EntityType.GROUP, "getGroupNewActivityNotificationPreference",
+                "changeGroupNewActivityNotificationPreference");
     }
 
     /**
      * Get a list of the ids of the groups this user is subscribed to new activity notifications for. The user would
      * have to belong to these groups.
      *
-     * @param ignoredParameter
-     *            ignored
      * @param useClientCacheIfAvailable
      *            whether to use the client cache
      */
-    public void fetch(final Serializable ignoredParameter, final boolean useClientCacheIfAvailable)
+    public void fetch(final boolean useClientCacheIfAvailable)
     {
         super.callReadAction("getUserGroupActivitySubscriptions", "", new OnSuccessCommand<ArrayList<String>>()
         {
             public void onSuccess(final ArrayList<String> groupShortNames)
             {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new GotGroupActivitySubscriptionsResponseEvent(groupShortNames));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new GotGroupActivitySubscriptionsResponseEvent(groupShortNames));
             }
         }, useClientCacheIfAvailable);
     }
