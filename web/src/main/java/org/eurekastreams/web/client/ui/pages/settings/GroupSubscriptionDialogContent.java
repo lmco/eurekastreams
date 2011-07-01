@@ -151,7 +151,6 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
      */
     private void populate()
     {
-
         Session.getInstance()
                 .getEventBus()
                 .addObserver(StreamActivitySubscriptionChangedEvent.class,
@@ -159,18 +158,21 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
                         {
                             public void update(final StreamActivitySubscriptionChangedEvent ev)
                             {
-                                String groupName = ev.getResponse().getStreamEntityUniqueId();
-                                boolean subscribed = ev.getResponse().getReceiveNewActivityNotifications();
-                                Widget button;
-                                button = subscribeButtons.get(groupName);
-                                if (button != null)
+                                if (EntityType.GROUP == ev.getResponse().getEntityType())
                                 {
-                                    button.setVisible(!subscribed);
-                                }
-                                button = unsubscribeButtons.get(groupName);
-                                if (button != null)
-                                {
-                                    button.setVisible(subscribed);
+                                    String groupName = ev.getResponse().getStreamEntityUniqueId();
+                                    boolean subscribed = ev.getResponse().getReceiveNewActivityNotifications();
+                                    Widget button;
+                                    button = subscribeButtons.get(groupName);
+                                    if (button != null)
+                                    {
+                                        button.setVisible(!subscribed);
+                                    }
+                                    button = unsubscribeButtons.get(groupName);
+                                    if (button != null)
+                                    {
+                                        button.setVisible(subscribed);
+                                    }
                                 }
                             }
                         });
@@ -240,6 +242,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().groupNotifSubscriptionDialog();

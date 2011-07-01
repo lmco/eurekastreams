@@ -18,32 +18,65 @@ package org.eurekastreams.web.client.model;
 
 import org.eurekastreams.server.action.request.stream.ChangeStreamActivitySubscriptionRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.web.client.events.data.GotStreamActivitySubscriptionResponseEvent;
 import org.eurekastreams.web.client.events.data.StreamActivitySubscriptionChangedEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Model for un/subscribing a user to stream notifications for a followed stream.
  */
-public class BaseActivitySubscriptionModel extends BaseModel implements Insertable<String>, Deletable<String>
+public class BaseActivitySubscriptionModel extends BaseModel implements Fetchable<String>, Insertable<String>,
+        Deletable<String>
 {
-    /** Action for updating preferences. */
-    private final String updateAction;
-
     /** Entity type of stream. */
     private final EntityType entityType;
+
+    /** Action to query a single preference. */
+    private final String queryAction;
+
+    /** Action for updating preferences. */
+    private final String updateAction;
 
     /**
      * Constructor.
      *
      * @param inEntityType
      *            Entity type of stream.
+     * @param inQueryAction
+     *            Action to query a single preference.
      * @param inUpdateAction
      *            Action for updating preferences.
      */
-    protected BaseActivitySubscriptionModel(final EntityType inEntityType, final String inUpdateAction)
+    protected BaseActivitySubscriptionModel(final EntityType inEntityType, final String inQueryAction,
+            final String inUpdateAction)
     {
         entityType = inEntityType;
+        queryAction = inQueryAction;
         updateAction = inUpdateAction;
+    }
+
+    /**
+     * Get whether this user is subscribed to new activity notifications for the given stream. The user would have to
+     * follow this stream.
+     *
+     * @param uniqueId
+     *            Unique ID of stream.
+     * @param useClientCacheIfAvailable
+     *            whether to use the client cache
+     */
+    public void fetch(final String uniqueId, final boolean useClientCacheIfAvailable)
+    {
+        super.callReadAction(queryAction, uniqueId, new OnSuccessCommand<Boolean>()
+        {
+            public void onSuccess(final Boolean isSubscribed)
+            {
+                Session.getInstance()
+                        .getEventBus()
+                        .notifyObservers(
+                                new GotStreamActivitySubscriptionResponseEvent(EntityType.GROUP, uniqueId,
+                                        isSubscribed));
+            }
+        }, useClientCacheIfAvailable);
     }
 
     /**
@@ -71,23 +104,23 @@ public class BaseActivitySubscriptionModel extends BaseModel implements Insertab
 
     /**
      * Subscribe to new activity notifications for the group with the input short name.
-     *
-     * @param inGroupShortName
-     *            the short name of the group to subsribe notifications from
+     * 
+     * @param uniqueId
+     *            Unique ID of the stream to subscribe notifications from.
      */
-    public void insert(final String inGroupShortName)
+    public void insert(final String uniqueId)
     {
-        update(inGroupShortName, true);
+        update(uniqueId, true);
     }
 
     /**
      * Unsubscribe to new activity notifications for the group with the input short name.
-     *
-     * @param inGroupShortName
-     *            the short name of the group to unsubsribe notifications from
+     * 
+     * @param uniqueId
+     *            Unique ID of the stream to unsubscribe notifications from.
      */
-    public void delete(final String inGroupShortName)
+    public void delete(final String uniqueId)
     {
-        update(inGroupShortName, false);
+        update(uniqueId, false);
     }
 }

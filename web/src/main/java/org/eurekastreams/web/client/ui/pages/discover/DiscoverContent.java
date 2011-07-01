@@ -158,6 +158,7 @@ public class DiscoverContent extends Composite
                         stream.getEntityType().toString() + ")<BR/>"));
             }
         }
+
         if (inDiscoverLists.getSuggestedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getSuggestedStreams())
