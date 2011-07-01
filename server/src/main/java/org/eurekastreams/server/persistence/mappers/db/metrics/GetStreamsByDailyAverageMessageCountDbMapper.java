@@ -67,16 +67,20 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
         // to get an idea of how many activities were generated in the window we have on the data, look at the max
         // number of messages we've seen - just assume that's the most recent, then look at the minimum number of
         // messages we've seen - assume that's the earliest. Subtract the two for the delta, then divide by number of
-        // days
+        // days.
+        // The "-86400000.0" is there because we're calculating the deltas between dates, so we ignore the first date in
+        // the
+        // count
         Query q = getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId, (MAX(totalActivityCount) + MAX(totalCommentCount)"
-                        + " - MIN(totalActivityCount) + MIN(totalCommentCount))*86400000.0/"
-                        + "(:nowInMS - MIN(usageDateTimeStampInMs)) "
+                        + " - MIN(totalActivityCount) - MIN(totalCommentCount))*86400000.0/"
+                        + "(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
+                        + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) > 0 "
                         + "ORDER BY (MAX(totalActivityCount) + MAX(totalCommentCount)"
-                        + " - MIN(totalActivityCount) + MIN(totalCommentCount))*86400000.0"
-                        + "/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC").setParameter("nowInMS",
+                        + " - MIN(totalActivityCount) - MIN(totalCommentCount))*86400000.0"
+                        + "/(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) DESC").setParameter("nowInMS",
                 DateDayExtractor.getStartOfDay(new Date()).getTime());
 
         List<Object[]> scopeIdAndMessageCountArray = q.getResultList();
