@@ -382,6 +382,15 @@ public class ActivityContent extends Composite
                     public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
                         filterList.clear();
+
+                        filterList.add(createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
+                                "style/images/customStream.png", null, "", ""));
+
+                        filterList.add(createPanel("My Liked Items", "custom/0/" + "{\"query\":{\"likedBy\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
+                                "style/images/customStream.png", null, "", ""));
+
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
                             filterList.add(createPanel(filter.getName(), "custom/"
