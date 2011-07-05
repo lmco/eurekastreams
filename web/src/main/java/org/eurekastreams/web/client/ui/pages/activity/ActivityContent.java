@@ -292,6 +292,7 @@ public class ActivityContent extends Composite
     {
         addEventHandlers();
         addObservers();
+        setupStreamsAndBookmarks();
 
         defaultList.add(createPanel("Following", "following", "style/images/customStream.png", null, "", ""));
         defaultList.add(createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", ""));
@@ -387,52 +388,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
-                new Observer<GotCurrentUserCustomStreamsResponseEvent>()
-                {
-                    public void update(final GotCurrentUserCustomStreamsResponseEvent event)
-                    {
-                        filterList.clear();
-                        customStreamWidgetMap.clear();
-
-                        Panel savedBy = createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
-                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
-                                "style/images/customStream.png", null, "", "");
-
-                        filterList.add(savedBy);
-                        customStreamWidgetMap.put(0L, savedBy);
-
-                        Panel likedBy = createPanel("My Liked Items", "custom/1/"
-                                + "{\"query\":{\"likedBy\":[{\"type\":\"PERSON\", \"name\":\""
-                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}",
-                                "style/images/customStream.png", null, "", "");
-
-                        filterList.add(likedBy);
-                        customStreamWidgetMap.put(1L, likedBy);
-
-                        for (final StreamFilter filter : event.getResponse().getStreamFilters())
-                        {
-                            Panel filterPanel = createPanel(filter.getName(), "custom/"
-                                    + filter.getId()
-                                    + "/"
-                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                            Session.getInstance().getCurrentPerson().getAccountId()),
-                                    "style/images/customStream.png", new ClickHandler()
-                                    {
-
-                                        public void onClick(final ClickEvent event)
-                                        {
-                                            Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
-                                            event.stopPropagation();
-                                        }
-                                    }, style.editCustomStream(), "edit");
-
-                            filterList.add(filterPanel);
-                            customStreamWidgetMap.put(filter.getId(), filterPanel);
-                        }
-                    }
-                });
-
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
             public void update(final HistoryViewsChangedEvent event)
@@ -461,6 +416,40 @@ public class ActivityContent extends Composite
             }
         }, true);
 
+        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        {
+            public void update(final MessageStreamAppendEvent event)
+            {
+                longNewestActivityId = event.getMessage().getId();
+                appendActivity(event.getMessage());
+
+            }
+        });
+
+        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
+        {
+            public void update(final CustomStreamCreatedEvent event)
+            {
+                CustomStreamModel.getInstance().fetch(null, true);
+            }
+        });
+
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                    }
+                });
+
+    }
+
+    /**
+     * Setup bookmarks and custom streams.
+     */
+    private void setupStreamsAndBookmarks()
+    {
         EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
 
         new Observer<GotCurrentUserStreamBookmarks>()
@@ -531,33 +520,51 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
-        {
-            public void update(final MessageStreamAppendEvent event)
-            {
-                longNewestActivityId = event.getMessage().getId();
-                appendActivity(event.getMessage());
-
-            }
-        });
-
-        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
-        {
-            public void update(final CustomStreamCreatedEvent event)
-            {
-                CustomStreamModel.getInstance().fetch(null, true);
-            }
-        });
-
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
+                new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
-                    public void update(final UpdatedHistoryParametersEvent event)
+                    public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                        filterList.clear();
+                        customStreamWidgetMap.clear();
+
+                        Panel savedBy = createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
+                                "style/images/customStream.png", null, "", "");
+
+                        filterList.add(savedBy);
+                        customStreamWidgetMap.put(0L, savedBy);
+
+                        Panel likedBy = createPanel("My Liked Items", "custom/1/"
+                                + "{\"query\":{\"likedBy\":[{\"type\":\"PERSON\", \"name\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}",
+                                "style/images/customStream.png", null, "", "");
+
+                        filterList.add(likedBy);
+                        customStreamWidgetMap.put(1L, likedBy);
+
+                        for (final StreamFilter filter : event.getResponse().getStreamFilters())
+                        {
+                            Panel filterPanel = createPanel(filter.getName(), "custom/"
+                                    + filter.getId()
+                                    + "/"
+                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                            Session.getInstance().getCurrentPerson().getAccountId()),
+                                    "style/images/customStream.png", new ClickHandler()
+                                    {
+
+                                        public void onClick(final ClickEvent event)
+                                        {
+                                            Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
+                                            event.stopPropagation();
+                                        }
+                                    }, style.editCustomStream(), "edit");
+
+                            filterList.add(filterPanel);
+                            customStreamWidgetMap.put(filter.getId(), filterPanel);
+                        }
                     }
                 });
-
     }
 
     /**
