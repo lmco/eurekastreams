@@ -119,8 +119,14 @@
 		
 		.configureLink
 		{
-		display: block;		
-		margin-top: 10px;
+    	background-image: url("style/images/configureHeaderIcon.png");
+    	background-repeat: no-repeat;
+    	bottom: 10px;
+    	display: block;
+    	height: 18px;
+    	padding-left: 21px;
+    	position: absolute;
+    	right: 155px;
 		}
 
 		.condensedStream .toggle-details-link, .condensedStream .follow-info-container,
@@ -162,6 +168,7 @@
 		float: left;
 		margin-left: 20px;
 		margin: 10px;
+		width: 430px;
 		}
 
 		.follow-info-container

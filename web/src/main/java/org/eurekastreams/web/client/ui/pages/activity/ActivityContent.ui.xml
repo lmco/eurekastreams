@@ -273,13 +273,13 @@
 		
 		.streamOptionChild:hover .editCustomStream
 		{
+		display: block;
 		margin-right: 5px;
 		color: #0066CC;
 		}
 
 		.streamOptionChild:hover .editCustomStream:hover
 		{
-		color: #F4BD00;
 		}
 	</ui:style>
 

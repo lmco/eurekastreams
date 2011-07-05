@@ -31,7 +31,6 @@ import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -121,11 +120,6 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     "At least one of the requested administrators is not found in the system: ";
 
     /**
-     * mapper to get group by short name.
-     */
-    private GetDomainGroupsByShortNames getGroupsByShortNamesMapper;
-
-    /**
      * Mapper to get people by ids.
      */
     private DomainMapper<List<Long>, List<PersonModelView>> peopleByIdsMapper;
@@ -133,15 +127,11 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     /**
      * Constructor.
      * 
-     * @param inGetGroupsByShortNamesMapper
-     *            the mapper to get domain group by short name
      * @param inPeopleByIdsMapper
      *            mapper to get people by ids
      */
-    public UpdateSystemSettingsValidation(final GetDomainGroupsByShortNames inGetGroupsByShortNamesMapper,
-            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleByIdsMapper)
+    public UpdateSystemSettingsValidation(final DomainMapper<List<Long>, List<PersonModelView>> inPeopleByIdsMapper)
     {
-        getGroupsByShortNamesMapper = inGetGroupsByShortNamesMapper;
         peopleByIdsMapper = inPeopleByIdsMapper;
     }
 

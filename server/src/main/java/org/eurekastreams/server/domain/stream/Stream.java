@@ -21,6 +21,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.hibernate.validator.Length;
@@ -62,6 +63,18 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     @Basic(optional = false)
     @Length(min = 1, max = MAX_NAME_LENGTH, message = NAME_LENGTH_MESSAGE)
     private String name;
+
+    /**
+     * Owner entity ID.
+     */
+    @Transient
+    private Long ownerEntityId;
+
+    /**
+     * Owner avatar ID.
+     */
+    @Transient
+    private String ownerAvatarId;
 
     /**
      * Sets the name of the view.
@@ -136,6 +149,48 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     public void setId(final long inId)
     {
         super.setId(inId);
+    }
+
+    /**
+     * Get the owner avatar ID.
+     * 
+     * @return the owner avatar ID.
+     */
+    public String getOwnerAvatarId()
+    {
+        return ownerAvatarId;
+    }
+
+    /**
+     * Get the owner entity ID.
+     * 
+     * @return the owner entity ID.
+     */
+    public Long getOwnerEntityId()
+    {
+        return ownerEntityId;
+    }
+
+    /**
+     * Set the owner avatar id.
+     * 
+     * @param inOwnerAvatarId
+     *            the owner avatar id.
+     */
+    public void setOwnerAvatarId(final String inOwnerAvatarId)
+    {
+        ownerAvatarId = inOwnerAvatarId;
+    }
+
+    /**
+     * Set the owner entity id.
+     * 
+     * @param inEntityId
+     *            the owner entity id.
+     */
+    public void setOwnerEntityId(final long inEntityId)
+    {
+        ownerEntityId = inEntityId;
     }
 
 }

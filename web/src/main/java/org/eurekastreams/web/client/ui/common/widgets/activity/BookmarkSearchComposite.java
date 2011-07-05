@@ -95,7 +95,7 @@ public class BookmarkSearchComposite extends FlowPanel
 
         bookmarkTitle.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 if (getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive()))
                 {

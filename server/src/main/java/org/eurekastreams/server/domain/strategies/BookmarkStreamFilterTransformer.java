@@ -112,7 +112,8 @@ public class BookmarkStreamFilterTransformer implements Transformer<List<StreamS
                 final String request = "{\"query\":{\"recipient\":[{\"type\":\"PERSON\",\"name\":\""
                         + person.getAccountId() + "\"}]}}";
 
-                filters.add(new BookmarkFilter(person.getStreamId(), name, request));
+                filters.add(new BookmarkFilter(person.getStreamId(), name, request, person.getAvatarId(), person
+                        .getEntityId()));
             }
         }
 
@@ -124,7 +125,8 @@ public class BookmarkStreamFilterTransformer implements Transformer<List<StreamS
                 final String request = "{\"query\":{\"recipient\":[{\"type\":\"GROUP\",\"name\":\""
                         + group.getShortName() + "\"}]}}";
 
-                filters.add(new BookmarkFilter(group.getStreamId(), name, request));
+                filters.add(new BookmarkFilter(group.getStreamId(), name, request, group.getAvatarId(), group
+                        .getEntityId()));
             }
         }
 

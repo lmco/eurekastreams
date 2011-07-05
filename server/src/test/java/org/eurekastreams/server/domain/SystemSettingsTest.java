@@ -16,7 +16,6 @@
 package org.eurekastreams.server.domain;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.List;

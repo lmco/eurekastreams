@@ -43,6 +43,16 @@ public class BookmarkFilter implements StreamFilter, Serializable
     private Long id = 0L;
 
     /**
+     * Owner entity ID.
+     */
+    private Long ownerEntityId;
+
+    /**
+     * Owner avatar ID.
+     */
+    private String ownerAvatarId;
+
+    /**
      * Used for serialization.
      */
     private BookmarkFilter()
@@ -59,12 +69,19 @@ public class BookmarkFilter implements StreamFilter, Serializable
      *            the name.
      * @param inRequest
      *            the request.
+     * @param inOwnerAvatarId
+     *            the avatar ID.
+     * @param inEntityId
+     *            the entity ID.
      */
-    public BookmarkFilter(final Long inId, final String inName, final String inRequest)
+    public BookmarkFilter(final Long inId, final String inName, final String inRequest, final String inOwnerAvatarId,
+            final long inEntityId)
     {
         id = inId;
         name = inName;
         request = inRequest;
+        ownerAvatarId = inOwnerAvatarId;
+        ownerEntityId = inEntityId;
     }
 
     /**
@@ -128,5 +145,47 @@ public class BookmarkFilter implements StreamFilter, Serializable
     public void setId(final Long inId)
     {
         id = inId;
+    }
+
+    /**
+     * Get the owner avatar ID.
+     * 
+     * @return the owner avatar ID.
+     */
+    public String getOwnerAvatarId()
+    {
+        return ownerAvatarId;
+    }
+
+    /**
+     * Get the owner entity ID.
+     * 
+     * @return the owner entity ID.
+     */
+    public Long getOwnerEntityId()
+    {
+        return ownerEntityId;
+    }
+
+    /**
+     * Set the owner avatar id.
+     * 
+     * @param inOwnerAvatarId
+     *            the owner avatar id.
+     */
+    public void setOwnerAvatarId(final String inOwnerAvatarId)
+    {
+        ownerAvatarId = inOwnerAvatarId;
+    }
+
+    /**
+     * Set the owner entity id.
+     * 
+     * @param inEntityId
+     *            the owner entity id.
+     */
+    public void setOwnerEntityId(final long inEntityId)
+    {
+        ownerEntityId = inEntityId;
     }
 }

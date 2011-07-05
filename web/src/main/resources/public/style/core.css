@@ -1352,6 +1352,7 @@ body .terms-of-service-modal .agree-button-disabled {
 	position: relative;
 	top: 5px;
 	font-size: 12px;
+	display: block;
 }
 
 .terms-of-service-modal .confirm-checkbox input {

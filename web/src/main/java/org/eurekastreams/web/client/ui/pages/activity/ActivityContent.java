@@ -72,7 +72,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -132,6 +131,11 @@ public class ActivityContent extends Composite
          */
         String editCustomStream();
 
+        /**
+         * The stream name style.
+         * 
+         * @return the stream name style.
+         */
         String streamName();
     }
 
@@ -728,6 +732,8 @@ public class ActivityContent extends Composite
      *            the class for the modify button.
      * @param modifyText
      *            the text for the modify button.
+     * @param imgUrl
+     *            the img url.
      * @return the LI.
      */
     private Panel createPanel(final String name, final String view, final String imgUrl,
