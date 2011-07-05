@@ -71,18 +71,6 @@ public class SystemSettings extends DomainEntity implements Serializable
     public static final int MAX_CONTENT_EXPIRATION = 365;
 
     /**
-     * Max Support Phone Number Characters.
-     */
-    @Transient
-    public static final int MAX_SUPPORT_PHONE_NUMBER_LENGTH = 50;
-
-    /**
-     * Max Support Email Address Characters.
-     */
-    @Transient
-    public static final int MAX_SUPPORT_EMAIL_ADDRESS_LENGTH = 50;
-
-    /**
      * Storage for the siteLabel.
      */
     @Basic(optional = true)
@@ -143,29 +131,6 @@ public class SystemSettings extends DomainEntity implements Serializable
      * Waring message for Plugins.
      */
     private String pluginWarning;
-
-    /**
-     * The short name of the group stream that provides help to users.
-     */
-    private String supportStreamGroupShortName;
-
-    /**
-     * The display name of the support group stream.
-     */
-    @Transient
-    private String supportStreamGroupDisplayName;
-
-    /**
-     * The stream support phone number.
-     */
-    @Length(max = MAX_SUPPORT_PHONE_NUMBER_LENGTH)
-    private String supportPhoneNumber;
-
-    /**
-     * The stream support email address.
-     */
-    @Length(max = MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
-    private String supportEmailAddress;
 
     /**
      * HTML content template used on the site labeling line of the header.
@@ -326,86 +291,6 @@ public class SystemSettings extends DomainEntity implements Serializable
     public String getPluginWarning()
     {
         return pluginWarning;
-    }
-
-    /**
-     * Get the phone number for system support.
-     * 
-     * @return the phone number for system support
-     */
-    public String getSupportPhoneNumber()
-    {
-        return supportPhoneNumber;
-    }
-
-    /**
-     * Set the phone number for system support.
-     * 
-     * @param inSupportPhoneNumber
-     *            the phone number for system support
-     */
-    public void setSupportPhoneNumber(final String inSupportPhoneNumber)
-    {
-        supportPhoneNumber = inSupportPhoneNumber;
-    }
-
-    /**
-     * Get the email address for system support.
-     * 
-     * @return the email address for system support
-     */
-    public String getSupportEmailAddress()
-    {
-        return supportEmailAddress;
-    }
-
-    /**
-     * Set the email address for system support.
-     * 
-     * @param inSupportEmailAddress
-     *            the email address for system support
-     */
-    public void setSupportEmailAddress(final String inSupportEmailAddress)
-    {
-        supportEmailAddress = inSupportEmailAddress;
-    }
-
-    /**
-     * Get the short name of the group stream that provides help to users.
-     * 
-     * @return the short name of the group stream that provides help to users
-     */
-    public String getSupportStreamGroupShortName()
-    {
-        return supportStreamGroupShortName;
-    }
-
-    /**
-     * Set the short name of the group stream that provides help to users.
-     * 
-     * @param inSupportStreamGroupShortName
-     *            the short name of the group stream that provides help to users
-     */
-    public void setSupportStreamGroupShortName(final String inSupportStreamGroupShortName)
-    {
-        supportStreamGroupShortName = inSupportStreamGroupShortName;
-    }
-
-    /**
-     * @param inSupportStreamGroupDisplayName
-     *            the supportStreamGroupDisplayName to set
-     */
-    public void setSupportStreamGroupDisplayName(final String inSupportStreamGroupDisplayName)
-    {
-        supportStreamGroupDisplayName = inSupportStreamGroupDisplayName;
-    }
-
-    /**
-     * @return the supportStreamGroupDisplayName
-     */
-    public String getSupportStreamGroupDisplayName()
-    {
-        return supportStreamGroupDisplayName;
     }
 
     /**

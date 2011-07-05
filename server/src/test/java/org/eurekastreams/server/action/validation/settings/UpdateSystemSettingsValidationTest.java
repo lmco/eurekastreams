@@ -28,8 +28,6 @@ import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -51,11 +49,6 @@ public class UpdateSystemSettingsValidationTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    /**
-     * mapper to get group by short name.
-     */
-    private GetDomainGroupsByShortNames getGroupsByShortNamesMapper = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
      * Mapper to get people by ids.
@@ -106,8 +99,7 @@ public class UpdateSystemSettingsValidationTest
     /**
      * {@link UpdateSystemSettingsValidation} system under test.
      */
-    private UpdateSystemSettingsValidation sut = new UpdateSystemSettingsValidation(getGroupsByShortNamesMapper,
-            peopleByIdsMapper);
+    private UpdateSystemSettingsValidation sut = new UpdateSystemSettingsValidation(peopleByIdsMapper);
 
     /**
      * Setup method.
@@ -153,7 +145,6 @@ public class UpdateSystemSettingsValidationTest
         formData.put("siteLabel", "sl");
         formData.put("contentWarningText", "cw");
         formData.put("streamViewId", 9L);
-        formData.put("supportStreamGroupShortName", "abcdefg");
 
         formData.put("admins", admins);
 
@@ -170,9 +161,6 @@ public class UpdateSystemSettingsValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getGroupsByShortNamesMapper).fetchUniqueResult("abcdefg");
-                will(returnValue(new DomainGroupModelView()));
-
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
 
@@ -195,8 +183,6 @@ public class UpdateSystemSettingsValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getGroupsByShortNamesMapper).fetchUniqueResult("abcdefg");
-                will(returnValue(new DomainGroupModelView()));
 
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
@@ -234,9 +220,6 @@ public class UpdateSystemSettingsValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getGroupsByShortNamesMapper).fetchUniqueResult("abcdefg");
-                will(returnValue(new DomainGroupModelView()));
-
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
 
@@ -271,9 +254,6 @@ public class UpdateSystemSettingsValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getGroupsByShortNamesMapper).fetchUniqueResult("abcdefg");
-                will(returnValue(new DomainGroupModelView()));
-
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
 
@@ -308,9 +288,6 @@ public class UpdateSystemSettingsValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getGroupsByShortNamesMapper).fetchUniqueResult("abcdefg");
-                will(returnValue(new DomainGroupModelView()));
-
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
 
@@ -334,89 +311,6 @@ public class UpdateSystemSettingsValidationTest
             throw ve;
         }
 
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test validateParams() with bad support group short name.
-     */
-    @Test(expected = ValidationException.class)
-    public void validateParamsWithInvalidSupportGroupShortName()
-    {
-        final HashMap<String, Serializable> formData = getSuccessMap();
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(getGroupsByShortNamesMapper).fetchUniqueResult("abcdefg");
-                will(returnValue(null));
-
-                allowing(actionContext).getParams();
-                will(returnValue(formData));
-
-                oneOf(peopleByIdsMapper).execute(with(IsEqualInternally.equalInternally(adminIds)));
-                will(returnValue(adminModelViews));
-            }
-        });
-
-        try
-        {
-            sut.validate(actionContext);
-        }
-        catch (ValidationException ve)
-        {
-            context.assertIsSatisfied();
-            assertTrue(ve.getErrors().containsKey("supportStreamGroupShortName"));
-            throw ve;
-        }
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test validateParams() with empty support group short name (valid).
-     */
-    @Test()
-    public void validateParamsWithEmptySupportGroupShortName()
-    {
-        final HashMap<String, Serializable> formData = getSuccessMap();
-        formData.put("supportStreamGroupShortName", "");
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(actionContext).getParams();
-                will(returnValue(formData));
-
-                oneOf(peopleByIdsMapper).execute(with(IsEqualInternally.equalInternally(adminIds)));
-                will(returnValue(adminModelViews));
-            }
-        });
-
-        sut.validate(actionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test validateParams() with null support group short name (valid).
-     */
-    @Test()
-    public void validateParamsWithNullSupportGroupShortName()
-    {
-        final HashMap<String, Serializable> formData = getSuccessMap();
-        formData.put("supportStreamGroupShortName", null);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(actionContext).getParams();
-                will(returnValue(formData));
-
-                oneOf(peopleByIdsMapper).execute(with(IsEqualInternally.equalInternally(adminIds)));
-                will(returnValue(adminModelViews));
-            }
-        });
-
-        sut.validate(actionContext);
         context.assertIsSatisfied();
     }
 
@@ -482,7 +376,6 @@ public class UpdateSystemSettingsValidationTest
     public void validateParamsMoreBadData()
     {
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
-        formData.put("supportEmailAddress", "notvalid");
         formData.put("contentExpiration", -1);
         formData.put("tosPromptInterval", 0);
 
@@ -501,7 +394,6 @@ public class UpdateSystemSettingsValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertTrue(ve.getErrors().containsKey("supportEmailAddress"));
             assertTrue(ve.getErrors().containsKey("contentExpiration"));
             assertTrue(ve.getErrors().containsKey("tosPromptInterval"));
             throw ve;
@@ -577,8 +469,6 @@ public class UpdateSystemSettingsValidationTest
         formData.put("siteLabel", over2000Chars);
         formData.put("contentWarningText", over255Chars);
         formData.put("termsOfService", over1000Chars);
-        formData.put("supportPhoneNumber", over50Chars);
-        formData.put("supportEmailAddress", over50Chars);
 
         context.checking(new Expectations()
         {
@@ -597,8 +487,6 @@ public class UpdateSystemSettingsValidationTest
             context.assertIsSatisfied();
             assertTrue(ve.getErrors().containsKey("siteLabel"));
             assertTrue(ve.getErrors().containsKey("contentWarningText"));
-            assertTrue(ve.getErrors().containsKey("supportPhoneNumber"));
-            assertTrue(ve.getErrors().containsKey("supportEmailAddress"));
             throw ve;
         }
     }

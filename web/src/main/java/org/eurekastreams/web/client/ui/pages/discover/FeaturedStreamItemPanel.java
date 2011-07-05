@@ -15,15 +15,14 @@
  */
 package org.eurekastreams.web.client.ui.pages.discover;
 
-import java.util.Date;
-
-import org.eurekastreams.commons.formatting.DateFormatter;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.dto.StreamDTO;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -35,49 +34,24 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * FlowPanel for the four simple lists of StreamDTOs on the Discover page.
+ * FlowPanel for the "Featured Streams" panel items.
  */
-public class DiscoverListItemPanel extends FlowPanel
+public class FeaturedStreamItemPanel extends FlowPanel
 {
-    /**
-     * The type subtext type to show under the name.
-     */
-    public enum ListItemType
-    {
-        /**
-         * Mutual follower(s).
-         */
-        MUTUAL_FOLLOWERS,
-
-        /**
-         * Daily viewer(s).
-         */
-        DAILY_VIEWERS,
-
-        /**
-         * Follower(s).
-         */
-        FOLLOWERS,
-
-        /**
-         * Formatted time ago.
-         */
-        TIME_AGO
-    };
-
     /**
      * Constructor.
      * 
-     * @param inStreamDTO
+     * @param inFeaturedStreamDTO
      *            the streamDTO to represent
-     * @param inListItemType
-     *            list item type
      */
-    public DiscoverListItemPanel(final StreamDTO inStreamDTO, final ListItemType inListItemType)
+    public FeaturedStreamItemPanel(final FeaturedStreamDTO inFeaturedStreamDTO)
     {
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
+
+        add(new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
+                inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
@@ -85,7 +59,7 @@ public class DiscoverListItemPanel extends FlowPanel
         Widget name;
 
         Page linkPage;
-        if (inStreamDTO instanceof PersonModelView)
+        if (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON)
         {
             linkPage = Page.PEOPLE;
         }
@@ -95,62 +69,20 @@ public class DiscoverListItemPanel extends FlowPanel
             linkPage = Page.GROUPS;
         }
         String nameUrl = Session.getInstance().generateUrl(//
-                new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
+                new CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId()));
 
-        name = new Hyperlink(inStreamDTO.getDisplayName(), nameUrl);
+        name = new Hyperlink(inFeaturedStreamDTO.getDisplayName(), nameUrl);
         name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
         infoPanel.add(name);
+        insertActionSeparator(infoPanel);
+        infoPanel.add(new Label(inFeaturedStreamDTO.getDescription()));
 
         FlowPanel followersPanel = new FlowPanel();
         followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
-        switch (inListItemType)
-        {
-        case MUTUAL_FOLLOWERS:
-            if (inStreamDTO.getFollowersCount() == 1)
-            {
-                followersPanel.add(new InlineLabel("1 Mutal Follower"));
-            }
-            else
-            {
-                followersPanel.add(new InlineLabel(Integer.toString(inStreamDTO.getFollowersCount())
-                        + " Mutal Followers"));
-            }
-            break;
-        case DAILY_VIEWERS:
-            if (inStreamDTO.getFollowersCount() == 1)
-            {
-                followersPanel.add(new InlineLabel("1 Daily Viewer"));
-            }
-            else
-            {
-                followersPanel.add(new InlineLabel(Integer.toString(inStreamDTO.getFollowersCount())
-                        + " Daily Viewers"));
-            }
-            break;
-        case FOLLOWERS:
-            if (inStreamDTO.getFollowersCount() == 1)
-            {
-                followersPanel.add(new InlineLabel("1 Follower"));
-            }
-            else
-            {
-                followersPanel.add(new InlineLabel(Integer.toString(inStreamDTO.getFollowersCount()) + " Followers"));
-            }
-            break;
-        case TIME_AGO:
-            DateFormatter dateFormatter = new DateFormatter(new Date());
-            InlineLabel dateAdded = new InlineLabel(dateFormatter.timeAgo(inStreamDTO.getDateAdded(), true));
-            dateAdded.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
-            followersPanel.add(dateAdded);
-
-            break;
-        default:
-            break;
-        }
         insertActionSeparator(followersPanel);
 
-        if (inStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
+        if (inFeaturedStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
         {
             followersPanel.add(new HTML("(FOLLOWING)"));
         }

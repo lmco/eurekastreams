@@ -120,7 +120,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     *
+     * 
      * @param inDiscoverLists
      *            the data to display
      */
@@ -144,8 +144,7 @@ public class DiscoverContent extends Composite
         {
             for (FeaturedStreamDTO featuredStream : inDiscoverLists.getFeaturedStreams())
             {
-                featuredStreamsPanel.add(new HTML(featuredStream.getDisplayName() + "("
-                        + featuredStream.getEntityType().toString() + ")<BR/>"));
+                featuredStreamsPanel.add(new FeaturedStreamItemPanel(featuredStream));
             }
         }
         if (inDiscoverLists.getMostActiveStreams() != null)
@@ -154,8 +153,7 @@ public class DiscoverContent extends Composite
                     + " streams"));
             for (StreamDTO stream : inDiscoverLists.getMostActiveStreams().getResultsSublist())
             {
-                mostActiveStreamsPanel.add(new HTML(stream.getDisplayName() + "(" + //
-                        stream.getEntityType().toString() + ")<BR/>"));
+                mostActiveStreamsPanel.add(new ActiveStreamsItemPanel(stream));
             }
         }
 

@@ -31,7 +31,6 @@ import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -103,28 +102,6 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
             + (SystemSettings.MIN_CONTENT_EXPIRATION + 1) + " and " + SystemSettings.MAX_CONTENT_EXPIRATION;
 
     /**
-     * Support Group Short Name Invalid Error Message.
-     */
-    public static final String SUPPORT_GROUP_NAME_INVALID_ERROR_MESSAGE = "Invalid support group";
-
-    /**
-     * Support Phone Number Length Error Message.
-     */
-    public static final String MAX_SUPPORT_PHONE_NUMBER_LENGTH_ERROR_MESSAGE = "Support Phone Number must be between "
-            + "1 and " + SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH + " characters";
-
-    /**
-     * Support Email Address Length Error Message.
-     */
-    public static final String MAX_SUPPORT_EMAIL_ADDRESS_LENGTH_ERROR_MESSAGE = "Support Email Address supports up to "
-            + SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH + " characters";
-
-    /**
-     * Support Email Address Invalid Format Error Message.
-     */
-    public static final String SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE = "Support Email Address is invalid";
-
-    /**
      * System administrators missing error message.
      */
     public static final String SYSTEM_ADMINISTRATORS_EMPTY_ERROR_MESSAGE = "At least one System "
@@ -143,11 +120,6 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     "At least one of the requested administrators is not found in the system: ";
 
     /**
-     * mapper to get group by short name.
-     */
-    private GetDomainGroupsByShortNames getGroupsByShortNamesMapper;
-
-    /**
      * Mapper to get people by ids.
      */
     private DomainMapper<List<Long>, List<PersonModelView>> peopleByIdsMapper;
@@ -155,15 +127,11 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     /**
      * Constructor.
      * 
-     * @param inGetGroupsByShortNamesMapper
-     *            the mapper to get domain group by short name
      * @param inPeopleByIdsMapper
      *            mapper to get people by ids
      */
-    public UpdateSystemSettingsValidation(final GetDomainGroupsByShortNames inGetGroupsByShortNamesMapper,
-            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleByIdsMapper)
+    public UpdateSystemSettingsValidation(final DomainMapper<List<Long>, List<PersonModelView>> inPeopleByIdsMapper)
     {
-        getGroupsByShortNamesMapper = inGetGroupsByShortNamesMapper;
         peopleByIdsMapper = inPeopleByIdsMapper;
     }
 
@@ -258,38 +226,6 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
                 && (Integer) fields.get("tosPromptInterval") < SystemSettings.MIN_TOS_PROMPT_INTERVAL)
         {
             ve.addError("tosPromptInterval", MIN_TOS_PROMPT_INTERVAL_ERROR_MESSAGE);
-        }
-
-        if (fields.containsKey("supportStreamGroupShortName") && fields.get("supportStreamGroupShortName") != null
-                && ((String) fields.get("supportStreamGroupShortName")).length() > 0)
-        {
-            // short name was passed in - make sure it exists
-            if (getGroupsByShortNamesMapper.fetchUniqueResult(
-            // line break
-                    (String) fields.get("supportStreamGroupShortName")) == null)
-            {
-                ve.addError("supportStreamGroupShortName", SUPPORT_GROUP_NAME_INVALID_ERROR_MESSAGE);
-            }
-        }
-
-        if (fields.containsKey("supportPhoneNumber") && fields.get("supportPhoneNumber") != null
-                && ((String) fields.get("supportPhoneNumber")).length() > //
-                SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
-        {
-            ve.addError("supportPhoneNumber", MAX_SUPPORT_PHONE_NUMBER_LENGTH_ERROR_MESSAGE);
-        }
-
-        if (fields.containsKey("supportEmailAddress") && fields.get("supportEmailAddress") != null
-                && ((String) fields.get("supportEmailAddress")).length() > //
-                SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
-        {
-            ve.addError("supportEmailAddress", MAX_SUPPORT_EMAIL_ADDRESS_LENGTH_ERROR_MESSAGE);
-        }
-        else if (fields.containsKey("supportEmailAddress") && fields.get("supportEmailAddress") != null
-                && ((String) fields.get("supportEmailAddress")).length() > 0
-                && !isValidEmailAddress(((String) fields.get("supportEmailAddress"))))
-        {
-            ve.addError("supportEmailAddress", SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE);
         }
 
         if (!fields.containsKey("admins") || fields.get("admins") == null

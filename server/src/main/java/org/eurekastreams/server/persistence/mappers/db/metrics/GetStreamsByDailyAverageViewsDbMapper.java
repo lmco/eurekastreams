@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
@@ -60,15 +61,20 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
     public List<StreamDTO> execute(final Serializable inIgnored)
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
-
-        // get the stream scope ids along with the counts
+        // to get an idea of how many views were generated in the window we have on the data, look at the max
+        // we've seen - just assume that's the most recent, then look at the minimum number we've seen - assume that's
+        // the earliest. Subtract the two for the delta, then divide by number of days.
+         
         Query q = getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId, "
-                        + "SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
+                        + "(MAX(totalStreamViewCount) - MIN(totalStreamViewCount))*86400000.0/"
+                        + "(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId "
-                        + "ORDER BY SUM(pageViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
-                .setParameter("nowInMS", new Date().getTime());
+                        + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) > 0 "
+                        + "ORDER BY (MAX(totalStreamViewCount) - MIN(totalStreamViewCount))*86400000.0"
+                        + "/(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) DESC").setParameter("nowInMS",
+                DateDayExtractor.getStartOfDay(new Date()).getTime());
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount);

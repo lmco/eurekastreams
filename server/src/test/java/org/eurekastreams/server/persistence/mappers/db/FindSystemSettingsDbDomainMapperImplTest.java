@@ -51,8 +51,6 @@ public class FindSystemSettingsDbDomainMapperImplTest extends MapperTest
         assertEquals("some content warning", settings.getContentWarningText());
         assertEquals(1, settings.getContentExpiration());
         assertTrue(settings.getSendWelcomeEmails());
-        assertEquals("group1", settings.getSupportStreamGroupShortName());
-        assertEquals("E Group 1 Name", settings.getSupportStreamGroupDisplayName());
         assertEquals("HeaderTemplate", settings.getHeaderTemplate());
         assertEquals("FooterTemplate", settings.getFooterTemplate());
     }

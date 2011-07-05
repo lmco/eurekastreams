@@ -179,4 +179,34 @@ public class FollowerStatusPopulatorTest
 
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test following self doesn't show as such.
+     */
+    @Test
+    public void testFollowingSelfDoesntShowFollowing()
+    {
+        final List<Long> idList = new ArrayList<Long>(Arrays.asList(1L, 2L, 3L, currentUserId));
+        final List<FollowerStatusable> fsList = new ArrayList<FollowerStatusable>(Arrays.asList(fs1));
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(fs1).getEntityType();
+                will(returnValue(EntityType.PERSON));
+
+                oneOf(personIdsFollowedByPrincipalMapper).execute(currentUserId);
+                will(returnValue(idList));
+
+                oneOf(fs1).getEntityId();
+                will(returnValue(currentUserId));
+
+                oneOf(fs1).setFollowerStatus(FollowerStatus.NOTFOLLOWING);
+            }
+        });
+
+        sut.execute(currentUserId, fsList, FollowerStatus.DISABLED);
+
+        context.assertIsSatisfied();
+    }
 }

@@ -8,7 +8,8 @@
 	<ui:image field="followBtn" src="style/images/followBtn.png" />
 	<ui:image field="followBtnHover" src="style/images/followBtnHover.png" />
 
-	<ui:image field="unFollowBtn" src="style/images/stopFollowBtn.png" />
+	<ui:image field="unFollowBtn" src="style/images/following.png" />
+	<ui:image field="unFollowBtnHover" src="style/images/unfollow.png" />
 
 	<ui:image field="everyoneHeader" src="style/images/everyoneHeader.png" />
 	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
@@ -113,13 +114,19 @@
 
 		@sprite .unFollowLink:hover
 		{
-		gwt-image: "unFollowBtn";
+		gwt-image: "unFollowBtnHover";
 		}
 		
 		.configureLink
 		{
-		display: block;		
-		margin-top: 10px;
+    	background-image: url("style/images/configureHeaderIcon.png");
+    	background-repeat: no-repeat;
+    	bottom: 10px;
+    	display: block;
+    	height: 18px;
+    	padding-left: 21px;
+    	position: absolute;
+    	right: 155px;
 		}
 
 		.condensedStream .toggle-details-link, .condensedStream .follow-info-container,
@@ -161,6 +168,7 @@
 		float: left;
 		margin-left: 20px;
 		margin: 10px;
+		width: 430px;
 		}
 
 		.follow-info-container

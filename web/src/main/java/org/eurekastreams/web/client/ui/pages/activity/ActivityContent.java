@@ -16,8 +16,10 @@
 package org.eurekastreams.web.client.ui.pages.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
@@ -72,11 +74,12 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -115,6 +118,27 @@ public class ActivityContent extends Composite
          * @return Stream options child.
          */
         String streamOptionChild();
+
+        /**
+         * Delete bookmark.
+         * 
+         * @return delete bookmark.
+         */
+        String deleteBookmark();
+
+        /**
+         * Edit custom stream.
+         * 
+         * @return edit custom stream.
+         */
+        String editCustomStream();
+
+        /**
+         * The stream name style.
+         * 
+         * @return the stream name style.
+         */
+        String streamName();
     }
 
     /**
@@ -157,19 +181,19 @@ public class ActivityContent extends Composite
      * UI element for recent sort.
      */
     @UiField
-    Anchor recentSort;
+    Hyperlink recentSort;
 
     /**
      * UI element for popular sort.
      */
     @UiField
-    Anchor popularSort;
+    Hyperlink popularSort;
 
     /**
      * UI element for active sort.
      */
     @UiField
-    Anchor activeSort;
+    Hyperlink activeSort;
 
     /**
      * UI element for activity loading spinner.
@@ -243,6 +267,16 @@ public class ActivityContent extends Composite
     private static final int NEW_ACTIVITY_POLLING_DELAY = 1200000;
 
     /**
+     * Custom streams map.
+     */
+    private HashMap<Long, Panel> customStreamWidgetMap = new HashMap<Long, Panel>();
+
+    /**
+     * Stream bookmarks map.
+     */
+    private HashMap<String, Panel> bookmarksWidgetMap = new HashMap<String, Panel>();
+
+    /**
      * Default constructor.
      */
     public ActivityContent()
@@ -258,9 +292,10 @@ public class ActivityContent extends Composite
     {
         addEventHandlers();
         addObservers();
+        setupStreamsAndBookmarks();
 
-        defaultList.add(createPanel("Following", "following", null));
-        defaultList.add(createPanel("Everyone", "everyone", null));
+        defaultList.add(createPanel("Following", "following", "style/images/customStream.png", null, "", ""));
+        defaultList.add(createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", ""));
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -353,32 +388,6 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
-                new Observer<GotCurrentUserCustomStreamsResponseEvent>()
-                {
-                    public void update(final GotCurrentUserCustomStreamsResponseEvent event)
-                    {
-                        filterList.clear();
-                        for (final StreamFilter filter : event.getResponse().getStreamFilters())
-                        {
-                            filterList.add(createPanel(filter.getName(), "custom/"
-                                    + filter.getId()
-                                    + "/"
-                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                            Session.getInstance().getCurrentPerson().getAccountId()),
-                                    new ClickHandler()
-                                    {
-
-                                        public void onClick(final ClickEvent event)
-                                        {
-                                            Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
-                                            event.stopPropagation();
-                                        }
-                                    }));
-                        }
-                    }
-                });
-
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
             public void update(final HistoryViewsChangedEvent event)
@@ -393,69 +402,19 @@ public class ActivityContent extends Composite
                 }
 
                 views.set(views.size() - 1, "recent");
-                recentSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+                recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                        new CreateUrlRequest(Page.ACTIVITY, views)));
 
                 views.set(views.size() - 1, "popular");
-                popularSort
-                        .setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+                popularSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                        new CreateUrlRequest(Page.ACTIVITY, views)));
 
                 views.set(views.size() - 1, "active");
-                activeSort.setHref("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+                activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                        new CreateUrlRequest(Page.ACTIVITY, views)));
 
             }
         }, true);
-
-        EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
-                new Observer<GotCurrentUserStreamBookmarks>()
-                {
-                    public void update(final GotCurrentUserStreamBookmarks event)
-                    {
-                        bookmarkList.clear();
-                        bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(),
-                                "person/" + Session.getInstance().getCurrentPerson().getAccountId(), null));
-
-                        for (final StreamFilter filter : event.getResponse())
-                        {
-                            JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
-                            String uniqueId = null;
-                            String entityType = null;
-
-                            if (req.containsKey("query"))
-                            {
-                                JSONObject query = req.get("query").isObject();
-                                if (query.containsKey(StreamJsonRequestFactory.RECIPIENT_KEY))
-                                {
-                                    JSONArray recipient = query.get(StreamJsonRequestFactory.RECIPIENT_KEY).isArray();
-                                    if (recipient.size() > 0)
-                                    {
-                                        JSONObject recipientObj = recipient.get(0).isObject();
-                                        uniqueId = recipientObj.get("name").isString().stringValue();
-                                        entityType = recipientObj.get("type").isString().stringValue().toLowerCase();
-                                    }
-                                }
-
-                            }
-
-                            if (uniqueId != null && entityType != null)
-                            {
-                                bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId,
-                                        new ClickHandler()
-                                        {
-                                            public void onClick(final ClickEvent event)
-                                            {
-                                                if (new WidgetJSNIFacadeImpl()
-                                                        .confirm("Are you sure you want to delete this bookmark?"))
-                                                {
-                                                    StreamBookmarksModel.getInstance().delete(filter.getId());
-                                                }
-
-                                                event.stopPropagation();
-                                            }
-                                        }));
-                            }
-                        }
-                    }
-                });
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
@@ -484,6 +443,128 @@ public class ActivityContent extends Composite
                     }
                 });
 
+    }
+
+    /**
+     * Setup bookmarks and custom streams.
+     */
+    private void setupStreamsAndBookmarks()
+    {
+        EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
+
+        new Observer<GotCurrentUserStreamBookmarks>()
+        {
+            private AvatarUrlGenerator groupUrlGen = new AvatarUrlGenerator(EntityType.GROUP);
+            private AvatarUrlGenerator personUrlGen = new AvatarUrlGenerator(EntityType.PERSON);
+
+            public void update(final GotCurrentUserStreamBookmarks event)
+            {
+                bookmarkList.clear();
+                bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
+                        + Session.getInstance().getCurrentPerson().getAccountId(), personUrlGen.getSmallAvatarUrl(
+                        Session.getInstance().getCurrentPerson().getEntityId(), Session.getInstance()
+                                .getCurrentPerson().getAvatarId()), null, "", ""));
+
+                for (final StreamFilter filter : event.getResponse())
+                {
+                    JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
+                    String uniqueId = null;
+                    String entityType = null;
+
+                    String imgUrl = "";
+
+                    if (req.containsKey("query"))
+                    {
+                        JSONObject query = req.get("query").isObject();
+                        if (query.containsKey(StreamJsonRequestFactory.RECIPIENT_KEY))
+                        {
+                            JSONArray recipient = query.get(StreamJsonRequestFactory.RECIPIENT_KEY).isArray();
+                            if (recipient.size() > 0)
+                            {
+                                JSONObject recipientObj = recipient.get(0).isObject();
+                                uniqueId = recipientObj.get("name").isString().stringValue();
+                                entityType = recipientObj.get("type").isString().stringValue().toLowerCase();
+
+                                AvatarUrlGenerator urlGen = groupUrlGen;
+
+                                if ("person".equals(entityType))
+                                {
+                                    urlGen = personUrlGen;
+                                }
+
+                                imgUrl = urlGen.getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
+
+                            }
+                        }
+
+                    }
+
+                    if (uniqueId != null && entityType != null)
+                    {
+                        bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId, imgUrl,
+                                new ClickHandler()
+                                {
+                                    public void onClick(final ClickEvent event)
+                                    {
+                                        if (new WidgetJSNIFacadeImpl()
+                                                .confirm("Are you sure you want to delete this bookmark?"))
+                                        {
+                                            StreamBookmarksModel.getInstance().delete(filter.getId());
+                                        }
+
+                                        event.stopPropagation();
+                                    }
+                                }, style.deleteBookmark(), ""));
+                    }
+                }
+            }
+        });
+
+        EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
+                new Observer<GotCurrentUserCustomStreamsResponseEvent>()
+                {
+                    public void update(final GotCurrentUserCustomStreamsResponseEvent event)
+                    {
+                        filterList.clear();
+                        customStreamWidgetMap.clear();
+
+                        Panel savedBy = createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
+                                "style/images/customStream.png", null, "", "");
+
+                        filterList.add(savedBy);
+                        customStreamWidgetMap.put(0L, savedBy);
+
+                        Panel likedBy = createPanel("My Liked Items", "custom/1/"
+                                + "{\"query\":{\"likedBy\":[{\"type\":\"PERSON\", \"name\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}",
+                                "style/images/customStream.png", null, "", "");
+
+                        filterList.add(likedBy);
+                        customStreamWidgetMap.put(1L, likedBy);
+
+                        for (final StreamFilter filter : event.getResponse().getStreamFilters())
+                        {
+                            Panel filterPanel = createPanel(filter.getName(), "custom/"
+                                    + filter.getId()
+                                    + "/"
+                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                            Session.getInstance().getCurrentPerson().getAccountId()),
+                                    "style/images/customStream.png", new ClickHandler()
+                                    {
+
+                                        public void onClick(final ClickEvent event)
+                                        {
+                                            Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
+                                            event.stopPropagation();
+                                        }
+                                    }, style.editCustomStream(), "edit");
+
+                            filterList.add(filterPanel);
+                            customStreamWidgetMap.put(filter.getId(), filterPanel);
+                        }
+                    }
+                });
     }
 
     /**
@@ -625,6 +706,7 @@ public class ActivityContent extends Composite
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
+            customStreamWidgetMap.get(views.get(1)).addStyleName(style.activeStream());
             currentStream.setScopeType(null);
         }
         else if (views.get(0).equals("everyone"))
@@ -703,9 +785,16 @@ public class ActivityContent extends Composite
      *            the history token to load.
      * @param modifyClickHandler
      *            click handler for modify.
+     * @param modifyClass
+     *            the class for the modify button.
+     * @param modifyText
+     *            the text for the modify button.
+     * @param imgUrl
+     *            the img url.
      * @return the LI.
      */
-    private Panel createPanel(final String name, final String view, final ClickHandler modifyClickHandler)
+    private Panel createPanel(final String name, final String view, final String imgUrl,
+            final ClickHandler modifyClickHandler, final String modifyClass, final String modifyText)
     {
         FocusPanel panel = new FocusPanel();
         panel.addStyleName(style.streamOptionChild());
@@ -718,11 +807,17 @@ public class ActivityContent extends Composite
         });
 
         FlowPanel innerPanel = new FlowPanel();
-        innerPanel.add(new Label(name));
+
+        innerPanel.add(new Image(imgUrl));
+
+        Label streamName = new Label(name);
+        streamName.addStyleName(style.streamName());
+        innerPanel.add(streamName);
 
         if (modifyClickHandler != null)
         {
-            Label modifyLink = new Label("X");
+            Label modifyLink = new Label(modifyText);
+            modifyLink.addStyleName(modifyClass);
             modifyLink.addClickHandler(modifyClickHandler);
             innerPanel.add(modifyLink);
         }

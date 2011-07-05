@@ -15,35 +15,64 @@
  */
 package org.eurekastreams.server.domain.stream;
 
-
 /**
- * Interface to use for Stream objects (e.g. StreamSearch, StreamView)
- * so they can be handled the same by client side.
- *
+ * Interface to use for Stream objects (e.g. StreamSearch, StreamView) so they can be handled the same by client side.
+ * 
  */
 public interface StreamFilter
 {
     /**
-     * Return the  name of the object.
-     * @return The name of the object. 
+     * Return the name of the object.
+     * 
+     * @return The name of the object.
      */
     String getName();
-    
+
     /**
      * Set the name of the StreamFilter.
-     * @param inName The name of the StreamFilter.
+     * 
+     * @param inName
+     *            The name of the StreamFilter.
      */
     void setName(String inName);
-    
+
     /**
      * Return the request.
+     * 
      * @return the request.
      */
     String getRequest();
-    
+
     /**
      * Get the id of the StreamFilter.
+     * 
      * @return the id.
      */
     long getId();
+
+    /**
+     * Get the avatar ID.
+     * 
+     * @return avatar ID.
+     */
+    String getOwnerAvatarId();
+
+    /**
+     * Get the entity ID.
+     * 
+     * @return entity ID.
+     */
+    Long getOwnerEntityId();
+    
+    /**
+     * Set the owner avatar id.
+     * @param inOwnerAvatarId the owner avatar id.
+     */
+    void setOwnerAvatarId(final String inOwnerAvatarId);
+
+    /**
+     * Set the owner entity id.
+     * @param inEntityId the owner entity id.
+     */
+    void setOwnerEntityId(final long inEntityId);
 }

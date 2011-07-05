@@ -1352,6 +1352,7 @@ body .terms-of-service-modal .agree-button-disabled {
 	position: relative;
 	top: 5px;
 	font-size: 12px;
+	display: block;
 }
 
 .terms-of-service-modal .confirm-checkbox input {
@@ -1505,14 +1506,20 @@ body .post-expanded-panel .content-warning {
 
 body .bookmarkSearch
 {
-	background-image: url("style/images/bookmarkGradient.png");
-   	background-repeat: repeat-x;
-   	background-color: #c0c0c0;
    	clear: left;
    	margin-left: 10px;
     padding-left: 0;
     width: 220px;
     overflow: hidden;
+    margin-bottom: 10px;
+}
+
+body .bookmarkSearchActive
+{
+	background-image: url("style/images/bookmarkGradient.png");
+   	background-repeat: repeat-x;
+   	background-color: #c0c0c0;
+    padding-bottom: 10px;
 }
 
 body .bookmarkSearch input {
@@ -1520,14 +1527,27 @@ body .bookmarkSearch input {
     border-width: 0;
     color: black;
     padding: 3px 22px;
-    width: 149px;
+    width: 150px;
     background-color: transparent;
+    margin-left: 10px;
+    display: none;
+}
+
+body .bookmarkSearchActive input {
+	display: block;
 }
 
 .bookmarkSearch .searchResultsAutocompleteResults
 {
 	border-width: 0;
 	background-color: #c0c0c0;
+}
+
+.bookmarkSearch  > .gwt-Label
+{
+	text-align: right;
+	padding: 5px;
+	cursor: pointer;
 }
 
 .bookmarkSearch .searchResultsAutocompleteResults > div > div:hover
@@ -7577,6 +7597,15 @@ body div.eureka-connect-liked-activity-wrapper {
 	visibility: hidden;
 }
 
+	
+@if user.agent ie6 ie8 { 
+	.searchResultsAutocompleteResults
+	{
+		margin-left: -235px;
+		zoom: 1;
+	}	
+}
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 IE SPECIFIC CSS.
@@ -8451,13 +8480,7 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
-	
-	.searchResultsAutocompleteResults
-	{
-		margin-left: -235px;
-		zoom: 1;
-	}
-	
+
 	
 	.modal-content-panel .form-container>a.form-submit-button {
 		z-index: 100;

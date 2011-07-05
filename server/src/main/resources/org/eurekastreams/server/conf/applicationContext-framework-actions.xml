@@ -831,7 +831,6 @@
     <bean id="updateSystemSettings" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.settings.UpdateSystemSettingsValidation">
-                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>

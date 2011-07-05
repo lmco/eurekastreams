@@ -49,7 +49,7 @@ public class GroupStreamDTO implements Serializable, StreamFilter
 
     /**
      * Constructor.
-     *
+     * 
      * @param inId
      *            the id to set.
      * @param inName
@@ -145,10 +145,55 @@ public class GroupStreamDTO implements Serializable, StreamFilter
         isPostable = inIsPostable;
     }
 
-    @Override
+    /**
+     * Does nothing.
+     * 
+     * @return null.
+     */
     public String getRequest()
     {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * Does nothing.
+     * 
+     * @return null.
+     */
+    public String getOwnerAvatarId()
+    {
+        return null;
+    }
+
+    /**
+     * Does nothing.
+     * 
+     * @return null.
+     */
+    public Long getOwnerEntityId()
+    {
+        return null;
+    }
+
+    /**
+     * Does nothing.
+     * 
+     * @param inOwnerAvatarId
+     *            the owner avatar id.
+     */
+    public void setOwnerAvatarId(final String inOwnerAvatarId)
+    {
+
+    }
+
+    /**
+     * Does nothing.
+     * 
+     * @param inEntityId
+     *            the owner entity id.
+     */
+    public void setOwnerEntityId(final long inEntityId)
+    {
+        
     }
 }

@@ -35,7 +35,7 @@
 		
 		.post-options
 		{
-			overflow: hidden;
+			overflow: visible;
 			display: none;
 		}
 		
@@ -44,21 +44,40 @@
 			float: right;
 			cursor: pointer;
 			gwt-image: "postActive";
+			position: relative;
+			right: -11px;
+			margin-top: 10px;
 		}
 		
-		@sprite .post-button-inactive
+		@sprite body .postButtonInactive
 		{
 			gwt-image: "postInactive";
 		}
 		
 		.post-char-count
 		{
-			float: right;
+			color: #666666;
+    		float: right;
+    		font-size: 16px;
+    		font-weight: bold;
+    		margin-top: 20px;
+		}
+		
+		body .postCharCountOverLimit
+		{
+			color: red;
 		}
 		
 		body .visiblePostBox
 		{
 			display: block;
+		}
+		
+		body .visiblePostBox > div:first-child
+		{
+			float: left;
+			margin-right: 0;
+    		width: 500px;
 		}		
 		
 		.person-avatar

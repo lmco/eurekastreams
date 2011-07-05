@@ -93,6 +93,21 @@ public class BookmarkSearchComposite extends FlowPanel
         add(resultsPanelContainer);
         resultsPanelContainer.add(resultsPanel);
 
+        bookmarkTitle.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                if (getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive()))
+                {
+                    removeStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive());
+                }
+                else
+                {
+                    addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive());
+                }
+            }
+        });
+
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         searchTerm.addKeyUpHandler(new KeyUpHandler()

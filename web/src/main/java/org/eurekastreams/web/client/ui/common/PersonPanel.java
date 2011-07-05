@@ -172,38 +172,42 @@ public class PersonPanel extends FlowPanel
     private Widget getFollowWidget(final PersonModelView person)
     {
         FollowerStatus status = person.getFollowerStatus();
-
         FlowPanel followPanel = new FlowPanel();
 
-        final Label followingLabel = new Label("Following");
-        followingLabel.setVisible(false);
-        followPanel.add(followingLabel);
-
-        switch (status)
+        if (status != null)
         {
-        case FOLLOWING:
-            followingLabel.setVisible(true);
-            break;
-        case NOTFOLLOWING:
-            final Label followLink = new Label("Follow");
-            followLink.addClickHandler(new ClickHandler()
-            {
-                public void onClick(final ClickEvent event)
-                {
-                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
-                            .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
-                            Follower.FollowerStatus.FOLLOWING);
-                    ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
-                    followLink.removeFromParent();
-                    followingLabel.setVisible(true);
-                }
-            });
-            followPanel.add(followLink);
-            break;
-        default:
-            break;
-        }
 
+
+            final Label followingLabel = new Label("Following");
+            followingLabel.setVisible(false);
+            followPanel.add(followingLabel);
+
+            switch (status)
+            {
+            case FOLLOWING:
+                followingLabel.setVisible(true);
+                break;
+            case NOTFOLLOWING:
+                final Label followLink = new Label("Follow");
+                followLink.addClickHandler(new ClickHandler()
+                {
+                    public void onClick(final ClickEvent event)
+                    {
+                        SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
+                                .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
+                                Follower.FollowerStatus.FOLLOWING);
+                        ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
+                        followLink.removeFromParent();
+                        followingLabel.setVisible(true);
+                    }
+                });
+                followPanel.add(followLink);
+                break;
+            default:
+                break;
+            }
+        }
+        
         return followPanel;
     }
 

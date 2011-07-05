@@ -63,16 +63,6 @@ public class FindSystemSettingsDbDomainMapperImpl extends ReadMapper<MapperReque
         Query q = getEntityManager().createQuery("from SystemSettings");
         SystemSettings settings = (SystemSettings) q.getSingleResult();
 
-        String groupShortName = settings.getSupportStreamGroupShortName();
-
-        if (groupShortName != null && !groupShortName.isEmpty())
-        {
-            q = getEntityManager().createQuery("select name from DomainGroup where shortName = :shortName")
-                    .setParameter("shortName", groupShortName);
-            String groupName = (String) q.getSingleResult();
-            settings.setSupportStreamGroupDisplayName(groupName);
-        }
-
         settings.setHeaderTemplate(headerTemplate);
         settings.setFooterTemplate(footerTemplate);
 
