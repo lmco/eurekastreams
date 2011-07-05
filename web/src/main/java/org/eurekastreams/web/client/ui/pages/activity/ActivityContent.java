@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.pages.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
@@ -430,57 +431,74 @@ public class ActivityContent extends Composite
         }, true);
 
         EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
-                new Observer<GotCurrentUserStreamBookmarks>()
+
+        new Observer<GotCurrentUserStreamBookmarks>()
+        {
+            private AvatarUrlGenerator groupUrlGen = new AvatarUrlGenerator(EntityType.GROUP);
+            private AvatarUrlGenerator personUrlGen = new AvatarUrlGenerator(EntityType.PERSON);
+
+            public void update(final GotCurrentUserStreamBookmarks event)
+            {
+                bookmarkList.clear();
+                bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
+                        + Session.getInstance().getCurrentPerson().getAccountId(), personUrlGen.getSmallAvatarUrl(
+                        Session.getInstance().getCurrentPerson().getEntityId(), Session.getInstance()
+                                .getCurrentPerson().getAvatarId()), null, "", ""));
+
+                for (final StreamFilter filter : event.getResponse())
                 {
-                    public void update(final GotCurrentUserStreamBookmarks event)
+                    JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
+                    String uniqueId = null;
+                    String entityType = null;
+
+                    String imgUrl = "";
+
+                    if (req.containsKey("query"))
                     {
-                        bookmarkList.clear();
-                        bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(),
-                                "person/" + Session.getInstance().getCurrentPerson().getAccountId(),
-                                "style/images/customStream.png", null, "", ""));
-
-                        for (final StreamFilter filter : event.getResponse())
+                        JSONObject query = req.get("query").isObject();
+                        if (query.containsKey(StreamJsonRequestFactory.RECIPIENT_KEY))
                         {
-                            JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
-                            String uniqueId = null;
-                            String entityType = null;
-
-                            if (req.containsKey("query"))
+                            JSONArray recipient = query.get(StreamJsonRequestFactory.RECIPIENT_KEY).isArray();
+                            if (recipient.size() > 0)
                             {
-                                JSONObject query = req.get("query").isObject();
-                                if (query.containsKey(StreamJsonRequestFactory.RECIPIENT_KEY))
+                                JSONObject recipientObj = recipient.get(0).isObject();
+                                uniqueId = recipientObj.get("name").isString().stringValue();
+                                entityType = recipientObj.get("type").isString().stringValue().toLowerCase();
+
+                                AvatarUrlGenerator urlGen = groupUrlGen;
+
+                                if ("person".equals(entityType))
                                 {
-                                    JSONArray recipient = query.get(StreamJsonRequestFactory.RECIPIENT_KEY).isArray();
-                                    if (recipient.size() > 0)
-                                    {
-                                        JSONObject recipientObj = recipient.get(0).isObject();
-                                        uniqueId = recipientObj.get("name").isString().stringValue();
-                                        entityType = recipientObj.get("type").isString().stringValue().toLowerCase();
-                                    }
+                                    urlGen = personUrlGen;
                                 }
 
-                            }
+                                imgUrl = urlGen.getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
 
-                            if (uniqueId != null && entityType != null)
-                            {
-                                bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId,
-                                        "style/images/customStream.png", new ClickHandler()
-                                        {
-                                            public void onClick(final ClickEvent event)
-                                            {
-                                                if (new WidgetJSNIFacadeImpl()
-                                                        .confirm("Are you sure you want to delete this bookmark?"))
-                                                {
-                                                    StreamBookmarksModel.getInstance().delete(filter.getId());
-                                                }
-
-                                                event.stopPropagation();
-                                            }
-                                        }, style.deleteBookmark(), ""));
                             }
                         }
+
                     }
-                });
+
+                    if (uniqueId != null && entityType != null)
+                    {
+                        bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId, imgUrl,
+                                new ClickHandler()
+                                {
+                                    public void onClick(final ClickEvent event)
+                                    {
+                                        if (new WidgetJSNIFacadeImpl()
+                                                .confirm("Are you sure you want to delete this bookmark?"))
+                                        {
+                                            StreamBookmarksModel.getInstance().delete(filter.getId());
+                                        }
+
+                                        event.stopPropagation();
+                                    }
+                                }, style.deleteBookmark(), ""));
+                    }
+                }
+            }
+        });
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {

@@ -62,6 +62,8 @@
 			float: left;
 			margin-right: 5px;
 			margin-top: -2px;
+			height: 21px;
+			width: 21px;
 		}
 
 		.stream-option-list > div > div > div.streamName
