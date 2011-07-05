@@ -7,6 +7,7 @@
 <ui:image field="markAllReadHoverImage" src="style/images/notifications/MarkAsReadHover.png" />
 <ui:image field="settingsImage" src="style/images/notifications/settings.png" />
 <ui:image field="settingsHoverImage" src="style/images/notifications/settingsHover.png" />
+<ui:image field="sourceShadowImage" src="style/images/notifications/shadow.png" repeatStyle="Vertical" />
 
 <ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
 .modal
@@ -84,6 +85,11 @@
 {
 	padding-left: 25px;
 }
+@sprite .shadow-panel
+{
+	gwt-image: "sourceShadowImage";
+	float: right;
+}
 
 .read-filter-options
 {
@@ -122,7 +128,9 @@
 
 <g:HTMLPanel addStyleNames="{style.main}">
 	<g:ScrollPanel addStyleNames="{style.source-filters-scroll-panel}">
-		<g:FlowPanel ui:field="sourceFiltersPanel" />
+		<g:FlowPanel ui:field="sourceFiltersPanel">
+			<g:SimplePanel addStyleNames="{style.shadow-panel}" ui:field="shadowPanel" />
+		</g:FlowPanel>
 	</g:ScrollPanel>
 	
 	<div class="{style.right-side}">

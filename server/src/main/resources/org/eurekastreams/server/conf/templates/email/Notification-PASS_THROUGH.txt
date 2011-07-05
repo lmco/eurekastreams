@@ -1,4 +1,4 @@
-#siteLabelText()
+#siteLabel_txt()
 $source.title sent the following notification:
 
 "$message"

@@ -26,6 +26,14 @@ public abstract class BaseDialogContent implements DialogContent
     private DialogContentHost hostDialog;
 
     /**
+     * @return The dialog hosting this content.
+     */
+    protected DialogContentHost getHost()
+    {
+        return hostDialog;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void setHost(final DialogContentHost inDialog)

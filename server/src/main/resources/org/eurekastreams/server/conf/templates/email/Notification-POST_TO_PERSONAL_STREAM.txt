@@ -1,4 +1,4 @@
-#siteLabelText()
+#siteLabel_txt()
 $actor.displayName posted a #activityType($activity) to your stream.
 
 #activityContent_txt($activity)

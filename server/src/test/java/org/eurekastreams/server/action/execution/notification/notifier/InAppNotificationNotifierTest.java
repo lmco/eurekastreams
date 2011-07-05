@@ -38,6 +38,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.States;
@@ -112,6 +113,20 @@ public class InAppNotificationNotifierTest
     /** Recipients. */
     private final Collection<Long> recipients = Collections.unmodifiableList(Arrays.asList(RECIPIENT1, RECIPIENT2));
 
+    /** Recipient index. */
+    private final Map<Long, PersonModelView> recipientIndex;
+
+    /**
+     * One-time setup.
+     */
+    public InAppNotificationNotifierTest()
+    {
+        Map<Long, PersonModelView> map = new HashMap<Long, PersonModelView>();
+        map.put(RECIPIENT1, context.mock(PersonModelView.class, "recipient1"));
+        map.put(RECIPIENT2, context.mock(PersonModelView.class, "recipient2"));
+        recipientIndex = Collections.unmodifiableMap(map);
+    }
+
     /**
      * Setup before each test.
      */
@@ -120,6 +135,7 @@ public class InAppNotificationNotifierTest
     {
         sut = new InAppNotificationNotifier(velocityEngine, velocityGlobalContext, templates, insertMapper,
                 syncMapper, placeholderPersonMapper);
+
     }
 
     /**
@@ -232,7 +248,7 @@ public class InAppNotificationNotifierTest
         });
 
         UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST, recipients,
-                Collections.EMPTY_MAP, null);
+                Collections.EMPTY_MAP, recipientIndex);
 
         context.assertIsSatisfied();
 
@@ -304,7 +320,7 @@ public class InAppNotificationNotifierTest
         properties.put(NotificationPropertyKeys.ACTOR, actor);
 
         UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST,
-                Collections.singletonList(RECIPIENT1), properties, null);
+                Collections.singletonList(RECIPIENT1), properties, recipientIndex);
 
         context.assertIsSatisfied();
 
@@ -331,7 +347,7 @@ public class InAppNotificationNotifierTest
         });
 
         UserActionRequest result = sut.notify(NotificationType.COMMENT_TO_COMMENTED_POST,
-                Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP, null);
+                Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP, recipientIndex);
 
         context.assertIsSatisfied();
 

@@ -91,7 +91,7 @@ public class InAppNotificationNotifier implements Notifier
      */
     @Override
     public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
-            final Map<String, Object> inProperties, final Map<Long, PersonModelView> recipientIndex) throws Exception
+            final Map<String, Object> inProperties, final Map<Long, PersonModelView> inRecipientIndex) throws Exception
     {
         String template = templates.get(inType);
         if (template == null)
@@ -101,7 +101,11 @@ public class InAppNotificationNotifier implements Notifier
 
         Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
         velocityContext.put("context", velocityContext);
-        // velocityContext.put("notificationProperties", inProperties);
+        velocityContext.put("type", inType);
+        if (inRecipients.size() == 1)
+        {
+            velocityContext.put("recipient", inRecipientIndex.get(inRecipients.iterator().next()));
+        }
 
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(velocityContext, writer, "InAppNotification-" + inType, template);

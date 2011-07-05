@@ -7,5 +7,7 @@ Eureka Streams
 
 To find out more information, visit #prop('eureka.infosite.url')
 
+#if ($typeToCategoryMap.get($type))
 Emails you receive from Eureka Streams can be managed from your notification settings page:
 #prop('eureka.web.baseurl')${pound}notificationsettings
+#end

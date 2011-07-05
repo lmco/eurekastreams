@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.eurekastreams.server.domain.InAppNotificationDTO;
+import org.eurekastreams.server.domain.UnreadInAppNotificationCountDTO;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.NotificationCountsAvailableEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
-
 
 /**
  * Model for handling the list of application alert notifications.
@@ -30,10 +32,19 @@ import org.eurekastreams.web.client.ui.Session;
 public class NotificationListModel extends BaseModel implements Fetchable<Serializable>, Updateable<ArrayList<Long>>,
         Deletable<Long>
 {
-    /**
-     * Singleton.
-     */
+    /** Singleton. */
     private static NotificationListModel model = new NotificationListModel();
+
+    /** Action taken when an update succeeds - raises a count update event. */
+    private final OnSuccessCommand<UnreadInAppNotificationCountDTO> updateSuccessCommand = // \n
+    new OnSuccessCommand<UnreadInAppNotificationCountDTO>()
+    {
+        public void onSuccess(final UnreadInAppNotificationCountDTO response)
+        {
+            EventBus.getInstance().notifyObservers(
+                    new NotificationCountsAvailableEvent(response.getNormalPriority(), response.getHighPriority()));
+        }
+    };
 
     /**
      * Gets the singleton.
@@ -51,13 +62,12 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
         super.callReadAction("getInAppNotifications", request, new OnSuccessCommand<ArrayList<InAppNotificationDTO>>()
-                {
+        {
             public void onSuccess(final ArrayList<InAppNotificationDTO> response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotNotificationListResponseEvent(response));
-                    }
-                }, useClientCacheIfAvailable);
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotNotificationListResponseEvent(response));
+            }
+        }, useClientCacheIfAvailable);
     }
 
     /**
@@ -68,7 +78,7 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
      */
     public void update(final ArrayList<Long> notifIds)
     {
-        super.callWriteAction("markInAppNotificationsRead", notifIds, null);
+        super.callWriteAction("markInAppNotificationsRead", notifIds, updateSuccessCommand);
     }
 
     /**
@@ -79,7 +89,8 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
      */
     public void update(final long notifId)
     {
-        super.callWriteAction("markInAppNotificationsRead", (Serializable) Collections.singletonList(notifId), null);
+        super.callWriteAction("markInAppNotificationsRead", (Serializable) Collections.singletonList(notifId),
+                updateSuccessCommand);
     }
 
     /**
@@ -90,6 +101,7 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
      */
     public void delete(final Long notifId)
     {
-        super.callWriteAction("deleteInAppNotifications", (Serializable) Collections.singletonList(notifId), null);
+        super.callWriteAction("deleteInAppNotifications", (Serializable) Collections.singletonList(notifId),
+                updateSuccessCommand);
     }
 }

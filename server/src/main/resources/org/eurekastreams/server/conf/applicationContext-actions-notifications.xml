@@ -18,7 +18,7 @@
   	</bean>
   	<!-- Maximum number of in-app notifications to fetch -->
   		<bean id="MAX_NOTIFICATIONS_TO_FETCH" class="java.lang.Integer">
-        <constructor-arg value="5000" />
+        <constructor-arg value="500" />
   	</bean>
   	<!-- Age (in days) at which in-app notifications should be deleted. -->
 	<bean id="MAX_NOTIFICATION_AGE" class="java.lang.Integer">
@@ -247,6 +247,7 @@
 				<entry key="uiUrlBuilder">
 					<value type="java.lang.Class">org.eurekastreams.server.service.utility.ui.UiUrlBuilder</value>
 				</entry>
+				<entry key="typeToCategoryMap" value-ref="notificationTypeToCategoryMap" />
 			</map>
 		</constructor-arg>
 	</bean>
@@ -473,11 +474,11 @@
 <!-- 		<entry key="POST_TO_FOLLOWED_STREAM" value="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream." /> -->
 		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your #activityType($activity)." />
 		<entry key="COMMENT_TO_COMMENTED_POST" value="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)." />
-		<entry key="FOLLOW_PERSON" value="$actor.displayName is following you." />
+		<entry key="FOLLOW_PERSON" value="$actor.displayName is following your stream." />
 		<entry key="FOLLOW_GROUP" value="$actor.displayName joined the $stream.displayName group." />
 		<entry key="FLAG_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream." />
 		<entry key="REQUEST_NEW_GROUP" value="The $group.name group is pending approval." />
-		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.name group has been approved." />
+		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.displayName group has been approved." />
 		<entry key="REQUEST_NEW_GROUP_DENIED" value="Your request to create the $groupName group has been denied." />
 		<entry key="REQUEST_GROUP_ACCESS" value="$actor.displayName requested to join the $group.displayName private group." />
 		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="Your request to join the $group.displayName group has been approved." />
