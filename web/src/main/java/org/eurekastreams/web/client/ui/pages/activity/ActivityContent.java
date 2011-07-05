@@ -63,6 +63,8 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItem
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -375,12 +377,14 @@ public class ActivityContent extends Composite
                     activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
-                    for (ActivityDTO activity : activitySet.getPagedSet())
+                    List<ActivityDTO> activities = activitySet.getPagedSet();
+
+                    for (ActivityDTO activity : activities)
                     {
                         streamPanel.add(renderer.render(activity));
                     }
 
-                    moreLink.setVisible(activitySet.getTotal() > activitySet.getPagedSet().size());
+                    moreLink.setVisible(activitySet.getTotal() > activities.size());
                 }
 
             }
@@ -457,7 +461,7 @@ public class ActivityContent extends Composite
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                        // loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
                     }
                 });
 
@@ -701,11 +705,12 @@ public class ActivityContent extends Composite
      */
     private void loadStream(final List<String> views, final String searchTerm)
     {
+        Session.getInstance().getActionProcessor().setQueueRequests(true);
+
         boolean singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         moreLink.setVisible(false);
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-        Session.getInstance().getActionProcessor().setQueueRequests(true);
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
         currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
 
@@ -812,18 +817,25 @@ public class ActivityContent extends Composite
      * @param panel
      *            the panel.
      */
-    private void setAsActiveStream(Panel panel)
+    private void setAsActiveStream(final Panel panel)
     {
-        if (currentlyActiveStream != null)
+        Scheduler.get().scheduleDeferred(new ScheduledCommand()
         {
-            currentlyActiveStream.removeStyleName(style.activeStream());
-        }
+            public void execute()
+            {
+                if (currentlyActiveStream != null)
+                {
+                    currentlyActiveStream.removeStyleName(style.activeStream());
+                }
 
-        if (panel != null)
-        {
-            currentlyActiveStream = panel;
-            panel.addStyleName(style.activeStream());
-        }
+                if (panel != null)
+                {
+                    currentlyActiveStream = panel;
+                    panel.addStyleName(style.activeStream());
+                }
+            }
+        });
+
     }
 
     /**
