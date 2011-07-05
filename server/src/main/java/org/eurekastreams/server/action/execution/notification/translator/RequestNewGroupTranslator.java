@@ -69,6 +69,7 @@ public class RequestNewGroupTranslator implements NotificationTranslator<TargetE
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_NEW_GROUP, admins);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("group", group);
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "group");
         batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
         batch.setProperty(NotificationPropertyKeys.URL, UiUrlBuilder.relativeUrlForPendingGroupRequest());
         return batch;

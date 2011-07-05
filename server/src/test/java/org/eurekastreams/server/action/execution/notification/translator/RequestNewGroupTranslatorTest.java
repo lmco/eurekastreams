@@ -101,10 +101,11 @@ public class RequestNewGroupTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(4, props.size());
+        assertEquals(5, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, actorId);
         PropertyMapTestHelper.assertValue(props, "group", group);
         PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
+        PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "group");
         PropertyMapTestHelper.assertSetNonNull(props, NotificationPropertyKeys.URL);
     }
 

@@ -142,7 +142,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
                             }
                         }
                     });
-            GroupActivitySubscriptionModel.getInstance().fetch(null, false);
+            GroupActivitySubscriptionModel.getInstance().fetch(false);
         }
     }
 

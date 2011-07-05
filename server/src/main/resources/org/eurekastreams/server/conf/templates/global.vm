@@ -35,10 +35,10 @@ UNKNOWN##
 #end
 #end
 
-#*
+
 #macro( streamDescription $stream $recipient )
 #if ($stream.EntityType == 'PERSON')
-#if ($stream.entityId == $recipient.id)
+#if ($recipient && $stream.entityId == $recipient.id)
 your##
 #else
 $stream.displayName's##
@@ -47,25 +47,16 @@ $stream.displayName's##
 the $stream.displayName##
 #end
 #end
-*#
-
-#macro( streamDescription $stream $recipient )
-#if ($stream.EntityType == 'PERSON')
-$stream.displayName's##
-#else
-the ${stream.displayName}##
-#end
-#end
 
 
-#macro( siteLabelText )
+#macro( siteLabel_txt )
 #if ($settings.siteLabel != '')
 $settings.siteLabel
 
 #end
 #end
 
-#macro( siteLabelHtml )
+#macro( siteLabel_html )
 #if ($settings.siteLabel != '')
 <p style="text-align: center">$settings.siteLabel</p>
 #end

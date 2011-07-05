@@ -1,4 +1,4 @@
-#siteLabelText()
+#siteLabel_txt()
 $actor.displayName commented on your #activityType($activity).
 
 "$comment.body"

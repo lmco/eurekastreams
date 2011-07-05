@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class PersonJoinedGroupsModel extends BaseModel implements Fetchable<GetF
      */
     public void fetch(final GetFollowersFollowingRequest request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getFollowingGroups", request, new OnSuccessCommand<PagedSet<DomainGroupModelView>>()
+        super.callReadAction("getPersonFollowers", request, new OnSuccessCommand<PagedSet<DomainGroupModelView>>()
         {
             public void onSuccess(final PagedSet<DomainGroupModelView> response)
             {

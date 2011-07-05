@@ -1,4 +1,4 @@
-#siteLabelText()
+#siteLabel_txt()
 $actor.displayName liked your #activityType($activity).
 
 #activityContent_txt($activity)

@@ -90,7 +90,11 @@ public class EmailNotifier implements Notifier
 
         Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
         velocityContext.put("context", velocityContext);
-        // velocityContext.put("notificationProperties", inProperties);
+        velocityContext.put("type", inType);
+        if (inRecipients.size() == 1)
+        {
+            velocityContext.put("recipient", inRecipientIndex.get(inRecipients.iterator().next()));
+        }
 
         // build the subject
         StringWriter writer = new StringWriter();

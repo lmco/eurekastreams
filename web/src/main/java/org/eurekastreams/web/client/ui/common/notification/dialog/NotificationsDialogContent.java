@@ -49,6 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -79,6 +80,10 @@ public class NotificationsDialogContent extends BaseDialogContent
     /** The list of sources. */
     @UiField
     FlowPanel sourceFiltersPanel;
+
+    /** Panel making a shadow on the source filter widgets. */
+    @UiField
+    SimplePanel shadowPanel;
 
     /** Scroll panel holding the notification list. */
     @UiField
@@ -320,12 +325,17 @@ public class NotificationsDialogContent extends BaseDialogContent
         rootSource = builder.getRootSource();
         sourceIndex = builder.getSourceIndex();
 
+        shadowPanel.setVisible(false);
         for (Source source : builder.getSourceList())
         {
             addSourceFilter(source, source.getParent() != null && source.getParent() != rootSource);
         }
 
         currentSource = rootSource;
+
+        // set up shadow
+        shadowPanel.setHeight(sourceFiltersPanel.getOffsetHeight() + "px");
+        shadowPanel.setVisible(true);
     }
 
     /**
@@ -452,10 +462,11 @@ public class NotificationsDialogContent extends BaseDialogContent
                 ids.add(item.getId());
             }
         }
-        if (!ids.isEmpty())
+        if (ids.isEmpty())
         {
-            NotificationListModel.getInstance().update(ids);
+            return;
         }
+        NotificationListModel.getInstance().update(ids);
 
         // update UI
         if (currentShowRead)
