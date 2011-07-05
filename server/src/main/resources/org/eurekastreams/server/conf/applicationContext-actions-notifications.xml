@@ -118,6 +118,7 @@
         <entry key="FOLLOW_GROUP">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowGroupTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
+                <constructor-arg ref="getPersonAccountIdByIdMapper" />
             </bean>
         </entry>
         <entry key="POST_PERSON_STREAM">

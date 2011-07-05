@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
+import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.PropertyMap;
@@ -63,6 +64,9 @@ public class FollowGroupTranslatorTest
     /** DAO to get group coordinator ids. */
     private final DomainMapper<Long, List<Long>> coordinatorDAO = context.mock(DomainMapper.class, "coordinatorDAO");
 
+    /** DAO to get the person's account id. */
+    private final DomainMapper<Long, String> idToUniqueIdDAO = context.mock(DomainMapper.class);
+
     /** System under test. */
     private NotificationTranslator<TargetEntityNotificationsRequest> sut;
 
@@ -72,9 +76,8 @@ public class FollowGroupTranslatorTest
     @Before
     public void setup()
     {
-        sut = new FollowGroupTranslator(coordinatorDAO);
+        sut = new FollowGroupTranslator(coordinatorDAO, idToUniqueIdDAO);
     }
-
 
     /**
      * Test translating.
@@ -89,6 +92,9 @@ public class FollowGroupTranslatorTest
             {
                 oneOf(coordinatorDAO).execute(GROUP_FOLLOWED_ID);
                 will(returnValue(coordinators));
+
+                allowing(idToUniqueIdDAO).execute(ACTOR_ID);
+                will(returnValue("somebody"));
             }
         });
 
@@ -104,10 +110,11 @@ public class FollowGroupTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(3, props.size());
+        assertEquals(4, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertPlaceholder(props, "stream", DomainGroupModelView.class, GROUP_FOLLOWED_ID);
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
+        PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.URL, "#activity/person/somebody");
     }
 
     /**
