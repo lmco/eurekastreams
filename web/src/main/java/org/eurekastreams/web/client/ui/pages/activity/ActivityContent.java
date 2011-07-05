@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
@@ -266,6 +267,16 @@ public class ActivityContent extends Composite
     private static final int NEW_ACTIVITY_POLLING_DELAY = 1200000;
 
     /**
+     * Custom streams map.
+     */
+    private HashMap<Long, Panel> customStreamWidgetMap = new HashMap<Long, Panel>();
+
+    /**
+     * Stream bookmarks map.
+     */
+    private HashMap<String, Panel> bookmarksWidgetMap = new HashMap<String, Panel>();
+
+    /**
      * Default constructor.
      */
     public ActivityContent()
@@ -382,18 +393,26 @@ public class ActivityContent extends Composite
                     public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
                         filterList.clear();
+                        customStreamWidgetMap.clear();
 
-                        filterList.add(createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
+                        Panel savedBy = createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
                                 + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
-                                "style/images/customStream.png", null, "", ""));
+                                "style/images/customStream.png", null, "", "");
 
-                        filterList.add(createPanel("My Liked Items", "custom/0/" + "{\"query\":{\"likedBy\":\""
-                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
-                                "style/images/customStream.png", null, "", ""));
+                        filterList.add(savedBy);
+                        customStreamWidgetMap.put(0L, savedBy);
+
+                        Panel likedBy = createPanel("My Liked Items", "custom/1/"
+                                + "{\"query\":{\"likedBy\":[{\"type\":\"PERSON\", \"name\":\""
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}",
+                                "style/images/customStream.png", null, "", "");
+
+                        filterList.add(likedBy);
+                        customStreamWidgetMap.put(1L, likedBy);
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            filterList.add(createPanel(filter.getName(), "custom/"
+                            Panel filterPanel = createPanel(filter.getName(), "custom/"
                                     + filter.getId()
                                     + "/"
                                     + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
@@ -406,7 +425,10 @@ public class ActivityContent extends Composite
                                             Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
                                             event.stopPropagation();
                                         }
-                                    }, style.editCustomStream(), "edit"));
+                                    }, style.editCustomStream(), "edit");
+
+                            filterList.add(filterPanel);
+                            customStreamWidgetMap.put(filter.getId(), filterPanel);
                         }
                     }
                 });
@@ -677,6 +699,7 @@ public class ActivityContent extends Composite
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
+            customStreamWidgetMap.get(views.get(1)).addStyleName(style.activeStream());
             currentStream.setScopeType(null);
         }
         else if (views.get(0).equals("everyone"))
