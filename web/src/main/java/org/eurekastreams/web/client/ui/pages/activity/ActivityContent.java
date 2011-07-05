@@ -63,6 +63,8 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItem
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -277,6 +279,21 @@ public class ActivityContent extends Composite
     private HashMap<String, Panel> bookmarksWidgetMap = new HashMap<String, Panel>();
 
     /**
+     * Currently active stream.
+     */
+    private Panel currentlyActiveStream = null;
+
+    /**
+     * Following filter panel.
+     */
+    private Panel followingFilterPanel = null;
+
+    /**
+     * Everyone filter panel.
+     */
+    private Panel everyoneFilterPanel = null;
+
+    /**
      * Default constructor.
      */
     public ActivityContent()
@@ -294,8 +311,11 @@ public class ActivityContent extends Composite
         addObservers();
         setupStreamsAndBookmarks();
 
-        defaultList.add(createPanel("Following", "following", "style/images/customStream.png", null, "", ""));
-        defaultList.add(createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", ""));
+        followingFilterPanel = createPanel("Following", "following", "style/images/customStream.png", null, "", "");
+        everyoneFilterPanel = createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", "");
+
+        defaultList.add(followingFilterPanel);
+        defaultList.add(everyoneFilterPanel);
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -357,12 +377,14 @@ public class ActivityContent extends Composite
                     activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
-                    for (ActivityDTO activity : activitySet.getPagedSet())
+                    List<ActivityDTO> activities = activitySet.getPagedSet();
+
+                    for (ActivityDTO activity : activities)
                     {
                         streamPanel.add(renderer.render(activity));
                     }
 
-                    moreLink.setVisible(activitySet.getTotal() > activitySet.getPagedSet().size());
+                    moreLink.setVisible(activitySet.getTotal() > activities.size());
                 }
 
             }
@@ -439,7 +461,7 @@ public class ActivityContent extends Composite
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+                        // loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
                     }
                 });
 
@@ -460,10 +482,15 @@ public class ActivityContent extends Composite
             public void update(final GotCurrentUserStreamBookmarks event)
             {
                 bookmarkList.clear();
-                bookmarkList.add(createPanel(Session.getInstance().getCurrentPerson().getDisplayName(), "person/"
-                        + Session.getInstance().getCurrentPerson().getAccountId(), personUrlGen.getSmallAvatarUrl(
-                        Session.getInstance().getCurrentPerson().getEntityId(), Session.getInstance()
-                                .getCurrentPerson().getAvatarId()), null, "", ""));
+                bookmarksWidgetMap.clear();
+
+                String personUrl = "person/" + Session.getInstance().getCurrentPerson().getAccountId();
+                Panel userBookmark = createPanel(Session.getInstance().getCurrentPerson().getDisplayName(), personUrl,
+                        personUrlGen.getSmallAvatarUrl(Session.getInstance().getCurrentPerson().getEntityId(), Session
+                                .getInstance().getCurrentPerson().getAvatarId()), null, "", "");
+
+                bookmarkList.add(userBookmark);
+                bookmarksWidgetMap.put(personUrl, userBookmark);
 
                 for (final StreamFilter filter : event.getResponse())
                 {
@@ -501,20 +528,23 @@ public class ActivityContent extends Composite
 
                     if (uniqueId != null && entityType != null)
                     {
-                        bookmarkList.add(createPanel(filter.getName(), entityType + "/" + uniqueId, imgUrl,
-                                new ClickHandler()
+                        String bookmarkUrl = entityType + "/" + uniqueId;
+                        Panel bookmarkFilter = createPanel(filter.getName(), bookmarkUrl, imgUrl, new ClickHandler()
+                        {
+                            public void onClick(final ClickEvent event)
+                            {
+                                if (new WidgetJSNIFacadeImpl()
+                                        .confirm("Are you sure you want to delete this bookmark?"))
                                 {
-                                    public void onClick(final ClickEvent event)
-                                    {
-                                        if (new WidgetJSNIFacadeImpl()
-                                                .confirm("Are you sure you want to delete this bookmark?"))
-                                        {
-                                            StreamBookmarksModel.getInstance().delete(filter.getId());
-                                        }
+                                    StreamBookmarksModel.getInstance().delete(filter.getId());
+                                }
 
-                                        event.stopPropagation();
-                                    }
-                                }, style.deleteBookmark(), ""));
+                                event.stopPropagation();
+                            }
+                        }, style.deleteBookmark(), "");
+
+                        bookmarkList.add(bookmarkFilter);
+                        bookmarksWidgetMap.put(bookmarkUrl, bookmarkFilter);
                     }
                 }
             }
@@ -675,17 +705,19 @@ public class ActivityContent extends Composite
      */
     private void loadStream(final List<String> views, final String searchTerm)
     {
+        Session.getInstance().getActionProcessor().setQueueRequests(true);
+
         boolean singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         moreLink.setVisible(false);
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-        Session.getInstance().getActionProcessor().setQueueRequests(true);
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
         currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
+            setAsActiveStream(followingFilterPanel);
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -694,6 +726,7 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
+            setAsActiveStream(bookmarksWidgetMap.get("person/" + accountId));
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -702,16 +735,18 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
+            setAsActiveStream(bookmarksWidgetMap.get("group/" + shortName));
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
-            customStreamWidgetMap.get(views.get(1)).addStyleName(style.activeStream());
+            setAsActiveStream(customStreamWidgetMap.get(Long.parseLong(views.get(1))));
             currentStream.setScopeType(null);
         }
         else if (views.get(0).equals("everyone"))
         {
             currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
+            setAsActiveStream(everyoneFilterPanel);
         }
         else if (views.size() == 1)
         {
@@ -774,6 +809,33 @@ public class ActivityContent extends Composite
 
         Session.getInstance().getActionProcessor().fireQueuedRequests();
         Session.getInstance().getActionProcessor().setQueueRequests(false);
+    }
+
+    /**
+     * Set a stream as active.
+     * 
+     * @param panel
+     *            the panel.
+     */
+    private void setAsActiveStream(final Panel panel)
+    {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand()
+        {
+            public void execute()
+            {
+                if (currentlyActiveStream != null)
+                {
+                    currentlyActiveStream.removeStyleName(style.activeStream());
+                }
+
+                if (panel != null)
+                {
+                    currentlyActiveStream = panel;
+                    panel.addStyleName(style.activeStream());
+                }
+            }
+        });
+
     }
 
     /**
