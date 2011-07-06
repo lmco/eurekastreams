@@ -75,7 +75,7 @@ public class NotificationFilterPreferencesModel extends BaseModel implements
             public void onSuccess(final Serializable response)
             {
                 Session.getInstance().getEventBus()
-                        .notifyObservers(new ShowNotificationEvent(new Notification("Notification category stopped")));
+                        .notifyObservers(new ShowNotificationEvent(new Notification("Notification type stopped")));
             }
         });
     }

@@ -49,14 +49,6 @@ public class NotificationWidget extends Composite
     /** Date formatter. */
     private final DateFormatter dateFormatter = new DateFormatter();
 
-    // /** Global CSS. */
-    // @UiField(provided = true)
-    // CoreCss coreCss;
-    //
-    // /** Global resources. */
-    // @UiField(provided = true)
-    // StaticResourceBundle globalResources;
-
     /** Local styles. */
     @UiField
     LocalStyle style;
@@ -104,9 +96,6 @@ public class NotificationWidget extends Composite
     public NotificationWidget(final InAppNotificationDTO inItem)
     {
         item = inItem;
-
-        // coreCss = StaticResourceBundle.INSTANCE.coreCss();
-        // globalResources = StaticResourceBundle.INSTANCE;
 
         main = binder.createAndBindUi(this);
         initWidget(main);
@@ -169,7 +158,6 @@ public class NotificationWidget extends Composite
     void onDeleteClick(final ClickEvent ev)
     {
         new EffectsFacade().fadeOut(getElement(), true);
-        // removeFromParent();
         EventBus.getInstance().notifyObservers(new NotificationDeleteRequestEvent(item));
     }
 

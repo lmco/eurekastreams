@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Generic mapper to wrap a collection mapper with a single value input/output.
@@ -32,12 +33,12 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
     /**
      * List mapper to wrap.
      */
-    private DomainMapper<List<RequestType>, List<ResponseType>> wrappedMapper;
+    private final DomainMapper<List<RequestType>, List<ResponseType>> wrappedMapper;
 
     /**
      * Whether to throw exception when anything other than exactly one result is found - else null.
      */
-    private boolean throwExceptionWhenSingleResultNotFound;
+    private final boolean throwExceptionWhenSingleResultNotFound;
 
     /**
      * Constructor.
@@ -65,9 +66,7 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
     @Override
     public ResponseType execute(final RequestType inRequest)
     {
-        ArrayList<RequestType> request = new ArrayList<RequestType>();
-        request.add(inRequest);
-        List<ResponseType> response = wrappedMapper.execute(request);
+        List<ResponseType> response = wrappedMapper.execute(Collections.singletonList(inRequest));
         if (response.size() != 1)
         {
             if (throwExceptionWhenSingleResultNotFound)
@@ -82,5 +81,4 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
         }
         return response.get(0);
     }
-
 }

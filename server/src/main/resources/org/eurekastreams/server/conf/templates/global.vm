@@ -17,22 +17,11 @@ $activity.BaseObjectType##
 #end
 
 #macro( activityUrl $stream $activity )
-#prop('eureka.web.baseurl')#activity/${activity.id}##
+#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForActivity(${activity.id})##
 #end
 
 #macro( profileUrl $whom )
-#prop('eureka.web.baseurl')#activity/#streamPage($whom)/${whom.uniqueId}##
-#end
-
-
-#macro( streamPage $stream )
-#if ($stream.EntityType == 'PERSON')
-person##
-#elseif ($stream.EntityType == 'GROUP')
-group##
-#else
-UNKNOWN##
-#end
+#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForEntity($whom)##
 #end
 
 
