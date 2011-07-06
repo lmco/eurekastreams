@@ -15,24 +15,22 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import java.util.ArrayList;
-
+import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 
 /**
- * Response event object.
+ * Response object for when a page of featured streams are fetched.
  */
-public class GotFeaturedStreamsResponseEvent extends BaseDataResponseEvent<ArrayList<FeaturedStreamDTO>>
+public class GotFeaturedStreamsPageResponseEvent extends BaseDataResponseEvent<PagedSet<FeaturedStreamDTO>>
 {
     /**
-     * Default constructor.
+     * Constructor.
      * 
      * @param inResponse
-     *            response/
+     *            response.
      */
-    public GotFeaturedStreamsResponseEvent(final ArrayList<FeaturedStreamDTO> inResponse)
+    public GotFeaturedStreamsPageResponseEvent(final PagedSet<FeaturedStreamDTO> inResponse)
     {
         super(inResponse);
     }
-
 }

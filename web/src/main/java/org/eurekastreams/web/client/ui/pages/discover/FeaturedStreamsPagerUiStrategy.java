@@ -15,27 +15,27 @@
  */
 package org.eurekastreams.web.client.ui.pages.discover;
 
-import org.eurekastreams.server.action.request.stream.GetMostActiveStreamsPageRequest;
+import org.eurekastreams.server.action.request.stream.GetFeaturedStreamsPageRequest;
 import org.eurekastreams.server.domain.BasicPager;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
-import org.eurekastreams.web.client.events.data.GotMostActiveStreamsPageResponseEvent;
-import org.eurekastreams.web.client.model.MostActiveStreamsModel;
+import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
+import org.eurekastreams.web.client.model.FeaturedStreamModel;
 import org.eurekastreams.web.client.ui.common.pagedlist.ThreeColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.pager.PagerStrategy;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * Pager strategy for Most Active streams on the Discover page.
+ * Pager strategy for Featured Streams on the Streams Discovery page.
  */
-public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
+public class FeaturedStreamsPagerUiStrategy implements PagerStrategy
 {
     /**
      * the model.
      */
-    private final MostActiveStreamsModel model = MostActiveStreamsModel.getInstance();
+    private final FeaturedStreamModel model = FeaturedStreamModel.getInstance();
 
     /**
      * The event.
@@ -55,7 +55,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
     /**
      * Renderer for Most Active Streams StreamDTOs.
      */
-    private final ActiveStreamsItemRenderer itemRenderer = new ActiveStreamsItemRenderer();
+    private final FeaturedStreamsItemRenderer itemRenderer = new FeaturedStreamsItemRenderer();
 
     /**
      * The page size.
@@ -68,35 +68,33 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
      * @param inPageSize
      *            the page size
      */
-    public MostActiveStreamsPagerUiStrategy(final int inPageSize)
+    public FeaturedStreamsPagerUiStrategy(final int inPageSize)
     {
         pageSize = inPageSize;
         responseEvent.setKey(getKey());
     }
 
     /**
-     * Listen for GotMostActiveStreamsPageResponseEvent events.
+     * Listen for GotFeaturedStreamsPageResponseEvent responses.
      */
     private void listen()
     {
-        EventBus.getInstance().addObserver(GotMostActiveStreamsPageResponseEvent.class,
-                new Observer<GotMostActiveStreamsPageResponseEvent>()
+        EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
+                new Observer<GotFeaturedStreamsPageResponseEvent>()
                 {
-                    public void update(final GotMostActiveStreamsPageResponseEvent inEvent)
+                    public void update(final GotFeaturedStreamsPageResponseEvent inEvent)
                     {
-                        EventBus.getInstance().removeObserver(GotMostActiveStreamsPageResponseEvent.class, this);
+                        EventBus.getInstance().removeObserver(GotFeaturedStreamsPageResponseEvent.class, this);
 
-                        // tell the pager not to try to page past the number of locally-cached items
-                        pager.setMaxCount(inEvent.getTotalNumberOfAccessibleStreams());
-
-                        // set the start and end indexes
+                        // set the start, end, total, and page sizes
                         pager.setStartItem(inEvent.getResponse().getFromIndex());
                         pager.setEndItem(inEvent.getResponse().getToIndex());
+                        pager.setMaxCount(inEvent.getResponse().getTotal());
                         pager.setPageSize(pageSize);
 
                         FlowPanel responsePanel = new FlowPanel();
                         threeColListRenderer.render(responsePanel, itemRenderer, inEvent.getResponse(),
-                                "Activity stream data is not available");
+                                "Featured streams data is not available");
 
                         responseEvent.setWidget(responsePanel);
                         EventBus.getInstance().notifyObservers(responseEvent);
@@ -111,7 +109,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
      */
     public String getKey()
     {
-        return "mostActiveStreams";
+        return "featuredStreams";
     }
 
     /**
@@ -140,7 +138,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
     public void init()
     {
         listen();
-        model.fetch(new GetMostActiveStreamsPageRequest(0, pageSize - 1), true);
+        model.fetch(new GetFeaturedStreamsPageRequest(0, pageSize - 1), true);
     }
 
     /**
@@ -150,7 +148,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
     {
         listen();
         pager.nextPage();
-        model.fetch(new GetMostActiveStreamsPageRequest(pager.getStartItem(), pager.getEndItem()), true);
+        model.fetch(new GetFeaturedStreamsPageRequest(pager.getStartItem(), pager.getEndItem()), true);
     }
 
     /**
@@ -160,7 +158,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
     {
         listen();
         pager.previousPage();
-        model.fetch(new GetMostActiveStreamsPageRequest(pager.getStartItem(), pager.getEndItem()), true);
+        model.fetch(new GetFeaturedStreamsPageRequest(pager.getStartItem(), pager.getEndItem()), true);
     }
 
 }

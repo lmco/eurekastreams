@@ -17,13 +17,14 @@
     <g:HTMLPanel>
         <div>
             <h3>Featured Streams</h3>
-            <g:FlowPanel ui:field="featuredStreamsPanel"/>
+            <pager:PagerComposite ui:field="featuredStreamsComposite">
+					</pager:PagerComposite>
         </div>
         <div>
         	<h3>Most Active Streams</h3>
             
         	<pager:PagerComposite ui:field="mostActiveStreamsComposite">
-			</pager:PagerComposite>
+					</pager:PagerComposite>
         </div>
         
         What are you looking for? <g:FlowPanel ui:field="searchFlowPanel" />

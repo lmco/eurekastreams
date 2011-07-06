@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.pages.discover;
 
-import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.web.client.events.EventBus;
@@ -49,6 +48,11 @@ public class DiscoverContent extends Composite
     private static final int MOST_ACTIVE_STREAMS_PAGE_SIZE = 9;
 
     /**
+     * Number of featured streams to show.
+     */
+    private static final int FEATURED_STREAMS_PAGE_SIZE = 3;
+
+    /**
      * CSS resource.
      */
     interface DiscoverStyle extends CssResource
@@ -66,7 +70,7 @@ public class DiscoverContent extends Composite
      * UI element for streams.
      */
     @UiField
-    FlowPanel featuredStreamsPanel;
+    PagerComposite featuredStreamsComposite;
 
     /**
      * UI element for streams.
@@ -130,7 +134,6 @@ public class DiscoverContent extends Composite
         {
             return;
         }
-        featuredStreamsPanel.clear();
         suggestedStreamsPanel.clear();
         mostViewedStreamsPanel.clear();
         mostFollowedStreamsPanel.clear();
@@ -138,19 +141,17 @@ public class DiscoverContent extends Composite
 
         searchFlowPanel.add(new GlobalSearchComposite("e.g., Jane Doe, Cloud Computing, etc.."));
 
-        if (inDiscoverLists.getFeaturedStreams() != null)
-        {
-            for (FeaturedStreamDTO featuredStream : inDiscoverLists.getFeaturedStreams())
-            {
-                featuredStreamsPanel.add(new FeaturedStreamItemPanel(featuredStream));
-            }
-        }
+        // --------------------
+        // FEATURED STREAMS
+        // Note: the data needed for this list is built from the MostActiveStreamsModel, but is actually fetched and
+        // stored in the StreamsDiscoveryModel cache, so this request won't hit the server
+        featuredStreamsComposite.init(new FeaturedStreamsPagerUiStrategy(FEATURED_STREAMS_PAGE_SIZE));
+        featuredStreamsComposite.load();
 
         // --------------------
         // MOST ACTIVE STREAMS
         // Note: the data needed for this list is built from the MostActiveStreamsModel, but is actually fetched and
         // stored in the StreamsDiscoveryModel cache, so this request won't hit the server
-
         mostActiveStreamsComposite.init(new MostActiveStreamsPagerUiStrategy(MOST_ACTIVE_STREAMS_PAGE_SIZE));
         mostActiveStreamsComposite.load();
 
