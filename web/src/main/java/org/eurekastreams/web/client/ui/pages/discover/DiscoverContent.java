@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
+import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
 import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
 import com.google.gwt.core.client.GWT;
@@ -30,7 +31,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -67,13 +67,7 @@ public class DiscoverContent extends Composite
      * UI element for streams.
      */
     @UiField
-    FlowPanel mostActiveStreamsPanel;
-
-    /**
-     * UI element to show the total number of active streams.
-     */
-    @UiField
-    FlowPanel totalStreamCountPanel;
+    PagerComposite mostActiveStreamsComposite;
 
     /**
      * UI element for streams.
@@ -111,6 +105,7 @@ public class DiscoverContent extends Composite
                 {
                     public void update(final GotStreamDiscoverListsDTOResponseEvent event)
                     {
+                        EventBus.getInstance().removeObserver(GotStreamDiscoverListsDTOResponseEvent.class, this);
                         buildPage(event.getResponse());
                     }
                 });
@@ -120,7 +115,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     * 
+     *
      * @param inDiscoverLists
      *            the data to display
      */
@@ -131,8 +126,6 @@ public class DiscoverContent extends Composite
             return;
         }
         featuredStreamsPanel.clear();
-        mostActiveStreamsPanel.clear();
-        totalStreamCountPanel.clear();
         suggestedStreamsPanel.clear();
         mostViewedStreamsPanel.clear();
         mostFollowedStreamsPanel.clear();
@@ -147,15 +140,14 @@ public class DiscoverContent extends Composite
                 featuredStreamsPanel.add(new FeaturedStreamItemPanel(featuredStream));
             }
         }
-        if (inDiscoverLists.getMostActiveStreams() != null)
-        {
-            totalStreamCountPanel.add(new HTML(inDiscoverLists.getMostActiveStreams().getTotalResultsCount()
-                    + " streams"));
-            for (StreamDTO stream : inDiscoverLists.getMostActiveStreams().getResultsSublist())
-            {
-                mostActiveStreamsPanel.add(new ActiveStreamsItemPanel(stream));
-            }
-        }
+
+        // --------------------
+        // MOST ACTIVE STREAMS
+        // Note: the data needed for this list is built from the MostActiveStreamsModel, but is actually fetched and
+        // stored in the StreamsDiscoveryModel cache, so this request won't hit the server
+
+        mostActiveStreamsComposite.init(new MostActiveStreamsPagerUiStrategy(9));
+        mostActiveStreamsComposite.load();
 
         if (inDiscoverLists.getSuggestedStreams() != null)
         {
