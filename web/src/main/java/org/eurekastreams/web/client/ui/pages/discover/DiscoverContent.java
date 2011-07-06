@@ -44,6 +44,11 @@ public class DiscoverContent extends Composite
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
     /**
+     * Number of streams to show in the "Most Active Streams" section.
+     */
+    private static final int MOST_ACTIVE_STREAMS_PAGE_SIZE = 9;
+
+    /**
      * CSS resource.
      */
     interface DiscoverStyle extends CssResource
@@ -115,7 +120,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     *
+     * 
      * @param inDiscoverLists
      *            the data to display
      */
@@ -146,7 +151,7 @@ public class DiscoverContent extends Composite
         // Note: the data needed for this list is built from the MostActiveStreamsModel, but is actually fetched and
         // stored in the StreamsDiscoveryModel cache, so this request won't hit the server
 
-        mostActiveStreamsComposite.init(new MostActiveStreamsPagerUiStrategy(9));
+        mostActiveStreamsComposite.init(new MostActiveStreamsPagerUiStrategy(MOST_ACTIVE_STREAMS_PAGE_SIZE));
         mostActiveStreamsComposite.load();
 
         if (inDiscoverLists.getSuggestedStreams() != null)

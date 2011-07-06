@@ -16,6 +16,7 @@
 package org.eurekastreams.server.domain;
 
 
+
 /**
  * This class keeps the page state for a view & controller. The page state is modified accordingly based on the paging
  * action taken. Page state represents the result set currently viewed. Each set of results has a start point, an end

@@ -44,8 +44,6 @@ public class ThreeColumnPagedListRenderer implements PagedListRenderer
         Panel right = new FlowPanel();
         right.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColRight());
 
-        int count = 0;
-
         if (items.getTotal() == 0)
         {
             Label noItemsMessageLabel = new Label(noItemsMessage);
@@ -61,6 +59,7 @@ public class ThreeColumnPagedListRenderer implements PagedListRenderer
         double thirdCol = items.getPagedSet().size() * 2.0 / 3.0;
         double secondCol = items.getPagedSet().size() / 3.0;
 
+        int count = 0;
         for (Serializable item : items.getPagedSet())
         {
             if (count >= thirdCol)
