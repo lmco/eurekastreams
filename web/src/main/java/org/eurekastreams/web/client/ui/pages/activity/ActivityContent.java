@@ -321,6 +321,8 @@ public class ActivityContent extends Composite
         StreamBookmarksModel.getInstance().fetch(null, true);
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+        
+        loadStream(Session.getInstance().getUrlViews());
     }
 
     /**
@@ -414,29 +416,9 @@ public class ActivityContent extends Composite
         {
             public void update(final HistoryViewsChangedEvent event)
             {
-                loadStream(event.getViews());
-                List<String> views = new ArrayList<String>(event.getViews());
-
-                if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
-                {
-                    views.add("sort");
-                    views.add("recent");
-                }
-
-                views.set(views.size() - 1, "recent");
-                recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.ACTIVITY, views)));
-
-                views.set(views.size() - 1, "popular");
-                popularSort.setTargetHistoryToken(Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.ACTIVITY, views)));
-
-                views.set(views.size() - 1, "active");
-                activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.ACTIVITY, views)));
-
+                handleViewsChanged(event.getViews());
             }
-        }, true);
+        });
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
@@ -464,7 +446,35 @@ public class ActivityContent extends Composite
                         // loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
                     }
                 });
+    }
 
+    /**
+     * Handle views changed.
+     * @param inViews the views.
+     */
+    protected void handleViewsChanged(final List<String> inViews)
+    {
+        loadStream(inViews);
+        List<String> views = new ArrayList<String>(inViews);
+
+        if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
+        {
+            views.add("sort");
+            views.add("recent");
+        }
+
+        views.set(views.size() - 1, "recent");
+        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ACTIVITY, views)));
+
+        views.set(views.size() - 1, "popular");
+        popularSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ACTIVITY, views)));
+
+        views.set(views.size() - 1, "active");
+        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ACTIVITY, views)));
+        
     }
 
     /**

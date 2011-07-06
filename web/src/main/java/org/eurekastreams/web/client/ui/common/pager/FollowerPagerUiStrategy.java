@@ -39,12 +39,12 @@ public class FollowerPagerUiStrategy implements PagerStrategy
      * Model.
      */
     private PersonFollowersModel model = PersonFollowersModel.getInstance();
-    
+
     /**
      * Event.
      */
     private PagerResponseEvent responseEvent = new PagerResponseEvent();
-    
+
     /**
      * Pager.
      */
@@ -54,17 +54,17 @@ public class FollowerPagerUiStrategy implements PagerStrategy
      * Renders two column layout.
      */
     private TwoColumnPagedListRenderer twoColListRenderer = new TwoColumnPagedListRenderer();
-    
+
     /**
      * Renders a person.
      */
     private PersonRenderer personRenderer = new PersonRenderer(false);
-    
+
     /**
      * Entity type.
      */
     private EntityType entityType;
-    
+
     /**
      * Evnet key.
      */
@@ -138,6 +138,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
      */
     public void init()
     {
+        pager = new BasicPager();
         model.fetch(new GetFollowersFollowingRequest(entityType, entityKey, pager.getStartItem(), pager.getEndItem()),
                 false);
     }

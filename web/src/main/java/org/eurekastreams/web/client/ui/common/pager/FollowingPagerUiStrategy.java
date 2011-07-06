@@ -122,6 +122,7 @@ public class FollowingPagerUiStrategy implements PagerStrategy
      */
     public void init()
     {
+        pager = new BasicPager();
         model.fetch(new GetStreamsUserIsFollowingRequest(entityKey, pager.getStartItem(), pager.getEndItem()), false);
     }
 
