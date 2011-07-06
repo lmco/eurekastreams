@@ -178,6 +178,7 @@
 		float: right;
 		position:relative;
 		overflow: visible;
+		margin-left: 2px;
 		}
 		
 		@sprite .subscribe-box:hover 
@@ -186,18 +187,19 @@
 		float: right;
 		position:relative;
 		overflow: visible;
+		border-bottom: 2px solid #BDBDBD;
 		}
 		
 		
 		.subscribe-options 
 		{
 		background-color: #BDBDBD;
-		display: none;
-		margin-left: -126px;
-		position: absolute;
-		top: 32px;
-		width: 186px;
-		padding: 2px;
+    	display: none;
+    	margin-left: -66px;
+    	padding: 2px;
+    	position: absolute;
+    	top: 34px;
+	    width: 126px;
 		}
 		
 		.subscribe-box:hover .subscribe-options
@@ -299,7 +301,10 @@
 					Active</g:Hyperlink>
 				<g:FlowPanel addStyleNames="{style.subscribe-box}">
 					<g:FlowPanel addStyleNames="{style.subscribe-options}">
-						<g:Label ui:field="addBookmark">Bookmark</g:Label>
+						<g:Label ui:field="addBookmark">Bookmark Stream</g:Label>
+						<g:Label ui:field="addToStartPage">Add to Start Page</g:Label>
+						<g:Label ui:field="subscribeViaEmail">Subscribe via Email</g:Label>
+						<g:Label ui:field="feedLink">RSS Feed</g:Label>
 					</g:FlowPanel>
 				</g:FlowPanel>
 				<div class="{style.search-container}">

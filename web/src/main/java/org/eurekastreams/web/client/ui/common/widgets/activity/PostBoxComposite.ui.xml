@@ -86,6 +86,28 @@
 			margin-top: 1px;
 		}
 		
+		.hashtags
+		{
+		position: absolute;
+		background-color: white;
+    	border: 1px solid #C6C6C6;
+    	padding: 5px;
+    	z-index: 900;
+    	margin-top: -1px;
+    	border-top-width: 0;
+		}
+		
+		.hashtags > div
+		{
+		padding: 2px;
+		cursor: pointer;
+		}
+		
+		.hashtags > div:hover
+		{
+		background-color: #c6c6c6;
+		}
+		
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.post-container}" ui:field="postPanel">
@@ -96,6 +118,7 @@
 			<div>
 				<ea:ExtendedTextArea addStyleNames="{style.post-box}"
 					ui:field="postBox"></ea:ExtendedTextArea>
+				<g:FlowPanel addStyleNames="{style.hashtags}" ui:field="hashTags"></g:FlowPanel>				
 				<div ui:field="postOptions" class="{style.post-options}">
 					<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
 					<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>

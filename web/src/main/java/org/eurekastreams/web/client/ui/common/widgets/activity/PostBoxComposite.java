@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.widgets.activity;
 
+import java.util.HashSet;
+
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
@@ -25,8 +27,10 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.GotAllPopularHashTagsResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.model.ActivityModel;
+import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
@@ -43,6 +47,7 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -57,6 +62,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -155,6 +161,12 @@ public class PostBoxComposite extends Composite
     AddLinkComposite addLinkComposite;
 
     /**
+     * Hash Tags.
+     */
+    @UiField
+    FlowPanel hashTags;
+
+    /**
      * Hide delay after blur on post box.
      */
     private static final Integer BLUR_DELAY = 500;
@@ -204,6 +216,11 @@ public class PostBoxComposite extends Composite
      * Attachment.
      */
     private Attachment attachment = null;
+
+    /**
+     * All hash tags.
+     */
+    private HashSet<String> allHashTags;
 
     /**
      * Default constructor.
@@ -318,6 +335,66 @@ public class PostBoxComposite extends Composite
                 }
             }
         });
+
+        Session.getInstance().getEventBus().addObserver(GotAllPopularHashTagsResponseEvent.class,
+                new Observer<GotAllPopularHashTagsResponseEvent>()
+                {
+                    public void update(final GotAllPopularHashTagsResponseEvent event)
+                    {
+                        allHashTags = event.getResponse();
+                        hashTags.getElement().getStyle().setWidth(postBox.getElement().getClientWidth(), Unit.PX);
+                    }
+                });
+
+        AllPopularHashTagsModel.getInstance().fetch(null, true);
+
+        postBox.addKeyUpHandler(new KeyUpHandler()
+        {
+            public void onKeyUp(final KeyUpEvent event)
+            {
+                hashTags.clear();
+                hashTags.setVisible(false);
+                String[] words = postBox.getText().split("\\s");
+
+                if (words.length >= 1 && !postBox.getText().endsWith(" "))
+                {
+                    final String lastWord = words[words.length - 1];
+                    if (lastWord.startsWith("#"))
+                    {
+                        for (final String tag : allHashTags)
+                        {
+                            if (hashTags.getWidgetCount() > 9)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                if (tag.startsWith(lastWord))
+                                {
+                                    hashTags.setVisible(true);
+                                    final Label tagLbl = new Label(tag);
+                                    hashTags.add(tagLbl);
+                                    tagLbl.addClickHandler(new ClickHandler()
+                                    {
+                                        public void onClick(final ClickEvent event)
+                                        {
+                                            String postText = postBox.getText();
+                                            postText = postText.substring(0, postText.length() - lastWord.length())
+                                                    + tag;
+                                            postBox.setText(postText);
+                                            hashTags.clear();
+                                            hashTags.setVisible(false);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        hashTags.setVisible(false);
     }
 
     /**
