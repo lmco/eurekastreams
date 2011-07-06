@@ -3633,7 +3633,7 @@ body .options>li>.option-title:hover {
 	padding-top: 7px;
 }
 
-.connection-col-left,.connection-col-right {
+.connection-col-left,.connection-col-right,.connection-col-middle {
 	display: inline-block;
 	padding: 0px 10px;
 	min-height: 30px;

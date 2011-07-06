@@ -271,6 +271,9 @@ public interface CoreCss extends CssResource
     @ClassName("connection-col-right")
     String connectionColRight();
 
+    @ClassName("connection-col-middle")
+    String connectionColMiddle();
+
     @ClassName("connection-edit-panel")
     String connectionEditPanel();
 
@@ -2156,7 +2159,7 @@ public interface CoreCss extends CssResource
     String searchResultsAutocompleteResults();
 
     String globalSearchBoxNav();
-    
+
     String globalSearchBoxActive();
 
     String bookmarkSearch();
@@ -2166,7 +2169,7 @@ public interface CoreCss extends CssResource
     String followDialogBody();
 
     String followDialogTips();
-    
+
     String bookmarkSearchActive();
 
 }

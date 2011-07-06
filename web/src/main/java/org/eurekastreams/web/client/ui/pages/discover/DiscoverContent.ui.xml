@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-    xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'
+    xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager'>
   
   <ui:style type="org.eurekastreams.web.client.ui.pages.discover.DiscoverContent.DiscoverStyle">
 	.discoverStreamList {
@@ -19,11 +20,10 @@
             <g:FlowPanel ui:field="featuredStreamsPanel"/>
         </div>
         <div>
-            <h3>Most Active Streams</h3>
-            <BR/>
-            <g:FlowPanel ui:field="mostActiveStreamsPanel"/>
-            <BR/>
-            <g:FlowPanel ui:field="totalStreamCountPanel" />
+        	<h3>Most Active Streams</h3>
+            
+        	<pager:PagerComposite ui:field="mostActiveStreamsComposite">
+			</pager:PagerComposite>
         </div>
         
         What are you looking for? <g:FlowPanel ui:field="searchFlowPanel" />
