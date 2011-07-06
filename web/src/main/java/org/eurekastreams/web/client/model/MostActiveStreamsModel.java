@@ -28,8 +28,6 @@ import org.eurekastreams.web.client.events.data.GotMostActiveStreamsPageResponse
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.user.client.Window;
-
 /**
  * Model to get paged results of StreamDTOs for displaying the most active streams.
  */
@@ -42,7 +40,7 @@ public class MostActiveStreamsModel extends BaseModel implements Fetchable<GetMo
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static MostActiveStreamsModel getInstance()
@@ -52,7 +50,7 @@ public class MostActiveStreamsModel extends BaseModel implements Fetchable<GetMo
 
     /**
      * Fetch a page of StreamDTOs from the most active streams.
-     *
+     * 
      * @param inRequest
      *            the request, containing the start and end index, inclusive
      * @param inUseClientCacheIfAvailable
@@ -67,7 +65,6 @@ public class MostActiveStreamsModel extends BaseModel implements Fetchable<GetMo
                     public void update(final GotStreamDiscoverListsDTOResponseEvent event)
                     {
                         EventBus.getInstance().removeObserver(GotStreamDiscoverListsDTOResponseEvent.class, this);
-                        Window.alert("GotStreamDiscoverListsDTOResponseEvent");
 
                         // we have the data - determine the page of data we need
                         SublistWithResultCount<StreamDTO> mostActiveStreams = event.getResponse()
@@ -79,7 +76,7 @@ public class MostActiveStreamsModel extends BaseModel implements Fetchable<GetMo
                         resultPage.setToIndex(inRequest.getEndIndex());
                         resultPage.setTotal(mostActiveStreams.getTotalResultsCount().intValue());
 
-                        if (streamDTOs != null && inRequest.getStartIndex() != null && inRequest.getStartIndex() > 0
+                        if (streamDTOs != null && inRequest.getStartIndex() != null && inRequest.getStartIndex() >= 0
                                 && streamDTOs.size() > inRequest.getStartIndex())
                         {
                             // we have data
@@ -87,14 +84,14 @@ public class MostActiveStreamsModel extends BaseModel implements Fetchable<GetMo
                             if (streamDTOs.size() < inRequest.getEndIndex() + 1)
                             {
                                 // we're at the end of the list
-                                resultPage.setPagedSet(streamDTOs
-                                        .subList(inRequest.getStartIndex(), streamDTOs.size()));
+                                resultPage.setPagedSet(streamDTOs.subList(inRequest.getStartIndex(), //
+                                        streamDTOs.size()));
                             }
                             else
                             {
                                 // this isn't the last page
-                                resultPage.setPagedSet(streamDTOs.subList(inRequest.getStartIndex(), inRequest
-                                        .getEndIndex() + 1));
+                                resultPage.setPagedSet(streamDTOs.subList(inRequest.getStartIndex(),
+                                        inRequest.getEndIndex() + 1));
                             }
                         }
                         else
@@ -103,12 +100,13 @@ public class MostActiveStreamsModel extends BaseModel implements Fetchable<GetMo
                             resultPage.setPagedSet(new ArrayList<StreamDTO>());
                         }
 
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotMostActiveStreamsPageResponseEvent(resultPage));
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new GotMostActiveStreamsPageResponseEvent(resultPage, streamDTOs.size()));
                     }
                 });
 
-        Window.alert("MostActiveStreamsModel - about to fetch");
         StreamsDiscoveryModel.getInstance().fetch(null, inUseClientCacheIfAvailable);
     }
 }

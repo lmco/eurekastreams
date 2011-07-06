@@ -24,13 +24,43 @@ import org.eurekastreams.server.domain.dto.StreamDTO;
 public class GotMostActiveStreamsPageResponseEvent extends BaseDataResponseEvent<PagedSet<StreamDTO>>
 {
     /**
+     * The number of streams to allow the user to page through.
+     */
+    private int totalNumberOfAccessibleStreams;
+
+    /**
      * Constructor.
      * 
      * @param inResponse
      *            response.
+     * @param inTotalNumberOfAccessibleStreams
+     *            the number of streams the user may page through
      */
-    public GotMostActiveStreamsPageResponseEvent(final PagedSet<StreamDTO> inResponse)
+    public GotMostActiveStreamsPageResponseEvent(final PagedSet<StreamDTO> inResponse,
+            final int inTotalNumberOfAccessibleStreams)
     {
         super(inResponse);
+        totalNumberOfAccessibleStreams = inTotalNumberOfAccessibleStreams;
+    }
+
+    /**
+     * Get the number of streams the user can page through.
+     * 
+     * @return the number of streams the user can page through
+     */
+    public int getTotalNumberOfAccessibleStreams()
+    {
+        return totalNumberOfAccessibleStreams;
+    }
+
+    /**
+     * Set the number of streams the user can page through.
+     * 
+     * @param inTotalNumberOfAccessibleStreams
+     *            the number of streams the user can page through
+     */
+    public void setTotalNumberOfAccessibleStreams(final int inTotalNumberOfAccessibleStreams)
+    {
+        totalNumberOfAccessibleStreams = inTotalNumberOfAccessibleStreams;
     }
 }

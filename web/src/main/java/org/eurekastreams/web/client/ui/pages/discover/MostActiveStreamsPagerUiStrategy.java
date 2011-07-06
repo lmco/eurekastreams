@@ -25,7 +25,6 @@ import org.eurekastreams.web.client.model.MostActiveStreamsModel;
 import org.eurekastreams.web.client.ui.common.pagedlist.ThreeColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.pager.PagerStrategy;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -65,7 +64,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPageSize
      *            the page size
      */
@@ -79,9 +78,13 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
                 {
                     public void update(final GotMostActiveStreamsPageResponseEvent inEvent)
                     {
-                        Window.alert("GotMostActiveStreamsPageResponseEvent");
                         // tell the pager not to try to page past the number of locally-cached items
-                        pager.setMaxCount(inEvent.getResponse().getPagedSet().size());
+                        pager.setMaxCount(inEvent.getTotalNumberOfAccessibleStreams());
+
+                        // set the start and end indexes
+                        pager.setStartItem(inEvent.getResponse().getFromIndex());
+                        pager.setEndItem(inEvent.getResponse().getToIndex());
+                        pager.setPageSize(pageSize);
 
                         FlowPanel responsePanel = new FlowPanel();
                         threeColListRenderer.render(responsePanel, itemRenderer, inEvent.getResponse(),
@@ -95,7 +98,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Get the key for this response - allows for UI to distinguish which PageerResponseEvent was fired.
-     *
+     * 
      * @return the key for this PagerRequest
      */
     public String getKey()
@@ -105,7 +108,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Whether there's a next page.
-     *
+     * 
      * @return whether there's more data
      */
     public boolean hasNext()
@@ -115,7 +118,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Whether there's a previous page.
-     *
+     * 
      * @return whether there's a previous page
      */
     public boolean hasPrev()
@@ -130,7 +133,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
     {
         // 9 per page
         pager.setPageSize(pageSize);
-        model.fetch(new GetMostActiveStreamsPageRequest(0, pageSize), true);
+        model.fetch(new GetMostActiveStreamsPageRequest(0, pageSize - 1), true);
     }
 
     /**
