@@ -48,7 +48,7 @@ public class AddLinkComposite extends FlowPanel
     private final Label addLink = new Label("attach link");
 
     /** Add link button. */
-    private final Label fetchLink = new Label("Go");
+    private final Label fetchLink = new Label("");
 
     /** The add link panel. */
     private final FlowPanel addPanel = new FlowPanel();

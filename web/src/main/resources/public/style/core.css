@@ -1904,7 +1904,6 @@ body .post-to-stream .over-character-limit {
 }
 
 .link-panel {
-	background-color: #EEE;
 	padding: 20px;
 }
 
@@ -1919,7 +1918,7 @@ body .post-to-stream .over-character-limit {
 .attach-link {
 	padding: 10px;
 	padding-bottom: 20px;
-	background-color: #EEE;
+	border: 1px solid #c6c6c6;
 }
 
 .attach-link>.close,.link-panel>.close,.search-description>.close {
@@ -1968,6 +1967,7 @@ body .post-to-stream .over-character-limit {
 
 .attach-link .title {
 	font-weight: bold;
+	margin-bottom: 10px;
 }
 
 .show-attach-link-panel {
@@ -1986,6 +1986,8 @@ body .post-to-stream .over-character-limit {
 .attach-link .add-button-submit {
 	float: right;
 	margin-top: 5px;
+	text-ident: 1000em;
+	overflow: hidden;
 }
 
 @sprite body .attach-link .verifying-link {

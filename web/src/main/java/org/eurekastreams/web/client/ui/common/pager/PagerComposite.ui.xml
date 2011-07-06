@@ -1,7 +1,13 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-
+	<ui:image field="prev" src="style/images/prev.png" />
+	<ui:image field="prevHover" src="style/images/prevHover.png" />
+	<ui:image field="prevDisabled" src="style/images/prevDisabled.png" />
+	<ui:image field="next" src="style/images/next.png" />
+	<ui:image field="nextHover" src="style/images/nextHover.png" />
+	<ui:image field="nextDisabled" src="style/images/nextDisabled.png" />
+	
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.pager.PagerComposite.PagerStyle">
 		.pagerContainer
@@ -23,6 +29,38 @@
 		cursor: pointer;
 		display: inline-block;
 		margin-left: 10px;
+		overflow: hidden;
+		text-indent: 1000em;
+		}
+		
+		@sprite .prevButton
+		{
+		gwt-image:"prev";
+		}
+
+		@sprite .prevButton:hover
+		{
+		gwt-image:"prevHover";
+		}
+
+		@sprite .nextButton
+		{
+		gwt-image:"next";
+		}
+
+		@sprite .nextButton:hover
+		{
+		gwt-image:"nextHover";
+		}
+		
+		@sprite .prevButton.pagingDisabled
+		{
+		gwt-image:"prevDisabled";
+		}
+
+		@sprite .nextButton.pagingDisabled
+		{
+		gwt-image:"nextDisabled";
 		}
 		
 		body .pagingDisabled
@@ -42,6 +80,7 @@
 		{
 			float: left;
 		}
+		
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.pagerContainer}"

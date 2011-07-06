@@ -35,6 +35,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
@@ -49,14 +50,17 @@ import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
+import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
+import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
+import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
@@ -72,10 +76,13 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -204,6 +211,12 @@ public class ActivityContent extends Composite
     DivElement activitySpinner;
 
     /**
+     * Feed link.
+     */
+    @UiField
+    Label feedLink;
+
+    /**
      * UI element for more spinner.
      */
     @UiField
@@ -220,6 +233,12 @@ public class ActivityContent extends Composite
      */
     @UiField
     Label addBookmark;
+
+    /**
+     * UI element for adding a a stream to the start page.
+     */
+    @UiField
+    Label addToStartPage;
 
     /**
      * Create Filter.
@@ -294,6 +313,11 @@ public class ActivityContent extends Composite
     private Panel everyoneFilterPanel = null;
 
     /**
+     * Stream to URL transformer.
+     * */
+    private static final StreamToUrlTransformer STREAM_URL_TRANSFORMER = new StreamToUrlTransformer();
+
+    /**
      * Default constructor.
      */
     public ActivityContent()
@@ -321,7 +345,7 @@ public class ActivityContent extends Composite
         StreamBookmarksModel.getInstance().fetch(null, true);
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-        
+
         loadStream(Session.getInstance().getUrlViews());
     }
 
@@ -450,7 +474,9 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     * @param inViews the views.
+     * 
+     * @param inViews
+     *            the views.
      */
     protected void handleViewsChanged(final List<String> inViews)
     {
@@ -464,17 +490,15 @@ public class ActivityContent extends Composite
         }
 
         views.set(views.size() - 1, "recent");
-        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ACTIVITY, views)));
+        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
         views.set(views.size() - 1, "popular");
-        popularSort.setTargetHistoryToken(Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ACTIVITY, views)));
+        popularSort
+                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
         views.set(views.size() - 1, "active");
-        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.ACTIVITY, views)));
-        
+        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+
     }
 
     /**
@@ -649,11 +673,30 @@ public class ActivityContent extends Composite
             }
         });
 
+        addToStartPage.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                GadgetModel.getInstance().insert(
+                        new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null,
+                                STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString())));
+            }
+        });
+
         createFilter.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
             {
                 Dialog.showCentered(new CustomStreamDialogContent());
+            }
+        });
+
+        feedLink.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                Window.Location.assign("/resources/atom/stream/query/recipient/" + currentStream.getScopeType() + ":"
+                        + currentStream.getUniqueKey());
             }
         });
 
