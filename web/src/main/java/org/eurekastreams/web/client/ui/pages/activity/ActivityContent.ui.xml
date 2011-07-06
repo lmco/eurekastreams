@@ -194,12 +194,12 @@
 		.subscribe-options 
 		{
 		background-color: #BDBDBD;
-		display: none;
-		margin-left: -126px;
-		position: absolute;
-		top: 34px;
-		width: 186px;
-		padding: 2px;
+    	display: none;
+    	margin-left: -66px;
+    	padding: 2px;
+    	position: absolute;
+    	top: 34px;
+	    width: 126px;
 		}
 		
 		.subscribe-box:hover .subscribe-options
