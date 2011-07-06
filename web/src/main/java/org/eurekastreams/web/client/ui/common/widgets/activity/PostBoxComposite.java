@@ -46,7 +46,6 @@ import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulat
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -57,8 +56,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -366,7 +363,7 @@ public class PostBoxComposite extends Composite
                     {
                         for (final String tag : allHashTags)
                         {
-                            if (hashTags.getWidgetCount() >= 10)
+                            if (hashTags.getWidgetCount() > 9)
                             {
                                 break;
                             }
