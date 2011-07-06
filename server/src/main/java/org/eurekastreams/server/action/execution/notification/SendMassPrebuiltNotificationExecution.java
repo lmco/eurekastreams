@@ -16,20 +16,27 @@
 package org.eurekastreams.server.action.execution.notification;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action to inject a pre-built notification into the system.
  */
 public class SendMassPrebuiltNotificationExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
+    /** Logger. */
+    static Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
+
     /** Mapper to create notification for all (unlocked) users. */
     private final DomainMapper<SendPrebuiltNotificationRequest, Serializable> createNotificationsMapper;
 
@@ -60,9 +67,14 @@ public class SendMassPrebuiltNotificationExecution implements TaskHandlerExecuti
     {
         final PrincipalActionContext actionContext = inWrapperContext.getActionContext();
 
+        Date d = new Date();
+        d = logTime(d, "START");
+
         // add the notification to the database
         int count = (Integer) createNotificationsMapper.execute((SendPrebuiltNotificationRequest) actionContext
                 .getParams());
+
+        d = logTime(d, "created notifications (" + count + ")");
 
         // get list of users and refresh their notification counts
         // Note: strategy here is to fetch the list within the action, then refresh each asynchronously. Some design
@@ -72,13 +84,34 @@ public class SendMassPrebuiltNotificationExecution implements TaskHandlerExecuti
         {
             List<Long> userIds = unlockedUsersMapper.execute(false);
 
+            d = logTime(d, "got unlocked users (" + userIds.size() + ")");
+
             List<UserActionRequest> actions = inWrapperContext.getUserActionRequests();
             for (Long userId : userIds)
             {
                 actions.add(new UserActionRequest("refreshUserInAppNotificationCounts", null, userId));
             }
+
+            d = logTime(d, "added async requests  [DONE]");
         }
 
         return count;
+    }
+
+    /**
+     * REMOVE THIS.
+     *
+     * @param last
+     *            last.
+     * @param msg
+     *            msg.
+     * @return return.
+     */
+    private Date logTime(final Date last, final String msg)
+    {
+        Date now = new Date();
+        log.info(msg + " (" + (now.getTime() - last.getTime()) + "ms)");
+
+        return now;
     }
 }
