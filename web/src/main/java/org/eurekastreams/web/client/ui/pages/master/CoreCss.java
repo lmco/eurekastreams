@@ -27,6 +27,8 @@ public interface CoreCss extends CssResource
     @ClassName("access-denied")
     String accessDenied();
 
+    String saveChangesButton();
+    
     @ClassName("access-groups")
     String accessGroups();
 
@@ -2171,5 +2173,7 @@ public interface CoreCss extends CssResource
     String followDialogTips();
 
     String bookmarkSearchActive();
+
+    String followDialogButtonPanel();
 
 }

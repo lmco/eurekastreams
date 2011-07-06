@@ -2726,20 +2726,50 @@ body .previous-arrow:hover {
 .followDialog {
 }
 
+.followDialog .title
+{
+	font-weight: bold;
+    margin: 5px 0;
+}
+
+.followDialogButtonPanel { 
+	margin-top: 15px;
+    overflow: hidden;
+}
+
+.followDialogButtonPanel > div {
+	cursor: pointer;
+	color: #126ABC;
+	float: left;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+.followDialogButtonPanel > div.saveChangesButton
+{
+	float: left;
+	margin-top: 0;
+	margin-left: 0;
+}
+	
 .followDialogBody {
 	background-color: white;
 	float: left;
 	width: 350px;
+	padding: 10px;
 }
 
 .followDialogBody .gwt-CheckBox {
-	display: block;
-	margin-bottom: 5px;
+    border-bottom: 1px dashed #C6C6C6;
+    display: block;
+    margin: 5px 5px 5px 0;
+    padding: 5px 5px 5px 0;	
 }
 
 .followDialogTips {
 	float: right;
 	width: 150px;
+	padding: 10px;
 }
 
 .followDialogTips div {
@@ -4965,6 +4995,11 @@ div.tab-container {
 	padding-top: 10px;
 	padding-left: 0px;
 	top: 1px;
+}
+
+@sprite .saveChangesButton
+{
+	gwt-image: "saveChangesBtn";
 }
 
 .profile-settings-tab-content>div>.form-container>.form-submit-button,.stream-settings-tab-content>div>div>div>.form-container>.form-submit-button,.stream-plugins-feed-subscriptions-container-edit a.form-submit-button,body .edit-position a.form-submit-button,body .edit-school a.form-submit-button,.group-profile-settings-panel a.form-submit-button,.form-submit-button,.list-edit-modal a.form-submit-button,.stream-search-dialog-body-edit a.form-submit-button,.notif-settings-form a.form-submit-button,.system-settings a.form-submit-button

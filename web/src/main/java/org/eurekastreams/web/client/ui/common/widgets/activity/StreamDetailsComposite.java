@@ -99,6 +99,12 @@ public class StreamDetailsComposite extends Composite
          * @return active option style.
          */
         String activeOption();
+
+        String everyoneAvatar();
+
+        String followingAvatar();
+
+        String privateAvatar();
     }
 
     /**
@@ -201,6 +207,12 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     HTMLPanel streamAvatar;
+
+    /**
+     * UI element for condensed stream avatar.
+     */
+    @UiField
+    HTMLPanel condensedAvatar;
 
     /**
      * UI element for stream description.
@@ -372,6 +384,7 @@ public class StreamDetailsComposite extends Composite
                     {
                         PersonModelView person = event.getResponse();
                         streamId = person.getStreamId();
+                        Session.getInstance().setPageTitle(person.getDisplayName());
 
                         if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
                         {
@@ -411,48 +424,60 @@ public class StreamDetailsComposite extends Composite
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
                         DomainGroupModelView group = event.getResponse();
-                        streamId = group.getStreamId();
+                        Session.getInstance().setPageTitle(group.getName());
 
-                        boolean isCoordinator = false;
-
-                        for (PersonModelView coordinator : group.getCoordinators())
+                        if (group.isRestricted())
                         {
-                            if (coordinator.getAccountId().equals(
-                                    Session.getInstance().getCurrentPerson().getAccountId()))
-                            {
-                                isCoordinator = true;
-                                break;
-                            }
-                        }
-
-                        if (isCoordinator || Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
-                        {
-                            configureLink.setVisible(true);
-                            configureLink.setHref("#groupsettings/" + group.getShortName());
+                            condensedAvatar.addStyleName(style.privateAvatar());
+                            thisClass.addStyleName(style.condensedStream());
                         }
                         else
                         {
-                            configureLink.setVisible(false);
+
+                            streamId = group.getStreamId();
+
+                            boolean isCoordinator = false;
+
+                            for (PersonModelView coordinator : group.getCoordinators())
+                            {
+                                if (coordinator.getAccountId().equals(
+                                        Session.getInstance().getCurrentPerson().getAccountId()))
+                                {
+                                    isCoordinator = true;
+                                    break;
+                                }
+                            }
+
+                            if (isCoordinator
+                                    || Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+                            {
+                                configureLink.setVisible(true);
+                                configureLink.setHref("#groupsettings/" + group.getShortName());
+                            }
+                            else
+                            {
+                                configureLink.setVisible(false);
+                            }
+
+                            updateFollowLink(group.getShortName(), EntityType.GROUP);
+
+                            streamName.setInnerText(group.getName());
+                            streamMeta.setInnerText("");
+                            // streamMeta.setInnerText(group.get);
+                            streamAvatar.clear();
+                            streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
+                                    EntityType.GROUP, Size.Normal));
+
+                            followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
+                            streamDescription.setInnerText(group.getDescription());
+                            String interestString = "";
+                            for (String interest : group.getCapabilities())
+                            {
+                                interestString += "<a href='#" + interest + "'>" + interest + "</a>";
+                            }
+                            streamInterests.setInnerHTML(interestString);
+                            streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
                         }
-
-                        updateFollowLink(group.getShortName(), EntityType.GROUP);
-
-                        streamName.setInnerText(group.getName());
-                        streamMeta.setInnerText("");
-                        // streamMeta.setInnerText(group.get);
-                        streamAvatar.clear();
-                        streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
-                                EntityType.GROUP, Size.Normal));
-
-                        followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
-                        streamDescription.setInnerText(group.getDescription());
-                        String interestString = "";
-                        for (String interest : group.getCapabilities())
-                        {
-                            interestString += "<a href='#" + interest + "'>" + interest + "</a>";
-                        }
-                        streamInterests.setInnerHTML(interestString);
-                        streamHashtags.setInnerHTML("<a href='#something'>#something</a>");
                     }
                 });
 
@@ -472,9 +497,15 @@ public class StreamDetailsComposite extends Composite
 
                 List<String> views = new ArrayList<String>(event.getViews());
 
+                condensedAvatar.removeStyleName(style.everyoneAvatar());
+                condensedAvatar.removeStyleName(style.followingAvatar());
+                condensedAvatar.removeStyleName(style.privateAvatar());
+
                 if (views == null || views.size() == 0 || views.get(0).equals("following"))
                 {
                     streamName.setInnerText("Following");
+                    Session.getInstance().setPageTitle("Following");
+                    condensedAvatar.addStyleName(style.followingAvatar());
                     thisClass.addStyleName(style.condensedStream());
                 }
                 else if (views.get(0).equals("person") && views.size() >= 2)
@@ -488,11 +519,14 @@ public class StreamDetailsComposite extends Composite
                 else if (views.get(0).equals("custom") && views.size() >= 3)
                 {
                     streamName.setInnerText("Custom");
+                    Session.getInstance().setPageTitle("Custom Stream");
                     thisClass.addStyleName(style.condensedStream());
                 }
                 else if (views.get(0).equals("everyone"))
                 {
                     streamName.setInnerText("Everyone");
+                    Session.getInstance().setPageTitle("Everyone");
+                    condensedAvatar.addStyleName(style.everyoneAvatar());
                     thisClass.addStyleName(style.condensedStream());
                 }
                 else if (views.size() == 1)

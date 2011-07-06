@@ -331,6 +331,7 @@ public class StartPageTab extends SimpleTab
     {
         super.select();
         isActive = true;
+        Session.getInstance().setPageTitle(tab.getTabName());
         if (getContents() != null && getContents() instanceof StartPageTabContent)
         {
             ((StartPageTabContent) getContents()).renderGadgets();

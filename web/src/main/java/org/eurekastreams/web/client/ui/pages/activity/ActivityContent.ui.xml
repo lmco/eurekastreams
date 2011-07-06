@@ -292,7 +292,7 @@
 			ui:field="streamContainerPanel">
 			<ewa:StreamDetailsComposite></ewa:StreamDetailsComposite>
 			<ewa:PostBoxComposite></ewa:PostBoxComposite>
-			<div class="{style.options-panel}">
+			<div ui:field="streamOptionsPanel" class="{style.options-panel}">
 				<g:Hyperlink addStyleNames="{style.sort-option} {style.activeSort}"
 					ui:field="recentSort">Recent</g:Hyperlink>
 				<g:Hyperlink addStyleNames="{style.sort-option}" ui:field="popularSort">

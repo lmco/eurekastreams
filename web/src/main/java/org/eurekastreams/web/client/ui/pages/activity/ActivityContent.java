@@ -50,6 +50,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GadgetModel;
+import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
@@ -69,6 +70,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -244,6 +246,12 @@ public class ActivityContent extends Composite
     Label createFilter;
 
     /**
+     * Subscribe via email.
+     */
+    @UiField
+    Label subscribeViaEmail;
+
+    /**
      * Message Renderer.
      */
     StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
@@ -268,6 +276,12 @@ public class ActivityContent extends Composite
      */
     @UiField
     TextBox searchBox;
+    
+    /**
+     * Stream options panel.
+     */
+    @UiField
+    DivElement streamOptionsPanel;
 
     /**
      * Current stream scope.
@@ -430,6 +444,13 @@ public class ActivityContent extends Composite
                     {
                         DomainGroupModelView group = event.getResponse();
                         currentScopeId = group.getStreamId();
+                        
+                        if (group.isRestricted())
+                        {
+                            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
+                            currentStream.setScopeType(null);
+                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+                        }
                     }
                 });
 
@@ -667,8 +688,17 @@ public class ActivityContent extends Composite
             public void onClick(final ClickEvent event)
             {
                 StreamBookmarksModel.getInstance().insert(currentScopeId);
+                addBookmark.setVisible(false);
             }
         });
+        
+        subscribeViaEmail.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+            }
+        });
+
 
         addToStartPage.addClickHandler(new ClickHandler()
         {
@@ -757,6 +787,12 @@ public class ActivityContent extends Composite
     {
         Session.getInstance().getActionProcessor().setQueueRequests(true);
 
+        addBookmark.setVisible(false);
+        subscribeViaEmail.setVisible(false);
+        feedLink.setVisible(false);
+        
+        streamOptionsPanel.getStyle().setDisplay(Display.BLOCK);
+
         boolean singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         moreLink.setVisible(false);
@@ -777,6 +813,12 @@ public class ActivityContent extends Composite
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
             setAsActiveStream(bookmarksWidgetMap.get("person/" + accountId));
+            if (!bookmarksWidgetMap.containsKey("person/" + accountId))
+            {
+                addBookmark.setVisible(true);
+            }
+            subscribeViaEmail.setVisible(true);
+            feedLink.setVisible(true);
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -786,6 +828,12 @@ public class ActivityContent extends Composite
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
             setAsActiveStream(bookmarksWidgetMap.get("group/" + shortName));
+            if (!bookmarksWidgetMap.containsKey("group/" + shortName))
+            {
+                addBookmark.setVisible(true);
+            }
+            subscribeViaEmail.setVisible(true);
+            feedLink.setVisible(true);
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {

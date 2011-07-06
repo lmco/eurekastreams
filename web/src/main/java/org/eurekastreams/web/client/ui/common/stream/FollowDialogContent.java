@@ -65,7 +65,7 @@ public class FollowDialogContent extends BaseDialogContent
      */
     public FollowDialogContent(final String inStreamName, final String streamRequest, final Long inStreamId)
     {
-        Label saveButton = new Label("save");
+        Label saveButton = new Label("");
         Label closeButton = new Label("Close");
 
         closeButton.addClickHandler(new ClickHandler()
@@ -77,7 +77,11 @@ public class FollowDialogContent extends BaseDialogContent
         });
 
         body.add(new Label("You are not following the:"));
-        body.add(new Label(inStreamName + " Stream"));
+
+        Label streamTitle = new Label(inStreamName + " Stream");
+        streamTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());       
+        
+        body.add(streamTitle);
 
         FlowPanel options = new FlowPanel();
 
@@ -122,7 +126,9 @@ public class FollowDialogContent extends BaseDialogContent
         body.add(options);
 
         FlowPanel buttonPanel = new FlowPanel();
+        buttonPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followDialogButtonPanel());
 
+        saveButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().saveChangesButton());
         buttonPanel.add(saveButton);
         buttonPanel.add(closeButton);
 

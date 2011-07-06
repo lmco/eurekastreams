@@ -13,6 +13,7 @@
 
 	<ui:image field="everyoneHeader" src="style/images/everyoneHeader.png" />
 	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
+	<ui:image field="privateHeader" src="style/images/privateIcon.png" />
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.widgets.activity.StreamDetailsComposite.StreamDetailsStyle">
@@ -145,14 +146,27 @@
 		{
 		display: none;
 		float: left;
-		padding: 5px;
 		margin: 10px;
 		}
 
-		@sprite .condensedStream .condensedAvatar
+		.condensedStream .condensedAvatar
+		{
+		display: block;
+		}
+		
+		@sprite .condensedStream .everyoneAvatar
 		{
 		gwt-image: "everyoneHeader";
-		display: block;
+		}
+
+		@sprite .condensedStream .privateAvatar
+		{
+		gwt-image: "privateHeader";
+		}
+
+		@sprite .condensedStream .followingAvatar
+		{
+		gwt-image: "followingHeader";
 		}
 
 
@@ -220,7 +234,7 @@
 
 	<g:HTMLPanel>
 		<div class="{style.header}">
-			<div class="{style.condensedAvatar}"></div>
+			<g:HTMLPanel ui:field="condensedAvatar" addStyleNames="{style.condensedAvatar}"></g:HTMLPanel>
 			<g:HTMLPanel addStyleNames="{style.stream-avatar}"
 				ui:field="streamAvatar">
 			</g:HTMLPanel>

@@ -71,6 +71,7 @@ public class PageFactory
         switch (page)
         {
         case ACTION:
+            Session.getInstance().setPageTitle("Action");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -84,6 +85,7 @@ public class PageFactory
             });
             break;
         case SEARCH:
+            Session.getInstance().setPageTitle("Search");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -97,6 +99,7 @@ public class PageFactory
             });
             break;
         case SETTINGS:
+            Session.getInstance().setPageTitle("Settings");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -123,6 +126,7 @@ public class PageFactory
             });
             break;
         case GALLERY:
+            Session.getInstance().setPageTitle("Gallery");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -136,6 +140,7 @@ public class PageFactory
             });
             break;
         case ACTIVITY:
+            Session.getInstance().setPageTitle("Activity");
             contentPanel.add(new ActivityContent());
             break;
         case PEOPLE_LEGACY:
@@ -145,6 +150,7 @@ public class PageFactory
             Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
             break;
         case PERSONAL_SETTINGS:
+            Session.getInstance().setPageTitle("Settings");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -158,6 +164,7 @@ public class PageFactory
             });
             break;
         case GROUP_SETTINGS:
+            Session.getInstance().setPageTitle("Settings");            
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -171,6 +178,7 @@ public class PageFactory
             });
             break;
         case NEW_GROUP:
+            Session.getInstance().setPageTitle("New Group");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -184,6 +192,7 @@ public class PageFactory
             });
             break;
         case METRICS:
+            Session.getInstance().setPageTitle("Metrics");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -197,6 +206,7 @@ public class PageFactory
             });
             break;
         case DISCOVER:
+            Session.getInstance().setPageTitle("Discover");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -210,9 +220,11 @@ public class PageFactory
             });
             break;
         case NOTIFICATION_SETTINGS:
+            Session.getInstance().setPageTitle("Notification Settings");            
             contentPanel.add(new NotificationSettingsPage());
             break;
         default:
+            Session.getInstance().setPageTitle("Start Page");            
             contentPanel.add(new StartPageContent());
             break;
         }

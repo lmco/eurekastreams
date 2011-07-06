@@ -33,6 +33,7 @@ import org.eurekastreams.web.client.log.Log;
 import org.eurekastreams.web.client.timer.Timer;
 
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 
@@ -333,6 +334,17 @@ public class Session
     public List<String> getUrlViews()
     {
         return history.getViews();
+    }
+
+    /**
+     * Set the title of the page.
+     * 
+     * @param title
+     *            the page title.
+     */
+    public void setPageTitle(final String title)
+    {
+        Window.setTitle(title + " - Eureka Streams");
     }
 
     /**
