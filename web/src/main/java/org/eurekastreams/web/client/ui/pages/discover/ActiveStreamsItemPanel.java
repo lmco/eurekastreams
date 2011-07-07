@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.ui.pages.discover;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -26,7 +25,6 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -40,7 +38,7 @@ public class ActiveStreamsItemPanel extends FlowPanel
 {
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamDTO
      *            the streamDTO to represent
      */
@@ -87,10 +85,11 @@ public class ActiveStreamsItemPanel extends FlowPanel
             followersPanel.add(new InlineLabel(Integer.toString(inStreamDTO.getFollowersCount()) + " Daily Messages"));
         }
         insertActionSeparator(followersPanel);
-
-        if (inStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
+        if (inStreamDTO.getEntityType() != EntityType.PERSON
+                || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            followersPanel.add(new HTML("(FOLLOWING)"));
+            // not the current person
+            followersPanel.add(new FollowPanel(inStreamDTO));
         }
         infoPanel.add(followersPanel);
 
@@ -99,7 +98,7 @@ public class ActiveStreamsItemPanel extends FlowPanel
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */

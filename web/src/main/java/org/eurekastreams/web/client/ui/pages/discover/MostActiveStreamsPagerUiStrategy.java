@@ -64,7 +64,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPageSize
      *            the page size
      */
@@ -106,7 +106,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Get the key for this response - allows for UI to distinguish which PageerResponseEvent was fired.
-     * 
+     *
      * @return the key for this PagerRequest
      */
     public String getKey()
@@ -116,7 +116,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Whether there's a next page.
-     * 
+     *
      * @return whether there's more data
      */
     public boolean hasNext()
@@ -126,7 +126,7 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
 
     /**
      * Whether there's a previous page.
-     * 
+     *
      * @return whether there's a previous page
      */
     public boolean hasPrev()
@@ -162,5 +162,4 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
         pager.previousPage();
         model.fetch(new GetMostActiveStreamsPageRequest(pager.getStartItem(), pager.getEndItem()), true);
     }
-
 }

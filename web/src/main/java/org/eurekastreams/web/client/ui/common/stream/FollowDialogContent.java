@@ -66,7 +66,7 @@ public class FollowDialogContent extends BaseDialogContent
     public FollowDialogContent(final String inStreamName, final String streamRequest, final Long inStreamId)
     {
         Label saveButton = new Label("");
-        Label closeButton = new Label("Close");
+        Label closeButton = new Label("No Thanks");
 
         closeButton.addClickHandler(new ClickHandler()
         {

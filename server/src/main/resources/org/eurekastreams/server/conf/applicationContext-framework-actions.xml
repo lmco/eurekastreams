@@ -430,76 +430,6 @@
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="deleteEmployment" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-             <bean
-                class="org.eurekastreams.server.action.authorization.profile.ModifyEmploymentAuthorizationStrategy">
-                <constructor-arg ref="jpaJobMapper" />
-                <constructor-arg ref="passThruRequestTransformer" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.DeleteEmploymentExecution">
-                <constructor-arg ref="jpaJobMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="deleteEducation" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-             <bean
-                class="org.eurekastreams.server.action.authorization.profile.ModifyEducationAuthorizationStrategy">
-                <constructor-arg ref="jpaEnrollmentMapper" />
-                <constructor-arg ref="passThruRequestTransformer" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.DeleteEducationExecution">
-                <constructor-arg ref="jpaEnrollmentMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="getEducation" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.validation.profile.GetProfileInformationValidation">
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.GetEducationExecution">
-                <constructor-arg ref="jpaEnrollmentMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="getEmployment" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.validation.profile.GetProfileInformationValidation">
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.GetEmploymentExecution">
-                <constructor-arg ref="jpaJobMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
     <bean id="addMembershipCriteria" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="isSystemAdminAuthorization" />
@@ -1161,74 +1091,6 @@
         <constructor-arg value="false" />
     </bean>
 
-    <bean id="updateBiography" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.UpdateBiographyExecution">
-                <constructor-arg>
-                    <ref bean="jpaPersonMapper" />
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="persistEducation" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.validation.profile.PersistEducationValidation">
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.authorization.profile.PersistEducationAuthorizationStrategy">
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.PersistEducationExecution">
-                <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
-                </constructor-arg>
-                <constructor-arg ref="indexEntity" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="persistEmployment" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.validation.profile.PersistEmploymentValidation">
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.authorization.profile.PersistEmploymentAuthorizationStrategy">
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.PersistEmploymentExecution">
-                <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
-                </constructor-arg>
-                <constructor-arg ref="indexEntity" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
     <bean id="insertOptOutVideo" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
             <bean
@@ -1830,9 +1692,6 @@
 
 
                    </constructor-arg>
-
-
-
 
                     <constructor-arg>
                         <map>

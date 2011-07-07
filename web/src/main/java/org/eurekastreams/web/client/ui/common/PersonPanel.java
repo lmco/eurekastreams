@@ -18,22 +18,16 @@ package org.eurekastreams.web.client.ui.common;
 import java.util.Date;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
-import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.model.Insertable;
-import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.discover.FollowPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -48,7 +42,7 @@ public class PersonPanel extends FlowPanel
 {
     /**
      * Constructor.
-     * 
+     *
      * @param inPerson
      *            to display
      * @param showFollowers
@@ -64,7 +58,7 @@ public class PersonPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param person
      *            to display
      * @param showFollowers
@@ -156,83 +150,15 @@ public class PersonPanel extends FlowPanel
             }
         }
 
-        infoPanel.add(getFollowWidget(person));
+        infoPanel.add(new FollowPanel(person));
 
         this.add(infoPanel);
-
     }
 
-    /**
-     * Get the follow widget.
-     * 
-     * @param person
-     *            the person.
-     * @return the widget.
-     */
-    private Widget getFollowWidget(final PersonModelView person)
-    {
-        FollowerStatus status = person.getFollowerStatus();
-        FlowPanel followPanel = new FlowPanel();
-
-        if (status != null)
-        {
-            final Label unfollowLink = new Label("");
-            unfollowLink.setVisible(false);
-            final Label followLink = new Label("");
-            followLink.setVisible(false);
-
-            unfollowLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unFollowLink());
-            unfollowLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followLink());
-            unfollowLink.addClickHandler(new ClickHandler()
-            {
-                public void onClick(final ClickEvent event)
-                {
-                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
-                            .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
-                            Follower.FollowerStatus.NOTFOLLOWING);
-                    ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
-                    unfollowLink.setVisible(false);
-                    followLink.setVisible(true);
-                }
-            });
-
-            followPanel.add(unfollowLink);
-
-            followLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followLink());
-            followLink.addClickHandler(new ClickHandler()
-            {
-                public void onClick(final ClickEvent event)
-                {
-                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
-                            .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
-                            Follower.FollowerStatus.FOLLOWING);
-                    ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
-                    unfollowLink.setVisible(true);
-                    followLink.setVisible(false);
-                }
-            });
-
-            followPanel.add(followLink);
-
-            switch (status)
-            {
-            case FOLLOWING:
-                unfollowLink.setVisible(true);
-                break;
-            case NOTFOLLOWING:
-                followLink.setVisible(true);
-                break;
-            default:
-                break;
-            }
-        }
-        
-        return followPanel;
-    }
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */

@@ -103,7 +103,6 @@ public class PersonTest
         sut.setJobDescription("I am so smart, S M R T");
         sut.setWorkPhone("6105551212");
         sut.setEmail("homer@gmail.com");
-        sut.setLocation("90210");
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         sut.setBookmarks(bookmarks);
         message = null;
@@ -246,12 +245,10 @@ public class PersonTest
         String title = "title";
         String jobDescription = "jobDescription";
         String email = "email@example.com";
-        String location = "myLocation";
         String workPhone = "6666666666";
         String cellPhone = "5555555555";
         String faxNumber = "4444444444";
         String avatar = "abc";
-        String biography = "my bio";
         String overview = "my overview";
         Date dateAdded = new Date();
         final int updatesCount = 23832;
@@ -264,7 +261,6 @@ public class PersonTest
         sut.setTitle(title);
         sut.setJobDescription(jobDescription);
         sut.setEmail(email);
-        sut.setLocation(location);
         sut.setWorkPhone(workPhone);
         sut.setCellPhone(cellPhone);
         sut.setFax(faxNumber);
@@ -272,7 +268,6 @@ public class PersonTest
         sut.setAvatarCropX(avatarCropX);
         sut.setAvatarCropY(avatarCropY);
         sut.setAvatarCropSize(avatarCropSize);
-        sut.setBiography(biography);
         sut.setOverview(overview);
         sut.setDateAdded(dateAdded);
         sut.setUpdatesCount(updatesCount);
@@ -294,7 +289,6 @@ public class PersonTest
         assertEquals("title" + message, title, sut.getTitle());
         assertEquals("jobDescription" + message, jobDescription, sut.getJobDescription());
         assertEquals("email" + message, email, sut.getEmail());
-        assertEquals("location" + message, location, sut.getLocation());
         assertEquals("workPhone" + message, workPhone, sut.getWorkPhone());
         assertEquals("cellPhone" + message, cellPhone, sut.getCellPhone());
         assertEquals("faxNumber" + message, faxNumber, sut.getFax());
@@ -304,7 +298,6 @@ public class PersonTest
         assertEquals(avatarCropX, sut.getAvatarCropX());
         assertEquals(avatarCropY, sut.getAvatarCropY());
         assertEquals(avatarCropSize, sut.getAvatarCropSize());
-        assertEquals(biography, sut.getBiography());
         assertEquals(overview, sut.getOverview());
         assertEquals(dateAdded, sut.getDateAdded());
         assertEquals(updatesCount, sut.getUpdatesCount());
@@ -326,7 +319,6 @@ public class PersonTest
         assertEquals(cellPhone, (String) props.get("cellPhone"));
         assertEquals(jobDescription, (String) props.get("jobDescription"));
         assertEquals(title, (String) props.get("title"));
-        assertEquals(location, (String) props.get("location"));
         assertEquals(streamScopeMock, sut.getStreamScope());
         assertEquals(source, sut.getSourceList());
 
@@ -427,21 +419,6 @@ public class PersonTest
         StringBuffer buffer = new StringBuffer();
         buffer.append(jobDescriptionChars);
         sut.setJobDescription(buffer.toString());
-        ClassValidator<Person> validator = new ClassValidator<Person>(Person.class);
-        InvalidValue[] invalidValues = validator.getInvalidValues(sut);
-        assertEquals(message, 1, invalidValues.length);
-    }
-
-    /**
-     * non-parsable zip code
-     * 
-     * hibernate validation.
-     */
-    @Test
-    public void testValidationLocation()
-    {
-        // non-parsable zip code
-        sut.setLocation("90210p");
         ClassValidator<Person> validator = new ClassValidator<Person>(Person.class);
         InvalidValue[] invalidValues = validator.getInvalidValues(sut);
         assertEquals(message, 1, invalidValues.length);
@@ -552,7 +529,5 @@ public class PersonTest
     {
         Person p = new Person("p", "f", "m", "l", "p");
         assertNull(p.getBackground());
-        assertNull(p.getJobs());
-        assertNull(p.getSchoolEnrollments());
     }
 }

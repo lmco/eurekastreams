@@ -58,13 +58,13 @@ public class DirectorySearchLuceneQueryBuilderTest
     /**
      * Search query used for all entities.
      */
-    private String allEntitiesSearch = "+(lastName:(%1$s)^2 name:(%1$s) overview:(%1$s) biography:(%1$s) "
+    private String allEntitiesSearch = "+(lastName:(%1$s)^2 name:(%1$s) overview:(%1$s) "
             + "jobs:(%1$s) background:(%1$s) education:(%1$s) title:(%1$s) capabilities:(%1$s))";
 
     /**
      * Search query after 'background' was boosted by 500.
      */
-    private String boostedFieldQueryMask = "+(lastName:(%1$s)^2 name:(%1$s) overview:(%1$s) biography:(%1$s) "
+    private String boostedFieldQueryMask = "+(lastName:(%1$s)^2 name:(%1$s) overview:(%1$s) "
             + "jobs:(%1$s) background:(%1$s)^500 education:(%1$s) title:(%1$s) capabilities:(%1$s))";
 
     /**
@@ -92,7 +92,7 @@ public class DirectorySearchLuceneQueryBuilderTest
     @Test
     public void testBuildNativeQueryNoWeightedFieldAllNoUser()
     {
-        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
+        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
         assertEquals(expected, sut.buildNativeQuery(searchText, "", 0));
@@ -106,7 +106,7 @@ public class DirectorySearchLuceneQueryBuilderTest
     @Test
     public void testBuildNativeQueryNoWeightedFieldAllWithUser()
     {
-        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
+        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar) education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
         assertEquals(expected, sut.buildNativeQuery(searchText, "", userPersonId));
@@ -127,7 +127,7 @@ public class DirectorySearchLuceneQueryBuilderTest
             }
         });
 
-        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
+        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar)^500 education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
         assertEquals(expected, sut.buildNativeQuery(searchText, "background", 0));
@@ -149,7 +149,7 @@ public class DirectorySearchLuceneQueryBuilderTest
             }
         });
 
-        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) biography:(foo bar) "
+        String expected = "+(lastName:(foo bar)^2 name:(foo bar) overview:(foo bar) "
                 + "jobs:(foo bar) background:(foo bar)^500 education:(foo bar) title:(foo bar) capabilities:(foo bar))";
 
         assertEquals(expected, sut.buildNativeQuery(searchText, "background", userPersonId));

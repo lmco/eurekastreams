@@ -268,10 +268,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     private List<String> interests = null;
 
-    /**
-     * A person's biography.
-     */
-    private String biography = null;
 
     /**
      * Banner id.
@@ -539,10 +535,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("interests"))
         {
             setInterests((List<String>) properties.get("interests"));
-        }
-        if (properties.containsKey("biography"))
-        {
-            setBiography((String) properties.get("biography"));
         }
         if (properties.containsKey("bannerId"))
         {
@@ -1234,24 +1226,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         interests = inInterests;
     }
-
-    /**
-     * @return the biography
-     */
-    public String getBiography()
-    {
-        return biography;
-    }
-
-    /**
-     * @param inBiography
-     *            the biography to set
-     */
-    public void setBiography(final String inBiography)
-    {
-        biography = inBiography;
-    }
-
+    
     /**
      * @see org.eurekastreams.server.domain.Bannerable#getBannerEntityId()
      * @return the Person id

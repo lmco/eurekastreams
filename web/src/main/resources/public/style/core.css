@@ -7658,7 +7658,7 @@ body div.eureka-connect-liked-activity-wrapper {
 }
 
 	
-@if user.agent gecko { 
+@if user.agent gecko1_8 { 
 	.searchResultsAutocompleteResults
 	{
 		 margin-left: -10px;
