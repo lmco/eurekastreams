@@ -2175,5 +2175,9 @@ public interface CoreCss extends CssResource
     String bookmarkSearchActive();
 
     String followDialogButtonPanel();
+    
+    String followLink();
+    
+    String unFollowLink();
 
 }

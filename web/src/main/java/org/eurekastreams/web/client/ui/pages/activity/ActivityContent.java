@@ -534,7 +534,7 @@ public class ActivityContent extends Composite
             public void update(final GotCurrentUserStreamBookmarks event)
             {
                 bookmarkList.clear();
-                bookmarksWidgetMap.clear();
+                bookmarksWidgetMap.clear();                
 
                 String personUrl = "person/" + Session.getInstance().getCurrentPerson().getAccountId();
                 Panel userBookmark = createPanel(Session.getInstance().getCurrentPerson().getDisplayName(), personUrl,

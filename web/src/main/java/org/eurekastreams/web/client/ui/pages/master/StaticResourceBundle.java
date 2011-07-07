@@ -293,4 +293,17 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/unsubscribeButton.png")
     ImageResource unsubscribeButton();
+    
+
+    @Source("style/images/followBtn.png")
+    ImageResource followBtn();
+    
+    @Source("style/images/followBtnHover.png")
+    ImageResource followBtnHover();
+
+    @Source("style/images/following.png")
+    ImageResource unFollowBtn();
+    
+    @Source("style/images/unfollow.png")
+    ImageResource unFollowBtnHover();
 }

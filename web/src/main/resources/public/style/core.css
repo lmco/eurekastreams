@@ -1457,10 +1457,11 @@ body .post-expanded-panel .content-warning {
 	 border-bottom: 1px solid #999999;
 	 border-left: 1px solid #999999;
 	 border-right: 1px solid #999999;
-	 margin-left: -10px;
 	 padding-bottom: 5px;
 	 padding-left: 0;
 	 padding-top: 5px;
+	 margin-left: -235px;
+	 zoom: 1;
 }
 
 .searchResultsAutocompleteResults > div
@@ -2722,6 +2723,28 @@ body .previous-arrow:hover {
 	font-style: italic;
 }
 
+
+@sprite .followLink
+{
+	margin-top: 10px;
+	gwt-image: "followBtn";
+	cursor: pointer;
+}
+
+@sprite .followLink:hover
+{
+	gwt-image: "followBtnHover";
+}
+
+@sprite .unFollowLink
+{
+	gwt-image: "unFollowBtn";
+}		
+
+@sprite .unFollowLink:hover
+{
+	gwt-image: "unFollowBtnHover";
+}
 
 .followDialog {
 }
@@ -7635,11 +7658,10 @@ body div.eureka-connect-liked-activity-wrapper {
 }
 
 	
-@if user.agent ie6 ie8 { 
+@if user.agent gecko { 
 	.searchResultsAutocompleteResults
 	{
-		margin-left: -235px;
-		zoom: 1;
+		 margin-left: -10px;
 	}	
 }
 

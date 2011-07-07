@@ -5,15 +5,11 @@
 	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
 	<ui:image field="viewDetails" src="style/images/viewDetailsBtn.png" />
 
-	<ui:image field="followBtn" src="style/images/followBtn.png" />
-	<ui:image field="followBtnHover" src="style/images/followBtnHover.png" />
-
-	<ui:image field="unFollowBtn" src="style/images/following.png" />
-	<ui:image field="unFollowBtnHover" src="style/images/unfollow.png" />
-
 	<ui:image field="everyoneHeader" src="style/images/everyoneHeader.png" />
 	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
 	<ui:image field="privateHeader" src="style/images/privateIcon.png" />
+
+	<ui:with field='resources' type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.widgets.activity.StreamDetailsComposite.StreamDetailsStyle">
@@ -95,28 +91,6 @@
 		font-weight: bold;
 		height: 16px;
 		}
-
-		@sprite .followLink
-		{
-		margin-top: 10px;
-		gwt-image: "followBtn";
-		cursor: pointer;
-		}
-		
-		@sprite .followLink:hover
-		{
-		gwt-image: "followBtnHover";
-		}
-		
-		@sprite .unFollowLink
-		{
-		gwt-image: "unFollowBtn";
-		}		
-
-		@sprite .unFollowLink:hover
-		{
-		gwt-image: "unFollowBtnHover";
-		}
 		
 		.configureLink
 		{
@@ -132,7 +106,7 @@
 
 		.condensedStream .toggle-details-link, .condensedStream .follow-info-container,
 		.condensedStream .stream-meta, .condensedStream .stream-avatar,
-		.condensedStream .followLink, .condensedStream .configureLink
+		.condensedStream .headerFollowLink, .condensedStream .configureLink
 		{
 		display: none;
 		}
@@ -241,7 +215,7 @@
 			<div class="{style.stream-info-container}">
 				<span class="{style.stream-name}" ui:field="streamName"></span>
 				<span class="{style.stream-meta}" ui:field="streamMeta"></span>
-				<g:Label addStyleNames="{style.followLink}" ui:field="followLink"></g:Label>
+				<g:Label addStyleNames="{style.headerFollowLink} {resources.coreCss.followLink}" ui:field="followLink"></g:Label>
 				<g:Anchor addStyleNames="{style.configureLink}" ui:field="configureLink">Configure</g:Anchor>
 			</div>
 			<div class="{style.follow-info-container}">

@@ -48,10 +48,12 @@ import org.eurekastreams.web.client.ui.common.pager.FollowingPagerUiStrategy;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
 import org.eurekastreams.web.client.ui.common.stream.FollowDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -85,13 +87,6 @@ public class StreamDetailsComposite extends Composite
          * @return Condensed Stream view.
          */
         String condensedStream();
-
-        /**
-         * Unfollow style.
-         * 
-         * @return Unfollow style.
-         */
-        String unFollowLink();;
 
         /**
          * Active option.
@@ -331,6 +326,10 @@ public class StreamDetailsComposite extends Composite
         streamFollowers.setVisible(false);
         streamFollowing.setVisible(false);
         configureLink.setVisible(false);
+        
+        showFollowing.setVisible(false);
+        followingCount.getStyle().setDisplay(Display.NONE);
+        followingLink.setVisible(false);
 
         followersLink.addClickHandler(new ClickHandler()
         {
@@ -382,6 +381,10 @@ public class StreamDetailsComposite extends Composite
                 {
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
+                        showFollowing.setVisible(true);
+                        followingCount.getStyle().setDisplay(Display.INLINE);
+                        followingLink.setVisible(true);
+                        
                         PersonModelView person = event.getResponse();
                         streamId = person.getStreamId();
                         Session.getInstance().setPageTitle(person.getDisplayName());
@@ -423,6 +426,10 @@ public class StreamDetailsComposite extends Composite
                 {
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
+                        showFollowing.setVisible(false);
+                        followingCount.getStyle().setDisplay(Display.NONE);
+                        followingLink.setVisible(false);
+                        
                         DomainGroupModelView group = event.getResponse();
                         Session.getInstance().setPageTitle(group.getName());
 
@@ -688,10 +695,10 @@ public class StreamDetailsComposite extends Composite
         switch (inStatus)
         {
         case FOLLOWING:
-            followLink.addStyleName(style.unFollowLink());
+            followLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unFollowLink());
             break;
         case NOTFOLLOWING:
-            followLink.removeStyleName(style.unFollowLink());
+            followLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().unFollowLink());
             break;
         default:
             break;

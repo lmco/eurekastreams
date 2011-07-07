@@ -176,32 +176,51 @@ public class PersonPanel extends FlowPanel
 
         if (status != null)
         {
+            final Label unfollowLink = new Label("");
+            unfollowLink.setVisible(false);
+            final Label followLink = new Label("");
+            followLink.setVisible(false);
 
+            unfollowLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unFollowLink());
+            unfollowLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followLink());
+            unfollowLink.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent event)
+                {
+                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
+                            .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
+                            Follower.FollowerStatus.NOTFOLLOWING);
+                    ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
+                    unfollowLink.setVisible(false);
+                    followLink.setVisible(true);
+                }
+            });
 
-            final Label followingLabel = new Label("Following");
-            followingLabel.setVisible(false);
-            followPanel.add(followingLabel);
+            followPanel.add(unfollowLink);
+
+            followLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followLink());
+            followLink.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent event)
+                {
+                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
+                            .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
+                            Follower.FollowerStatus.FOLLOWING);
+                    ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
+                    unfollowLink.setVisible(true);
+                    followLink.setVisible(false);
+                }
+            });
+
+            followPanel.add(followLink);
 
             switch (status)
             {
             case FOLLOWING:
-                followingLabel.setVisible(true);
+                unfollowLink.setVisible(true);
                 break;
             case NOTFOLLOWING:
-                final Label followLink = new Label("Follow");
-                followLink.addClickHandler(new ClickHandler()
-                {
-                    public void onClick(final ClickEvent event)
-                    {
-                        SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
-                                .getCurrentPerson().getAccountId(), person.getAccountId(), EntityType.PERSON, false,
-                                Follower.FollowerStatus.FOLLOWING);
-                        ((Insertable<SetFollowingStatusRequest>) PersonFollowersModel.getInstance()).insert(request);
-                        followLink.removeFromParent();
-                        followingLabel.setVisible(true);
-                    }
-                });
-                followPanel.add(followLink);
+                followLink.setVisible(true);
                 break;
             default:
                 break;
