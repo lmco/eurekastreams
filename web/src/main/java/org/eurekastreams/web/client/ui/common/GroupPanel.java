@@ -24,7 +24,6 @@ import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
@@ -137,8 +136,8 @@ public class GroupPanel extends FlowPanel
     /**
      * Get the follow widget.
      * 
-     * @param person
-     *            the person.
+     * @param group
+     *            the group.
      * @return the widget.
      */
     private Widget getFollowWidget(final DomainGroupModelView group)

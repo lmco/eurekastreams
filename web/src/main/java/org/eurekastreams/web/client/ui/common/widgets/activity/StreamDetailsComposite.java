@@ -95,10 +95,22 @@ public class StreamDetailsComposite extends Composite
          */
         String activeOption();
 
+        /**
+         * Everyone avatar.
+         * @return everyone avatar.
+         */
         String everyoneAvatar();
 
+        /**
+         * Following avatar.
+         * @return following avatar.
+         */
         String followingAvatar();
 
+        /**
+         * Private avatar.
+         * @return Private avatar.
+         */
         String privateAvatar();
     }
 
@@ -311,8 +323,6 @@ public class StreamDetailsComposite extends Composite
         streamName.setInnerText("Following");
         this.addStyleName(style.condensedStream());
 
-        final StreamDetailsComposite thisClass = this;
-
         detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, EXPAND_ANIMATION_DURATION);
         final StreamAnalyticsChart chart = new StreamAnalyticsChart();
 
@@ -375,6 +385,31 @@ public class StreamDetailsComposite extends Composite
                 openAbout();
             }
         });
+
+        toggleDetails.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                if (detailsContainerAnimation.isExpanded())
+                {
+                    detailsContainerAnimation.collapse();
+                }
+                else
+                {
+                    openAbout();
+                }
+            }
+        });
+        
+        addEvents();
+    }
+
+    /**
+     * Add events.
+     */
+    private void addEvents()
+    {
+        final StreamDetailsComposite thisClass = this;
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
@@ -543,20 +578,7 @@ public class StreamDetailsComposite extends Composite
             }
         }, true);
 
-        toggleDetails.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                if (detailsContainerAnimation.isExpanded())
-                {
-                    detailsContainerAnimation.collapse();
-                }
-                else
-                {
-                    openAbout();
-                }
-            }
-        });
+
     }
 
     /**

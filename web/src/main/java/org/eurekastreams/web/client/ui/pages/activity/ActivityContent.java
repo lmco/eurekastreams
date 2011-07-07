@@ -50,7 +50,6 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GadgetModel;
-import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
