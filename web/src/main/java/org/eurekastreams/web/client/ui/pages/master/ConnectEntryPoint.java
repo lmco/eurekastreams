@@ -15,13 +15,10 @@
  */
 package org.eurekastreams.web.client.ui.pages.master;
 
-import java.io.Serializable;
-
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionProcessorImpl;
 import org.eurekastreams.commons.client.ActionRPCService;
 import org.eurekastreams.commons.client.ActionRPCServiceAsync;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.UsageMetricDTO;
 import org.eurekastreams.web.client.events.EventBus;
@@ -88,68 +85,62 @@ public class ConnectEntryPoint implements EntryPoint
 
         ActionRPCServiceAsync service = (ActionRPCServiceAsync) GWT.create(ActionRPCService.class);
         ((ServiceDefTarget) service).setServiceEntryPoint("/gwt_rpc");
-        processor = new ActionProcessorImpl(service);
-
-        session.setActionProcessor(processor);
-        session.setEventBus(EventBus.getInstance());
-
-        processor.makeRequest(new ActionRequestImpl<Serializable>("noOperation", null), new AsyncCallback<String>()
+        processor = new ActionProcessorImpl(service, new AsyncCallback<String>()
         {
+            public void onSuccess(final String inResult)
+            {
+            }
+
             public void onFailure(final Throwable caught)
             {
                 onSessionInitFailure(caught);
             }
+        });
 
-            public void onSuccess(final String sessionId)
+        session.setActionProcessor(processor);
+        session.setEventBus(EventBus.getInstance());
+
+        processor.makeRequest("getPersonModelViewForStartup", null, new AsyncCallback<PersonModelView>()
+        {
+            public void onFailure(final Throwable caught)
             {
-                ActionProcessorImpl.setCurrentSessionId(sessionId);
+                onPersonFetchFailure(caught);
+            }
 
-                // this must be the first action called so that the session is handled correctly
-                processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelViewForStartup", null),
-                        new AsyncCallback<PersonModelView>()
+            public void onSuccess(final PersonModelView person)
+            {
+                session.setCurrentPerson(person);
+                session.setCurrentPersonRoles(person.getRoles());
+                session.setHistoryHandler(new HistoryHandler());
+
+                determineLaunchPage();
+
+                // catch attempts to go to profile pages and pop them up in a new window
+                final EventBus eventBus = Session.getInstance().getEventBus();
+                eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+                {
+                    public void update(final SwitchedHistoryViewEvent ev)
+                    {
+                        switch (ev.getPage())
                         {
-                            public void onFailure(final Throwable caught)
-                            {
-                                onPersonFetchFailure(caught);
-                            }
+                        case PEOPLE:
+                        case GROUPS:
+                        case DISCOVER:
+                            String url = mainAppLaunchUrl + Window.Location.getHash();
+                            Window.open(url, "_blank", "");
+                            History.back();
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                });
 
-                            public void onSuccess(final PersonModelView person)
-                            {
-                                session.setCurrentPerson(person);
-                                session.setCurrentPersonRoles(person.getRoles());
-                                session.setHistoryHandler(new HistoryHandler());
+                recordStreamViewMetrics();
 
-                                determineLaunchPage();
+                Session.getInstance().getEventBus().bufferObservers();
 
-                                // catch attempts to go to profile pages and pop them up in a new window
-                                final EventBus eventBus = Session.getInstance().getEventBus();
-                                eventBus.addObserver(SwitchedHistoryViewEvent.class,
-                                        new Observer<SwitchedHistoryViewEvent>()
-                                        {
-                                            public void update(final SwitchedHistoryViewEvent ev)
-                                            {
-                                                switch (ev.getPage())
-                                                {
-                                                case PEOPLE:
-                                                case GROUPS:
-                                                case DISCOVER:
-                                                    String url = mainAppLaunchUrl + Window.Location.getHash();
-                                                    Window.open(url, "_blank", "");
-                                                    History.back();
-                                                    break;
-                                                default:
-                                                    break;
-                                                }
-                                            }
-                                        });
-
-                                recordStreamViewMetrics();
-
-                                Session.getInstance().getEventBus().bufferObservers();
-
-                                buildPage();
-                            }
-                        });
+                buildPage();
             }
         });
     }

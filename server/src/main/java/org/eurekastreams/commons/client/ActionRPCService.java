@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface ActionRPCService extends RemoteService
 {
     /**
+     * @return A session ID for the client to use in action requests.
+     */
+    String establishSession();
+
+    /**
      * Make the call to the ServerAction.
-     *
+     * 
      * @param request
      *            the request to be executed
      * @return the response from the server, including the original request.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Handles requests made to actions on the server. Is able to queue requests into one giant request.
- *
  */
 public interface ActionProcessor
 {
@@ -36,14 +35,16 @@ public interface ActionProcessor
 
     /**
      * Makes a request to the action rpc service. If the action processor is queueable then it adds it to the queue and
-     * waits until the FireQueuedRequests method is called
+     * waits until the FireQueuedRequests method is called. DEPRECATED: we don't want your request objects - we're using
+     * our own to insure we are in control!
      *
      * @param request
      *            the ActionRequest to send to the server
      * @param callback
      *            the AsyncCallback to call after the request is handled. Please provide an OnFailure and an OnSuccess
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    @Deprecated
     void makeRequest(ActionRequest request, AsyncCallback callback);
 
     /**
@@ -57,7 +58,7 @@ public interface ActionProcessor
      * @param callback
      *            the AsyncCallback to call after the request is handled. Please provide an OnFailure and an OnSuccess
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     void makeRequest(final String actionKey, final Serializable param, AsyncCallback callback);
 
     /**
@@ -65,12 +66,4 @@ public interface ActionProcessor
      * down HTTP requests made to the server.
      */
     void fireQueuedRequests();
-
-    /**
-     * This is just here for tests.
-     *
-     * @param inSessionId
-     *            the session id.
-     */
-    void setSessionId(final String inSessionId);
 }
