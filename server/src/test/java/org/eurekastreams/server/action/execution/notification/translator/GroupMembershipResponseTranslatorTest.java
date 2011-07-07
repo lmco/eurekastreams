@@ -53,7 +53,7 @@ public class GroupMembershipResponseTranslatorTest
         }
     };
 
-    /** DAO to get the person's account id. */
+    /** DAO to get the group's unique id. */
     private final DomainMapper<Long, String> idToUniqueIdDAO = context.mock(DomainMapper.class);
 
     /**

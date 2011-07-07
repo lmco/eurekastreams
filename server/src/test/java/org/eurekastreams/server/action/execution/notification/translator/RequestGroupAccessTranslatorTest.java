@@ -69,7 +69,10 @@ public class RequestGroupAccessTranslatorTest
     };
 
     /** Mock coordinator mapper. */
-    private final DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, List<Long>> coordinatorsDAO = context.mock(DomainMapper.class, "coordinatorsDAO");
+
+    /** DAO to get the group's unique id. */
+    private final DomainMapper<Long, String> idToUniqueIdDAO = context.mock(DomainMapper.class, "idToUniqueIdDAO");
 
     /**
      * Setup test.
@@ -77,7 +80,7 @@ public class RequestGroupAccessTranslatorTest
     @Before
     public void setup()
     {
-        sut = new RequestGroupAccessTranslator(mapper);
+        sut = new RequestGroupAccessTranslator(coordinatorsDAO, idToUniqueIdDAO);
     }
 
     /**
@@ -93,8 +96,11 @@ public class RequestGroupAccessTranslatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).execute(GROUP_ID);
+                oneOf(coordinatorsDAO).execute(GROUP_ID);
                 will(returnValue(coordinators));
+
+                allowing(idToUniqueIdDAO).execute(GROUP_ID);
+                will(returnValue("somegroup"));
             }
         });
 
@@ -109,11 +115,11 @@ public class RequestGroupAccessTranslatorTest
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
-        assertEquals(3, props.size());
+        assertEquals(5, props.size());
         PropertyMapTestHelper.assertPlaceholder(props, "actor", PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertPlaceholder(props, "group", DomainGroupModelView.class, GROUP_ID);
         PropertyMapTestHelper.assertValue(props, NotificationPropertyKeys.HIGH_PRIORITY, true);
-        // TODO PropertyMapTestHelper.assertSetNonNull(props, NotificationPropertyKeys.URL);
+        PropertyMapTestHelper.assertAlias(props, NotificationPropertyKeys.SOURCE, "group");
+        PropertyMapTestHelper.assertSetNonNull(props, NotificationPropertyKeys.URL);
     }
-
 }

@@ -149,7 +149,10 @@ public class Enrollment extends DomainEntity implements Serializable
 
     /**
      * @return person who enrolled.
-     * @note Omit this property when serializing to JSON.
+     * @note Omit this property when serializing to JSON. Without the exclusion, Jackson tries to access the lazy-loaded
+     *       person to serialize it, which throws an exception because the Jackson serialization is done after the
+     *       transaction is closed. Since the only action accessed using JSON that uses Enrollment asks for a list by
+     *       person, there is no need to serialize the person to JSON.
      */
     @JsonIgnore
     public Person getPerson()

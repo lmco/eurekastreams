@@ -64,8 +64,7 @@ public class GetSubscribedPersonIdsForStreamDbMapper extends BaseArgDomainMapper
         return getEntityManager()
                 .createQuery(
                         "SELECT gf.pk.followerId FROM " + entityName + " gf WHERE gf.pk.followingId = :id"
-                                + " AND gf.receiveNewActivityNotifications = :boolean").setParameter("id", inRequest)
-                .setParameter("boolean", true).getResultList();
+                                + " AND gf.receiveNewActivityNotifications = true").setParameter("id", inRequest)
+                .getResultList();
     }
-
 }

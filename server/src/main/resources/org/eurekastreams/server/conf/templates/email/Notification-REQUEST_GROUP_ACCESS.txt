@@ -4,6 +4,6 @@ you have the ability to approve or deny this person access.
 If you would like to grant this user access to your group, please visit the group profile Admin tab.
 We also recommend that you please send the user an email stating your decision regarding their request.
 
-To see the membership request follow this link to the group Admin tab:
-#profileUrl($group)?tab=Admin
+To see the membership request follow this link:
+#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForGroupAccessRequest($group.uniqueId)
 #parse('Footer.txt')

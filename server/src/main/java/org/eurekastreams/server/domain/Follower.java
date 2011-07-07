@@ -111,7 +111,7 @@ public class Follower extends WrappedLightEntity implements Serializable
     public static class FollowerPk implements Serializable
     {
         /** Fingerprint. */
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 4994416313627946355L;
 
         /**
          * Follower id.

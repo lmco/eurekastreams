@@ -24,26 +24,32 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
 
 /**
  * Translates the event of someone requesting access to a private group to appropriate notifications.
  */
 public class RequestGroupAccessTranslator implements NotificationTranslator<TargetEntityNotificationsRequest>
 {
-    /**
-     * Mapper to get group coordinator ids.
-     */
+    /** DAO to get group coordinator ids. */
     private final DomainMapper<Long, List<Long>> coordinatorDAO;
+
+    /** DAO to get the group's unique id. */
+    private final DomainMapper<Long, String> idToUniqueIdDAO;
 
     /**
      * Constructor.
      *
      * @param inCoordinatorDAO
-     *            coordinator mapper to set.
+     *            DAO to get group coordinator ids.
+     * @param inIdToUniqueIdDAO
+     *            DAO to get the group's unique id.
      */
-    public RequestGroupAccessTranslator(final DomainMapper<Long, List<Long>> inCoordinatorDAO)
+    public RequestGroupAccessTranslator(final DomainMapper<Long, List<Long>> inCoordinatorDAO,
+            final DomainMapper<Long, String> inIdToUniqueIdDAO)
     {
         coordinatorDAO = inCoordinatorDAO;
+        idToUniqueIdDAO = inIdToUniqueIdDAO;
     }
 
     /**
@@ -59,9 +65,10 @@ public class RequestGroupAccessTranslator implements NotificationTranslator<Targ
         NotificationBatch batch = new NotificationBatch(NotificationType.REQUEST_GROUP_ACCESS, coordinatorIds);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("group", DomainGroupModelView.class, inRequest.getTargetEntityId());
-        // TODO: add appropriate SOURCE property
+        batch.setPropertyAlias(NotificationPropertyKeys.SOURCE, "group");
         batch.setProperty(NotificationPropertyKeys.HIGH_PRIORITY, true);
-        // TODO: add URL property for whatever page pending group access requests go on
+        batch.setProperty(NotificationPropertyKeys.URL,
+                UiUrlBuilder.relativeUrlForGroupAccessRequest(idToUniqueIdDAO.execute(inRequest.getTargetEntityId())));
         return batch;
     }
 }

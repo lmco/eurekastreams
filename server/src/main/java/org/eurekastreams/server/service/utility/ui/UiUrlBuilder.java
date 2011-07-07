@@ -30,7 +30,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to a single activity.
-     * 
+     *
      * @param activityId
      *            The activity ID.
      * @return URL.
@@ -42,7 +42,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to an entity's profile.
-     * 
+     *
      * @param entity
      *            Entity.
      * @return URL.
@@ -94,4 +94,16 @@ public final class UiUrlBuilder
         return "#settings?tab=Pending&listFilter=Group+Requests";
     }
 
+    /**
+     * Returns the relative URL to the group access approval page.
+     *
+     * @param uniqueId
+     *            Group unique id.
+     * @return URL.
+     */
+    public static String relativeUrlForGroupAccessRequest(final String uniqueId)
+    {
+        // TODO: Need the correct page or tab on the page
+        return relativeUrlForEntity(EntityType.GROUP, uniqueId);
+    }
 }

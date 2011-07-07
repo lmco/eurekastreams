@@ -33,7 +33,7 @@ your##
 $stream.displayName's##
 #end
 #else
-the $stream.displayName##
+the ${stream.displayName}##
 #end
 #end
 

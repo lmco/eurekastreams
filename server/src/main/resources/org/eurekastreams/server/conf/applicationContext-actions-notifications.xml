@@ -170,6 +170,7 @@
         <entry key="REQUEST_GROUP_ACCESS">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestGroupAccessTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
+                <constructor-arg ref="getGroupUniqueIdByIdMapper" />
             </bean>
         </entry>
         <entry key="REQUEST_GROUP_ACCESS_APPROVED">
