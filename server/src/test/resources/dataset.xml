@@ -157,7 +157,7 @@
 	<Person id="42" version="1117" accountId="fordp" firstName="Ford"
 		middleName="X" lastName="Prefect" preferredName="Volgon-Swatter"
 		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
-		jobDescription="skljk klsdjlsdlsj lkj" location="99999" followersCount="0"
+		jobDescription="skljk klsdjlsdlsj lkj" followersCount="0"
 		followingCount="0" groupsCount="0" themeId="103"
 		startTabGroupId="4231" avatarId="sdfsdsd"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
@@ -351,7 +351,7 @@
 		
 	<Person id="98" version="4" accountId="smithers" firstName="W"
 		middleName="Mr" lastName="Smithers" preferredName="Smithers" email="smithers@gmail.com"
-		workPhone="6105551212" title="lickspittle" location="99999"
+		workPhone="6105551212" title="lickspittle" 
 		jobDescription="skljk klsdjlsdlsj lkj5" followersCount="0" followingCount="1"
 		groupsCount="1" themeId="102"
 		startTabGroupId="4231" avatarId="heynow"
@@ -363,7 +363,7 @@
 
 	<Person id="99" version="5" accountId="mrburns" firstName="Monty"
 		middleName="Mr." lastName="Burns" preferredName="Mr.Burns" email="mrburns@gmail.com"
-		workPhone="6105551212" title="Master of All" location="99999"
+		workPhone="6105551212" title="Master of All" 
 		jobDescription="skljk klsdjlsdlsj lkj" followersCount="1" followingCount="0"
 		groupsCount="1" themeId="102"
 		startTabGroupId="4231" avatarId="foofoo"

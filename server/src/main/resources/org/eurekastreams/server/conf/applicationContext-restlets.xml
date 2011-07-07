@@ -13,12 +13,6 @@
 		<property name="modifiable" value="true" />
 	</bean>
 
-	<bean id="personFullBioResource" class="org.eurekastreams.server.service.restlets.PersonFullBioResource"
-		scope="prototype">
-		<property name="personMapper" ref="jpaPersonMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
 	<bean id="personOverviewResource" class="org.eurekastreams.server.service.restlets.PersonOverviewResource"
 		scope="prototype">
 		<property name="personMapper" ref="jpaPersonMapper" />
@@ -44,32 +38,6 @@
 	<bean name="titlesCollectionResource" class="org.eurekastreams.server.service.restlets.TitlesCollectionResource"
 		scope="prototype">
 		<property name="jobMapper" ref="jpaJobMapper" />
-	</bean>
-
-	<bean name="jobCollectionResource" class="org.eurekastreams.server.service.restlets.JobsCollectionResource"
-		scope="prototype">
-		<property name="jobMapper" ref="jpaJobMapper" />
-		<property name="personMapper" ref="jpaPersonMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean name="jobEntryResource" class="org.eurekastreams.server.service.restlets.JobsEntryResource"
-		scope="prototype">
-		<property name="jobMapper" ref="jpaJobMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-	
-	<bean name="enrollmentCollectionResource" class="org.eurekastreams.server.service.restlets.EnrollmentsCollectionResource"
-		scope="prototype">
-		<property name="enrollmentMapper" ref="jpaEnrollmentMapper" />
-		<property name="personMapper" ref="jpaPersonMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean name="enrollmentEntryResource" class="org.eurekastreams.server.service.restlets.EnrollmentsEntryResource"
-		scope="prototype">
-		<property name="enrollmentMapper" ref="jpaEnrollmentMapper" />
-		<property name="modifiable" value="true" />
 	</bean>
 
 	<bean name="recommendationsCollectionResource"
@@ -302,11 +270,6 @@
 						<lookup-method name="createResource" bean="backgroundResource" />
 					</bean>
 				</entry>			
-				<entry key="/people/{uuid}/biography">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="personFullBioResource" />
-					</bean>
-				</entry>
 				<entry key="/people/{uuid}/overview">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="personOverviewResource" />
@@ -327,26 +290,6 @@
 				<entry key="/people/{openSocialId}/recommendations/{recommendationId}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="recommendationsEntryResource" />
-					</bean>
-				</entry>
-				<entry key="/people/{uuid}/jobs">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="jobCollectionResource" />
-					</bean>
-				</entry>
-				<entry key="/people/{uuid}/jobs/{jobId}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="jobEntryResource" />
-					</bean>
-				</entry>
-				<entry key="/people/{uuid}/enrollments">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="enrollmentCollectionResource" />
-					</bean>
-				</entry>
-				<entry key="/people/{uuid}/enrollments/{enrollmentId}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="enrollmentEntryResource" />
 					</bean>
 				</entry>
                 <entry key="/gadgets/{moduleid}/{url}/userprefsformui/{saveduserprefs}">

@@ -45,7 +45,6 @@ public class PluginDefinitionTest
         String gadgetUrl = "http://www.example.com";
         GalleryItemCategory gic = new GalleryItemCategory("face");
         Person person = new Person();
-        person.setBiography("hello test");
 
         sut = new PluginDefinition();
 
@@ -59,8 +58,6 @@ public class PluginDefinitionTest
         assertEquals(gic, sut.getCategory());
         assertEquals(Boolean.FALSE, sut.getShowInGallery());
         assertEquals(5, sut.getNumberOfUsers());
-        assertEquals("hello test", sut.getOwner().getBiography());
-
     }
 
     /**

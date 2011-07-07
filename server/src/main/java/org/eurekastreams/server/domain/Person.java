@@ -30,7 +30,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -48,8 +47,6 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundStringBridge;
-import org.eurekastreams.server.search.bridge.EducationListStringBridge;
-import org.eurekastreams.server.search.bridge.JobsListStringBridge;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.OrderBy;
@@ -61,7 +58,6 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Store;
-import org.hibernate.validator.Digits;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -349,14 +345,13 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private String jobDescription;
 
     /**
-     * Profile biography for person.
+     * Background information - not managed through Person, here for search indexing.
      */
-    @Basic(optional = true)
-    @Field(name = "biography", index = Index.TOKENIZED, store = Store.NO,
-    // html-stemmer analyzer will be used for indexing and, text-stemmer for searching
-    analyzer = @Analyzer(impl = HtmlStemmerAnalyzer.class))
-    @Lob
-    private String biography;
+    @OneToOne(mappedBy = "person", fetch = FetchType.LAZY)
+    @Field(name = "background", bridge = @FieldBridge(impl = BackgroundStringBridge.class), index = Index.TOKENIZED,
+    // line break
+    store = Store.NO, analyzer = @Analyzer(impl = TextStemmerAnalyzer.class))
+    private Background background;
 
     /**
      * Profile overview for person. This is a short version of the biography.
@@ -367,64 +362,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     // html-stemmer analyzer will be used for indexing and, text-stemmer for searching
     analyzer = @Analyzer(impl = HtmlStemmerAnalyzer.class))
     private String overview;
-
-    /**
-     * Background information - not managed through Person, here for search indexing.
-     */
-    @OneToOne(mappedBy = "person", fetch = FetchType.LAZY)
-    @Field(name = "background", bridge = @FieldBridge(impl = BackgroundStringBridge.class), index = Index.TOKENIZED,
-    // line break
-    store = Store.NO, analyzer = @Analyzer(impl = TextStemmerAnalyzer.class))
-    private Background background;
-
-    /**
-     * Job history - not managed through Person, here for search indexing.
-     */
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personId")
-    @Field(name = "jobs", bridge = @FieldBridge(impl = JobsListStringBridge.class), index = Index.TOKENIZED,
-    // line break
-    store = Store.NO, analyzer = @Analyzer(impl = TextStemmerAnalyzer.class))
-    private List<Job> jobs;
-
-    /**
-     * School Enrollments - not managed through Person, here for search indexing.
-     */
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personId")
-    @Field(name = "education", bridge = @FieldBridge(impl = EducationListStringBridge.class), index = Index.TOKENIZED,
-    // line break
-    store = Store.NO, analyzer = @Analyzer(impl = TextStemmerAnalyzer.class))
-    private List<Enrollment> schoolEnrollments;
-
+    
     /**
      * A ; delimited list of video ids a person has optedOut of seeing.
      */
     @Basic
     private String optOutVideoIds = "";
-
-    /**
-     * Used for validation.
-     */
-    @Transient
-    public static final int LOCATION_LENGTH = 5;
-
-    /**
-     * Used for validation.
-     */
-    @Transient
-    public static final String LOCATION_MESSAGE = "Please use a 5-digit zip code";
-
-    /**
-     * Profile location for person.
-     * 
-     * @Digits integerDigits tells you *up to* how many digits it can have so we include a minimum length here to make
-     *         sure there are exactly 10.
-     */
-    @Digits(integerDigits = LOCATION_LENGTH, message = LOCATION_MESSAGE)
-    @Length(min = LOCATION_LENGTH, message = LOCATION_MESSAGE)
-    @Field(name = "location", index = Index.UN_TOKENIZED, store = Store.NO)
-    private String location;
 
     /**
      * Open social ID.
@@ -802,27 +745,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Set the Person's biography.
-     * 
-     * @param inBiography
-     *            the biography.
-     */
-    public void setBiography(final String inBiography)
-    {
-        biography = inBiography;
-    }
-
-    /**
-     * Get the Person's biography.
-     * 
-     * @return the biography.
-     */
-    public String getBiography()
-    {
-        return biography;
-    }
-
-    /**
      * Get the person's first name.
      * 
      * @return the first name
@@ -1057,27 +979,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Getter for person's location.
-     * 
-     * @return person's location.
-     */
-    public String getLocation()
-    {
-        return location;
-    }
-
-    /**
-     * Setter for person's location.
-     * 
-     * @param inLocation
-     *            person's location.
-     */
-    public void setLocation(final String inLocation)
-    {
-        location = inLocation;
-    }
-
-    /**
      * @return the followersCount
      */
     @Override
@@ -1299,7 +1200,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         addNonNullProperty("cellPhone", getCellPhone(), personData);
         addNonNullProperty("jobDescription", getJobDescription(), personData);
         addNonNullProperty("title", getTitle(), personData);
-        addNonNullProperty("location", getLocation(), personData);
         addNonNullProperty("accountLocked", isAccountLocked(), personData);
         addNonNullProperty("companyName", getCompanyName(), personData);
 
@@ -1453,16 +1353,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Get the Person's jobs.
-     * 
-     * @return the jobs for a person.
-     */
-    public List<Job> getJobs()
-    {
-        return jobs;
-    }
-
-    /**
      * Get the Person's background.
      * 
      * @return the Person's background.
@@ -1482,16 +1372,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private void setBackground(final Background inBackground)
     {
         background = inBackground;
-    }
-
-    /**
-     * Get the Person's school enrollments.
-     * 
-     * @return the Person's school enrollments.
-     */
-    public List<Enrollment> getSchoolEnrollments()
-    {
-        return schoolEnrollments;
     }
 
     /**
@@ -1793,7 +1673,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
             }
             p.setInterests(interests);
         }
-        p.setBiography(biography);
         return p;
     }
 

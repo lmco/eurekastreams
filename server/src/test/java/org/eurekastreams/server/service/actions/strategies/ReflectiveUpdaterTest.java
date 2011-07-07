@@ -79,7 +79,6 @@ public class ReflectiveUpdaterTest
         person.setEmail(email);
         person.setWorkPhone("1234567890");
         person.setTitle("Better than you!");
-        person.setLocation("19406");
         person.setJobDescription("ahhh, snuts!");
 
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();
@@ -109,7 +108,6 @@ public class ReflectiveUpdaterTest
         person.setEmail("joe@schmoe.com");
         person.setWorkPhone("1234567890");
         person.setTitle("Better than you!");
-        person.setLocation("19406");
         person.setJobDescription("ahhh, snuts!");
 
         HashSet<Person> coords = new HashSet<Person>();

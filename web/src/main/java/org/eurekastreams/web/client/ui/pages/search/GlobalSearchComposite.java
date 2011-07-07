@@ -42,9 +42,9 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
  * Global search composite. TODO break this out for testability.
@@ -143,12 +143,13 @@ public class GlobalSearchComposite extends FlowPanel
                 {
                     resultsPanel.clear();
                     resultsPanelContainer.setVisible(event.getResponse().getPagedSet().size() > 0);
+                    String historyToken = "";
 
                     for (ModelView result : event.getResponse().getPagedSet())
                     {
                         final FocusPanel itemContainer = new FocusPanel();
                         final FlowPanel itemPanel = new FlowPanel();
-                        final Anchor name = new Anchor();
+                        final Hyperlink name = new Hyperlink();
 
                         if (result instanceof PersonModelView)
                         {
@@ -156,9 +157,8 @@ public class GlobalSearchComposite extends FlowPanel
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
                                     .getEntityId(), person.getAvatarId(), Size.Small));
                             name.setText(person.getDisplayName());
-                            name.setHref("#"
-                                    + Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));
+                            historyToken = Session.getInstance().generateUrl(
+                                    new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
                         }
                         else if (result instanceof DomainGroupModelView)
                         {
@@ -166,18 +166,18 @@ public class GlobalSearchComposite extends FlowPanel
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
                                     .getEntityId(), group.getAvatarId(), Size.Small));
                             name.setText(group.getName());
-                            name.setHref("#"
-                                    + Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.GROUPS, group.getShortName())));
+                            historyToken = Session.getInstance().generateUrl(
+                                    new CreateUrlRequest(Page.GROUPS, group.getShortName()));
                         }
 
+                        name.setTargetHistoryToken(historyToken);
                         itemPanel.add(name);
 
                         itemContainer.addClickHandler(new ClickHandler()
                         {
                             public void onClick(final ClickEvent event)
                             {
-                                Window.Location.assign(name.getHref());
+                                Window.Location.assign(name.getTargetHistoryToken());
                             }
                         });
 

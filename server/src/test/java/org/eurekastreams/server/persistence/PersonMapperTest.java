@@ -161,7 +161,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setWorkPhone("1234567890");
         p.setTitle("Better than you!");
         p.setEmail("foo.blah@example.com");
-        p.setLocation("19406");
         p.setJobDescription("some description!");
         p.setStartTabGroup(tg);
         jpaPersonMapper.insert(p);
@@ -182,7 +181,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setWorkPhone("1234567890");
         p.setTitle("Better than you!");
         p.setEmail("foo.blah@example.com");
-        p.setLocation("19406");
         p.setJobDescription("some description!");
         p.setAvatarId("avatar");
         p.setStartTabGroup(tg);
@@ -202,7 +200,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         Person sut = jpaPersonMapper.findByAccountId("yoyojoe");
         assertTrue(sut.getTitle().equals("Better than you!"));
         assertTrue(sut.getEmail().equals("foo.blah@example.com"));
-        assertTrue(sut.getLocation().equals("19406"));
         assertTrue(sut.getJobDescription().equals("some description!"));
         assertTrue("1234567890".equals(sut.getWorkPhone()));
         assertTrue("5555555555".equals(sut.getCellPhone()));
@@ -566,11 +563,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
     public void testProfileProperties()
     {
         Person ford = jpaPersonMapper.findByAccountId("fordp");
-        assertEquals(1, ford.getJobs().size());
-        assertEquals("Aerospace", ford.getJobs().get(0).getIndustry());
-
-        assertEquals(1, ford.getSchoolEnrollments().size());
-        assertEquals("BS Computer Science", ford.getSchoolEnrollments().get(0).getDegree());
 
         assertEquals(1, ford.getBackground().getBackgroundItems(BackgroundItemType.INTEREST).size());
         assertEquals("Earthlings", ford.getBackground().getBackgroundItems(BackgroundItemType.INTEREST).get(0)
@@ -618,7 +610,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setWorkPhone("1234567890");
         p.setTitle("Better than you!");
         p.setEmail("foo.blah@example.com");
-        p.setLocation("19406");
         p.setJobDescription("some description!");
         p.setStartTabGroup(tg);
 

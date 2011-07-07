@@ -70,7 +70,6 @@ public class PersonQueryStrategy
         fields.add(getColumn("workPhone"));
         fields.add(getColumn("cellPhone"));
         fields.add(getColumn("fax"));
-        fields.add(getColumn("biography"));
         fields.add(Projections.property("streamViewHiddenLineIndex").as("compositeStreamHiddenLineIndex"));
         fields.add(Projections.property("stream.id").as("streamId"));
         criteria.setProjection(fields);
