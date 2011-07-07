@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(ActionRPCServiceImpl.class);
+    private final Log log = LogFactory.getLog(ActionRPCServiceImpl.class);
 
     /**
      * The context from which this service can load action beans.
@@ -52,9 +52,9 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     private ApplicationContext springContext = null;
 
     /**
-     * Local instance of the {@link ActionExecutorFactory}.
+     * Local instance of the {@link ActionExecutor}.
      */
-    private ActionExecutorFactory actionExecutorFactory;
+    private ActionExecutor actionExecutor;
 
     /**
      * As a servlet, this class' init() method is called automatically. This is how we get context.
@@ -78,7 +78,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
 
         springContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
-        actionExecutorFactory = (ActionExecutorFactory) springContext.getBean("actionExecutorFactory");
+        actionExecutor = (ActionExecutor) springContext.getBean("actionExecutor");
     }
 
     /**
@@ -90,19 +90,11 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     }
 
     /**
-     * Executes the request. This method should contain no logic and act solely as an interface to creating and invoking
-     * the action executor.
-     * 
-     * @param user
-     *            User making the request.
-     * @param request
-     *            The request.
-     * @return Response to return to the client.
+     * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    protected ActionRequest executeAction(final UserDetails user, final ActionRequest request)
+    public String establishSession()
     {
-        return actionExecutorFactory.getActionExecutor(springContext, user, request).execute();
+        return getThreadLocalRequest().getSession().getId();
     }
 
     /**
@@ -112,7 +104,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
      *            the request specification to execute
      * @return the action response encapsulated with the request
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public final ActionRequest execute(final ActionRequest request)
     {
         UserDetails user = getUserDetails();
@@ -127,7 +119,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
      *            the request specifications to execute
      * @return the action response encapsulated with the request
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public final ActionRequest[] execute(final ActionRequest[] requests)
     {
         UserDetails user = getUserDetails();
@@ -150,24 +142,18 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
      *            the user making the request
      * @return the action response encapsulated with the request
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private ActionRequest execute(final ActionRequest request, final UserDetails user)
     {
-        if (request.getActionKey().equals("noOperation"))
-        {
-            request.setSessionId(this.getThreadLocalRequest().getSession().getId());
-        }
-
-        // check that the session id is the session id stamped in the request, ignoring on first action call
-        // from ApplicationEntryPoint.
-        if (!this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
+        // check that the session id is the session id stamped in the request
+        if (!getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
         {
             request.setResponse(new SessionException("Session Expired"));
             return request;
         }
         else
         {
-            return executeAction(user, request);
+            return actionExecutor.execute(request, user);
         }
     }
 

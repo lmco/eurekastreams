@@ -48,8 +48,10 @@
     <!-- Action Framework configuration -->
     <!-- ****************************** -->
     
-    <bean id="actionExecutorFactory"
-        class="org.eurekastreams.commons.server.ActionExecutorFactory"/>
+	<!-- 
+		actionExecutor should be defined here, except that this file is included from both the main and OpenSocial 
+		container contexts, and actionExecutor references persistentBeanManager which is only defined in the main context. 
+	-->
         
     <bean id="principalPopulator"
         class="org.eurekastreams.server.action.principal.SpringSecurityPrincipalPopulator" />

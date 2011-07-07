@@ -27,7 +27,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -62,11 +61,18 @@ public class LoginDialogContent extends BaseDialogContent
     /** The password text box. */
     private final PasswordTextBox password = new PasswordTextBox();
 
-    /** Remember me checkbox. */
-    private final CheckBox rememberMe = new CheckBox("Keep me logged in.");
-
     /** Container for login elements. */
     private final FlowPanel loginContentContainer = new FlowPanel();
+
+    /*
+     * Note: Current approach to handling the problem where a user keeps the app up in the background for a long
+     * duration during which the session expires (since we no longer do any polling when the app goes inactive) and thus
+     * renders the app dead is to *always* use the "remember me" (persistent logon) feature. (Always for form-based
+     * logon; not applicable with pre-auth.) Leaving the checkbox commented out for now, since it is highly conceivable
+     * we'll come up with a different approach.
+     */
+    // /** Remember me checkbox. */
+    // private final CheckBox rememberMe = new CheckBox("Keep me logged in.");
 
     /**
      * Default constructor. Builds up widgets.
@@ -123,11 +129,12 @@ public class LoginDialogContent extends BaseDialogContent
         returnTo.setName("spring-security-redirect");
         loginPanel.add(returnTo);
 
-
-        rememberMe.setName("_spring_security_remember_me");
-
         loginPanel.add(passwordPanel);
-        loginPanel.add(rememberMe);
+        // rememberMe.setName("_spring_security_remember_me");
+        // loginPanel.add(rememberMe);
+        Hidden usePersistentLogon = new Hidden("_spring_security_remember_me", "on");
+        usePersistentLogon.setName("_spring_security_remember_me");
+        loginPanel.add(usePersistentLogon);
 
         errorMessage.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorMessage.setVisible(false);
@@ -168,7 +175,7 @@ public class LoginDialogContent extends BaseDialogContent
         };
         username.addKeyUpHandler(enterKeyHandler);
         password.addKeyUpHandler(enterKeyHandler);
-        rememberMe.addKeyUpHandler(enterKeyHandler);
+        // rememberMe.addKeyUpHandler(enterKeyHandler);
 
         cancelButton.addClickHandler(new ClickHandler()
         {

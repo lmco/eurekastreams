@@ -16,28 +16,22 @@
 package org.eurekastreams.commons.client;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Encapsulates a request to perform some action.
  * 
+ * Note: This is deprecated for use outside of ActionProcessorImpl.
+ *
  * @param <T>
  *            specifies the return type
  */
-@SuppressWarnings("serial")
+@Deprecated
 public class ActionRequestImpl<T extends Serializable> implements Serializable, ActionRequest<T>
 {
     /**
      * Session id.
      */
     private String sessionId;
-    /**
-     * List of AsyncCallbacks.
-     */
-    private final List<AsyncCallback<T>> callbackArray = new LinkedList<AsyncCallback<T>>();
 
     /**
      * Uniquely represents one ServerAction.
@@ -47,15 +41,14 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
     /**
      * The ID of the ActionRequest.
      */
-    private Integer id = null;
+    private int id;
 
     /**
      * Returns the ID.
      * 
      * @return the ID
      */
-    @Override
-    public Integer getId()
+    public int getId()
     {
         return id;
     }
@@ -66,8 +59,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inId
      *            the ID
      */
-    @Override
-    public void setId(final Integer inId)
+    public void setId(final int inId)
     {
         this.id = inId;
     }
@@ -87,7 +79,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      */
     public ActionRequestImpl()
     {
-
     }
 
     /**
@@ -109,7 +100,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the action key
      */
-    @Override
     public String getActionKey()
     {
         return actionKey;
@@ -121,7 +111,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inActionKey
      *            the action key
      */
-    @Override
     public void setActionKey(final String inActionKey)
     {
         this.actionKey = inActionKey;
@@ -133,7 +122,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return current instance of the Serializable param object for this Request.
      */
-    @Override
     public Serializable getParam()
     {
         return param;
@@ -146,7 +134,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inParam
      *            - value to assign to the param of this ActionRequest.
      */
-    @Override
     public void setParam(final Serializable inParam)
     {
         param = inParam;
@@ -157,7 +144,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the ServerAction response
      */
-    @Override
     public T getResponse()
     {
         return response;
@@ -169,44 +155,9 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inResponse
      *            the ServerAction's response
      */
-    @Override
     public void setResponse(final T inResponse)
     {
         this.response = inResponse;
-    }
-
-    /**
-     * Add callbacks to be executed with executeCallbacks().
-     * 
-     * @param callback
-     *            The callback to add.
-     */
-    @Override
-    public void addCallback(final AsyncCallback<T> callback)
-    {
-        callbackArray.add(callback);
-    }
-
-    /**
-     * execute the callbacks that have been added via addCallback().
-     * 
-     * @param inResponse
-     *            The response object.
-     */
-    @Override
-    public void executeCallbacks(final T inResponse)
-    {
-        for (AsyncCallback<T> callback : callbackArray)
-        {
-            if (inResponse instanceof Throwable)
-            {
-                callback.onFailure((Throwable) inResponse);
-            }
-            else
-            {
-                callback.onSuccess(inResponse);
-            }
-        }
     }
 
     /**
@@ -221,8 +172,8 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      *            The object to compare with.
      * @return true if object equals this one, false otherwise.
      */
+    @SuppressWarnings("rawtypes")
     @Override
-    @SuppressWarnings("unchecked")
     public boolean equals(final Object other)
     {
 
@@ -260,7 +211,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the session id.
      */
-    @Override
     public String getSessionId()
     {
         return sessionId;
@@ -272,10 +222,8 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inSessionId
      *            the session id.
      */
-    @Override
     public void setSessionId(final String inSessionId)
     {
         sessionId = inSessionId;
     }
-
 }
