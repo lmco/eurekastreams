@@ -27,7 +27,9 @@
 					</pager:PagerComposite>
         </div>
         
-        What are you looking for? <g:FlowPanel ui:field="searchFlowPanel" />
+        <div>
+        	What are you looking for? <g:FlowPanel ui:field="searchFlowPanel" />
+        </div>
         
         <div class="{style.discoverStreamList}">
             <h3>Suggested</h3>

@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import java.util.Date;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -27,7 +27,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -67,7 +66,7 @@ public class DiscoverListItemPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -149,10 +148,11 @@ public class DiscoverListItemPanel extends FlowPanel
             break;
         }
         insertActionSeparator(followersPanel);
-
-        if (inStreamDTO.getFollowerStatus() == FollowerStatus.FOLLOWING)
+        if (inStreamDTO.getEntityType() != EntityType.PERSON
+                || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            followersPanel.add(new HTML("(FOLLOWING)"));
+            // not the current person
+            followersPanel.add(new FollowPanel(inStreamDTO));
         }
         infoPanel.add(followersPanel);
 
@@ -161,7 +161,7 @@ public class DiscoverListItemPanel extends FlowPanel
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */
