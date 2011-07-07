@@ -24,8 +24,6 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionProcessorImpl;
 import org.eurekastreams.commons.client.ActionRPCService;
 import org.eurekastreams.commons.client.ActionRPCServiceAsync;
-import org.eurekastreams.commons.client.ActionRequestImpl;
-import org.eurekastreams.commons.exceptions.SessionException;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
@@ -46,7 +44,6 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BulkEntityModel;
-import org.eurekastreams.web.client.model.SessionEstablishModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.UsageMetricModel;
@@ -64,8 +61,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -90,6 +85,7 @@ public class ApplicationEntryPoint implements EntryPoint
     {
         /**
          * Create canvas element.
+         *
          * @return canvas element.
          */
         public GChartCanvasLite create()
@@ -163,9 +159,29 @@ public class ApplicationEntryPoint implements EntryPoint
         }
 
         ActionRPCServiceAsync service = (ActionRPCServiceAsync) GWT.create(ActionRPCService.class);
-        processor = new ActionProcessorImpl(service);
-
         ((ServiceDefTarget) service).setServiceEntryPoint("/gwt_rpc");
+        processor = new ActionProcessorImpl(service, new AsyncCallback<String>()
+        {
+            public void onSuccess(final String inResult)
+            {
+            }
+
+            public void onFailure(final Throwable inCaught)
+            {
+                if (inCaught.getMessage().contains("NO_CREDENTIALS"))
+                {
+                    showLogin();
+                }
+                else if (inCaught.getMessage().contains("LOGIN_DISABLED"))
+                {
+                    Window.Location.assign(ACCESS_DENIED_PAGE);
+                }
+                else
+                {
+                    Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection", "Please Refresh."));
+                }
+            }
+        });
 
         StaticResourceBundle.INSTANCE.coreCss().ensureInjected();
         StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
@@ -196,43 +212,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
         setUpGwtFunctions();
 
-        processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
-                new AsyncCallback<Serializable>()
-                {
-                    public void onFailure(final Throwable caught)
-                    {
-                        if (caught.getMessage().contains("NO_CREDENTIALS"))
-                        {
-                            showLogin();
-                        }
-                        else if (caught.getMessage().contains("LOGIN_DISABLED"))
-                        {
-                            Window.Location.assign(ACCESS_DENIED_PAGE);
-                        }
-                        else
-                        {
-                            Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection",
-                                    "Please Refresh."));
-                        }
-                    }
-
-                    public void onSuccess(final Serializable sessionId)
-                    {
-                        ActionProcessorImpl.setCurrentSessionId((String) sessionId);
-                        loadPerson();
-                    }
-                });
-
-        // Keep session alive.
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
-        {
-            public boolean execute()
-            {
-                SessionEstablishModel.getInstance().fetch(null, false);
-                
-                return true;
-            }
-        }, SESSION_POLLING_TIME);
+        loadPerson();
     }
 
     /**
@@ -240,63 +220,54 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void loadPerson()
     {
-        // this must be the first action called so that the session is handled correctly
-        processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelViewForStartup", null),
-                new AsyncCallback<PersonModelView>()
+        processor.makeRequest("getPersonModelViewForStartup", null, new AsyncCallback<PersonModelView>()
+        {
+            /* implement the async call back methods */
+            public void onFailure(final Throwable caught)
+            {
+                rootPanel.add(master);
+
+                // TODO: This REALLY NEEDS to distinguish between types of errors - it's REALLY ANNOYING to keep hitting
+                // refresh for nothing when the server is down, etc.
+                Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection", "Please Refresh."));
+            }
+
+            public void onSuccess(final PersonModelView resultMV)
+            {
+                // If user needs to accept ToS, short circuit here.
+                if (!resultMV.getTosAcceptance())
                 {
-                    /* implement the async call back methods */
-                    public void onFailure(final Throwable caught)
-                    {
-                        rootPanel.add(master);
+                    displayToS();
+                    return;
+                }
 
-                        if (caught instanceof SessionException)
-                        {
-                            Dialog.showCentered(new MessageDialogContent("Unable to Establish Session",
-                                    "Please Refresh."));
-                        }
-                        else
-                        {
-                            Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection",
-                                    "Please Refresh."));
-                        }
-                    }
+                session.setAuthenticationType(resultMV.getAuthenticationType());
+                session.setCurrentPerson(resultMV);
+                session.setCurrentPersonRoles(resultMV.getRoles());
+                jSNIFacade.setViewer(resultMV.getOpenSocialId(), resultMV.getAccountId());
+                jSNIFacade.setOwner(resultMV.getOpenSocialId());
+                processor.setQueueRequests(true);
 
-                    public void onSuccess(final PersonModelView resultMV)
-                    {
-                        // If user needs to accept ToS, short circuit here.
-                        if (!resultMV.getTosAcceptance())
-                        {
-                            displayToS();
-                            return;
-                        }
+                // create the StartTabs model before the event bus is buffered, so it's event wiring stays
+                // intact for the life of the app
+                StartTabsModel.getInstance();
 
-                        session.setAuthenticationType(resultMV.getAuthenticationType());
-                        session.setCurrentPerson(resultMV);
-                        session.setCurrentPersonRoles(resultMV.getRoles());
-                        jSNIFacade.setViewer(resultMV.getOpenSocialId(), resultMV.getAccountId());
-                        jSNIFacade.setOwner(resultMV.getOpenSocialId());
-                        processor.setQueueRequests(true);
+                recordStreamViewMetrics();
+                recordPageViewMetrics();
 
-                        // create the StartTabs model before the event bus is buffered, so it's event wiring stays
-                        // intact for the life of the app
-                        StartTabsModel.getInstance();
+                session.setHistoryHandler(new HistoryHandler());
+                Session.getInstance().getEventBus().bufferObservers();
+                History.fireCurrentHistoryState();
 
-                        recordStreamViewMetrics();
-                        recordPageViewMetrics();
+                processor.setQueueRequests(true);
+                master.renderHeaderAndFooter();
+                processor.fireQueuedRequests();
+                processor.setQueueRequests(false);
 
-                        session.setHistoryHandler(new HistoryHandler());
-                        Session.getInstance().getEventBus().bufferObservers();
-                        History.fireCurrentHistoryState();
-
-                        processor.setQueueRequests(true);
-                        master.renderHeaderAndFooter();
-                        processor.fireQueuedRequests();
-                        processor.setQueueRequests(false);
-
-                        session.getPeriodicEventManager().start();
-                        rootPanel.add(master);
-                    }
-                });
+                session.getPeriodicEventManager().start();
+                rootPanel.add(master);
+            }
+        });
     }
 
     /**
@@ -306,8 +277,8 @@ public class ApplicationEntryPoint implements EntryPoint
     private void displayToS()
     {
 
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -332,8 +303,8 @@ public class ApplicationEntryPoint implements EntryPoint
         // twice on activity page for some reason (profile pages work correctly). Somewhere
         // this is filtered down to only one call to the server to get the stream, so response
         // event works fine for metrics, but should track down why request it double-firing.
-        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
-                new Observer<GotStreamResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
                 {
                     public void update(final GotStreamResponseEvent event)
                     {
@@ -349,8 +320,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void recordPageViewMetrics()
     {
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
@@ -446,8 +417,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public static void bulkGetPeople(final String[] ntids, final int callbackIndex)
     {
-        Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
-                new Observer<GotBulkEntityResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotBulkEntityResponseEvent.class, new Observer<GotBulkEntityResponseEvent>()
                 {
                     public void update(final GotBulkEntityResponseEvent arg1)
                     {
@@ -465,8 +436,8 @@ public class ApplicationEntryPoint implements EntryPoint
                                 if (ntidList.contains(personMV.getAccountId()))
                                 {
                                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                                    String imageUrl = urlGen
-                                            .getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
+                                    String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(),
+                                            personMV.getAvatarId());
 
                                     JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
                                     personJSON.set(0, personMV.getAccountId());

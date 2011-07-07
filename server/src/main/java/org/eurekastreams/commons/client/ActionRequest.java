@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@ package org.eurekastreams.commons.client;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 /**
  * The ActionRequest interface.
- * 
+ *
  * @param <T>
  *            The generic type implementations will work with.
  */
@@ -29,29 +27,29 @@ public interface ActionRequest<T extends Serializable>
 {
     /**
      * Getter for Id.
-     * 
+     *
      * @return the action id.
      */
-    Integer getId();
+    int getId();
 
     /**
      * Setter for Id.
-     * 
+     *
      * @param inId
      *            the Id to set.
      */
-    void setId(final Integer inId);
+    void setId(final int inId);
 
     /**
      * Getter for action key.
-     * 
+     *
      * @return The action key.
      */
     String getActionKey();
 
     /**
      * Setter for action key.
-     * 
+     *
      * @param inActionKey
      *            The Id to set.
      */
@@ -59,14 +57,14 @@ public interface ActionRequest<T extends Serializable>
 
     /**
      * Getter for param.
-     * 
+     *
      * @return ServiceAction param.
      */
     Serializable getParam();
 
     /**
      * Setter for param.
-     * 
+     *
      * @param inParam
      *            ServiceAction param.
      */
@@ -74,45 +72,29 @@ public interface ActionRequest<T extends Serializable>
 
     /**
      * Getter.
-     * 
+     *
      * @return the ServerAction response
      */
     T getResponse();
 
     /**
      * Setter.
-     * 
+     *
      * @param inResponse
      *            the ServerAction's response
      */
     void setResponse(final T inResponse);
 
     /**
-     * Adds callback.
-     * 
-     * @param callback
-     *            The callback to add.
-     */
-    void addCallback(AsyncCallback<T> callback);
-
-    /**
-     * Executes the callbacks.
-     * 
-     * @param inResponse
-     *            The response object.
-     */
-    void executeCallbacks(T inResponse);
-
-    /**
      * Gets the session id.
-     * 
+     *
      * @return the session id.
      */
     String getSessionId();
 
     /**
      * Sets session id.
-     * 
+     *
      * @param inSessionId
      *            the session id.
      */

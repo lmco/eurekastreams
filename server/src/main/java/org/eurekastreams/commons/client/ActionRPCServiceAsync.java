@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface ActionRPCServiceAsync
 {
     /**
+     * Retrieves a session ID for the client to use in action requests.
+     *
+     * @param callback
+     *            Completion callback; passed the session ID.
+     */
+    void establishSession(AsyncCallback<String> callback);
+
+    /**
      * Make the call to the ServerAction.
      *
      * @param request
@@ -30,9 +38,8 @@ public interface ActionRPCServiceAsync
      * @param callback
      *            the response from the server, including the original request.
      */
-    @SuppressWarnings("unchecked")
-    void execute(ActionRequest request,
-            AsyncCallback<ActionRequest> callback);
+    @SuppressWarnings("rawtypes")
+    void execute(ActionRequest request, AsyncCallback<ActionRequest> callback);
 
     /**
      * Make calls to multiple ServerActions.
@@ -42,7 +49,6 @@ public interface ActionRPCServiceAsync
      * @param callback
      *            the response from the server.
      */
-    @SuppressWarnings("unchecked")
-    void execute(ActionRequest[] requests,
-            AsyncCallback<ActionRequest[]> callback);
+    @SuppressWarnings("rawtypes")
+    void execute(ActionRequest[] requests, AsyncCallback<ActionRequest[]> callback);
 }

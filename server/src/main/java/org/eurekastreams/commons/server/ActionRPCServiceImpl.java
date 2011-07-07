@@ -90,14 +90,21 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public String establishSession()
+    {
+        return getThreadLocalRequest().getSession().getId();
+    }
+
+    /**
      * Execute a single ActionRequest.
      *
      * @param request
      *            the request specification to execute
      * @return the action response encapsulated with the request
      */
-    @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public final ActionRequest execute(final ActionRequest request)
     {
         UserDetails user = getUserDetails();
@@ -112,8 +119,7 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
      *            the request specifications to execute
      * @return the action response encapsulated with the request
      */
-    @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public final ActionRequest[] execute(final ActionRequest[] requests)
     {
         UserDetails user = getUserDetails();
@@ -136,17 +142,11 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
      *            the user making the request
      * @return the action response encapsulated with the request
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private ActionRequest execute(final ActionRequest request, final UserDetails user)
     {
-        if (request.getActionKey().equals("noOperation"))
-        {
-            request.setSessionId(this.getThreadLocalRequest().getSession().getId());
-        }
-
-        // check that the session id is the session id stamped in the request, ignoring on first action call
-        // from ApplicationEntryPoint.
-        if (!this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
+        // check that the session id is the session id stamped in the request
+        if (!getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
         {
             request.setResponse(new SessionException("Session Expired"));
             return request;

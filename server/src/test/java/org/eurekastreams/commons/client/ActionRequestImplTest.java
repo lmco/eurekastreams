@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,28 +19,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Test class for ActionRequestImpl.
- * 
+ *
  */
+@SuppressWarnings("deprecation")
 public class ActionRequestImplTest
 {
-    /**
-     * Context for mocking.
-     */
-    private final JUnit4Mockery context = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
     /**
      * Subject under test.
      */
@@ -61,7 +48,7 @@ public class ActionRequestImplTest
 
         int id = 2;
         sut.setId(Integer.valueOf(id));
-        assertEquals("id doesn't match", Integer.valueOf(id), sut.getId());
+        assertEquals("id doesn't match", id, sut.getId());
 
         sut.setParam(param);
         assertEquals("params don't match", param, sut.getParam());
@@ -158,49 +145,5 @@ public class ActionRequestImplTest
 
         // non-null <-> different should be unequal
         assertFalse("Non-null-non-null compare should be equal.", nonNull1.equals(different));
-    }
-
-    /**
-     * Testing exe with success.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void executeCallbacksWithSuccess()
-    {
-        final AsyncCallback callbackMock = context.mock(AsyncCallback.class);
-        final String result = "Hello";
-        sut = new ActionRequestImpl<String>("", null);
-        sut.addCallback(callbackMock);
-
-        context.checking(new Expectations()
-        {
-            {
-                one(callbackMock).onSuccess(result);
-            }
-        });
-
-        sut.executeCallbacks(result);
-    }
-
-    /**
-     * Testing exe with failure.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void executeCallbacksWithFailure()
-    {
-        final ActionRequestImpl localSut = new ActionRequestImpl("", null);
-        final AsyncCallback callbackMock = context.mock(AsyncCallback.class);
-        final Throwable result = new Throwable("Hello");
-        localSut.addCallback(callbackMock);
-
-        context.checking(new Expectations()
-        {
-            {
-                one(callbackMock).onFailure(result);
-            }
-        });
-
-        localSut.executeCallbacks(result);
     }
 }
