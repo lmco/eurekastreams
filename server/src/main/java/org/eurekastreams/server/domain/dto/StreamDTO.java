@@ -18,7 +18,6 @@ package org.eurekastreams.server.domain.dto;
 import java.util.Date;
 
 import org.eurekastreams.server.domain.Followable;
-import org.eurekastreams.server.domain.FollowerStatusable;
 
 /**
  * Interface for StreamDTO implementations.
