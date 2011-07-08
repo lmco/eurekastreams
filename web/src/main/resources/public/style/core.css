@@ -386,6 +386,8 @@ div.message div.content {
 
 div.content {
 	padding-bottom: 135px;
+	overflow: hidden;
+	width: 100%;
 }
 
 div.banner-container {

@@ -10,20 +10,31 @@
 		width: 220px;
 		float: left;
 		margin-left: 10px;
+		background-color: white;
+	}
+	
+	.stremaPager
+	{
+		background-color: #252525;
+	}
+	
+	.discoveryPage
+	{
+		padding: 20px;
 	}
 	
 	</ui:style>
   
-    <g:HTMLPanel>
+    <g:HTMLPanel addStyleNames="{style.discoveryPage}">
         <div>
             <h3>Featured Streams</h3>
-            <pager:PagerComposite ui:field="featuredStreamsComposite">
+            <pager:PagerComposite addStyleNames="{style.streamPager}" ui:field="featuredStreamsComposite">
 					</pager:PagerComposite>
         </div>
         <div>
         	<h3>Most Active Streams</h3>
             
-        	<pager:PagerComposite ui:field="mostActiveStreamsComposite">
+        	<pager:PagerComposite addStyleNames="{style.streamPager}" ui:field="mostActiveStreamsComposite">
 					</pager:PagerComposite>
         </div>
         
