@@ -619,7 +619,6 @@ div.close-button {
 }
 
 .login-content-container>div {
-	display: inline-block;
 }
 
 .login-dialog {
@@ -632,13 +631,12 @@ div.close-button {
 }
 
 .login-content {
-	display: inline-block;
+	display: block;
 }
 
 .login-content input.gwt-TextBox,.login-content input.gwt-PasswordTextBox
 	{
 	width: 197px;
-	float: right;
 	margin-bottom: 10px;
 }
 
@@ -8852,11 +8850,6 @@ IE SPECIFIC CSS.
 	.link-panel {
 		zoom: 1;
 	}
-	
-	.login-content input.gwt-TextBox,.login-content input.gwt-PasswordTextBox
-	{
-		margin-left: -80px;
-	}	
 }
 /*/////////////////////////////////////////////////////////////////////////////
 

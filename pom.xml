@@ -98,7 +98,7 @@
         <id>nuxeo</id>
         <name>nuxeo</name>
         <layout>default</layout>
-        <url>https://maven.nuxeo.org/nexus/content/groups/public/</url>
+        <url>http://maven.nuxeo.org/nexus/content/groups/public/</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>

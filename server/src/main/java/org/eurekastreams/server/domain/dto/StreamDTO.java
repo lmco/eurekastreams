@@ -24,7 +24,7 @@ import org.eurekastreams.server.domain.FollowerStatusable;
  * Interface for StreamDTO implementations.
  * 
  */
-public interface StreamDTO extends FollowerStatusable, Followable, DisplayInfoSettable
+public interface StreamDTO extends Followable, DisplayInfoSettable
 {
     /**
      * @return stream entity id.
