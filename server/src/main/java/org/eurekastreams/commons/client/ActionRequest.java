@@ -23,7 +23,7 @@ import java.io.Serializable;
  * @param <T>
  *            The generic type implementations will work with.
  */
-public interface ActionRequest<T extends Serializable>
+public interface ActionRequest<T extends Serializable> extends Serializable
 {
     /**
      * Getter for Id.

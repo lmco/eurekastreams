@@ -1832,6 +1832,18 @@
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
         <constructor-arg ref="memcachedCache" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
+        <constructor-arg>
+            <list>
+                <ref bean="canCommentFilter" />
+                <ref bean="canShareFilter" />
+                <ref bean="deleteFilter" />                    
+                <ref bean="likeFilter" />
+                <ref bean="savedFilter" />
+                <ref bean="authorLockedFilter" />
+                <ref bean="serverTimeFilter" />
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean id="postPersonActivityExecutionStrategy"
@@ -1850,6 +1862,18 @@
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
         <constructor-arg ref="memcachedCache" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
+        <constructor-arg>
+            <list>
+                <ref bean="canCommentFilter" />
+                <ref bean="canShareFilter" />
+                <ref bean="deleteFilter" />                    
+                <ref bean="likeFilter" />
+                <ref bean="savedFilter" />
+                <ref bean="authorLockedFilter" />
+                <ref bean="serverTimeFilter" />
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean id="postResourceActivityExecutionStrategy"
@@ -1867,6 +1891,18 @@
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
         <constructor-arg ref="memcachedCache" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
+        <constructor-arg>
+            <list>
+                <ref bean="canCommentFilter" />
+                <ref bean="canShareFilter" />
+                <ref bean="deleteFilter" />                    
+                <ref bean="likeFilter" />
+                <ref bean="savedFilter" />
+                <ref bean="authorLockedFilter" />
+                <ref bean="serverTimeFilter" />
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean id="sendGroupAccessRequestAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
