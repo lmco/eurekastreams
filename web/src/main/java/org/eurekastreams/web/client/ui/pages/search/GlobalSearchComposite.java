@@ -177,7 +177,7 @@ public class GlobalSearchComposite extends FlowPanel
                         {
                             public void onClick(final ClickEvent event)
                             {
-                                Window.Location.assign(name.getTargetHistoryToken());
+                                Window.Location.assign("#" + name.getTargetHistoryToken());
                             }
                         });
 

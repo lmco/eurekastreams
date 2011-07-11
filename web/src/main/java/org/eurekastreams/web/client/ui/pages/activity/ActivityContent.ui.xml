@@ -285,6 +285,13 @@
 		.streamOptionChild:hover .editCustomStream:hover
 		{
 		}
+		
+		.errorPanel
+		{
+			color: red;
+			font-weight: bold;
+			text-align: center;
+		}
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
@@ -314,6 +321,7 @@
 			</div>
 			<div class="{style.stream-panel}">
 				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
+				<g:FlowPanel addStyleNames="{style.errorPanel}" ui:field="errorPanel"></g:FlowPanel>
 				<g:FlowPanel ui:field="streamPanel">
 				</g:FlowPanel>
 				<div class="{style.more-loading-spinner}" ui:field="moreSpinner"></div>
