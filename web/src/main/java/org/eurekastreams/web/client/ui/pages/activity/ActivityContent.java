@@ -813,6 +813,7 @@ public class ActivityContent extends Composite
     {
         Session.getInstance().getActionProcessor().setQueueRequests(true);
 
+        
         addBookmark.setVisible(false);
         subscribeViaEmail.setVisible(false);
         feedLink.setVisible(false);

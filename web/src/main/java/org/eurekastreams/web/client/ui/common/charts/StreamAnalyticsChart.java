@@ -26,7 +26,7 @@ public class StreamAnalyticsChart extends GChart
      * Chart width.
      */
     private static final int CHART_WIDTH = 300;
-    
+
     /**
      * Chart height.
      */
@@ -50,19 +50,68 @@ public class StreamAnalyticsChart extends GChart
         getXAxis().setTickLabelFontColor("#c6c6c6");
 
         getYAxis().setHasGridlines(true);
-        getXAxis().setTickCount(4);
 
-        getCurve(0).getSymbol().setSymbolType(SymbolType.LINE);
-        getCurve(0).getSymbol().setBackgroundColor("#339966");
+        getXAxis().setTickCount(0);
+        getYAxis().setTickCount(0);
+
+        getCurve(0).getSymbol().setSymbolType(SymbolType.VBAR_SOUTHEAST);
+        getCurve(0).getSymbol().setBackgroundColor("#1D402F");
         getCurve(0).getSymbol().setBorderColor(TRANSPARENT_BORDER_COLOR);
+        getCurve(0).getSymbol().setBorderWidth(fillSpacing == 0 ? 1 : 0);
+        getCurve(0).getSymbol().setWidth(fillSpacing);
+        getCurve(0).getSymbol().setFillThickness(Math.max(1, fillSpacing));
+        getCurve(0).getSymbol().setFillSpacing(fillSpacing);
 
-        getCurve(1).getSymbol().setSymbolType(SymbolType.VBAR_SOUTHEAST);
+        getCurve(1).getSymbol().setSymbolType(SymbolType.LINE);
         getCurve(1).getSymbol().setBackgroundColor("#339966");
         getCurve(1).getSymbol().setBorderColor(TRANSPARENT_BORDER_COLOR);
-        getCurve(1).getSymbol().setBorderWidth(fillSpacing == 0 ? 1 : 0);
-        getCurve(1).getSymbol().setWidth(fillSpacing);
-        getCurve(1).getSymbol().setFillThickness(Math.max(1, fillSpacing));
-        getCurve(1).getSymbol().setFillSpacing(fillSpacing);
 
+    }
+
+    /**
+     * Add point.
+     * 
+     * @param x
+     *            x coordinate;
+     * @param y
+     *            y coordinate;
+     */
+    public void addPoint(final double x, final double y)
+    {
+        getXAxis().addTick(x);
+        getCurve(0).addPoint(x, y);
+        getCurve(1).addPoint(x, y);
+    }
+
+    /**
+     * Clear all points.
+     */
+    public void clearPoints()
+    {
+        getYAxis().clearTicks();
+        getXAxis().clearTicks();
+        getCurve(0).clearPoints();
+        getCurve(1).clearPoints();
+    }
+
+    /**
+     * Update the chart.
+     */
+    @Override
+    public void update()
+    {
+        final double ceilMult = 1.5;
+        getYAxis().clearTicks();
+
+        double yMax = getYAxis().getDataMax() * ceilMult;
+
+        double divBy6 = Math.ceil(yMax / 6);
+
+        for (int i = 1; i <= 6; i++)
+        {
+            getYAxis().addTick(divBy6 * i);
+        }
+
+        super.update();
     }
 }

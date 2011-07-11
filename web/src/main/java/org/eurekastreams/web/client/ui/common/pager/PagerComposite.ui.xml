@@ -14,23 +14,25 @@
 		{
 		clear: both;
 		overflow: hidden;
+		padding: 25px;
 		}
 
 		.buttons
 		{
 		border-top: 1px solid #404040;
 		text-align: right;
+		margin-top: 20px;
 		}
 
 		.prevButton, .nextButton
 		{
 		background-color: #c0c0c0;
-		padding: 5px;
 		cursor: pointer;
 		display: inline-block;
-		margin-left: 10px;
 		overflow: hidden;
 		text-indent: 1000em;
+		margin-left: 1px;
+    	margin-top: 5px;
 		}
 		
 		@sprite .prevButton
