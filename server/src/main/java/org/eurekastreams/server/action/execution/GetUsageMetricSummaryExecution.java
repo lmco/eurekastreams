@@ -101,6 +101,8 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         long uniqueVisitorCount = 0;
         long avgActivityResponseTime = 0;
 
+        long startingCommentCount = 0, finalCommentCount = 0;
+
         Long totalStreamViewCount = null;
         Long totalActivityCount = null;
         Long totalCommentCount = null;
@@ -142,6 +144,8 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 totalActivityCount = dus.getTotalActivityCount();
                 totalCommentCount = dus.getTotalCommentCount();
                 totalContributorCount = dus.getTotalContributorCount();
+
+                finalCommentCount = dus.getTotalCommentCount();
             }
 
             recordCount++;
@@ -149,6 +153,8 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             {
                 // this is the earliest reporting date we've seen
                 oldestAvailableReportDate = summaryDate;
+
+                startingCommentCount = dus.getTotalCommentCount();
             }
 
             msgCount += dus.getMessageCount();
@@ -184,6 +190,12 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             result.setAverageDailyStreamViewerCount(streamViewerCount / weekdaysCount);
             result.setAverageDailyUniqueVisitorCount(uniqueVisitorCount / weekdaysCount);
             result.setAverageDailyActivityResponseTime(avgActivityResponseTime / weekdaysCount);
+
+            if (weekdaysCount > 1)
+            {
+                result.setAverageDailyCommentCount(//
+                        (finalCommentCount - startingCommentCount) / (weekdaysCount - 1));
+            }
         }
         return result;
     }

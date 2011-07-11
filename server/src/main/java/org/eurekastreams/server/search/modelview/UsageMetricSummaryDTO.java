@@ -72,6 +72,11 @@ public class UsageMetricSummaryDTO implements Serializable
     private long averageDailyActivityResponseTime;
 
     /**
+     * average daily number of comments.
+     */
+    private long averageDailyCommentCount;
+
+    /**
      * Total number of views of streams for all time.
      */
     private Long totalStreamViewCount;
@@ -317,4 +322,20 @@ public class UsageMetricSummaryDTO implements Serializable
         dailyStatistics = inDailyStatistics;
     }
 
+    /**
+     * @return the averageDailyCommentCount
+     */
+    public long getAverageDailyCommentCount()
+    {
+        return averageDailyCommentCount;
+    }
+
+    /**
+     * @param inAverageDailyCommentCount
+     *            the averageDailyCommentCount to set
+     */
+    public void setAverageDailyCommentCount(final long inAverageDailyCommentCount)
+    {
+        averageDailyCommentCount = inAverageDailyCommentCount;
+    }
 }
