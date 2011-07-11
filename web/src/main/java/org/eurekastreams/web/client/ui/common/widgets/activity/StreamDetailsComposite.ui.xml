@@ -59,7 +59,7 @@
 		none;
 		}
 
-		.stream-details-options > div
+		.stream-details-options > .stream-details-option
 		{
 		color: white;
 		display: block;
@@ -71,7 +71,7 @@
 		cursor: pointer;
 		}
 		
-		.stream-details-options > div:hover
+		.stream-details-options > .stream-details-option:hover
 		{
 		color: #999999;
 		}
@@ -279,9 +279,9 @@
 		</div>
 		<div class="{style.stream-details-container}" ui:field="streamDetailsContainer">
 			<div class="{style.stream-details-options}">
-				<g:Label ui:field="aboutLink">About</g:Label>
-				<g:Label ui:field="followersLink">Followers</g:Label>
-				<g:Label ui:field="followingLink">Following</g:Label>
+				<g:Label addStyleNames="{style.stream-details-option}" ui:field="aboutLink">About</g:Label>
+				<g:Label addStyleNames="{style.stream-details-option}" ui:field="followersLink">Followers</g:Label>
+				<g:Label addStyleNames="{style.stream-details-option}" ui:field="followingLink">Following</g:Label>
 			</div>
 			<div class="{style.stream-details-content}">
 				<g:HTMLPanel ui:field="streamAbout">

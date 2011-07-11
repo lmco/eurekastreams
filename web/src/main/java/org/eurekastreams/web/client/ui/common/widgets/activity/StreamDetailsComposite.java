@@ -817,7 +817,6 @@ public class StreamDetailsComposite extends Composite
         streamAbout.setVisible(false);
         streamFollowing.setVisible(true);
         streamFollowing.load();
-        detailsContainerAnimation.expandWithPadding(CONTENT_PADDING);
     }
 
     /**
@@ -833,7 +832,6 @@ public class StreamDetailsComposite extends Composite
         streamAbout.setVisible(false);
         streamFollowers.setVisible(true);
         streamFollowers.load();
-        detailsContainerAnimation.expandWithPadding(CONTENT_PADDING);
     }
 
     /**
