@@ -387,7 +387,7 @@ public class ActivityContent extends Composite
 
         EventBus.getInstance().addObserver(ErrorRetrievingStreamEvent.class, new Observer<ErrorRetrievingStreamEvent>()
         {
-            public void update(ErrorRetrievingStreamEvent event)
+            public void update(final ErrorRetrievingStreamEvent event)
             {
                 errorPanel.clear();
                 errorPanel.setVisible(true);
