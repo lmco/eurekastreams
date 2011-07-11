@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager'>
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager'
+	xmlns:chart='urn:import:org.eurekastreams.web.client.ui.common.charts'>
 
 	<ui:image field="activityHeaderBackground" src="style/images/activityHeaderBackground.png" />
 	<ui:image field="hideDetails" src="style/images/hideDetailsBtn.png" />
@@ -16,6 +17,7 @@
 		.analyticsChartContainer {
 		float: right;
 		margin: 10px;
+		height: 350px;
 		}
 
 		.analyticsChartContainer > div {
@@ -57,7 +59,6 @@
 		none;
 		}
 
-
 		.stream-details-options > div
 		{
 		color: white;
@@ -66,13 +67,23 @@
 		height: 27px;
 		margin: 10px 0 10px
 		10px;
-		padding: 0 10px;
+		padding: 0 15px;
 		cursor: pointer;
+		}
+		
+		.stream-details-options > div:hover
+		{
+		color: #999999;
 		}
 		
 		.activeOption
 		{
 		background-image: url("style/images/subFilterBackground.png");
+		}
+		
+		.activeOption:hover
+		{
+			color: white ! important;
 		}
 
 		.stream-details-container
@@ -94,7 +105,7 @@
 		
 		.configureLink
 		{
-    	background-image: url("style/images/configureHeaderIcon.png");
+    	background-image: url("style/images/configure.png");
     	background-repeat: no-repeat;
     	bottom: 10px;
     	display: block;
@@ -102,6 +113,13 @@
     	padding-left: 21px;
     	position: absolute;
     	right: 155px;
+		}
+		
+		.stream-meta
+		{
+		color: #999999;
+    	font-size: 12px;
+		
 		}
 
 		.condensedStream .toggle-details-link, .condensedStream .follow-info-container,
@@ -143,7 +161,6 @@
 		gwt-image: "followingHeader";
 		}
 
-
 		@sprite .header {
 		gwt-image: "activityHeaderBackground";
 		position:
@@ -156,6 +173,7 @@
 		float: left;
 		margin-left: 20px;
 		margin: 10px;
+		margin-left: 0;
 		width: 430px;
 		}
 
@@ -164,6 +182,12 @@
 		margin: 10px;
 		float: right;
 		text-align: center;
+		}
+		
+		.follow-info-container > span
+		{
+		font-size: 18px;
+		font-weight: bold;
 		}
 
 		.follow-info-link
@@ -204,6 +228,26 @@
 			width: 100%;
 		}
 		
+		.pagerControl
+		{
+			margin-top: 5px;
+		}
+			
+		.metrics-data-avg
+		{
+			float: left;	
+		}
+
+		.metrics-data-total
+		{
+			float: right;
+			margin-right: 20xp;	
+		}
+		
+		.metrics-data-avg span, .metrics-data-total span
+		{
+			font-weight: bold;
+		}
 	</ui:style>
 
 	<g:HTMLPanel>
@@ -251,11 +295,27 @@
 					</div>
 					<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}"
 						ui:field="analyticsChartContainer">
+						<chart:StreamAnalyticsChart ui:field="chart"></chart:StreamAnalyticsChart>
+						<div class="{style.metrics-data-avg}">
+							<b>Avg Daily Activity</b>
+							<div><span ui:field="avgViewers"></span> Viewers</div> 
+							<div><span ui:field="avgViews"></span> Views</div> 
+							<div><span ui:field="avgContributors"></span> Contributors</div> 
+							<div><span ui:field="avgMessages"></span> Messages</div> 
+							<div><span ui:field="avgComments"></span> Comments per post</div> 
+						</div>
+						<div class="{style.metrics-data-total}">
+							<b>Total</b>
+							<div><span ui:field="totalViews"></span> Views</div> 
+							<div><span ui:field="totalContributors"></span> Contributors</div> 
+							<div><span ui:field="totalMessages"></span> Messages</div> 
+							<div><span ui:field="totalComments"></span> Comments per post</div> 
+						</div>
 					</g:HTMLPanel>
 				</g:HTMLPanel>
-				<pager:PagerComposite ui:field="streamFollowers">
+				<pager:PagerComposite addStyleNames="pagerControl" ui:field="streamFollowers">
 				</pager:PagerComposite>
-				<pager:PagerComposite ui:field="streamFollowing">
+				<pager:PagerComposite addStyleNames="pagerControl" ui:field="streamFollowing">
 				</pager:PagerComposite>
 			</div>
 		</div>

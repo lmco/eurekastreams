@@ -139,7 +139,7 @@ a:hover,.linked-label:hover {
 }
 
 input.empty-labeled-textbox {
-	color: #999999 ! important;
+	color: #666666 ! important;
 }
 
 .content-warning {
@@ -307,8 +307,8 @@ body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a
 }
 
 .header-bar ul.user-bar li {
-	padding-right: 10px;
-	padding-top: 15px;
+	padding-right: 15px;
+	padding-top: 18px;
 }
 
 .header-bar ul.barred li:first-child {
@@ -1437,8 +1437,8 @@ body .post-expanded-panel .content-warning {
 }
 
 .header-bar .search-list {
-	padding-top: 15px;
-	height: 35px;
+	padding-top: 14px;
+	height: 36px;
 	padding-left: 10px;
 	padding-right: 10px;	
 }
@@ -1481,6 +1481,7 @@ body .post-expanded-panel .content-warning {
 .searchResultsAutocompleteResults > div > div:hover
 {
 	background-image: url(style/images/searchResultsBackground.png);
+	color: white;
 }
 
 .search-list .searchResultsAutocompleteResults .avatar
@@ -3688,11 +3689,15 @@ body .options>li>.option-title:hover {
 
 .connection-col-left,.connection-col-right,.connection-col-middle {
 	display: inline-block;
-	padding: 0px 10px;
 	min-height: 30px;
 	vertical-align: top;
+	margin-bottom: -20px;
 }
 
+.connection-col-left, .connection-col-middle {
+	border-right: 1px solid #404040;
+	margin-right: 25px;	
+}
 	
 .connection-item-panel {
 	display: block;
@@ -6482,7 +6487,6 @@ div.tab-container table.dragdrop-dropTarget-engage {
 .settings-panel .settings-title-bar {
 	font-size: 16px;
 	margin-left: -10px;
-	margin-top: -10px;
 	width: 970px;
 	padding: 10px;
 	position: relative;
