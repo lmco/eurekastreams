@@ -16,10 +16,13 @@
 package org.eurekastreams.server.search.modelview;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.eurekastreams.server.domain.DailyUsageSummary;
 
 /**
  * Contains Summary usage metrics.
- * 
+ *
  */
 public class UsageMetricSummaryDTO implements Serializable
 {
@@ -87,6 +90,11 @@ public class UsageMetricSummaryDTO implements Serializable
      * Total contributor count - for all time - applies to streams only.
      */
     private Long totalContributorCount;
+
+    /**
+     * A list of the daily usage metrics from the past 30 days, omitting weekends.
+     */
+    private List<DailyUsageSummary> dailyStatistics;
 
     /**
      * @return the weekdayRecordCount
@@ -290,6 +298,23 @@ public class UsageMetricSummaryDTO implements Serializable
     public void setTotalContributorCount(final Long inTotalContributorCount)
     {
         totalContributorCount = inTotalContributorCount;
+    }
+
+    /**
+     * @return the dailyStatistics
+     */
+    public List<DailyUsageSummary> getDailyStatistics()
+    {
+        return dailyStatistics;
+    }
+
+    /**
+     * @param inDailyStatistics
+     *            the dailyStatistics to set
+     */
+    public void setDailyStatistics(final List<DailyUsageSummary> inDailyStatistics)
+    {
+        dailyStatistics = inDailyStatistics;
     }
 
 }

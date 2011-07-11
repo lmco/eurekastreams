@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,21 +41,21 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
     /**
      * Logger.
      */
-    private Log logger = LogFactory.make();
+    private final Log logger = LogFactory.make();
 
     /**
      * Mapper to get the summary data for a stream, or all streams.
      */
-    private DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper;
+    private final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper;
 
     /**
      * Strategy to get the number of weekdays between two dates.
      */
-    private WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy;
+    private final WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSummaryDataMapper
      *            mapper to get the summary data for a stream, or all streams
      * @param inWeekdaysInDateRangeStrategy
@@ -70,7 +71,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Get the daily usage summary for all streams or for a specific stream.
-     * 
+     *
      * @param inActionContext
      *            the action context containing the UsageMetricDailyStreamInfoRequest
      * @return the UsageMetricSummaryDTO
@@ -84,6 +85,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         logger.info("Found " + results.size() + " summary results");
 
         UsageMetricSummaryDTO result = new UsageMetricSummaryDTO();
+        result.setDailyStatistics(new ArrayList<DailyUsageSummary>());
 
         // short-circuit if no results.
         if (results.size() == 0)
@@ -127,6 +129,9 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 logger.debug("Can't use data for " + summaryDate);
                 continue;
             }
+            // set the normalized date, add the date to the list
+            dus.setUsageDate(summaryDate);
+            result.getDailyStatistics().add(dus);
 
             if (newestAvailableReportDate == null || summaryDate.after(newestAvailableReportDate))
             {

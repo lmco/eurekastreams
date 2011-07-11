@@ -113,8 +113,6 @@ public class GetUsageMetricSummaryExecutionTest
         results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, fourDaysAgo, 1308238511000L, 110L, 120L,
                 130L, 140L, 150L));
 
-        System.out.println(DateDayExtractor.getStartOfDay(threeDaysAgo));
-        System.out.println(DateDayExtractor.getStartOfDay(new Date()));
         context.checking(new Expectations()
         {
             {
