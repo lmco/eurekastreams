@@ -221,7 +221,11 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             Date reportDate;
             long lastDateInMs = latestReportDate.getTime();
             int dataIndex = 0; // the current index in the data list
-            for (reportDate = cal.getTime(); reportDate.getTime() <= lastDateInMs; cal.add(Calendar.DATE, 1), reportDate = cal
+
+            // when looping, include a check to make sure we don't add more records than expected - this is a safeguard
+            // in case there's an unexpected daylight savings time condition that'll cause an infinite loop
+            for (reportDate = cal.getTime(); reportDate.getTime() <= lastDateInMs
+                    && result.getDailyStatistics().size() < weekdaysCount; cal.add(Calendar.DATE, 1), reportDate = cal
                     .getTime())
             {
                 if (!dayOfWeekStrategy.isWeekday(reportDate))
