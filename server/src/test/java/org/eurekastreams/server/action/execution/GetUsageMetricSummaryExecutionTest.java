@@ -22,6 +22,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eurekastreams.commons.date.DateDayExtractor;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -70,12 +71,17 @@ public class GetUsageMetricSummaryExecutionTest
             WeekdaysInDateRangeStrategy.class, "weekdaysInDateRangeStrategy");
 
     /**
+     * Strategy to determine if a day is a weekday.
+     */
+    private final DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
+
+    /**
      * Setup method.
      */
     @Before
     public void setup()
     {
-        sut = new GetUsageMetricSummaryExecution(summaryDataMapper, weekdaysInDateRangeStrategy);
+        sut = new GetUsageMetricSummaryExecution(summaryDataMapper, weekdaysInDateRangeStrategy, dayOfWeekStrategy);
     }
 
     /**
@@ -123,7 +129,10 @@ public class GetUsageMetricSummaryExecutionTest
                 oneOf(weekdaysInDateRangeStrategy).getWeekdayCountBetweenDates(
                         with(DateDayExtractor.getStartOfDay(threeDaysAgo)),
                         with(DateDayExtractor.getStartOfDay(new Date())));
-                will(returnValue(10));
+                will(returnValue(10)); // for easy math
+
+                allowing(dayOfWeekStrategy).isWeekday(with(any(Date.class)));
+                will(returnValue(true));
             }
         });
 
@@ -143,5 +152,169 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(new Long(140), result.getTotalStreamViewCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
         Assert.assertEquals(2, result.getAverageDailyCommentCount());
+    }
+
+    /**
+     * Test execute on data with a missing record in the middle.
+     */
+    @Test
+    public void testExecuteWithAMissingDatum()
+    {
+        final UsageMetricStreamSummaryRequest request = new UsageMetricStreamSummaryRequest(4, 4L);
+        final List<DailyUsageSummary> results = new ArrayList<DailyUsageSummary>();
+        Calendar cal;
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        final Date yesterday = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -2);
+        final Date twoDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -3);
+        final Date threeDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -4);
+        final Date fourDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, fourDaysAgo, //
+                1308238511000L, 80L, 91L, 101L, 111L, 121L));
+        results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, threeDaysAgo, //
+                1308238511000L, 90L, 100L, 110L, 120L, 130L));
+        results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, yesterday, //
+                1308238511000L, 110L, 120L, 130L, 140L, 150L));
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(summaryDataMapper).execute(with(request));
+                will(returnValue(results));
+
+                oneOf(weekdaysInDateRangeStrategy).getWeekdayCountBetweenDates(
+                        with(DateDayExtractor.getStartOfDay(fourDaysAgo)),
+                        with(DateDayExtractor.getStartOfDay(new Date())));
+                will(returnValue(10));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(yesterday));
+                will(returnValue(true));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(twoDaysAgo));
+                will(returnValue(true));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(threeDaysAgo));
+                will(returnValue(true));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(fourDaysAgo));
+                will(returnValue(true));
+            }
+        });
+
+        // invoke
+        UsageMetricSummaryDTO result = (UsageMetricSummaryDTO) sut.execute(TestContextCreator
+                .createPrincipalActionContext(request, null));
+
+        Assert.assertEquals(10, result.getWeekdayRecordCount());
+        Assert.assertEquals(4, result.getDailyStatistics().size());
+        Assert.assertSame(results.get(0), result.getDailyStatistics().get(0));
+        Assert.assertSame(results.get(1), result.getDailyStatistics().get(1));
+        Assert.assertNull(result.getDailyStatistics().get(2));
+        Assert.assertSame(results.get(2), result.getDailyStatistics().get(3));
+
+        Assert.assertEquals(7, result.getAverageDailyUniqueVisitorCount());
+        Assert.assertEquals(10, result.getAverageDailyPageViewCount());
+        Assert.assertEquals(13, result.getAverageDailyStreamViewerCount());
+        Assert.assertEquals(16, result.getAverageDailyStreamViewCount());
+        Assert.assertEquals(19, result.getAverageDailyStreamContributorCount());
+        Assert.assertEquals(22, result.getAverageDailyMessageCount());
+        Assert.assertEquals(new Long(120), result.getTotalActivityCount());
+        Assert.assertEquals(new Long(130), result.getTotalCommentCount());
+        Assert.assertEquals(new Long(140), result.getTotalStreamViewCount());
+        Assert.assertEquals(new Long(150), result.getTotalContributorCount());
+        Assert.assertEquals(3, result.getAverageDailyCommentCount());
+    }
+
+    /**
+     * Test execute on data with a missing record in the middle, but that date is a weekend.
+     */
+    @Test
+    public void testExecuteWithAMissingWeekendDatum()
+    {
+        final UsageMetricStreamSummaryRequest request = new UsageMetricStreamSummaryRequest(4, 4L);
+        final List<DailyUsageSummary> results = new ArrayList<DailyUsageSummary>();
+        Calendar cal;
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        final Date yesterday = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -2);
+        final Date twoDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -3);
+        final Date threeDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -4);
+        final Date fourDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
+
+        results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, fourDaysAgo, //
+                1308238511000L, 80L, 91L, 101L, 111L, 121L));
+        results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, threeDaysAgo, //
+                1308238511000L, 90L, 100L, 110L, 120L, 130L));
+        results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, yesterday, //
+                1308238511000L, 110L, 120L, 130L, 140L, 150L));
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(summaryDataMapper).execute(with(request));
+                will(returnValue(results));
+
+                oneOf(weekdaysInDateRangeStrategy).getWeekdayCountBetweenDates(
+                        with(DateDayExtractor.getStartOfDay(fourDaysAgo)),
+                        with(DateDayExtractor.getStartOfDay(new Date())));
+                will(returnValue(10));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(yesterday));
+                will(returnValue(true));
+
+                // missing day is a weekend
+                allowing(dayOfWeekStrategy).isWeekday(with(twoDaysAgo));
+                will(returnValue(false));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(threeDaysAgo));
+                will(returnValue(true));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(fourDaysAgo));
+                will(returnValue(true));
+            }
+        });
+
+        // invoke
+        UsageMetricSummaryDTO result = (UsageMetricSummaryDTO) sut.execute(TestContextCreator
+                .createPrincipalActionContext(request, null));
+
+        Assert.assertEquals(10, result.getWeekdayRecordCount());
+        Assert.assertEquals(3, result.getDailyStatistics().size());
+        Assert.assertSame(results.get(0), result.getDailyStatistics().get(0));
+        Assert.assertSame(results.get(1), result.getDailyStatistics().get(1));
+        Assert.assertSame(results.get(2), result.getDailyStatistics().get(2));
+
+        Assert.assertEquals(7, result.getAverageDailyUniqueVisitorCount());
+        Assert.assertEquals(10, result.getAverageDailyPageViewCount());
+        Assert.assertEquals(13, result.getAverageDailyStreamViewerCount());
+        Assert.assertEquals(16, result.getAverageDailyStreamViewCount());
+        Assert.assertEquals(19, result.getAverageDailyStreamContributorCount());
+        Assert.assertEquals(22, result.getAverageDailyMessageCount());
+        Assert.assertEquals(new Long(120), result.getTotalActivityCount());
+        Assert.assertEquals(new Long(130), result.getTotalCommentCount());
+        Assert.assertEquals(new Long(140), result.getTotalStreamViewCount());
+        Assert.assertEquals(new Long(150), result.getTotalContributorCount());
+        Assert.assertEquals(3, result.getAverageDailyCommentCount());
     }
 }

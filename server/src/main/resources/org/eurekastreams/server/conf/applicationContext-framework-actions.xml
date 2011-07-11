@@ -4297,6 +4297,7 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy" />
                 </constructor-arg>
+                <constructor-arg ref="dayOfWeekStrategy" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
