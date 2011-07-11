@@ -161,7 +161,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.4</version>
+            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -772,7 +772,6 @@
                             <port>8080</port>
                             <hostedWebapp>ROOT</hostedWebapp>
                             <style>${build.gwt.compile.style}</style>
-                            <localWorkers>1</localWorkers>
                        </configuration>
                         <executions>
                             <execution>

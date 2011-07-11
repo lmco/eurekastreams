@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
@@ -63,7 +62,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The basic group settings.
- * 
+ *
  */
 public class GroupProfileSettingsTabContent extends FlowPanel
 {
@@ -97,7 +96,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param groupName
      *            the group name.
      */
@@ -114,17 +113,19 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(AuthorizeUpdateGroupResponseEvent.class,
-                new Observer<AuthorizeUpdateGroupResponseEvent>()
-                {
-                    public void update(final AuthorizeUpdateGroupResponseEvent event)
-                    {
-                        if (event.getResponse())
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(AuthorizeUpdateGroupResponseEvent.class,
+                        new Observer<AuthorizeUpdateGroupResponseEvent>()
                         {
-                            GroupModel.getInstance().fetch(groupName, true);
-                        }
-                    }
-                });
+                            public void update(final AuthorizeUpdateGroupResponseEvent event)
+                            {
+                                if (event.getResponse())
+                                {
+                                    GroupModel.getInstance().fetch(groupName, true);
+                                }
+                            }
+                        });
 
         GroupModel.getInstance().authorize(groupName, true);
 
@@ -132,7 +133,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Setter.
-     * 
+     *
      * @param entity
      *            the group whose settings will be changed
      */
@@ -147,11 +148,16 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         {
             public void update(final UpdatedGroupResponseEvent arg1)
             {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS, arg1.getResponse().getShortName())));
+                Session.getInstance()
+                        .getEventBus()
+                        .notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS, arg1.getResponse()
+                                        .getShortName())));
 
-                Session.getInstance().getEventBus().notifyObservers(
-                        new ShowNotificationEvent(new Notification("Your group has been successfully saved")));
+                Session.getInstance()
+                        .getEventBus()
+                        .notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your group has been successfully saved")));
             }
         });
 
@@ -266,8 +272,8 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         // TODO: evidently this is supposed to go away
         BasicCheckBoxFormElement blockWallPost = new BasicCheckBoxFormElement("Stream Moderation",
-                DomainGroupModelView.STREAM_POSTABLE_KEY, "Allow others to post to your group's stream", false, entity
-                        .isStreamPostable());
+                DomainGroupModelView.STREAM_POSTABLE_KEY, "Allow others to post to your group's stream", false,
+                entity.isStreamPostable());
         BasicCheckBoxFormElement blockCommentPost = new BasicCheckBoxFormElement(null,
                 DomainGroupModelView.STREAM_COMMENTABLE_KEY,
                 "Allow others to comment on activity in your group's stream", false, entity.isCommentable());
@@ -321,30 +327,35 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
                     // TODO - might should put this in GroupModel (and mark it as Deletable) but there's no
                     // custom onFailure ability there yet.
-                    Session.getInstance().getActionProcessor().makeRequest(
-                            new ActionRequestImpl<Boolean>("deleteGroupAction", entity.getId()),
-                            new AsyncCallback<Boolean>()
+                    Session.getInstance().getActionProcessor()
+                            .makeRequest("deleteGroupAction", entity.getId(), new AsyncCallback<Boolean>()
                             {
                                 public void onSuccess(final Boolean result)
                                 {
                                     // adds notification to top of page
-                                    Session.getInstance().getEventBus().notifyObservers(
-                                            new ShowNotificationEvent(new Notification("The group '" + entity.getName()
-                                                    + "' has been deleted")));
+                                    Session.getInstance()
+                                            .getEventBus()
+                                            .notifyObservers(
+                                                    new ShowNotificationEvent(new Notification("The group '"
+                                                            + entity.getName() + "' has been deleted")));
 
                                     // navigates away from settings page to the parent org profile page
-                                    Session.getInstance().getEventBus().notifyObservers(
-                                            new UpdateHistoryEvent(new CreateUrlRequest(Page.PEOPLE, Session
-                                                    .getInstance().getCurrentPerson().getAccountId())));
+                                    Session.getInstance()
+                                            .getEventBus()
+                                            .notifyObservers(
+                                                    new UpdateHistoryEvent(new CreateUrlRequest(Page.PEOPLE, Session
+                                                            .getInstance().getCurrentPerson().getAccountId())));
                                 }
 
                                 public void onFailure(final Throwable caught)
                                 {
                                     // adds notification to top of page
-                                    Session.getInstance().getEventBus().notifyObservers(
-                                            new ShowNotificationEvent(new Notification(
-                                                    "An error has occured and the group '" + entity.getName()
-                                                            + "' was not deleted")));
+                                    Session.getInstance()
+                                            .getEventBus()
+                                            .notifyObservers(
+                                                    new ShowNotificationEvent(new Notification(
+                                                            "An error has occured and the group '" + entity.getName()
+                                                                    + "' was not deleted")));
                                 }
                             });
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.stream.SetActivityStarRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityStarRequest.StarActionType;
 import org.eurekastreams.web.client.ui.Session;
@@ -53,13 +52,11 @@ public class StarLinkWidget extends InlineLabel
         {
             public void onClick(final ClickEvent event)
             {
-                SetActivityStarRequest request = new SetActivityStarRequest(
-                        activityId, starred ? StarActionType.REMOVE_STAR
-                                : StarActionType.ADD_STAR);
+                SetActivityStarRequest request = new SetActivityStarRequest(activityId,
+                        starred ? StarActionType.REMOVE_STAR : StarActionType.ADD_STAR);
 
-                Session.getInstance().getActionProcessor().makeRequest(
-                        new ActionRequestImpl<Boolean>("setActivityStar",
-                                request), new AsyncCallback<Boolean>()
+                Session.getInstance().getActionProcessor()
+                        .makeRequest("setActivityStar", request, new AsyncCallback<Boolean>()
                         {
                             /* implement the async call back methods */
                             public void onFailure(final Throwable caught)

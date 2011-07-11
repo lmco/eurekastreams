@@ -15,14 +15,10 @@
  */
 package org.eurekastreams.web.client.ui.pages.settings;
 
-import java.util.LinkedList;
-
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.dto.MembershipCriteriaDTO;
-import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
@@ -64,21 +60,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SystemSettingsPanelComposite extends FlowPanel
 {
-    /**
-     * Maximum phone length.
-     */
-    private static final int MAX_PHONE = 50;
-
-    /**
-     * Maximum group name length.
-     */
-    private static final int MAX_GROUP_NAME = 50;
-
-    /**
-     * Maximum email length.
-     */
-    private static final int MAX_EMAIL = 50;
-
     /**
      * Maximum email length.
      */
@@ -133,11 +114,6 @@ public class SystemSettingsPanelComposite extends FlowPanel
     private TermsOfServicePromptIntervalFormElement promptInterval;
 
     /**
-     * Scopes.
-     */
-    private final LinkedList<StreamScope> scopes = new LinkedList<StreamScope>();
-
-    /**
      * Constructor.
      *
      * @param inProcessor
@@ -184,27 +160,29 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 if (event.isNew())
                 {
                     // TODO: Refactor to use new client models
-                    processor.makeRequest(new ActionRequestImpl<SystemSettings>("addMembershipCriteria", event
-                            .getMembershipCriteria()), new AsyncCallback<Long>()
-                    {
-                        public void onFailure(final Throwable caught)
-                        {
-                        }
+                    processor.makeRequest("addMembershipCriteria", event.getMembershipCriteria(),
+                            new AsyncCallback<Long>()
+                            {
+                                public void onFailure(final Throwable caught)
+                                {
+                                }
 
-                        public void onSuccess(final Long persistedItemId)
-                        {
-                            SystemSettingsModel.getInstance().clearCache();
+                                public void onSuccess(final Long persistedItemId)
+                                {
+                                    SystemSettingsModel.getInstance().clearCache();
 
-                            Session.getInstance().getEventBus().notifyObservers(
-                                    new ShowNotificationEvent(new Notification("Access List Saved")));
-                            History.newItem(History.getToken());
+                                    Session.getInstance()
+                                            .getEventBus()
+                                            .notifyObservers(
+                                                    new ShowNotificationEvent(new Notification("Access List Saved")));
+                                    History.newItem(History.getToken());
 
-                            MembershipCriteriaDTO result = event.getMembershipCriteria();
-                            result.setId(persistedItemId);
-                            Session.getInstance().getEventBus().notifyObservers(
-                                    new MembershipCriteriaPersistedEvent(result));
-                        }
-                    });
+                                    MembershipCriteriaDTO result = event.getMembershipCriteria();
+                                    result.setId(persistedItemId);
+                                    Session.getInstance().getEventBus()
+                                            .notifyObservers(new MembershipCriteriaPersistedEvent(result));
+                                }
+                            });
                 }
             }
         });
@@ -213,23 +191,23 @@ public class SystemSettingsPanelComposite extends FlowPanel
         {
             public void update(final MembershipCriteriaRemovedEvent event)
             {
-                processor.makeRequest(new ActionRequestImpl<SystemSettings>("removeMembershipCriteria", event
-                        .getMembershipCriteria().getId()), new AsyncCallback<SystemSettings>()
-                {
-                    public void onFailure(final Throwable caught)
-                    {
-                    }
+                processor.makeRequest("removeMembershipCriteria", event.getMembershipCriteria().getId(),
+                        new AsyncCallback<SystemSettings>()
+                        {
+                            public void onFailure(final Throwable caught)
+                            {
+                            }
 
-                    public void onSuccess(final SystemSettings systemSettings)
-                    {
-                        // TODO: Refactor to use new client models
-                        SystemSettingsModel.getInstance().clearCache();
+                            public void onSuccess(final SystemSettings systemSettings)
+                            {
+                                // TODO: Refactor to use new client models
+                                SystemSettingsModel.getInstance().clearCache();
 
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ShowNotificationEvent(new Notification("Item Deleted")));
-                        History.newItem(History.getToken());
-                    }
-                });
+                                Session.getInstance().getEventBus()
+                                        .notifyObservers(new ShowNotificationEvent(new Notification("Item Deleted")));
+                                History.newItem(History.getToken());
+                            }
+                        });
             }
         });
     }
@@ -241,8 +219,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
     {
         processor.setQueueRequests(false);
 
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -251,8 +229,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
                         if (event.getResponse().getSystemAdministrators() != null)
                         {
                             // this is the response we were waiting for - unhook and generate the form
-                            Session.getInstance().getEventBus().removeObserver(GotSystemSettingsResponseEvent.class,
-                                    this);
+                            Session.getInstance().getEventBus()
+                                    .removeObserver(GotSystemSettingsResponseEvent.class, this);
                             generateForm(event.getResponse());
                         }
                     }
@@ -288,20 +266,23 @@ public class SystemSettingsPanelComposite extends FlowPanel
         this.clear();
         final FormBuilder form = new FormBuilder("", SystemSettingsModel.getInstance(), Method.UPDATE);
 
-        Session.getInstance().getEventBus().addObserver(UpdatedSystemSettingsResponseEvent.class,
-                new Observer<UpdatedSystemSettingsResponseEvent>()
-                {
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(UpdatedSystemSettingsResponseEvent.class,
+                        new Observer<UpdatedSystemSettingsResponseEvent>()
+                        {
 
-                    public void update(final UpdatedSystemSettingsResponseEvent arg1)
-                    {
-                        form.onSuccess();
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ShowNotificationEvent(new Notification("Settings saved")));
+                            public void update(final UpdatedSystemSettingsResponseEvent arg1)
+                            {
+                                form.onSuccess();
+                                Session.getInstance()
+                                        .getEventBus()
+                                        .notifyObservers(new ShowNotificationEvent(new Notification("Settings saved")));
 
-                        clearRetainedValues();
-                    }
+                                clearRetainedValues();
+                            }
 
-                });
+                        });
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.START)));
         form.turnOffChangeCheck();
@@ -324,8 +305,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
         activityExp = new ActivityExpirationFormElement(systemSettingValues.getContentExpiration(),
                 "contentExpiration", true);
 
-        tosElement = new HideableRichTextAreaFormElement("Terms Of Service", "termsOfService", systemSettingValues
-                .getTermsOfService(), "I would like to setup the Terms of Service for the system.",
+        tosElement = new HideableRichTextAreaFormElement("Terms Of Service", "termsOfService",
+                systemSettingValues.getTermsOfService(), "I would like to setup the Terms of Service for the system.",
                 "Users will be prompted to agree or disagree with a Terms of Service message "
                         + "on an interval of your choice.  You can also add a link to the full "
                         + "Terms of Service document.", true);
@@ -348,8 +329,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormElement(new UserAssociationFormElement(systemSettingValues));
 
         BasicCheckBoxFormElement sendEmails = new BasicCheckBoxFormElement("", "sendWelcomeEmails",
-                "Send email invitations to new users as their accounts are created.", false, systemSettingValues
-                        .getSendWelcomeEmails());
+                "Send email invitations to new users as their accounts are created.", false,
+                systemSettingValues.getSendWelcomeEmails());
 
         sendEmails.addStyleName(StaticResourceBundle.INSTANCE.coreCss().welcomeEmailCheckbox());
 
@@ -414,24 +395,27 @@ public class SystemSettingsPanelComposite extends FlowPanel
         {
             public void onClick(final ClickEvent event)
             {
-                processor.makeRequest(new ActionRequestImpl<String>("updateMembershipTaskHandler", null),
-                        new AsyncCallback<String>()
-                        {
-                            public void onFailure(final Throwable caught)
-                            {
-                                Session.getInstance().getEventBus().notifyObservers(
+                processor.makeRequest("updateMembershipTaskHandler", null, new AsyncCallback<String>()
+                {
+                    public void onFailure(final Throwable caught)
+                    {
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
                                         new ShowNotificationEvent(new Notification(
                                                 "An error occurred refreshing Access List")));
-                                History.newItem(History.getToken());
-                            }
+                        History.newItem(History.getToken());
+                    }
 
-                            public void onSuccess(final String value)
-                            {
-                            }
-                        });
+                    public void onSuccess(final String value)
+                    {
+                    }
+                });
 
-                Session.getInstance().getEventBus().notifyObservers(
-                        new ShowNotificationEvent(new Notification("Access List Refresh is now processing")));
+                Session.getInstance()
+                        .getEventBus()
+                        .notifyObservers(
+                                new ShowNotificationEvent(new Notification("Access List Refresh is now processing")));
                 History.newItem(History.getToken());
             }
         });

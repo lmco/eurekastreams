@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.attach.bookmark;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.stream.LinkInformation;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
@@ -257,7 +256,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Called when a link is added to the message.
-     * 
+     *
      * @param link
      *            the link that was added.
      */
@@ -308,7 +307,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Fetch link.
-     * 
+     *
      * @param inLinkUrl
      *            link url.
      */
@@ -324,9 +323,8 @@ public class AddLinkComposite extends FlowPanel
         }
         else if (inLinkUrl != fetchedLink)
         {
-            Session.getInstance().getActionProcessor().makeRequest(
-                    new ActionRequestImpl<LinkInformation>("getParsedLinkInformation", inLinkUrl),
-                    new AsyncCallback<LinkInformation>()
+            Session.getInstance().getActionProcessor()
+                    .makeRequest("getParsedLinkInformation", inLinkUrl, new AsyncCallback<LinkInformation>()
                     {
                         /* implement the async call back methods */
                         public void onFailure(final Throwable caught)
@@ -339,16 +337,15 @@ public class AddLinkComposite extends FlowPanel
                                     linkInformation));
                             eventBus.notifyObservers(event);
 
-                            eventBus
-                                    .notifyObservers(new
-                                            // line break.
-                                            ShowNotificationEvent(new Notification(UNVERIFIED_URL_MESSAGE)));
+                            eventBus.notifyObservers(new
+                            // line break.
+                            ShowNotificationEvent(new Notification(UNVERIFIED_URL_MESSAGE)));
                         }
 
                         public void onSuccess(final LinkInformation result)
                         {
-                            MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
-                                    new Bookmark(result));
+                            MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(new Bookmark(
+                                    result));
 
                             boolean titleBlank = result.getTitle() == null || result.getTitle().isEmpty();
                             if (titleBlank)
@@ -356,7 +353,6 @@ public class AddLinkComposite extends FlowPanel
                                 result.setTitle(result.getUrl());
                             }
                             eventBus.notifyObservers(event);
-
                         }
                     });
         }

@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.stream.comments;
 
 import java.util.Date;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
@@ -77,8 +76,8 @@ public class CommentPanel extends Composite
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
         commentContainer.add(body);
 
-        Widget author =
-                new MetadataLinkRenderer("", comment.getAuthorAccountId(), comment.getAuthorDisplayName()).render();
+        Widget author = new MetadataLinkRenderer("", comment.getAuthorAccountId(), comment.getAuthorDisplayName())
+                .render();
         author.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
         body.add(author);
 
@@ -90,7 +89,7 @@ public class CommentPanel extends Composite
         commentBody = commentBody.replaceAll("(\r\n|\n|\r)", "<br />");
 
         // transform links
-        commentBody =new HyperlinkTransformer(jSNIFacade).transform(commentBody);
+        commentBody = new HyperlinkTransformer(jSNIFacade).transform(commentBody);
 
         // then transform hashtags to hyperlinks
         commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);
@@ -130,9 +129,8 @@ public class CommentPanel extends Composite
                 {
                     if (jSNIFacade.confirm("Are you sure you want to delete this comment?"))
                     {
-                        Session.getInstance().getActionProcessor().makeRequest(
-                                new ActionRequestImpl<Boolean>("deleteComment", comment.getId()),
-                                new AsyncCallback<Boolean>()
+                        Session.getInstance().getActionProcessor()
+                                .makeRequest("deleteComment", comment.getId(), new AsyncCallback<Boolean>()
                                 {
                                     /*
                                      * implement the async call back methods
@@ -145,8 +143,8 @@ public class CommentPanel extends Composite
                                     public void onSuccess(final Boolean result)
                                     {
                                         effects.fadeOut(commentContainer.getElement(), true);
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new CommentDeletedEvent(comment.getActivityId()));
+                                        Session.getInstance().getEventBus()
+                                                .notifyObservers(new CommentDeletedEvent(comment.getActivityId()));
                                     }
                                 });
                     }

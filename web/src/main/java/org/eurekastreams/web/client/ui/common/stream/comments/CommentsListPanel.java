@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.stream.comments;
 
 import java.util.List;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.search.modelview.CommentDTO;
@@ -47,7 +46,7 @@ public class CommentsListPanel extends FlowPanel
     /**
      * Effects facade for fading.
      */
-    private EffectsFacade effects = new EffectsFacade();
+    private final EffectsFacade effects = new EffectsFacade();
 
     /**
      * Whether or not the post comment is shown.
@@ -62,7 +61,7 @@ public class CommentsListPanel extends FlowPanel
     /**
      * The post comment panel.
      */
-    private PostCommentPanel postCommentPanel;
+    private final PostCommentPanel postCommentPanel;
 
     /**
      * Number of Comments for this activity.
@@ -72,7 +71,7 @@ public class CommentsListPanel extends FlowPanel
     /**
      * if to allow additional comments.
      */
-    private boolean allowAdditionalComments;
+    private final boolean allowAdditionalComments;
 
     /**
      * Anchor with test to view all comments.
@@ -134,9 +133,8 @@ public class CommentsListPanel extends FlowPanel
                     public void onClick(final ClickEvent event)
                     {
                         // TODO: refactor to use new simplified model design
-                        Session.getInstance().getActionProcessor().makeRequest(
-                                new ActionRequestImpl<ActivityDTO>("getActivityById", messageId),
-                                new AsyncCallback<ActivityDTO>()
+                        Session.getInstance().getActionProcessor()
+                                .makeRequest("getActivityById", messageId, new AsyncCallback<ActivityDTO>()
                                 {
                                     public void onFailure(final Throwable caught)
                                     {
@@ -189,8 +187,8 @@ public class CommentsListPanel extends FlowPanel
         {
             public void update(final CommentDeletedEvent arg1)
             {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new ShowNotificationEvent(new Notification("Comment has been deleted")));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new ShowNotificationEvent(new Notification("Comment has been deleted")));
 
                 if (messageId.equals(arg1.getMessageId()))
                 {
@@ -198,9 +196,8 @@ public class CommentsListPanel extends FlowPanel
                     if (commentCount <= 2)
                     {
                         // TODO: refactor to use new simplified model design
-                        Session.getInstance().getActionProcessor().makeRequest(
-                                new ActionRequestImpl<ActivityDTO>("getActivityById", messageId),
-                                new AsyncCallback<ActivityDTO>()
+                        Session.getInstance().getActionProcessor()
+                                .makeRequest("getActivityById", messageId, new AsyncCallback<ActivityDTO>()
                                 {
                                     public void onFailure(final Throwable caught)
                                     {

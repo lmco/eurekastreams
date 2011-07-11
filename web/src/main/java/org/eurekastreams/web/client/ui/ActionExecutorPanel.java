@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui;
 import java.io.Serializable;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,7 +32,7 @@ public class ActionExecutorPanel extends Composite
     /**
      * Execute the action with the input name, using the input action processor, using a popup notice to report the
      * status of the action.
-     * 
+     *
      * @param actionProcessor
      *            the action processor
      * @param actionName
@@ -44,19 +43,18 @@ public class ActionExecutorPanel extends Composite
         FlowPanel panel = new FlowPanel();
         initWidget(panel);
 
-        actionProcessor.makeRequest(new ActionRequestImpl<Serializable>(actionName, null),
-                new AsyncCallback<Serializable>()
-                {
-                    /* implement the async call back methods */
-                    public void onFailure(final Throwable caught)
-                    {
-                        Window.alert("Fail");
-                    }
+        actionProcessor.makeRequest(actionName, null, new AsyncCallback<Serializable>()
+        {
+            /* implement the async call back methods */
+            public void onFailure(final Throwable caught)
+            {
+                Window.alert("Fail");
+            }
 
-                    public void onSuccess(final Serializable result)
-                    {
-                        Window.alert("Success");
-                    }
-                });
+            public void onSuccess(final Serializable result)
+            {
+                Window.alert("Success");
+            }
+        });
     }
 }

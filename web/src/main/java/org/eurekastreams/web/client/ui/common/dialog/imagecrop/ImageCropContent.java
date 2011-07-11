@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.profile.ResizeAvatarRequest;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
@@ -50,6 +49,7 @@ public class ImageCropContent extends BaseDialogContent
     /**
      * The person object.
      */
+    @SuppressWarnings("rawtypes")
     private final ImageUploadStrategy strategy;
     /**
      * The content panel.
@@ -97,8 +97,9 @@ public class ImageCropContent extends BaseDialogContent
      * @param inImageHeight
      *            Image height.
      */
-    public ImageCropContent(final ImageUploadStrategy inStrategy, final ActionProcessor inProcessor,
-            final String inAvatarId, final Command inSaveCommand, final String inImageWidth, final String inImageHeight)
+    public ImageCropContent(@SuppressWarnings("rawtypes") final ImageUploadStrategy inStrategy,
+            final ActionProcessor inProcessor, final String inAvatarId, final Command inSaveCommand,
+            final String inImageWidth, final String inImageHeight)
     {
         saveCommand = inSaveCommand;
         processor = inProcessor;
@@ -157,20 +158,19 @@ public class ImageCropContent extends BaseDialogContent
                         Boolean.TRUE, strategy.getId());
 
                 // TODO: refactor to new simplified model design (and thus eliminiate use of the action processor here)
-                processor.makeRequest(new ActionRequestImpl<AvatarEntity>(strategy.getResizeAction(), request),
-                        new AsyncCallback<AvatarEntity>()
-                        {
-                            public void onFailure(final Throwable caught)
-                            {
-                            }
+                processor.makeRequest(strategy.getResizeAction(), request, new AsyncCallback<AvatarEntity>()
+                {
+                    public void onFailure(final Throwable caught)
+                    {
+                    }
 
-                            public void onSuccess(final AvatarEntity result)
-                            {
-                                strategy.setEntity(result);
-                                saveCommand.execute();
-                                close();
-                            }
-                        });
+                    public void onSuccess(final AvatarEntity result)
+                    {
+                        strategy.setEntity(result);
+                        saveCommand.execute();
+                        close();
+                    }
+                });
             }
         });
     }
@@ -298,6 +298,7 @@ public class ImageCropContent extends BaseDialogContent
      *
      * @return the css name.
      */
+    @Override
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().imageCropDialog();

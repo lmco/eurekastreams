@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.comments;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.web.client.events.CommentAddedEvent;
@@ -203,23 +202,20 @@ public class PostCommentPanel extends FlowPanel
                     CommentDTO comment = new CommentDTO();
                     comment.setBody(commentBox.getText());
                     comment.setActivityId(messageId);
-                    Session.getInstance()
-                            .getActionProcessor()
-                            .makeRequest(new ActionRequestImpl<CommentDTO>("postActivityCommentAction", comment),
-                                    new AsyncCallback<CommentDTO>()
-                                    {
-                                        /* implement the async call back methods */
-                                        public void onFailure(final Throwable caught)
-                                        {
+                    Session.getInstance().getActionProcessor()
+                            .makeRequest("postActivityCommentAction", comment, new AsyncCallback<CommentDTO>()
+                            {
+                                /* implement the async call back methods */
+                                public void onFailure(final Throwable caught)
+                                {
+                                }
 
-                                        }
-
-                                        public void onSuccess(final CommentDTO result)
-                                        {
-                                            Session.getInstance().getEventBus()
-                                                    .notifyObservers(new CommentAddedEvent(result, messageId));
-                                        }
-                                    });
+                                public void onSuccess(final CommentDTO result)
+                                {
+                                    Session.getInstance().getEventBus()
+                                            .notifyObservers(new CommentAddedEvent(result, messageId));
+                                }
+                            });
                 }
             }
         });
