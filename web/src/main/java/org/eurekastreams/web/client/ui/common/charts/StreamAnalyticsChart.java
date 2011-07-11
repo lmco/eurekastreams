@@ -94,12 +94,16 @@ public class StreamAnalyticsChart extends GChart
         getCurve(1).clearPoints();
     }
 
+    /**
+     * Update the chart.
+     */
     @Override
     public void update()
     {
+        final double ceilMult = 1.5;
         getYAxis().clearTicks();
 
-        double yMax = getYAxis().getDataMax() * 1.5;
+        double yMax = getYAxis().getDataMax() * ceilMult;
 
         double divBy6 = Math.ceil(yMax / 6);
 

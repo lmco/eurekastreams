@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricDTO;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
@@ -71,7 +70,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -290,23 +288,57 @@ public class StreamDetailsComposite extends Composite
     @UiField
     StreamAnalyticsChart chart;
 
+    /**
+     * Average viewers.
+     */
     @UiField
     SpanElement avgViewers;
+
+    /**
+     * Average views.
+     */
     @UiField
     SpanElement avgViews;
+
+    /**
+     * Average contributors.
+     */
     @UiField
     SpanElement avgContributors;
+
+    /**
+     * Average messages.
+     */
     @UiField
     SpanElement avgMessages;
+
+    /**
+     * Average comments.
+     */
     @UiField
     SpanElement avgComments;
 
+    /**
+     * Total views.
+     */
     @UiField
     SpanElement totalViews;
+
+    /**
+     * Total contributors.
+     */
     @UiField
     SpanElement totalContributors;
+
+    /**
+     * Total messages.
+     */
     @UiField
     SpanElement totalMessages;
+
+    /**
+     * Total comments.
+     */
     @UiField
     SpanElement totalComments;
 
@@ -321,11 +353,14 @@ public class StreamDetailsComposite extends Composite
     private static final int EXPAND_ANIMATION_DURATION = 500;
 
     /**
-     * Default stream details container size.
+     * Content padding for details.
      */
-    private static final int DEFAULT_STREAM_DETAILS_CONTAINER_SIZE = 550;
-
     private static final int CONTENT_PADDING = 20;
+
+    /**
+     * Number of days to gather metrics for.
+     */
+    private static final Integer NUM_DAYS_FOR_METRICS = 30;
 
     /**
      * Avatar Renderer.
@@ -454,7 +489,7 @@ public class StreamDetailsComposite extends Composite
         EventBus.getInstance().addObserver(GotStreamPopularHashTagsEvent.class,
                 new Observer<GotStreamPopularHashTagsEvent>()
                 {
-                    public void update(GotStreamPopularHashTagsEvent event)
+                    public void update(final GotStreamPopularHashTagsEvent event)
                     {
                         String tagString = "";
                         for (String tag : event.getPopularHashTags())
@@ -475,7 +510,7 @@ public class StreamDetailsComposite extends Composite
 
         EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
         {
-            public void update(GotUsageMetricSummaryEvent event)
+            public void update(final GotUsageMetricSummaryEvent event)
             {
                 UsageMetricSummaryDTO data = event.getResponse();
 
@@ -545,7 +580,7 @@ public class StreamDetailsComposite extends Composite
                                 new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
 
                         UsageMetricModel.getInstance().fetch(
-                                new UsageMetricStreamSummaryRequest(30, person.getStreamId()), true);
+                                new UsageMetricStreamSummaryRequest(NUM_DAYS_FOR_METRICS, person.getStreamId()), true);
                     }
                 });
 
@@ -615,7 +650,8 @@ public class StreamDetailsComposite extends Composite
                             PopularHashTagsModel.getInstance().fetch(
                                     new StreamPopularHashTagsRequest(ScopeType.GROUP, group.getShortName()), true);
                             UsageMetricModel.getInstance().fetch(
-                                    new UsageMetricStreamSummaryRequest(30, group.getStreamId()), true);
+                                    new UsageMetricStreamSummaryRequest(NUM_DAYS_FOR_METRICS, group.getStreamId()),
+                                    true);
                         }
                     }
                 });
