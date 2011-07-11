@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.date.DateDayExtractor;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.DailyUsageSummary;
@@ -54,19 +55,28 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
     private final WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy;
 
     /**
+     * Strategy to determine if a date is a weekday.
+     */
+    private final DayOfWeekStrategy dayOfWeekStrategy;
+
+    /**
      * Constructor.
      *
      * @param inSummaryDataMapper
      *            mapper to get the summary data for a stream, or all streams
      * @param inWeekdaysInDateRangeStrategy
      *            strategy to get the number of weekdays between two dates
+     * @param inDayOfWeekStrategy
+     *            strategy to determine if a date is a weekday
      */
     public GetUsageMetricSummaryExecution(
             final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> inSummaryDataMapper,
-            final WeekdaysInDateRangeStrategy inWeekdaysInDateRangeStrategy)
+            final WeekdaysInDateRangeStrategy inWeekdaysInDateRangeStrategy,
+            final DayOfWeekStrategy inDayOfWeekStrategy)
     {
         summaryDataMapper = inSummaryDataMapper;
         weekdaysInDateRangeStrategy = inWeekdaysInDateRangeStrategy;
+        dayOfWeekStrategy = inDayOfWeekStrategy;
     }
 
     /**
@@ -85,7 +95,9 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         logger.info("Found " + results.size() + " summary results");
 
         UsageMetricSummaryDTO result = new UsageMetricSummaryDTO();
-        result.setDailyStatistics(new ArrayList<DailyUsageSummary>());
+
+        // can't build the list directly - build up a temporary list so we can fill in the holes later
+        List<DailyUsageSummary> dailyStats = new ArrayList<DailyUsageSummary>();
 
         // short-circuit if no results.
         if (results.size() == 0)
@@ -133,7 +145,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             }
             // set the normalized date, add the date to the list
             dus.setUsageDate(summaryDate);
-            result.getDailyStatistics().add(dus);
+            dailyStats.add(dus);
 
             if (newestAvailableReportDate == null || summaryDate.after(newestAvailableReportDate))
             {
@@ -197,6 +209,55 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                         (finalCommentCount - startingCommentCount) / (weekdaysCount - 1));
             }
         }
+
+        result.setDailyStatistics(new ArrayList<DailyUsageSummary>());
+        if (dailyStats.size() > 0)
+        {
+            // Loop through every date from the start of reporting for this stream to now, filling in records for
+            // weekdays
+            // that have none to make the client-side logic easier
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(oldestAvailableReportDate);
+            Date reportDate;
+            long lastDateInMs = latestReportDate.getTime();
+            int dataIndex = 0; // the current index in the data list
+            for (reportDate = cal.getTime(); reportDate.getTime() <= lastDateInMs; cal.add(Calendar.DATE, 1), reportDate = cal
+                    .getTime())
+            {
+                if (!dayOfWeekStrategy.isWeekday(reportDate))
+                {
+                    // we don't include weekend data
+                    continue;
+                }
+
+                // it's a weekday - we need a record for this date
+
+                if (dataIndex < dailyStats.size())
+                {
+                    // there's still data records to look for
+                    DailyUsageSummary record = dailyStats.get(dataIndex);
+                    if (DateDayExtractor.getStartOfDay(record.getUsageDate()).getTime() == reportDate.getTime())
+                    {
+                        // this is the data we're looking for - add it to the result list
+                        result.getDailyStatistics().add(record);
+
+                        // bump up the position index for the next loop iteration
+                        dataIndex++;
+                    }
+                    else
+                    {
+                        // we don't have data for that weekday - add a null to the result list
+                        result.getDailyStatistics().add(null);
+                    }
+                }
+                else
+                {
+                    // no more data to look for - we're just adding nulls until the end
+                    result.getDailyStatistics().add(null);
+                }
+            }
+        }
+
         return result;
     }
 }

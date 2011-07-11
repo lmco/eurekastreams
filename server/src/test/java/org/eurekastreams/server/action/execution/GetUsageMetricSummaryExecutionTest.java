@@ -22,6 +22,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eurekastreams.commons.date.DateDayExtractor;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -70,12 +71,17 @@ public class GetUsageMetricSummaryExecutionTest
             WeekdaysInDateRangeStrategy.class, "weekdaysInDateRangeStrategy");
 
     /**
+     * Strategy to determine if a day is a weekday.
+     */
+    private final DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
+
+    /**
      * Setup method.
      */
     @Before
     public void setup()
     {
-        sut = new GetUsageMetricSummaryExecution(summaryDataMapper, weekdaysInDateRangeStrategy);
+        sut = new GetUsageMetricSummaryExecution(summaryDataMapper, weekdaysInDateRangeStrategy, dayOfWeekStrategy);
     }
 
     /**
@@ -124,6 +130,9 @@ public class GetUsageMetricSummaryExecutionTest
                         with(DateDayExtractor.getStartOfDay(threeDaysAgo)),
                         with(DateDayExtractor.getStartOfDay(new Date())));
                 will(returnValue(10));
+
+                allowing(dayOfWeekStrategy).isWeekday(with(any(Date.class)));
+                will(returnValue(true));
             }
         });
 
