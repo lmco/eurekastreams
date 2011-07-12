@@ -2180,4 +2180,8 @@ public interface CoreCss extends CssResource
     
     String unFollowLink();
 
+    String analyticsChart();
+
+    String searchResultsMoreButton();
+
 }

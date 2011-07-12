@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.search;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
@@ -36,15 +37,21 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Global search composite. TODO break this out for testability.
@@ -70,6 +77,11 @@ public class GlobalSearchComposite extends FlowPanel
      * Last length of search term.
      */
     private int termLength = -1;
+
+    /**
+     * Currently active item.
+     */
+    private Panel activeItem = null;
 
     /**
      * Constructor.
@@ -99,10 +111,30 @@ public class GlobalSearchComposite extends FlowPanel
             public void onKeyUp(final KeyUpEvent ev)
             {
                 if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown()
-                        && searchTerm.getText().length() > 0)
+                        && searchTerm.getText().length() > 0 && activeItem != null)
                 {
-                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
-                            generateParams(searchTerm.getText()), false)));
+                    activeItem.getElement().dispatchEvent(
+                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                    clearSearch();
+
+                }
+                else if (ev.getNativeKeyCode() == KeyCodes.KEY_DOWN && activeItem != null)
+                {
+                    int activeIndex = resultsPanel.getWidgetIndex(activeItem);
+
+                    if (activeIndex + 1 < resultsPanel.getWidgetCount())
+                    {
+                        selectItem((Panel) resultsPanel.getWidget(activeIndex + 1));
+                    }
+                }
+                else if (ev.getNativeKeyCode() == KeyCodes.KEY_UP && activeItem != null)
+                {
+                    int activeIndex = resultsPanel.getWidgetIndex(activeItem);
+
+                    if (activeIndex - 1 >= 0)
+                    {
+                        selectItem((Panel) resultsPanel.getWidget(activeIndex - 1));
+                    }
                 }
                 else if (termLength != searchTerm.getText().length())
                 {
@@ -124,14 +156,11 @@ public class GlobalSearchComposite extends FlowPanel
             }
         });
 
-        resultsPanelContainer.addClickHandler(new ClickHandler()
+        searchTerm.addBlurHandler(new BlurHandler()
         {
-            public void onClick(final ClickEvent event)
+            public void onBlur(final BlurEvent arg0)
             {
-                searchTerm.reset();
-                resultsPanelContainer.setVisible(false);
-                resultsPanel.clear();
-                thisClass.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
+                clearSearch();
             }
         });
 
@@ -142,6 +171,7 @@ public class GlobalSearchComposite extends FlowPanel
                 if ("global".equals(event.getCallerKey()))
                 {
                     resultsPanel.clear();
+                    activeItem = null;
                     resultsPanelContainer.setVisible(event.getResponse().getPagedSet().size() > 0);
                     String historyToken = "";
 
@@ -153,37 +183,88 @@ public class GlobalSearchComposite extends FlowPanel
 
                         if (result instanceof PersonModelView)
                         {
-                            PersonModelView person = (PersonModelView) result;
+                            final PersonModelView person = (PersonModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
                                     .getEntityId(), person.getAvatarId(), Size.Small));
                             name.setText(person.getDisplayName());
                             historyToken = Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
+
+                            itemContainer.addClickHandler(new ClickHandler()
+                            {
+                                public void onClick(final ClickEvent event)
+                                {
+                                    ArrayList<String> views = new ArrayList<String>();
+                                    views.add(person.getAccountId());
+                                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.PEOPLE,
+                                            views)));
+                                }
+                            });
+
                         }
                         else if (result instanceof DomainGroupModelView)
                         {
-                            DomainGroupModelView group = (DomainGroupModelView) result;
+                            final DomainGroupModelView group = (DomainGroupModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
                                     .getEntityId(), group.getAvatarId(), Size.Small));
                             name.setText(group.getName());
                             historyToken = Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.GROUPS, group.getShortName()));
+
+                            itemContainer.addClickHandler(new ClickHandler()
+                            {
+                                public void onClick(final ClickEvent event)
+                                {
+                                    ArrayList<String> views = new ArrayList<String>();
+                                    views.add(group.getShortName());
+                                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS,
+                                            views)));
+                                }
+                            });
                         }
+
+                        itemContainer.addMouseOverHandler(new MouseOverHandler()
+                        {
+                            public void onMouseOver(final MouseOverEvent arg0)
+                            {
+                                selectItem(itemContainer);
+                            }
+                        });
 
                         name.setTargetHistoryToken(historyToken);
                         itemPanel.add(name);
+
+                        itemContainer.add(itemPanel);
+                        resultsPanel.add(itemContainer);
+
+                        if (activeItem == null)
+                        {
+                            selectItem(itemContainer);
+                        }
+                    }
+
+                    if (event.getResponse().getTotal() > event.getResponse().getPagedSet().size())
+                    {
+                        final FocusPanel itemContainer = new FocusPanel();
+                        final FlowPanel itemPanel = new FlowPanel();
+
+                        itemContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsMoreButton());
+
+                        itemPanel.add(new Label("See more results"));
 
                         itemContainer.addClickHandler(new ClickHandler()
                         {
                             public void onClick(final ClickEvent event)
                             {
-                                Window.Location.assign("#" + name.getTargetHistoryToken());
+                                eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
+                                        generateParams(searchTerm.getText()), false)));
                             }
                         });
 
                         itemContainer.add(itemPanel);
                         resultsPanel.add(itemContainer);
                     }
+
                 }
             }
         });
@@ -198,6 +279,34 @@ public class GlobalSearchComposite extends FlowPanel
                 }
             }
         });
+    }
+
+    /**
+     * Clear the search.
+     */
+    protected void clearSearch()
+    {
+        termLength = -1;
+        searchTerm.reset();
+        resultsPanelContainer.setVisible(false);
+        resultsPanel.clear();
+        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
+    }
+
+    /**
+     * Select an item.
+     * 
+     * @param item
+     *            the item.
+     */
+    private void selectItem(final Panel item)
+    {
+        if (activeItem != null)
+        {
+            activeItem.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+        }
+        item.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+        activeItem = item;
     }
 
     /**
