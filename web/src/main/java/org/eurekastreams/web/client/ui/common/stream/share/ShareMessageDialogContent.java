@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.common.stream.share;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -149,8 +148,8 @@ public class ShareMessageDialogContent extends BaseDialogContent
         final Label warning = new Label();
         warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warning());
         body.add(warning);
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -219,11 +218,11 @@ public class ShareMessageDialogContent extends BaseDialogContent
                         }
 
                         PostActivityRequest postRequest = new PostActivityRequest(new ActivityDTOPopulator()
-                                .getActivityDTO("", recipientType, scope.getUniqueKey(),
-                                        new SharePopulator(sharedMessage, commentBox.getText()), null));
+                                .getActivityDTO("", recipientType, scope.getUniqueKey(), new SharePopulator(
+                                        sharedMessage, commentBox.getText()), null));
 
-                        processor.makeRequest(new ActionRequestImpl<Integer>(actionKeys.get(recipientType),
-                                postRequest), new AsyncCallback<ActivityDTO>()
+                        processor.makeRequest(actionKeys.get(recipientType), postRequest,
+                                new AsyncCallback<ActivityDTO>()
                                 {
                                     /* implement the async call back methods */
                                     public void onFailure(final Throwable caught)
@@ -250,7 +249,9 @@ public class ShareMessageDialogContent extends BaseDialogContent
 
     /**
      * Shows the error.
-     * @param text the error message text.
+     *
+     * @param text
+     *            the error message text.
      */
     private void showError(final String text)
     {
@@ -281,6 +282,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
      *
      * @return the class.
      */
+    @Override
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().shareMessageDialog();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@ package org.eurekastreams.web.client.ui.common.dialog.tos;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.TermsOfServiceAcceptedEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -33,12 +31,12 @@ public class TermsOfServiceDialogModel
     /**
      * The session.
      */
-    private Session session;
+    private final Session session;
 
     /**
      * Event bus.
      */
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     /**
      * If the user has agreed.
@@ -47,7 +45,7 @@ public class TermsOfServiceDialogModel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSession
      *            the session.
      * @param inEventBus
@@ -61,40 +59,37 @@ public class TermsOfServiceDialogModel
     }
 
     /**
-     * Accep the terms of service.
+     * Accept the terms of service.
      */
     public void acceptTermsOfService()
     {
-        session.getActionProcessor().makeRequest(new ActionRequestImpl<Person>("acceptTermsOfService", null),
-                new AsyncCallback<Serializable>()
-                {
-                    public void onFailure(final Throwable caught)
-                    {
+        session.getActionProcessor().makeRequest("acceptTermsOfService", null, new AsyncCallback<Serializable>()
+        {
+            public void onFailure(final Throwable caught)
+            {
+            }
 
-                    }
-
-                    public void onSuccess(final Serializable result)
-                    {
-                        eventBus.notifyObservers(new TermsOfServiceAcceptedEvent());
-                    }
-                });
+            public void onSuccess(final Serializable result)
+            {
+                eventBus.notifyObservers(new TermsOfServiceAcceptedEvent());
+            }
+        });
     }
 
     /**
      * Set the value of agreement with the ToS.
-     * 
+     *
      * @param inAgree
      *            the value.
      */
     public void setAgreeValue(final Boolean inAgree)
     {
         agree = inAgree;
-
     }
 
     /**
      * Get the value of agreement.
-     * 
+     *
      * @return the value.
      */
     public Boolean getAgreeValue()

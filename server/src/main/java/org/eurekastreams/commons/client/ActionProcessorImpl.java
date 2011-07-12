@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eurekastreams.commons.exceptions.SessionException;
@@ -78,8 +77,6 @@ public class ActionProcessorImpl implements ActionProcessor
     {
         service = inService;
         appEstablishSessionCallback = inAppEstablishSessionCallback;
-
-        log.setLevel(Level.FINEST);
     }
 
     /**
@@ -92,7 +89,7 @@ public class ActionProcessorImpl implements ActionProcessor
             sessionId = inResult;
             establishingSession = false;
 
-            log.info("Session established:  " + sessionId);
+            log.fine("Session established:  " + sessionId);
 
             // let app know if it's interested
             if (appEstablishSessionCallback != null)
@@ -116,7 +113,7 @@ public class ActionProcessorImpl implements ActionProcessor
         {
             establishingSession = false;
 
-            log.info("Error establishing session: " + inCaught);
+            log.fine("Error establishing session: " + inCaught);
 
             // Let app know about failure so it can try to do something about it
             if (appEstablishSessionCallback != null)
@@ -139,7 +136,7 @@ public class ActionProcessorImpl implements ActionProcessor
      */
     private void establishSession()
     {
-        log.fine("Entering establishSession");
+        log.finest("Entering establishSession");
 
         // wait until all request batches have returned, and don't send out multiple session requests
         if (outstandingMessages > 0 || establishingSession)
@@ -147,7 +144,7 @@ public class ActionProcessorImpl implements ActionProcessor
             return;
         }
 
-        log.info("About to establish session");
+        log.fine("About to establish session");
 
         // discard the queue, since we will re-request using the index after the session is established
         requestQueue.clear();
@@ -173,7 +170,7 @@ public class ActionProcessorImpl implements ActionProcessor
      */
     public void fireQueuedRequests()
     {
-        log.fine("Entering fireQueuedRequests");
+        log.finest("Entering fireQueuedRequests");
 
         // establish session instead
         if (sessionId == null)
@@ -194,14 +191,14 @@ public class ActionProcessorImpl implements ActionProcessor
      */
     private void sendRequests(final Collection<RequestInfo> requestSource)
     {
-        log.fine("Entering sendRequests");
+        log.finest("Entering sendRequests");
 
         if (requestSource.isEmpty())
         {
             return;
         }
 
-        log.info("sending " + requestSource.size() + " requests.");
+        log.fine("sending " + requestSource.size() + " requests.");
 
         // prepare list to send
         // Note: we really only need one session id per batch (since it's one HTTP request), so we could set it only
@@ -214,22 +211,6 @@ public class ActionProcessorImpl implements ActionProcessor
             requests[i].setSessionId(sessionId);
             i++;
         }
-
-
-// final ActionRequest[] requests = (requestSource.toArray(new ActionRequest[requestSource.size()]));
-        //
-        //
-        // final ActionProcessorRequestImpl[] requests = (requestSource
-        // .toArray(new ActionProcessorRequestImpl[requestSource.size()]));
-        // // Note: we really only need one session id per batch (since it's one HTTP request), so we could set it only
-        // on
-        // // the first request batch and then only check it on the first request of the batch in ActionRPCServiceImpl
-        // for (ActionRequest request : requests)
-        // {
-        // request.setSessionId(sessionId);
-        // }
-        // ^#$(@^#@($));
-
 
         // clear the queue
         // requestSource may not be the queue - it may be the index - but we know that either way, all messages that
@@ -271,7 +252,7 @@ public class ActionProcessorImpl implements ActionProcessor
     @SuppressWarnings("unchecked")
     private void onSendBatchSuccess(final ActionRequest[] responses)
     {
-        log.info("Batch success with " + responses.length + " responses.");
+        log.fine("Batch success with " + responses.length + " responses.");
 
         for (ActionRequest response : responses)
         {
@@ -279,7 +260,7 @@ public class ActionProcessorImpl implements ActionProcessor
             // exception) would come back in there, but since we don't, we have to check on individual requests
             if (response.getResponse() instanceof SessionException)
             {
-                log.info("Found a SessionException in the response batch.");
+                log.fine("Found a SessionException in the response batch.");
 
                 sessionId = null;
             }
@@ -333,7 +314,7 @@ public class ActionProcessorImpl implements ActionProcessor
      */
     private void onSendBatchFailure(final ActionRequest[] requests, final Throwable caught)
     {
-        log.info("Batch failure with exception " + caught);
+        log.fine("Batch failure with exception " + caught);
 
         // handle batch-level exceptions (of which session failure is the only one we're dealing with)
         if (caught instanceof SessionException)
@@ -363,21 +344,6 @@ public class ActionProcessorImpl implements ActionProcessor
                 }
             }
         }
-    }
-
-    /**
-     * Makes a request to the action processor. If the queue is on it only queue's the request, otherwise it fires it
-     * off. DEPRECATED: we don't want your request objects - we're using our own to insure we are in control!
-     *
-     * @param request
-     *            The ActionRequest object.
-     * @param callback
-     *            The AsyncCallback object.
-     */
-    @Deprecated
-    public void makeRequest(final ActionRequest request, final AsyncCallback callback)
-    {
-        makeRequest(request.getActionKey(), request.getParam(), callback);
     }
 
     /**

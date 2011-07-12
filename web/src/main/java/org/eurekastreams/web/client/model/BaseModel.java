@@ -18,8 +18,6 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.eurekastreams.commons.client.ActionRequest;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.exceptions.ValidationException;
@@ -178,8 +176,7 @@ public abstract class BaseModel
             final OnFailureCommand failureCommand, final boolean useClientCacheIfAvailable)
     {
         final BaseModel thisBuffered = this;
-        ActionRequest<Serializable> serverRqst = new ActionRequestImpl<Serializable>(actionKey, request);
-        Session.getInstance().getActionProcessor().makeRequest(serverRqst, new AsyncCallback<Serializable>()
+        Session.getInstance().getActionProcessor().makeRequest(actionKey, request, new AsyncCallback<Serializable>()
         {
             public void onFailure(final Throwable caught)
             {

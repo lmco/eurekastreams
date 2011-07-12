@@ -17,6 +17,7 @@ package org.eurekastreams.server.testing;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -143,5 +144,42 @@ public final class TestHelper
         }
 
         return expectedAsSet.equals(actualAsSet);
+    }
+
+    /**
+     * Sets the value of an object's private field.
+     *
+     * @param target
+     *            Target object.
+     * @param fieldName
+     *            Name of field.
+     * @param value
+     *            Value to set.
+     * @throws IllegalArgumentException
+     *             Shouldn't.
+     * @throws IllegalAccessException
+     *             Shouldn't.
+     * @throws NoSuchFieldException
+     *             Field not found - calling unit test is probably out of date.
+     */
+    public static void setPrivateField(final Object target, final String fieldName, final Object value)
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException
+    {
+        final Class< ? extends Object> type = target.getClass();
+        for (Field field : type.getDeclaredFields())
+        {
+            if (field.getName().equals(fieldName))
+            {
+                boolean oldAccess = field.isAccessible();
+                field.setAccessible(true);
+                field.set(target, value);
+                if (!oldAccess)
+                {
+                    field.setAccessible(false);
+                }
+                return;
+            }
+        }
+        throw new NoSuchFieldException(type.getName() + " has no field named " + fieldName);
     }
 }

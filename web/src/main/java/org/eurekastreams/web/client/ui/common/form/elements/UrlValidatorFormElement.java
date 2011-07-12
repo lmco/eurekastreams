@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -227,45 +226,43 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         importBtn.setVisible(false);
         processingSpinny.setVisible(true);
 
-        Session.getInstance()
-                .getActionProcessor()
-                .makeRequest(new ActionRequestImpl<String>("getFeedTitleAction", getValue()),
-                        new AsyncCallback<String>()
+        Session.getInstance().getActionProcessor()
+                .makeRequest("getFeedTitleAction", getValue(), new AsyncCallback<String>()
+                {
+                    /* implement the async call back methods */
+                    public void onFailure(final Throwable caught)
+                    {
+                        importBtn.setVisible(true);
+                        processingSpinny.setVisible(false);
+                        errorBox.setVisible(true);
+                        if (caught instanceof ValidationException)
                         {
-                            /* implement the async call back methods */
-                            public void onFailure(final Throwable caught)
-                            {
-                                importBtn.setVisible(true);
-                                processingSpinny.setVisible(false);
-                                errorBox.setVisible(true);
-                                if (caught instanceof ValidationException)
-                                {
-                                    errorDetail.setVisible(true);
-                                    errorDetail.setText(caught.getMessage());
-                                }
-                                else
-                                {
-                                    errorDetail.setVisible(false);
-                                }
-                                requiredLabel.setVisible(true);
-                                instructions.setVisible(true);
-                                failed = true;
-                                thisBuffered.onError("");
-                            }
+                            errorDetail.setVisible(true);
+                            errorDetail.setText(caught.getMessage());
+                        }
+                        else
+                        {
+                            errorDetail.setVisible(false);
+                        }
+                        requiredLabel.setVisible(true);
+                        instructions.setVisible(true);
+                        failed = true;
+                        thisBuffered.onError("");
+                    }
 
-                            public void onSuccess(final String result)
-                            {
-                                originalValueFormElement.setValue(getOriginalValue());
-                                importBtn.setVisible(false);
-                                requiredLabel.setVisible(false);
-                                instructions.setVisible(false);
-                                processingSpinny.setVisible(false);
-                                errorBox.setVisible(false);
-                                urlPanel.setVisible(true);
-                                getTextBox().setVisible(false);
-                                urlLabel.setText(result);
-                                thisBuffered.onSuccess();
-                            }
-                        });
+                    public void onSuccess(final String result)
+                    {
+                        originalValueFormElement.setValue(getOriginalValue());
+                        importBtn.setVisible(false);
+                        requiredLabel.setVisible(false);
+                        instructions.setVisible(false);
+                        processingSpinny.setVisible(false);
+                        errorBox.setVisible(false);
+                        urlPanel.setVisible(true);
+                        getTextBox().setVisible(false);
+                        urlLabel.setText(result);
+                        thisBuffered.onSuccess();
+                    }
+                });
     }
 }

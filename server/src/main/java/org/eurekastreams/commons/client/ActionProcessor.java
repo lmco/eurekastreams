@@ -35,20 +35,6 @@ public interface ActionProcessor
 
     /**
      * Makes a request to the action rpc service. If the action processor is queueable then it adds it to the queue and
-     * waits until the FireQueuedRequests method is called. DEPRECATED: we don't want your request objects - we're using
-     * our own to insure we are in control!
-     *
-     * @param request
-     *            the ActionRequest to send to the server
-     * @param callback
-     *            the AsyncCallback to call after the request is handled. Please provide an OnFailure and an OnSuccess
-     */
-    @SuppressWarnings("rawtypes")
-    @Deprecated
-    void makeRequest(ActionRequest request, AsyncCallback callback);
-
-    /**
-     * Makes a request to the action rpc service. If the action processor is queueable then it adds it to the queue and
      * waits until the FireQueuedRequests method is called
      *
      * @param actionKey

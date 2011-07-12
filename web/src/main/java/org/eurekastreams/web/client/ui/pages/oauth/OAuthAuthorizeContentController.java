@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.pages.oauth;
 import java.io.Serializable;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -31,11 +30,11 @@ public class OAuthAuthorizeContentController
     /**
      * The action processor.
      */
-    private ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inProcessor
      *            the action processor.
      */
@@ -50,34 +49,34 @@ public class OAuthAuthorizeContentController
     public void init()
     {
         processor.setQueueRequests(true);
-        processor.makeRequest(new ActionRequestImpl<Serializable>("oauthAuthorize", Window.Location
-                .getParameter("oauth_token")), new AsyncCallback<Serializable>()
-        {
-            /* implement the async call back methods */
-            public void onFailure(final Throwable caught)
-            {
-                Window.alert("Fail");
-            }
-
-            public void onSuccess(final Serializable result)
-            {
-                String callbackUrl = (String) result;
-                if (callbackUrl.length() > 0)
+        processor.makeRequest("oauthAuthorize", Window.Location.getParameter("oauth_token"),
+                new AsyncCallback<Serializable>()
                 {
-                    redirectToUrl(callbackUrl);
-                }
-            }
-        });
+                    /* implement the async call back methods */
+                    public void onFailure(final Throwable caught)
+                    {
+                        Window.alert("Fail");
+                    }
+
+                    public void onSuccess(final Serializable result)
+                    {
+                        String callbackUrl = (String) result;
+                        if (callbackUrl.length() > 0)
+                        {
+                            redirectToUrl(callbackUrl);
+                        }
+                    }
+                });
 
     }
 
     /**
      * Method to redirect the user when Authorization is complete.
-     * 
+     *
      * @param url
      *            - url to redirect to.
      */
     private static native void redirectToUrl(final String url)/*-{
-                                $wnd.location = url;
-                            }-*/;
+                                                              $wnd.location = url;
+                                                              }-*/;
 }
