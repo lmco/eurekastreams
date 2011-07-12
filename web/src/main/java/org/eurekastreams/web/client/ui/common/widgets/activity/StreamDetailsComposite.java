@@ -64,6 +64,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -355,7 +356,7 @@ public class StreamDetailsComposite extends Composite
     /**
      * Content padding for details.
      */
-    private static final int CONTENT_PADDING = 20;
+    private static final int CONTENT_PADDING = 0;
 
     /**
      * Number of days to gather metrics for.
@@ -400,6 +401,7 @@ public class StreamDetailsComposite extends Composite
         // Default style. Prevent flashing.
         streamName.setInnerText("Following");
         this.addStyleName(style.condensedStream());
+        followLink.setVisible(false);
 
         detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, EXPAND_ANIMATION_DURATION);
 
@@ -518,10 +520,17 @@ public class StreamDetailsComposite extends Composite
 
                 for (int i = 0; i < stats.size(); i++)
                 {
-                    chart.addPoint(i, stats.get(i).getStreamViewCount());
+                    if (null == stats.get(i))
+                    {
+                        chart.addPoint(i, 0.0);
+                    }
+                    else
+                    {
+                        chart.addPoint(i, stats.get(i).getStreamViewCount());
+                    }
                 }
 
-                avgComments.setInnerText("-1");
+                avgComments.setInnerText("" + data.getAverageDailyCommentCount());
                 avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
                 avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
                 avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
@@ -671,7 +680,8 @@ public class StreamDetailsComposite extends Composite
                 chart.clearPoints();
                 chart.update();
 
-                detailsContainerAnimation.collapse();
+                // Collapse right away if open.
+                streamDetailsContainer.getStyle().setHeight(0.0, Unit.PX);
 
                 List<String> views = new ArrayList<String>(event.getViews());
 

@@ -772,7 +772,6 @@
                             <port>8080</port>
                             <hostedWebapp>ROOT</hostedWebapp>
                             <style>${build.gwt.compile.style}</style>
-                            <localWorkers>1</localWorkers>
                        </configuration>
                         <executions>
                             <execution>

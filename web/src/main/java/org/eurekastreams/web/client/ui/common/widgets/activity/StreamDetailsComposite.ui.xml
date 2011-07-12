@@ -16,21 +16,21 @@
 		type="org.eurekastreams.web.client.ui.common.widgets.activity.StreamDetailsComposite.StreamDetailsStyle">
 		.analyticsChartContainer {
 		float: right;
-		margin: 10px;
-		height: 350px;
-		}
-
-		.analyticsChartContainer > div {
-		padding-top: 10px;
+		margin: 0;
+		width: 370px;
 		}
 
 		.stream-details
 		{
 		clear: left;
 		float: left;
-		margin: 0
-		10px;
-		width: 200px;
+		margin: 0;
+		width: 280px;
+		}
+		
+		.stream-details > div
+		{
+			margin-bottom: 10px;
 		}
 
 		.stream-details-options
@@ -39,8 +39,7 @@
 		border-bottom: 1px
 		solid #404040;
 		border-top: 1px solid #404040;
-		height:
-		37px;
+		height:	37px;
 		}
 
 		.stream-avatar
@@ -101,6 +100,7 @@
 		{
 		font-weight: bold;
 		height: 16px;
+		margin: 0 0 10px
 		}
 		
 		.configureLink
@@ -222,10 +222,18 @@
 		gwt-image: "viewDetails";
 		}
 		
+		.streamAbout
+		{
+		padding: 25px;
+		overflow: hidden;
+		}
+		
 		.stream-details-content 
 		{
 			overflow: hidden;
 			width: 100%;
+			position: relative;
+			top: -9px;
 		}
 		
 		.pagerControl
@@ -244,9 +252,34 @@
 			margin-right: 20xp;	
 		}
 		
-		.metrics-data-avg span, .metrics-data-total span
+		.metrics-data-avg span, .metrics-data-total span, .metrics-data-avg b, .metrics-data-total b
 		{
 			font-weight: bold;
+			font-size: 16px;
+			color: white;
+		}
+		
+		.metrics-data-avg > div, .metrics-data-total > div
+		{
+			margin-left: 10px;
+			margin-top: 5px;
+		}
+		
+		.metrics-data-avg, .metrics-data-total
+		{
+			margin-top: 10px;
+			color: #666666;
+		}
+		
+		.chart-description
+		{
+			color: #666666;
+    		font-size: 12px;
+    		font-style: italic;
+    		font-weight: bold;
+    		margin-right: 5px;
+    		margin-top: 5px;
+    		text-align: right;
 		}
 	</ui:style>
 
@@ -284,7 +317,7 @@
 				<g:Label addStyleNames="{style.stream-details-option}" ui:field="followingLink">Following</g:Label>
 			</div>
 			<div class="{style.stream-details-content}">
-				<g:HTMLPanel ui:field="streamAbout">
+				<g:HTMLPanel addStyleNames="{style.streamAbout}" ui:field="streamAbout">
 					<div class="{style.stream-details}">
 						<h2>Description</h2>
 						<div ui:field="streamDescription"></div>
@@ -296,6 +329,7 @@
 					<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}"
 						ui:field="analyticsChartContainer">
 						<chart:StreamAnalyticsChart ui:field="chart"></chart:StreamAnalyticsChart>
+						<div class="{style.chart-description}">Stream views over the last 30 days</div>
 						<div class="{style.metrics-data-avg}">
 							<b>Avg Daily Activity</b>
 							<div><span ui:field="avgViewers"></span> Viewers</div> 

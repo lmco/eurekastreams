@@ -1457,17 +1457,28 @@ body .post-expanded-panel .content-warning {
 	 border-bottom: 1px solid #999999;
 	 border-left: 1px solid #999999;
 	 border-right: 1px solid #999999;
-	 padding-bottom: 5px;
-	 padding-left: 0;
-	 padding-top: 5px;
+	 padding: 0;
 	 margin-left: -235px;
 	 zoom: 1;
+}
+
+.analyticsChart
+{
+	padding: 20px 20px 20px 10px;
 }
 
 .searchResultsAutocompleteResults > div
 {
 	display: block ! important;
 }
+
+.searchResultsMoreButton
+{
+	color: black;
+	text-align: right;
+	border-top: 1px solid #999999;
+	padding-right: 10px;
+}	
 
 .searchResultsAutocompleteResults > div > div
 {
@@ -1483,6 +1494,13 @@ body .post-expanded-panel .content-warning {
 	background-image: url(style/images/searchResultsBackground.png);
 	color: white;
 }
+
+.searchResultsAutocompleteResults > div > div.active
+{
+	background-image: url(style/images/searchResultsBackground.png);
+	color: white;
+}
+
 
 .search-list .searchResultsAutocompleteResults .avatar
 {
@@ -1511,9 +1529,14 @@ body .bookmarkSearch
    	clear: left;
    	margin-left: 10px;
     padding-left: 0;
-    width: 220px;
+    width: 225px;
     overflow: hidden;
     margin-bottom: 10px;
+}
+
+.bookmarkSearch .gwt-Anchor
+{
+	margin-top: 6px;
 }
 
 body .bookmarkSearchActive
@@ -1522,13 +1545,14 @@ body .bookmarkSearchActive
    	background-repeat: repeat-x;
    	background-color: #c0c0c0;
     padding-bottom: 10px;
+    border-bottom: 1px solid #999999;
 }
 
 body .bookmarkSearch input {
     background-image: url("style/images/bookmarkSearch.png");
     border-width: 0;
     color: black;
-    padding: 3px 22px;
+    padding: 4px 22px;
     width: 150px;
     background-color: transparent;
     margin-left: 10px;
@@ -1543,6 +1567,11 @@ body .bookmarkSearchActive input {
 {
 	border-width: 0;
 	background-color: #c0c0c0;
+}
+
+.bookmarkSearch .searchResultsAutocompleteResults > div > div:first-child
+{
+	border-top: 1px solid #999;
 }
 
 .bookmarkSearch  > .gwt-Label
