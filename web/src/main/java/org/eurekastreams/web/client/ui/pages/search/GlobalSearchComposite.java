@@ -158,7 +158,7 @@ public class GlobalSearchComposite extends FlowPanel
 
         searchTerm.addBlurHandler(new BlurHandler()
         {
-            public void onBlur(BlurEvent arg0)
+            public void onBlur(final BlurEvent arg0)
             {
                 clearSearch();
             }
@@ -225,7 +225,7 @@ public class GlobalSearchComposite extends FlowPanel
 
                         itemContainer.addMouseOverHandler(new MouseOverHandler()
                         {
-                            public void onMouseOver(MouseOverEvent arg0)
+                            public void onMouseOver(final MouseOverEvent arg0)
                             {
                                 selectItem(itemContainer);
                             }
@@ -242,16 +242,15 @@ public class GlobalSearchComposite extends FlowPanel
                             selectItem(itemContainer);
                         }
                     }
-                    
+
                     if (event.getResponse().getTotal() > event.getResponse().getPagedSet().size())
                     {
                         final FocusPanel itemContainer = new FocusPanel();
                         final FlowPanel itemPanel = new FlowPanel();
-                        
+
                         itemContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsMoreButton());
-                        
+
                         itemPanel.add(new Label("See more results"));
-                        ;
 
                         itemContainer.addClickHandler(new ClickHandler()
                         {

@@ -544,6 +544,76 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
+        addModelViewEvents();
+
+        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        {
+            public void update(final GotStreamResponseEvent event)
+            {
+                streamReq = event.getJsonRequest();
+            }
+        });
+
+        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
+        {
+            public void update(final HistoryViewsChangedEvent event)
+            {
+                chart.clearPoints();
+                chart.update();
+
+                // Collapse right away if open.
+                streamDetailsContainer.getStyle().setHeight(0.0, Unit.PX);
+
+                List<String> views = new ArrayList<String>(event.getViews());
+
+                condensedAvatar.removeStyleName(style.everyoneAvatar());
+                condensedAvatar.removeStyleName(style.followingAvatar());
+                condensedAvatar.removeStyleName(style.privateAvatar());
+
+                if (views == null || views.size() == 0 || views.get(0).equals("following"))
+                {
+                    streamName.setInnerText("Following");
+                    Session.getInstance().setPageTitle("Following");
+                    condensedAvatar.addStyleName(style.followingAvatar());
+                    thisClass.addStyleName(style.condensedStream());
+                }
+                else if (views.get(0).equals("person") && views.size() >= 2)
+                {
+                    thisClass.removeStyleName(style.condensedStream());
+                }
+                else if (views.get(0).equals("group") && views.size() >= 2)
+                {
+                    thisClass.removeStyleName(style.condensedStream());
+                }
+                else if (views.get(0).equals("custom") && views.size() >= 3)
+                {
+                    streamName.setInnerText("Custom");
+                    Session.getInstance().setPageTitle("Custom Stream");
+                    thisClass.addStyleName(style.condensedStream());
+                }
+                else if (views.get(0).equals("everyone"))
+                {
+                    streamName.setInnerText("Everyone");
+                    Session.getInstance().setPageTitle("Everyone");
+                    condensedAvatar.addStyleName(style.everyoneAvatar());
+                    thisClass.addStyleName(style.condensedStream());
+                }
+                else if (views.size() == 1)
+                {
+                    thisClass.addStyleName(style.condensedStream());
+                }
+            }
+        }, true);
+
+    }
+
+    /**
+     * Add the model view events.
+     */
+    private void addModelViewEvents()
+    {
+        final StreamDetailsComposite thisClass = this;
+
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
@@ -664,66 +734,6 @@ public class StreamDetailsComposite extends Composite
                         }
                     }
                 });
-
-        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
-        {
-            public void update(final GotStreamResponseEvent event)
-            {
-                streamReq = event.getJsonRequest();
-            }
-        });
-
-        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
-        {
-            public void update(final HistoryViewsChangedEvent event)
-            {
-                chart.clearPoints();
-                chart.update();
-
-                // Collapse right away if open.
-                streamDetailsContainer.getStyle().setHeight(0.0, Unit.PX);
-
-                List<String> views = new ArrayList<String>(event.getViews());
-
-                condensedAvatar.removeStyleName(style.everyoneAvatar());
-                condensedAvatar.removeStyleName(style.followingAvatar());
-                condensedAvatar.removeStyleName(style.privateAvatar());
-
-                if (views == null || views.size() == 0 || views.get(0).equals("following"))
-                {
-                    streamName.setInnerText("Following");
-                    Session.getInstance().setPageTitle("Following");
-                    condensedAvatar.addStyleName(style.followingAvatar());
-                    thisClass.addStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("person") && views.size() >= 2)
-                {
-                    thisClass.removeStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("group") && views.size() >= 2)
-                {
-                    thisClass.removeStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("custom") && views.size() >= 3)
-                {
-                    streamName.setInnerText("Custom");
-                    Session.getInstance().setPageTitle("Custom Stream");
-                    thisClass.addStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("everyone"))
-                {
-                    streamName.setInnerText("Everyone");
-                    Session.getInstance().setPageTitle("Everyone");
-                    condensedAvatar.addStyleName(style.everyoneAvatar());
-                    thisClass.addStyleName(style.condensedStream());
-                }
-                else if (views.size() == 1)
-                {
-                    thisClass.addStyleName(style.condensedStream());
-                }
-            }
-        }, true);
-
     }
 
     /**
