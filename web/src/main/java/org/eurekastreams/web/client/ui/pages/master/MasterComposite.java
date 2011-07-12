@@ -154,7 +154,7 @@ public class MasterComposite extends Composite
         panel.add(notifier);
 
         mainContents.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainContents());
-        mainContents.add(headerPanel);
+        panel.add(headerPanel);
 
         mainContents.add(contentPanel);
         contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().content());
@@ -232,7 +232,7 @@ public class MasterComposite extends Composite
         {
             public void update(final SetBannerEvent event)
             {
-                mainContents.insert(banner, 1);
+                mainContents.insert(banner, 0);
 
                 // Banner exists and should override the banner the theme is supplying. (i.e. profile page.)
                 if (event.getBannerableEntity() != null)

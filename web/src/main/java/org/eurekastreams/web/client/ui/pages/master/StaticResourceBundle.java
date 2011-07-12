@@ -40,7 +40,7 @@ public interface StaticResourceBundle extends ClientBundle
      */
     @Source("style/core.css")
     CoreCss coreCss();
-
+    
     /**
      * YUI CSS.
      *

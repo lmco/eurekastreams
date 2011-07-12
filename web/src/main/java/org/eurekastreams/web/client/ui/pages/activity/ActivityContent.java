@@ -64,6 +64,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
+import org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -190,8 +191,6 @@ public class ActivityContent extends Composite
      */
     @UiField
     FlowPanel errorPanel;
-    
-    
 
     /**
      * UI element for recent sort.
@@ -332,6 +331,12 @@ public class ActivityContent extends Composite
     private Panel everyoneFilterPanel = null;
 
     /**
+     * Post Box.
+     */
+    @UiField
+    PostBoxComposite postBox;
+
+    /**
      * Stream to URL transformer.
      * */
     private static final StreamToUrlTransformer STREAM_URL_TRANSFORMER = new StreamToUrlTransformer();
@@ -380,6 +385,20 @@ public class ActivityContent extends Composite
             {
                 streamPanel.clear();
                 activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+
+                EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
+                String actorName = event.getResponse().getDestinationStream().getUniqueId();
+                
+                if (actorType.equals(EntityType.GROUP))
+                {
+                    GroupModel.getInstance().fetch(actorName, false);
+
+                }
+                else if (actorType.equals(EntityType.PERSON))
+                {
+                    PersonalInformationModel.getInstance().fetch(actorName, false);
+                }
+
                 streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
                 streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
             }
@@ -813,13 +832,12 @@ public class ActivityContent extends Composite
     {
         Session.getInstance().getActionProcessor().setQueueRequests(true);
 
-        
         addBookmark.setVisible(false);
         subscribeViaEmail.setVisible(false);
         feedLink.setVisible(false);
 
         streamOptionsPanel.getStyle().setDisplay(Display.BLOCK);
-        
+
         errorPanel.clear();
         errorPanel.setVisible(false);
 
@@ -888,6 +906,9 @@ public class ActivityContent extends Composite
 
         if (!singleActivityMode)
         {
+            streamOptionsPanel.getStyle().setDisplay(Display.BLOCK);
+            postBox.setVisible(true);
+
             String sortBy = "recent";
 
             if (views != null && views.size() >= 2 && "sort".equals(views.get(views.size() - 2)))
@@ -924,6 +945,9 @@ public class ActivityContent extends Composite
         }
         else
         {
+            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
+            postBox.setVisible(false);
+
             try
             {
                 ActivityModel.getInstance().fetch(Long.parseLong(views.get(0)), true);

@@ -50,10 +50,9 @@ public class ActivityDetailPanel extends FlowPanel
      */
     public ActivityDetailPanel(final ActivityDTO activity, final ShowRecipient showRecipient)
     {
-        final FlowPanel thisBuffered = this;
-
         boolean manageFlagged = "true".equals(Session.getInstance().getParameterValue("manageFlagged"));
         boolean showComment = "true".equals(Session.getInstance().getParameterValue("showComment"));
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityPanel());
 
         final EventBus bus = Session.getInstance().getEventBus();
 
@@ -70,26 +69,6 @@ public class ActivityDetailPanel extends FlowPanel
         else
         {
             showNotFound();
-        }
-
-        final Panel linkPanel = new FlowPanel();
-        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().manageFlaggedLinksPanel());
-        thisBuffered.insert(linkPanel, 0);
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("activityId", null);
-        params.put("manageFlagged", null);
-        linkPanel.add(new InlineHyperlink("View all activities", Session.getInstance().generateUrl(
-                new CreateUrlRequest(params, false))));
-
-        // TODO: change this to goto the new admin page
-        if (manageFlagged && activity != null)
-        {
-            linkPanel.add(new InlineLabel("|"));
-
-            String url = Session.getInstance()
-                    .generateUrl(new CreateUrlRequest(Page.DISCOVER, "", "tab", "Admin"));
-            linkPanel.add(new InlineHyperlink("Manage flagged content", url));
         }
     }
 

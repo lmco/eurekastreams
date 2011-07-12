@@ -66,19 +66,6 @@ public class SearchContent extends FlowPanel
      */
     public SearchContent()
     {
-        // When the history changes, update the query and reset the pager, triggering a re-search.
-        // IMPORTANT: Wire up URL change event first, so we see it before the PagedList does. This way we can change the
-        // search term in the search requests before PagedList sees the event. Otherwise PagedList may see the change in
-        // the page range and send out a search request using the old search term.
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        onHistoryParameterChange(event);
-                    }
-                });
-
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().directory());
 
         searchResultsPanel = new PagedListPanel("searchResults", new SingleColumnPagedListRenderer());
@@ -107,6 +94,20 @@ public class SearchContent extends FlowPanel
                         searchResultsPanel.render(arg1.getResponse(), "No matches found");
                     }
                 });
+
+        // When the history changes, update the query and reset the pager, triggering a re-search.
+        // IMPORTANT: Wire up URL change event first, so we see it before the PagedList does. This way we can change the
+        // search term in the search requests before PagedList sees the event. Otherwise PagedList may see the change in
+        // the page range and send out a search request using the old search term.
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        onHistoryParameterChange(event);
+                    }
+                }, true);
+
     }
 
     /**

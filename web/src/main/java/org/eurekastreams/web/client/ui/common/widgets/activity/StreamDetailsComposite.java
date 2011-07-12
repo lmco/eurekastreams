@@ -599,8 +599,8 @@ public class StreamDetailsComposite extends Composite
                     thisClass.addStyleName(style.condensedStream());
                 }
                 else if (views.size() == 1)
-                {
-                    thisClass.addStyleName(style.condensedStream());
+                {                    
+                    thisClass.removeStyleName(style.condensedStream());
                 }
             }
         }, true);

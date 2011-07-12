@@ -16,7 +16,7 @@
 		.main
 		{
 		overflow: hidden;
-		margin-top: 60px;
+		padding-top: 60px;
 		}
 
 		.stream-option-list {
@@ -86,15 +86,13 @@
 
 		.stream-option-list > .streamOptionChild:hover
 		{
-		background-image:
-		url(style/images/activeBackground.png);
+		background-color: #e4e4e4;
 		color: #000;
 		}
 
 		.stream-option-list div.activeStream
 		{
-		background-image:
-		url(style/images/activeBackground.png);
+		background-image: url(style/images/activeBackground.png);
 		}
 
 		.activeSort
@@ -298,7 +296,7 @@
 		<g:HTMLPanel addStyleNames="{style.stream-container-panel}"
 			ui:field="streamContainerPanel">
 			<ewa:StreamDetailsComposite></ewa:StreamDetailsComposite>
-			<ewa:PostBoxComposite></ewa:PostBoxComposite>
+			<ewa:PostBoxComposite ui:field="postBox"></ewa:PostBoxComposite>
 			<div ui:field="streamOptionsPanel" class="{style.options-panel}">
 				<g:Hyperlink addStyleNames="{style.sort-option} {style.activeSort}"
 					ui:field="recentSort">Recent</g:Hyperlink>

@@ -49,7 +49,7 @@ body {
 	font-size: 0.8em;
 	padding: 0;
 	margin: 0;
-	background-color: #666666;
+	background-color: #e4e4e4;
 }
 
 a {
@@ -189,17 +189,18 @@ body .main-contents .header-container {
 	overflow: visible;
 }
 
-.header-bar {
-	width: 100%;
-	position: relative;
-	margin-bottom: -16px;
-	color: white;
-	padding-top: 0px;
-}
-
-@sprite .nav-bar {
+@sprite .header-bar {
 	gwt-image: "navBg";
 	width: 100%;
+	position: relative;
+	color: white;
+	padding-top: 0px;
+	overflow: visible;
+}
+
+.nav-bar {
+	width: 990px;
+	margin: 0 auto;
 	position: relative;
 	color: white;
 	overflow: visible;
@@ -360,8 +361,13 @@ ul.barred li:first-child a {
 }
 
 .main-contents {
+	clear: both;
 	background-color: #F0F0F0;
 	min-height: 100%;
+	width: 990px;
+	margin: 0 auto;
+	position: relative;
+	top: -3px;
 }
 
 .themeable .main-contents .header-container+div {
@@ -373,12 +379,11 @@ ul.barred li:first-child a {
 }
 
 div.main {
-	width: 990px;
-	margin: 0 auto;
 	padding: 0;
 	height: 100%;
 	position: relative;
 }
+
 
 div.message div.content {
 	padding-bottom: 0;
@@ -386,7 +391,6 @@ div.message div.content {
 
 div.content {
 	padding-bottom: 135px;
-	overflow: hidden;
 	width: 100%;
 }
 
@@ -424,8 +428,8 @@ div.banner-container {
 
 @sprite .footer-bar {
 	gwt-image: "footerBackground";
-	margin-top: -95px;
-	width: 100%;
+	margin: -95px auto 0;
+	width: 990px;
 }
 
 .footer-bar .horizontal {
@@ -466,7 +470,7 @@ div.banner-container {
 
 .modal-bg
 {
-	background-color: #333333;
+	background-color: #fff;
 	-moz-opacity: .50;
 	opacity: .50;
 	filter: literal("alpha(opacity = 50)");
@@ -779,6 +783,13 @@ div.close-button {
 	padding-left: 5px;
 }
 
+.singleActivityPanel .message-body
+{
+	font-family: georgia;
+	font-size: 18px ! important;
+	padding: 10px 5px;
+}
+
 div.tab-container table {
 	float: left;
 	white-space: nowrap;
@@ -839,6 +850,10 @@ body div.tab-container div.active div div.gwt-Label {
 	padding-right: 0px;
 }
 
+.portal-boundary {
+	margin-top: -64px;
+}
+
 .themeable div.tab {
 	top: -1px;
 }
@@ -884,7 +899,6 @@ body.themeable div.new-tab-button {
 }
 
 div.tab div div.gwt-MenuBar {
-	clear: both;
 	display: none;
 	background: url('style/images/menu-inactive.png') no-repeat;
 	overflow: hidden;
@@ -1260,7 +1274,6 @@ div.layout-container table.dragdrop-dropTarget {
 
 .portal-boundary {
 	clear: both;
-	margin-top: -64px;
 }
 
 .start-tab-content-container .dragdrop-positioner {
@@ -1477,8 +1490,12 @@ body .post-expanded-panel .content-warning {
 	color: black;
 	text-align: right;
 	border-top: 1px solid #999999;
-	padding-right: 10px;
 }	
+
+.searchResultsMoreButton > div
+{
+	margin-right: 10px;
+}
 
 .searchResultsAutocompleteResults > div > div
 {
@@ -4803,9 +4820,9 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 .configure-tab {
 	margin-left: 897px;
 	position: absolute;
-	top: 135px;
+	top: 100px;
 	margin-right: 20px;
-	z-index: 999;
+	z-index: 10;
 	padding: 3px 10px;
 	border-bottom: 2px solid;
 	font-size: 12px;
@@ -7690,33 +7707,27 @@ body div.eureka-connect-liked-activity-wrapper {
 	visibility: hidden;
 }
 
-	
-@if user.agent gecko1_8 { 
-	.searchResultsAutocompleteResults
-	{
-		 margin-left: -10px;
-	}	
-}
 
-/*/////////////////////////////////////////////////////////////////////////////
-
-IE SPECIFIC CSS.
-
-/////////////////////////////////////////////////////////////////////////////*/
 
 @if user.agent ie6 ie8 { 
-	.eureka-connect-like-button, .eureka-connect-unlike-button, .eureka-connect-share-button {
+		
+	.portal-boundary {
+		margin-top: -59px;
+	}
+	
+	.eureka-connect-like-button,.eureka-connect-unlike-button,.eureka-connect-share-button
+		{
 		display: inline;
-		zoom: 1; 
+		zoom: 1;
 	}
 	
 	.eureka-connect-liked-activity {
 		position: relative;
 		left: -25px;
 	}
-
-	.pending-group-membership-item >div {
-		display:inline;
+	
+	.pending-group-membership-item>div {
+		display: inline;
 		zoom: 1;
 	}
 	
@@ -7728,23 +7739,23 @@ IE SPECIFIC CSS.
 		float: left;
 	}
 	
-	.membershipcriteria-criteria{
-	    display:inline;
-	    word-wrap:break-word;
-	    width:345px;
+	.membershipcriteria-criteria {
+		display: inline;
+		word-wrap: break-word;
+		width: 345px;
 	}
-	    
-	.membershipcriteria-theme{
-	    display:inline;
-	    word-wrap:break-word;
-	    width:250px;
+	
+	.membershipcriteria-theme {
+		display: inline;
+		word-wrap: break-word;
+		width: 250px;
 	}
-	    
-	.membershipcriteria-tab{
-	    display:inline;
-	    word-wrap:break-word;
-	    width:250px;
-	}	
+	
+	.membershipcriteria-tab {
+		display: inline;
+		word-wrap: break-word;
+		width: 250px;
+	}
 	
 	.unseen-activity a {
 		display: inline;
@@ -7783,8 +7794,7 @@ IE SPECIFIC CSS.
 		vertical-align: middle;
 	}
 	
-	.notification-settings-modal
-	{
+	.notification-settings-modal {
 		width: 700px;
 	}
 	
@@ -7804,7 +7814,10 @@ IE SPECIFIC CSS.
 	.filters .show-more {
 		display: block;
 	}
-	
+}
+
+@if user.agent ie6 ie8 { 
+
 	.scope-form-element .required-form-label {
 		margin-top: -19px;
 	}
@@ -7834,7 +7847,7 @@ IE SPECIFIC CSS.
 	.share-message-dialog .share-message-cancel {
 		margin-top: 15px;
 	}
-
+	
 	.stream-view-dialog .auto-complete.yui-skin-sam .yui-ac-container {
 		margin-top: 1.7em;
 	}
@@ -7858,10 +7871,10 @@ IE SPECIFIC CSS.
 		display: inline;
 		margin-top: 1px;
 	}
-		
+	
 	.login-button,.cancel-button {
 		display: inline;
-        zoom: 1;
+		zoom: 1;
 	}
 	
 	.footer-bar .horizontal {
@@ -7943,7 +7956,7 @@ IE SPECIFIC CSS.
 		{
 		display: inline;
 	}
-		
+	
 	.search-description {
 		overflow: auto;
 		padding-bottom: 7px;
@@ -7969,9 +7982,9 @@ IE SPECIFIC CSS.
 	.search-list input {
 		position: static !important;
 	}
-
-	.eureka-connect-full-stream  .search-list input,
-	.connect-widget-comment .search-list input {
+	
+	.eureka-connect-full-stream  .search-list input,.connect-widget-comment .search-list input
+		{
 		width: 175px;
 	}
 	
@@ -8004,10 +8017,6 @@ IE SPECIFIC CSS.
 	
 	.terms-of-service-modal .agree-button {
 		display: inline;
-	}
-	
-	.portal-boundary {
-		margin-top: -59px;
 	}
 	
 	div.layout-spacer {
@@ -8059,13 +8068,13 @@ IE SPECIFIC CSS.
 		margin-left: -20px;
 		width: 150px;
 	}
-
+	
 	.post-to .yui-ac-container .yui-ac-content {
 		margin-left: -150px;
 	}
-
-	.eureka-connect-share-widget-container  .post-to .yui-ac-container .yui-ac-content,
-	.share-message-dialog .post-to .yui-ac-container .yui-ac-content {
+	
+	.eureka-connect-share-widget-container  .post-to .yui-ac-container .yui-ac-content,.share-message-dialog .post-to .yui-ac-container .yui-ac-content
+		{
 		margin-left: 0px;
 	}
 	
@@ -8173,18 +8182,17 @@ IE SPECIFIC CSS.
 		zoom: 1;
 	}
 	
-	.form-user-association .radio-button-container { 
-		margin-top: 5px; 
-		margin-bottom: 10px; 
+	.form-user-association .radio-button-container {
+		margin-top: 5px;
+		margin-bottom: 10px;
 		clear: both;
 	}
-		
+	
 	.form-cancel-button a,a.form-cancel-button {
 		margin: 0;
 	}
 	
-	.form-submit-button,.form-update-button
-	{
+	.form-submit-button,.form-update-button {
 		zoom: 1;
 		display: inline;
 	}
@@ -8227,7 +8235,7 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
-		
+	
 	.users-who-liked-activity-wrapper {
 		margin-left: -27px;
 		margin-top: -2px;
@@ -8483,6 +8491,7 @@ IE SPECIFIC CSS.
 	}
 	
 	.directory .options.views {
+		
 	}
 	
 	.options.views>div,.options>div>div {
@@ -8542,8 +8551,8 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
-}
 	
+	}
 	.search-metadata div {
 		display: inline;
 		zoom: 1;
@@ -8572,7 +8581,6 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
-
 	
 	.modal-content-panel .form-container>a.form-submit-button {
 		z-index: 100;
@@ -8660,7 +8668,10 @@ IE SPECIFIC CSS.
 		display: inline;
 		zoom: 1;
 	}
-	
+}
+
+@if user.agent ie6 ie8 { 
+
 	.gadget-button {
 		margin-top: -19px;
 	}
@@ -8702,11 +8713,11 @@ IE SPECIFIC CSS.
 	body .stream-message-item .message-metadata a {
 		margin-left: 5px;
 	}
-
+	
 	.attach-link .box-wrapper input {
 		width: 98%;
 	}
-
+	
 	.attach-link .add-button-submit {
 		display: block;
 		margin-top: 7px;
@@ -8725,7 +8736,7 @@ IE SPECIFIC CSS.
 	}
 	
 	.stream-container>.layout-container>div>div.post-to-stream-container+div
-	{
+		{
 		position: static !important;
 	}
 	
@@ -8766,16 +8777,16 @@ IE SPECIFIC CSS.
 	body .profile-page-container .post-to .yui-ac-container {
 		margin-left: -150px;
 	}
-
+	
 	.post-to {
 		max-height: 24px;
 	}
 	
-	.post-to > .gwt-RadioButton > input, .post-to > .gwt-RadioButton > label {
+	.post-to>.gwt-RadioButton>input,.post-to>.gwt-RadioButton>label {
 		vertical-align: super;
 	}
-
-	.post-to  > .label {
+	
+	.post-to>.label {
 		display: inline;
 		zoom: 1;
 		padding-bottom: 8px;
@@ -8868,24 +8879,26 @@ IE SPECIFIC CSS.
 		z-index: 200;
 	}
 	
-	
 	/* Unrelated items which all need the IE equivalent of inline-block */
-	.content-warning > div:first-child,
-	.navpanel .options .gwt-Label,
-	.options .connection-filter-button,.options .sort-option
-	{
+	.content-warning>div:first-child,.navpanel .options .gwt-Label,.options .connection-filter-button,.options .sort-option
+		{
 		display: inline;
 		zoom: 1;
 	}
-
+	
 	/* Unrelated items which IE lays out wrong unless zoom=1 is specified */
-	.attach-link,
-	.link-panel {
+	.attach-link,.link-panel {
 		zoom: 1;
 	}
+
+} /* END IE SPECIFIC */
+	
+@if user.agent gecko1_8 { 
+	.searchResultsAutocompleteResults
+	{
+		 margin-left: -10px;
+	}	
 }
-/*/////////////////////////////////////////////////////////////////////////////
 
-END OF IE SPECIFIC CSS.
 
-/////////////////////////////////////////////////////////////////////////////*/
+

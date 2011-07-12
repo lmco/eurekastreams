@@ -2184,4 +2184,6 @@ public interface CoreCss extends CssResource
 
     String searchResultsMoreButton();
 
+    String singleActivityPanel();
+
 }
