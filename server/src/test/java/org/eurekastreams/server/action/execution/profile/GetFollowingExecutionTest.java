@@ -58,7 +58,7 @@ public class GetFollowingExecutionTest
     /** Test data. */
     private static final Long USER_ID = 99L;
 
-    /** The current user id **/
+    /** The current user id. **/
     private static final Long CURRENT_USER_ID = 8822L;
 
     /**
