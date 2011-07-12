@@ -18,16 +18,17 @@ package org.eurekastreams.commons.client;
 import java.io.Serializable;
 
 /**
- * Encapsulates a request to perform some action.
- *
- * Note: This is deprecated for use outside of ActionProcessorImpl.
+ * Encapsulates a request to perform some action. This class should only be referenced directly by ActionProcessorImpl;
+ * all others should use the ActionRequest interface.
  *
  * @param <T>
  *            specifies the return type
  */
-@Deprecated
 public class ActionRequestImpl<T extends Serializable> implements Serializable, ActionRequest<T>
 {
+    /** Fingerprint. */
+    private static final long serialVersionUID = -4314979001678290458L;
+
     /**
      * Session id.
      */
