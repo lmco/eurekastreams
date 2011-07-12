@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eurekastreams.commons.exceptions.SessionException;
@@ -217,6 +218,13 @@ public class ActionProcessorImpl implements ActionProcessor
         // were in the queue will have been sent, since everything that is in the queue is also in the index.
         requestQueue.clear();
 
+        // send the message and handle results
+        // Note: The onFailure method of the callback can be called inline by service.execute on certain errors. If that
+        // occurred AND onSendBatchFailure also threw an exception AND since service.execute doesn't catch the
+        // exceptions from callbacks (at least in GWT 2.2 with a draft-mode compile - I checked the generated
+        // JavaScript), then outstandingMessages would get decremented twice and onSendBatchFailure would be called
+        // twice; this is being prevented by the try/catch block around the call to onSendBatchFailure.
+        // onSendBatchSuccess is also protected just for good measure.
         try
         {
             outstandingMessages++;
@@ -225,13 +233,27 @@ public class ActionProcessorImpl implements ActionProcessor
                 public void onSuccess(final ActionRequest[] inResult)
                 {
                     outstandingMessages--;
-                    onSendBatchSuccess(inResult);
+                    try
+                    {
+                        onSendBatchSuccess(inResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.log(Level.WARNING, "Unhandled exception in onSendBatchSuccess", ex);
+                    }
                 }
 
                 public void onFailure(final Throwable inCaught)
                 {
                     outstandingMessages--;
-                    onSendBatchFailure(requests, inCaught);
+                    try
+                    {
+                        onSendBatchFailure(requests, inCaught);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.log(Level.WARNING, "Unhandled exception in onSendBatchFailure", ex);
+                    }
                 }
             });
         }
@@ -326,6 +348,10 @@ public class ActionProcessorImpl implements ActionProcessor
         else
         {
             // any exception other than a session exception gets distributed to each request
+            // TODO: Come up with a better idea than this. Most batch-level exceptions are communications exceptions
+            // which really should be handled at the comm level, not at the individual action level. Plus most action
+            // requesters don't handle failure cases anyway, so an error causes the app to just sit there, usually with
+            // an eternal spinner. Would be better to have this handled in a single place in a consistent way.
             for (ActionRequest request : requests)
             {
                 RequestInfo info = requestIndex.remove(request.getId());
