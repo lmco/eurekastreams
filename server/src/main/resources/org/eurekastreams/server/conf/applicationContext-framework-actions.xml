@@ -1144,17 +1144,16 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-        <constructor-arg ref="getPersonIdByAccountIdMapper" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
-                <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="getPersonsByIdsMapper" />
-            </bean>
+            <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
+        		<constructor-arg ref="getPersonIdByAccountIdMapper" />
+        		<constructor-arg>
+            		<bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
+                		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
+            		</bean>
+        		</constructor-arg>
+        		<constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="followerStatusPopulator" /> 
+			</bean>
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>

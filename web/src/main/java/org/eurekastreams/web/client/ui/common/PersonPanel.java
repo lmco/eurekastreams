@@ -86,8 +86,8 @@ public class PersonPanel extends FlowPanel
         Widget name;
         if (makeLinkable)
         {
-            String nameUrl = Session.getInstance()
-                    .generateUrl(new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
+            String nameUrl = Session.getInstance().generateUrl(
+                    new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
             name = new Hyperlink(person.getDisplayName(), nameUrl);
         }
         else
@@ -150,11 +150,13 @@ public class PersonPanel extends FlowPanel
             }
         }
 
-        infoPanel.add(new FollowPanel(person));
+        if (Session.getInstance().getCurrentPerson().getId() != person.getId())
+        {
+            infoPanel.add(new FollowPanel(person));
+        }
 
         this.add(infoPanel);
     }
-
 
     /**
      * Adds a separator (dot).
