@@ -21,7 +21,7 @@
 
 		.stream-option-list {
 		border-top: 2px solid #bbb;
-		width: 220px;
+		width: 225px;
 		float: left;
 		clear: left;
 		margin-left: 10px;

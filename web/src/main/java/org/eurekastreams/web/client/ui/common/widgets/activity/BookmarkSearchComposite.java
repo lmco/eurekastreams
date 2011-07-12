@@ -145,6 +145,7 @@ public class BookmarkSearchComposite extends FlowPanel
                 searchTerm.reset();
                 resultsPanelContainer.setVisible(false);
                 resultsPanel.clear();
+                removeStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive());
             }
         });
 

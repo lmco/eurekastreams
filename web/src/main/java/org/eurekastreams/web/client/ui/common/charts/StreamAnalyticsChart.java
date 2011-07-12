@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.charts;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.googlecode.gchart.client.GChart;
 
 /**
@@ -37,20 +39,24 @@ public class StreamAnalyticsChart extends GChart
      */
     public StreamAnalyticsChart()
     {
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().analyticsChart());
         setChartSize(CHART_WIDTH, CHART_HEIGHT);
-
+        
         setBackgroundColor("#111111");
         setGridColor("#252525");
+        
         addCurve(0);
         addCurve(1);
 
         int fillSpacing = 0;
 
+        
         getYAxis().setTickLabelFontColor("#c6c6c6");
         getXAxis().setTickLabelFontColor("#c6c6c6");
 
         getYAxis().setHasGridlines(true);
 
+        
         getXAxis().setTickCount(0);
         getYAxis().setTickCount(0);
 

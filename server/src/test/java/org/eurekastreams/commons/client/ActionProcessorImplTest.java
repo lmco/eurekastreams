@@ -447,6 +447,98 @@ public class ActionProcessorImplTest
     }
 
     /**
+     * Tests some additional session establishment request cases, such as exceptions trying to send a message, and
+     * sending multiple session requests.
+     *
+     * @throws IllegalAccessException
+     *             Shouldn't.
+     * @throws IllegalArgumentException
+     *             Shouldn't.
+     * @throws NoSuchFieldException
+     *             Only if test is out of date.
+     * @throws SecurityException
+     *             Shouldn't.
+     */
+    @Test
+    public void testSomeAdditionalSessionRequestCases() throws IllegalArgumentException, IllegalAccessException,
+            SecurityException, NoSuchFieldException
+    {
+        ActionProcessor sut = new ActionProcessorImpl(service, sessionCb);
+
+        // cheat and set the session ID directly in the SUT to set up the initial state
+        TestHelper.setPrivateField(sut, "sessionId", SESSION_ID1);
+
+        // -- try to make request, but service will throw session exception --
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(service).execute((ActionRequest[]) with(anything()), with(any(AsyncCallback.class)));
+                will(paramInt);
+            }
+        });
+        sut.makeRequest(ACTION1, param1, actionCb1);
+        context.assertIsSatisfied();
+
+        // -- return a session exception - SUT should ask service to establish new session, but have service throw an
+        // exception - SUT should tell app --
+        ActionRequest[] requests = (ActionRequest[]) paramInt.getParam(0);
+        AsyncCallback serviceExecCb = (AsyncCallback) paramInt.getParam(1);
+
+        final Exception ex1 = new RuntimeException("What will it do?");
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(service).establishSession(with(any(AsyncCallback.class)));
+                will(throwException(ex1));
+
+                oneOf(sessionCb).onFailure(with(equal(ex1)));
+            }
+        });
+        serviceExecCb.onSuccess(new ActionRequest[] { new ActionResponse(requests[0], new SessionException()) });
+        context.assertIsSatisfied();
+
+        // -- app asks SUT to try again --
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(service).establishSession(with(any(AsyncCallback.class)));
+                will(paramInt);
+            }
+        });
+        sut.fireQueuedRequests();
+        context.assertIsSatisfied();
+
+        // -- app gets impatient and asks SUT to try again again - SUT should do nothing --
+        sut.fireQueuedRequests();
+
+        // -- service replies with success. SUT should notify app and then send the messages --
+        AsyncCallback<String> serviceSessionCb = (AsyncCallback<String>) paramInt.getParam(0);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(sessionCb).onSuccess(SESSION_ID2);
+
+                oneOf(service).execute((ActionRequest[]) with(anything()), with(any(AsyncCallback.class)));
+                will(paramInt);
+            }
+        });
+        serviceSessionCb.onSuccess(SESSION_ID2);
+        context.assertIsSatisfied();
+
+        requests = (ActionRequest[]) paramInt.getParam(0);
+
+        assertEquals(1, requests.length);
+        assertEquals(ACTION1, requests[0].getActionKey());
+        assertSame(param1, requests[0].getParam());
+        assertEquals(SESSION_ID2, requests[0].getSessionId());
+
+        // -- server replies with wrong id - SUT should do nothing --
+        ActionResponse result = new ActionResponse(requests[0], "Ha ha!");
+        result.setId((result.getId() + 9) * 9);
+        ((AsyncCallback) paramInt.getParam(1)).onSuccess(new ActionRequest[] { result });
+    }
+
+    /**
      * Concrete class for testing.
      */
     static class ActionResponse implements ActionRequest
