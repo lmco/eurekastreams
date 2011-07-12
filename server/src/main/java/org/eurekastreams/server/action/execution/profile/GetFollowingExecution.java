@@ -22,56 +22,67 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
-import org.eurekastreams.server.domain.Followable;
+import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Action to get the followers of a person.
- * 
+ *
  */
 public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /** Logger. */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /** Mapper to find the follower's id given their account id. */
-    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /** Mapper returning the ids of the entities being followed. */
-    private DomainMapper<Long, List<Long>> idsMapper;
+    private final DomainMapper<Long, List<Long>> idsMapper;
 
     /** Mapper returning entities (people, groups) given their ids. */
-    private DomainMapper<List<Long>, List<Followable>> bulkModelViewMapper;
+    private final DomainMapper<List<Long>, List<FollowerStatusable>> bulkModelViewMapper;
+
+    /**
+     * Populator for follower status of results.
+     */
+    private final FollowerStatusPopulator<FollowerStatusable> followerStatusPopulator;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGetPersonIdByAccountIdMapper
      *            Mapper to find the follower's id given their account id.
      * @param inIdsMapper
      *            Mapper returning the ids of the entities being followed.
      * @param inBulkModelViewMapper
      *            Mapper returning entities (people, groups) given their ids.
+     * @param inFollowerStatusPopulator
+     *            populates each PersonModelView with the current user's follow status
      */
     public GetFollowingExecution(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
             final DomainMapper<Long, List<Long>> inIdsMapper,
-            final DomainMapper<List<Long>, List<Followable>> inBulkModelViewMapper)
+            final DomainMapper<List<Long>, List<FollowerStatusable>> inBulkModelViewMapper,
+            final FollowerStatusPopulator<FollowerStatusable> inFollowerStatusPopulator)
     {
         getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         idsMapper = inIdsMapper;
         bulkModelViewMapper = inBulkModelViewMapper;
+        followerStatusPopulator = inFollowerStatusPopulator;
     }
 
     /**
      * Returns Set of people following a user excluding themselves.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @return true if the group exists and the user is authorized, false otherwise
      */
     @Override
-    public PagedSet<Followable> execute(final PrincipalActionContext inActionContext)
+    public PagedSet<FollowerStatusable> execute(final PrincipalActionContext inActionContext)
     {
         // get the request
         GetFollowersFollowingRequest inRequest = (GetFollowersFollowingRequest) inActionContext.getParams();
@@ -79,23 +90,25 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
         // get the unique entity Id
         final String entityUniqueId = inRequest.getEntityId();
 
+        final long currentUserId = inActionContext.getPrincipal().getId();
+
         Long entityId = getPersonIdByAccountIdMapper.execute(entityUniqueId);
 
         List<Long> allIds = idsMapper.execute(entityId);
 
         // determine the page
-        int startIndex = ((Integer) inRequest.getStartIndex()).intValue();
-        int endIndex = ((Integer) inRequest.getEndIndex()).intValue();
+        int startIndex = (inRequest.getStartIndex()).intValue();
+        int endIndex = (inRequest.getEndIndex()).intValue();
 
-        PagedSet<Followable> pagedSet;
+        PagedSet<FollowerStatusable> pagedSet;
         if (allIds.isEmpty())
         {
-            pagedSet = new PagedSet<Followable>();
+            pagedSet = new PagedSet<FollowerStatusable>();
         }
         else if (startIndex >= allIds.size())
         {
             // if asking for a range beyond the end of the list return an empty set
-            pagedSet = new PagedSet<Followable>();
+            pagedSet = new PagedSet<FollowerStatusable>();
             pagedSet.setTotal(allIds.size());
         }
         else
@@ -106,9 +119,10 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
             }
             List<Long> pageIds = allIds.subList(startIndex, endIndex + 1);
 
-            List<Followable> list = bulkModelViewMapper.execute(pageIds);
+            List<FollowerStatusable> list = bulkModelViewMapper.execute(pageIds);
+            followerStatusPopulator.execute(currentUserId, list, FollowerStatus.NOTSPECIFIED);
 
-            pagedSet = new PagedSet<Followable>(startIndex, endIndex, allIds.size(), list);
+            pagedSet = new PagedSet<FollowerStatusable>(startIndex, endIndex, allIds.size(), list);
         }
 
         if (log.isTraceEnabled())

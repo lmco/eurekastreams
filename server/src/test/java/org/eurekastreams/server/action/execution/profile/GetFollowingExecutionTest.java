@@ -18,16 +18,20 @@ package org.eurekastreams.server.action.execution.profile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.AnonymousClassInterceptor;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Followable;
+import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -54,6 +58,9 @@ public class GetFollowingExecutionTest
     /** Test data. */
     private static final Long USER_ID = 99L;
 
+    /** The current user id **/
+    private static final Long CURRENT_USER_ID = 8822L;
+
     /**
      * Context for building mock objects.
      */
@@ -65,18 +72,29 @@ public class GetFollowingExecutionTest
     };
 
     /** Fixture: Mapper to find the follower's id given their account id. */
-    private DomainMapper<String, Long> personAccountIdToIdLookupMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<String, Long> personAccountIdToIdLookupMapper = context.mock(DomainMapper.class,
             "personAccountIdToIdLookupMapper");
 
     /** Fixture: Mapper returning the ids of the entities being followed. */
-    private DomainMapper<Long, List<Long>> idsMapper = context.mock(DomainMapper.class, "idsMapper");
+    private final DomainMapper<Long, List<Long>> idsMapper = context.mock(DomainMapper.class, "idsMapper");
 
     /** Fixture: Mapper returning entities (people, groups) given their ids. */
-    private DomainMapper<List<Long>, List<Followable>> bulkModelViewMapper = context.mock(DomainMapper.class,
-            "bulkModelViewMapper");
+    private final DomainMapper<List<Long>, List<FollowerStatusable>> bulkModelViewMapper = context.mock(
+            DomainMapper.class, "bulkModelViewMapper");
 
     /** Fixture: action context. */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+    /**
+     * Populator for follower status of results.
+     */
+    private final FollowerStatusPopulator<FollowerStatusable> followerStatusPopulator = context
+            .mock(FollowerStatusPopulator.class);
+
+    /**
+     * Principal.
+     */
+    private final Principal principal = context.mock(Principal.class);
 
     /** SUT. */
     private GetFollowingExecution sut;
@@ -87,7 +105,8 @@ public class GetFollowingExecutionTest
     @Before
     public void setUp()
     {
-        sut = new GetFollowingExecution(personAccountIdToIdLookupMapper, idsMapper, bulkModelViewMapper);
+        sut = new GetFollowingExecution(personAccountIdToIdLookupMapper, idsMapper, bulkModelViewMapper,
+                followerStatusPopulator);
 
         final GetFollowersFollowingRequest rqst = new GetFollowersFollowingRequest(EntityType.PERSON, ACCOUNT_ID,
                 START_INDEX, END_INDEX);
@@ -98,6 +117,12 @@ public class GetFollowingExecutionTest
                 will(returnValue(rqst));
                 allowing(personAccountIdToIdLookupMapper).execute(ACCOUNT_ID);
                 will(returnValue(USER_ID));
+
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
             }
         });
     }
@@ -116,7 +141,7 @@ public class GetFollowingExecutionTest
             }
         });
 
-        PagedSet<Followable> results = sut.execute(actionContext);
+        PagedSet<FollowerStatusable> results = sut.execute(actionContext);
         context.assertIsSatisfied();
         assertEquals(-1, results.getFromIndex());
         assertEquals(-1, results.getToIndex());
@@ -131,8 +156,9 @@ public class GetFollowingExecutionTest
     public void testExecute()
     {
         final List<Long> list = Arrays.asList(0L, 0L, 0L, 0L, 0L, 8L, 7L, 6L, 5L, 4L, 0L, 0L, 0L, 0L, 0L);
+        final List<FollowerStatusable> resultList = new ArrayList<FollowerStatusable>();
 
-        final AnonymousClassInterceptor<List<Long>> parmCatch = new AnonymousClassInterceptor<List<Long>>();
+        final AnonymousClassInterceptor<List<Long>> parmCatch = new AnonymousClassInterceptor<List<Long>>(resultList);
 
         context.checking(new Expectations()
         {
@@ -141,10 +167,13 @@ public class GetFollowingExecutionTest
                 will(returnValue(list));
                 allowing(bulkModelViewMapper).execute(with(any(List.class)));
                 will(parmCatch);
+
+                oneOf(followerStatusPopulator).execute(with(CURRENT_USER_ID), with(resultList),
+                        with(FollowerStatus.NOTSPECIFIED));
             }
         });
 
-        PagedSet<Followable> results = sut.execute(actionContext);
+        PagedSet<FollowerStatusable> results = sut.execute(actionContext);
         context.assertIsSatisfied();
         assertEquals(START_INDEX, results.getFromIndex());
         assertEquals(END_INDEX, results.getToIndex());
@@ -164,8 +193,9 @@ public class GetFollowingExecutionTest
     public void testExecutePartil()
     {
         final List<Long> list = Arrays.asList(0L, 0L, 0L, 0L, 0L, 8L, 7L, 6L);
+        final List<FollowerStatusable> resultList = new ArrayList<FollowerStatusable>();
 
-        final AnonymousClassInterceptor<List<Long>> parmCatch = new AnonymousClassInterceptor<List<Long>>();
+        final AnonymousClassInterceptor<List<Long>> parmCatch = new AnonymousClassInterceptor<List<Long>>(resultList);
 
         context.checking(new Expectations()
         {
@@ -174,10 +204,13 @@ public class GetFollowingExecutionTest
                 will(returnValue(list));
                 allowing(bulkModelViewMapper).execute(with(any(List.class)));
                 will(parmCatch);
+
+                oneOf(followerStatusPopulator).execute(with(CURRENT_USER_ID), with(resultList),
+                        with(FollowerStatus.NOTSPECIFIED));
             }
         });
 
-        PagedSet<Followable> results = sut.execute(actionContext);
+        PagedSet<FollowerStatusable> results = sut.execute(actionContext);
         context.assertIsSatisfied();
         assertEquals(START_INDEX, results.getFromIndex());
         assertEquals(START_INDEX + 2, results.getToIndex());
@@ -205,7 +238,7 @@ public class GetFollowingExecutionTest
             }
         });
 
-        PagedSet<Followable> results = sut.execute(actionContext);
+        PagedSet<FollowerStatusable> results = sut.execute(actionContext);
         context.assertIsSatisfied();
         assertEquals(-1, results.getFromIndex());
         assertEquals(-1, results.getToIndex());
