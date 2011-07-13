@@ -46,6 +46,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConnectEntryPoint implements EntryPoint
 {
+    /** Maintenance message. */
+    private static final String MAINTENANCE_MSG = // \n
+    "Eureka is down for maintenance and will be back as soon as possible.";
+
     /**
      * Mandatory ID for the HTML element in which to create the widget.
      */
@@ -169,7 +173,7 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onSessionInitFailure(final Throwable caught)
     {
-        final Label errLabel = new Label("Eureka is down for maintence and will be back as soon as possible.");
+        final Label errLabel = new Label(MAINTENANCE_MSG);
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
@@ -181,7 +185,7 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onPersonFetchFailure(final Throwable caught)
     {
-        final Label errLabel = new Label("Eureka is down for maintence and will be back as soon as possible.");
+        final Label errLabel = new Label(MAINTENANCE_MSG);
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
@@ -203,7 +207,7 @@ public class ConnectEntryPoint implements EntryPoint
             }
         }
 
-        final Label errLabel = new Label("Eureka is down for maintence and will be back as soon as possible.");
+        final Label errLabel = new Label(MAINTENANCE_MSG);
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 

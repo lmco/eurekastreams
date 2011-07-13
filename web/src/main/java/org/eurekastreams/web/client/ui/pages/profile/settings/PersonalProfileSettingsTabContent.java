@@ -31,8 +31,8 @@ import org.eurekastreams.web.client.events.data.UpdatedPersonalInformationRespon
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteItemDropDownFormElement;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteDropDownPanel.ElementType;
+import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteItemDropDownFormElement;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
@@ -112,7 +112,7 @@ public class PersonalProfileSettingsTabContent extends Composite
                                 PersonModelView.TITILE_KEY, person.getTitle(),
                                 "Your title will appear below your photo on the profile page", true));
                         form.addFormDivider();
-                        form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Display Name",
+                        form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "First Name",
                                 PersonModelView.PREFERREDNAME_KEY, person.getPreferredName(),
                                 "Entering a display name will replace your first name anywhere your name "
                                         + "appears in the system", true));
@@ -124,7 +124,7 @@ public class PersonalProfileSettingsTabContent extends Composite
 
                         String skills = DomainFormatUtility.buildCapabilitiesStringFromStrings(person.getInterests());
 
-                        form.addFormElement(new AutoCompleteItemDropDownFormElement("Interests",
+                        form.addFormElement(new AutoCompleteItemDropDownFormElement("Keywords",
                                 PersonModelView.SKILLS_KEY, skills,
                                 "Add keywords that describe your work experience, skills, interests, or "
                                         + "hobbies. Separate keywords with a comma. Including tags increases your "
@@ -132,14 +132,8 @@ public class PersonalProfileSettingsTabContent extends Composite
                                 "/resources/autocomplete/skill/", "itemNames", ElementType.TEXTAREA, ","));
                         form.addFormDivider();
 
-                        form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Work Phone",
+                        form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Phone",
                                 PersonModelView.WORKPHONE_KEY, person.getWorkPhone(), null, false));
-                        form.addFormDivider();
-                        form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Cell",
-                                PersonModelView.CELLPHONE_KEY, person.getCellPhone(), null, false));
-                        form.addFormDivider();
-                        form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Fax",
-                                PersonModelView.FAX_KEY, person.getFax(), null, false));
                         form.addFormDivider();
                         form.addFormElement(new BasicTextBoxFormElement(MAX_EMAIL, false, "Email",
                                 PersonModelView.EMAIL_KEY, person.getEmail(), "(ex. user@example.com)", true));
@@ -166,7 +160,6 @@ public class PersonalProfileSettingsTabContent extends Composite
                                 new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));
 
                         panel.add(form);
-
                     }
                 });
 

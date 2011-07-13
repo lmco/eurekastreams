@@ -168,11 +168,11 @@ public class ApplicationEntryPoint implements EntryPoint
 
             public void onFailure(final Throwable inCaught)
             {
-                if (inCaught.getMessage().contains("NO_CREDENTIALS"))
+                if (inCaught.getMessage().startsWith("NO_CREDENTIALS"))
                 {
                     showLogin();
                 }
-                else if (inCaught.getMessage().contains("LOGIN_DISABLED"))
+                else if (inCaught.getMessage().startsWith("LOGIN_DISABLED"))
                 {
                     Window.Location.assign(ACCESS_DENIED_PAGE);
                 }
