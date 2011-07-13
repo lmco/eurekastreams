@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ActionProcessorImpl implements ActionProcessor
 {
     /** Log. */
-    Logger log = Logger.getLogger("ActionProcessorImpl");
+    private final Logger log = Logger.getLogger("ActionProcessorImpl");
 
     /** The RPC service to call. */
     private final ActionRPCServiceAsync service;
@@ -101,8 +101,7 @@ public class ActionProcessorImpl implements ActionProcessor
                 }
                 catch (Exception ex)
                 {
-                    @SuppressWarnings("unused")
-                    int swallowExceptionsFromIllBehavedAppCode = 1;
+                    log.log(Level.WARNING, "Unhandled exception in application session established callback", ex);
                 }
             }
 
@@ -125,8 +124,8 @@ public class ActionProcessorImpl implements ActionProcessor
                 }
                 catch (Exception ex)
                 {
-                    @SuppressWarnings("unused")
-                    int swallowExceptionsFromIllBehavedAppCode = 1;
+                    log.log(Level.WARNING,
+                            "Unhandled exception in application session establishment failure callback", ex);
                 }
             }
         }
@@ -307,11 +306,19 @@ public class ActionProcessorImpl implements ActionProcessor
                             info.getCallback().onSuccess(response.getResponse());
                         }
                     }
-                    catch (Throwable ex)
+                    catch (Exception ex)
                     {
                         // swallow exceptions from callbacks - a fault in a callback shouldn't break everything else
-                        @SuppressWarnings("unused")
-                        int doNothing = 1;
+                        log.log(Level.WARNING, "Unhandled exception in application action request callback for "
+                                + info.getRequest().getActionKey(), ex);
+                    }
+                    catch (AssertionError ex)
+                    {
+                        // Note: Catching AssertionErrors is good and bad. This means unit test assertion failures will
+                        // be swallowed and the test will not fail (bad), but any failed asserts within an app callback
+                        // will not break everything else.
+                        log.log(Level.SEVERE, "Unhandled exception in application action request callback for "
+                                + info.getRequest().getActionKey(), ex);
                     }
                 }
             }
@@ -361,11 +368,19 @@ public class ActionProcessorImpl implements ActionProcessor
                     {
                         info.getCallback().onFailure(caught);
                     }
-                    catch (Throwable ex)
+                    catch (Exception ex)
                     {
                         // swallow exceptions from callbacks - a fault in a callback shouldn't break everything else
-                        @SuppressWarnings("unused")
-                        int doNothing = 1;
+                        log.log(Level.WARNING, "Unhandled exception in application action request callback for "
+                                + info.getRequest().getActionKey(), ex);
+                    }
+                    catch (AssertionError ex)
+                    {
+                        // Note: Catching AssertionErrors is good and bad. This means unit test assertion failures will
+                        // be swallowed and the test will not fail (bad), but any failed asserts within an app callback
+                        // will not break everything else.
+                        log.log(Level.SEVERE, "Unhandled exception in application action request callback for "
+                                + info.getRequest().getActionKey(), ex);
                     }
                 }
             }

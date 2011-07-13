@@ -19,6 +19,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import org.eurekastreams.commons.exceptions.SessionException;
 import org.eurekastreams.server.testing.ParamInterceptor;
@@ -90,6 +91,12 @@ public class ActionProcessorImplTest
     /** Parameter interceptor. */
     private final ParamInterceptor paramInt = new ParamInterceptor();
 
+    /** Fixture: log. */
+    private final Logger log = context.mock(Logger.class, "log");
+
+    /** SUT. */
+    private ActionProcessor sut;
+
     /*
      * Note: Many of the app callbacks are mocked to throw exceptions. This is done just to test the exception paths and
      * insure that a ill-behaved callback doesn't interfere with the proper behavior of the SUT.
@@ -97,10 +104,29 @@ public class ActionProcessorImplTest
 
     /**
      * Test setup.
+     * 
+     * @throws NoSuchFieldException
+     *             Only if SUT changes its log.
+     * @throws IllegalAccessException
+     *             Shouldn't.
+     * @throws IllegalArgumentException
+     *             Shouldn't.
      */
     @Before
-    public final void setUp()
+    public final void setUp() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException
     {
+        sut = new ActionProcessorImpl(service, sessionCb);
+        TestHelper.setPrivateField(sut, "log", log);
+        context.checking(new Expectations()
+        {
+            {
+                // mock logger and ignore log calls to keep errors from spilling into the output and looking like
+                // something actually went wrong. Would be ideal if the mock could be configured to ignore any
+                // trace/debug logging, but have expectations that some other logging would be done (but without
+                // specifying exactly which logging method is used) when a callback throws an exception.
+                ignoring(log);
+            }
+        });
     }
 
     /**
@@ -109,8 +135,6 @@ public class ActionProcessorImplTest
     @Test
     public void testNormalStartup()
     {
-        ActionProcessor sut = new ActionProcessorImpl(service, sessionCb);
-
         sut.setQueueRequests(true);
         sut.makeRequest(ACTION1, param1, actionCb1);
         sut.makeRequest(ACTION2, param2, actionCb2);
@@ -130,7 +154,7 @@ public class ActionProcessorImplTest
         {
             {
                 oneOf(sessionCb).onSuccess(SESSION_ID1);
-                will(throwException(new Exception("Naughty callback")));
+                will(throwException(new RuntimeException("Naughty callback")));
 
                 oneOf(service).execute((ActionRequest[]) with(anything()), with(any(AsyncCallback.class)));
                 will(paramInt);
@@ -158,9 +182,9 @@ public class ActionProcessorImplTest
         {
             {
                 oneOf(actionCb1).onSuccess(with(same(result1)));
-                will(throwException(new Exception("Naughty callback")));
+                will(throwException(new RuntimeException("Naughty callback")));
                 oneOf(actionCb2).onSuccess(with(same(result2)));
-                will(throwException(new Exception("Naughty callback")));
+                will(throwException(new RuntimeException("Naughty callback")));
             }
         });
 
@@ -185,8 +209,6 @@ public class ActionProcessorImplTest
     public void testLoseSession() throws IllegalArgumentException, IllegalAccessException, SecurityException,
             NoSuchFieldException
     {
-        ActionProcessor sut = new ActionProcessorImpl(service, sessionCb);
-
         // cheat and set the session ID directly in the SUT to set up the initial state
         TestHelper.setPrivateField(sut, "sessionId", SESSION_ID1);
 
@@ -222,7 +244,7 @@ public class ActionProcessorImplTest
         {
             {
                 oneOf(sessionCb).onFailure(with(equal(ex)));
-                will(throwException(new Exception("Naughty callback")));
+                will(throwException(new RuntimeException("Naughty callback")));
             }
         });
         serviceSessionCb.onFailure(ex);
@@ -245,7 +267,7 @@ public class ActionProcessorImplTest
         {
             {
                 oneOf(sessionCb).onSuccess(SESSION_ID2);
-                will(throwException(new Exception("Naughty callback")));
+                will(throwException(new RuntimeException("Naughty callback")));
 
                 oneOf(service).execute((ActionRequest[]) with(anything()), with(any(AsyncCallback.class)));
                 will(paramInt);
@@ -276,8 +298,6 @@ public class ActionProcessorImplTest
     public void testMultipleOutstandingRequests() throws IllegalArgumentException, IllegalAccessException,
             NoSuchFieldException
     {
-        ActionProcessor sut = new ActionProcessorImpl(service, sessionCb);
-
         // cheat and set the session ID directly in the SUT to set up the initial state
         TestHelper.setPrivateField(sut, "sessionId", SESSION_ID1);
 
@@ -391,16 +411,24 @@ public class ActionProcessorImplTest
 
     /**
      * Tests that callbacks are not required. Use same basic scenario as startup test.
+     * 
+     * @throws NoSuchFieldException
+     *             Only if SUT changes its log.
+     * @throws IllegalAccessException
+     *             Shouldn't.
+     * @throws IllegalArgumentException
+     *             Shouldn't.
      */
     @Test
-    public void testNoCallbacks()
+    public void testNoCallbacks() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException
     {
-        ActionProcessor sut = new ActionProcessorImpl(service, null);
+        sut = new ActionProcessorImpl(service, null);
+        TestHelper.setPrivateField(sut, "log", log);
 
         // -- send over messages with no session set. SUT should request a session --
         sut.setQueueRequests(true);
-        sut.makeRequest(ACTION1, param1, actionCb1);
-        sut.makeRequest(ACTION2, param2, actionCb2);
+        sut.makeRequest(ACTION1, param1, null);
+        sut.makeRequest(ACTION2, param2, null);
         context.checking(new Expectations()
         {
             {
@@ -463,8 +491,6 @@ public class ActionProcessorImplTest
     public void testSomeAdditionalSessionRequestCases() throws IllegalArgumentException, IllegalAccessException,
             SecurityException, NoSuchFieldException
     {
-        ActionProcessor sut = new ActionProcessorImpl(service, sessionCb);
-
         // cheat and set the session ID directly in the SUT to set up the initial state
         TestHelper.setPrivateField(sut, "sessionId", SESSION_ID1);
 
@@ -532,10 +558,12 @@ public class ActionProcessorImplTest
         assertSame(param1, requests[0].getParam());
         assertEquals(SESSION_ID2, requests[0].getSessionId());
 
-        // -- server replies with wrong id - SUT should do nothing --
+
+        // -- server replies with wrong id - SUT should do nothing. --
         ActionResponse result = new ActionResponse(requests[0], "Ha ha!");
         result.setId((result.getId() + 9) * 9);
-        ((AsyncCallback) paramInt.getParam(1)).onSuccess(new ActionRequest[] { result });
+        ((AsyncCallback) paramInt.getParam(1)).onSuccess(new ActionRequest[] { result
+                 });
     }
 
     /**
