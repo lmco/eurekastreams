@@ -43,19 +43,20 @@ import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResp
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
-import org.eurekastreams.web.client.events.errors.ErrorRetrievingStreamEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GadgetModel;
+import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.SpinnerLabelButton;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
@@ -65,7 +66,6 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
-import org.eurekastreams.web.client.ui.pages.requestaccess.RequestAccessPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -165,6 +165,9 @@ public class ActivityContent extends Composite
     @UiField
     ActivityStyle style;
 
+    /**
+     * Search container.
+     */
     @UiField
     DivElement searchContainer;
 
@@ -501,7 +504,7 @@ public class ActivityContent extends Composite
                 {
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
-                        DomainGroupModelView group = event.getResponse();
+                        final DomainGroupModelView group = event.getResponse();
                         currentScopeId = group.getStreamId();
 
                         if (group.isRestricted())
@@ -516,7 +519,17 @@ public class ActivityContent extends Composite
                             errorPanel.add(new Label("Access to this group is restricted"));
                             errorPanel.add(new Label(
                                     "To view this group's stream please request access from its coordinator"));
-                            errorPanel.add(new RequestAccessPanel(group.getShortName()));
+                            
+                            final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
+                            {
+                                public void onClick(final ClickEvent inArg0)
+                                {
+                                    GroupMembershipRequestModel.getInstance().insert(group.getShortName());
+                                }
+                            });
+                            button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
+                            errorPanel.add(button);
+                            
                             streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                         }
                     }

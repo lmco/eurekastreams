@@ -231,8 +231,14 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // Posts a message to the user's personal stream unless this is a new pending group
             if (!isPending)
             {
-                SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext
-                        .getActionContext().getParams();
+                String targetStream = "";
+
+                if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusRequest)
+                {
+                    SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext
+                            .getActionContext().getParams();
+                    targetStream = currentRequest.getTargetUniqueId();
+                }
 
                 StreamEntityDTO destination = new StreamEntityDTO();
                 destination.setUniqueIdentifier(followerAccountId);
@@ -241,15 +247,26 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                 ActivityDTO activity = new ActivityDTO();
                 HashMap<String, String> props = new HashMap<String, String>();
                 activity.setBaseObjectProperties(props);
-                String content = "%EUREKA:ACTORNAME% has joined the [" + targetName + "](#activity/group/"
-                        + currentRequest.getTargetUniqueId() + ") group";
+
+                String content = "";
+
+                if (targetStream.length() > 0)
+                {
+                    content = "%EUREKA:ACTORNAME% has joined the [" + targetName + "](#activity/group/" + targetStream
+                            + ") group";
+                }
+                else
+                {
+                    content = "%EUREKA:ACTORNAME% has joined the " + targetName + " group";
+                }
 
                 activity.getBaseObjectProperties().put("content", content);
                 activity.setDestinationStream(destination);
                 activity.setBaseObjectType(BaseObjectType.NOTE);
                 activity.setVerb(ActivityVerb.POST);
 
-                // Note: create a principal for the follower: we want to post on the follower's stream as the follower.
+                // Note: create a principal for the follower: we want to post on the follower's stream as the
+                // follower.
                 // The current principal will be different from the follower in some cases, namely when following a
                 // private group (the current principal / actor is the coordinator who approved access).
                 postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(

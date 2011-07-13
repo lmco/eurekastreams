@@ -50,16 +50,34 @@ public class InsertActivityCommentTest extends CachedMapperTest
     private BulkActivitiesDbMapper activityMapper;
 
     /**
-     * A comment that is 250 characters.
+     * A comment that is 1000 characters.
      */
-    String is250 = "this comment is 250 characters this comment is 250 characters this comment is 250 "
+    String is1000 = "this comment is 250 characters this comment is 250 characters this comment is 250 "
+            + "characters this comment is 250 characters this comment is 250 characters this comment is "
+            + "250 characters this comment is 250 characters this comment is 250 characters th"
+            + "this comment is 250 characters this comment is 250 characters this comment is 250 "
+            + "characters this comment is 250 characters this comment is 250 characters this comment is "
+            + "250 characters this comment is 250 characters this comment is 250 characters th"
+            + "this comment is 250 characters this comment is 250 characters this comment is 250 "
+            + "characters this comment is 250 characters this comment is 250 characters this comment is "
+            + "250 characters this comment is 250 characters this comment is 250 characters th"
+            + "this comment is 250 characters this comment is 250 characters this comment is 250 "
             + "characters this comment is 250 characters this comment is 250 characters this comment is "
             + "250 characters this comment is 250 characters this comment is 250 characters th";
 
     /**
-     * A comment over 250 charachters.
+     * A comment over 1000 charachters.
      */
-    String over250 = "this comment is over 250 characters this comment is over 250 characters this comment "
+    String over1000 = "this comment is over 250 characters this comment is over 250 characters this comment "
+            + "is over 250 characters this comment is over 250 characters this comment is over 250 "
+            + "characters this comment is over 250 characters this comment is over 250 characters"
+            + "this comment is over 250 characters this comment is over 250 characters this comment "
+            + "is over 250 characters this comment is over 250 characters this comment is over 250 "
+            + "characters this comment is over 250 characters this comment is over 250 characters"
+            + "this comment is over 250 characters this comment is over 250 characters this comment "
+            + "is over 250 characters this comment is over 250 characters this comment is over 250 "
+            + "characters this comment is over 250 characters this comment is over 250 characters"
+            + "this comment is over 250 characters this comment is over 250 characters this comment "
             + "is over 250 characters this comment is over 250 characters this comment is over 250 "
             + "characters this comment is over 250 characters this comment is over 250 characters";
 
@@ -97,7 +115,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         assertEquals(7, activityDTO.getLastComment().getId());
 
         // Create the insertRequest and insert the comment via sut.
-        InsertActivityCommentRequest insertRequest = new InsertActivityCommentRequest(smithersId, activityId, is250);
+        InsertActivityCommentRequest insertRequest = new InsertActivityCommentRequest(smithersId, activityId, is1000);
         CommentDTO result = sut.execute(insertRequest);
 
         // Grab entity id for later use
@@ -115,7 +133,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         assertNotNull(comment);
         assertEquals(smithersId, comment.getAuthor().getId());
         assertEquals(activityId, comment.getTarget().getId());
-        assertEquals(is250, comment.getBody());
+        assertEquals(is1000, comment.getBody());
 
         // Get the activity DTO and assert is was updated correctly by sut.
         activityDTO = activityMapper.execute(activityIds).get(0);
@@ -139,7 +157,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
      */
     @SuppressWarnings("unchecked")
     @Test(expected = InvalidStateException.class)
-    public void testExecuteCommentToBig()
+    public void testExecuteCommentT0oBig()
     {
         final long activityId = 6790L;
         final long smithersId = 98L;
@@ -162,7 +180,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         assertEquals(7, activityDTO.getLastComment().getId());
 
         // Create the insertRequest and insert the comment via sut.
-        InsertActivityCommentRequest insertRequest = new InsertActivityCommentRequest(smithersId, activityId, over250);
+        InsertActivityCommentRequest insertRequest = new InsertActivityCommentRequest(smithersId, activityId, over1000);
 
         sut.execute(insertRequest);
     }

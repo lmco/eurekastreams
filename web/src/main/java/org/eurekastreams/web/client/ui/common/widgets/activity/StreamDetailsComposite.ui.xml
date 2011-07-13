@@ -131,7 +131,10 @@
 
 		.condensedStream .header
 		{
-		height: 77px;
+		
+		height: 60px;
+		padding-left: 10px;
+    	padding-top: 5px;
 		}
 
 		.condensedAvatar
@@ -139,6 +142,7 @@
 		display: none;
 		float: left;
 		margin: 10px;
+		margin-right: 20px;
 		}
 
 		.condensedStream .condensedAvatar

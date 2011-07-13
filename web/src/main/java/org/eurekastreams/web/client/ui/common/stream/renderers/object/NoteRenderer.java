@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
