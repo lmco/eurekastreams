@@ -7300,6 +7300,8 @@ body .stream-view-dialog .delete-button {
 	background: transparent
 		url('style/images/RequestAccessButton-Enabled.png') no-repeat scroll
 		center center;
+	margin-top: 10px;
+	cursor: pointer;
 }
 
 .request-access-button.label-button-disabled {
