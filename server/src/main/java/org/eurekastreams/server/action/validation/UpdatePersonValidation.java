@@ -106,14 +106,25 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
         vHelper.stringMeetsRequirments(PersonModelView.WORKPHONE_KEY, workNumber, ve, null,
                 Person.MAX_PHONE_NUMBER_LENGTH, Person.PHONE_NUMBER_MESSAGE, null, null);
 
-        String cellNumber = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.CELLPHONE_KEY,
-                true, ve);
-        vHelper.stringMeetsRequirments(PersonModelView.CELLPHONE_KEY, cellNumber, ve, null,
-                Person.MAX_PHONE_NUMBER_LENGTH, Person.PHONE_NUMBER_MESSAGE, null, null);
+        // TODO: Commented out to fix person update for 1.5, but future of phone numbers is uncertain right now as spec
+        // shows us
+        // collecting a number, but not displaying it,
+        // Also, prod db shows more people have entered fax numbers than either of the other two numbers (which is
+        // weird)
+        // so we may want to wait before dropping all that data.
+        // will submit to Lisa for clarification before deleteing this fuctionality all the way through the entity/db,
+        // losing
+        // a lot of data.
 
-        String faxNumber = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.FAX_KEY, true, ve);
-        vHelper.stringMeetsRequirments(PersonModelView.FAX_KEY, faxNumber, ve, null, Person.MAX_PHONE_NUMBER_LENGTH,
-                Person.FAX_NUMBER_MESSAGE, null, null);
+        // String cellNumber = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.CELLPHONE_KEY,
+        // true, ve);
+        // vHelper.stringMeetsRequirments(PersonModelView.CELLPHONE_KEY, cellNumber, ve, null,
+        // Person.MAX_PHONE_NUMBER_LENGTH, Person.PHONE_NUMBER_MESSAGE, null, null);
+        //
+        // String faxNumber = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.FAX_KEY, true,
+        // ve);
+        // vHelper.stringMeetsRequirments(PersonModelView.FAX_KEY, faxNumber, ve, null, Person.MAX_PHONE_NUMBER_LENGTH,
+        // Person.FAX_NUMBER_MESSAGE, null, null);
 
         String email = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.EMAIL_KEY, true, ve);
         if (vHelper.stringMeetsRequirments(PersonModelView.EMAIL_KEY, email, ve, "Email is required.",

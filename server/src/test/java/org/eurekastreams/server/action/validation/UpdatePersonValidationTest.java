@@ -143,7 +143,7 @@ public class UpdatePersonValidationTest
     public void testbadvalidationNofieldsSent()
     {
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
-        final int errorSize = 8;
+        final int errorSize = 6;
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);
         try
         {
@@ -190,14 +190,12 @@ public class UpdatePersonValidationTest
         catch (ValidationException e)
         {
             context.assertIsSatisfied();
-            assertEquals(8, e.getErrors().size());
+            assertEquals(6, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(Person.EMAIL_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.JOB_DESCRIPTION_MESSAGE));
-            assertTrue(e.getErrors().containsKey(PersonModelView.CELLPHONE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.WORKPHONE_KEY));
-            assertTrue(e.getErrors().containsValue(Person.FAX_NUMBER_MESSAGE));
             assertTrue(e.getErrors().containsValue(PersonModelView.SKILLS_MESSAGE));
 
             throw e;
@@ -235,13 +233,11 @@ public class UpdatePersonValidationTest
         catch (ValidationException e)
         {
             context.assertIsSatisfied();
-            assertEquals(7, e.getErrors().size());
+            assertEquals(5, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.JOB_DESCRIPTION_MESSAGE));
-            assertTrue(e.getErrors().containsKey(PersonModelView.CELLPHONE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.WORKPHONE_KEY));
-            assertTrue(e.getErrors().containsValue(Person.FAX_NUMBER_MESSAGE));
 
             throw e;
         }
