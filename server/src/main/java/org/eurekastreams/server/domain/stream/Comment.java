@@ -56,7 +56,7 @@ public class Comment extends DomainEntity implements Serializable
     /**
      * Max character count for comment body.
      */
-    private static final int MAX_BODY_LENGTH = 250;
+    private static final int MAX_BODY_LENGTH = 1000;
 
     /**
      * Max body length error message.

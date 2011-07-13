@@ -92,8 +92,10 @@
 
 		.stream-option-list div.activeStream
 		{
-		background-image: url(style/images/hightlight.png);
+		background-image: url(style/images/highlight.png);
 		background-position: top right;
+		background-repeat: no-repeat;
+		background-color: #e4e4e4;
 		}
 
 		.activeSort
@@ -146,15 +148,15 @@
 			display: block;
 		}
 
-		.search-box.activeSearch
+		.activeSearch .search-box
 		{
 			display: block;
 		}
 		
-		.search-container:hover .search-box-button
+		.activeSearch .search-box-button, .search-container:hover .search-box-button
 		{		
 			display: none;
-		}
+		}		
 
 		@sprite .search-box
 		{
@@ -264,7 +266,7 @@
 		
 		@sprite .streamOptionChild:hover .deleteBookmark
 		{
-		margin-right: 5px;
+		margin-right: 15px;
 		gwt-image: "deleteBookmark";
 		}
 
@@ -291,10 +293,21 @@
 		
 		.errorPanel
 		{
-			color: red;
-			font-weight: bold;
-			text-align: center;
+			background-color: #FFE488;
+		 	overflow: hidden;
+    		padding: 20px;
 		}
+		
+		.errorPanel > div:first-child
+		{
+    		color: red;
+    		font-weight: bold;
+    		font-size: 18px;
+    		background-image: url("style/images/red-error-icon-sm.png");
+    		background-repeat: no-repeat;
+    		padding-bottom: 10px;
+    		padding-left: 30px;
+		}		
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
@@ -317,7 +330,7 @@
 						<g:Label ui:field="feedLink">RSS Feed</g:Label>
 					</g:FlowPanel>
 				</g:FlowPanel>
-				<div class="{style.search-container}">
+				<div ui:field="searchContainer" class="{style.search-container}">
 					<div class="{style.search-box-button}"></div>
 					<g:TextBox addStyleNames="{style.search-box}" ui:field="searchBox"></g:TextBox>
 				</div>

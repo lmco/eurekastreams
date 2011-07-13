@@ -131,7 +131,10 @@
 
 		.condensedStream .header
 		{
-		height: 77px;
+		
+		height: 60px;
+		padding-left: 10px;
+    	padding-top: 5px;
 		}
 
 		.condensedAvatar
@@ -139,6 +142,7 @@
 		display: none;
 		float: left;
 		margin: 10px;
+		margin-right: 20px;
 		}
 
 		.condensedStream .condensedAvatar
@@ -257,6 +261,7 @@
 			font-weight: bold;
 			font-size: 16px;
 			color: white;
+			padding-right: 10px;
 		}
 		
 		.metrics-data-avg > div, .metrics-data-total > div
@@ -332,18 +337,18 @@
 						<div class="{style.chart-description}">Stream views over the last 30 days</div>
 						<div class="{style.metrics-data-avg}">
 							<b>Avg Daily Activity</b>
-							<div><span ui:field="avgViewers"></span> Viewers</div> 
-							<div><span ui:field="avgViews"></span> Views</div> 
-							<div><span ui:field="avgContributors"></span> Contributors</div> 
-							<div><span ui:field="avgMessages"></span> Messages</div> 
-							<div><span ui:field="avgComments"></span> Comments per post</div> 
+							<div><span ui:field="avgViewers"></span>Viewers</div> 
+							<div><span ui:field="avgViews"></span>Views</div> 
+							<div><span ui:field="avgContributors"></span>Contributors</div> 
+							<div><span ui:field="avgMessages"></span>Messages</div> 
+							<div><span ui:field="avgComments"></span>Comments</div> 
 						</div>
 						<div class="{style.metrics-data-total}">
 							<b>Total</b>
-							<div><span ui:field="totalViews"></span> Views</div> 
-							<div><span ui:field="totalContributors"></span> Contributors</div> 
-							<div><span ui:field="totalMessages"></span> Messages</div> 
-							<div><span ui:field="totalComments"></span> Comments per post</div> 
+							<div><span ui:field="totalViews"></span>Views</div> 
+							<div><span ui:field="totalContributors"></span>Contributors</div> 
+							<div><span ui:field="totalMessages"></span>Messages</div> 
+							<div><span ui:field="totalComments"></span>Comments</div> 
 						</div>
 					</g:HTMLPanel>
 				</g:HTMLPanel>

@@ -84,7 +84,6 @@ public class StreamAnalyticsChart extends GChart
      */
     public void addPoint(final double x, final double y)
     {
-        getXAxis().addTick(x);
         getCurve(0).addPoint(x, y);
         getCurve(1).addPoint(x, y);
     }
@@ -113,7 +112,7 @@ public class StreamAnalyticsChart extends GChart
 
         double divBy6 = Math.ceil(yMax / 6);
 
-        for (int i = 1; i <= 6; i++)
+        for (int i = 0; i <= 6; i++)
         {
             getYAxis().addTick(divBy6 * i);
         }

@@ -61,7 +61,7 @@ public class PostCommentPanel extends FlowPanel
     /**
      * Max comment length.
      */
-    private static final int MAXLENGTH = 250;
+    private static final int MAXLENGTH = 1000;
 
     /**
      * Delay before processing onBlur event. This prevents weird things like blocking click events on other elements due

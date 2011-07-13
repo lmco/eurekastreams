@@ -98,6 +98,8 @@ public class GlobalSearchComposite extends FlowPanel
         add(searchTerm);
 
         resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsAutocompleteResults());
+        resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                .globalSearchResultsAutocompleteResults());
 
         add(resultsPanelContainer);
         resultsPanelContainer.add(resultsPanel);
@@ -258,6 +260,14 @@ public class GlobalSearchComposite extends FlowPanel
                             {
                                 eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
                                         generateParams(searchTerm.getText()), false)));
+                            }
+                        });
+
+                        itemContainer.addMouseOverHandler(new MouseOverHandler()
+                        {
+                            public void onMouseOver(final MouseOverEvent arg0)
+                            {
+                                selectItem(itemContainer);
                             }
                         });
 

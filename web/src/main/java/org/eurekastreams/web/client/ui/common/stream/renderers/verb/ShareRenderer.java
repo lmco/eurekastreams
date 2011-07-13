@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Render a share verb activity.
- *
+ * 
  */
 public class ShareRenderer implements VerbRenderer
 {
@@ -61,7 +61,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Setup.
-     *
+     * 
      * @param inObjectRendererDictionary
      *            object dictionary.
      * @param inActivity
@@ -83,7 +83,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow commenting.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowComment()
@@ -93,7 +93,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow sharing.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowShare()
@@ -103,7 +103,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow starring.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowStar()
@@ -113,7 +113,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow liking.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowLike()
@@ -123,17 +123,17 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the avatar.
-     *
+     * 
      * @return the avatar.
      */
     public Widget getAvatar()
     {
-        return new AvatarRenderer().render(activity.getActor());
+        return new AvatarRenderer().render(activity.getOriginalActor());
     }
 
     /**
      * Get the content.
-     *
+     * 
      * @return the content.
      */
     public Widget getContent()
@@ -156,15 +156,13 @@ public class ShareRenderer implements VerbRenderer
     }
 
     /**
-     * Retern a list of appropriate metadata link renderers.
-     *
+     * Return a list of appropriate metadata link renderers.
+     * 
      * @return the list.
      */
     public List<StatefulRenderer> getMetaDataItemRenderers()
     {
-        return Collections.singletonList((StatefulRenderer) new MetadataLinkRenderer("Posted by ", activity
-                .getOriginalActor()
-                .getUniqueIdentifier(), activity.getOriginalActor().getDisplayName()));
+        return Collections.emptyList();
     }
 
     /**
@@ -173,8 +171,11 @@ public class ShareRenderer implements VerbRenderer
     public List<StatefulRenderer> getSourceMetaDataItemRenderers()
     {
         List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
-        renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity.getActor()
-                .getDisplayName()));
+        renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getUniqueIdentifier(), activity
+                .getOriginalActor().getDisplayName()));
+
+        renderers.add(new MetadataLinkRenderer("via", activity.getActor().getUniqueIdentifier(), activity
+                .getActor().getDisplayName()));
 
         StreamEntityDTO stream = activity.getDestinationStream();
         if (stream.getType() == EntityType.RESOURCE)

@@ -55,7 +55,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- *
+ * 
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -104,7 +104,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     *
+     * 
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inGetPersonByIdMapper
@@ -123,7 +123,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *            post executor.
      * @param inDeleteCacheKeyMapper
      *            Delete cache key mapper.
-     *
+     * 
      */
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
             final DomainMapper<Long, PersonModelView> inGetPersonByIdMapper,
@@ -147,7 +147,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -212,8 +212,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
 
             // remove any requests from the user for group membership
-            if (deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId,
-                    followerId)))
+            if (deleteRequestForGroupMembershipMapper
+                    .execute(new RequestForGroupMembershipRequest(targetId, followerId)))
             {
                 // if any requests were present, then user was just approved for access
                 asyncRequests.add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
@@ -231,6 +231,15 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // Posts a message to the user's personal stream unless this is a new pending group
             if (!isPending)
             {
+                String targetStream = "";
+
+                if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusRequest)
+                {
+                    SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext
+                            .getActionContext().getParams();
+                    targetStream = currentRequest.getTargetUniqueId();
+                }
+
                 StreamEntityDTO destination = new StreamEntityDTO();
                 destination.setUniqueIdentifier(followerAccountId);
                 destination.setType(EntityType.PERSON);
@@ -238,14 +247,26 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                 ActivityDTO activity = new ActivityDTO();
                 HashMap<String, String> props = new HashMap<String, String>();
                 activity.setBaseObjectProperties(props);
-                String content = "%EUREKA:ACTORNAME% has joined the " + targetName + " group";
+
+                String content = "";
+
+                if (targetStream.length() > 0)
+                {
+                    content = "%EUREKA:ACTORNAME% has joined the [" + targetName + "](#activity/group/" + targetStream
+                            + ") group";
+                }
+                else
+                {
+                    content = "%EUREKA:ACTORNAME% has joined the " + targetName + " group";
+                }
 
                 activity.getBaseObjectProperties().put("content", content);
                 activity.setDestinationStream(destination);
                 activity.setBaseObjectType(BaseObjectType.NOTE);
                 activity.setVerb(ActivityVerb.POST);
 
-                // Note: create a principal for the follower: we want to post on the follower's stream as the follower.
+                // Note: create a principal for the follower: we want to post on the follower's stream as the
+                // follower.
                 // The current principal will be different from the follower in some cases, namely when following a
                 // private group (the current principal / actor is the coordinator who approved access).
                 postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(
@@ -283,7 +304,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Creates a principal for the given user's id and account id.
-     *
+     * 
      * @param followerId
      *            Person id.
      * @param followerAccountId
