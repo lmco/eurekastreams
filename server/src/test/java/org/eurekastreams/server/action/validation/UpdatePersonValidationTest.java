@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test for person update validation.
- * 
+ *
  */
 public class UpdatePersonValidationTest
 {
@@ -53,12 +53,12 @@ public class UpdatePersonValidationTest
     /**
      * Mocked principal object for test.
      */
-    private Principal principalMock = context.mock(Principal.class);
+    private final Principal principalMock = context.mock(Principal.class);
 
     /**
      * email address validator.
      */
-    private EmailAddressValidator emailValidator = new EmailAddressValidator(".*@.*", "");
+    private final EmailAddressValidator emailValidator = new EmailAddressValidator(".*@.*", "");
 
     /**
      * subject under test.
@@ -72,32 +72,27 @@ public class UpdatePersonValidationTest
     public void setup()
     {
         sut = new UpdatePersonValidation(emailValidator);
-
     }
 
     /**
      * good input test.
      */
     @Test
-    public void testgoodvalidation()
+    public void testGoodValidation()
     {
 
         HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put(PersonModelView.TITILE_KEY, ValidationTestHelper.generateString(Person.MAX_TITLE_LENGTH));
-        formData.put(PersonModelView.PREFERREDNAME_KEY, ValidationTestHelper
-                .generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH));
-        formData.put(PersonModelView.DESCRIPTION_KEY, ValidationTestHelper
-                .generateString(Person.MAX_JOB_DESCRIPTION_LENGTH));
+        formData.put(PersonModelView.PREFERREDNAME_KEY,
+                ValidationTestHelper.generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH));
+        formData.put(PersonModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(Person.MAX_JOB_DESCRIPTION_LENGTH));
         formData.put(PersonModelView.WORKPHONE_KEY,
         // line break
                 ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH));
-        formData.put(PersonModelView.CELLPHONE_KEY,
-        // line break
-                ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH));
-        formData.put(PersonModelView.FAX_KEY, ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH));
         formData.put(PersonModelView.EMAIL_KEY, "email@email.com");
-        formData.put(PersonModelView.SKILLS_KEY, ValidationTestHelper
-                .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH));
+        formData.put(PersonModelView.SKILLS_KEY,
+                ValidationTestHelper.generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH));
 
         final ServiceActionContext currentContext = new ServiceActionContext(formData, principalMock);
 
@@ -115,8 +110,6 @@ public class UpdatePersonValidationTest
         formData.put(PersonModelView.PREFERREDNAME_KEY, "");
         formData.put(PersonModelView.DESCRIPTION_KEY, "");
         formData.put(PersonModelView.WORKPHONE_KEY, "");
-        formData.put(PersonModelView.CELLPHONE_KEY, "");
-        formData.put(PersonModelView.FAX_KEY, "");
         formData.put(PersonModelView.EMAIL_KEY, "");
         formData.put(PersonModelView.SKILLS_KEY, "");
 
@@ -143,16 +136,14 @@ public class UpdatePersonValidationTest
     public void testbadvalidationNofieldsSent()
     {
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
-        final int errorSize = 8;
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);
         try
         {
             sut.validate(currentContext);
-
         }
         catch (ValidationException e)
         {
-            assertEquals(errorSize, e.getErrors().size());
+            assertEquals(6, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(ValidationHelper.UNEXPECTED_DATA_ERROR_MESSAGE));
             throw e;
         }
@@ -167,18 +158,15 @@ public class UpdatePersonValidationTest
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
 
         formdata.put(PersonModelView.TITILE_KEY, ValidationTestHelper.generateString(Person.MAX_TITLE_LENGTH + 1));
-        formdata.put(PersonModelView.PREFERREDNAME_KEY, ValidationTestHelper
-                .generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
-        formdata.put(PersonModelView.DESCRIPTION_KEY, ValidationTestHelper
-                .generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
-        formdata.put(PersonModelView.WORKPHONE_KEY, ValidationTestHelper
-                .generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
-        formdata.put(PersonModelView.CELLPHONE_KEY, ValidationTestHelper
-                .generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
-        formdata.put(PersonModelView.FAX_KEY, ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
+        formdata.put(PersonModelView.PREFERREDNAME_KEY,
+                ValidationTestHelper.generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
+        formdata.put(PersonModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
+        formdata.put(PersonModelView.WORKPHONE_KEY,
+                ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
         formdata.put(PersonModelView.EMAIL_KEY, "notanemail");
-        formdata.put(PersonModelView.SKILLS_KEY, ValidationTestHelper
-                .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
+        formdata.put(PersonModelView.SKILLS_KEY,
+                ValidationTestHelper.generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
 
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);
 
@@ -190,14 +178,12 @@ public class UpdatePersonValidationTest
         catch (ValidationException e)
         {
             context.assertIsSatisfied();
-            assertEquals(8, e.getErrors().size());
+            assertEquals(6, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(Person.EMAIL_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.JOB_DESCRIPTION_MESSAGE));
-            assertTrue(e.getErrors().containsKey(PersonModelView.CELLPHONE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.WORKPHONE_KEY));
-            assertTrue(e.getErrors().containsValue(Person.FAX_NUMBER_MESSAGE));
             assertTrue(e.getErrors().containsValue(PersonModelView.SKILLS_MESSAGE));
 
             throw e;
@@ -213,15 +199,12 @@ public class UpdatePersonValidationTest
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
 
         formdata.put(PersonModelView.TITILE_KEY, ValidationTestHelper.generateString(Person.MAX_TITLE_LENGTH + 1));
-        formdata.put(PersonModelView.PREFERREDNAME_KEY, ValidationTestHelper
-                .generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
-        formdata.put(PersonModelView.DESCRIPTION_KEY, ValidationTestHelper
-                .generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
-        formdata.put(PersonModelView.WORKPHONE_KEY, ValidationTestHelper
-                .generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
-        formdata.put(PersonModelView.CELLPHONE_KEY, ValidationTestHelper
-                .generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
-        formdata.put(PersonModelView.FAX_KEY, ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
+        formdata.put(PersonModelView.PREFERREDNAME_KEY,
+                ValidationTestHelper.generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
+        formdata.put(PersonModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
+        formdata.put(PersonModelView.WORKPHONE_KEY,
+                ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
         formdata.put(PersonModelView.EMAIL_KEY, "notanemail@ss..das");
         formdata.put(PersonModelView.SKILLS_KEY, "");
 
@@ -235,13 +218,11 @@ public class UpdatePersonValidationTest
         catch (ValidationException e)
         {
             context.assertIsSatisfied();
-            assertEquals(7, e.getErrors().size());
+            assertEquals(5, e.getErrors().size());
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.JOB_DESCRIPTION_MESSAGE));
-            assertTrue(e.getErrors().containsKey(PersonModelView.CELLPHONE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.WORKPHONE_KEY));
-            assertTrue(e.getErrors().containsValue(Person.FAX_NUMBER_MESSAGE));
 
             throw e;
         }

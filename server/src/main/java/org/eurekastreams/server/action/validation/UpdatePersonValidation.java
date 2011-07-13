@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
     /**
      * {@link EmailAddressValidator}.
      */
-    private EmailAddressValidator emailValidator;
+    private final EmailAddressValidator emailValidator;
 
     /**
      * @param inEmailValidator
@@ -105,15 +105,6 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
                 true, ve);
         vHelper.stringMeetsRequirments(PersonModelView.WORKPHONE_KEY, workNumber, ve, null,
                 Person.MAX_PHONE_NUMBER_LENGTH, Person.PHONE_NUMBER_MESSAGE, null, null);
-
-        String cellNumber = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.CELLPHONE_KEY,
-                true, ve);
-        vHelper.stringMeetsRequirments(PersonModelView.CELLPHONE_KEY, cellNumber, ve, null,
-                Person.MAX_PHONE_NUMBER_LENGTH, Person.PHONE_NUMBER_MESSAGE, null, null);
-
-        String faxNumber = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.FAX_KEY, true, ve);
-        vHelper.stringMeetsRequirments(PersonModelView.FAX_KEY, faxNumber, ve, null, Person.MAX_PHONE_NUMBER_LENGTH,
-                Person.FAX_NUMBER_MESSAGE, null, null);
 
         String email = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.EMAIL_KEY, true, ve);
         if (vHelper.stringMeetsRequirments(PersonModelView.EMAIL_KEY, email, ve, "Email is required.",
