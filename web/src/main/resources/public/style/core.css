@@ -78,8 +78,7 @@ button {
 	visibility: hidden;
 }
 
-@sprite .error {
-	gwt-image: "redErrorIconSmall";
+.error {
 	color: red;
 	padding-left: 25px;
 	display: inline-block;
