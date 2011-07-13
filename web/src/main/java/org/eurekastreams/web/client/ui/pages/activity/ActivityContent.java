@@ -35,6 +35,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
@@ -42,6 +43,7 @@ import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
@@ -58,6 +60,7 @@ import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SpinnerLabelButton;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
@@ -519,7 +522,7 @@ public class ActivityContent extends Composite
                             errorPanel.add(new Label("Access to this group is restricted"));
                             errorPanel.add(new Label(
                                     "To view this group's stream please request access from its coordinator"));
-                            
+
                             final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
                             {
                                 public void onClick(final ClickEvent inArg0)
@@ -527,9 +530,22 @@ public class ActivityContent extends Composite
                                     GroupMembershipRequestModel.getInstance().insert(group.getShortName());
                                 }
                             });
+
+                            EventBus.getInstance().addObserver(InsertedRequestForGroupMembershipResponseEvent.class,
+                                    new Observer<InsertedRequestForGroupMembershipResponseEvent>()
+                                    {
+                                        public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
+                                        {
+                                            button.disable();
+                                            EventBus.getInstance().notifyObservers(
+                                                    new ShowNotificationEvent(new Notification(
+                                                            "Your request for access has been sent")));
+                                        }
+                                    });
+
                             button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
                             errorPanel.add(button);
-                            
+
                             streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                         }
                     }
