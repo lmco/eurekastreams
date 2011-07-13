@@ -1455,7 +1455,7 @@ body .post-expanded-panel .content-warning {
 	padding-right: 10px;	
 }
 
-.header-bar .searchResultsAutocompleteResults
+.globalSearchResultsAutocompleteResults
 {
 	 position: absolute;
 	 top: 50px;
@@ -2198,7 +2198,7 @@ body .post-to-stream .over-character-limit {
 	font-size: 14px;
 }
 
-.message-metadata-source *
+.message-metadata-source span, .message-metadata-source a
 {
 	margin-right: 5px;
 }
@@ -4287,8 +4287,9 @@ body .extended-view .extended-info {
 	gwt-image: "createGroupBtn";
 }
 
-@sprite .request-group-access {
-	gwt-image: "privateIcon";
+.request-group-access {
+	background-image: "style/images/private-icon.png";
+	background-repeat: no-repeat;
 	padding-left: 20px;
 	clear: both;
 	display: block;
@@ -7710,6 +7711,9 @@ body div.eureka-connect-liked-activity-wrapper {
 
 @if user.agent ie6 ie8 { 
 		
+	.main-contents {
+		top: 0;
+	}		
 	.portal-boundary {
 		margin-top: -59px;
 	}

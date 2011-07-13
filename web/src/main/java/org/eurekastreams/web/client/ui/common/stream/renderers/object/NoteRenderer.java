@@ -70,8 +70,7 @@ public class NoteRenderer implements ObjectRenderer
         activityContent = activityContent.replaceAll("(\r\n|\n|\r)", "<br />");
 
         // first transform links to hyperlinks
-        String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
-
+        String html = jSNIFacade.addMarkDownLinks(activityContent);
         // then transform hashtags to hyperlinks
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
 

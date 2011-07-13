@@ -65,11 +65,13 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+import org.eurekastreams.web.client.ui.pages.requestaccess.RequestAccessPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -162,6 +164,9 @@ public class ActivityContent extends Composite
      */
     @UiField
     ActivityStyle style;
+
+    @UiField
+    DivElement searchContainer;
 
     /**
      * UI element for streams.
@@ -344,6 +349,11 @@ public class ActivityContent extends Composite
     PostBoxComposite postBox;
 
     /**
+     * Current sort keyword.
+     */
+    private String sortKeyword = "";
+
+    /**
      * Stream to URL transformer.
      * */
     private static final StreamToUrlTransformer STREAM_URL_TRANSFORMER = new StreamToUrlTransformer();
@@ -377,7 +387,7 @@ public class ActivityContent extends Composite
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
-        loadStream(Session.getInstance().getUrlViews());
+        handleViewsChanged(Session.getInstance().getUrlViews());
     }
 
     /**
@@ -407,18 +417,6 @@ public class ActivityContent extends Composite
                 }
 
                 streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
-                streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-            }
-        });
-
-        EventBus.getInstance().addObserver(ErrorRetrievingStreamEvent.class, new Observer<ErrorRetrievingStreamEvent>()
-        {
-            public void update(final ErrorRetrievingStreamEvent event)
-            {
-                errorPanel.clear();
-                errorPanel.setVisible(true);
-                activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-                errorPanel.add(new Label(event.getErrorMsg()));
                 streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
             }
         });
@@ -480,6 +478,21 @@ public class ActivityContent extends Composite
                     {
                         PersonModelView person = event.getResponse();
                         currentScopeId = person.getStreamId();
+
+                        if (person.isAccountLocked())
+                        {
+                            currentStream.setScopeType(null);
+                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+
+                            errorPanel.clear();
+                            errorPanel.setVisible(true);
+                            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                            errorPanel.add(new Label("Employee no longer has access to Eureka Streams"));
+                            errorPanel.add(new Label("This employee no longer has access to Eureka Streams.  "
+                                    + "This could be due to a change in assignment "
+                                    + "within the company or due to leaving the company."));
+                            streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                        }
                     }
                 });
 
@@ -496,9 +509,15 @@ public class ActivityContent extends Composite
                             streamOptionsPanel.getStyle().setDisplay(Display.NONE);
                             currentStream.setScopeType(null);
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
-                            ErrorRetrievingStreamEvent errorEvent = new ErrorRetrievingStreamEvent();
-                            errorEvent.setErrorMsg("You do not have permission to view this group");
-                            EventBus.getInstance().notifyObservers(errorEvent);
+
+                            errorPanel.clear();
+                            errorPanel.setVisible(true);
+                            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                            errorPanel.add(new Label("Access to this group is restricted"));
+                            errorPanel.add(new Label(
+                                    "To view this group's stream please request access from its coordinator"));
+                            errorPanel.add(new RequestAccessPanel(group.getShortName()));
+                            streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                         }
                     }
                 });
@@ -515,8 +534,16 @@ public class ActivityContent extends Composite
         {
             public void update(final MessageStreamAppendEvent event)
             {
-                longNewestActivityId = event.getMessage().getId();
-                appendActivity(event.getMessage());
+                if (sortKeyword.equals("date"))
+                {
+                    longNewestActivityId = event.getMessage().getId();
+                    appendActivity(event.getMessage());
+                }
+                else
+                {
+                    recentSort.getElement().dispatchEvent(
+                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                }
 
             }
         });
@@ -538,7 +565,7 @@ public class ActivityContent extends Composite
      */
     protected void handleViewsChanged(final List<String> inViews)
     {
-        loadStream(inViews);
+        loadStream(inViews, Session.getInstance().getParameterValue("search"));
         List<String> views = new ArrayList<String>(inViews);
 
         if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
@@ -719,16 +746,10 @@ public class ActivityContent extends Composite
                         || searchBox.getText().length() < lastSearchLength)
                 {
                     lastSearchLength = searchBox.getText().length();
-                    searchBox.addStyleName(style.activeSearch());
                     loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
 
                     EventBus.getInstance().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
-                }
-
-                if (searchBox.getText().length() == 0)
-                {
-                    searchBox.removeStyleName(style.activeSearch());
                 }
             }
         });
@@ -821,17 +842,6 @@ public class ActivityContent extends Composite
      * 
      * @param views
      *            the stream history link.
-     */
-    private void loadStream(final List<String> views)
-    {
-        loadStream(views, "");
-    }
-
-    /**
-     * Load a stream.
-     * 
-     * @param views
-     *            the stream history link.
      * @param searchTerm
      *            the search term.
      */
@@ -906,9 +916,15 @@ public class ActivityContent extends Composite
             singleActivityMode = true;
         }
 
-        if (searchTerm.length() > 0)
+        if (searchTerm != null && searchTerm.length() > 0)
         {
             currentRequestObj = StreamJsonRequestFactory.setSearchTerm(searchTerm, currentRequestObj);
+            searchContainer.addClassName(style.activeSearch());
+            searchBox.setText(searchTerm);
+        }
+        else
+        {
+            searchContainer.removeClassName(style.activeSearch());
         }
 
         if (!singleActivityMode)
@@ -927,7 +943,7 @@ public class ActivityContent extends Composite
             popularSort.removeStyleName(style.activeSort());
             activeSort.removeStyleName(style.activeSort());
 
-            String sortKeyword = "date";
+            sortKeyword = "date";
 
             if ("recent".equals(sortBy))
             {
