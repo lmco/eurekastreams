@@ -92,13 +92,13 @@
 
 		.stream-option-list div.activeStream
 		{
-		background-image: url(style/images/activeBackground.png);
+		background-image: url(style/images/hightlight.png);
+		background-position: top right;
 		}
 
 		.activeSort
 		{
-		background-image:
-		url(style/images/activeBackground.png);
+		background-image: url(style/images/activeBackground.png);
 		}
 
 		.options-panel
@@ -142,6 +142,11 @@
 		}
 
 		.search-container:hover .search-box
+		{
+			display: block;
+		}
+
+		.search-box.activeSearch
 		{
 			display: block;
 		}

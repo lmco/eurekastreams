@@ -36,7 +36,6 @@ import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
-import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
@@ -74,6 +73,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.json.client.JSONArray;
@@ -148,6 +148,13 @@ public class ActivityContent extends Composite
          * @return the stream name style.
          */
         String streamName();
+
+        /**
+         * Active search style.
+         * 
+         * @return active search style.
+         */
+        String activeSearch();
     }
 
     /**
@@ -388,7 +395,7 @@ public class ActivityContent extends Composite
 
                 EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
                 String actorName = event.getResponse().getDestinationStream().getUniqueId();
-                
+
                 if (actorType.equals(EntityType.GROUP))
                 {
                     GroupModel.getInstance().fetch(actorName, false);
@@ -521,16 +528,6 @@ public class ActivityContent extends Composite
                 CustomStreamModel.getInstance().fetch(null, true);
             }
         });
-
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        // loadStream(Session.getInstance().getUrlViews(),
-                        // searchBox.getText());
-                    }
-                });
     }
 
     /**
@@ -717,11 +714,21 @@ public class ActivityContent extends Composite
 
             public void onKeyUp(final KeyUpEvent event)
             {
-                if (searchBox.getText().length() > 3 && searchBox.getText().length() != lastSearchLength)
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER
+                        || (searchBox.getText().length() > 2 && searchBox.getText().length() != lastSearchLength)
+                        || searchBox.getText().length() < lastSearchLength)
                 {
                     lastSearchLength = searchBox.getText().length();
+                    searchBox.addStyleName(style.activeSearch());
+                    loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+
                     EventBus.getInstance().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
+                }
+
+                if (searchBox.getText().length() == 0)
+                {
+                    searchBox.removeStyleName(style.activeSearch());
                 }
             }
         });
