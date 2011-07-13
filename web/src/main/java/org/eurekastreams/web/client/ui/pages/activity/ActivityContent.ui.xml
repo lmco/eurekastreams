@@ -294,7 +294,6 @@
 		.errorPanel
 		{
 			background-color: #FFE488;
-    		font-weight: bold;
 		 	overflow: hidden;
     		padding: 20px;
 		}
@@ -302,7 +301,12 @@
 		.errorPanel > div:first-child
 		{
     		color: red;
+    		font-weight: bold;
     		font-size: 18px;
+    		background-image: url("style/images/red-error-icon-sm.png");
+    		background-repeat: no-repeat;
+    		padding-bottom: 10px;
+    		padding-left: 30px;
 		}		
 	</ui:style>
 
