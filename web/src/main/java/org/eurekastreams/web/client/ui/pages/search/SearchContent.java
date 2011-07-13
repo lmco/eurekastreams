@@ -130,8 +130,7 @@ public class SearchContent extends FlowPanel
         }
         queryText.setText(query);
 
-        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, boost, 0, 0,
-                "searchpage");
+        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, boost, 0, 0);
 
         if (!initialized)
         {
