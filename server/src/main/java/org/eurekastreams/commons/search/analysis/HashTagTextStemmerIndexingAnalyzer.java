@@ -40,8 +40,13 @@ public class HashTagTextStemmerIndexingAnalyzer extends Analyzer
     private static final String INDEXED_HASHTAG_PREFIX = "bbindexedhashtagprefixbb";
 
     /**
+     * Temporary replacement to preserve underscores in hashtags.
+     */
+    private static final String HASHTAG_UNDERSCORE_REPLACEMENT = "bbunderscorehashtagreplacement";
+
+    /**
      * Tokenize the stream.
-     *
+     * 
      * @param fieldName
      *            the name of the field
      * @param inReader
@@ -55,14 +60,15 @@ public class HashTagTextStemmerIndexingAnalyzer extends Analyzer
         List<String> hashTaggedKeywords = new ArrayList<String>();
 
         // this reader will replace all hashtags with our marker text
-        Reader reader = CharacterReplacementStreamBuilder.buildReplacementReader(inReader, '#', INDEXED_HASHTAG_PREFIX);
+        Reader reader = CharacterReplacementStreamBuilder.buildReplacementReader(inReader, '#',
+                HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT);
+        reader = CharacterReplacementStreamBuilder.buildReplacementReader(reader, '_',
+                HashTagTokenizer.UNDERSCORE_TEMPORARY_REPLACEMENT);
         TokenStream result = new StandardTokenizer(reader);
         result = new StandardFilter(result);
         result = new LowerCaseFilter(result);
 
-        // now remove our hashtag prefixes and store the hashtagged keywords in a set
-        result = new PrefixedTokenRemoverDuplicatorAndExtractorTokenizer(result, INDEXED_HASHTAG_PREFIX, "#",
-                hashTaggedKeywords);
+        result = new HashTagTokenizer(result, hashTaggedKeywords);
         result = new StopFilter(result, StopAnalyzer.ENGLISH_STOP_WORDS);
         result = new EnglishPorterFilterFactory().create(result);
         result = new WordListInjectionTokenizer(hashTaggedKeywords, result);

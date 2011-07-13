@@ -25,15 +25,16 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 /**
- * Test fixture for PrefixedTokenRemoverDuplicatorAndExtractorTokenizer.
+ * Test fixture for HashTagTokenizer.
  */
-public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
+public class HashTagTokenizerTest
 {
     /**
      * Context for mocking.
@@ -64,7 +65,10 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
     @Test
     public void testNextWithPrefixAndMidReplacement() throws IOException
     {
-        runTest("FOO", "#", "FOObar123fooFOOfoo", "bar123foo#foo", "#bar123foo#foo");
+        List<String> expectedList = new ArrayList<String>();
+        expectedList.add("#bar123foo");
+        expectedList.add("foo");
+        runTest("#bar123foo#foo", "bar123foo", expectedList);
     }
 
     /**
@@ -76,7 +80,7 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
     @Test
     public void testNextWithNoReplacementCharacter() throws IOException
     {
-        runTest("FOO", "#", "FObar123fooOOfoo", "FObar123fooOOfoo", null);
+        runTest("FObar123fooOOfoo", "FObar123fooOOfoo", null);
     }
 
     /**
@@ -88,7 +92,9 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
     @Test
     public void testNextWithReplacementButNoPrefix() throws IOException
     {
-        runTest("FOO", "#", "bar123fooFOOfoo", "bar123foo#foo", null);
+        List<String> expectedList = new ArrayList<String>();
+        expectedList.add("foo");
+        runTest("bar123foo#foo", "bar123foo", expectedList);
     }
 
     /**
@@ -100,7 +106,22 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
     @Test
     public void testNextWithPrefixButNoReplacement() throws IOException
     {
-        runTest("FOO", "#", "FOObar123fooFOfoo", "bar123fooFOfoo", "#bar123fooFOfoo");
+        runTest("#bar123fooFOfoo", "bar123fooFOfoo", Collections.singletonList("#bar123fooFOfoo"));
+    }
+
+    /**
+     * Test next() with content that has a prefix but no replacement.
+     * 
+     * @throws IOException
+     *             on error
+     */
+    @Test
+    public void testNextWithUnderscoreReplacment() throws IOException
+    {
+        List<String> expectedExtractedKeywords = new ArrayList<String>();
+        expectedExtractedKeywords.add("#bar123_fooFOfoo");
+        expectedExtractedKeywords.add("fooFOfoo");
+        runTest("#bar123_fooFOfoo", "bar123", expectedExtractedKeywords);
     }
 
     /**
@@ -116,9 +137,7 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
         tokenStream = new TokenStreamTestHelper(tokens);
 
         List<String> extractedKeywords = new ArrayList<String>();
-        PrefixedTokenRemoverDuplicatorAndExtractorTokenizer
-        // line break
-        sut = new PrefixedTokenRemoverDuplicatorAndExtractorTokenizer(tokenStream, "FOO", "#", extractedKeywords);
+        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedKeywords);
         assertNull(null, sut.next(reusableToken));
     }
 
@@ -131,18 +150,16 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
     @Test
     public void testNextWithEmptyThenValidToken() throws IOException
     {
-        final Sequence sequence = context.sequence("sequence-name");
         final Token token1 = new Token("", 0, 0);
-        final Token token2 = new Token("FOOsnutsBoo", 0, "FOOsnutsBoo".length());
+        final Token token2 = new Token(HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT + "snutsBoo", 0,
+                (HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT + "snutsBoo").length());
         List<Token> tokens = new ArrayList<Token>();
         tokens.add(token1);
         tokens.add(token2);
         tokenStream = new TokenStreamTestHelper(tokens);
 
         List<String> extractedKeywords = new ArrayList<String>();
-        PrefixedTokenRemoverDuplicatorAndExtractorTokenizer
-        // line break
-        sut = new PrefixedTokenRemoverDuplicatorAndExtractorTokenizer(tokenStream, "FOO", "#", extractedKeywords);
+        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedKeywords);
 
         assertSame(token2, sut.next(reusableToken));
 
@@ -156,32 +173,30 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
     /**
      * Perform a test with the input parameters.
      * 
-     * @param replaceFrom
-     *            the text to replace from
-     * @param replaceTo
-     *            the text to replace to
      * @param input
      *            the token value
      * @param expectedReturn
      *            the expected token text
-     * @param expectedExtractedKeyword
-     *            the keyword extracted
+     * @param expectedExtractedKeywords
+     *            the keywords extracted
      * @throws IOException
      *             on error
      */
-    private void runTest(final String replaceFrom, final String replaceTo, final String input,
-            final String expectedReturn, final String expectedExtractedKeyword) throws IOException
+    private void runTest(final String input, final String expectedReturn, final List<String> expectedExtractedKeywords)
+            throws IOException
     {
-        final Token returnToken = new Token(input, 0, input.length());
+        String text = input.replace("#", HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT);
+        text = input.replace("_", HashTagTokenizer.UNDERSCORE_TEMPORARY_REPLACEMENT);
+
+        System.out.println("TEXT: " + text);
+
+        final Token returnToken = new Token(text, 0, text.length());
         List<Token> tokens = new ArrayList<Token>();
         tokens.add(returnToken);
         tokenStream = new TokenStreamTestHelper(tokens);
 
         List<String> extractedKeywords = new ArrayList<String>();
-        PrefixedTokenRemoverDuplicatorAndExtractorTokenizer sut
-        // line break
-        = new PrefixedTokenRemoverDuplicatorAndExtractorTokenizer(tokenStream, replaceFrom, replaceTo,
-                extractedKeywords);
+        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedKeywords);
 
         assertSame(returnToken, sut.next(reusableToken));
 
@@ -189,14 +204,17 @@ public class PrefixedTokenRemoverDuplicatorAndExtractorTokenizerTest
         assertEquals(0, returnToken.startOffset());
         assertEquals(expectedReturn.length(), returnToken.endOffset());
 
-        if (expectedExtractedKeyword == null)
+        if (expectedExtractedKeywords == null)
         {
             assertEquals(0, extractedKeywords.size());
         }
         else
         {
-            assertEquals(1, extractedKeywords.size());
-            assertEquals(expectedExtractedKeyword, extractedKeywords.get(0));
+            assertEquals(expectedExtractedKeywords.size(), extractedKeywords.size());
+            for (int i = 0; i < expectedExtractedKeywords.size(); i++)
+            {
+                assertEquals(expectedExtractedKeywords.get(i), extractedKeywords.get(i));
+            }
         }
     }
 }

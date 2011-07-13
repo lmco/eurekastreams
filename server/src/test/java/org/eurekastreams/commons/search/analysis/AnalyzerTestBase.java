@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.commons.search.analysis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
@@ -24,6 +22,7 @@ import java.io.StringReader;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
+import org.junit.Assert;
 
 /**
  * Base class for testing Analyzers.
@@ -32,7 +31,7 @@ public class AnalyzerTestBase
 {
     /**
      * Assert the input Analyzer parses the input String as expected.
-     *
+     * 
      * @param analyzer
      *            the analyzer to test
      * @param input
@@ -48,22 +47,16 @@ public class AnalyzerTestBase
         TokenStream ts = analyzer.tokenStream("dummy", new StringReader(input));
         final Token reusableToken = new Token();
 
-        StringBuffer sb = new StringBuffer();
         Token nextToken;
-        while ((nextToken = ts.next(reusableToken)) != null)
-        {
-            sb.append("\"" + nextToken.term() + "\",");
-        }
+
         ts.close();
         ts = analyzer.tokenStream("dummy", new StringReader(input));
-
-        System.out.println(sb.toString());
 
         for (int i = 0; i < expectedImages.length; i++)
         {
             nextToken = ts.next(reusableToken);
-            assertNotNull(reusableToken);
-            assertEquals(expectedImages[i], nextToken.term());
+            Assert.assertNotNull(reusableToken);
+            Assert.assertEquals(expectedImages[i], nextToken.term());
         }
         assertNull(ts.next(reusableToken));
         ts.close();

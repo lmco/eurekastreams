@@ -33,7 +33,7 @@ public class HashTagExtractorTest
     /**
      * System under test.
      */
-    private HashTagExtractor sut = new HashTagExtractor();
+    private final HashTagExtractor sut = new HashTagExtractor();
 
     /**
      * Test extract returns null when no hashtags.
@@ -153,7 +153,7 @@ public class HashTagExtractorTest
     }
 
     /**
-     * Test extract finds hashtag in parents.
+     * Test extract finds hashtag in parens.
      */
     @Test
     public void testExtractFindsHashtagInParens()
@@ -164,13 +164,48 @@ public class HashTagExtractorTest
     }
 
     /**
-     * Test extract finds hashtag in parents.
+     * Test extract finds hashtag in content with period at the end of hashtag.
      */
     @Test
     public void testExtractFindsHashtagWithEndingPeriod()
     {
         String content = "test content #foo.";
         Substring expectedResult = new Substring(9 + 4, 4, "#foo"); // 13
+        assertTrue(IsEqualInternally.areEqualInternally(expectedResult, sut.extract(content, 0)));
+    }
+
+    /**
+     * Test extract finds hashtag in content with a hash in it.
+     */
+    @Test
+    public void testExtractFindsHashtagWithHash()
+    {
+        String content = "#foo#snuts.";
+        Substring expectedResult = new Substring(0, 4, "#foo");
+        assertTrue(IsEqualInternally.areEqualInternally(expectedResult, sut.extract(content, 0)));
+        assertNull(sut.extract(content, 1));
+    }
+
+    /**
+     * Test extract finds hashtag in content with a hash in it.
+     */
+    @Test
+    public void testExtractFindsHashtagWithHashAndUnderscore()
+    {
+        String content = "#foo_#snuts.";
+        Substring expectedResult = new Substring(0, 5, "#foo_");
+        assertTrue(IsEqualInternally.areEqualInternally(expectedResult, sut.extract(content, 0)));
+        assertNull(sut.extract(content, 1));
+    }
+
+    /**
+     * Test extract finds hashtag with underscore.
+     */
+    @Test
+    public void testExtractFindsHashtagWithUnderscore()
+    {
+        String content = "test content #foo_bar.";
+        Substring expectedResult = new Substring(9 + 4, 8, "#foo_bar"); // 13
         assertTrue(IsEqualInternally.areEqualInternally(expectedResult, sut.extract(content, 0)));
     }
 

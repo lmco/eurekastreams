@@ -46,7 +46,7 @@ public class HashtagLinkTransformerTest
     /**
      * System under test.
      */
-    private HashtagLinkTransformer sut = new HashtagLinkTransformer(linkBuilder);
+    private final HashtagLinkTransformer sut = new HashtagLinkTransformer(linkBuilder);
 
     /**
      * Test.
@@ -252,12 +252,12 @@ public class HashtagLinkTransformerTest
     public void testWithHashTag7()
     {
         String input = "hello there, ##heynow's up?";
-        String expected = "hello there, <a href=\"FOOBAR-heynow\">##heynow</a>'s up?";
+        String expected = "hello there, #<a href=\"FOOBAR-heynow\">#heynow</a>'s up?";
 
         context.checking(new Expectations()
         {
             {
-                oneOf(linkBuilder).buildHashtagSearchLink("##heynow", null);
+                oneOf(linkBuilder).buildHashtagSearchLink("#heynow", null);
                 will(returnValue("FOOBAR-heynow"));
             }
         });
@@ -353,12 +353,12 @@ public class HashtagLinkTransformerTest
     public void testWithHashTag12()
     {
         String input = "Here goes... #woot#woot!!";
-        String expected = "Here goes... <a href=\"heynow\">#woot#woot</a>!!";
+        String expected = "Here goes... <a href=\"heynow\">#woot</a>#woot!!";
 
         context.checking(new Expectations()
         {
             {
-                oneOf(linkBuilder).buildHashtagSearchLink("#woot#woot", null);
+                oneOf(linkBuilder).buildHashtagSearchLink("#woot", null);
                 will(returnValue("heynow"));
             }
         });
