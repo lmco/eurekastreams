@@ -1,156 +1,159 @@
-<ui:UiBinder 
-	xmlns:ui='urn:ui:com.google.gwt.uibinder' 
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-<ui:image field="activeBackground" src="style/images/activeBackground.png" repeatStyle="Horizontal" />
-<ui:image field="markAllReadImage" src="style/images/notifications/MarkAsRead.png" />
-<ui:image field="markAllReadHoverImage" src="style/images/notifications/MarkAsReadHover.png" />
-<ui:image field="settingsImage" src="style/images/notifications/settings.png" />
-<ui:image field="settingsHoverImage" src="style/images/notifications/settingsHover.png" />
-<ui:image field="sourceShadowImage" src="style/images/notifications/shadow.png" repeatStyle="Vertical" />
+	<ui:image field="activeBackground" src="style/images/activeBackground.png"
+		repeatStyle="Horizontal" />
+	<ui:image field="markAllReadImage" src="style/images/notifications/MarkAsRead.png" />
+	<ui:image field="markAllReadHoverImage"
+		src="style/images/notifications/MarkAsReadHover.png" />
+	<ui:image field="settingsImage" src="style/images/notifications/settings.png" />
+	<ui:image field="settingsHoverImage" src="style/images/notifications/settingsHover.png" />
+	<ui:image field="sourceShadowImage" src="style/images/notifications/shadow.png"
+		repeatStyle="Vertical" />
 
-<ui:style type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
-.modal
-{
-}
-.main
-{
-	width: 700px;
-	height: 400px;
-}
-.source-filters-scroll-panel
-{
-	float: left;
-	height: 100%;
-	width: 250px;
-}
-.right-side
-{
-	margin-left: 250px;
-	border-left: 1px solid #666;
-}
-.controls-bar
-{
-	height: 33px;
-	border-bottom: 1px solid #666;
-}
-@sprite .mark-all-read
-{
-	gwt-image: "markAllReadImage";
-	float: right;
-	margin-right: 10px;
-	margin-top: 8px;
-	cursor: pointer;
-}
-@sprite .mark-all-read:hover
-{
-	gwt-image: "markAllReadHoverImage";
-}
-@sprite .settings-button
-{
-	gwt-image: "settingsImage";
-	float: right;
-	margin-right: 10px;
-	margin-top: 8px;
-	cursor: pointer;
-}
-@sprite .settings-button:hover
-{
-	gwt-image: "settingsHoverImage";
-}
-.no-notifications,
-.notification-list-scroll-panel
-{
-	height: 363px;
-}
-.no-notifications
-{
-	line-height: 363px;
-	text-align: center;
-}
-
-.source-filter
-{
-	height: 33px;
-	line-height: 33px;
-	padding-left: 10px;
-	padding-right: 10px;
-	border-bottom: 1px solid #CCC;
-}
-@sprite .filter-selected
-{
-	gwt-image: "activeBackground";
-}
-.source-filter-indented
-{
-	padding-left: 25px;
-}
-@sprite .shadow-panel
-{
-	gwt-image: "sourceShadowImage";
-	float: right;
-}
-
-.read-filter-options
-{
-}
-.read-filter-options > div
-{
-	cursor: pointer;
-	height: 31px;
-	line-height: 31px;
-	padding-left: 10px;
-	padding-right: 10px;
-	float: left;
-	margin: 1px;
-}
-
-.wait-spinner
-{
-	margin-top: 166px;
-}
-
-@if user.agent ie6 ie8 {
-	.modal
-	{
-		width: 700px;
-	}
-	.no-notifications,
-	.notification-list-scroll-panel
-	{
-		height: 363px;
-	}
-}
-</ui:style>
+	<ui:style
+		type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationsDialogContent.LocalStyle">
+			.modal {
+				
+			}
+			
+			.main {
+				width: 700px;
+				height: 400px;
+			}
+			
+			.source-filters-scroll-panel {
+				float: left;
+				height: 100%;
+				width: 250px;
+			}
+			
+			.right-side {
+				margin-left: 250px;
+				border-left: 1px solid #666;
+			}
+			
+			.controls-bar {
+				height: 33px;
+				border-bottom: 1px solid #666;
+			}
+			
+			@sprite .mark-all-read {
+				gwt-image: "markAllReadImage";
+				float: right;
+				margin-right: 10px;
+				margin-top: 8px;
+				cursor: pointer;
+			}
+			
+			@sprite .mark-all-read:hover {
+				gwt-image: "markAllReadHoverImage";
+			}
+			
+			@sprite .settings-button {
+				gwt-image: "settingsImage";
+				float: right;
+				margin-right: 10px;
+				margin-top: 8px;
+				cursor: pointer;
+			}
+			
+			@sprite .settings-button:hover {
+				gwt-image: "settingsHoverImage";
+			}
+			
+			.no-notifications,.notification-list-scroll-panel {
+				height: 363px;
+			}
+			
+			.no-notifications {
+				line-height: 363px;
+				text-align: center;
+			}
+			
+			.source-filter {
+				height: 33px;
+				line-height: 33px;
+				padding-left: 10px;
+				padding-right: 10px;
+				border-bottom: 1px solid #CCC;
+			}
+			
+			@sprite .filter-selected {
+				gwt-image: "activeBackground";
+			}
+			
+			.source-filter-indented {
+				padding-left: 25px;
+			}
+			
+			@sprite .shadow-panel {
+				gwt-image: "sourceShadowImage";
+				float: right;
+			}
+			
+			.read-filter-options {
+				
+			}
+			
+			.read-filter-options>div {
+				cursor: pointer;
+				height: 31px;
+				line-height: 31px;
+				padding-left: 10px;
+				padding-right: 10px;
+				float: left;
+				margin: 1px;
+			}
+			
+			.wait-spinner {
+				margin-top: 166px;
+			}
+			
+			@if user.agent ie6 ie8 {
+				.modal {
+					width: 700px;
+				}
+				.no-notifications,.notification-list-scroll-panel {
+					height: 363px;
+				}
+			}
+		</ui:style>
 
 
-<ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+	<ui:with field="coreCss"
+		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
 
-<g:HTMLPanel addStyleNames="{style.main}">
-	<g:ScrollPanel addStyleNames="{style.source-filters-scroll-panel}">
-		<g:FlowPanel ui:field="sourceFiltersPanel">
-			<g:SimplePanel addStyleNames="{style.shadow-panel}" ui:field="shadowPanel" />
-		</g:FlowPanel>
-	</g:ScrollPanel>
-	
-	<div class="{style.right-side}">
-		<div class="{style.controls-bar}">
-			<!-- float these right:  so reverse order and put first -->
-			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" title="Settings" />
-			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" title="Mark All As Read" />
-
-			<div class="{style.read-filter-options}">
-				<g:Label addStyleNames="{style.filter-selected}" ui:field="unreadFilterUi">Unread</g:Label>
-				<g:Label ui:field="allFilterUi">All</g:Label>
-			</div>
-		</div>
-		<div class="{style.no-notifications}" style="display: none;" ui:field="noNotificationsUi">No notifications</div>
-		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">
-			<g:FlowPanel ui:field="notificationListPanel">
-				<g:Label addStyleNames="{style.wait-spinner} {coreCss.waitSpinner}" />
+	<g:HTMLPanel addStyleNames="{style.main}">
+		<g:ScrollPanel addStyleNames="{style.source-filters-scroll-panel}">
+			<g:FlowPanel ui:field="sourceFiltersPanel">
+				<g:SimplePanel addStyleNames="{style.shadow-panel}"
+					ui:field="shadowPanel" />
 			</g:FlowPanel>
 		</g:ScrollPanel>
-	</div>
-</g:HTMLPanel>
-	
+
+		<div class="{style.right-side}">
+			<div class="{style.controls-bar}">
+				<!-- float these right:  so reverse order and put first -->
+				<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton"
+					title="Settings" />
+				<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton"
+					title="Mark All As Read" />
+					
+				<div class="{style.read-filter-options}">
+					<g:Label addStyleNames="{style.filter-selected}" ui:field="unreadFilterUi">Unread</g:Label>
+					<g:Label ui:field="allFilterUi">All</g:Label>
+				</div>
+			</div>
+			<div class="{style.no-notifications}" style="display: none;"
+				ui:field="noNotificationsUi">No notifications</div>
+			<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}"
+				ui:field="notificationListScrollPanel">
+				<g:FlowPanel ui:field="notificationListPanel">
+					<g:Label addStyleNames="{style.wait-spinner} {coreCss.waitSpinner}" />
+				</g:FlowPanel>
+			</g:ScrollPanel>
+		</div>
+	</g:HTMLPanel>
+
 </ui:UiBinder>

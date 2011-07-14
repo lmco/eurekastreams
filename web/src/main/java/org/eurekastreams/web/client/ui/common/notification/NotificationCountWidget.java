@@ -34,12 +34,9 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class NotificationCountWidget extends FocusPanel
 {
-    /** Additional style for when there are unread notifications. */
-    private static final String UNREAD_STYLE = "notif-count-unread";
-
     /** The label. */
     private final Label countLabel = new Label();
-    
+
     /**
      * The container panel.
      */
@@ -54,11 +51,13 @@ public class NotificationCountWidget extends FocusPanel
         container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountContainer());
         add(container);
         
-        countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());        
-        
+        FlowPanel countLabelContainer = new FlowPanel();
+
+        countLabelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());
+        countLabelContainer.add(countLabel);
+
         // -- UI setup --
-        container.add(new Label("Notifications"));
-        container.add(countLabel);
+        container.add(countLabelContainer);
 
         // -- MVC setup --
 
@@ -70,8 +69,8 @@ public class NotificationCountWidget extends FocusPanel
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(NotificationCountsAvailableEvent.class,
-                new Observer<NotificationCountsAvailableEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(NotificationCountsAvailableEvent.class, new Observer<NotificationCountsAvailableEvent>()
                 {
                     public void update(final NotificationCountsAvailableEvent ev)
                     {
@@ -79,14 +78,25 @@ public class NotificationCountWidget extends FocusPanel
                         countLabel.setVisible(total > 0);
                         if (total > 0)
                         {
-                            String text = (ev.getHighPriorityCount() > 0 ? total + "!" : Integer.toString(total));
+                            if (ev.getHighPriorityCount() > 0)
+                            {
+                                countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                        .notifCountHighPriority());
+                            }
+                            else
+                            {
+                                countLabel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                        .notifCountHighPriority());
+                            }
+
+                            String text = Integer.toString(total);
                             countLabel.setText(text);
-                            countLabel.addStyleName(UNREAD_STYLE);
                         }
                         else
                         {
                             countLabel.setText("");
-                            countLabel.removeStyleName(UNREAD_STYLE);
+                            countLabel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                    .notifCountHighPriority());
                         }
                     }
                 });
@@ -97,8 +107,8 @@ public class NotificationCountWidget extends FocusPanel
      */
     public void init()
     {
-        Session.getInstance().getTimer().addTimerJob("getNotificationCountTimerJob", 1,
-                NotificationCountModel.getInstance(), null, true);
+        Session.getInstance().getTimer()
+                .addTimerJob("getNotificationCountTimerJob", 1, NotificationCountModel.getInstance(), null, true);
 
         NotificationCountModel.getInstance().fetch(null, true);
     }

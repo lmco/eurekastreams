@@ -17,11 +17,7 @@
 		    </bean>
 	    </property>
 	  </bean>
-
-	<bean class="org.apache.activemq.ActiveMQConnectionFactory" lazy-init="false">
-        <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
-	</bean>
-
+	  
     <!-- the creation of the queue object to submit async. tasks to -->
     <bean id="eurekaActivityQueue" class="org.apache.activemq.command.ActiveMQQueue" lazy-init="false">
         <constructor-arg value="${eureka.queue.activity.queuename}" />

@@ -130,7 +130,7 @@ public class HeaderComposite extends Composite
         Hyperlink settingsLink = new Hyperlink("Settings", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.SETTINGS)));
         settingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
-        Hyperlink myProfileLink = new Hyperlink("My Profile", Session.getInstance().generateUrl(
+        Hyperlink myProfileLink = new Hyperlink("My Stream", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PEOPLE, viewer.getAccountId())));
         myProfileLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
@@ -142,12 +142,6 @@ public class HeaderComposite extends Composite
         activityLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityHeaderButton());
         directoryLinkPanel.add(directoryLink);
         directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverHeaderButton());
-
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
-        {
-            settingsLinkPanel.add(settingsLink);
-            settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
-        }
 
         linkMap.put(Page.START, startPageLink);
         linkMap.put(Page.ACTIVITY, activityLink);
@@ -171,13 +165,19 @@ public class HeaderComposite extends Composite
         mainNav.add(directoryLinkPanel);
         mainNav.add(galleryLinkPanel);
         notif.init();
-        userNav.add(notif);
 
         FlowPanel myProfileLinkPanel = new FlowPanel();
         myProfileLinkPanel.add(myProfileLink);
         userNav.add(myProfileLinkPanel);
 
-        userNav.add(settingsLinkPanel);
+        userNav.add(notif, StaticResourceBundle.INSTANCE.coreCss().notifHeader());
+        
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            settingsLinkPanel.add(settingsLink);
+            settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
+            userNav.add(settingsLinkPanel);
+        }
 
         if (Session.getInstance().getAuthenticationType() == AuthenticationType.FORM)
         {

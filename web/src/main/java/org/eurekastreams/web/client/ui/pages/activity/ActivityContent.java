@@ -59,6 +59,8 @@ import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SpinnerLabelButton;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
@@ -160,6 +162,20 @@ public class ActivityContent extends Composite
          * @return active search style.
          */
         String activeSearch();
+
+        /**
+         * Current user link style.
+         * 
+         * @return current user stream style.
+         */
+        String currentUserStreamLink();
+
+        /**
+         * Small avatar.
+         * 
+         * @return small avatar style.
+         */
+        String smallAvatar();
     }
 
     /**
@@ -355,6 +371,12 @@ public class ActivityContent extends Composite
     PostBoxComposite postBox;
 
     /**
+     * User panel.
+     */
+    @UiField
+    FlowPanel userPanel;
+
+    /**
      * Current sort keyword.
      */
     private String sortKeyword = "";
@@ -382,11 +404,33 @@ public class ActivityContent extends Composite
         addObservers();
         setupStreamsAndBookmarks();
 
-        followingFilterPanel = createPanel("Following", "following", "style/images/customStream.png", null, "", "");
-        everyoneFilterPanel = createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", "");
+        followingFilterPanel = createPanel("Following", "following", "style/images/customStream.png", null, "", "",
+                false);
+        everyoneFilterPanel = createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", "", false);
 
         defaultList.add(followingFilterPanel);
         defaultList.add(everyoneFilterPanel);
+
+        final PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
+
+        AvatarLinkPanel userAvatar = new AvatarLinkPanel(currentPerson.getEntityType(), currentPerson.getAccountId(),
+                currentPerson.getEntityId(), currentPerson.getAvatarId(), Size.Small, currentPerson.getDisplayName());
+        userPanel.add(userAvatar);
+
+        FlowPanel userLinkPanel = new FlowPanel();
+
+        String nameUrl = Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.PEOPLE, currentPerson.getAccountId()));
+        Hyperlink name = new Hyperlink(currentPerson.getDisplayName(), nameUrl);
+        name.addStyleName(style.currentUserStreamLink());
+        userLinkPanel.add(name);
+
+        String confUrl = Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.PERSONAL_SETTINGS, currentPerson.getAccountId()));
+        Hyperlink conf = new Hyperlink("Configure My Stream", confUrl);
+        userLinkPanel.add(conf);
+
+        userPanel.add(userLinkPanel);
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
@@ -604,14 +648,16 @@ public class ActivityContent extends Composite
         }
 
         views.set(views.size() - 1, "recent");
-        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
-
-        views.set(views.size() - 1, "popular");
-        popularSort
+        recentSort
                 .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
+        views.set(views.size() - 1, "popular");
+        popularSort.setTargetHistoryToken(Session.getInstance()
+                .generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+
         views.set(views.size() - 1, "active");
-        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        activeSort
+                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
     }
 
@@ -631,14 +677,6 @@ public class ActivityContent extends Composite
             {
                 bookmarkList.clear();
                 bookmarksWidgetMap.clear();
-
-                String personUrl = "person/" + Session.getInstance().getCurrentPerson().getAccountId();
-                Panel userBookmark = createPanel(Session.getInstance().getCurrentPerson().getDisplayName(), personUrl,
-                        personUrlGen.getSmallAvatarUrl(Session.getInstance().getCurrentPerson().getEntityId(), Session
-                                .getInstance().getCurrentPerson().getAvatarId()), null, "", "");
-
-                bookmarkList.add(userBookmark);
-                bookmarksWidgetMap.put(personUrl, userBookmark);
 
                 for (final StreamFilter filter : event.getResponse())
                 {
@@ -689,7 +727,7 @@ public class ActivityContent extends Composite
 
                                 event.stopPropagation();
                             }
-                        }, style.deleteBookmark(), "");
+                        }, style.deleteBookmark(), "", true);
 
                         bookmarkList.add(bookmarkFilter);
                         bookmarksWidgetMap.put(bookmarkUrl, bookmarkFilter);
@@ -708,7 +746,7 @@ public class ActivityContent extends Composite
 
                         Panel savedBy = createPanel("My Saved Items", "custom/0/" + "{\"query\":{\"savedBy\":\""
                                 + Session.getInstance().getCurrentPerson().getAccountId() + "\"}}",
-                                "style/images/customStream.png", null, "", "");
+                                "style/images/customStream.png", null, "", "", false);
 
                         filterList.add(savedBy);
                         customStreamWidgetMap.put(0L, savedBy);
@@ -716,18 +754,20 @@ public class ActivityContent extends Composite
                         Panel likedBy = createPanel("My Liked Items", "custom/1/"
                                 + "{\"query\":{\"likedBy\":[{\"type\":\"PERSON\", \"name\":\""
                                 + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}",
-                                "style/images/customStream.png", null, "", "");
+                                "style/images/customStream.png", null, "", "", false);
 
                         filterList.add(likedBy);
                         customStreamWidgetMap.put(1L, likedBy);
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            Panel filterPanel = createPanel(filter.getName(), "custom/"
-                                    + filter.getId()
-                                    + "/"
-                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                            Session.getInstance().getCurrentPerson().getAccountId()),
+                            Panel filterPanel = createPanel(
+                                    filter.getName(),
+                                    "custom/"
+                                            + filter.getId()
+                                            + "/"
+                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                                    Session.getInstance().getCurrentPerson().getAccountId()),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 
@@ -736,7 +776,7 @@ public class ActivityContent extends Composite
                                             Dialog.showCentered(new CustomStreamDialogContent((Stream) filter));
                                             event.stopPropagation();
                                         }
-                                    }, style.editCustomStream(), "edit");
+                                    }, style.editCustomStream(), "edit", false);
 
                             filterList.add(filterPanel);
                             customStreamWidgetMap.put(filter.getId(), filterPanel);
@@ -1057,10 +1097,13 @@ public class ActivityContent extends Composite
      *            the text for the modify button.
      * @param imgUrl
      *            the img url.
+     * @param isAvatar
+     *            if the image is an avatar.
      * @return the LI.
      */
     private Panel createPanel(final String name, final String view, final String imgUrl,
-            final ClickHandler modifyClickHandler, final String modifyClass, final String modifyText)
+            final ClickHandler modifyClickHandler, final String modifyClass, final String modifyText,
+            final boolean isAvatar)
     {
         FocusPanel panel = new FocusPanel();
         panel.addStyleName(style.streamOptionChild());
@@ -1074,7 +1117,13 @@ public class ActivityContent extends Composite
 
         FlowPanel innerPanel = new FlowPanel();
 
-        innerPanel.add(new Image(imgUrl));
+        Image streamImage = new Image(imgUrl);
+        if (isAvatar)
+        {
+            streamImage.addStyleName(style.smallAvatar());
+        }
+
+        innerPanel.add(streamImage);
 
         Label streamName = new Label(name);
         streamName.addStyleName(style.streamName());

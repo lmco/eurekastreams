@@ -1382,4 +1382,8 @@ public interface CoreCss extends CssResource
     String singleActivityPanel();
 
     String globalSearchResultsAutocompleteResults();
+
+    String notifCountHighPriority();
+
+    String notifHeader();
 }
