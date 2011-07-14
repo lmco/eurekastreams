@@ -221,8 +221,6 @@ public class NotificationSettingsWidget extends Composite
     private Grid buildNotificationFilterGrid(final Map<String, String> notifiers,
             final Map<String, String> categories, final Collection<NotificationFilterPreferenceDTO> filters)
     {
-        // Grid grid = new Grid(1 + categories.size(), 1 + notifiers.size());
-        // grid.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifGrid());
         Grid grid = settingsGrid;
         grid.resize(1 + categories.size(), 1 + notifiers.size());
 
