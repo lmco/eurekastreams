@@ -164,12 +164,16 @@ public class ActivityContent extends Composite
         String activeSearch();
 
         /**
-         * Curren user link style.
+         * Current user link style.
+         * 
+         * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
+         * 
+         * @return small avatar style.
          */
         String smallAvatar();
     }
@@ -400,7 +404,8 @@ public class ActivityContent extends Composite
         addObservers();
         setupStreamsAndBookmarks();
 
-        followingFilterPanel = createPanel("Following", "following", "style/images/customStream.png", null, "", "", false);
+        followingFilterPanel = createPanel("Following", "following", "style/images/customStream.png", null, "", "",
+                false);
         everyoneFilterPanel = createPanel("Everyone", "everyone", "style/images/customStream.png", null, "", "", false);
 
         defaultList.add(followingFilterPanel);

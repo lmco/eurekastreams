@@ -162,6 +162,7 @@
 			@sprite .search-box-button {
 				gwt-image: "searchNormal";
 				float: right;
+				border-left: 1px solid #BDBDBD;
 			}
 			
 			@sprite .subscribe-box {
@@ -170,6 +171,7 @@
 				position: relative;
 				overflow: visible;
 				margin-left: 2px;
+				border-left: 1px solid #BDBDBD;
 			}
 			
 			@sprite .subscribe-box:hover {
