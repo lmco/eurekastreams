@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,7 +35,7 @@ import org.junit.Test;
 
 /**
  * This class contains the test suite for the {@link UpdatePersonExecution} class.
- * 
+ *
  */
 public class UpdatePersonExecutionTest
 {
@@ -79,16 +80,6 @@ public class UpdatePersonExecutionTest
     private final Principal principalMock = context.mock(Principal.class);
 
     /**
-     * Mocked instance of the {@link PrincipalActionContext}.
-     */
-    private final PrincipalActionContext principalActionContextMock = context.mock(PrincipalActionContext.class);
-
-    /**
-     * Mocked instance of the {@link TaskHandlerActionContext}.
-     */
-    private final TaskHandlerActionContext taskHandlerActionContextMock = context.mock(TaskHandlerActionContext.class);
-
-    /**
      * Test fields to use in this suite.
      */
     private HashMap<String, Serializable> fields;
@@ -113,12 +104,6 @@ public class UpdatePersonExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(taskHandlerActionContextMock).getActionContext();
-                will(returnValue(principalActionContextMock));
-
-                oneOf(principalActionContextMock).getParams();
-                will(returnValue(fields));
-
                 oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personMock));
 
@@ -130,7 +115,7 @@ public class UpdatePersonExecutionTest
             }
         });
 
-        sut.execute(taskHandlerActionContextMock);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(fields, principalMock));
         context.assertIsSatisfied();
     }
 
@@ -141,17 +126,10 @@ public class UpdatePersonExecutionTest
     public void testExecuteWithSkills()
     {
         fields.put("skills", "stuff, things");
-        fields.put("isAdministrator", true); // make sure this is pulled out
 
         context.checking(new Expectations()
         {
             {
-                oneOf(taskHandlerActionContextMock).getActionContext();
-                will(returnValue(principalActionContextMock));
-
-                oneOf(principalActionContextMock).getParams();
-                will(returnValue(fields));
-
                 oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personMock));
 
@@ -163,9 +141,8 @@ public class UpdatePersonExecutionTest
             }
         });
 
-        sut.execute(taskHandlerActionContextMock);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(fields, principalMock));
         context.assertIsSatisfied();
-        Assert.assertFalse(fields.containsKey("isAdministrator"));
     }
 
     /**
@@ -179,12 +156,6 @@ public class UpdatePersonExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(taskHandlerActionContextMock).getActionContext();
-                will(returnValue(principalActionContextMock));
-
-                oneOf(principalActionContextMock).getParams();
-                will(returnValue(fields));
-
                 oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personMock));
 
@@ -196,7 +167,41 @@ public class UpdatePersonExecutionTest
             }
         });
 
-        sut.execute(taskHandlerActionContextMock);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(fields, principalMock));
         context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests that non-client-settable fields are not passed to the DAO.
+     */
+    @Test
+    public void testExecuteRemoveBlockedFields()
+    {
+        fields.put("skills", "");
+
+        // make sure these are pulled out
+        fields.put("isAdministrator", true);
+        fields.put(PersonModelView.CELLPHONE_KEY, "222-333-4444");
+        fields.put(PersonModelView.FAX_KEY, "999-999-9999");
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(persistResourceExecutionMock).execute(with(any(TaskHandlerActionContext.class)));
+                will(returnValue(personMock));
+
+                oneOf(personMock).getOpenSocialId();
+                will(returnValue("53"));
+                oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
+
+                oneOf(personMapperMock).flush();
+            }
+        });
+
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(fields, principalMock));
+        context.assertIsSatisfied();
+        Assert.assertFalse(fields.containsKey("isAdministrator"));
+        Assert.assertFalse(fields.containsKey(PersonModelView.CELLPHONE_KEY));
+        Assert.assertFalse(fields.containsKey(PersonModelView.FAX_KEY));
     }
 }

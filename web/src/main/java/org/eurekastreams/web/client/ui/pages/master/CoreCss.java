@@ -24,11 +24,8 @@ public interface CoreCss extends CssResource
     @ClassName("ac-input-wrapper")
     String acInputWrapper();
 
-    @ClassName("access-denied")
-    String accessDenied();
-
     String saveChangesButton();
-    
+
     @ClassName("access-groups")
     String accessGroups();
 
@@ -49,26 +46,14 @@ public interface CoreCss extends CssResource
     @ClassName("activity-header-button")
     String activityHeaderButton();
 
-    @ClassName("add-a-delegate")
-    String addADelegate();
-
     @ClassName("add-as-gadget")
     String addAsGadget();
-
-    @ClassName("add-button")
-    String addButton();
 
     @ClassName("add-button-submit")
     String addButtonSubmit();
 
-    @ClassName("add-from-gallery-text")
-    String addFromGalleryText();
-
     @ClassName("add-gadget")
     String addGadget();
-
-    @ClassName("add-new-background")
-    String addNewBackground();
 
     @ClassName("add-theme")
     String addTheme();
@@ -106,8 +91,6 @@ public interface CoreCss extends CssResource
     @ClassName("attach-link-title-entry")
     String attachLinkTitleEntry();
 
-    String authenticated();
-
     @ClassName("auto-complete")
     String autoComplete();
 
@@ -142,15 +125,10 @@ public interface CoreCss extends CssResource
     @ClassName("banner-container")
     String bannerContainer();
 
-    @ClassName("banner-upload-form-element")
-    String bannerUploadFormElement();
-
     String barred();
 
     @ClassName("basic-textbox")
     String basicTextbox();
-
-    String biography();
 
     String body();
 
@@ -175,65 +153,18 @@ public interface CoreCss extends CssResource
     @ClassName("cancel-button")
     String cancelButton();
 
-    @ClassName("carousel-categories")
-    String carouselCategories();
-
-    @ClassName("carousel-clip-region")
-    String carouselClipRegion();
-
-    @ClassName("carousel-component")
-    String carouselComponent();
-
-    @ClassName("carousel-sort")
-    String carouselSort();
-
-    String center();
-
     @ClassName("characters-remaining")
     String charactersRemaining();
 
     @ClassName("check-box-label")
     String checkBoxLabel();
 
-    @ClassName("checklist-bottom-bar")
-    String checklistBottomBar();
-
-    @ClassName("checklist-complete-sen")
-    String checklistCompleteSen();
-
-    @ClassName("checklist-desc")
-    String checklistDesc();
-
-    @ClassName("checklist-done")
-    String checklistDone();
-
-    @ClassName("checklist-not-done")
-    String checklistNotDone();
-
-    @ClassName("checklist-progress-bar")
-    String checklistProgressBar();
-
-    @ClassName("checklist-task")
-    String checklistTask();
-
-    @ClassName("checklist-task-desc")
-    String checklistTaskDesc();
-
     String clear();
 
     String close();
 
-    @ClassName("close-button")
-    String closeButton();
-
     @ClassName("close-notification")
     String closeNotification();
-
-    @ClassName("colored-drop-zone")
-    String coloredDropZone();
-
-    @ClassName("comment-metadata")
-    String commentMetadata();
 
     @ClassName("comment-moderation")
     String commentModeration();
@@ -244,28 +175,11 @@ public interface CoreCss extends CssResource
     @ClassName("configure-tab")
     String configureTab();
 
-    @ClassName("confirm-button")
-    String confirmButton();
-
     @ClassName("confirm-checkbox")
     String confirmCheckbox();
 
-    String confirmed();
-
     @ClassName("connect-widget-comment")
     String connectCommentWidget();
-
-    @ClassName("connection-button-add")
-    String connectionButtonAdd();
-
-    @ClassName("connection-button-delete")
-    String connectionButtonDelete();
-
-    @ClassName("connection-button-done")
-    String connectionButtonDone();
-
-    @ClassName("connection-button-edit")
-    String connectionButtonEdit();
 
     @ClassName("connection-col-left")
     String connectionColLeft();
@@ -275,9 +189,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("connection-col-middle")
     String connectionColMiddle();
-
-    @ClassName("connection-edit-panel")
-    String connectionEditPanel();
 
     @ClassName("connection-filter-button")
     String connectionFilterButton();
@@ -300,9 +211,6 @@ public interface CoreCss extends CssResource
     @ClassName("connection-item-name")
     String connectionItemName();
 
-    @ClassName("connection-item-panel")
-    String connectionItemPanel();
-
     @ClassName("connection-item-title")
     String connectionItemTitle();
 
@@ -318,40 +226,18 @@ public interface CoreCss extends CssResource
 
     String content_video();
 
-    @ClassName("create-group-link")
-    String createGroupLink();
-
-    @ClassName("create-link")
-    String createLink();
-
     @ClassName("date-picker-form-element")
     String datePickerFormElement();
 
     @ClassName("default")
     String defaultClass();
 
-    @ClassName("delegation-container")
-    String delegationContainer();
-
-    @ClassName("delegation-item")
-    String delegationItem();
-
-    @ClassName("delegation-title")
-    String delegationTitle();
-
     String delete();
 
     @ClassName("delete-button")
     String deleteButton();
 
-    @ClassName("delete-panel")
-    String deletePanel();
-
     String deleted();
-
-    String deleteFollower();
-
-    String denied();
 
     @ClassName("deny-button")
     String denyButton();
@@ -360,9 +246,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("dialog-message-text")
     String dialogMessageText();
-
-    @ClassName("dim-panel")
-    String dimPanel();
 
     String directory();
 
@@ -375,9 +258,6 @@ public interface CoreCss extends CssResource
     @ClassName("directory-item")
     String directoryItem();
 
-    @ClassName("directory-list")
-    String directoryList();
-
     @ClassName("disagree-button")
     String disagreeButton();
 
@@ -386,30 +266,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("display-none")
     String displayNone();
-
-    @ClassName("done-button")
-    String doneButton();
-
-    @ClassName("dragdrop-dropTarget")
-    String dragdropDropTarget();
-
-    @ClassName("dragdrop-dropTarget-engage")
-    String dragdropDropTargetEngage();
-
-    @ClassName("dragdrop-handle")
-    String dragdropHandle();
-
-    @ClassName("dragdrop-movable-panel")
-    String dragdropMovablePanel();
-
-    @ClassName("dragdrop-positioner")
-    String dragdropPositioner();
-
-    @ClassName("dragdrop-proxy")
-    String dragdropProxy();
-
-    @ClassName("dragdrop-proxy-content")
-    String dragdropProxyContent();
 
     @ClassName("drop-zone")
     String dropZone();
@@ -431,8 +287,6 @@ public interface CoreCss extends CssResource
 
     String dropping();
 
-    String duration();
-
     String edit();
 
     @ClassName("edit-button")
@@ -441,31 +295,16 @@ public interface CoreCss extends CssResource
     @ClassName("edit-controls")
     String editControls();
 
-    @ClassName("edit-position")
-    String editPosition();
-
-    @ClassName("edit-school")
-    String editSchool();
-
     @ClassName("editable-item")
     String editableItem();
-
-    String education();
 
     String email();
 
     @ClassName("embedded-widget")
     String embeddedWidget();
 
-    String employee();
-
     @ClassName("employee-lookup-dialog")
     String employeeLookupDialog();
-
-    @ClassName("employee-summary")
-    String employeeSummary();
-
-    String employment();
 
     @ClassName("empty-labeled-textbox")
     String emptyLabeledTextbox();
@@ -481,31 +320,13 @@ public interface CoreCss extends CssResource
 
     String error();
 
-    @ClassName("error-info")
-    String errorInfo();
-
-    @ClassName("error-message")
-    String errorMessage();
-
     @ClassName("error-message-text")
     String errorMessageText();
-
-    @ClassName("error-report")
-    String errorReport();
-
-    @ClassName("error-report-container")
-    String errorReportContainer();
-
-    @ClassName("eureka-logo-small")
-    String eurekaLogoSmall();
 
     String explanation();
 
     @ClassName("extended-info")
     String extendedInfo();
-
-    @ClassName("extended-view")
-    String extendedView();
 
     @ClassName("external-header-button")
     String externalHeaderButton();
@@ -583,9 +404,6 @@ public interface CoreCss extends CssResource
     @ClassName("form-lookup-button")
     String formLookupButton();
 
-    @ClassName("form-phone-input")
-    String formPhoneInput();
-
     @ClassName("form-photo-button-panel")
     String formPhotoButtonPanel();
 
@@ -607,26 +425,11 @@ public interface CoreCss extends CssResource
     @ClassName("form-share-button")
     String formShareButton();
 
-    @ClassName("form-small-delete-button")
-    String formSmallDeleteButton();
-
     @ClassName("form-standalone-label")
     String formStandaloneLabel();
 
     @ClassName("form-static-value")
     String formStaticValue();
-
-    @ClassName("form-sub-element")
-    String formSubElement();
-
-    @ClassName("form-sub-error")
-    String formSubError();
-
-    @ClassName("form-sub-success")
-    String formSubSuccess();
-
-    @ClassName("form-sub-title")
-    String formSubTitle();
 
     @ClassName("form-submit-button")
     String formSubmitButton();
@@ -652,16 +455,8 @@ public interface CoreCss extends CssResource
     @ClassName("form-user-association")
     String formUserAssociation();
 
-    @ClassName("form-verify-button")
-    String formVerifyButton();
-
     @ClassName("form-verifying-spinny")
     String formVerifyingSpinny();
-
-    String fourcolumn();
-
-    @ClassName("full-gallery-link")
-    String fullGalleryLink();
 
     @ClassName("gadget-button")
     String gadgetButton();
@@ -671,9 +466,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("gadget-close")
     String gadgetClose();
-
-    @ClassName("gadget-container")
-    String gadgetContainer();
 
     @ClassName("gadget-data")
     String gadgetData();
@@ -690,17 +482,11 @@ public interface CoreCss extends CssResource
     @ClassName("gadget-maximize")
     String gadgetMaximize();
 
-    @ClassName("gadget-menu")
-    String gadgetMenu();
-
     @ClassName("gadget-meta-data")
     String gadgetMetaData();
 
     @ClassName("gadget-minimize")
     String gadgetMinimize();
-
-    @ClassName("gadget-preferences")
-    String gadgetPreferences();
 
     @ClassName("gadget-refresh")
     String gadgetRefresh();
@@ -714,41 +500,8 @@ public interface CoreCss extends CssResource
     @ClassName("gadget-zone")
     String gadgetZone();
 
-    @ClassName("gadget-zone-chrome-render-zone")
-    String gadgetZoneChromeRenderZone();
-
     @ClassName("gadget-zone-chrome-title-bar")
     String gadgetZoneChromeTitleBar();
-
-    @ClassName("gadget-zone-chrome-title-bar-close-button")
-    String gadgetZoneChromeTitleBarCloseButton();
-
-    @ClassName("gadget-zone-chrome-title-bar-close-button-selected")
-    String gadgetZoneChromeTitleBarCloseButtonSelected();
-
-    @ClassName("gadget-zone-chrome-title-bar-edit-button")
-    String gadgetZoneChromeTitleBarEditButton();
-
-    @ClassName("gadget-zone-chrome-title-bar-edit-button-selected")
-    String gadgetZoneChromeTitleBarEditButtonSelected();
-
-    @ClassName("gadget-zone-chrome-title-bar-maximize-button")
-    String gadgetZoneChromeTitleBarMaximizeButton();
-
-    @ClassName("gadget-zone-chrome-title-bar-minimize-button")
-    String gadgetZoneChromeTitleBarMinimizeButton();
-
-    @ClassName("gadget-zone-chrome-title-bar-minimize-button-selected")
-    String gadgetZoneChromeTitleBarMinimizeButtonSelected();
-
-    @ClassName("gadget-zone-chrome-title-bar-refresh-button")
-    String gadgetZoneChromeTitleBarRefreshButton();
-
-    @ClassName("gadget-zone-chrome-title-bar-refresh-button-selected")
-    String gadgetZoneChromeTitleBarRefreshButtonSelected();
-
-    @ClassName("gadget-zone-chrome-title-bar-restore-button")
-    String gadgetZoneChromeTitleBarRestoreButton();
 
     @ClassName("gadget-zone-chrome-title-bar-title-button")
     String gadgetZoneChromeTitleBarTitleButton();
@@ -756,55 +509,13 @@ public interface CoreCss extends CssResource
     @ClassName("gadget-zone-minimized")
     String gadgetZoneMinimized();
 
-    @ClassName("gadgets-gadget")
-    String gadgetsGadget();
-
-    @ClassName("gadgets-gadget-content")
-    String gadgetsGadgetContent();
-
     @ClassName("gadgets-gadget-loading")
     String gadgetsGadgetLoading();
 
-    @ClassName("gadgets-gadget-user-prefs-dialog")
-    String gadgetsGadgetUserPrefsDialog();
-
-    @ClassName("gadgets-gadget-user-prefs-dialog-action-bar")
-    String gadgetsGadgetUserPrefsDialogActionBar();
-
-    @ClassName("gadgets-zone-gadget-content")
-    String gadgetsZoneGadgetContent();
-
     String gallery();
-
-    @ClassName("gallery-add-text")
-    String galleryAddText();
-
-    @ClassName("gallery-carousel-undertext")
-    String galleryCarouselUndertext();
-
-    @ClassName("gallery-categories")
-    String galleryCategories();
-
-    @ClassName("gallery-contents")
-    String galleryContents();
-
-    @ClassName("gallery-header")
-    String galleryHeader();
-
-    @ClassName("gallery-item-delete")
-    String galleryItemDelete();
-
-    @ClassName("gallery-items-results-container")
-    String galleryItemsResultsContainer();
 
     @ClassName("gallery-master")
     String galleryMaster();
-
-    @ClassName("gallery-search-results-list")
-    String gallerySearchResultsList();
-
-    @ClassName("gallery-upload-note")
-    String galleryUploadNote();
 
     @ClassName("go-to-stream-link")
     String goToStreamLink();
@@ -813,15 +524,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("group-check-box")
     String groupCheckBox();
-
-    @ClassName("group-error-msg-panel")
-    String groupErrorMsgPanel();
-
-    @ClassName("group-error-msg-panel-text")
-    String groupErrorMsgPanelText();
-
-    @ClassName("group-error-msg-panel-title")
-    String groupErrorMsgPanelTitle();
 
     @ClassName("group-notif-suppress")
     String groupNotifSuppress();
@@ -835,65 +537,11 @@ public interface CoreCss extends CssResource
     @ClassName("group-short-name")
     String groupShortName();
 
-    @ClassName("gwt-Anchor")
-    String gwtAnchor();
-
-    @ClassName("gwt-CheckBox")
-    String gwtCheckBox();
-
-    @ClassName("gwt-HTML")
-    String gwtHTML();
-
     @ClassName("gwt-Hyperlink")
     String gwtHyperlink();
 
-    @ClassName("gwt-Image")
-    String gwtImage();
-
-    @ClassName("gwt-InlineHyperlink")
-    String gwtInlineHyperlink();
-
-    @ClassName("gwt-InlineLabel")
-    String gwtInlineLabel();
-
     @ClassName("gwt-Label")
     String gwtLabel();
-
-    @ClassName("gwt-MenuBar")
-    String gwtMenuBar();
-
-    @ClassName("gwt-MenuBar-horizontal")
-    String gwtMenuBarHorizontal();
-
-    @ClassName("gwt-MenuBar-vertical")
-    String gwtMenuBarVertical();
-
-    @ClassName("gwt-MenuBarPopup")
-    String gwtMenuBarPopup();
-
-    @ClassName("gwt-MenuItem")
-    String gwtMenuItem();
-
-    @ClassName("gwt-MenuItem-selected")
-    String gwtMenuItemSelected();
-
-    @ClassName("gwt-PasswordTextBox")
-    String gwtPasswordTextBox();
-
-    @ClassName("gwt-PopupPanel")
-    String gwtPopupPanel();
-
-    @ClassName("gwt-RadioButton")
-    String gwtRadioButton();
-
-    @ClassName("gwt-TextArea")
-    String gwtTextArea();
-
-    @ClassName("gwt-TextBox")
-    String gwtTextBox();
-
-    @ClassName("has-image")
-    String hasImage();
 
     @ClassName("has-thumbnail")
     String hasThumbnail();
@@ -911,9 +559,6 @@ public interface CoreCss extends CssResource
 
     String hidden();
 
-    @ClassName("hidden-in-footer")
-    String hiddenInFooter();
-
     String hide();
 
     @ClassName("hide-text")
@@ -925,65 +570,15 @@ public interface CoreCss extends CssResource
     @ClassName("hideable-textarea")
     String hideableTextarea();
 
-    String highlight();
-
     String horizontal();
 
     String icon();
-
-    @ClassName("icon-accdb")
-    String iconAccdb();
-
-    @ClassName("icon-bmp")
-    String iconBmp();
-
-    @ClassName("icon-doc")
-    String iconDoc();
-
-    @ClassName("icon-docx")
-    String iconDocx();
-
-    @ClassName("icon-gif")
-    String iconGif();
-
-    @ClassName("icon-jpeg")
-    String iconJpeg();
-
-    @ClassName("icon-jpg")
-    String iconJpg();
-
-    @ClassName("icon-mpp")
-    String iconMpp();
-
-    @ClassName("icon-pdf")
-    String iconPdf();
-
-    @ClassName("icon-png")
-    String iconPng();
-
-    @ClassName("icon-ppt")
-    String iconPpt();
-
-    @ClassName("icon-pptx")
-    String iconPptx();
-
-    @ClassName("icon-txt")
-    String iconTxt();
-
-    @ClassName("icon-xls")
-    String iconXls();
-
-    @ClassName("icon-xlsx")
-    String iconXlsx();
 
     @ClassName("image-container")
     String imageContainer();
 
     @ClassName("image-crop-dialog")
     String imageCropDialog();
-
-    @ClassName("img-container")
-    String imgContainer();
 
     @ClassName("import-button")
     String importButton();
@@ -995,35 +590,12 @@ public interface CoreCss extends CssResource
 
     String inner();
 
-    @ClassName("input-area")
-    String inputArea();
-
-    @ClassName("input-box")
-    String inputBox();
-
     @ClassName("input-wrapper")
     String inputWrapper();
 
-    String instructions();
-
     String label();
 
-    @ClassName("label-area")
-    String labelArea();
-
-    @ClassName("label-button-disabled")
-    String labelButtonDisabled();
-
-    @ClassName("label-button-enabled")
-    String labelButtonEnabled();
-
-    @ClassName("label-button-wait-spinner")
-    String labelButtonWaitSpinner();
-
     String last();
-
-    @ClassName("launch-checklist")
-    String launchChecklist();
 
     @ClassName("layout-container")
     String layoutContainer();
@@ -1039,15 +611,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("left-bar-child")
     String leftBarChild();
-
-    @ClassName("left-bar-child-divider")
-    String leftBarChildDivider();
-
-    @ClassName("left-bar-container")
-    String leftBarContainer();
-
-    @ClassName("left-carousel-button")
-    String leftCarouselButton();
 
     @ClassName("left-column")
     String leftColumn();
@@ -1069,9 +632,6 @@ public interface CoreCss extends CssResource
     @ClassName("likers-content")
     String likersContent();
 
-    @ClassName("link-info")
-    String linkInfo();
-
     @ClassName("link-panel")
     String linkPanel();
 
@@ -1083,17 +643,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("list-item")
     String listItem();
-
-    @ClassName("list-item-collection")
-    String listItemCollection();
-
-    @ClassName("list-member-instructions")
-    String listMemberInstructions();
-
-    @ClassName("list-option-panel")
-    String listOptionPanel();
-
-    String loading();
 
     @ClassName("login-button")
     String loginButton();
@@ -1109,9 +658,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("login-dialog")
     String loginDialog();
-
-    @ClassName("login-dialog-header")
-    String loginDialogHeader();
 
     @ClassName("login-nav-panel")
     String loginNavPanel();
@@ -1141,13 +687,8 @@ public interface CoreCss extends CssResource
     @ClassName("main-nav")
     String mainNav();
 
-    @ClassName("manage-flagged-links-panel")
-    String manageFlaggedLinksPanel();
-
     @ClassName("master-notifier")
     String masterNotifier();
-
-    String maximized();
 
     @ClassName("maximized-drop-zone")
     String maximizedDropZone();
@@ -1178,17 +719,11 @@ public interface CoreCss extends CssResource
     @ClassName("message-link")
     String messageLink();
 
-    @ClassName("message-metadata")
-    String messageMetadata();
-
     @ClassName("message-metadata-additional")
     String messageMetadataAdditional();
 
     @ClassName("message-metadata-source")
     String messageMetadataSource();
-
-    @ClassName("message-panel")
-    String messagePanel();
 
     @ClassName("message-timestamp-actions-area")
     String messageTimestampActionsArea();
@@ -1198,8 +733,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("meta-description")
     String metaDescription();
-
-    String metadata();
 
     String minimized();
 
@@ -1232,9 +765,6 @@ public interface CoreCss extends CssResource
     @ClassName("multi-zone")
     String multiZone();
 
-    @ClassName("my-lists")
-    String myLists();
-
     @ClassName("nav-bar")
     String navBar();
 
@@ -1243,15 +773,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("navpanel")
     String navpanel();
-
-    @ClassName("NESTED")
-    String nESTED();
-
-    @ClassName("new-messages-notification")
-    String newMessagesNotification();
-
-    @ClassName("new-tab-button")
-    String newTabButton();
 
     @ClassName("new-tab-textbox")
     String newTabTextbox();
@@ -1268,76 +789,11 @@ public interface CoreCss extends CssResource
     @ClassName("no-thumbnail")
     String noThumbnail();
 
-    @ClassName("no-value")
-    String noValue();
-
-    @ClassName("not-found-carousel")
-    String notFoundCarousel();
-
-    String notice();
-
     @ClassName("notif-count")
     String notifCount();
 
     @ClassName("notif-count-container")
     String notifCountContainer();
-
-    @ClassName("notif-count-list-item")
-    String notifCountListItem();
-
-    // @ClassName("notif-dialog-main")
-    // String notifDialogMain();
-    //
-    // @ClassName("notif-edit-settings-link")
-    // String notifEditSettingsLink();
-    //
-    @ClassName("notif-email-value")
-    String notifEmailValue();
-
-    // @ClassName("notif-entry")
-    // String notifEntry();
-    //
-    // @ClassName("notif-entry-comment")
-    // String notifEntryComment();
-    //
-    // @ClassName("notif-entry-flag")
-    // String notifEntryFlag();
-    //
-    // @ClassName("notif-entry-follow")
-    // String notifEntryFollow();
-    //
-    // @ClassName("notif-entry-like")
-    // String notifEntryLike();
-    //
-    // @ClassName("notif-entry-new-group")
-    // String notifEntryNewGroup();
-    //
-    // @ClassName("notif-entry-post")
-    // String notifEntryPost();
-    //
-    // @ClassName("notif-entry-unread")
-    // String notifEntryUnread();
-    //
-    @ClassName("notif-grid")
-    String notifGrid();
-
-    // @ClassName("notif-modal")
-    // String notifModal();
-
-    // @ClassName("notif-no-notifications")
-    // String notifNoNotifications();
-    //
-    // @ClassName("notif-scroll-list")
-    // String notifScrollList();
-    //
-    @ClassName("notif-selection-column")
-    String notifSelectionColumn();
-
-    @ClassName("notif-settings-form")
-    String notifSettingsForm();
-
-    @ClassName("notif-settings-panel")
-    String notifSettingsPanel();
 
     @ClassName("notification-settings-modal")
     String notificationSettingsModal();
@@ -1351,15 +807,7 @@ public interface CoreCss extends CssResource
     @ClassName("notification-right")
     String notificationRight();
 
-    String onecolumn();
-
-    @ClassName("option-title")
-    String optionTitle();
-
     String options();
-
-    @ClassName("options-panel")
-    String optionsPanel();
 
     @ClassName("optoutable-video-modal")
     String optoutableVideoModal();
@@ -1400,11 +848,6 @@ public interface CoreCss extends CssResource
     @ClassName("pending-group-membership-item")
     String pendingGroupMembershipItem();
 
-    @ClassName("pending-groups-container")
-    String pendingGroupsContainer();
-
-    String percentage();
-
     String person();
 
     @ClassName("person-container")
@@ -1413,21 +856,8 @@ public interface CoreCss extends CssResource
     @ClassName("person-lookup-form-element")
     String personLookupFormElement();
 
-    @ClassName("personal-settings")
-    String personalSettings();
-
-    @ClassName("personal-settings-background")
-    String personalSettingsBackground();
-
-    String play();
-
     @ClassName("plugins-master")
     String pluginsMaster();
-
-    @ClassName("popular-hashtags")
-    String popularHashtags();
-
-    String popupContent();
 
     @ClassName("portal-boundary")
     String portalBoundary();
@@ -1459,9 +889,6 @@ public interface CoreCss extends CssResource
     @ClassName("post-to-stream-container")
     String postToStreamContainer();
 
-    @ClassName("post-to-stream-title")
-    String postToStreamTitle();
-
     @ClassName("posting-disabled-box")
     String postingDisabledBox();
 
@@ -1477,9 +904,6 @@ public interface CoreCss extends CssResource
     @ClassName("previous-arrow-disabled")
     String previousArrowDisabled();
 
-    @ClassName("previous-link")
-    String previousLink();
-
     @ClassName("privacy-settings")
     String privacySettings();
 
@@ -1492,103 +916,11 @@ public interface CoreCss extends CssResource
     @ClassName("private")
     String privateClass();
 
-    @ClassName("private-group")
-    String privateGroup();
-
     @ClassName("private-icon")
     String privateIcon();
 
-    String profile();
-
-    @ClassName("profile-about")
-    String profileAbout();
-
-    @ClassName("profile-about-background")
-    String profileAboutBackground();
-
-    @ClassName("profile-about-background-item-links")
-    String profileAboutBackgroundItemLinks();
-
-    @ClassName("profile-about-backgrounditem-link")
-    String profileAboutBackgrounditemLink();
-
-    @ClassName("profile-about-biography")
-    String profileAboutBiography();
-
-    @ClassName("profile-about-column")
-    String profileAboutColumn();
-
-    @ClassName("profile-about-none-label")
-    String profileAboutNoneLabel();
-
-    @ClassName("profile-about-overview")
-    String profileAboutOverview();
-
-    @ClassName("profile-about-section-header")
-    String profileAboutSectionHeader();
-
-    @ClassName("profile-add-group")
-    String profileAddGroup();
-
-    @ClassName("profile-cell-phone")
-    String profileCellPhone();
-
-    @ClassName("profile-connection-count")
-    String profileConnectionCount();
-
-    @ClassName("profile-connection-label")
-    String profileConnectionLabel();
-
-    @ClassName("profile-connection-subpanel")
-    String profileConnectionSubpanel();
-
-    @ClassName("profile-contact-info")
-    String profileContactInfo();
-
-    @ClassName("profile-disabled-follow-me-btn")
-    String profileDisabledFollowMeBtn();
-
-    @ClassName("profile-email")
-    String profileEmail();
-
-    @ClassName("profile-fax")
-    String profileFax();
-
-    @ClassName("profile-follow-me-btn")
-    String profileFollowMeBtn();
-
-    @ClassName("profile-gadgets-container")
-    String profileGadgetsContainer();
-
-    @ClassName("profile-group-statistics")
-    String profileGroupStatistics();
-
-    @ClassName("profile-location")
-    String profileLocation();
-
-    @ClassName("profile-mission")
-    String profileMission();
-
-    @ClassName("profile-more-people")
-    String profileMorePeople();
-
-    @ClassName("profile-name")
-    String profileName();
-
     @ClassName("profile-page")
     String profilePage();
-
-    @ClassName("profile-page-container")
-    String profilePageContainer();
-
-    @ClassName("profile-photo")
-    String profilePhoto();
-
-    @ClassName("profile-quote")
-    String profileQuote();
-
-    @ClassName("profile-settings-header")
-    String profileSettingsHeader();
 
     @ClassName("profile-settings-tab-container")
     String profileSettingsTabContainer();
@@ -1596,32 +928,11 @@ public interface CoreCss extends CssResource
     @ClassName("profile-settings-tab-content")
     String profileSettingsTabContent();
 
-    @ClassName("profile-statistics")
-    String profileStatistics();
-
-    @ClassName("profile-subheader")
-    String profileSubheader();
-
-    @ClassName("profile-title")
-    String profileTitle();
-
-    @ClassName("profile-unfollow-me-btn")
-    String profileUnfollowMeBtn();
-
-    @ClassName("profile-website")
-    String profileWebsite();
-
-    @ClassName("profile-work-phone")
-    String profileWorkPhone();
-
     @ClassName("prompt-interval")
     String promptInterval();
 
     @ClassName("read-only-tos")
     String readOnlyTos();
-
-    @ClassName("refresh-stream")
-    String refreshStream();
 
     @ClassName("removable-person")
     String removablePerson();
@@ -1643,22 +954,11 @@ public interface CoreCss extends CssResource
     @ClassName("results-header")
     String resultsHeader();
 
-    @ClassName("results-list")
-    String resultsList();
-
-    @ClassName("right-carousel-button")
-    String rightCarouselButton();
-
     @ClassName("save-search")
     String saveSearch();
 
-    String saved();
-
     @ClassName("scope-form-element")
     String scopeFormElement();
-
-    @ClassName("search-button")
-    String searchButton();
 
     @ClassName("search-description")
     String searchDescription();
@@ -1687,25 +987,13 @@ public interface CoreCss extends CssResource
     @ClassName("search-results-for")
     String searchResultsFor();
 
-    @ClassName("search-results-list")
-    String searchResultsList();
-
     @ClassName("search-term")
     String searchTerm();
-
-    @ClassName("section-header")
-    String sectionHeader();
-
-    @ClassName("selected-option")
-    String selectedOption();
 
     String settings();
 
     @ClassName("settings-content")
     String settingsContent();
-
-    @ClassName("settings-header")
-    String settingsHeader();
 
     @ClassName("settings-header-button")
     String settingsHeaderButton();
@@ -1719,9 +1007,6 @@ public interface CoreCss extends CssResource
     @ClassName("settings-title-bar")
     String settingsTitleBar();
 
-    @ClassName("shadow-container")
-    String shadowContainer();
-
     @ClassName("share-message-cancel")
     String shareMessageCancel();
 
@@ -1733,9 +1018,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("short-bio")
     String shortBio();
-
-    @ClassName("short-name-example")
-    String shortNameExample();
 
     @ClassName("shortname-form-element")
     String shortnameFormElement();
@@ -1763,9 +1045,6 @@ public interface CoreCss extends CssResource
 
     String small();
 
-    @ClassName("small-theme")
-    String smallTheme();
-
     @ClassName("small-x")
     String smallX();
 
@@ -1783,9 +1062,6 @@ public interface CoreCss extends CssResource
     @ClassName("stream-atom-link")
     String streamAtomLink();
 
-    @ClassName("stream-container")
-    String streamContainer();
-
     @ClassName("stream-list-item")
     String streamListItem();
 
@@ -1797,9 +1073,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("stream-moderation")
     String streamModeration();
-
-    @ClassName("stream-page-container")
-    String streamPageContainer();
 
     @ClassName("stream-plugin-checkbox")
     String streamPluginCheckbox();
@@ -1831,15 +1104,6 @@ public interface CoreCss extends CssResource
     @ClassName("stream-scope-container")
     String streamScopeContainer();
 
-    @ClassName("stream-search-dialog")
-    String streamSearchDialog();
-
-    @ClassName("stream-search-dialog-body")
-    String streamSearchDialogBody();
-
-    @ClassName("stream-search-dialog-body-edit")
-    String streamSearchDialogBodyEdit();
-
     @ClassName("stream-settings-tab-content")
     String streamSettingsTabContent();
 
@@ -1855,9 +1119,6 @@ public interface CoreCss extends CssResource
     @ClassName("stream-view-dialog-body")
     String streamViewDialogBody();
 
-    @ClassName("sub-title")
-    String subTitle();
-
     @ClassName("system-settings")
     String systemSettings();
 
@@ -1866,29 +1127,17 @@ public interface CoreCss extends CssResource
     @ClassName("tab-container")
     String tabContainer();
 
-    @ClassName("tab-container-composite")
-    String tabContainerComposite();
-
     @ClassName("tab-container-parent")
     String tabContainerParent();
 
     @ClassName("tab-menu")
     String tabMenu();
 
-    @ClassName("task-container")
-    String taskContainer();
-
-    @ClassName("task-title")
-    String taskTitle();
-
     @ClassName("terms-of-service-link")
     String termsOfServiceLink();
 
     @ClassName("terms-of-service-modal")
     String termsOfServiceModal();
-
-    @ClassName("text-box")
-    String textBox();
 
     @ClassName("textbox-input-wrapper")
     String textboxInputWrapper();
@@ -1897,12 +1146,6 @@ public interface CoreCss extends CssResource
     String textareaInputWrapper();
 
     String themeable();
-
-    String threecolumn();
-
-    String threecolumnleftwideheader();
-
-    String threecolumnrightwideheader();
 
     String thumbnail();
 
@@ -1920,9 +1163,6 @@ public interface CoreCss extends CssResource
     @ClassName("top-label")
     String topLabel();
 
-    @ClassName("top-pager")
-    String topPager();
-
     @ClassName("tos-body")
     String tosBody();
 
@@ -1934,12 +1174,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("two-thirds-column")
     String twoThirdsColumn();
-
-    String twocolumn();
-
-    String twocolumnleftwide();
-
-    String twocolumnrightwide();
 
     String unactive();
 
@@ -1967,9 +1201,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("url-validator")
     String urlValidator();
-
-    @ClassName("user-assoc-people-results")
-    String userAssocPeopleResults();
 
     @ClassName("user-bar")
     String userBar();
@@ -2001,15 +1232,6 @@ public interface CoreCss extends CssResource
 
     String videoDialog();
 
-    @ClassName("view-label")
-    String viewLabel();
-
-    @ClassName("view-panel")
-    String viewPanel();
-
-    @ClassName("view-text")
-    String viewText();
-
     String views();
 
     @ClassName("wait-active")
@@ -2031,33 +1253,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("welcome-email-checkbox")
     String welcomeEmailCheckbox();
-
-    @ClassName("yui-ac")
-    String yuiAc();
-
-    @ClassName("yui-ac-container")
-    String yuiAcContainer();
-
-    @ClassName("yui-ac-content")
-    String yuiAcContent();
-
-    @ClassName("yui-ac-input")
-    String yuiAcInput();
-
-    @ClassName("yui-carousel-element")
-    String yuiCarouselElement();
-
-    @ClassName("yui-carousel-horizontal")
-    String yuiCarouselHorizontal();
-
-    @ClassName("yui-carousel-item-selected")
-    String yuiCarouselItemSelected();
-
-    @ClassName("yui-crop")
-    String yuiCrop();
-
-    @ClassName("yui-editor-container")
-    String yuiEditorContainer();
 
     @ClassName("yui-skin-sam")
     String yuiSkinSam();
@@ -2175,9 +1370,9 @@ public interface CoreCss extends CssResource
     String bookmarkSearchActive();
 
     String followDialogButtonPanel();
-    
+
     String followLink();
-    
+
     String unFollowLink();
 
     String analyticsChart();
@@ -2187,5 +1382,4 @@ public interface CoreCss extends CssResource
     String singleActivityPanel();
 
     String globalSearchResultsAutocompleteResults();
-
 }

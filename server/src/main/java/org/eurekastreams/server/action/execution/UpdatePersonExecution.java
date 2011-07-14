@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,14 +37,14 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * This class updates a person object based on the Map of fields that come in and match the properties of the Person
  * object.
- * 
+ *
  */
 public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Person mapper.
@@ -63,7 +63,7 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            - instance of {@link PersonMapper} for this execution strategy.
      * @param inPersonPersister
@@ -81,7 +81,7 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method updates the person object with the data from the form.
      */
     @Override
@@ -93,6 +93,8 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
     {
         Map<String, Serializable> fields = (Map<String, Serializable>) inActionContext.getActionContext().getParams();
         fields.remove("isAdministrator");
+        fields.remove(PersonModelView.CELLPHONE_KEY);
+        fields.remove(PersonModelView.FAX_KEY);
 
         log.debug("Updating person with fields: " + fields.keySet());
 
@@ -111,7 +113,7 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
 
     /**
      * Converts a String of comma separated elements to a list of background items.
-     * 
+     *
      * @param bgItems
      *            String of Background Items.
      * @param type
@@ -135,5 +137,4 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
         return results;
 
     }
-
 }
