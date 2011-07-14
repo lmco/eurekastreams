@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.commons.search.analysis;
 
-import static org.junit.Assert.assertNull;
-
 import java.io.StringReader;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -49,16 +47,21 @@ public class AnalyzerTestBase
 
         Token nextToken;
 
-        ts.close();
-        ts = analyzer.tokenStream("dummy", new StringReader(input));
+        // while ((nextToken = ts.next(reusableToken)) != null)
+        // {
+        // System.out.println(nextToken.term());
+        // }
+        //
+        // return;
 
         for (int i = 0; i < expectedImages.length; i++)
         {
             nextToken = ts.next(reusableToken);
+            // System.out.println(nextToken.term());
             Assert.assertNotNull(reusableToken);
             Assert.assertEquals(expectedImages[i], nextToken.term());
         }
-        assertNull(ts.next(reusableToken));
+        Assert.assertNull(ts.next(reusableToken));
         ts.close();
     }
 }

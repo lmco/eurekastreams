@@ -116,12 +116,13 @@ public class HashTagTokenizerTest
     public void testNextWithUnderscoreNoHashNonLiteral() throws IOException
     {
         List<String> expectedList = new ArrayList<String>();
-        expectedList.add("foo_bar");
+        expectedList.add("foo_bars");
 
         List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("foo_bars");
         expectedNonHashtags.add("foo");
-        expectedNonHashtags.add("bar");
-        runTest("foo_bar", "", expectedList, expectedNonHashtags, true, false);
+        expectedNonHashtags.add("bars");
+        runTest("foo_bars", "", expectedList, expectedNonHashtags, true, false);
     }
 
     /**
@@ -134,10 +135,8 @@ public class HashTagTokenizerTest
     public void testNextWithUnderscoreNoHashLiteral() throws IOException
     {
         List<String> expectedList = new ArrayList<String>();
-        expectedList.add("foo_bars");
-
         List<String> expectedNonHashtags = new ArrayList<String>();
-        runTest("foo_bars", "", expectedList, expectedNonHashtags, true, true);
+        runTest("foo_bars", "foo_bars", expectedList, expectedNonHashtags, false, true);
     }
 
     /**
@@ -177,13 +176,15 @@ public class HashTagTokenizerTest
     public void testNextWithUnderscoreReplacment() throws IOException
     {
         List<String> expectedExtractedKeywords = new ArrayList<String>();
-        expectedExtractedKeywords.add("#bar123_fooFOfoo");
+        expectedExtractedKeywords.add("#bar123_fooFOfoos");
+        expectedExtractedKeywords.add("bar123_fooFOfoos");
 
         List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("bar123_fooFOfoos");
         expectedNonHashtags.add("bar123");
-        expectedNonHashtags.add("fooFOfoo");
+        expectedNonHashtags.add("fooFOfoos");
 
-        runTest("#bar123_fooFOfoo", "", expectedExtractedKeywords, expectedNonHashtags, true, false);
+        runTest("#bar123_fooFOfoos", "", expectedExtractedKeywords, expectedNonHashtags, true, false);
     }
 
     /**

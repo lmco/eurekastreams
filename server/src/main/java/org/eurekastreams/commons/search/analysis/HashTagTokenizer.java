@@ -126,7 +126,7 @@ public class HashTagTokenizer extends TokenFilter
             if (literalMode)
             {
                 // this is searching, not indexing, so don't explode the content out
-                if (termText.contains("#") || termText.contains("_"))
+                if (termText.contains("#"))
                 {
                     if (!extractedHashtags.contains(termText))
                     {
@@ -165,6 +165,29 @@ public class HashTagTokenizer extends TokenFilter
                     if (!extractedHashtags.contains(termText))
                     {
                         extractedHashtags.add(termText);
+                    }
+
+                    // Also add literal and plural-parsed versions omitting any starting hashes and containing _
+                    if (termText.contains("_"))
+                    {
+                        // remove all the leading hashes
+                        String temp = termText;
+                        while (temp.length() > 1 && temp.startsWith("#"))
+                        {
+                            temp = temp.substring(1);
+                        }
+
+                        // add it as a literal
+                        if (!extractedHashtags.contains(temp))
+                        {
+                            extractedHashtags.add(temp);
+                        }
+
+                        // add it for plural removal
+                        if (!extractedNonHashTags.contains(temp))
+                        {
+                            extractedNonHashTags.add(temp);
+                        }
                     }
 
                     // split the text on # and _ for indexing

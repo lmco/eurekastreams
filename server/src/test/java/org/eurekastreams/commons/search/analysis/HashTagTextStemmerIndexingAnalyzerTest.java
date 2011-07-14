@@ -38,7 +38,8 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
     {
         String html = "#Hello #horse, monkey potato #houses dogs fork,,fork #pencil_whisperer";
         assertAnalyzesTo(analyzer, html, new String[] { "monkey", "potato", "dog", "fork", "fork", "hello", "hors",
-                "hous", "pencil", "whisper", "#hello", "#horse", "#houses", "#pencil_whisperer" });
+                "hous", "pencil_whisper", "pencil", "whisper", "#hello", "#horse", "#houses", "#pencil_whisperer",
+                "pencil_whisperer" });
     }
 
     /**
