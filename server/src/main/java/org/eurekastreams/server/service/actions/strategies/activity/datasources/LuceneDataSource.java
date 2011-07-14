@@ -37,27 +37,27 @@ public class LuceneDataSource implements SortedDataSource
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Search request builder.
      */
-    private ProjectionSearchRequestBuilder searchRequestBuilder;
+    private final ProjectionSearchRequestBuilder searchRequestBuilder;
 
     /**
      * Unstemmed request builder.
      */
-    private ProjectionSearchRequestBuilder unstemmedRequestBuilder;
+    private final ProjectionSearchRequestBuilder unstemmedRequestBuilder;
 
     /**
      * Translates the request to search fields.
      */
-    private Map<String, String> requestToField;
+    private final Map<String, String> requestToField;
 
     /**
      * Transformers.
      */
-    private Map<String, PersistenceDataSourceRequestTransformer> transformers;
+    private final Map<String, PersistenceDataSourceRequestTransformer> transformers;
 
     /**
      * Max allowed results.
@@ -79,7 +79,8 @@ public class LuceneDataSource implements SortedDataSource
      *            max results.
      */
     public LuceneDataSource(final ProjectionSearchRequestBuilder inSearchRequestBuilder,
-            final ProjectionSearchRequestBuilder inUnstemmedRequestBuilder, final Map<String, String> inRequestToField,
+            final ProjectionSearchRequestBuilder inUnstemmedRequestBuilder,
+            final Map<String, String> inRequestToField,
             final Map<String, PersistenceDataSourceRequestTransformer> inTransformers, final int inMaxResults)
     {
         searchRequestBuilder = inSearchRequestBuilder;

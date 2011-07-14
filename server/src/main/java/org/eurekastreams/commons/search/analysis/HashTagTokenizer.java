@@ -25,18 +25,22 @@ import org.eurekastreams.server.domain.strategies.HashTagExtractor;
 import org.eurekastreams.server.domain.strategies.Substring;
 
 /**
- * Tokenizer that helps tokenize hashtags. The input content is assumed to have had octothorpes replaced with
- * HASHTAG_TEMPORARY_REPLACEMENT and underscores replaced with UNDERSCORE_TEMPORARY_REPLACEMENT. A HashtagExtractor is
- * used to pull hashtags out. Those hashtags are stored in the passed-in string collection. After the hashtag is pulled
- * out, the content is split on octothorpe and underscore. The first in the list is set as the token, and the rest are
- * added to the input collection.
+ * Special filter that helps preserve # and _ for hashtags. There are two modes - literal, and non-literal. Literal mode
+ * is meant for searching while non-literal is for indexing. Non-literal mode will add extra versions of the text to
+ * allow for searching by different ways. For example... in non-literal (indexing) mode, this will happen: #my_hats ->
+ * my, hat, #my_hats
  */
 public class HashTagTokenizer extends TokenFilter
 {
     /**
-     * Collection to store the extracted keywords.
+     * Collection to store the extracted hashtags.
      */
-    private final List<String> extractedKeywords;
+    private final List<String> extractedHashtags;
+
+    /**
+     * Collection to store the extracted non-hashtags that will be subject to more parsing.
+     */
+    private final List<String> extractedNonHashTags;
 
     /**
      * The string used to replace hashtags during tokenizing.
@@ -49,6 +53,11 @@ public class HashTagTokenizer extends TokenFilter
     public static final String UNDERSCORE_TEMPORARY_REPLACEMENT = "xxxunderscorereplacementxxx";
 
     /**
+     * Work in literal mode - just restore the #'s and _'s.
+     */
+    private final boolean literalMode;
+
+    /**
      * Hashtag extractor - same one that's used on the client.
      */
     private final HashTagExtractor hashTagExtractor;
@@ -58,14 +67,22 @@ public class HashTagTokenizer extends TokenFilter
      * 
      * @param inInput
      *            the input
-     * @param inExtractedKeywords
-     *            list to store the extracted keywords
+     * @param inExtractedHashtags
+     *            list to store the extracted hashtags
+     * @param inExtractedNonHashTags
+     *            the list to store non-hashtags that had to be extracted - these will be further processed
+     * @param inLiteralMode
+     *            whether to use literal mode, which just passes the tokens back through after putting back the #'s and
+     *            _'s
      */
-    public HashTagTokenizer(final TokenStream inInput, final List<String> inExtractedKeywords)
+    public HashTagTokenizer(final TokenStream inInput, final List<String> inExtractedHashtags,
+            final List<String> inExtractedNonHashTags, final boolean inLiteralMode)
     {
         super(inInput);
-        extractedKeywords = inExtractedKeywords;
+        extractedHashtags = inExtractedHashtags;
+        extractedNonHashTags = inExtractedNonHashTags;
         hashTagExtractor = new HashTagExtractor();
+        literalMode = inLiteralMode;
     }
 
     /**
@@ -104,43 +121,68 @@ public class HashTagTokenizer extends TokenFilter
             termText = termText.replaceAll(UNDERSCORE_TEMPORARY_REPLACEMENT, "_");
             termText = termText.replaceAll(HASHTAG_TEMPORARY_REPLACEMENT, "#");
 
-            // use the HashTagExtractor to find all of the hashtags
-            Substring hashTag = hashTagExtractor.extract(termText, 0);
+            String newTokenText = "";
 
-            if (hashTag != null)
+            if (literalMode)
             {
-                String hashTagText = hashTag.getContent();
-                if (!extractedKeywords.contains(hashTagText))
+                // this is searching, not indexing, so don't explode the content out
+                if (termText.contains("#") || termText.contains("_"))
                 {
-                    extractedKeywords.add(hashTagText);
+                    if (!extractedHashtags.contains(termText))
+                    {
+                        // found a word with an underscore or hash - just pass it through the list to avoid being munged
+                        // by later filters - this lets people do #foo#bar or foo_bars if they really want.
+                        extractedHashtags.add(termText);
+                    }
+                }
+                else
+                {
+                    // doesn't start with a # - just pass it through
+                    newTokenText = termText;
                 }
             }
-
-            // now split out the # and _ and put the pieces into the extracted keywords list - except the first - that
-            // goes with the token
-            String newTokenText = "";
-            String[] parts = termText.split("[#_]");
-            if (parts.length > 0)
+            else
             {
-                for (int i = 0; i < parts.length; i++)
+                // this is indexing, not searching, so expand the text into whatever we might want later
+
+                // use the HashTagExtractor to find a hashtag
+                Substring hashTag = hashTagExtractor.extract(termText, 0);
+
+                if (hashTag != null)
                 {
-                    if (parts[i].length() > 0)
+                    String hashTagText = hashTag.getContent();
+                    if (!extractedHashtags.contains(hashTagText))
                     {
-                        if (newTokenText.isEmpty())
+                        // add the parsed hashtag into the list
+                        extractedHashtags.add(hashTagText);
+                    }
+                }
+
+                if (termText.contains("#") || termText.contains("_"))
+                {
+                    // pass it through the list to avoid being munged by later filters - this lets people do #foo#bar or
+                    // hi_there if they really want.
+                    if (!extractedHashtags.contains(termText))
+                    {
+                        extractedHashtags.add(termText);
+                    }
+
+                    // split the text on # and _ for indexing
+                    String[] parts = termText.split("[#_]");
+                    for (int i = 0; i < parts.length; i++)
+                    {
+                        if (parts[i].length() > 0 && !extractedNonHashTags.contains(parts[i]))
                         {
-                            newTokenText = parts[i];
-                        }
-                        else
-                        {
-                            if (!extractedKeywords.contains(parts[i]))
-                            {
-                                extractedKeywords.add(parts[i]);
-                            }
+                            extractedNonHashTags.add(parts[i]);
                         }
                     }
                 }
+                else
+                {
+                    // simple word - just pass it through
+                    newTokenText = termText;
+                }
             }
-
             nextToken.reinit(newTokenText, 0, newTokenText.length());
         }
         while (nextToken.termLength() == 0);

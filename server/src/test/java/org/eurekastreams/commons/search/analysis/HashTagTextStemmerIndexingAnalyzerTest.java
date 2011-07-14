@@ -36,9 +36,9 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
     @Test
     public void testParseHandlesHashesAndUnderscores() throws Exception
     {
-        String html = "#Hello #horse, monkey potato fork,,fork #pencil_whisperer";
-        assertAnalyzesTo(analyzer, html, new String[] { "hello", "hors", "monkey", "potato", "fork", "fork", "pencil",
-                "#hello", "#horse", "#pencil_whisperer", "whisperer" });
+        String html = "#Hello #horse, monkey potato #houses dogs fork,,fork #pencil_whisperer";
+        assertAnalyzesTo(analyzer, html, new String[] { "monkey", "potato", "dog", "fork", "fork", "hello", "hors",
+                "hous", "pencil", "whisper", "#hello", "#horse", "#houses", "#pencil_whisperer" });
     }
 
     /**
@@ -51,7 +51,7 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
     public void testParseHandlesHashesInMiddleOfWords() throws Exception
     {
         String html = "#c#c# c# #c# c";
-        assertAnalyzesTo(analyzer, html, new String[] { "c", "c", "c", "c", "#c", "c" });
+        assertAnalyzesTo(analyzer, html, new String[] { "c", "c", "#c", "#c#c#", "c#", "#c#" });
     }
 
     /**
@@ -64,7 +64,7 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
     public void testHashOnly() throws Exception
     {
         String html = "#";
-        assertAnalyzesTo(analyzer, html, new String[] {});
+        assertAnalyzesTo(analyzer, html, new String[] { "#" });
     }
 
     /**

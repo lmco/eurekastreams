@@ -59,6 +59,9 @@ public class HashTagTextStemmerIndexingAnalyzer extends Analyzer
         // collection to hold hashtagged keywords
         List<String> hashTaggedKeywords = new ArrayList<String>();
 
+        // collection to hold non-hashtagged keywords
+        List<String> nonHashTaggedKeywords = new ArrayList<String>();
+
         // this reader will replace all hashtags with our marker text
         Reader reader = CharacterReplacementStreamBuilder.buildReplacementReader(inReader, '#',
                 HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT);
@@ -68,9 +71,15 @@ public class HashTagTextStemmerIndexingAnalyzer extends Analyzer
         result = new StandardFilter(result);
         result = new LowerCaseFilter(result);
 
-        result = new HashTagTokenizer(result, hashTaggedKeywords);
+        result = new HashTagTokenizer(result, hashTaggedKeywords, nonHashTaggedKeywords, false); // not literal mode
+
+        // add the non-hashtags back in so they can be de-pluralized
+        result = new WordListInjectionTokenizer(nonHashTaggedKeywords, result);
+
         result = new StopFilter(result, StopAnalyzer.ENGLISH_STOP_WORDS);
         result = new EnglishPorterFilterFactory().create(result);
+
+        // add the hashtags back in, unedited - does not remove plurals
         result = new WordListInjectionTokenizer(hashTaggedKeywords, result);
 
         return result;

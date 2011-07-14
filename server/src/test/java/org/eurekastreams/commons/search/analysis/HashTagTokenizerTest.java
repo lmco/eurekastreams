@@ -67,8 +67,13 @@ public class HashTagTokenizerTest
     {
         List<String> expectedList = new ArrayList<String>();
         expectedList.add("#bar123foo");
-        expectedList.add("foo");
-        runTest("#bar123foo#foo", "bar123foo", expectedList);
+        expectedList.add("#bar123foo#foo");
+
+        List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("bar123foo");
+        expectedNonHashtags.add("foo");
+
+        runTest("#bar123foo#foo", "", expectedList, expectedNonHashtags, true, false);
     }
 
     /**
@@ -80,7 +85,7 @@ public class HashTagTokenizerTest
     @Test
     public void testNextWithNoReplacementCharacter() throws IOException
     {
-        runTest("FObar123fooOOfoo", "FObar123fooOOfoo", null);
+        runTest("FObar123fooOOfoo", "FObar123fooOOfoo", new ArrayList<String>(), new ArrayList<String>(), false, false);
     }
 
     /**
@@ -93,8 +98,46 @@ public class HashTagTokenizerTest
     public void testNextWithReplacementButNoPrefix() throws IOException
     {
         List<String> expectedList = new ArrayList<String>();
-        expectedList.add("foo");
-        runTest("bar123foo#foo", "bar123foo", expectedList);
+        expectedList.add("bar123foo#foo");
+
+        List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("bar123foo");
+        expectedNonHashtags.add("foo");
+        runTest("bar123foo#foo", "", expectedList, expectedNonHashtags, true, false);
+    }
+
+    /**
+     * Test next() with "foo_bar" - nonliteral.
+     * 
+     * @throws IOException
+     *             on error
+     */
+    @Test
+    public void testNextWithUnderscoreNoHashNonLiteral() throws IOException
+    {
+        List<String> expectedList = new ArrayList<String>();
+        expectedList.add("foo_bar");
+
+        List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("foo");
+        expectedNonHashtags.add("bar");
+        runTest("foo_bar", "", expectedList, expectedNonHashtags, true, false);
+    }
+
+    /**
+     * Test next() with "foo_bar" - literal.
+     * 
+     * @throws IOException
+     *             on error
+     */
+    @Test
+    public void testNextWithUnderscoreNoHashLiteral() throws IOException
+    {
+        List<String> expectedList = new ArrayList<String>();
+        expectedList.add("foo_bars");
+
+        List<String> expectedNonHashtags = new ArrayList<String>();
+        runTest("foo_bars", "", expectedList, expectedNonHashtags, true, true);
     }
 
     /**
@@ -106,7 +149,22 @@ public class HashTagTokenizerTest
     @Test
     public void testNextWithPrefixButNoReplacement() throws IOException
     {
-        runTest("#bar123fooFOfoo", "bar123fooFOfoo", Collections.singletonList("#bar123fooFOfoo"));
+        List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("bar123fooFOfoo");
+        runTest("#bar123fooFOfoo", "", Collections.singletonList("#bar123fooFOfoo"), expectedNonHashtags, true, false);
+    }
+
+    /**
+     * Test next() with content that has a prefix but no replacement - literal mode.
+     * 
+     * @throws IOException
+     *             on error
+     */
+    @Test
+    public void testNextWithPrefixButNoReplacementInLiteralMode() throws IOException
+    {
+        runTest("#bar123foo#FOfoo", "", Collections.singletonList("#bar123foo#FOfoo"), new ArrayList<String>(), true,
+                true);
     }
 
     /**
@@ -120,8 +178,12 @@ public class HashTagTokenizerTest
     {
         List<String> expectedExtractedKeywords = new ArrayList<String>();
         expectedExtractedKeywords.add("#bar123_fooFOfoo");
-        expectedExtractedKeywords.add("fooFOfoo");
-        runTest("#bar123_fooFOfoo", "bar123", expectedExtractedKeywords);
+
+        List<String> expectedNonHashtags = new ArrayList<String>();
+        expectedNonHashtags.add("bar123");
+        expectedNonHashtags.add("fooFOfoo");
+
+        runTest("#bar123_fooFOfoo", "", expectedExtractedKeywords, expectedNonHashtags, true, false);
     }
 
     /**
@@ -136,8 +198,9 @@ public class HashTagTokenizerTest
         List<Token> tokens = new ArrayList<Token>();
         tokenStream = new TokenStreamTestHelper(tokens);
 
-        List<String> extractedKeywords = new ArrayList<String>();
-        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedKeywords);
+        List<String> extractedHashtags = new ArrayList<String>();
+        List<String> extractedNonHashtags = new ArrayList<String>();
+        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedHashtags, extractedNonHashtags, false);
         assertNull(null, sut.next(reusableToken));
     }
 
@@ -158,16 +221,18 @@ public class HashTagTokenizerTest
         tokens.add(token2);
         tokenStream = new TokenStreamTestHelper(tokens);
 
-        List<String> extractedKeywords = new ArrayList<String>();
-        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedKeywords);
+        List<String> extractedHashtags = new ArrayList<String>();
+        List<String> extractedNonHashtags = new ArrayList<String>();
+        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedHashtags, extractedNonHashtags, false);
 
-        assertSame(token2, sut.next(reusableToken));
+        assertNull(sut.next(reusableToken));
 
-        assertEquals("snutsBoo", token2.term());
-        assertEquals(0, token2.startOffset());
-        assertEquals("snutsBoo".length(), token2.endOffset());
-        assertEquals(1, extractedKeywords.size());
-        assertEquals("#snutsBoo", extractedKeywords.get(0));
+        assertEquals(1, extractedNonHashtags.size());
+        assertEquals("snutsBoo", extractedNonHashtags.get(0));
+
+        assertEquals("", token2.term());
+        assertEquals(1, extractedHashtags.size());
+        assertEquals("#snutsBoo", extractedHashtags.get(0));
     }
 
     /**
@@ -178,27 +243,41 @@ public class HashTagTokenizerTest
      * @param expectedReturn
      *            the expected token text
      * @param expectedExtractedKeywords
-     *            the keywords extracted
+     *            the expected hashtags extracted
+     * @param expectedNonHashTags
+     *            the expected non-hashtags extracted
+     * @param inExpectNullReturnToken
+     *            whether to expect the return token to be null
+     * @param runInLiteralMode
+     *            whether to run in literal mode
      * @throws IOException
      *             on error
      */
-    private void runTest(final String input, final String expectedReturn, final List<String> expectedExtractedKeywords)
-            throws IOException
+    private void runTest(final String input, final String expectedReturn,
+            final List<String> expectedExtractedKeywords, final List<String> expectedNonHashTags,
+            final boolean inExpectNullReturnToken, final boolean runInLiteralMode) throws IOException
     {
         String text = input.replace("#", HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT);
         text = input.replace("_", HashTagTokenizer.UNDERSCORE_TEMPORARY_REPLACEMENT);
-
-        System.out.println("TEXT: " + text);
 
         final Token returnToken = new Token(text, 0, text.length());
         List<Token> tokens = new ArrayList<Token>();
         tokens.add(returnToken);
         tokenStream = new TokenStreamTestHelper(tokens);
 
-        List<String> extractedKeywords = new ArrayList<String>();
-        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedKeywords);
+        List<String> extractedHashtags = new ArrayList<String>();
+        List<String> extractedNonHashtags = new ArrayList<String>();
+        HashTagTokenizer sut = new HashTagTokenizer(tokenStream, extractedHashtags, extractedNonHashtags,
+                runInLiteralMode);
 
-        assertSame(returnToken, sut.next(reusableToken));
+        if (inExpectNullReturnToken)
+        {
+            assertNull(sut.next(reusableToken));
+        }
+        else
+        {
+            assertSame(returnToken, sut.next(reusableToken));
+        }
 
         assertEquals(expectedReturn, returnToken.term());
         assertEquals(0, returnToken.startOffset());
@@ -206,15 +285,29 @@ public class HashTagTokenizerTest
 
         if (expectedExtractedKeywords == null)
         {
-            assertEquals(0, extractedKeywords.size());
+            assertEquals(0, extractedHashtags.size());
         }
         else
         {
-            assertEquals(expectedExtractedKeywords.size(), extractedKeywords.size());
+            assertEquals(expectedExtractedKeywords.size(), extractedHashtags.size());
             for (int i = 0; i < expectedExtractedKeywords.size(); i++)
             {
-                assertEquals(expectedExtractedKeywords.get(i), extractedKeywords.get(i));
+                assertEquals(expectedExtractedKeywords.get(i), extractedHashtags.get(i));
             }
         }
+
+        if (expectedNonHashTags == null)
+        {
+            assertEquals(0, extractedNonHashtags.size());
+        }
+        else
+        {
+            assertEquals(expectedNonHashTags.size(), extractedNonHashtags.size());
+            for (int i = 0; i < expectedNonHashTags.size(); i++)
+            {
+                assertEquals(expectedNonHashTags.get(i), extractedNonHashtags.get(i));
+            }
+        }
+
     }
 }
