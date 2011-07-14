@@ -135,13 +135,14 @@
 	
 	<div class="{style.right-side}">
 		<div class="{style.controls-bar}">
+			<!-- float these right:  so reverse order and put first -->
+			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" title="Settings" />
+			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" title="Mark All As Read" />
+
 			<div class="{style.read-filter-options}">
 				<g:Label addStyleNames="{style.filter-selected}" ui:field="unreadFilterUi">Unread</g:Label>
 				<g:Label ui:field="allFilterUi">All</g:Label>
 			</div>
-			
-			<g:Label addStyleNames="{style.settings-button}" ui:field="settingsButton" title="Settings" />
-			<g:Label addStyleNames="{style.mark-all-read}" ui:field="markAllReadButton" title="Mark All As Read" />
 		</div>
 		<div class="{style.no-notifications}" style="display: none;" ui:field="noNotificationsUi">No notifications</div>
 		<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}" ui:field="notificationListScrollPanel">

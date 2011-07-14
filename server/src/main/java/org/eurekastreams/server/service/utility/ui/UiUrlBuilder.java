@@ -104,6 +104,6 @@ public final class UiUrlBuilder
     public static String relativeUrlForGroupAccessRequest(final String uniqueId)
     {
         // TODO: Need the correct page or tab on the page
-        return relativeUrlForEntity(EntityType.GROUP, uniqueId);
+        return "#groupsettings/" + uniqueId;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -270,7 +270,7 @@ public class EventBus
     public void notifyObservers(final Object event)
     {
         int thisRunId = ++lastNotifyRunId;
-        boolean shouldLog = log != null && log.isLoggable(Level.FINE);
+        boolean shouldLog = log != null && log.isLoggable(Level.FINER);
 
         lastFiredEvent.put(event.getClass(), event);
         List<Observer< ? >> observers = observerHandlers.get(event.getClass());
@@ -279,7 +279,7 @@ public class EventBus
         {
             if (shouldLog)
             {
-                log.fine("[" + thisRunId + "] Notify with event " + event.getClass().getName() + "  " + event
+                log.finer("[" + thisRunId + "] Notify with event " + event.getClass().getName() + "  " + event
                         + " for no observers.");
             }
         }
@@ -287,28 +287,47 @@ public class EventBus
         {
             if (shouldLog)
             {
-                log.fine("[" + thisRunId + "] Starting notify with event " + event.getClass().getName() + "  " + event
-                        + " for " + observers.size() + " observers.");
+                log.finer("[" + thisRunId + "] Starting notify with event " + event.getClass().getName() + "  "
+                        + event + " for " + observers.size() + " observers.");
             }
 
             for (Observer observer : observers)
             {
                 if (shouldLog)
                 {
-                    log.fine("[" + thisRunId + "] Notifying observer " + observer.getClass().getName() + "  "
+                    log.finer("[" + thisRunId + "] Notifying observer " + observer.getClass().getName() + "  "
                             + observer);
                 }
 
-                // TODO: Should catch here and do something with it so that an exception in one observer doesn't cause
-                // the others to not run
-                observer.update(event);
+                try
+                {
+                    observer.update(event);
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        if (log != null)
+                        {
+                            log.log(Level.WARNING, "Event listener '" + observer + "' of type "
+                                    + observer.getClass().getName() + " for event '" + event + "' of type "
+                                    + event.getClass().getName() + " threw an exception.", ex);
+                        }
+                    }
+                    catch (Exception ex2)
+                    {
+                        if (log != null)
+                        {
+                            log.log(Level.WARNING, "Event listener threw an exception.", ex);
+                        }
+                    }
+                }
             }
 
             if (shouldLog)
             {
-                log.fine("[" + thisRunId + "] Finishing notify");
+                log.finer("[" + thisRunId + "] Finishing notify");
             }
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,22 +47,22 @@ public class EventBusTest
     /**
      * Mock of an observer to a "String" type event.
      */
-    private Observer<String> stringObserver = context.mock(Observer.class, "stringObserver");
+    private final Observer<String> stringObserver = context.mock(Observer.class, "stringObserver");
 
     /**
      * Mock of an observer to a "String" type event.
      */
-    private Observer<String> stringObserver2 = context.mock(Observer.class, "stringObserver2");
+    private final Observer<String> stringObserver2 = context.mock(Observer.class, "stringObserver2");
 
     /**
      * Mock of an observer to a "Boolean" type event.
      */
-    private Observer<Boolean> booleanObserver = context.mock(Observer.class, "booleanObserver");
+    private final Observer<Boolean> booleanObserver = context.mock(Observer.class, "booleanObserver");
 
     /**
      * Mock of an observer to an "Integer" type event.
      */
-    private Observer<Integer> integerObserver = context.mock(Observer.class, "integerObserver");
+    private final Observer<Integer> integerObserver = context.mock(Observer.class, "integerObserver");
 
     /**
      * The event bus.
@@ -104,6 +104,32 @@ public class EventBusTest
             {
                 oneOf(stringObserver).update(event);
                 oneOf(stringObserver2).update(event);
+            }
+        });
+
+        sut.notifyObservers(event);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests that one observer throwing an exception doesn't keep the rest from running.
+     */
+    @Test
+    public void notifyObserversWithAnException()
+    {
+        final String event = new String("I'm an event!");
+
+        sut.addObserver(new String(), stringObserver);
+        sut.addObserver(new String(), stringObserver2);
+        sut.addObserver(new Boolean(true), booleanObserver);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(stringObserver).update(event);
+                will(throwException(new RuntimeException("I'm ill-behaved!")));
+                oneOf(stringObserver2).update(event);
+                will(throwException(new RuntimeException("So am I!")));
             }
         });
 
