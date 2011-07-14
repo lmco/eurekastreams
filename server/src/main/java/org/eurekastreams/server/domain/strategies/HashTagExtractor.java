@@ -28,7 +28,7 @@ public class HashTagExtractor
     /**
      * The valid characters in a hashtag.
      */
-    private static final String VALID_HASHTAG_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz#"
+    private static final String VALID_HASHTAG_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
             + "ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
     /**
@@ -43,7 +43,7 @@ public class HashTagExtractor
 
     /**
      * Extract the next hashtag, starting with the input starting position.
-     *
+     * 
      * @param content
      *            the content to search for hashtags
      * @param inStartingIndex
@@ -102,7 +102,7 @@ public class HashTagExtractor
 
     /**
      * Extract all hashtags from the input content.
-     *
+     * 
      * @param content
      *            the content to extract
      * @return a set of hashtags extracted
@@ -125,7 +125,7 @@ public class HashTagExtractor
 
     /**
      * Check if the character at a specific position in content is inside a url.
-     *
+     * 
      * @param content
      *            the content to check
      * @param pos
@@ -153,7 +153,7 @@ public class HashTagExtractor
 
     /**
      * Test whether the character at the input position is inside a hyperlink tag.
-     *
+     * 
      * @param content
      *            the content to check
      * @param pos
@@ -179,7 +179,7 @@ public class HashTagExtractor
 
     /**
      * Check if the input character is a valid character right before a hashtag.
-     *
+     * 
      * @param inChar
      *            the char test
      * @return whether the input char is a valid character right before a hashtag
@@ -191,7 +191,7 @@ public class HashTagExtractor
 
     /**
      * Check if the input character is a valid hashtag character.
-     *
+     * 
      * @param inChar
      *            the char to check
      * @return whether the input char is valid in a hashtag

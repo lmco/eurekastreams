@@ -25,24 +25,25 @@ public class HashTagTextStemmerSearchAnalyzerTest extends AnalyzerTestBase
     /**
      * System under test.
      */
-    private HashTagTextStemmerSearchAnalyzer analyzer = new HashTagTextStemmerSearchAnalyzer();
+    private final HashTagTextStemmerSearchAnalyzer analyzer = new HashTagTextStemmerSearchAnalyzer();
 
     /**
      * Test the analyzer handles hashtags properly.
-     *
+     * 
      * @throws Exception
      *             on error
      */
     @Test
     public void testParseHandlesHashes() throws Exception
     {
-        String html = "#Hello #horse, monkey potato fork,,fork";
-        assertAnalyzesTo(analyzer, html, new String[] { "monkey", "potato", "fork", "fork", "#hello", "#horse" });
+        String html = "#Hello #horse, monkey potato fork,,fork dogs";
+        assertAnalyzesTo(analyzer, html,
+                new String[] { "monkey", "potato", "fork", "fork", "dog", "#hello", "#horse" });
     }
 
     /**
      * Test the analyzer handles hashtags in the middle of the word properly.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -50,12 +51,25 @@ public class HashTagTextStemmerSearchAnalyzerTest extends AnalyzerTestBase
     public void testParseHandlesHashesInMiddleOfWords() throws Exception
     {
         String html = "#c# c#, c";
-        assertAnalyzesTo(analyzer, html, new String[] { "c#", "c", "#c#" });
+        assertAnalyzesTo(analyzer, html, new String[] { "c", "#c#", "c#" });
+    }
+
+    /**
+     * Test parsing a hashtag with an underscore.
+     * 
+     * @throws Exception
+     *             shouldn't happen
+     */
+    @Test
+    public void testParseHashtagWithUnderscore() throws Exception
+    {
+        String html = "#test_run";
+        assertAnalyzesTo(analyzer, html, new String[] { "#test_run" });
     }
 
     /**
      * Test the analyzer handles.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -63,12 +77,14 @@ public class HashTagTextStemmerSearchAnalyzerTest extends AnalyzerTestBase
     public void testHashOnly() throws Exception
     {
         String html = "#";
-        assertAnalyzesTo(analyzer, html, new String[] {});
+
+        // garbage in, garbage out - this won't return results, who cares?
+        assertAnalyzesTo(analyzer, html, new String[] { "#" });
     }
 
     /**
      * Perform a simple Analyzer test with words that don't stem.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -81,7 +97,7 @@ public class HashTagTextStemmerSearchAnalyzerTest extends AnalyzerTestBase
 
     /**
      * Test the analyzer does not remove HTML tags, resulting in "p".
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -94,7 +110,7 @@ public class HashTagTextStemmerSearchAnalyzerTest extends AnalyzerTestBase
 
     /**
      * Test the analyzer properly stems words.
-     *
+     * 
      * @throws Exception
      *             on error
      */

@@ -25,38 +25,39 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
     /**
      * System under test.
      */
-    private HashTagTextStemmerIndexingAnalyzer analyzer = new HashTagTextStemmerIndexingAnalyzer();
+    private final HashTagTextStemmerIndexingAnalyzer analyzer = new HashTagTextStemmerIndexingAnalyzer();
 
     /**
      * Test the analyzer handles hashtags properly.
-     *
+     * 
      * @throws Exception
      *             on error
      */
     @Test
-    public void testParseHandlesHashes() throws Exception
+    public void testParseHandlesHashesAndUnderscores() throws Exception
     {
-        String html = "#Hello #horse, monkey potato fork,,fork";
-        assertAnalyzesTo(analyzer, html, new String[] { "hello", "hors", "monkey", "potato", "fork", "fork", "#hello",
-                "#horse" });
+        String html = "#Hello #horse, monkey potato #houses dogs fork,,fork #pencil_whisperer";
+        assertAnalyzesTo(analyzer, html, new String[] { "monkey", "potato", "dog", "fork", "fork", "hello", "hors",
+                "hous", "pencil_whisper", "pencil", "whisper", "#hello", "#horse", "#houses", "#pencil_whisperer",
+                "pencil_whisperer" });
     }
 
     /**
      * Test the analyzer handles hashtags in the middle of the word properly.
-     *
+     * 
      * @throws Exception
      *             on error
      */
     @Test
     public void testParseHandlesHashesInMiddleOfWords() throws Exception
     {
-        String html = "#c# c#, c";
-        assertAnalyzesTo(analyzer, html, new String[] { "c#", "c#", "c", "#c#" });
+        String html = "#c#c# c# #c# c";
+        assertAnalyzesTo(analyzer, html, new String[] { "c", "c", "#c", "#c#c#", "c#", "#c#" });
     }
 
     /**
      * Test the analyzer handles.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -64,12 +65,12 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
     public void testHashOnly() throws Exception
     {
         String html = "#";
-        assertAnalyzesTo(analyzer, html, new String[] {});
+        assertAnalyzesTo(analyzer, html, new String[] { "#" });
     }
 
     /**
      * Perform a simple Analyzer test with words that don't stem.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -82,7 +83,7 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
 
     /**
      * Test the analyzer does not remove HTML tags, resulting in "p".
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -95,7 +96,7 @@ public class HashTagTextStemmerIndexingAnalyzerTest extends AnalyzerTestBase
 
     /**
      * Test the analyzer properly stems words.
-     *
+     * 
      * @throws Exception
      *             on error
      */

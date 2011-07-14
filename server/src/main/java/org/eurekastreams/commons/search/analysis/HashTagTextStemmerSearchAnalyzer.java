@@ -35,13 +35,8 @@ import org.apache.solr.analysis.EnglishPorterFilterFactory;
 public class HashTagTextStemmerSearchAnalyzer extends Analyzer
 {
     /**
-     * Temporary replacement for hashtags during tokenizing, since '#' is split on and removed by standard tokenizer.
-     */
-    private static final String INDEXED_HASHTAG_PREFIX = "bbindexedhashtagprefixbb";
-
-    /**
      * Tokenize the stream.
-     *
+     * 
      * @param fieldName
      *            the name of the field
      * @param inReader
@@ -55,13 +50,16 @@ public class HashTagTextStemmerSearchAnalyzer extends Analyzer
         List<String> hashTaggedKeywords = new ArrayList<String>();
 
         // this reader will replace all hashtags with our marker text
-        Reader reader = CharacterReplacementStreamBuilder.buildReplacementReader(inReader, '#', INDEXED_HASHTAG_PREFIX);
+        Reader reader = CharacterReplacementStreamBuilder.buildReplacementReader(inReader, '#',
+                HashTagTokenizer.HASHTAG_TEMPORARY_REPLACEMENT);
+        reader = CharacterReplacementStreamBuilder.buildReplacementReader(reader, '_',
+                HashTagTokenizer.UNDERSCORE_TEMPORARY_REPLACEMENT);
         TokenStream result = new StandardTokenizer(reader);
         result = new StandardFilter(result);
         result = new LowerCaseFilter(result);
 
         // now remove our hashtag prefixes and store the hashtagged keywords in a set
-        result = new PrefixedTokenRemoverAndExtractorTokenizer(result, INDEXED_HASHTAG_PREFIX, "#", hashTaggedKeywords);
+        result = new HashTagTokenizer(result, hashTaggedKeywords, new ArrayList<String>(), true); // literal mode
         result = new StopFilter(result, StopAnalyzer.ENGLISH_STOP_WORDS);
         result = new EnglishPorterFilterFactory().create(result);
         result = new WordListInjectionTokenizer(hashTaggedKeywords, result);
