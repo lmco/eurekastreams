@@ -7,83 +7,70 @@
 	<ui:image field="next" src="style/images/next.png" />
 	<ui:image field="nextHover" src="style/images/nextHover.png" />
 	<ui:image field="nextDisabled" src="style/images/nextDisabled.png" />
-	
+
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.pager.PagerComposite.PagerStyle">
-		.pagerContainer
-		{
-		clear: both;
-		overflow: hidden;
-		padding: 25px;
-		}
-
-		.buttons
-		{
-		border-top: 1px solid #404040;
-		text-align: right;
-		margin-top: 20px;
-		}
-
-		.prevButton, .nextButton
-		{
-		background-color: #c0c0c0;
-		cursor: pointer;
-		display: inline-block;
-		overflow: hidden;
-		text-indent: 1000em;
-		margin-left: 1px;
-    	margin-top: 5px;
-		}
-		
-		@sprite .prevButton
-		{
-		gwt-image:"prev";
-		}
-
-		@sprite .prevButton:hover
-		{
-		gwt-image:"prevHover";
-		}
-
-		@sprite .nextButton
-		{
-		gwt-image:"next";
-		}
-
-		@sprite .nextButton:hover
-		{
-		gwt-image:"nextHover";
-		}
-		
-		@sprite .prevButton.pagingDisabled
-		{
-		gwt-image:"prevDisabled";
-		}
-
-		@sprite .nextButton.pagingDisabled
-		{
-		gwt-image:"nextDisabled";
-		}
-		
-		body .pagingDisabled
-		{
-			background-color: black;
-			cursor: auto;
-		}
-		
-		.pageResults
-		{
-			overflow: auto;
-			width: 250%;
-			position: relative;
-		}
-		
-		.pageResults > *
-		{
-			float: left;
-		}
-		
-	</ui:style>
+			.pagerContainer {
+				clear: both;
+				overflow: hidden;
+				padding: 25px;
+			}
+			
+			.buttons {
+				border-top: 1px solid #404040;
+				text-align: right;
+				margin-top: 20px;
+			}
+			
+			.prevButton,.nextButton {
+				background-color: #c0c0c0;
+				cursor: pointer;
+				display: inline-block;
+				overflow: hidden;
+				text-indent: 1000em;
+				margin-left: 1px;
+				margin-top: 5px;
+			}
+			
+			@sprite .prevButton {
+				gwt-image: "prev";
+			}
+			
+			@sprite .prevButton:hover {
+				gwt-image: "prevHover";
+			}
+			
+			@sprite .nextButton {
+				gwt-image: "next";
+			}
+			
+			@sprite .nextButton:hover {
+				gwt-image: "nextHover";
+			}
+			
+			@sprite .prevButton.pagingDisabled {
+				gwt-image: "prevDisabled";
+			}
+			
+			@sprite .nextButton.pagingDisabled {
+				gwt-image: "nextDisabled";
+			}
+			
+			body .pagingDisabled {
+				background-color: black;
+				cursor: auto;
+			}
+			
+			.pageResults {
+				overflow: auto;
+				width: 250%;
+				position: relative;
+			}
+			
+			.pageResults>* {
+				float: left;
+			}
+		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.pagerContainer}"
 		ui:field="pagerContainer">

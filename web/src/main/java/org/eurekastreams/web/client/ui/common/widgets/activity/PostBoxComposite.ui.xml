@@ -6,111 +6,97 @@
 	<ui:image field="postActive" src="style/images/postActive.png" />
 	<ui:image field="postInactive" src="style/images/postInactive.png" />
 
-	<ui:style type="org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite.PostBoxStyle">
+	<ui:style
+		type="org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite.PostBoxStyle">
+			.post-container {
+				padding: 10px;
+				background-color: #e4e4e4;
+				border-left: 1px solid #c6c6c6;
+				border-right: 1px solid #c6c6c6;
+				overflow: hidden;
+			}
 			
-		.post-container
-		{
-			padding: 10px;
-			background-color: #e4e4e4;
-			border-left: 1px solid #c6c6c6;
-			border-right: 1px solid #c6c6c6;
-			overflow: hidden;
-		}
-		
-		.post-box
-		{
-			border: 1px solid #c6c6c6;
-			width: 100%;
-			overflow: hidden;
-			padding: 5px;
-			height: 44px;
-		}
-		
-		.post-box-container
-		{
-			margin-left: 70px;
-			margin-right: 10px;
-			zoom: 1;
-		}
-		
-		.post-options
-		{
-			overflow: visible;
-			display: none;
-		}
-		
-		@sprite .post-button
-		{
-			float: right;
-			cursor: pointer;
-			gwt-image: "postActive";
-			position: relative;
-			right: -11px;
-			margin-top: 10px;
-		}
-		
-		@sprite body .postButtonInactive
-		{
-			gwt-image: "postInactive";
-		}
-		
-		.post-char-count
-		{
-			color: #666666;
-    		float: right;
-    		font-size: 16px;
-    		font-weight: bold;
-    		margin-top: 20px;
-		}
-		
-		body .postCharCountOverLimit
-		{
-			color: red;
-		}
-		
-		body .visiblePostBox
-		{
-			display: block;
-		}
-		
-		body .visiblePostBox > div:first-child
-		{
-			float: left;
-			margin-right: 0;
-    		width: 500px;
-		}		
-		
-		.person-avatar
-		{
-			float: left;
-			margin-top: 1px;
-		}
-		
-		.hashtags
-		{
-		position: absolute;
-		background-color: white;
-    	border: 1px solid #C6C6C6;
-    	padding: 5px;
-    	z-index: 900;
-    	margin-top: -1px;
-    	border-top-width: 0;
-		}
-		
-		.hashtags > div
-		{
-		padding: 2px;
-		cursor: pointer;
-		}
-		
-		.hashtags > div:hover
-		{
-		background-color: #c6c6c6;
-		}
-		
-	</ui:style>
+			.post-box {
+				border: 1px solid #c6c6c6;
+				width: 100%;
+				overflow: hidden;
+				padding: 5px;
+				height: 44px;
+			}
+			
+			.post-box-container {
+				margin-left: 70px;
+				margin-right: 10px;
+				zoom: 1;
+			}
+			
+			.post-options {
+				overflow: visible;
+				display: none;
+			}
+			
+			@sprite .post-button {
+				float: right;
+				cursor: pointer;
+				gwt-image: "postActive";
+				position: relative;
+				right: -11px;
+				margin-top: 10px;
+			}
+			
+			@sprite body .postButtonInactive {
+				gwt-image: "postInactive";
+			}
+			
+			.post-char-count {
+				color: #666666;
+				float: right;
+				font-size: 16px;
+				font-weight: bold;
+				margin-top: 20px;
+			}
+			
+			body .postCharCountOverLimit {
+				color: red;
+			}
+			
+			body .visiblePostBox {
+				display: block;
+			}
+			
+			body .visiblePostBox>div:first-child {
+				float: left;
+				margin-right: 0;
+				width: 500px;
+			}
+			
+			.person-avatar {
+				float: left;
+				margin-top: 1px;
+			}
+			
+			.hashtags {
+				position: absolute;
+				background-color: white;
+				border: 1px solid #C6C6C6;
+				padding: 5px;
+				z-index: 900;
+				margin-top: -1px;
+				border-top-width: 0;
+			}
+			
+			.hashtags>div {
+				padding: 2px;
+				cursor: pointer;
+			}
+			
+			.hashtags>div:hover {
+				background-color: #c6c6c6;
+			}
+		</ui:style>
 
-	<g:HTMLPanel addStyleNames="{style.post-container}" ui:field="postPanel">
+	<g:HTMLPanel addStyleNames="{style.post-container}"
+		ui:field="postPanel">
 		<g:HTMLPanel addStyleNames="{style.person-avatar}"
 			ui:field="posterAvatar">
 		</g:HTMLPanel>
@@ -118,7 +104,7 @@
 			<div>
 				<ea:ExtendedTextArea addStyleNames="{style.post-box}"
 					ui:field="postBox"></ea:ExtendedTextArea>
-				<g:FlowPanel addStyleNames="{style.hashtags}" ui:field="hashTags"></g:FlowPanel>				
+				<g:FlowPanel addStyleNames="{style.hashtags}" ui:field="hashTags"></g:FlowPanel>
 				<div ui:field="postOptions" class="{style.post-options}">
 					<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
 					<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>

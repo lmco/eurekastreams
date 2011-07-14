@@ -414,6 +414,7 @@ div.banner-container {
 	gwt-image: "footerBackground";
 	margin: -95px auto 0;
 	width: 990px;
+	position: relative;
 }
 
 .footer-bar .horizontal {
@@ -2059,10 +2060,6 @@ body .post-to-stream .over-character-limit {
 .comment-timestamp,.message-timestamp-link,a.message-timestamp-link:link,a.message-timestamp-link:visited,a.message-timestamp-link:active
 	{
 	color: #666;
-}
-
-.message-timestamp-actions-area {
-	height: 20px;
 }
 
 .message-timestamp-actions-area>.message-timestamp-link,.message-timestamp-actions-area>.message-actions-area

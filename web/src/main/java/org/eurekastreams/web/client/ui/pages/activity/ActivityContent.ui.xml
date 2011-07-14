@@ -8,307 +8,300 @@
 	<ui:image field="searchActive" src="style/images/searchActive.png" />
 	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
 	<ui:image field="deleteBookmarkHover" src="style/images/modalCloseBtnSmallHover.png" />
-	<ui:image field="deleteBookmark" src="style/images/modalCloseBtnSmall.png" />	
-	
+	<ui:image field="deleteBookmark" src="style/images/modalCloseBtnSmall.png" />
+
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
-		.main
-		{
-		overflow: hidden;
-		padding-top: 60px;
-		}
-
-		.stream-option-list {
-		border-top: 2px solid #bbb;
-		width: 225px;
-		float: left;
-		clear: left;
-		margin-left: 10px;
-		margin-bottom: 10px;
-		height: auto;
-		overflow: auto;
-		}
-
-		.stream-container-panel {
-		float: right;
-		width: 730px;
-		margin-right: 10px;
-		}
-
-		.stream-panel {
-		background-color: white;
-		clear: both;
-		border: 1px solid
-		#c6c6c6;
-		border-top-width: 0;
-		min-height: 100px;
-		}
-
-		.stream-option-list  > div > div
-		{
-			overflow: hidden;
-			clear: both;
-		}
-
-		.stream-option-list  > div > div > div
-		{
-			float: right;
-		}
-
-		.stream-option-list > div > div > img
-		{
-			float: left;
-			margin-right: 5px;
-			margin-top: -2px;
-			height: 21px;
-			width: 21px;
-		}
-
-		.stream-option-list > div > div > div.streamName
-		{
-			float: left;
-		}
-
-		.stream-option-list > .streamOptionChild
-		{
-		cursor: pointer;
-		display: block;
-		border-bottom: 1px solid #bbb;
-		height: 24px;
-		padding-top: 9px;
-		padding-left: 5px;
-		color: #000;
-		overflow: hidden;
-		zoom: 1;
-		}
-
-		.stream-option-list > .streamOptionChild:hover
-		{
-		background-color: #e4e4e4;
-		color: #000;
-		}
-
-		.stream-option-list div.activeStream
-		{
-		background-image: url(style/images/highlight.png);
-		background-position: top right;
-		background-repeat: no-repeat;
-		background-color: #e4e4e4;
-		}
-
-		.activeSort
-		{
-		background-image: url(style/images/activeBackground.png);
-		}
-
-		.options-panel
-		{
-		background-color: white;
-		padding: 1px;
-		border: 1px solid
-		#c6c6c6;
-		overflow: visible;
-		height: 33px;
-		}
-
-		.sort-option
-		{
-		height:	19px;
-		padding: 7px 10px;
-		float: left;
-		}
-		
-		.sort-option a, .sort-option a:hover,
-		.sort-option a:link,
-		.sort-option a:active,
-		.sort-option a:visited
-		{
-		color: black;
-		}
-
-		.sort-option:hover
-		{
-		color: black;
-		}
-
-		.search-container
-		{
-		margin-right: 1px;
-		}
-
-		.search-container .search-box
-		{
-			display: none;
-		}
-
-		.search-container:hover .search-box
-		{
-			display: block;
-		}
-
-		.activeSearch .search-box
-		{
-			display: block;
-		}
-		
-		.activeSearch .search-box-button, .search-container:hover .search-box-button
-		{		
-			display: none;
-		}		
-
-		@sprite .search-box
-		{
-		gwt-image: "searchActive";
-		border: 0 none;
-		float: right;
-		height: 20px;
-		padding-left: 35px;
-		padding-right: 21px;
-		width: 160px;
-		padding-top: 6px;
-		padding-bottom: 6px;
-		}
-		
-		@sprite .search-box-button
-		{
-		gwt-image: "searchNormal";			
-		float: right;
-		}
-		
-		@sprite .subscribe-box 
-		{
-		gwt-image: "subscribeNormal";
-		float: right;
-		position:relative;
-		overflow: visible;
-		margin-left: 2px;
-		}
-		
-		@sprite .subscribe-box:hover 
-		{
-		gwt-image: "subscribeActive";
-		float: right;
-		position:relative;
-		overflow: visible;
-		border-bottom: 2px solid #BDBDBD;
-		}
-		
-		
-		.subscribe-options 
-		{
-		background-color: #BDBDBD;
-    	display: none;
-    	margin-left: -66px;
-    	padding: 2px;
-    	position: absolute;
-    	top: 34px;
-	    width: 126px;
-		}
-		
-		.subscribe-box:hover .subscribe-options
-		{
-			display: block;
-		}
-		
-		.subscribe-options > div
-		{
-			padding: 5px;
-		}
-		
-		.subscribe-options > div:hover
-		{
-			cursor: pointer;
-			background-color: #e4e4e4;
-		}
-		
-		@sprite .stream-loading-spinner
-		{
-		gwt-image: "spinner";
-		margin: 0
-		auto;
-		position:
-		relative;
-		top: 30px;
-		}
-
-		@sprite .more-loading-spinner
-		{
-		gwt-image: "spinner";
-		margin: 0 auto;
-		}
-
-		.view-more-link
-		{
-		margin: 0 auto;
-		margin-top: 10px;
-		font-size: 14px;
-		font-weight: bold;
-		text-align: center;
-		width: 95%;
-		border-top: 1px solid #bbbbbb;
-		padding-top: 5px;
-		display: block;
-		cursor: pointer;
-		color: #0066CC;
-		}
-		
-		.createFilter
-		{
-	    clear: left;
-	    float: left;
-	    cursor: pointer;
-    	display: inline-block;
-    	margin-left: 140px;
-    	width: 100px;
-		}
-		
-		@sprite .streamOptionChild:hover .deleteBookmark
-		{
-		margin-right: 15px;
-		gwt-image: "deleteBookmark";
-		}
-
-		@sprite .streamOptionChild:hover .deleteBookmark:hover
-		{
-		gwt-image: "deleteBookmarkHover";
-		}
-		
-		.streamOptionChild .editCustomStream
-		{
-		display: none;
-		}
-		
-		.streamOptionChild:hover .editCustomStream
-		{
-		display: block;
-		margin-right: 5px;
-		color: #0066CC;
-		}
-
-		.streamOptionChild:hover .editCustomStream:hover
-		{
-		}
-		
-		.errorPanel
-		{
-			background-color: #FFE488;
-		 	overflow: hidden;
-    		padding: 20px;
-		}
-		
-		.errorPanel > div:first-child
-		{
-    		color: red;
-    		font-weight: bold;
-    		font-size: 18px;
-    		background-image: url("style/images/red-error-icon-sm.png");
-    		background-repeat: no-repeat;
-    		padding-bottom: 10px;
-    		padding-left: 30px;
-		}		
-		
-	</ui:style>
+			.main {
+				overflow: hidden;
+				padding-top: 60px;
+			}
+			
+			.option-title {
+				float: left;
+				clear: left;
+				font-size: 16px;
+				margin: 0 10px 5px;
+				margin-top: 20px;
+			}
+			
+			.stream-option-list {
+				border-top: 2px solid #bbb;
+				width: 225px;
+				float: left;
+				clear: left;
+				margin-left: 10px;
+				margin-bottom: 10px;
+				height: auto;
+				overflow: auto;
+			}
+			
+			.stream-container-panel {
+				float: right;
+				width: 730px;
+				margin-right: 10px;
+			}
+			
+			.stream-panel {
+				background-color: white;
+				clear: both;
+				border: 1px solid #c6c6c6;
+				border-top-width: 0;
+				min-height: 100px;
+			}
+			
+			.stream-option-list>div>div {
+				clear: both;
+			}
+			
+			.stream-option-list>div>div>div {
+				float: right;
+			}
+			
+			.stream-option-list>div>div>img {
+				float: left;
+				margin-right: 5px;
+				margin-top: -2px;
+			}
+			
+			.stream-option-list>div>div>img.smallAvatar {
+				height: 25px;
+				width: 25px;
+				border: 1px solid #C0C0C0;
+				padding: 1px;
+				margin-top: -7px;
+			}
+			
+			.stream-option-list>div>div>div.streamName {
+				float: left;
+			}
+			
+			.stream-option-list>.streamOptionChild {
+				cursor: pointer;
+				display: block;
+				height: 24px;
+				padding-top: 9px;
+				padding-left: 5px;
+				color: #000;
+				zoom: 1;
+			}
+			
+			.stream-option-list>.streamOptionChild:hover {
+				background-color: #e4e4e4;
+				color: #000;
+			}
+			
+			.stream-option-list div.activeStream {
+				background-image: url(style/images/highlight.png);
+				background-position: top right;
+				background-repeat: no-repeat;
+				background-color: #e4e4e4;
+			}
+			
+			.activeSort {
+				background-image: url(style/images/activeBackground.png);
+			}
+			
+			.options-panel {
+				background-color: white;
+				padding: 1px;
+				border: 1px solid #c6c6c6;
+				overflow: visible;
+				height: 33px;
+			}
+			
+			.sort-option {
+				height: 19px;
+				padding: 7px 10px;
+				float: left;
+			}
+			
+			.sort-option a,.sort-option a:hover,.sort-option a:link,.sort-option a:active,.sort-option a:visited
+				{
+				color: black;
+			}
+			
+			.sort-option:hover {
+				color: black;
+			}
+			
+			.search-container {
+				margin-right: 1px;
+			}
+			
+			.search-container .search-box {
+				display: none;
+			}
+			
+			.search-container:hover .search-box {
+				display: block;
+			}
+			
+			.activeSearch .search-box {
+				display: block;
+			}
+			
+			.activeSearch .search-box-button,.search-container:hover .search-box-button
+				{
+				display: none;
+			}
+			
+			@sprite .search-box {
+				gwt-image: "searchActive";
+				border: 0 none;
+				float: right;
+				height: 20px;
+				padding-left: 35px;
+				padding-right: 21px;
+				width: 160px;
+				padding-top: 6px;
+				padding-bottom: 6px;
+			}
+			
+			@sprite .search-box-button {
+				gwt-image: "searchNormal";
+				float: right;
+			}
+			
+			@sprite .subscribe-box {
+				gwt-image: "subscribeNormal";
+				float: right;
+				position: relative;
+				overflow: visible;
+				margin-left: 2px;
+			}
+			
+			@sprite .subscribe-box:hover {
+				gwt-image: "subscribeActive";
+				float: right;
+				position: relative;
+				overflow: visible;
+				border-bottom: 2px solid #BDBDBD;
+			}
+			
+			.subscribe-options {
+				background-color: #BDBDBD;
+				display: none;
+				margin-left: -66px;
+				padding: 2px;
+				position: absolute;
+				top: 34px;
+				width: 126px;
+			}
+			
+			.subscribe-box:hover .subscribe-options {
+				display: block;
+			}
+			
+			.subscribe-options>div {
+				padding: 5px;
+			}
+			
+			.subscribe-options>div:hover {
+				cursor: pointer;
+				background-color: #e4e4e4;
+			}
+			
+			@sprite .stream-loading-spinner {
+				gwt-image: "spinner";
+				margin: 0 auto;
+				position: relative;
+				top: 30px;
+			}
+			
+			@sprite .more-loading-spinner {
+				gwt-image: "spinner";
+				margin: 0 auto;
+			}
+			
+			.view-more-link {
+				margin: 0 auto;
+				margin-top: 10px;
+				font-size: 14px;
+				font-weight: bold;
+				text-align: center;
+				width: 95%;
+				border-top: 1px solid #bbbbbb;
+				padding-top: 5px;
+				display: block;
+				cursor: pointer;
+				color: #0066CC;
+			}
+			
+			.createFilter {
+				clear: left;
+				float: left;
+				cursor: pointer;
+				display: inline-block;
+				margin-left: 140px;
+				width: 100px;
+			}
+			
+			@sprite .streamOptionChild:hover .deleteBookmark {
+				margin-right: 15px;
+				gwt-image: "deleteBookmark";
+			}
+			
+			@sprite .streamOptionChild:hover .deleteBookmark:hover {
+				gwt-image: "deleteBookmarkHover";
+			}
+			
+			.streamOptionChild .editCustomStream {
+				display: none;
+			}
+			
+			.streamOptionChild:hover .editCustomStream {
+				display: block;
+				margin-right: 5px;
+				color: #0066CC;
+			}
+			
+			.streamOptionChild:hover .editCustomStream:hover {
+				
+			}
+			
+			.errorPanel {
+				background-color: #FFE488;
+				overflow: hidden;
+				padding: 20px;
+			}
+			
+			.errorPanel>div:first-child {
+				color: red;
+				font-weight: bold;
+				font-size: 18px;
+				background-image: url("style/images/red-error-icon-sm.png");
+				background-repeat: no-repeat;
+				padding-bottom: 10px;
+				padding-left: 30px;
+			}
+			
+			.currentUserStreamLink {
+				margin-top: 10px;
+				font-size: 16px;
+				font-weight: bold;
+				margin-bottom: 5px;
+			}
+			
+			.currentUserStreamLink>a {
+				color: black;
+			}
+			
+			.userPanel {
+				float: left;
+				padding-top: 10px;
+			}
+			
+			.userPanel img {
+				padding: 2px;
+			}
+			
+			.userPanel>div {
+				float: left;
+				padding-left: 10px;
+			}
+		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main}">
 		<g:HTMLPanel addStyleNames="{style.stream-container-panel}"
@@ -318,10 +311,14 @@
 			<div ui:field="streamOptionsPanel" class="{style.options-panel}">
 				<g:Hyperlink addStyleNames="{style.sort-option} {style.activeSort}"
 					ui:field="recentSort">Recent</g:Hyperlink>
-				<g:Hyperlink addStyleNames="{style.sort-option}" ui:field="popularSort">
-					Popular</g:Hyperlink>
-				<g:Hyperlink addStyleNames="{style.sort-option}" ui:field="activeSort">
-					Active</g:Hyperlink>
+				<g:Hyperlink addStyleNames="{style.sort-option}"
+					ui:field="popularSort">
+					Popular
+				</g:Hyperlink>
+				<g:Hyperlink addStyleNames="{style.sort-option}"
+					ui:field="activeSort">
+					Active
+				</g:Hyperlink>
 				<g:FlowPanel addStyleNames="{style.subscribe-box}">
 					<g:FlowPanel addStyleNames="{style.subscribe-options}">
 						<g:Label ui:field="addBookmark">Bookmark Stream</g:Label>
@@ -337,24 +334,34 @@
 			</div>
 			<div class="{style.stream-panel}">
 				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
-				<g:FlowPanel addStyleNames="{style.errorPanel}" ui:field="errorPanel"></g:FlowPanel>
+				<g:FlowPanel addStyleNames="{style.errorPanel}"
+					ui:field="errorPanel"></g:FlowPanel>
 				<g:FlowPanel ui:field="streamPanel">
 				</g:FlowPanel>
 				<div class="{style.more-loading-spinner}" ui:field="moreSpinner"></div>
-				<g:Label addStyleNames="{style.view-more-link}" ui:field="moreLink">View More</g:Label>
+				<g:Label addStyleNames="{style.view-more-link}" ui:field="moreLink">View
+					More</g:Label>
 			</div>
 		</g:HTMLPanel>
 
-		<g:FlowPanel addStyleNames="{style.stream-option-list}" ui:field="defaultList">
+		<g:FlowPanel addStyleNames="{style.userPanel}" ui:field="userPanel"></g:FlowPanel>
+		<h2 class="{style.option-title}">Network</h2>
+		<g:FlowPanel addStyleNames="{style.stream-option-list}"
+			ui:field="defaultList">
 		</g:FlowPanel>
 
-		<g:FlowPanel addStyleNames="{style.stream-option-list}" ui:field="bookmarkList">
+		<h2 class="{style.option-title}">Bookmarks</h2>
+		<g:FlowPanel addStyleNames="{style.stream-option-list}"
+			ui:field="bookmarkList">
 		</g:FlowPanel>
-		<ewa:BookmarkSearchComposite></ewa:BookmarkSearchComposite>		
+		<ewa:BookmarkSearchComposite></ewa:BookmarkSearchComposite>
 
-		<g:FlowPanel addStyleNames="{style.stream-option-list}" ui:field="filterList">
+		<h2 class="{style.option-title}">Filters</h2>
+		<g:FlowPanel addStyleNames="{style.stream-option-list}"
+			ui:field="filterList">
 		</g:FlowPanel>
-		<g:Label addStyleNames="{style.createFilter}" ui:field="createFilter">Create a Filter</g:Label>
+		<g:Label addStyleNames="{style.createFilter}" ui:field="createFilter">Create
+			a Filter</g:Label>
 	</g:HTMLPanel>
 
 </ui:UiBinder>
