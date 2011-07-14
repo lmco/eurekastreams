@@ -157,7 +157,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 totalCommentCount = dus.getTotalCommentCount();
                 totalContributorCount = dus.getTotalContributorCount();
 
-                finalCommentCount = dus.getTotalCommentCount();
+                finalCommentCount = dus.getTotalCommentCount() == null ? 0 : dus.getTotalCommentCount();
             }
 
             recordCount++;
@@ -166,7 +166,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 // this is the earliest reporting date we've seen
                 oldestAvailableReportDate = summaryDate;
 
-                startingCommentCount = dus.getTotalCommentCount();
+                startingCommentCount = dus.getTotalCommentCount() == null ? 0 : dus.getTotalCommentCount();
             }
 
             msgCount += dus.getMessageCount();
