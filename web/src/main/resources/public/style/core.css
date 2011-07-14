@@ -250,10 +250,6 @@ body .main-contents .header-container {
 	margin-top: 0px;
 }
 
-.main-nav>li,.user-bar>li>div {
-	overflow: hidden;
-}
-
 .header-bar a,.header-bar a:link,.header-bar a:visited,.header-bar a:hover,.header-bar a:active
 	{
 	color: white;
@@ -884,7 +880,6 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 	top: 40px;
 	margin: 0px auto;
 	z-index: 999;
-	width: 600px;
 	left: 200px;
 }
 
@@ -1975,6 +1970,8 @@ body .post-to-stream .over-character-limit {
 	padding-left: 20px;
 	overflow: hidden;
 	margin-left: 25px;
+	font-size: 14px;
+    line-height: 1.4;
 }
 
 .thumbnail {
@@ -4727,12 +4724,32 @@ body .dragdrop-proxy {
 	left: -10000px;
 }
 
-@sprite body .user-bar li div.notif-count {
-	gwt-image: "notifBg";
+.notifHeader
+{
+	padding-right: 0 ! important;
+}
+
+body .user-bar li div.notif-count {
 	color: black;
-	text-align: center;
-	margin-left: 5px;
-	vertical-align: top;
+    margin-left: 5px;
+    position: relative;
+    text-align: center;
+    top: -15px;
+    left: -10px;
+    vertical-align: top;
+}
+
+@sprite body .user-bar li div.notif-count > div
+{
+	gwt-image: "notifBg";
+    padding-top: 4px;
+	height: 18px;
+    overflow: visible;
+}
+
+@sprite body .user-bar li div.notifCountHighPriority
+{
+	gwt-image: "notifBgPriority";
 }
 
 body .user-bar li div.notif-count-container:hover {
