@@ -42,11 +42,12 @@ public class LabeledTextBox extends TextBox
 
     /**
      * Constructor.
-     *
+     * 
      * @param inLabel
      *            the label text.
      */
-    public @UiConstructor LabeledTextBox(final String inLabel)
+    @UiConstructor
+    public LabeledTextBox(final String inLabel)
     {
         label = inLabel;
 
@@ -77,7 +78,7 @@ public class LabeledTextBox extends TextBox
 
     /**
      * Checks if the textbox is empty.
-     *
+     * 
      * @return true if the box is empty.
      */
     public boolean isEmpty()
@@ -120,7 +121,7 @@ public class LabeledTextBox extends TextBox
 
     /**
      * Overrides setText to also clear the label of the box.
-     *
+     * 
      * @param text
      *            The text to put in the text box.
      */
@@ -134,7 +135,7 @@ public class LabeledTextBox extends TextBox
 
     /**
      * Overrides getText to not return the label.
-     *
+     * 
      * @return the text.
      */
     @Override
@@ -152,7 +153,7 @@ public class LabeledTextBox extends TextBox
 
     /**
      * Sets the label for an empty text box.
-     *
+     * 
      * @param inLabel
      *            The label.
      */
@@ -163,7 +164,7 @@ public class LabeledTextBox extends TextBox
 
     /**
      * returns the empty text box label.
-     *
+     * 
      * @return the label
      */
     public String getLabel()

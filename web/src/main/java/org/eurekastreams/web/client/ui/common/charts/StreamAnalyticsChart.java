@@ -56,7 +56,6 @@ public class StreamAnalyticsChart extends GChart
 
         getYAxis().setHasGridlines(true);
 
-        
         getXAxis().setTickCount(0);
         getYAxis().setTickCount(0);
 
@@ -67,11 +66,12 @@ public class StreamAnalyticsChart extends GChart
         getCurve(0).getSymbol().setWidth(fillSpacing);
         getCurve(0).getSymbol().setFillThickness(Math.max(1, fillSpacing));
         getCurve(0).getSymbol().setFillSpacing(fillSpacing);
+        getCurve(0).getSymbol().setHoverAnnotationEnabled(false);
 
         getCurve(1).getSymbol().setSymbolType(SymbolType.LINE);
         getCurve(1).getSymbol().setBackgroundColor("#339966");
         getCurve(1).getSymbol().setBorderColor(TRANSPARENT_BORDER_COLOR);
-
+        getCurve(1).getSymbol().setHoverAnnotationEnabled(false);
     }
 
     /**

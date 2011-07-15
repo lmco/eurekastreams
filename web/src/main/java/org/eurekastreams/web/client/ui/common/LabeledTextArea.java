@@ -20,7 +20,6 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -43,11 +42,12 @@ public class LabeledTextArea extends TextArea
 
     /**
      * Constructor.
-     *
+     * 
      * @param inLabel
      *            the label text.
      */
-    public @UiConstructor LabeledTextArea(final String inLabel)
+    @UiConstructor
+    public LabeledTextArea(final String inLabel)
     {
         label = inLabel;
 
@@ -78,7 +78,7 @@ public class LabeledTextArea extends TextArea
 
     /**
      * Checks if the textbox is empty.
-     *
+     * 
      * @return true if the box is empty.
      */
     public boolean isEmpty()
@@ -121,7 +121,7 @@ public class LabeledTextArea extends TextArea
 
     /**
      * Overrides setText to also clear the label of the box.
-     *
+     * 
      * @param text
      *            The text to put in the text box.
      */
@@ -135,7 +135,7 @@ public class LabeledTextArea extends TextArea
 
     /**
      * Overrides getText to not return the label.
-     *
+     * 
      * @return the text.
      */
     @Override
@@ -153,7 +153,7 @@ public class LabeledTextArea extends TextArea
 
     /**
      * Sets the label for an empty text box.
-     *
+     * 
      * @param inLabel
      *            The label.
      */
@@ -164,7 +164,7 @@ public class LabeledTextArea extends TextArea
 
     /**
      * returns the empty text box label.
-     *
+     * 
      * @return the label
      */
     public String getLabel()

@@ -134,6 +134,12 @@ public class PagerComposite extends Composite
 
     }
 
+    /**
+     * Set the header.
+     * 
+     * @param headerTextString
+     *            header text.
+     */
     public void setHeader(final String headerTextString)
     {
         headerText.getStyle().setDisplay(Display.BLOCK);

@@ -218,7 +218,7 @@ public class DiscoverContent extends Composite
         
         goSearch.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent arg0)
+            public void onClick(final ClickEvent arg0)
             {
                 EventBus.getInstance().notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
                         generateParams(searchBox.getText()), false)));

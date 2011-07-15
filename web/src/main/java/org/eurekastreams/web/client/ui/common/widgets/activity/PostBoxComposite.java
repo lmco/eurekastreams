@@ -230,6 +230,7 @@ public class PostBoxComposite extends Composite
         postCharCount.setInnerText(POST_MAX.toString());
         checkPostBox();
         postBox.setLabel("Something to share?");
+        postBox.reset();
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
@@ -277,7 +278,8 @@ public class PostBoxComposite extends Composite
                 {
                     public void run()
                     {
-                        if (postBox.getText().trim().length() == 0 && !addLinkComposite.inAddMode() && attachment == null)
+                        if (postBox.getText().trim().length() == 0 && !addLinkComposite.inAddMode()
+                                && attachment == null)
                         {
                             postOptions.removeClassName(style.visiblePostBox());
                             postBox.getElement().getStyle().clearHeight();
@@ -315,9 +317,9 @@ public class PostBoxComposite extends Composite
                     ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
                             : new NotePopulator();
 
-                    ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(), DomainConversionUtility
-                            .convertToEntityType(currentStream.getScopeType()), currentStream.getUniqueKey(),
-                            new PostPopulator(), objectStrat);
+                    ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
+                            DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
+                            currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
                     PostActivityRequest postRequest = new PostActivityRequest(activity);
 
                     ActivityModel.getInstance().insert(postRequest);
@@ -325,14 +327,16 @@ public class PostBoxComposite extends Composite
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(GotAllPopularHashTagsResponseEvent.class,
-                new Observer<GotAllPopularHashTagsResponseEvent>()
-                {
-                    public void update(final GotAllPopularHashTagsResponseEvent event)
-                    {
-                        allHashTags = event.getResponse();
-                    }
-                });
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotAllPopularHashTagsResponseEvent.class,
+                        new Observer<GotAllPopularHashTagsResponseEvent>()
+                        {
+                            public void update(final GotAllPopularHashTagsResponseEvent event)
+                            {
+                                allHashTags = event.getResponse();
+                            }
+                        });
 
         AllPopularHashTagsModel.getInstance().fetch(null, true);
 
