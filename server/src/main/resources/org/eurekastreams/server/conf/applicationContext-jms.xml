@@ -22,11 +22,17 @@
     <bean id="eurekaActivityQueue" class="org.apache.activemq.command.ActiveMQQueue" lazy-init="false">
         <constructor-arg value="${eureka.queue.activity.queuename}" />
     </bean>
+    
+	  <!-- Spring JMS Template -->
+	  <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	    <property name="connectionFactory" ref="connectionFactory"/>
+	    <property name="defaultDestination" ref="eurekaActivityQueue"/>
+	  </bean>
+    
 
    <!-- the message producer -->   
     <bean id="queueTaskHandler" class="org.eurekastreams.commons.task.QueueTaskHandler" lazy-init="false">
-        <property name="connectionFactory" ref="connectionFactory" />
-        <property name="queue" ref="eurekaActivityQueue" />
+        <constructor-arg ref="jmsTemplate"/>
     </bean>
 
 </beans>

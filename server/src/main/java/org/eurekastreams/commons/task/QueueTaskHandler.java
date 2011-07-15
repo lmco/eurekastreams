@@ -15,20 +15,16 @@
  */
 package org.eurekastreams.commons.task;
 
-import java.io.Serializable;
-
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
-import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.apache.log4j.Logger;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
+import org.springframework.util.Assert;
 
 /**
  * This class puts a request into a message and places it on the queue.
@@ -41,39 +37,23 @@ public class QueueTaskHandler implements TaskHandler
      * The logger.
      */
     private Logger logger = Logger.getLogger(QueueTaskHandler.class);
-    
+
     /**
      * The JMS template used to place the request on the queue.
      */
     private JmsTemplate jmsTemplate;
-    
+
     /**
-     * The queue that the request will be placed upon.
-     */
-    private Queue jmsQueue;
-    
-    /**
-     * The connection factory used to create the jms template.
+     * Constructor.
      * 
-     * @param connectionFactory
-     *            the connection factory
+     * @param inJmsTemplate
+     *            The JMS template used to place the request on the queue.
      */
-    @Required
-    public void setConnectionFactory(final ConnectionFactory connectionFactory) 
+    public QueueTaskHandler(final JmsTemplate inJmsTemplate)
     {
-        this.jmsTemplate = new JmsTemplate(connectionFactory);
-    }
-     
-    /**
-     * The queue that the request will be placed upon.
-     * 
-     * @param queue
-     *            the queue 
-     */
-    @Required
-    public void setQueue(final Queue queue) 
-    {
-        this.jmsQueue = queue;
+        jmsTemplate = inJmsTemplate;
+        Assert.notNull(jmsTemplate, "JMS template cannot be null");
+        Assert.notNull(jmsTemplate.getDefaultDestination(), "JMS template must have default destination set.");
     }
 
     /**
@@ -82,16 +62,16 @@ public class QueueTaskHandler implements TaskHandler
      * @param inUserActionRequest
      *            the request
      */
-    public void handleTask(final UserActionRequest inUserActionRequest) 
+    public void handleTask(final UserActionRequest inUserActionRequest)
     {
-        this.jmsTemplate.send(this.jmsQueue, new MessageCreator() 
+        jmsTemplate.send(new MessageCreator()
         {
-            public Message createMessage(final Session session) throws JMSException 
+            public Message createMessage(final Session session) throws JMSException
             {
-                ObjectMessage message = session.createObjectMessage((Serializable) inUserActionRequest);
+                ObjectMessage message = session.createObjectMessage(inUserActionRequest);
                 return message;
-            }     
-       });
-       logger.info("Message sent to message broker");
-   }
+            }
+        });
+        logger.debug("Message sent to message broker");
+    }
 }

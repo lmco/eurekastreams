@@ -13,9 +13,6 @@
 
     <!-- Hook up the Indexing JMS Queue -->
     <bean id="mdbSearchController" class="org.eurekastreams.server.search.indexing.MDBSearchController" />
-    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
-    </bean>
     
     <jms:listener-container connection-factory="connectionFactory">
         <jms:listener destination="${eureka.queue.hibernatesearch.queuename}" ref="mdbSearchController" />
