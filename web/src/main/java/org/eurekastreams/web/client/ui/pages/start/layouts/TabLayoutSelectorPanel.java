@@ -84,7 +84,7 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
 
     /**
      * Constructor.
-     *
+     * 
      * @param inTabId
      *            the tab for the layout selector.
      * @param inLayout
@@ -147,7 +147,7 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
                         if (currentLayout.getNumberOfZones() > layout.getNumberOfZones())
                         {
                             shouldChange = jSNIFacade.confirm("You have a column that would be removed. "
-                                    + "Should we move your gadgets for you?");
+                                    + "Should we move your apps for you?");
                         }
 
                         if (shouldChange)
@@ -167,23 +167,23 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
 
     /**
      * Setup the carousel with YUI.
-     *
+     * 
      * @param timeStamp
      *            used to allow multiple carousels.
      */
     private static native void setupCarousel(final String timeStamp) /*-{
-                                        var carousel = new $wnd.YAHOO.widget.Carousel("carousel" + timeStamp);
-                                        carousel.set("animation", { speed: 0.5 });
-                                        carousel.set("numVisible", 5);
-                                        carousel.set("scrollIncrement", 5);
-                                        carousel.render();
-                                        carousel.show();
+                                           var carousel = new $wnd.YAHOO.widget.Carousel("carousel" + timeStamp);
+                                           carousel.set("animation", { speed: 0.5 });
+                                           carousel.set("numVisible", 5);
+                                           carousel.set("scrollIncrement", 5);
+                                           carousel.render();
+                                           carousel.show();
 
-                                     }-*/;
+                                        }-*/;
 
     /**
      * Set the active layout.
-     *
+     * 
      * @param layout
      *            the layout to use.
      */
@@ -202,7 +202,7 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
 
     /**
      * Get the layout title.
-     *
+     * 
      * @return the layout title.
      */
     @Override
@@ -213,7 +213,7 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
 
     /**
      * There is no title bar widget.
-     *
+     * 
      * @return nothing.
      */
     public Widget getTitleBarWidget()
