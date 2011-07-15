@@ -70,11 +70,20 @@
 			.pageResults>* {
 				float: left;
 			}
+			
+			.headerText {
+				background-image: url(style/images/headerTransparentBG.png);
+				color: white;
+				display: block;
+				font-size: 18px;
+				padding: 10px;
+				margin-bottom: 20px;
+			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.pagerContainer}"
 		ui:field="pagerContainer">
-
+		<div class="{style.headerText}" ui:field="headerText"></div>
 		<g:FlowPanel addStyleNames="{style.pageResults}" ui:field="pageResults"></g:FlowPanel>
 		<g:FlowPanel addStyleNames="{style.buttons}" ui:field="buttonContainer">
 			<g:Label addStyleNames="{style.prevButton}" ui:field="prevButton">Prev

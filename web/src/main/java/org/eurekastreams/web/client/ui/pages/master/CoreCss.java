@@ -1386,4 +1386,6 @@ public interface CoreCss extends CssResource
     String notifCountHighPriority();
 
     String notifHeader();
+
+    String discoverPageList();
 }

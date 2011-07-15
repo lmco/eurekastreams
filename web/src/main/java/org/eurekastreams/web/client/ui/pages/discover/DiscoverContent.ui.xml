@@ -1,16 +1,31 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager'>
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager' xmlns:common='urn:import:org.eurekastreams.web.client.ui.common' >
+
+	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.discover.DiscoverContent.DiscoverStyle">
 			.discoverStreamList {
-				border-top: 2px solid #bbb;
 				list-style: none;
 				padding-left: 0;
-				width: 220px;
+				width: 235px;
 				float: left;
 				margin-left: 10px;
+			}
+			
+			.discoverStreamList>div {
 				background-color: white;
+				border-left: 1px solid #BDBDBD;
+				border-right: 1px solid #BDBDBD;
+				border-top: 1px solid white;
+			}
+			
+			.discoverStreamList>div>div:first-child {
+				border-top: 2px solid #bdbdbd;
+			}
+			
+			.discoverStreamList>div>div {
+				border-bottom: 1px solid #bdbdbd;
 			}
 			
 			.streamPager {
@@ -18,52 +33,88 @@
 			}
 			
 			.discoveryPage {
-				padding: 20px;
 				overflow: hidden;
+			}
+			
+			h3 {
+				margin-bottom: 5px;
+			}
+			
+			.activePager {
+				margin-top: 20px;
+			}
+			
+			.searchBar {
+				padding: 10px;
+				background-color: #cccccc;
+				text-align: center;
+			}
+			
+			.searchBar input {
+				border-color: #999999 white white;
+				border-right: 1px solid white;
+				border-style: solid;
+				border-width: 1px;
+				color: #666666;
+				font-size: 14px;
+				padding: 10px;
+				width: 350px;
+			}
+			
+			@sprite .goSearch {
+				gwt-image: "searchNormal";
+				border-left: 1px solid #999;
+				background-color: white;
+				border-top: 1px solid #999999;
+				display: inline-block;
+				height: 37px;
+				vertical-align: bottom;
+				cursor: pointer;
+			}
+			
+			.featuredPager {
+				background-image: url("style/images/featured_Bg.png");
+				height: 234px;
 			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.discoveryPage}">
 		<div>
-			<h3>Featured Streams</h3>
-			<pager:PagerComposite addStyleNames="{style.streamPager}"
+			<pager:PagerComposite addStyleNames="{style.streamPager} {style.featuredPager}"
 				ui:field="featuredStreamsComposite">
 			</pager:PagerComposite>
 		</div>
-		<div>
-			<h3>Most Active Streams</h3>
 
+		<div class="{style.searchBar}">
+			<g:FlowPanel ui:field="searchFlowPanel">
+				<common:LabeledTextBox ui:field="searchBox" inLabel="What are you looking for?" />
+				<g:Label ui:field="goSearch" addStyleNames="{style.goSearch}" />
+			</g:FlowPanel>
+		</div>
+
+		<div>
 			<pager:PagerComposite addStyleNames="{style.streamPager}"
 				ui:field="mostActiveStreamsComposite">
 			</pager:PagerComposite>
 		</div>
 
-		<div>
-			What are you looking for?
-			<g:FlowPanel ui:field="searchFlowPanel" />
-		</div>
-
 		<div class="{style.discoverStreamList}">
 			<h3>Suggested</h3>
-			<BR />
 			<g:FlowPanel ui:field="suggestedStreamsPanel" />
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Viewed</h3>
-			<BR />
 			<g:FlowPanel ui:field="mostViewedStreamsPanel" />
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Followed</h3>
-			<BR />
 			<g:FlowPanel ui:field="mostFollowedStreamsPanel" />
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Recent</h3>
-			<BR />
 			<g:FlowPanel ui:field="mostRecentStreamsPanel" />
 		</div>
 	</g:HTMLPanel>

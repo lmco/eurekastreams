@@ -22,6 +22,8 @@ import org.eurekastreams.web.client.ui.common.animation.SlideAnimation;
 import org.eurekastreams.web.client.ui.common.animation.SlideAnimation.Direction;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -94,6 +96,12 @@ public class PagerComposite extends Composite
     FlowPanel buttonContainer;
 
     /**
+     * Header text.
+     */
+    @UiField
+    DivElement headerText;
+
+    /**
      * Slide left animation.
      */
     private SlideAnimation slideAnimation = new SlideAnimation();
@@ -120,9 +128,16 @@ public class PagerComposite extends Composite
     {
         initWidget(binder.createAndBindUi(this));
         buttonContainer.setVisible(false);
+        headerText.getStyle().setDisplay(Display.NONE);
 
         buildPage();
 
+    }
+
+    public void setHeader(final String headerTextString)
+    {
+        headerText.getStyle().setDisplay(Display.BLOCK);
+        headerText.setInnerHTML(headerTextString);
     }
 
     /**

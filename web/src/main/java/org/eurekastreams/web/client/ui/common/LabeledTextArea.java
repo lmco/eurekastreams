@@ -19,13 +19,14 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.FocusListener;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Makes a textbox show a grayed out label when it's empty.
+ * Makes a textarea show a grayed out label when it's empty.
  */
-public class LabeledTextBox extends TextBox
+public class LabeledTextArea extends TextArea
 {
     /**
      * If the box is labeled.
@@ -46,11 +47,11 @@ public class LabeledTextBox extends TextBox
      * @param inLabel
      *            the label text.
      */
-    public @UiConstructor LabeledTextBox(final String inLabel)
+    public @UiConstructor LabeledTextArea(final String inLabel)
     {
         label = inLabel;
 
-        final TextBox thisBuffered = this;
+        final TextArea thisBuffered = this;
 
         this.addFocusListener(new FocusListener()
         {

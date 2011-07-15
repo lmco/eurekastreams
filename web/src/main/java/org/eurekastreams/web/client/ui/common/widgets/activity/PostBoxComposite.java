@@ -34,7 +34,6 @@ import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
-import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
 import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
@@ -182,16 +181,6 @@ public class PostBoxComposite extends Composite
     private static final int POST_BOX_DEFAULT_HEIGHT = 250;
 
     /**
-     * Post box expand animation duration.
-     */
-    private static final int POST_BOX_EXPAND_ANIMATION_DURATION = 100;
-
-    /**
-     * Post box animation.
-     */
-    private ExpandCollapseAnimation postBoxAnimation;
-
-    /**
      * Timer factory.
      */
     private TimerFactory timerFactory = new TimerFactory();
@@ -236,11 +225,11 @@ public class PostBoxComposite extends Composite
      */
     private void buildPage()
     {
-        postBoxAnimation = new ExpandCollapseAnimation(postBox.getElement(), POST_BOX_EXPAND_ANIMATION_DURATION);
         posterAvatar.add(avatarRenderer.render(Session.getInstance().getCurrentPerson().getEntityId(), Session
                 .getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.Small));
         postCharCount.setInnerText(POST_MAX.toString());
         checkPostBox();
+        postBox.setLabel("Something to share?");
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
@@ -288,7 +277,7 @@ public class PostBoxComposite extends Composite
                 {
                     public void run()
                     {
-                        if (postBox.getText().length() == 0 && !addLinkComposite.inAddMode() && attachment == null)
+                        if (postBox.getText().trim().length() == 0 && !addLinkComposite.inAddMode() && attachment == null)
                         {
                             postOptions.removeClassName(style.visiblePostBox());
                             postBox.getElement().getStyle().clearHeight();
@@ -342,7 +331,6 @@ public class PostBoxComposite extends Composite
                     public void update(final GotAllPopularHashTagsResponseEvent event)
                     {
                         allHashTags = event.getResponse();
-                        hashTags.getElement().getStyle().setWidth(postBox.getElement().getClientWidth(), Unit.PX);
                     }
                 });
 
@@ -352,6 +340,7 @@ public class PostBoxComposite extends Composite
         {
             public void onKeyUp(final KeyUpEvent event)
             {
+                hashTags.getElement().getStyle().setWidth(postBox.getElement().getClientWidth(), Unit.PX);
                 hashTags.clear();
                 hashTags.setVisible(false);
                 String[] words = postBox.getText().split("\\s");
@@ -402,9 +391,9 @@ public class PostBoxComposite extends Composite
      */
     protected void checkPostBox()
     {
-        if (postBox.getElement().getClientHeight() != postBox.getElement().getScrollHeight())
+        if (postBox.getElement().getClientHeight() < postBox.getElement().getScrollHeight())
         {
-            postBoxAnimation.expand(postBox.getElement().getScrollHeight());
+            postBox.getElement().getStyle().setHeight(postBox.getElement().getScrollHeight(), Unit.PX);
         }
 
         postCharCount.setInnerText(Integer.toString(POST_MAX - postBox.getText().length()));

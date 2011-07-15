@@ -126,6 +126,12 @@ input.empty-labeled-textbox {
 	color: #666666 ! important;
 }
 
+textarea.empty-labeled-textbox {
+	color: #666666 ! important;
+	font-size: 18px;
+}
+
+
 .content-warning {
 	font-style: italic;
 	color: #666;
@@ -2011,11 +2017,6 @@ body .post-to-stream .over-character-limit {
 	margin-top: 5px;
 }
 
-.stream-message-item .message-body {
-	line-height: 1.5;
-	font-size: 13px;
-}
-
 .message-metadata-additional {
 	margin-bottom: 5px;
 }
@@ -3305,6 +3306,22 @@ body .shortname-form-element input {
 }
 
 
+.discoverPageList .followLink {
+	display: none;
+    position: absolute;
+    left: 145px;
+    top: -35px;
+}
+
+.discoverPageList .connection-item:hover .followLink {
+	display: block;
+}
+
+.discoverPageList .connection-item-followers > div
+{
+	position: relative;
+}
+
 .connection-master .pager-container {
 	width: auto;
 }
@@ -3333,7 +3350,9 @@ body .shortname-form-element input {
 	display: inline-block;
 	min-height: 30px;
 	vertical-align: top;
-	margin-bottom: -20px;
+	margin-bottom: -10px;
+	margin-top: -10px;
+width: 330px;
 }
 
 .connection-col-left, .connection-col-middle {
@@ -3344,9 +3363,8 @@ body .shortname-form-element input {
 .connection-item-info {
 	display: inline-block;
 	text-align: left;
-	padding-left: 20px;
+	padding-left: 10px;
 	vertical-align: top;
-	width: 249px;
 	font-size: 12px;
 	line-height: 16px;
 	margin-top: -3px;
@@ -3354,8 +3372,7 @@ body .shortname-form-element input {
 
 .connection-item {
 	display: block;
-	width: 345px;
-	margin-bottom: 20px;
+	padding: 10px 0;
 }
 
 .options .connection-filter-button,.options .sort-option {

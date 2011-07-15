@@ -15,23 +15,26 @@
  */
 package org.eurekastreams.web.client.ui.common.autocomplete;
 
+import org.eurekastreams.web.client.ui.common.LabeledTextArea;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Subclass of TextArea that handles onPaste events, registering them as onChanged.
  */
-public class ExtendedTextArea extends TextArea
+public class ExtendedTextArea extends LabeledTextArea
 {
     /**
      * Constructor.
      */
     public ExtendedTextArea()
     {
-        super();
+        super("");
         sinkEvents(Event.ONPASTE);
     }
 
