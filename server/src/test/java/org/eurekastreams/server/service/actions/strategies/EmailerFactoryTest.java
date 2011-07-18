@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,7 +161,6 @@ public class EmailerFactoryTest
         assertEquals(toString, list[0].toString());
     }
 
-
     /**
      * Test setting sender.
      *
@@ -183,8 +182,28 @@ public class EmailerFactoryTest
     }
 
     /**
+     * Test setting reply-to.
+     * 
+     * @throws MessagingException
+     *             Only on test failure.
+     */
+    @Test
+    public void testSetReplyTo() throws MessagingException
+    {
+        final String addressString = "somebody@email.com";
+
+        MimeMessage msg = sut.createMessage();
+
+        sut.setReplyTo(msg, addressString);
+
+        Address[] list = msg.getReplyTo();
+        assertEquals(1, list.length);
+        assertEquals(addressString, list[0].toString());
+    }
+
+    /**
      * Test setting subject.
-     *
+     * 
      * @throws MessagingException
      *             Only on test failure.
      */

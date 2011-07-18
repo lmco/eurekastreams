@@ -35,6 +35,7 @@ import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hamcrest.Description;
@@ -279,7 +280,18 @@ public class EmailNotifierTest
     {
         commonSetup();
 
-        UserActionRequest result = sut.notify(OK_TYPE, Arrays.asList(RECIPIENT1, RECIPIENT2), Collections.EMPTY_MAP,
+        final Object actorEmail = "actor@eurekastreams.org";
+        final HasEmail actor = context.mock(HasEmail.class, "actor");
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actor).getEmail();
+                will(returnValue(actorEmail));
+            }
+        });
+
+        UserActionRequest result = sut.notify(OK_TYPE, Arrays.asList(RECIPIENT1, RECIPIENT2),
+                Collections.singletonMap(NotificationPropertyKeys.ACTOR, (Object) actor),
                 recipientIndex);
         context.assertIsSatisfied();
 
@@ -291,6 +303,7 @@ public class EmailNotifierTest
         assertEquals(PREFIX + SUBJECT_RENDERED, request.getSubject());
         assertTrue(request.getToRecipient() == null || request.getToRecipient().isEmpty());
         assertEquals(EMAIL1 + "," + EMAIL2, request.getBccRecipients());
+        assertEquals(actorEmail, request.getReplyTo());
         assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
         assertFalse(request.isHighPriority());
     }

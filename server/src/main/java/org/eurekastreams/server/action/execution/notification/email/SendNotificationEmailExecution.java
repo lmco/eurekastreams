@@ -20,6 +20,7 @@ import java.io.Serializable;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -66,13 +67,17 @@ public class SendNotificationEmailExecution implements ExecutionStrategy<ActionC
             emailer.setSubject(message, request.getSubject());
             emailer.setTextBody(message, request.getTextBody());
             emailer.setHtmlBody(message, request.getHtmlBody());
-            if (request.getToRecipient() != null && !request.getToRecipient().isEmpty())
+            if (StringUtils.isNotBlank(request.getToRecipient()))
             {
                 emailer.setTo(message, request.getToRecipient());
             }
-            if (request.getBccRecipients() != null && !request.getBccRecipients().isEmpty())
+            if (StringUtils.isNotBlank(request.getBccRecipients()))
             {
                 emailer.setBcc(message, request.getBccRecipients());
+            }
+            if (StringUtils.isNotBlank(request.getReplyTo()))
+            {
+                emailer.setReplyTo(message, request.getReplyTo());
             }
             if (request.isHighPriority())
             {
