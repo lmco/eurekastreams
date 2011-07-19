@@ -51,26 +51,29 @@ $settings.siteLabel
 #end
 #end
 
-#macro( activityBody $activity )
-##${helper.substituteEurekaPlaceholders($activity.getBaseObjectProperties('content'),$context)}##
-${helper.resolveActivityBody($activity,$context)}##
+#macro( activityBody_txt $activity )
+${helper.resolveMarkdownForText($helper.resolveActivityBody($activity,$context))}##
+#end
+
+#macro( activityBody_html $activity )
+${helper.resolveMarkdownForHtml($helper.resolveActivityBody($activity,$context))}##
 #end
 
 #macro( activityContent_txt $activity )
 #if ($activity.BaseObjectType == 'BOOKMARK')
-"#activityBody($activity)
+"#activityBody_txt($activity)
 
 $activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targetUrl"
 #else
-"#activityBody($activity)"
+"#activityBody_txt($activity)"
 #end
 #end
 
 #macro( activityContent_html $activity )
 #if ($activity.BaseObjectType == 'BOOKMARK')
-<p>"#activityBody($activity)<br/><br/>
+<p>"#activityBody_html($activity)<br/><br/>
 <a href="$activity.baseObjectProperties.targetUrl">$activity.baseObjectProperties.targetTitle</a>"</p>
 #else
-<p>"#activityBody($activity)"</p>
+<p>"#activityBody_html($activity)"</p>
 #end
 #end
