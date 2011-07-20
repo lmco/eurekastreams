@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class StreamPluginsPanel extends FlowPanel
     /**
      * The panel.
      */
-    private FlowPanel panel = new FlowPanel();
+    private final FlowPanel panel = new FlowPanel();
 
     /**
      * Gadget tab.
@@ -87,23 +87,23 @@ public class StreamPluginsPanel extends FlowPanel
     /**
      * Add Gadget button.
      */
-    private Hyperlink addPlugin;
+    private final Hyperlink addPlugin;
 
     /**
      * Container for the gallery tabs.
      */
-    private FlowPanel galleryPortalContainer = new FlowPanel();
+    private final FlowPanel galleryPortalContainer = new FlowPanel();
     /**
      * Container for the add/edit panels.
      */
-    private FlowPanel galleryAddOrEditContainer = new FlowPanel();
+    private final FlowPanel galleryAddOrEditContainer = new FlowPanel();
 
     /**
      * Stream plugins panel.
      */
     public StreamPluginsPanel()
     {
-        this.clear();
+        clear();
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("tab", "Plugins");
@@ -213,11 +213,13 @@ public class StreamPluginsPanel extends FlowPanel
                             form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.SETTINGS, "tab", "Plugins")));
                             form.addFormElement(new ValueOnlyFormElement("id", id));
-                            form.addWidget(new HTML(
+                            HTML infoMessage = new HTML(
                                     "<span class='gallery-upload-note'><strong>Please Note:</strong><br />"
-                                            + "Please be sure your XML file includes the required fields."
+                                            + "Please be sure your XML file includes the required fields.<br />"
                                             + " You will not be able to upload the XML without the required"
-                                            + " fields.</span>"));
+                                            + " fields.</span>");
+                            infoMessage.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addPluginInfoMessage());
+                            form.addWidget(infoMessage);
                             form.addFormDivider();
 
                             List<String> categories = new LinkedList<String>();

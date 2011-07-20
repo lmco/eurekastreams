@@ -1390,4 +1390,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("input-wrapper-wrapper")
     String inputWrapperWrapper();
+
+    @ClassName("add-plugin-info-message")
+    String addPluginInfoMessage();
 }

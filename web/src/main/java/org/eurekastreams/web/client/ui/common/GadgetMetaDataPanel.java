@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,14 +52,14 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Displays gadget metadata for the gallery. (and anything else I guess).
- * 
+ *
  */
 public class GadgetMetaDataPanel extends FlowPanel
 {
     /**
      * The tab id.
      */
-    private Long tabId;
+    private final Long tabId;
 
     /**
      * Apply Gadget link.
@@ -71,9 +71,12 @@ public class GadgetMetaDataPanel extends FlowPanel
      */
     private Integer dropZoneId = null;
 
+    /** Date format (cached for performance). */
+    private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("LLL d, yyyy");
+
     /**
      * Default constructor.
-     * 
+     *
      * @param metaData
      *            the gadget meta data.
      * @param inTabId
@@ -153,7 +156,7 @@ public class GadgetMetaDataPanel extends FlowPanel
         FlowPanel imageContainer = new FlowPanel();
         imageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().imageContainer());
 
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMetaData());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMetaData());
 
         // Im a gadget.
         if (tabId != null)
@@ -254,7 +257,7 @@ public class GadgetMetaDataPanel extends FlowPanel
                 + metaData.getAuthor() + "</a>"));
         insertActionSeparator(gadgetExtInfo);
         gadgetExtInfo.add(new HTML(" Publish date: <span class='light'>"
-                + DateTimeFormat.getLongDateFormat().format(metaData.getGadgetDefinition().getCreated()) + "</span>"));
+                + DATE_FORMAT.format(metaData.getGadgetDefinition().getCreated()) + "</span>"));
         dataPanel.add(gadgetExtInfo);
 
         this.add(imageContainer);
@@ -263,7 +266,7 @@ public class GadgetMetaDataPanel extends FlowPanel
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */
@@ -276,7 +279,7 @@ public class GadgetMetaDataPanel extends FlowPanel
 
     /**
      * Sets the theme as active or not.
-     * 
+     *
      * @param active
      *            value.
      */
