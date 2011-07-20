@@ -35,8 +35,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 /**
  * Search for stream-postable people and groups by prefix, using Hibernate Search.
  */
-public class SearchPeopleAndGroupsByPrefix extends
-        ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
+public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
 {
     /**
      * Logger.
@@ -64,9 +63,9 @@ public class SearchPeopleAndGroupsByPrefix extends
     private final DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
-     * Flag to enable group searching only.
+     * Flag for excluding entities with read-only streams from results.
      */
-    private final boolean searchGroupsOnly;
+    private boolean excludeReadOnlyStreams;
 
     /** Regex to match characters which need to be escaped for Lucene. */
     private static final String LUCENE_ESCAPE_REGEX_STRING = // \n
@@ -77,7 +76,7 @@ public class SearchPeopleAndGroupsByPrefix extends
 
     /**
      * Constructor.
-     *
+     * 
      * @param inMaxResults
      *            the max number of results to return
      * @param inSearchRequestBuilder
@@ -86,24 +85,24 @@ public class SearchPeopleAndGroupsByPrefix extends
      *            Mapper to get groups user has access to.
      * @param inGetPersonIdByAccountIdMapper
      *            Mapper used to translate user accountId to DB id.
-     * @param inSearchGroupsOnly
-     *            Flag to search for groups only.
+     * @param inExcludeReadOnlyStreams
+     *            Flag for excluding entities with read-only streams from results.
      */
     public SearchPeopleAndGroupsByPrefix(final Integer inMaxResults,
             final ProjectionSearchRequestBuilder inSearchRequestBuilder,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetGroupIdsMapper,
-            final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper, final boolean inSearchGroupsOnly)
+            final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper, final boolean inExcludeReadOnlyStreams)
     {
         maxResults = inMaxResults;
         searchRequestBuilder = inSearchRequestBuilder;
         getGroupIdsMapper = inGetGroupIdsMapper;
         getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
-        searchGroupsOnly = inSearchGroupsOnly;
+        excludeReadOnlyStreams = inExcludeReadOnlyStreams;
     }
 
     /**
      * Search for people and groups by prefix.
-     *
+     * 
      * @param inRequest
      *            The request object containing parameters for search.
      * @return List of DisplayEntityModelView representing people/groups matching search criteria.
@@ -118,8 +117,9 @@ public class SearchPeopleAndGroupsByPrefix extends
         // - both: isStreamPostable, isPublic
         // Due to text stemming, we need to search with and without the wildcard
         String term = escapeSearchTerm(inRequest.getPrefix());
+        String excludeReadOnlyClause = excludeReadOnlyStreams ? "+isStreamPostable:true" : "";
         String searchText = String.format("+(name:(%1$s* %1$s) lastName:(%1$s* %1$s) preferredName:(%1$s* %1$s)^0.5) "
-                + "+isStreamPostable:true %2$s", term, getGroupVisibilityClause(inRequest));
+                + "%2$s %3$s", term, excludeReadOnlyClause, getGroupVisibilityClause(inRequest));
 
         if (log.isTraceEnabled())
         {
@@ -143,7 +143,7 @@ public class SearchPeopleAndGroupsByPrefix extends
         for (ModelView modelView : searchResults)
         {
             DisplayEntityModelView displayModelView = new DisplayEntityModelView();
-            if (modelView instanceof PersonModelView && !searchGroupsOnly)
+            if (modelView instanceof PersonModelView)
             {
                 PersonModelView person = (PersonModelView) modelView;
 
@@ -181,7 +181,7 @@ public class SearchPeopleAndGroupsByPrefix extends
 
     /**
      * Returns search clause used to sort out groups user doesn't have access to.
-     *
+     * 
      * @param inRequest
      *            The search parameters
      * @return Search clause used to sort out groups user doesn't have access to.
@@ -216,7 +216,7 @@ public class SearchPeopleAndGroupsByPrefix extends
 
     /**
      * Escapes a search term for Lucene.
-     *
+     * 
      * @param term
      *            Term to escape.
      * @return Escaped term.
