@@ -26,8 +26,8 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
-import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -36,44 +36,44 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Return list of StreamsDTOs representing streams a user is following.
- * 
+ *
  */
 public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Mapper to get user id by accountid.
      */
-    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Mapper to get person ids for all persons current user is following.
      */
-    private DomainMapper<Long, List<Long>> personIdsUserIsFollowingMapper;
+    private final DomainMapper<Long, List<Long>> personIdsUserIsFollowingMapper;
 
     /**
      * Mapper to get group ids for all persons current user is following.
      */
-    private DomainMapper<Long, List<Long>> groupIdsUserIsFollowingMapper;
+    private final DomainMapper<Long, List<Long>> groupIdsUserIsFollowingMapper;
 
     /**
      * Mapper to get Person model views.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsMapper;
+    private final DomainMapper<List<Long>, List<PersonModelView>> personModelViewsMapper;
 
     /**
      * Mapper to get group model views.
      */
-    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupModelViewsMapper;
+    private final DomainMapper<List<Long>, List<DomainGroupModelView>> groupModelViewsMapper;
 
     /**
      * Populator for follower status of results.
      */
-    private FollowerStatusPopulator<StreamDTO> followerStatusPopulator;
+    private final FollowerStatusPopulator<StreamDTO> followerStatusPopulator;
 
     /**
      * Comparator for StreamDTOs by display name.
@@ -90,7 +90,7 @@ public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<Pri
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGetPersonIdByAccountIdMapper
      *            Mapper to get user id by accountid.
      * @param inPersonIdsUserIsFollowingMapper
@@ -151,9 +151,11 @@ public class GetStreamsUserIsFollowingExecution implements ExecutionStrategy<Pri
         // set up PagedSet result and return.
         int total = results.size();
         int startIndex = request.getStartIndex();
-        int endIndex = request.getEndIndex() > results.size() ? results.size() : request.getEndIndex() + 1;
+        int endIndex = request.getEndIndex() >= total ? total - 1 : request.getEndIndex();
 
-        ArrayList<StreamDTO> trimmedResults = new ArrayList<StreamDTO>(results.subList(startIndex, endIndex));
+        // Note that the end index in the request is INCLUSIVE but the end index for subList() is EXCLUSIVE, so account
+        // for the difference.
+        ArrayList<StreamDTO> trimmedResults = new ArrayList<StreamDTO>(results.subList(startIndex, endIndex + 1));
         start = System.currentTimeMillis();
         followerStatusPopulator.execute(currentUserId, trimmedResults, FollowerStatus.NOTFOLLOWING);
         log.debug("Populate follower status time: " + (System.currentTimeMillis() - start) + "(ms).");
