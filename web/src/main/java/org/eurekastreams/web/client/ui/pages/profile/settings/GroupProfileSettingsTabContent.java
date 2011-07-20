@@ -42,11 +42,9 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGrou
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.RichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.AvatarUploadFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.AvatarUploadStrategy;
-import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.BannerUploadStrategy;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -57,8 +55,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The basic group settings.
@@ -186,19 +182,6 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new RichTextAreaFormElement("Overview", DomainGroupModelView.OVERVIEW_KEY, entity
-                .getOverview(), "Enter an overview of your group.  This description will appear under the About tab.",
-                TEXT_EDITOR_WIDTH, false));
-        HTML html = new HTML("<strong>Tip:</strong> Include more detailed information about your group, "
-                + "type of content you would like people to post, or other relevant guidelines.");
-        html.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
-        Panel instructionPanel = new SimplePanel();
-        instructionPanel.add(html);
-        instructionPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
-        form.addWidget(instructionPanel);
-
-        form.addFormDivider();
-
         AutoCompleteItemDropDownFormElement keywords = new AutoCompleteItemDropDownFormElement("Keywords",
                 DomainGroupModelView.KEYWORDS_KEY, DomainFormatUtility.buildCapabilitiesStringFromStrings(entity
                         .getCapabilities()),
@@ -215,16 +198,6 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         form.addFormElement(new PersonModelViewLookupFormElement("Group Coordinators", "Add Coordinator",
                 coordinstructions, DomainGroupModelView.COORDINATORS_KEY, entity.getCoordinators(), true));
-
-        form.addFormDivider();
-
-        final AvatarUploadFormElement avatarBanner = new AvatarUploadFormElement("Banner",
-                "Select a JPG, PNG or GIF image from your computer. "
-                        + "The maximum file size is 4MB and will be cropped to 120 pixels high.",
-                "/eurekastreams/bannerupload?type=DomainGroup&entityName=" + entity.getShortName(), Session
-                        .getInstance().getActionProcessor(), new BannerUploadStrategy<DomainGroupModelView>(entity,
-                        entity.getId()));
-        form.addWidget(avatarBanner);
 
         form.addFormDivider();
 

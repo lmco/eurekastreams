@@ -129,6 +129,8 @@ input.empty-labeled-textbox {
 textarea.empty-labeled-textbox {
 	color: #666666 ! important;
 	font-size: 18px;
+	line-height: 2.4em;
+	font-style: italic;
 }
 
 
@@ -139,9 +141,14 @@ textarea.empty-labeled-textbox {
 
 @sprite .content-warning > div:first-child {
 	gwt-image: "informationCircleIcon";
-	margin-right: 5px;
 	display: inline-block;
 }
+
+.content-warning > span {
+	position: relative;
+	top: -3px;
+}
+
 
 img {
 	-ms-interpolation-mode: bicubic;
@@ -1709,9 +1716,9 @@ body .post-to-stream.small .content-warning {
 	display: none;
 }
 
-.post-to-stream .content-warning {
-	clear: both;
-	padding-top: 10px;
+.content-warning {
+	clear: left;
+	float: left;
 	font-size: 12px;
 	font-style: normal;
 	background-position: left 10px;
@@ -1808,6 +1815,7 @@ body .post-to-stream .over-character-limit {
 	padding: 10px;
 	padding-bottom: 20px;
 	border: 1px solid #c6c6c6;
+	margin-bottom: 10px;
 }
 
 .attach-link>.close,.link-panel>.close,.search-description>.close {
@@ -1859,7 +1867,7 @@ body .post-to-stream .over-character-limit {
 	cursor: pointer;
 }
 
-.post-to-stream .show-attach-link-panel {
+.show-attach-link-panel {
 	bottom: 0px;
 	padding-left: 20px;
 	background: url(style/images/postLinkBtnActive.png) no-repeat scroll 0 0;
@@ -1869,7 +1877,6 @@ body .post-to-stream .over-character-limit {
 
 .attach-link .add-button-submit {
 	float: right;
-	margin-top: 5px;
 	text-ident: 1000em;
 	overflow: hidden;
 }

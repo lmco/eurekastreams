@@ -159,7 +159,8 @@ public class LabeledTextArea extends TextArea
      */
     public void setLabel(final String inLabel)
     {
-        label = inLabel;
+        label = "  " + inLabel;
+        reset();
     }
 
     /**

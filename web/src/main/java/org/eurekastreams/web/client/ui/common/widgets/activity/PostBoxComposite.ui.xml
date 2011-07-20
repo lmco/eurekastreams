@@ -6,6 +6,10 @@
 	<ui:image field="postActive" src="style/images/postActive.png" />
 	<ui:image field="postInactive" src="style/images/postInactive.png" />
 
+
+	<ui:with field='resources'
+		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
+		
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite.PostBoxStyle">
 			.post-container {
@@ -110,6 +114,10 @@
 					<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
 					<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>
 					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
+					<div class="{resources.coreCss.contentWarning}">
+						<div></div>
+						<g:InlineLabel ui:field="contentWarning"></g:InlineLabel>
+					</div>
 				</div>
 			</div>
 		</div>
