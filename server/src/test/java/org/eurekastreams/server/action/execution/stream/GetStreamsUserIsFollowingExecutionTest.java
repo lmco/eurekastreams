@@ -24,13 +24,14 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.stream.GetStreamsUserIsFollowingRequest;
-import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -40,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Test for GetStreamsUserIsFollowingExecution.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class GetStreamsUserIsFollowingExecutionTest
@@ -58,74 +59,75 @@ public class GetStreamsUserIsFollowingExecutionTest
     /**
      * Action context.
      */
-    private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
 
     /**
      * Principal.
      */
-    private Principal principal = context.mock(Principal.class);
+    private final Principal principal = context.mock(Principal.class);
 
     /**
      * Current user id.
      */
-    private long currentUserId = 6L;
+    private final long currentUserId = 6L;
 
     /**
      * Requested user id.
      */
-    private long userId = 5L;
+    private final long userId = 5L;
 
     /**
      * User account id.
      */
-    private String userAccountId = "userAccountId";
+    private final String userAccountId = "userAccountId";
 
     /**
      * Mapper to get user id by accountid.
      */
-    private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
             "getPersonIdByAccountIdMapper");
 
     /**
      * Mapper to get person ids for all persons current user is following.
      */
-    private DomainMapper<Long, List<Long>> personIdsUserIsFollowingMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, List<Long>> personIdsUserIsFollowingMapper = context.mock(DomainMapper.class,
             "personIdsUserIsFollowingMapper");
 
     /**
      * Mapper to get group ids for all persons current user is following.
      */
-    private DomainMapper<Long, List<Long>> groupIdsUserIsFollowingMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, List<Long>> groupIdsUserIsFollowingMapper = context.mock(DomainMapper.class,
             "groupIdsUserIsFollowingMapper");
 
     /**
      * Mapper to get Person model views.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsMapper = context.mock(DomainMapper.class,
-            "personModelViewsMapper");
+    private final DomainMapper<List<Long>, List<PersonModelView>> personModelViewsMapper = context.mock(
+            DomainMapper.class, "personModelViewsMapper");
 
     /**
      * Mapper to get group model views.
      */
-    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupModelViewsMapper = context.mock(
+    private final DomainMapper<List<Long>, List<DomainGroupModelView>> groupModelViewsMapper = context.mock(
             DomainMapper.class, "groupModelViewsMapper");
 
     /**
      * Populator for follower status of results.
      */
-    private FollowerStatusPopulator<StreamDTO> followerStatusPopulator = context.mock(FollowerStatusPopulator.class);
+    private final FollowerStatusPopulator<StreamDTO> followerStatusPopulator = context
+            .mock(FollowerStatusPopulator.class);
 
     /**
      * System under test.
      */
-    private GetStreamsUserIsFollowingExecution sut = new GetStreamsUserIsFollowingExecution(
+    private final GetStreamsUserIsFollowingExecution sut = new GetStreamsUserIsFollowingExecution(
             getPersonIdByAccountIdMapper, personIdsUserIsFollowingMapper, groupIdsUserIsFollowingMapper,
             personModelViewsMapper, groupModelViewsMapper, followerStatusPopulator);
 
     /**
      * List of ids for mock id mappers to return.
      */
-    private List<Long> mvIds = new ArrayList<Long>(Arrays.asList(1L, 2L, 3L));
+    private final List<Long> mvIds = new ArrayList<Long>(Arrays.asList(1L, 2L, 3L));
 
     /**
      * PersonModelViews used in test.
@@ -150,7 +152,7 @@ public class GetStreamsUserIsFollowingExecutionTest
     /**
      * Action context param.
      */
-    private GetStreamsUserIsFollowingRequest request = context.mock(GetStreamsUserIsFollowingRequest.class);
+    private final GetStreamsUserIsFollowingRequest request = context.mock(GetStreamsUserIsFollowingRequest.class);
 
     /**
      * Setup.
@@ -225,6 +227,48 @@ public class GetStreamsUserIsFollowingExecutionTest
         });
 
         List<StreamDTO> results = sut.execute(ac).getPagedSet();
+        assertEquals(6, results.size());
+        assertEquals("a", results.get(0).getDisplayName());
+        assertEquals("b", results.get(1).getDisplayName());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public final void testAsk7Get6()
+    {
+        final int startIndex = 0;
+        final int endIndex = 6;
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(getPersonIdByAccountIdMapper).execute(userAccountId);
+                will(returnValue(userId));
+
+                oneOf(personIdsUserIsFollowingMapper).execute(userId);
+                will(returnValue(mvIds));
+
+                oneOf(personModelViewsMapper).execute(mvIds);
+                will(returnValue(pmvList));
+
+                oneOf(groupIdsUserIsFollowingMapper).execute(userId);
+                will(returnValue(mvIds));
+
+                oneOf(groupModelViewsMapper).execute(mvIds);
+                will(returnValue(gmvList));
+
+                oneOf(followerStatusPopulator).execute(with(any(Long.class)), with(any(List.class)),
+                        with(any(FollowerStatus.class)));
+            }
+        });
+
+        PrincipalActionContext actionContext = TestContextCreator.createPrincipalActionContext(
+                new GetStreamsUserIsFollowingRequest(userAccountId, startIndex, endIndex), null, currentUserId);
+        List<StreamDTO> results = sut.execute(actionContext).getPagedSet();
         assertEquals(6, results.size());
         assertEquals("a", results.get(0).getDisplayName());
         assertEquals("b", results.get(1).getDisplayName());
