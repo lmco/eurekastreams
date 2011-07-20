@@ -84,7 +84,6 @@
 				position: absolute;
 				background-color: white;
 				border: 1px solid #C6C6C6;
-				padding: 5px;
 				z-index: 900;
 				margin-top: -1px;
 				border-top-width: 0;
@@ -96,7 +95,7 @@
 			}
 			
 			.hashtags>div.activeHashTag {
-				background-color: #c6c6c6;
+				background-color: #426DF9;
 			}
 		</ui:style>
 
