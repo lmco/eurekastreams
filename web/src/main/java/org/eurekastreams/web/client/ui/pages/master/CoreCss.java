@@ -1387,4 +1387,7 @@ public interface CoreCss extends CssResource
     String notifHeader();
 
     String discoverPageList();
+
+    @ClassName("input-wrapper-wrapper")
+    String inputWrapperWrapper();
 }

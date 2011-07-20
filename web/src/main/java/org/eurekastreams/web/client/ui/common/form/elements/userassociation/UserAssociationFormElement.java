@@ -47,6 +47,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -116,16 +117,16 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
     /**
      * GalleryTabTemplates drop down info.
      */
-    private Map<String, String> galleryTabTemplateDropDownValues = new HashMap<String, String>();
+    private final Map<String, String> galleryTabTemplateDropDownValues = new HashMap<String, String>();
 
     /**
      * GalleryTabTemplates drop down info.
      */
-    private Map<String, String> themeDropDownValues = new HashMap<String, String>();
+    private final Map<String, String> themeDropDownValues = new HashMap<String, String>();
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSettings
      *            the system settings.
      */
@@ -162,7 +163,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
      */
     private void setupWidgets()
     {
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUserAssociation());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUserAssociation());
 
         Label label = new Label("Access List");
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
@@ -170,10 +171,6 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         Label topDesc = new Label("Specify the users that you want to have access to Eureka.");
         topDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().topLabel());
         topDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
-
-        requiredLabel = new Label();
-        requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
-        requiredLabel.setText("(required)");
 
         FlowPanel radioButtons = new FlowPanel();
         radioButtons.addStyleName(StaticResourceBundle.INSTANCE.coreCss().radioButtonContainer());
@@ -197,6 +194,13 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         final SimplePanel textWrapper = new SimplePanel();
         textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
         textWrapper.add(membershipCriteria);
+
+        Panel textWrapperWrapper = new FlowPanel();
+        textWrapperWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapperWrapper());
+        requiredLabel = new Label("(required)");
+        requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
+        textWrapperWrapper.add(requiredLabel);
+        textWrapperWrapper.add(textWrapper);
 
         verifyButton = new Anchor("");
         verifyButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButtonSubmit());
@@ -227,9 +231,8 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         this.add(results);
         this.add(label);
         this.add(topDesc);
-        this.add(requiredLabel);
         this.add(radioButtons);
-        this.add(textWrapper);
+        this.add(textWrapperWrapper);
         this.add(description);
         this.add(tabDropDownWrapper);
         this.add(themeDropDownWrapper);
@@ -404,7 +407,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
     /**
      * Handles an error.
-     * 
+     *
      * @param errMessage
      *            the error message.
      */
@@ -421,7 +424,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
     /**
      * Add membership criteria.
-     * 
+     *
      * @param criterion
      *            the membership criteria.
      */

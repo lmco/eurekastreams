@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,11 +62,11 @@ public class HideableTextAreaFormElement extends FlowPanel implements FormElemen
     /**
      * the site Label CheckBox.
      */
-    private BasicCheckBoxFormElement hidingCheckBox;
+    private final BasicCheckBoxFormElement hidingCheckBox;
     /**
      * the site Label Txt.
      */
-    private BasicTextAreaFormElement hidableTxtArea;
+    private final BasicTextAreaFormElement hidableTxtArea;
 
     /**
      * Creates a hideable textArea Form element.
@@ -102,12 +102,10 @@ public class HideableTextAreaFormElement extends FlowPanel implements FormElemen
         FlowPanel checkboxInstructionsPanel = new FlowPanel();
         checkboxInstructionsPanel.getElement().setInnerHTML(checkboxInstructions);
         checkboxInstructionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
 
         hidableTxtArea = new BasicTextAreaFormElement(inSize, null, "", value, null, true);
         hidingCheckBox.addClickListener(hidePanel);
-
-        hidableTxtArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
 
         this.add(hidingCheckBox);        
         this.add(hidableTxtArea);

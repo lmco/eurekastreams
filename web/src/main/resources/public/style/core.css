@@ -2405,6 +2405,10 @@ body .previous-arrow:hover {
 	display: inline;
 }
 
+.input-wrapper-wrapper {
+	width: 550px;
+}
+
 .form-element {
 	padding: 10px;
 	margin-left: 20px;
