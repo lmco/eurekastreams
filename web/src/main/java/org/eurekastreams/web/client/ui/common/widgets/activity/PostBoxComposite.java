@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotAllPopularHashTagsResponseEvent;
+import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
@@ -60,6 +61,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -166,6 +168,12 @@ public class PostBoxComposite extends Composite
     FlowPanel hashTags;
 
     /**
+     * The content warning.
+     */
+    @UiField
+    Label contentWarning;
+
+    /**
      * Hide delay after blur on post box.
      */
     private static final Integer BLUR_DELAY = 500;
@@ -229,7 +237,7 @@ public class PostBoxComposite extends Composite
                 .getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.Small));
         postCharCount.setInnerText(POST_MAX.toString());
         checkPostBox();
-        postBox.setLabel("Something to share?");
+        postBox.setLabel("Post to your stream...");
         postBox.reset();
 
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
@@ -239,6 +247,7 @@ public class PostBoxComposite extends Composite
                 attachment = null;
                 addLinkComposite.close();
                 postBox.setText("");
+                postBox.reset();
                 postBox.getElement().getStyle().clearHeight();
                 postOptions.removeClassName(style.visiblePostBox());
                 checkPostBox();
@@ -283,6 +292,7 @@ public class PostBoxComposite extends Composite
                         {
                             postOptions.removeClassName(style.visiblePostBox());
                             postBox.getElement().getStyle().clearHeight();
+                            postBox.reset();
                         }
                     }
                 });
@@ -295,6 +305,29 @@ public class PostBoxComposite extends Composite
                     public void update(final PostableStreamScopeChangeEvent stream)
                     {
                         currentStream = stream.getResponse();
+                        if (currentStream != null && !"".equals(currentStream.getDisplayName()))
+                        {
+                            if (currentStream.getScopeType().equals(ScopeType.PERSON))
+                            {
+                                if (currentStream.getDisplayName().endsWith("s"))
+                                {
+                                    postBox.setLabel("Post to " + currentStream.getDisplayName() + "' stream...");
+                                }
+                                else
+                                {
+                                    postBox.setLabel("Post to " + currentStream.getDisplayName() + "'s stream...");
+                                }
+                            }
+                            else
+                            {
+                                postBox.setLabel("Post to the " + currentStream.getDisplayName() + " stream...");
+                            }
+                        }
+                        else
+                        {
+                            postBox.setLabel("Post to your stream...");
+                        }
+                                                
                         postPanel.setVisible(stream.getResponse().getScopeType() != null);
                     }
                 });
@@ -305,6 +338,23 @@ public class PostBoxComposite extends Composite
                     public void update(final MessageAttachmentChangedEvent evt)
                     {
                         attachment = evt.getAttachment();
+                    }
+                });
+
+        EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
+                {
+                    public void update(final GotSystemSettingsResponseEvent event)
+                    {
+                        String warning = event.getResponse().getContentWarningText();
+                        if (warning != null && !warning.isEmpty())
+                        {
+                            contentWarning.setText(warning);
+                        }
+                        else
+                        {
+                            contentWarning.setVisible(false);
+                        }
                     }
                 });
 

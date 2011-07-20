@@ -47,7 +47,7 @@ public class StreamScope extends DomainEntity implements Serializable
      * Display name for the scope.
      */
     @Transient
-    private String displayName;
+    private String displayName = "";
 
     /**
      * The scope type.

@@ -532,7 +532,6 @@ public class ActivityContent extends Composite
                         if (person.isAccountLocked())
                         {
                             currentStream.setScopeType(null);
-                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
 
                             errorPanel.clear();
                             errorPanel.setVisible(true);
@@ -543,6 +542,12 @@ public class ActivityContent extends Composite
                                     + "within the company or due to leaving the company."));
                             streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                         }
+                        else
+                        {
+                            currentStream.setDisplayName(person.getDisplayName());
+                        }
+
+                        EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                     }
                 });
 
@@ -558,7 +563,6 @@ public class ActivityContent extends Composite
                         {
                             streamOptionsPanel.getStyle().setDisplay(Display.NONE);
                             currentStream.setScopeType(null);
-                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
 
                             errorPanel.clear();
                             errorPanel.setVisible(true);
@@ -592,6 +596,12 @@ public class ActivityContent extends Composite
 
                             streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                         }
+                        else
+                        {
+                            currentStream.setDisplayName(group.getName());
+                        }
+                        
+                        EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                     }
                 });
 
@@ -938,6 +948,7 @@ public class ActivityContent extends Composite
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             setAsActiveStream(followingFilterPanel);
+            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -974,11 +985,13 @@ public class ActivityContent extends Composite
             currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
             setAsActiveStream(customStreamWidgetMap.get(Long.parseLong(views.get(1))));
             currentStream.setScopeType(null);
+            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
         }
         else if (views.get(0).equals("everyone"))
         {
             currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
             setAsActiveStream(everyoneFilterPanel);
+            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
         }
         else if (views.size() == 1)
         {
@@ -999,7 +1012,6 @@ public class ActivityContent extends Composite
         if (!singleActivityMode)
         {
             streamOptionsPanel.getStyle().setDisplay(Display.BLOCK);
-            postBox.setVisible(true);
 
             String sortBy = "recent";
 
@@ -1033,7 +1045,6 @@ public class ActivityContent extends Composite
             currentRequestObj = StreamJsonRequestFactory.setSort(sortKeyword, currentRequestObj);
 
             StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
-            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
         }
         else
         {

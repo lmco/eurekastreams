@@ -32,6 +32,8 @@ import org.eurekastreams.web.client.events.data.GotSearchResultsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.SearchResultsModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.TimerFactory;
+import org.eurekastreams.web.client.ui.TimerHandler;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
@@ -82,6 +84,16 @@ public class GlobalSearchComposite extends FlowPanel
      * Currently active item.
      */
     private Panel activeItem = null;
+
+    /**
+     * Timer factory.
+     */
+    private TimerFactory timerFactory = new TimerFactory();
+
+    /**
+     * Hide delay after blur on post box.
+     */
+    private static final Integer BLUR_DELAY = 100;
 
     /**
      * Constructor.
@@ -162,7 +174,13 @@ public class GlobalSearchComposite extends FlowPanel
         {
             public void onBlur(final BlurEvent arg0)
             {
-                clearSearch();
+                timerFactory.runTimer(BLUR_DELAY, new TimerHandler()
+                {
+                    public void run()
+                    {
+                        clearSearch();
+                    }
+                });
             }
         });
 
