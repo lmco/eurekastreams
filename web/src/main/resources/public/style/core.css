@@ -258,9 +258,10 @@ body .main-contents .header-container {
 }
 
 
-.nav-bar ul.horizontal li div {
+.nav-bar ul.horizontal li > * {
 	display: inline-block;
 	margin-top: 0px;
+	line-height: 30px;
 }
 
 .header-bar a,.header-bar a:link,.header-bar a:visited,.header-bar a:hover,.header-bar a:active
@@ -301,32 +302,26 @@ body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a
 }
 
 .header-bar ul.user-bar li {
+	height: 30px;
+	margin-top: 10px;
+	padding-left: 15px;
 	padding-right: 15px;
-	padding-top: 18px;
+	border-left: 1px solid #5C5C5C;
 }
 
-.header-bar ul.barred li:first-child {
-	background: none;
+.header-bar ul.user-bar li:first-child {
+	border-left: none;
+	padding-left: 0px;
 }
-
+	
 ul.horizontal {
 	padding-top: 3px;
 }
 
 ul.horizontal,ul.horizontal li {
 	list-style: none;
-	display: inline-block;
+	float: left;
 	font-size: 11px;
-}
-
-ul.horizontal li {
-	vertical-align: top;
-}
-
-ul.horizontal li div {
-	display: inline;
-	margin-top: 10px;
-	padding-right: 0px;
 }
 
 .globalSearchBoxNav
@@ -339,14 +334,6 @@ ul.horizontal li div {
 .globalSearchBoxActive
 {
 	background-image: url(style/images/navActive.png);
-}
-
-ul.barred li {
-	padding-left: 0px;
-}
-
-ul.barred li:first-child a {
-	border-left: none !important
 }
 
 .main-contents div table {
@@ -1352,9 +1339,7 @@ body .post-expanded-panel .content-warning {
 }
 
 .header-bar .search-list {
-	padding-top: 14px;
-	height: 36px;
-	padding-left: 10px;
+	padding-top: 4px;
 	padding-right: 10px;	
 }
 
@@ -4748,36 +4733,29 @@ body .dragdrop-proxy {
 	left: -10000px;
 }
 
-.notifHeader
-{
-	padding-right: 0 ! important;
-}
-
-body .user-bar li div.notif-count {
+@sprite .notif-count {
+	gwt-image: "notifBgNone";
 	color: black;
-    margin-left: 5px;
-    position: relative;
-    text-align: center;
-    top: -15px;
-    left: -10px;
-    vertical-align: top;
+	text-align: center;
+	line-height: 30px;
+	height: 30px;
+	background-position: center;
 }
 
-@sprite body .user-bar li div.notif-count > div
-{
-	gwt-image: "notifBg";
-    padding-top: 4px;
-	height: 18px;
-    overflow: visible;
-}
-
-@sprite body .user-bar li div.notifCountHighPriority
-{
-	gwt-image: "notifBgPriority";
-}
-
-body .user-bar li div.notif-count-container:hover {
+.notif-count:hover {
 	cursor: pointer;
+}
+
+@sprite .notif-count.notif-count-normal-priority {
+	gwt-image: "notifBgNormalPriority";
+	height: 30px;
+	background-position: center;
+}
+
+@sprite .notif-count.notif-count-high-priority {
+	gwt-image: "notifBgHighPriority";
+	height: 30px;
+	background-position: center;
 }
 
 .modal-content-panel .form-submit-button,.modal-content-panel .form-update-button
@@ -5934,27 +5912,104 @@ body div.eureka-connect-liked-activity-wrapper {
 
 @if user.agent ie6 ie8 { 
 		
+	/* Items which all need the IE equivalent of inline-block */
+	.content-warning>div:first-child,
+	.navpanel .options .gwt-Label,
+	.options .connection-filter-button,
+	.options .sort-option,
+	.pending-group-membership-item>div,
+	.unseen-activity a,
+	.stream-list-item .delete-button,
+	.settings-panel .settings-title-bar .gwt-Hyperlink,
+	.stream-scope .gwt-Hyperlink,
+	.list-item .avatar,
+	.date-picker-form-element .required-form-label,
+	.date-picker-form-element .form-text,
+	.left-bar-child .connection-item .connection-item-info,
+	.gadget-zone-chrome-title-bar-title-button,
+	.stream-view-dialog .content-warning,
+	.filters .header .addbutton,
+	.filters .header .gwt-Label,
+	.stream-list-item.active .gwt-MenuBar-horizontal,
+	.filter.active .move-handle,
+	.stream-list-item:hover .move-handle,
+	.gadget-title-url,
+	.stream-message-item .message-actions-area,
+	.search-metadata div,
+	.gadget-button.gadget-minimize,
+	.gadget-zone:hover .gadget-button.gadget-refresh,
+	.gadget-zone:hover .gadget-button.gadget-edit,
+	.gadget-zone:hover .gadget-button.gadget-close,
+	.gadget-zone:hover .gadget-button.gadget-help
+	.stream-list-item:hover a.edit-button,
+	.stream-list-item:hover .delete-button
+	.gadget-button.gadget-maximize,
+	.stream-plugins-settings-container,
+	.stream-plugins-feed-subscriptions-container .header .gwt-Label,
+	.form-verifying-spinny,
+	.form-submit-spinny,
+	.form-submit-button,
+	.form-update-button,
+	.form-button,
+	.form-element .characters-remaining,
+	.thumbnail-selector-controls div,
+	.options>li,
+	.add-button-submit,
+	.delete-button,
+	.yui-carousel-horizontal,
+	.avatar-container,
+	.avatar-modification-panel,
+	.person-lookup-form-element .form-instructions,
+	.connection-item-info,
+	.connection-col-left,
+	.connection-col-right,
+	.scope-form-element,
+	.message-timestamp-actions-area .via-metadata,
+	.login-button,
+	.cancel-button,
+	.nav-bar ul.user-bar li div,
+	div.portal-pref-pane div.title-bar-widget,
+	div.portal-pref-pane div.title div.gwt-Label,
+	.like-count-widget a,
+	.like-count-widget .like-count,
+	.stream-plugin-checkbox label,
+	.url-label,
+	.url-panel,
+	.url-panel .gwt-Label,
+	.url-panel .small-x,
+	.stream-plugins-meta-data>div,
+	.stream-plugins-add-feed-meta-data>div,
+	.eureka-connect-like-button,
+	.eureka-connect-unlike-button,
+	.eureka-connect-share-button
+	{
+		display: inline;
+		zoom: 1;
+	}
+
+
+	.notif-count {
+		background-image: url("style/images/notificationBackground_none.png");
+	}
+
+	.notif-count.notif-count-normal-priority {
+		background-image: url("style/images/notificationBackground_normal.png");
+	}
+
+	.notif-count.notif-count-high-priority {
+		background-image: url("style/images/notificationBackground_high.png");
+	}
+
 	.main-contents {
 		top: 0;
 	}		
 	.portal-boundary {
 		margin-top: -59px;
 	}
-	
-	.eureka-connect-like-button,.eureka-connect-unlike-button,.eureka-connect-share-button
-		{
-		display: inline;
-		zoom: 1;
-	}
-	
+
 	.eureka-connect-liked-activity {
 		position: relative;
 		left: -25px;
-	}
-	
-	.pending-group-membership-item>div {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.plugins-master .image-container .gwt-Image {
@@ -5983,11 +6038,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		width: 250px;
 	}
 	
-	.unseen-activity a {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.unseen-activity div.unseen-label div {
 		display: inline;
 	}
@@ -5997,19 +6047,10 @@ body div.eureka-connect-liked-activity-wrapper {
 		top: -2px;
 	}
 	
-	.stream-list-item .delete-button {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.settings-panel .settings-content .form-container {
 		margin-top: -10px;
 	}
 	
-	.settings-panel .settings-title-bar .gwt-Hyperlink {
-		display: inline;
-		zoom: 1;
-	}
 	
 	.optoutable-video-modal .form-checkBox label {
 		padding-bottom: 10px;
@@ -6039,11 +6080,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		margin-top: -19px;
 	}
 	
-	.stream-scope .gwt-Hyperlink {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.stream-scope .gwt-Label {
 		margin-top: -3px;
 		display: inline;
@@ -6068,30 +6104,10 @@ body div.eureka-connect-liked-activity-wrapper {
 	.stream-view-dialog .auto-complete.yui-skin-sam .yui-ac-container {
 		margin-top: 1.7em;
 	}
-	
-	body .user-bar li div.notif-count {
-		zoom: 1;
-		display: inline !important;
-	}
-	
-	.scope-form-element {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.message-timestamp-actions-area .via-metadata {
-		display: inline;
-		zoom: 1;
-	}
-	
+
 	.search-list .search-list-button {
 		display: inline;
 		margin-top: 1px;
-	}
-	
-	.login-button,.cancel-button {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.footer-bar .horizontal {
@@ -6106,20 +6122,12 @@ body div.eureka-connect-liked-activity-wrapper {
 		zoom: 1;
 	}
 	
-	.nav-bar ul.user-bar li div {
-		display: inline;
-	}
-	
 	.nav-bar ul.main-nav li {
 		display: inline;
 	}
 	
 	.clear {
 		font-size: 1px;
-	}
-	
-	.nav-bar ul.user-bar li div {
-		zoom: 1;
 	}
 	
 	.start-tab-content-container .drop-zone {
@@ -6135,16 +6143,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	
 	div.portal-pref-pane div.title a.gwt-Anchor {
 		margin-top: -30px;
-	}
-	
-	div.portal-pref-pane div.title-bar-widget {
-		display: inline;
-		zoom: 1;
-	}
-	
-	div.portal-pref-pane div.title div.gwt-Label {
-		display: inline;
-		zoom: 1;
 	}
 	
 	div.notification-bar div.message div {
@@ -6252,16 +6250,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		height: 18px ! important;
 	}
 	
-	.like-count-widget a {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.like-count-widget .like-count {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.like-count-widget {
 		display: inline;
 	}
@@ -6290,33 +6278,8 @@ body div.eureka-connect-liked-activity-wrapper {
 		position: static !important;
 	}
 	
-	.stream-plugin-checkbox label {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.stream-plugin-conf-panel .form-container {
 		width: 95%;
-		display: inline;
-		zoom: 1;
-	}
-	
-	.url-label {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.url-panel {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.url-panel .gwt-Label {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.url-panel .small-x {
 		display: inline;
 		zoom: 1;
 	}
@@ -6329,11 +6292,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	.stream-plugins-meta-data .edit-button {
 		display: block;
 		zoom: 1;
-	}
-	
-	.stream-plugins-meta-data>div,.stream-plugins-add-feed-meta-data>div {
-		zoom: 1;
-		display: inline;
 	}
 	
 	.stream-plugins-meta-data .stream-plugins-screenshot,.stream-plugins-add-feed-meta-data .stream-plugins-screenshot
@@ -6350,16 +6308,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		margin-left: -10px;
 	}
 	
-	.stream-plugins-settings-container {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.stream-plugins-feed-subscriptions-container .header .gwt-Label {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.stream-plugin-conf-panel .form-submit-spinny {
 		position: relative;
 		top: -5px;
@@ -6368,11 +6316,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	.stream-plugin-conf-panel .required-form-label {
 		position: relative;
 		top: 5px;
-	}
-	
-	.form-verifying-spinny,.form-submit-spinny {
-		zoom: 1;
-		display: inline;
 	}
 	
 	.form-user-association .search-ldap-label {
@@ -6396,23 +6339,8 @@ body div.eureka-connect-liked-activity-wrapper {
 		margin: 0;
 	}
 	
-	.form-submit-button,.form-update-button {
-		zoom: 1;
-		display: inline;
-	}
-	
 	.form-button a {
 		display: inline;
-	}
-	
-	.form-button {
-		zoom: 1;
-		display: inline;
-	}
-	
-	.form-element .characters-remaining {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.form-user-association .top-label {
@@ -6425,29 +6353,9 @@ body div.eureka-connect-liked-activity-wrapper {
 		filter: literal("alpha(opacity = 0)");
 	}
 	
-	.thumbnail-selector-controls div {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.users-who-liked-activity-wrapper {
 		margin-left: -27px;
 		margin-top: -2px;
-	}
-	
-	.options>li {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.add-button-submit {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.delete-button {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.delete-button a {
@@ -6462,21 +6370,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	
 	.gwt-MenuBarPopup {
 		margin-top: -1px;
-	}
-	
-	.yui-carousel-horizontal {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.avatar-container {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.avatar-modification-panel {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.person-lookup-form-element .person-container .connection-item {
@@ -6497,11 +6390,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	
 	body .shortname-form-element .required-form-label {
 		margin-left: 5px;
-	}
-	
-	.person-lookup-form-element .form-instructions {
-		zoom: 1;
-		display: inline;
 	}
 	
 	.settings .activity-expiration input {
@@ -6531,16 +6419,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		float: left;
 	}
 	
-	.connection-item-info {
-		zoom: 1;
-		display: inline;
-	}
-	
-	.connection-col-left,.connection-col-right {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.settings .activity-expiration .form-instructions {
 		position: static ! important;
 	}
@@ -6560,32 +6438,12 @@ body div.eureka-connect-liked-activity-wrapper {
 		border: none;
 	}
 	
-	.list-item .avatar {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.directory-header {
 		padding-top: 10px;
 	}
 	
-	.date-picker-form-element .required-form-label {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.date-picker-form-element select {
 		margin-left: 2px;
-	}
-	
-	.date-picker-form-element .form-text {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.left-bar-child .connection-item .connection-item-info {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.start-tab-content-container {
@@ -6612,11 +6470,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		top: -25px;
 	}
 	
-	.gadget-zone-chrome-title-bar-title-button {
-		display: inline;
-		zoom: 1;
-	}
-	
 	.directory .options.views {
 		
 	}
@@ -6625,49 +6478,8 @@ body div.eureka-connect-liked-activity-wrapper {
 		margin-top: 5px;
 	}
 	
-	.stream-view-dialog .content-warning {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.filters .header .addbutton {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.filters .header .gwt-Label {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.stream-list-item.active .gwt-MenuBar-horizontal {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.filter.active .move-handle,.stream-list-item:hover .move-handle {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.gadget-title-url {
-		zoom: 1;
-		display: inline;
-	}
-	
 	.gadget-meta-data>div {
 		display: inline;
-	}
-	
-	.stream-message-item .message-actions-area {
-		display: inline;
-		zoom: 1;
-	}
-	
-	}
-	.search-metadata div {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.gallery-master .edit-controls {
@@ -6722,17 +6534,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	}
 	
 	.gadget-button.gadget-minimize {
-		display: inline;
-		zoom: 1;
-	}
-	
-	.gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close,.gadget-zone:hover .gadget-button.gadget-help
-		{
-		display: inline;
-		zoom: 1;
-	}
-	
-	.gadget-button.gadget-minimize {
 		margin-top: 3px;
 	}
 	
@@ -6760,22 +6561,12 @@ body div.eureka-connect-liked-activity-wrapper {
 		bottom: 50px;
 	}
 	
-	.stream-list-item:hover a.edit-button,.stream-list-item:hover .delete-button
-		{
-		display: inline;
-		zoom: 1;
-	}
 }
 
 @if user.agent ie6 ie8 { 
 
 	.gadget-button {
 		margin-top: -19px;
-	}
-	
-	.gadget-button.gadget-maximize {
-		display: inline;
-		zoom: 1;
 	}
 	
 	.tab-container .gwt-MenuBar {
@@ -6890,13 +6681,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		z-index: 200;
 	}
 	
-	/* Unrelated items which all need the IE equivalent of inline-block */
-	.content-warning>div:first-child,.navpanel .options .gwt-Label,.options .connection-filter-button,.options .sort-option
-		{
-		display: inline;
-		zoom: 1;
-	}
-	
 	/* Unrelated items which IE lays out wrong unless zoom=1 is specified */
 	.attach-link,.link-panel {
 		zoom: 1;
@@ -6913,8 +6697,10 @@ body div.eureka-connect-liked-activity-wrapper {
 
 /* Empty rules needed since they are referenced by methods in CoreCss.  
    The methods in CoreCss are called, but probably the widgets that use them are not used. */  
-.short-bio{}
-.mission-statement{}
-.extended-info{}
-.group{}
-.private{}
+.short-bio,
+.mission-statement,
+.extended-info,
+.group,
+.private,
+.notifHeader
+{}

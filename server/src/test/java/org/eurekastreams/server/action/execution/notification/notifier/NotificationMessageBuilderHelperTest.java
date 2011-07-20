@@ -33,6 +33,9 @@ import org.junit.Test;
  */
 public class NotificationMessageBuilderHelperTest
 {
+    /** Test data. */
+    private static final String BASE_URL = "http://demo.eurekastreams.org";
+
     /** Used for mocking objects. */
     private final JUnit4Mockery context = new JUnit4Mockery()
     {
@@ -53,7 +56,7 @@ public class NotificationMessageBuilderHelperTest
     @Before
     public void setUp()
     {
-        sut = new NotificationMessageBuilderHelper();
+        sut = new NotificationMessageBuilderHelper(BASE_URL);
     }
 
     /**
@@ -83,5 +86,69 @@ public class NotificationMessageBuilderHelperTest
         context.assertIsSatisfied();
 
         assertEquals("Blah John Doe blah %EUREKA:NOSUCH% blah.", result);
+    }
+
+    /**
+     * Tests resolveMarkdownForText.
+     */
+    @Test
+    public void testResolveMarkdownForText()
+    {
+        String result = sut.resolveMarkdownForText("Pre-stuff [Link1](#dest1) Middle [Link2](http://xyz/abc) After");
+        assertEquals("Pre-stuff Link1 (" + BASE_URL + "#dest1) Middle Link2 (http://xyz/abc) After", result);
+    }
+
+    /**
+     * Tests resolveMarkdownForText.
+     */
+    @Test
+    public void testResolveMarkdownForTextOnlyLinks()
+    {
+        String result = sut.resolveMarkdownForText("[Link1](#dest1)[Link2](http://xyz/abc)");
+        assertEquals("Link1 (" + BASE_URL + "#dest1)Link2 (http://xyz/abc)", result);
+    }
+
+    /**
+     * Tests resolveMarkdownForText.
+     */
+    @Test
+    public void testResolveMarkdownForTextNoLinks()
+    {
+        String input = "A [Link1] (http://xyz/abc) B";
+        String result = sut.resolveMarkdownForText(input);
+        assertEquals(input, result);
+    }
+
+    /**
+     * Tests resolveMarkdownForHtml.
+     */
+    @Test
+    public void testResolveMarkdownForHtml()
+    {
+        String input = "Bef&ore [Link&1](#dest1?a=b&c=d) Mid&dle [Link&2](http://xyz/abc?x=y&z=w) Aft&er";
+        String result = sut.resolveMarkdownForHtml(input);
+        assertEquals("Bef&amp;ore <a href=\"" + BASE_URL + "#dest1?a=b&amp;c=d\">Link&amp;1</a> Mid&amp;dle "
+                + "<a href=\"http://xyz/abc?x=y&amp;z=w\">Link&amp;2</a> Aft&amp;er", result);
+    }
+
+    /**
+     * Tests resolveMarkdownForHtml.
+     */
+    @Test
+    public void testResolveMarkdownForHtmlOnlyLinks()
+    {
+        String result = sut.resolveMarkdownForHtml("[Link&1](#dest1?a=b&c=d)[Link&2](http://xyz/abc?x=y&z=w)");
+        assertEquals("<a href=\"" + BASE_URL + "#dest1?a=b&amp;c=d\">Link&amp;1</a>"
+                + "<a href=\"http://xyz/abc?x=y&amp;z=w\">Link&amp;2</a>", result);
+    }
+
+    /**
+     * Tests resolveMarkdownForHtml.
+     */
+    @Test
+    public void testResolveMarkdownForHtmlNoLinks()
+    {
+        String result = sut.resolveMarkdownForHtml("A&A [Link&1] (http://xyz/abc?a=1&b=2) B&B");
+        assertEquals("A&amp;A [Link&amp;1] (http://xyz/abc?a=1&amp;b=2) B&amp;B", result);
     }
 }

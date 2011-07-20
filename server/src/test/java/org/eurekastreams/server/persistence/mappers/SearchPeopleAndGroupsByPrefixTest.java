@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test for SearchPeopleAndGroupsByPrefix class.
- *
+ * 
  */
 public class SearchPeopleAndGroupsByPrefixTest
 {
@@ -121,7 +121,7 @@ public class SearchPeopleAndGroupsByPrefixTest
     public void setup()
     {
         sut = new SearchPeopleAndGroupsByPrefix(9, searchRequestBuilder, getGroupIdsMapper,
-                getPersonIdByAccountIdMapper, false);
+                getPersonIdByAccountIdMapper, true);
         searchResults = new ArrayList<ModelView>();
         searchResults.add(personView);
         searchResults.add(groupView);

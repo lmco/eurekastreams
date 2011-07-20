@@ -37,6 +37,9 @@ public class NotificationEmailDTO implements Serializable
     /** Addresses of BCC recipients. */
     private String bccRecipients;
 
+    /** Address to reply to. */
+    private String replyTo;
+
     /** If high priority. */
     private boolean highPriority;
 
@@ -160,5 +163,22 @@ public class NotificationEmailDTO implements Serializable
     public void setHighPriority(final boolean inHighPriority)
     {
         highPriority = inHighPriority;
+    }
+
+    /**
+     * @return the replyTo
+     */
+    public String getReplyTo()
+    {
+        return replyTo;
+    }
+
+    /**
+     * @param inReplyTo
+     *            the replyTo to set
+     */
+    public void setReplyTo(final String inReplyTo)
+    {
+        replyTo = inReplyTo;
     }
 }

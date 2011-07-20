@@ -56,11 +56,14 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/saveChangesBtn.png")
     ImageResource saveChangesBtn();
 
-    @Source("style/images/notificationBackground.png")
-    ImageResource notifBg();
+    @Source("style/images/notificationBackground_none.png")
+    ImageResource notifBgNone();
 
-    @Source("style/images/notificationBackground2.png")
-    ImageResource notifBgPriority();
+    @Source("style/images/notificationBackground_normal.png")
+    ImageResource notifBgNormalPriority();
+
+    @Source("style/images/notificationBackground_high.png")
+    ImageResource notifBgHighPriority();
 
     @Source("style/images/navStartPage.png")
     ImageResource navStartPage();

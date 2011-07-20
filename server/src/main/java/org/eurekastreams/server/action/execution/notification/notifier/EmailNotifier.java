@@ -30,6 +30,7 @@ import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
@@ -131,6 +132,14 @@ public class EmailNotifier implements Notifier
                 persons.add(inRecipientIndex.get(recipientId));
             }
             email.setBccRecipients(EmailerFactory.buildEmailList(persons));
+        }
+
+        // set the reply-to to the actor (so replies to emails go to the actor, not the system)
+        Object obj = inProperties.get(NotificationPropertyKeys.ACTOR);
+        if (obj instanceof HasEmail)
+        {
+            HasEmail actor = (HasEmail) obj;
+            email.setReplyTo(actor.getEmail());
         }
 
         // set the priority

@@ -131,18 +131,42 @@
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
 		<constructor-arg ref="getPersonIdByAccountIdMapper" />
-		<constructor-arg value="false" />
+		<!-- exclude Read Only Streams from results-->
+		<constructor-arg value="true" />
 	</bean>
 
 	<bean id="searchGroupsByPrefixMapper"
 		class="org.eurekastreams.server.persistence.mappers.SearchPeopleAndGroupsByPrefix">
 		<constructor-arg value="7" /> <!-- default max results -->
-		<constructor-arg ref="groupPersonSearchRequestBuilder" />
+		<constructor-arg ref="groupSearchRequestBuilder" />
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
 		<constructor-arg ref="getPersonIdByAccountIdMapper" />
+		<!-- exclude Read Only Streams from results-->
 		<constructor-arg value="true" />
 	</bean>
+	
+    <bean id="searchPeopleAndGroupsByPrefixAllowReadOnlyStreamsMapper"
+        class="org.eurekastreams.server.persistence.mappers.SearchPeopleAndGroupsByPrefix">
+        <constructor-arg value="7" /> <!-- default max results -->
+        <constructor-arg ref="groupPersonSearchRequestBuilder" />
+        <constructor-arg
+            ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+        <constructor-arg ref="getPersonIdByAccountIdMapper" />
+        <!-- exclude Read Only Streams from results-->
+        <constructor-arg value="false" />
+    </bean>	
+	
+	<bean id="searchPeopleByPrefixAllowReadOnlyStreamsMapper"
+        class="org.eurekastreams.server.persistence.mappers.SearchPeopleAndGroupsByPrefix">
+        <constructor-arg value="7" /> <!-- default max results -->
+        <constructor-arg ref="personSearchRequestBuilder" />
+        <constructor-arg
+            ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+        <constructor-arg ref="getPersonIdByAccountIdMapper" />
+        <!-- exclude Read Only Streams from results-->
+        <constructor-arg value="false" />
+    </bean>
 
 	<bean id="getPendingDomainGroupsMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsMapper">

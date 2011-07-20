@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -29,29 +30,28 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.server.domain.HasEmail;
 
-//TODO would be cool to turn this into a real message factory and create an email impl.
 /**
  * Email helper for sending Emails.
  */
 public class EmailerFactory
 {
     /** Protocol message is using (e.g. "smtp"). */
-    private String mailTransportProtocol;
+    private final String mailTransportProtocol;
 
     /**
      * List of configuration properties relevant to the given transport protocol. (For SMTP use mail.smtp.host and
      * mail.smtp.port)
      */
-    private Map<String, String> transportConfiguration;
+    private final Map<String, String> transportConfiguration;
 
     /** Address of sender if not otherwise specified. */
-    private String defaultFromAddress;
+    private final String defaultFromAddress;
 
     /**
      * Constructor.
@@ -198,6 +198,21 @@ public class EmailerFactory
     {
         InternetAddress fromAddress = new InternetAddress(emailFromString);
         message.setFrom(fromAddress);
+    }
+
+    /**
+     * Sets the reply-to address.
+     * 
+     * @param message
+     *            Email message being built.
+     * @param addressString
+     *            Email address to use.
+     * @throws MessagingException
+     *             Thrown if there are problems creating the message.
+     */
+    public void setReplyTo(final MimeMessage message, final String addressString) throws MessagingException
+    {
+        message.setReplyTo(new Address[] { new InternetAddress(addressString) });
     }
 
     /**

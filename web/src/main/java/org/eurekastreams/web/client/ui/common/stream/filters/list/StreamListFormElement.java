@@ -66,6 +66,11 @@ public class StreamListFormElement extends FlowPanel implements FormElement
     private StreamScopeFormElement scopes;
 
     /**
+     * Scopes form element.
+     */
+    private StreamScopeFormElement personScopes;
+
+    /**
      * Maximum name length.
      */
     private static final int MAX_NAME = 50;
@@ -84,8 +89,12 @@ public class StreamListFormElement extends FlowPanel implements FormElement
     public StreamListFormElement(final JSONObject json)
     {
         scopes = new StreamScopeFormElement("scopes", new LinkedList<StreamScope>(), "",
-                "Enter the name of an employee or group.", false, true, "/resources/autocomplete/entities/", MAX_NAME,
-                MAX_ITEMS);
+                "Enter the name of an employee or group.", false, true,
+                "/resources/autocomplete/allowreadonly/entities/", MAX_NAME, MAX_ITEMS);
+
+        personScopes = new StreamScopeFormElement("personscopes", new LinkedList<StreamScope>(), "",
+                "Enter the name of an employee.", false, true, "/resources/autocomplete/allowreadonly/people/",
+                MAX_NAME, MAX_ITEMS);
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamLists());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
@@ -105,7 +114,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         {
             public void onChange(final ChangeEvent event)
             {
-                scopes.setVisible(hasStreamScopes(getSelected()));
+                setScopesVisibility(getSelected());
             }
         });
 
@@ -113,6 +122,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         {
             streamOptions.setSelectedIndex(0);
             scopes.setVisible(false);
+            personScopes.setVisible(false);
         }
         else
         {
@@ -200,6 +210,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         }
 
         this.add(scopes);
+        this.add(personScopes);
 
     }
 
@@ -228,6 +239,19 @@ public class StreamListFormElement extends FlowPanel implements FormElement
     }
 
     /**
+     * Set scope drop down visibility based on selected value.
+     * 
+     * @param selected
+     *            selected value.
+     */
+    private void setScopesVisibility(final String selected)
+    {
+        personScopes.setVisible(selected.equals(StreamJsonRequestFactory.AUTHOR_KEY)
+                || selected.equals(StreamJsonRequestFactory.LIKER_KEY));
+        scopes.setVisible(selected.equals(StreamJsonRequestFactory.RECIPIENT_KEY));
+    }
+
+    /**
      * Set selected by value.
      * 
      * @param selectedValue
@@ -243,7 +267,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
             }
         }
 
-        scopes.setVisible(hasStreamScopes(selectedValue));
+        setScopesVisibility(selectedValue);
     }
 
     /**

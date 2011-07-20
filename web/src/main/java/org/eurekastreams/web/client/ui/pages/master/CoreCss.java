@@ -125,8 +125,6 @@ public interface CoreCss extends CssResource
     @ClassName("banner-container")
     String bannerContainer();
 
-    String barred();
-
     @ClassName("basic-textbox")
     String basicTextbox();
 
@@ -792,8 +790,11 @@ public interface CoreCss extends CssResource
     @ClassName("notif-count")
     String notifCount();
 
-    @ClassName("notif-count-container")
-    String notifCountContainer();
+    @ClassName("notif-count-normal-priority")
+    String notifCountNormalPriority();
+
+    @ClassName("notif-count-high-priority")
+    String notifCountHighPriority();
 
     @ClassName("notification-settings-modal")
     String notificationSettingsModal();
@@ -1382,8 +1383,6 @@ public interface CoreCss extends CssResource
     String singleActivityPanel();
 
     String globalSearchResultsAutocompleteResults();
-
-    String notifCountHighPriority();
 
     String notifHeader();
 
