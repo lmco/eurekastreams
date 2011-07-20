@@ -104,7 +104,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     * 
+     *
      * @param viewer
      *            - user to display.
      */
@@ -155,7 +155,6 @@ public class HeaderComposite extends Composite
         HorizontalULPanel mainNav = new HorizontalULPanel();
 
         userNav = new HorizontalULPanel();
-        userNav.setShowBars(false);
 
         mainNav.add(externalPageLinkPanel);
 
@@ -171,7 +170,7 @@ public class HeaderComposite extends Composite
         userNav.add(myProfileLinkPanel);
 
         userNav.add(notif, StaticResourceBundle.INSTANCE.coreCss().notifHeader());
-        
+
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             settingsLinkPanel.add(settingsLink);
@@ -210,7 +209,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Sets Site labeling.
-     * 
+     *
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -225,7 +224,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     * 
+     *
      * @param page
      *            the page to activate.
      */

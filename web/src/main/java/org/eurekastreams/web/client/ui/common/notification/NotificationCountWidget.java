@@ -25,41 +25,20 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * Widget displaying the notification count in the nav bar.
  */
-public class NotificationCountWidget extends FocusPanel
+public class NotificationCountWidget extends Label
 {
-    /** The label. */
-    private final Label countLabel = new Label();
-
-    /**
-     * The container panel.
-     */
-    private final FlowPanel container = new FlowPanel();
-
     /**
      * Constructor.
      */
     public NotificationCountWidget()
     {
-        countLabel.setVisible(false);
-        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountContainer());
-        add(container);
-        
-        FlowPanel countLabelContainer = new FlowPanel();
-
-        countLabelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());
-        countLabelContainer.add(countLabel);
-
-        // -- UI setup --
-        container.add(countLabelContainer);
-
-        // -- MVC setup --
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());
+        setTitle("View Notifications");
 
         addClickHandler(new ClickHandler()
         {
@@ -75,28 +54,24 @@ public class NotificationCountWidget extends FocusPanel
                     public void update(final NotificationCountsAvailableEvent ev)
                     {
                         int total = ev.getNormalCount() + ev.getHighPriorityCount();
-                        countLabel.setVisible(total > 0);
+                        setText(Integer.toString(total));
                         if (total > 0)
                         {
                             if (ev.getHighPriorityCount() > 0)
                             {
-                                countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
-                                        .notifCountHighPriority());
+                                addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
+                                removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
                             }
                             else
                             {
-                                countLabel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss()
-                                        .notifCountHighPriority());
+                                addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
+                                removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
                             }
-
-                            String text = Integer.toString(total);
-                            countLabel.setText(text);
                         }
                         else
                         {
-                            countLabel.setText("");
-                            countLabel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss()
-                                    .notifCountHighPriority());
+                            removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
+                            removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
                         }
                     }
                 });
