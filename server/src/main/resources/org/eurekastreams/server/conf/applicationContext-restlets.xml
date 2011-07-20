@@ -99,6 +99,16 @@
 		scope="prototype">
 		<property name="entitiesDAO" ref="searchGroupsByPrefixMapper" />
 	</bean>
+	
+    <bean name="entitiesByPrefixAllowReadOnlyStreamsResource" class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
+        scope="prototype">
+        <property name="entitiesDAO" ref="searchPeopleAndGroupsByPrefixAllowReadOnlyStreamsMapper" />
+    </bean>	
+	
+    <bean name="peopleByPrefixAllowReadOnlyStreamsResource" class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
+        scope="prototype">
+        <property name="entitiesDAO" ref="searchPeopleByPrefixAllowReadOnlyStreamsMapper" />
+    </bean>	
 
 	<bean name="feedReaderEntityResource" class="org.eurekastreams.server.service.restlets.FeedReaderEntityResource"
 		scope="prototype">
@@ -265,6 +275,16 @@
 						<lookup-method name="createResource" bean="groupsByPrefixResource" />
 					</bean>
 				</entry>
+                <entry key="/autocomplete/allowreadonly/entities/{query}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="entitiesByPrefixAllowReadOnlyStreamsResource" />
+                    </bean>
+                </entry>				
+				<entry key="/autocomplete/allowreadonly/people/{query}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="peopleByPrefixAllowReadOnlyStreamsResource" />
+                    </bean>
+                </entry>
 				<entry key="/autocomplete/{type}/{query}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="backgroundResource" />
