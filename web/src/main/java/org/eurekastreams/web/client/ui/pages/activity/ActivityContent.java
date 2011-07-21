@@ -183,7 +183,7 @@ public class ActivityContent extends Composite
      */
     @UiField
     ActivityStyle style;
-    
+
     /**
      * No results panel.
      */
@@ -483,7 +483,7 @@ public class ActivityContent extends Composite
             public void update(final GotStreamResponseEvent event)
             {
                 final PagedSet<ActivityDTO> activitySet = event.getStream();
-                
+
                 if (activitySet.getPagedSet().size() > 0)
                 {
                     longNewestActivityId = activitySet.getPagedSet().get(0).getEntityId();
@@ -521,14 +521,14 @@ public class ActivityContent extends Composite
                     {
                         streamPanel.add(renderer.render(activity));
                     }
-                    
+
                     if (activities.size() == 0)
                     {
                         noResults.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     }
                     else
                     {
-                        noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());                        
+                        noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     }
 
                     moreLink.setVisible(activitySet.getTotal() > activities.size());
@@ -616,7 +616,7 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setDisplayName(group.getName());
                         }
-                        
+
                         EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                     }
                 });

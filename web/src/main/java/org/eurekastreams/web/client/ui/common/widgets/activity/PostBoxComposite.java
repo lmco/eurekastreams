@@ -68,7 +68,6 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -201,6 +200,11 @@ public class PostBoxComposite extends Composite
      * Post box default height.
      */
     private static final int POST_BOX_DEFAULT_HEIGHT = 250;
+
+    /**
+     * Padding for hashtag dropdown.
+     */
+    private static final int HASH_TAG_DROP_DOWN_PADDING = 14;
 
     /**
      * Currently active item.
@@ -371,7 +375,8 @@ public class PostBoxComposite extends Composite
                 {
                     boxHeight = "44";
                 }
-                hashTags.getElement().getStyle().setTop(Integer.parseInt(boxHeight) + 14, Unit.PX);
+                hashTags.getElement().getStyle()
+                        .setTop(Integer.parseInt(boxHeight) + HASH_TAG_DROP_DOWN_PADDING, Unit.PX);
                 hashTags.clear();
                 hashTags.setVisible(false);
                 String[] words = postBox.getText().split("\\s");
