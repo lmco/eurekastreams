@@ -338,12 +338,6 @@ public class StreamDetailsComposite extends Composite
     SpanElement totalMessages;
 
     /**
-     * Total comments.
-     */
-    @UiField
-    SpanElement totalComments;
-
-    /**
      * Current status.
      */
     private Follower.FollowerStatus status;
@@ -510,39 +504,40 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
-        {
-            public void update(final GotUsageMetricSummaryEvent event)
-            {
-                UsageMetricSummaryDTO data = event.getResponse();
-
-                List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                for (int i = 0; i < stats.size(); i++)
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
+                new Observer<GotUsageMetricSummaryEvent>()
                 {
-                    if (null == stats.get(i))
+                    public void update(final GotUsageMetricSummaryEvent event)
                     {
-                        chart.addPoint(i, 0.0);
-                    }
-                    else
-                    {
-                        chart.addPoint(i, stats.get(i).getStreamViewCount());
-                    }
-                }
+                        UsageMetricSummaryDTO data = event.getResponse();
 
-                avgComments.setInnerText("" + data.getAverageDailyCommentCount());
-                avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
-                avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
-                avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
-                avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+                        List<DailyUsageSummary> stats = data.getDailyStatistics();
 
-                totalComments.setInnerText("" + data.getTotalCommentCount());
-                totalContributors.setInnerText("" + data.getTotalContributorCount());
-                totalMessages.setInnerText("" + data.getTotalActivityCount());
-                totalViews.setInnerText("" + data.getTotalStreamViewCount());
-                chart.update();
-            }
-        });
+                        for (int i = 0; i < stats.size(); i++)
+                        {
+                            if (null == stats.get(i))
+                            {
+                                chart.addPoint(i, 0.0);
+                            }
+                            else
+                            {
+                                chart.addPoint(i, stats.get(i).getStreamViewCount());
+                            }
+                        }
+
+                        avgComments.setInnerText("" + data.getAverageDailyCommentCount());
+                        avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
+                        avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
+                        avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
+                        avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+
+                        Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
+                        totalContributors.setInnerText("" + data.getTotalContributorCount());
+                        totalMessages.setInnerText(totalMessagesNumber.toString());
+                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
+                        chart.update();
+                    }
+                });
 
         addModelViewEvents();
 
@@ -599,7 +594,7 @@ public class StreamDetailsComposite extends Composite
                     thisClass.addStyleName(style.condensedStream());
                 }
                 else if (views.size() == 1)
-                {                    
+                {
                     thisClass.removeStyleName(style.condensedStream());
                 }
             }
@@ -770,16 +765,14 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request = new SetFollowingStatusRequest(
-                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
-                                Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request = new SetFollowingStatusRequest(
-                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
-                                Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
@@ -791,14 +784,16 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
-                    new Observer<GotPersonFollowerStatusResponseEvent>()
-                    {
-                        public void update(final GotPersonFollowerStatusResponseEvent event)
-                        {
-                            onFollowerStatusChanged(event.getResponse());
-                        }
-                    });
+            Session.getInstance()
+                    .getEventBus()
+                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                            new Observer<GotPersonFollowerStatusResponseEvent>()
+                            {
+                                public void update(final GotPersonFollowerStatusResponseEvent event)
+                                {
+                                    onFollowerStatusChanged(event.getResponse());
+                                }
+                            });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);

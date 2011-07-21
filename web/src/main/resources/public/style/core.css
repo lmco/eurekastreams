@@ -137,6 +137,7 @@ textarea.empty-labeled-textbox {
 .content-warning {
 	font-style: italic;
 	color: #666;
+	width: 100%;
 }
 
 @sprite .content-warning > div:first-child {
@@ -144,14 +145,15 @@ textarea.empty-labeled-textbox {
 	display: inline-block;
 }
 
-.content-warning > span {
+.content-warning > .warningText {
 	position: relative;
+	display: inline;
 	top: -3px;
 }
 
 
 img {
-	-ms-interpolation-mode: bicubic;
+	literal("-ms-interpolation-mode: bicubic");
 }
 
 .inline-panel {
@@ -1341,6 +1343,7 @@ body .post-expanded-panel .content-warning {
 .header-bar .search-list {
 	padding-top: 4px;
 	padding-right: 10px;	
+	line-height: auto;
 }
 
 .globalSearchResultsAutocompleteResults
@@ -4026,8 +4029,8 @@ div.tab-container+div .profile-settings-tab-content .form-container {
 
 .no-results {
 	text-align: center;
-	margin-top: 40px;
-	margin-bottom: 20px;
+	padding-top: 40px;
+	padding-bottom: 20px;
 	color: #666666;
 	font-size: 12px;
 }
@@ -6015,7 +6018,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	.eureka-connect-liked-activity {
 		position: relative;
 		left: -25px;
-	}
+		}
 	
 	.plugins-master .image-container .gwt-Image {
 		margin-top: 7px;
@@ -6077,10 +6080,15 @@ body div.eureka-connect-liked-activity-wrapper {
 	.filters .show-more {
 		display: block;
 	}
+	
+	.content-warning > .warningText {
+		top: auto;
+		margin-left: 5px;
+		zoom: 1;
+	}
 }
 
 @if user.agent ie6 ie8 { 
-
 	.scope-form-element .required-form-label {
 		margin-top: -19px;
 	}
@@ -6282,7 +6290,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	.post-to-stream .content-warning {
 		position: static !important;
 	}
-	
+
 	.stream-plugin-conf-panel .form-container {
 		width: 95%;
 		display: inline;

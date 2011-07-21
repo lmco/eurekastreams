@@ -219,6 +219,8 @@ public interface CoreCss extends CssResource
 
     @ClassName("content-warning")
     String contentWarning();
+    
+    String warningText();
 
     String content_text();
 

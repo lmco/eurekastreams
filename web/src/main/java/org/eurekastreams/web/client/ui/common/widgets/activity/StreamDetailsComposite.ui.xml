@@ -316,7 +316,7 @@
 							</div>
 							<div>
 								<span ui:field="avgComments"></span>
-								Comments
+								Comments Per Activity
 							</div>
 						</div>
 						<div class="{style.metrics-data-total}">
@@ -332,10 +332,6 @@
 							<div>
 								<span ui:field="totalMessages"></span>
 								Messages
-							</div>
-							<div>
-								<span ui:field="totalComments"></span>
-								Comments
 							</div>
 						</div>
 					</g:HTMLPanel>
