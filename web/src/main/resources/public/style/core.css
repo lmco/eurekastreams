@@ -215,6 +215,11 @@ body .main-contents .header-container {
 	height: 50px;
 }
 
+.nav-bar ul.main-nav li {
+	height: 50px;
+}
+
+
 @sprite .external-header-button {
 	gwt-image: "navLogo";
 	cursor: pointer;
@@ -348,7 +353,7 @@ ul.horizontal,ul.horizontal li {
 	min-height: 100%;
 	width: 990px;
 	margin: 0 auto;
-	position: relative;
+  	position: relative;
 	top: -3px;
 }
 
@@ -377,7 +382,7 @@ div.content {
 }
 
 div.banner-container {
-	padding-top: 100px;
+	height: 100px;
 	border-bottom: 1px solid #BBBBBB;
 }
 

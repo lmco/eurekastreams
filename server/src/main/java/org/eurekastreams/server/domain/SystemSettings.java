@@ -34,7 +34,7 @@ import org.hibernate.validator.Min;
 
 /**
  * This class represents the System Settings domain object.
- * 
+ *
  */
 @SuppressWarnings("serial")
 @Entity
@@ -148,6 +148,12 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     @Transient
     private String footerTemplate;
+
+    /**
+     * HTML content template used in the banner.
+     */
+    @Transient
+    private String bannerTemplate;
 
     /**
      * System admins - not loaded from the database - this is here to send over the wire to the client, if requested.
@@ -275,7 +281,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     * 
+     *
      * @param inPluginWarning
      *            the plugin warning setter.
      */
@@ -285,7 +291,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     * 
+     *
      * @return the plugin warning text.
      */
     public String getPluginWarning()
@@ -395,4 +401,20 @@ public class SystemSettings extends DomainEntity implements Serializable
         themes = inThemes;
     }
 
+    /**
+     * @return the bannerTemplate
+     */
+    public String getBannerTemplate()
+    {
+        return bannerTemplate;
+    }
+
+    /**
+     * @param inBannerTemplate
+     *            the bannerTemplate to set
+     */
+    public void setBannerTemplate(final String inBannerTemplate)
+    {
+        bannerTemplate = inBannerTemplate;
+    }
 }
