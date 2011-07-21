@@ -160,10 +160,9 @@ img {
 	display: inline;
 }
 
-body .main-contents .header-container {
+.header-container {
 	position: relative;
-	padding-bottom: 0px;
-	z-index: 901;
+	z-index: 999;
 }
 
 .site-labeling {
@@ -182,9 +181,8 @@ body .main-contents .header-container {
 	top: 52px;
 }
 
-..search-list {
+.search-list {
 	background-repeat: repeat-x;
-	height: 50px;
 	width: auto;
 	overflow: visible;
 }
@@ -329,9 +327,12 @@ ul.horizontal,ul.horizontal li {
 
 .globalSearchBoxNav
 {
-	height: 50px;
+	height: 50px ! important;
+	margin-top: 0 ! important;
 	padding-top: 0 ! important;
 	padding-right: 0px ! important;
+	padding-left: 0px ! important;
+	border-left: none !important;
 }
 
 .globalSearchBoxActive
@@ -1342,9 +1343,12 @@ body .post-expanded-panel .content-warning {
 }
 
 .header-bar .search-list {
-	padding-top: 4px;
-	padding-right: 10px;	
-	line-height: auto;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 12px;
+	height: 38px;
+    position: relative;
+    line-height: 1 !important;
 }
 
 .globalSearchResultsAutocompleteResults
@@ -1395,6 +1399,7 @@ body .post-expanded-panel .content-warning {
 	cursor: pointer;
 	display: block ! important;
 	overflow: hidden;
+	line-height: 1;
 }
 
 .searchResultsAutocompleteResults > div > div:hover
@@ -1511,7 +1516,7 @@ body .bookmarkSearchActive input {
 	border: 1px solid #BBB;
 	border-right: none;
 	width: 200px;
-	height: 16px;
+	height: 17px;
 	padding: 3px;
 	vertical-align: text-top;
 }
@@ -6235,11 +6240,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		position: relative ! important;
 		top: -1px;
 		zoom: 1;
-	}
-	
-	.header-bar .search-list {
-		height: 22px;
-		top: 3px;
 	}
 	
 	.stream-titlebar {
