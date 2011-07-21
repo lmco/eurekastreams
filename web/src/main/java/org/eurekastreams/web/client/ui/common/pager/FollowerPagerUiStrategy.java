@@ -21,9 +21,12 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
+import org.eurekastreams.web.client.events.data.GotGroupMembersResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowersResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
+import org.eurekastreams.web.client.model.Fetchable;
+import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.TwoColumnPagedListRenderer;
@@ -38,7 +41,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
     /**
      * Model.
      */
-    private PersonFollowersModel model = PersonFollowersModel.getInstance();
+    private Fetchable<GetFollowersFollowingRequest> model;
 
     /**
      * Event.
@@ -92,6 +95,21 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                     }
                 });
 
+        EventBus.getInstance().addObserver(GotGroupMembersResponseEvent.class,
+                new Observer<GotGroupMembersResponseEvent>()
+                {
+
+                    public void update(final GotGroupMembersResponseEvent event)
+                    {
+                        pager.setMaxCount(event.getResponse().getTotal());
+
+                        FlowPanel responsePanel = new FlowPanel();
+                        twoColListRenderer.render(responsePanel, personRenderer, event.getResponse(), "No Followers");
+                        responseEvent.setWidget(responsePanel);
+                        EventBus.getInstance().notifyObservers(responseEvent);
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
@@ -99,6 +117,8 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                     {
                         entityKey = event.getResponse().getAccountId();
                         entityType = EntityType.PERSON;
+                        model = PersonFollowersModel.getInstance();
+
                     }
                 });
 
@@ -109,6 +129,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                     {
                         entityKey = event.getResponse().getShortName();
                         entityType = EntityType.GROUP;
+                        model = GroupMembersModel.getInstance();
                     }
                 });
     }
