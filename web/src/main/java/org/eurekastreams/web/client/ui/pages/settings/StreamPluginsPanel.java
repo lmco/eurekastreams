@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PluginMetaDataRenderer;
+import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -103,7 +104,7 @@ public class StreamPluginsPanel extends FlowPanel
      */
     public StreamPluginsPanel()
     {
-        clear();
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsPanel());
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("tab", "Plugins");
@@ -123,7 +124,7 @@ public class StreamPluginsPanel extends FlowPanel
         galleryPortalContainer.add(addPlugin);
 
         // Calling this gadgets so it works with a GadgetMetaDataRenderer. Do NOT change to plugins.
-        pluginTab = new PagedListPanel("gadgets");
+        pluginTab = new PagedListPanel("gadgets", new SingleColumnPagedListRenderer());
         galleryPortalContainer.add(pluginTab);
 
         pluginTab.addSet("All", PluginDefinitionModel.getInstance(), new PluginMetaDataRenderer(),

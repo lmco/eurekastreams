@@ -1398,4 +1398,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("pending-tab-content")
     String pendingTabContent();
+
+    @ClassName("stream-plugins-panel")
+    String streamPluginsPanel();
 }
