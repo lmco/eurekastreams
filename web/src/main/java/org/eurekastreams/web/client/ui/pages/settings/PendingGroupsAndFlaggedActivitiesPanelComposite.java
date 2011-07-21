@@ -42,6 +42,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRen
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 
@@ -58,7 +59,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
 
     /**
      * Constructor.
-     * 
+     *
      * @param inIdentifier
      *            the identifier
      */
@@ -75,7 +76,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
 
     /**
      * Builds the admin tab.
-     * 
+     *
      * @return The tab.
      */
     private PagedListPanel buildPanel()
@@ -87,6 +88,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
         // set up the tab itself
         final PagedListPanel adminTabContent = new PagedListPanel("pending", new SingleColumnPagedListRenderer(),
                 "tab", "Pending");
+        adminTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingTabContent());
 
         // wire up the data retrieval events
         eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class, new Observer<GotFlaggedActivitiesResponseEvent>()
