@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
+import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
@@ -427,6 +428,8 @@ public class PostBoxComposite extends Composite
         });
 
         AllPopularHashTagsModel.getInstance().fetch(null, true);
+        SystemSettingsModel.getInstance().fetch(null, true);
+
         hashTags.setVisible(false);
     }
 

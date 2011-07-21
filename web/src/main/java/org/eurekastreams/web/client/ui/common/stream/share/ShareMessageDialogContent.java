@@ -87,7 +87,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
     /**
      * Max length.
      */
-    private static final int MAXLENGTH = 250;
+    private static final int MAXLENGTH = 1000;
 
     /**
      * Action keys associated with recipient types.
