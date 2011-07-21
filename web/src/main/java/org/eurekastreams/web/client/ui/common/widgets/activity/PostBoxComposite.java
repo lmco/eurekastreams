@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.widgets.activity;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.DomainConversionUtility;
@@ -45,7 +45,6 @@ import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopul
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -203,9 +202,14 @@ public class PostBoxComposite extends Composite
     private static final int POST_BOX_DEFAULT_HEIGHT = 250;
 
     /**
+     * Padding for hashtag dropdown.
+     */
+    private static final int HASH_TAG_DROP_DOWN_PADDING = 14;
+
+    /**
      * Currently active item.
      */
-    private Label activeItem = null;
+    private Integer activeItemIndex = null;
 
     /**
      * Timer factory.
@@ -236,7 +240,7 @@ public class PostBoxComposite extends Composite
     /**
      * All hash tags.
      */
-    private HashSet<String> allHashTags;
+    private ArrayList<String> allHashTags;
 
     /**
      * Default constructor.
@@ -331,33 +335,29 @@ public class PostBoxComposite extends Composite
             {
 
                 if (event.getNativeKeyCode() == KeyCodes.KEY_TAB && !event.isAnyModifierKeyDown()
-                        && activeItem != null)
+                        && activeItemIndex != null)
                 {
-                    activeItem.getElement().dispatchEvent(
-                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                    hashTags.getWidget(activeItemIndex).getElement()
+                            .dispatchEvent(Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
                     event.preventDefault();
                     event.stopPropagation();
                     // clearSearch();
 
                 }
-                else if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN && activeItem != null)
+                else if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN && activeItemIndex != null)
                 {
-                    int activeIndex = hashTags.getWidgetIndex(activeItem);
-
-                    if (activeIndex + 1 < hashTags.getWidgetCount())
+                    if (activeItemIndex + 1 < hashTags.getWidgetCount())
                     {
-                        selectItem((Label) hashTags.getWidget(activeIndex + 1));
+                        selectItem((Label) hashTags.getWidget(activeItemIndex + 1));
                     }
                     event.preventDefault();
                     event.stopPropagation();
                 }
-                else if (event.getNativeKeyCode() == KeyCodes.KEY_UP && activeItem != null)
+                else if (event.getNativeKeyCode() == KeyCodes.KEY_UP && activeItemIndex != null)
                 {
-                    int activeIndex = hashTags.getWidgetIndex(activeItem);
-
-                    if (activeIndex - 1 >= 0)
+                    if (activeItemIndex - 1 >= 0)
                     {
-                        selectItem((Label) hashTags.getWidget(activeIndex - 1));
+                        selectItem((Label) hashTags.getWidget(activeItemIndex - 1));
                     }
                     event.preventDefault();
                     event.stopPropagation();
@@ -369,7 +369,14 @@ public class PostBoxComposite extends Composite
         {
             public void onKeyUp(final KeyUpEvent event)
             {
-                hashTags.getElement().getStyle().setWidth(postBox.getElement().getClientWidth() + 8, Unit.PX);
+                String boxHeight = postBox.getElement().getStyle().getHeight();
+                boxHeight = boxHeight.replace("px", "");
+                if (boxHeight.length() == 0)
+                {
+                    boxHeight = "44";
+                }
+                hashTags.getElement().getStyle()
+                        .setTop(Integer.parseInt(boxHeight) + HASH_TAG_DROP_DOWN_PADDING, Unit.PX);
                 hashTags.clear();
                 hashTags.setVisible(false);
                 String[] words = postBox.getText().split("\\s");
@@ -379,20 +386,22 @@ public class PostBoxComposite extends Composite
                     final String lastWord = words[words.length - 1];
                     if (lastWord.startsWith("#"))
                     {
-                        activeItem = null;
+                        boolean activeItemSet = false;
+                        Label firstItem = null;
 
-                        for (final String tag : allHashTags)
+                        for (int i = 0; i < allHashTags.size(); i++)
                         {
+                            final int index = i;
                             if (hashTags.getWidgetCount() > 9)
                             {
                                 break;
                             }
                             else
                             {
-                                if (tag.startsWith(lastWord))
+                                if (allHashTags.get(index).startsWith(lastWord))
                                 {
                                     hashTags.setVisible(true);
-                                    final Label tagLbl = new Label(tag);
+                                    final Label tagLbl = new Label(allHashTags.get(i));
                                     hashTags.add(tagLbl);
                                     tagLbl.addClickHandler(new ClickHandler()
                                     {
@@ -400,7 +409,7 @@ public class PostBoxComposite extends Composite
                                         {
                                             String postText = postBox.getText();
                                             postText = postText.substring(0, postText.length() - lastWord.length())
-                                                    + tag + " ";
+                                                    + allHashTags.get(index) + " ";
                                             postBox.setText(postText);
                                             hashTags.clear();
                                             hashTags.setVisible(false);
@@ -415,12 +424,27 @@ public class PostBoxComposite extends Composite
                                         }
                                     });
 
-                                    if (activeItem == null)
+                                    if (firstItem == null)
                                     {
+                                        firstItem = tagLbl;
+                                    }
+
+                                    if (activeItemIndex != null
+                                            && activeItemIndex.equals(hashTags.getWidgetCount() - 1))
+                                    {
+                                        activeItemIndex = null;
+                                        activeItemSet = true;
                                         selectItem(tagLbl);
                                     }
+
                                 }
                             }
+                        }
+
+                        if (!activeItemSet && firstItem != null)
+                        {
+                            activeItemIndex = null;
+                            selectItem(firstItem);
                         }
                     }
                 }
@@ -518,7 +542,13 @@ public class PostBoxComposite extends Composite
                         {
                             public void update(final GotAllPopularHashTagsResponseEvent event)
                             {
-                                allHashTags = event.getResponse();
+                                allHashTags = new ArrayList<String>(event.getResponse());
+                                allHashTags.add("#test");
+                                allHashTags.add("#status");
+                                allHashTags.add("#eureka");
+                                allHashTags.add("#standup");
+                                allHashTags.add("#hello");
+                                allHashTags.add("#defect");
                             }
                         });
 
@@ -563,12 +593,12 @@ public class PostBoxComposite extends Composite
      */
     private void selectItem(final Label item)
     {
-        if (activeItem != null)
+        if (activeItemIndex != null)
         {
-            activeItem.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+            hashTags.getWidget(activeItemIndex).removeStyleName(style.activeHashTag());
         }
         item.addStyleName(style.activeHashTag());
-        activeItem = item;
+        activeItemIndex = hashTags.getWidgetIndex(item);
     }
 
 }

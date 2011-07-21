@@ -10,6 +10,9 @@
 	<ui:image field="deleteBookmarkHover" src="style/images/modalCloseBtnSmallHover.png" />
 	<ui:image field="deleteBookmark" src="style/images/modalCloseBtnSmall.png" />
 
+	<ui:with field='resources'
+		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
+		
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
@@ -341,6 +344,7 @@
 			</div>
 			<div class="{style.stream-panel}">
 				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
+				<div class="{resources.coreCss.noResults}" ui:field="noResults">This stream does not contain any activity.</div>
 				<g:FlowPanel addStyleNames="{style.errorPanel}"
 					ui:field="errorPanel"></g:FlowPanel>
 				<g:FlowPanel ui:field="streamPanel">

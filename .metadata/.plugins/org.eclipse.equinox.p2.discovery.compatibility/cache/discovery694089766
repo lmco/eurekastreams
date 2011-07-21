@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<directory xmlns="http://www.eclipse.org/mylyn/discovery/directory/">
+    <entry url="https://repository.sonatype.org/content/repositories/forge-sites/m2e-discovery-catalog/org.eclipse.m2e.discovery.oss-1.0.0-SNAPSHOT.jar" permitCategories="true"/>
+<!--
+	<entry url="http://download.eclipse.org/technology/m2e/discovery/org.eclipse.m2e.discovery.oss/org.eclipse.m2e.discovery.oss-1.0.0-SNAPSHOT.jar" permitCategories="true"/>
+-->
+</directory>
