@@ -35,11 +35,13 @@ import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
+import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.Deletable;
@@ -55,6 +57,7 @@ import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.pager.FollowerPagerUiStrategy;
 import org.eurekastreams.web.client.ui.common.pager.FollowingPagerUiStrategy;
+import org.eurekastreams.web.client.ui.common.pager.GroupMembershipRequestPagerUiStrategy;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
 import org.eurekastreams.web.client.ui.common.stream.FollowDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
@@ -188,6 +191,12 @@ public class StreamDetailsComposite extends Composite
     Label followingLink;
 
     /**
+     * UI element for admin link.
+     */
+    @UiField
+    Label adminLink;
+
+    /**
      * UI element for toggling details.
      */
     @UiField
@@ -270,6 +279,12 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     PagerComposite streamFollowing;
+
+    /**
+     * UI element admin tab content.
+     */
+    @UiField
+    PagerComposite adminContent;
 
     /**
      * Show following link.
@@ -409,14 +424,17 @@ public class StreamDetailsComposite extends Composite
 
         streamFollowers.init(new FollowerPagerUiStrategy());
         streamFollowing.init(new FollowingPagerUiStrategy());
+        adminContent.init(new GroupMembershipRequestPagerUiStrategy());
 
         streamFollowers.setVisible(false);
         streamFollowing.setVisible(false);
         configureLink.setVisible(false);
+        adminLink.setVisible(false);
 
         showFollowing.setVisible(false);
         followingCount.getStyle().setDisplay(Display.NONE);
         followingLink.setVisible(false);
+        adminContent.setVisible(false);
 
         followersLink.addClickHandler(new ClickHandler()
         {
@@ -433,6 +451,14 @@ public class StreamDetailsComposite extends Composite
             public void onClick(final ClickEvent event)
             {
                 openFollowing();
+            }
+        });
+
+        adminLink.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                openAdmin();
             }
         });
 
@@ -599,12 +625,29 @@ public class StreamDetailsComposite extends Composite
                     thisClass.addStyleName(style.condensedStream());
                 }
                 else if (views.size() == 1)
-                {                    
+                {
                     thisClass.removeStyleName(style.condensedStream());
                 }
             }
         }, true);
 
+        EventBus.getInstance().addObserver(DeletedRequestForGroupMembershipResponseEvent.class,
+                new Observer<DeletedRequestForGroupMembershipResponseEvent>()
+                {
+                    public void update(final DeletedRequestForGroupMembershipResponseEvent event)
+                    {
+                        openAdmin();
+                    }
+                }, true);
+
+        EventBus.getInstance().addObserver(InsertedGroupMemberResponseEvent.class,
+                new Observer<InsertedGroupMemberResponseEvent>()
+                {
+                    public void update(final InsertedGroupMemberResponseEvent event)
+                    {
+                        openAdmin();
+                    }
+                }, true);
     }
 
     /**
@@ -622,6 +665,7 @@ public class StreamDetailsComposite extends Composite
                         showFollowing.setVisible(true);
                         followingCount.getStyle().setDisplay(Display.INLINE);
                         followingLink.setVisible(true);
+                        adminLink.setVisible(false);
 
                         PersonModelView person = event.getResponse();
                         streamId = person.getStreamId();
@@ -700,6 +744,10 @@ public class StreamDetailsComposite extends Composite
                             if (isCoordinator
                                     || Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
                             {
+                                if (!group.isPublic())
+                                {
+                                    adminLink.setVisible(true);
+                                }
                                 configureLink.setVisible(true);
                                 configureLink.setHref("#groupsettings/" + group.getShortName());
                             }
@@ -817,10 +865,12 @@ public class StreamDetailsComposite extends Composite
         aboutLink.addStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
+        adminLink.removeStyleName(style.activeOption());
 
         streamFollowing.setVisible(false);
         streamAbout.setVisible(true);
         streamFollowers.setVisible(false);
+        adminContent.setVisible(false);
         detailsContainerAnimation.expandWithPadding(CONTENT_PADDING);
     }
 
@@ -832,10 +882,12 @@ public class StreamDetailsComposite extends Composite
         aboutLink.removeStyleName(style.activeOption());
         followingLink.addStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
+        adminLink.removeStyleName(style.activeOption());
 
         streamFollowers.setVisible(false);
         streamAbout.setVisible(false);
         streamFollowing.setVisible(true);
+        adminContent.setVisible(false);
         streamFollowing.load();
     }
 
@@ -847,11 +899,30 @@ public class StreamDetailsComposite extends Composite
         aboutLink.removeStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.addStyleName(style.activeOption());
+        adminLink.removeStyleName(style.activeOption());
 
         streamFollowing.setVisible(false);
         streamAbout.setVisible(false);
         streamFollowers.setVisible(true);
+        adminContent.setVisible(false);
         streamFollowers.load();
+    }
+
+    /**
+     * Open the Admin panel.
+     */
+    private void openAdmin()
+    {
+        aboutLink.removeStyleName(style.activeOption());
+        followingLink.removeStyleName(style.activeOption());
+        followersLink.removeStyleName(style.activeOption());
+        adminLink.addStyleName(style.activeOption());
+
+        streamFollowing.setVisible(false);
+        streamAbout.setVisible(false);
+        streamFollowers.setVisible(false);
+        adminContent.setVisible(true);
+        adminContent.load();
     }
 
     /**

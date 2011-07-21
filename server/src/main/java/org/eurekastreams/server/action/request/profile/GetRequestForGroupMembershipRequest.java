@@ -32,19 +32,28 @@ public class GetRequestForGroupMembershipRequest extends BasePageableRequest imp
     private long groupId;
 
     /**
+     * Group short name.
+     */
+    private String groupShortName;
+
+    /**
      * Constructor.
      * 
      * @param inGroupId
      *            Group id.
+     * @param inGroupShortName
+     *            Group short name.
      * @param inStartIndex
      *            The zero-based start index for items to return.
      * @param inEndIndex
      *            The zero-based end index for items to return.
      */
-    public GetRequestForGroupMembershipRequest(final long inGroupId, final int inStartIndex, final int inEndIndex)
+    public GetRequestForGroupMembershipRequest(final long inGroupId, final String inGroupShortName,
+            final int inStartIndex, final int inEndIndex)
     {
         super(inStartIndex, inEndIndex);
         groupId = inGroupId;
+        groupShortName = inGroupShortName;
     }
 
     /**
@@ -69,5 +78,22 @@ public class GetRequestForGroupMembershipRequest extends BasePageableRequest imp
     public void setGroupId(final long inGroupId)
     {
         groupId = inGroupId;
+    }
+
+    /**
+     * @return the groupShortName
+     */
+    public String getGroupShortName()
+    {
+        return groupShortName;
+    }
+
+    /**
+     * @param inGroupShortName
+     *            the groupShortName to set
+     */
+    public void setGroupShortName(final String inGroupShortName)
+    {
+        groupShortName = inGroupShortName;
     }
 }

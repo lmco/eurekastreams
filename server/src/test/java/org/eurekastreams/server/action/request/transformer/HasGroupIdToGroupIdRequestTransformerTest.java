@@ -41,7 +41,7 @@ public class HasGroupIdToGroupIdRequestTransformerTest
             public Serializable getParams()
             {
                 // a sample request that implements HasGroupId
-                return new GetRequestForGroupMembershipRequest(8L, 0, 0);
+                return new GetRequestForGroupMembershipRequest(8L, null, 0, 0);
             }
 
             public Map<String, Object> getState()
