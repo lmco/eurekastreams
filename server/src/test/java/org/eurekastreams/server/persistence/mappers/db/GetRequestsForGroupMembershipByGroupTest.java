@@ -24,7 +24,6 @@ import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  * Tests mapper.
  */
@@ -47,8 +46,8 @@ public class GetRequestsForGroupMembershipByGroupTest extends MapperTest
         final int endIndex = 9;
         final long personId = 4507L;
 
-        GetRequestForGroupMembershipRequest request =
-                new GetRequestForGroupMembershipRequest(groupId, startIndex, endIndex);
+        GetRequestForGroupMembershipRequest request = new GetRequestForGroupMembershipRequest(groupId, null,
+                startIndex, endIndex);
 
         // perform SUT
         PagedSet<Long> results = sut.execute(request);
@@ -58,7 +57,7 @@ public class GetRequestsForGroupMembershipByGroupTest extends MapperTest
         assertEquals("Wrong To index", 0, results.getToIndex());
         assertEquals("Wrong total", 1, results.getTotal());
         assertEquals(1, results.getPagedSet().size());
-        assertEquals((Long) personId, (Long) results.getPagedSet().get(0));
+        assertEquals((Long) personId, results.getPagedSet().get(0));
     }
 
     /**
@@ -71,8 +70,8 @@ public class GetRequestsForGroupMembershipByGroupTest extends MapperTest
         final int startIndex = 0;
         final int endIndex = 9;
 
-        GetRequestForGroupMembershipRequest request =
-                new GetRequestForGroupMembershipRequest(groupId, startIndex, endIndex);
+        GetRequestForGroupMembershipRequest request = new GetRequestForGroupMembershipRequest(groupId, null,
+                startIndex, endIndex);
 
         // perform SUT
         PagedSet<Long> results = sut.execute(request);

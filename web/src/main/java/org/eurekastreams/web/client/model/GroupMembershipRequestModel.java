@@ -38,7 +38,7 @@ public class GroupMembershipRequestModel extends BaseModel implements Fetchable<
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static GroupMembershipRequestModel getInstance()
@@ -57,7 +57,8 @@ public class GroupMembershipRequestModel extends BaseModel implements Fetchable<
                     public void onSuccess(final PagedSet<PersonModelView> response)
                     {
                         Session.getInstance().getEventBus().notifyObservers(
-                                new GotRequestForGroupMembershipResponseEvent(response));
+                                new GotRequestForGroupMembershipResponseEvent(inRequest.getGroupId(), inRequest
+                                        .getGroupShortName(), response));
                     }
                 }, inUseClientCacheIfAvailable);
     }

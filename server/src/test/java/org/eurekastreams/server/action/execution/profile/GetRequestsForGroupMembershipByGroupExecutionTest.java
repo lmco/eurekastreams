@@ -86,7 +86,7 @@ public class GetRequestsForGroupMembershipByGroupExecutionTest
     public void setUp()
     {
         sut = new GetRequestsForGroupMembershipByGroupExecution(requestMapper, peopleMapper);
-        request = new GetRequestForGroupMembershipRequest(GROUP_ID, START_INDEX, END_INDEX);
+        request = new GetRequestForGroupMembershipRequest(GROUP_ID, null, START_INDEX, END_INDEX);
 
         context.checking(new Expectations()
         {

@@ -1395,4 +1395,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("add-plugin-info-message")
     String addPluginInfoMessage();
+
+    @ClassName("pending-tab-content")
+    String pendingTabContent();
 }

@@ -71,7 +71,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 {
     /**
      * State.
-     * 
+     *
      */
     public enum State
     {
@@ -133,7 +133,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     * 
+     *
      * @param inShowRecipient
      *            show the recipient.
      */
@@ -144,7 +144,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     * 
+     *
      * @param inShowRecipient
      *            show the recipient.
      * @param inState
@@ -175,7 +175,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets showComment.
-     * 
+     *
      * @param inShowComment
      *            value to set.
      */
@@ -213,10 +213,10 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Render a message item.
-     * 
+     *
      * @param msg
      *            the message item.
-     * 
+     *
      * @return the rendered item as a FlowPanel.
      */
     public Panel render(final ActivityDTO msg)
@@ -392,7 +392,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Builds the action links panel.
-     * 
+     *
      * @param msg
      *            The message.
      * @param mainPanel
@@ -513,7 +513,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Called when user requests to share the activity.
-     * 
+     *
      * @param msg
      *            Activity to share.
      */
@@ -524,7 +524,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */
@@ -537,7 +537,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up the buttons to manage flagged content.
-     * 
+     *
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -585,7 +585,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             {
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this activity?"))
                 {
-                    buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
+                    // buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
                     setupDeleteFadeout(msg, mainPanel);
                     ActivityModel.getInstance().delete(msg.getId());
                 }
@@ -597,7 +597,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Wires up the handler for clicking on a delete link/button.
-     * 
+     *
      * @param widget
      *            The delete link/button.
      * @param msg
@@ -623,7 +623,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Action to actually do the delete.
-     * 
+     *
      * @param msg
      *            The activity.
      */
@@ -641,7 +641,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up to remove the activity on deletion.
-     * 
+     *
      * @param msg
      *            The activity.
      * @param mainPanel

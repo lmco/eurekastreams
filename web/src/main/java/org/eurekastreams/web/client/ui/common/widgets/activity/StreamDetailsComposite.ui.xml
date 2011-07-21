@@ -280,6 +280,8 @@
 					ui:field="followersLink">Followers</g:Label>
 				<g:Label addStyleNames="{style.stream-details-option}"
 					ui:field="followingLink">Following</g:Label>
+				 <g:Label addStyleNames="{style.stream-details-option}"
+                    ui:field="adminLink">Admin</g:Label>	
 			</div>
 			<div class="{style.stream-details-content}">
 				<g:HTMLPanel addStyleNames="{style.streamAbout}"
@@ -342,6 +344,9 @@
 				<pager:PagerComposite addStyleNames="pagerControl"
 					ui:field="streamFollowing">
 				</pager:PagerComposite>
+				<pager:PagerComposite addStyleNames="pagerControl"
+                    ui:field="adminContent">
+                </pager:PagerComposite>
 			</div>
 		</div>
 	</g:HTMLPanel>
