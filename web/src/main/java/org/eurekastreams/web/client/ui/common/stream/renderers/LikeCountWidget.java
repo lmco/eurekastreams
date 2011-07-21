@@ -338,7 +338,14 @@ public class LikeCountWidget extends Composite
         {
             viewAll.setVisible(true);
         }
-        likedLabel.setText(likeCount + " people liked this");
+        if (likeCount == 1)
+        {
+            likedLabel.setText(likeCount + " person liked this");
+        }
+        else
+        {
+            likedLabel.setText(likeCount + " people liked this");
+        }
         innerLikeCountLink.setText(likeCount.toString());
     }
 

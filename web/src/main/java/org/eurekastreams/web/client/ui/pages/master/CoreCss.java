@@ -219,6 +219,8 @@ public interface CoreCss extends CssResource
 
     @ClassName("content-warning")
     String contentWarning();
+    
+    String warningText();
 
     String content_text();
 
@@ -1393,4 +1395,10 @@ public interface CoreCss extends CssResource
 
     @ClassName("add-plugin-info-message")
     String addPluginInfoMessage();
+
+    @ClassName("pending-tab-content")
+    String pendingTabContent();
+
+    @ClassName("stream-plugins-panel")
+    String streamPluginsPanel();
 }

@@ -17,7 +17,9 @@
 				background-color: #e4e4e4;
 				border-left: 1px solid #c6c6c6;
 				border-right: 1px solid #c6c6c6;
-				overflow: hidden;
+				width: 708px;
+				display: table;
+				zoom: 1;
 			}
 			
 			.post-box {
@@ -87,6 +89,9 @@
 				z-index: 900;
 				margin-top: -1px;
 				border-top-width: 0;
+				padding: 5px;
+				width: 628px;
+				left: 0;
 			}
 			
 			.hashtags>div {
@@ -97,6 +102,11 @@
 			.hashtags>div.activeHashTag {
 				background-color: #426DF9;
 			}
+			
+			.post-box-inner-container {
+				position: relative;			
+				z-index: 800;
+			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.post-container}"
@@ -105,7 +115,7 @@
 			ui:field="posterAvatar">
 		</g:HTMLPanel>
 		<div class="{style.post-box-container}">
-			<div>
+			<div class='{style.post-box-inner-container}'>
 				<ea:ExtendedTextArea addStyleNames="{style.post-box}"
 					ui:field="postBox"></ea:ExtendedTextArea>
 				<g:FlowPanel addStyleNames="{style.hashtags}" ui:field="hashTags"></g:FlowPanel>
@@ -115,7 +125,7 @@
 					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
 					<div class="{resources.coreCss.contentWarning}">
 						<div></div>
-						<g:InlineLabel ui:field="contentWarning"></g:InlineLabel>
+						<g:Label addStyleNames="{resources.coreCss.warningText}" ui:field="contentWarning"></g:Label>
 					</div>
 				</div>
 			</div>

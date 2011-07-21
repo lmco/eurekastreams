@@ -185,6 +185,12 @@ public class ActivityContent extends Composite
     ActivityStyle style;
 
     /**
+     * No results panel.
+     */
+    @UiField
+    DivElement noResults;
+
+    /**
      * Search container.
      */
     @UiField
@@ -436,6 +442,7 @@ public class ActivityContent extends Composite
         StreamBookmarksModel.getInstance().fetch(null, true);
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+        noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
         handleViewsChanged(Session.getInstance().getUrlViews());
     }
@@ -513,6 +520,15 @@ public class ActivityContent extends Composite
                     for (ActivityDTO activity : activities)
                     {
                         streamPanel.add(renderer.render(activity));
+                    }
+
+                    if (activities.size() == 0)
+                    {
+                        noResults.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                    }
+                    else
+                    {
+                        noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     }
 
                     moreLink.setVisible(activitySet.getTotal() > activities.size());
@@ -600,7 +616,7 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setDisplayName(group.getName());
                         }
-                        
+
                         EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                     }
                 });
@@ -926,6 +942,7 @@ public class ActivityContent extends Composite
      */
     private void loadStream(final List<String> views, final String searchTerm)
     {
+        noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         Session.getInstance().getActionProcessor().setQueueRequests(true);
 
         addBookmark.setVisible(false);

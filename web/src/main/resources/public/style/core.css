@@ -19,6 +19,7 @@
 @external .post-to-stream;
 @external .auto-complete;
 @external .gwt-*;
+@external .gadget-preferences;
 @external .gadgets-gadget;
 @external .dragdrop*;
 @external .onecolumn;
@@ -137,6 +138,7 @@ textarea.empty-labeled-textbox {
 .content-warning {
 	font-style: italic;
 	color: #666;
+	width: 100%;
 }
 
 @sprite .content-warning > div:first-child {
@@ -144,24 +146,24 @@ textarea.empty-labeled-textbox {
 	display: inline-block;
 }
 
-.content-warning > span {
+.content-warning > .warningText {
 	position: relative;
+	display: inline;
 	top: -3px;
 }
 
 
 img {
-	-ms-interpolation-mode: bicubic;
+	literal("-ms-interpolation-mode: bicubic");
 }
 
 .inline-panel {
 	display: inline;
 }
 
-body .main-contents .header-container {
+.header-container {
 	position: relative;
-	padding-bottom: 0px;
-	z-index: 901;
+	z-index: 999;
 }
 
 .site-labeling {
@@ -172,6 +174,7 @@ body .main-contents .header-container {
 	min-height: 16px;
 	clear: both;
 	font-size: 11px;
+	z-index: 900;
 }
 
 .header-bar .site-labeling {
@@ -179,9 +182,8 @@ body .main-contents .header-container {
 	top: 52px;
 }
 
-..search-list {
+.search-list {
 	background-repeat: repeat-x;
-	height: 50px;
 	width: auto;
 	overflow: visible;
 }
@@ -326,9 +328,12 @@ ul.horizontal,ul.horizontal li {
 
 .globalSearchBoxNav
 {
-	height: 50px;
+	height: 50px ! important;
+	margin-top: 0 ! important;
 	padding-top: 0 ! important;
 	padding-right: 0px ! important;
+	padding-left: 0px ! important;
+	border-left: none !important;
 }
 
 .globalSearchBoxActive
@@ -1339,8 +1344,12 @@ body .post-expanded-panel .content-warning {
 }
 
 .header-bar .search-list {
-	padding-top: 4px;
-	padding-right: 10px;	
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 12px;
+	height: 38px;
+    position: relative;
+    line-height: 1 !important;
 }
 
 .globalSearchResultsAutocompleteResults
@@ -1391,6 +1400,7 @@ body .post-expanded-panel .content-warning {
 	cursor: pointer;
 	display: block ! important;
 	overflow: hidden;
+	line-height: 1;
 }
 
 .searchResultsAutocompleteResults > div > div:hover
@@ -1507,7 +1517,7 @@ body .bookmarkSearchActive input {
 	border: 1px solid #BBB;
 	border-right: none;
 	width: 200px;
-	height: 16px;
+	height: 17px;
 	padding: 3px;
 	vertical-align: text-top;
 }
@@ -1954,6 +1964,7 @@ body .post-to-stream .over-character-limit {
 		scroll 0 0;
 	width: 58px;
 	height: 16px;
+	cursor: pointer;
 }
 
 .flag-delete-button {
@@ -1961,6 +1972,7 @@ body .post-to-stream .over-character-limit {
 		scroll 0 0;
 	width: 58px;
 	height: 16px;
+	cursor: pointer;
 }
 
 .stream-message-item .description {
@@ -4026,8 +4038,8 @@ div.tab-container+div .profile-settings-tab-content .form-container {
 
 .no-results {
 	text-align: center;
-	margin-top: 40px;
-	margin-bottom: 20px;
+	padding-top: 40px;
+	padding-bottom: 20px;
 	color: #666666;
 	font-size: 12px;
 }
@@ -5193,7 +5205,12 @@ body .stream-view-dialog .delete-button {
 
 .pending-group.directory-item.list-item {
 	overflow: auto;
-	margin-top: 20px;
+	padding-top: 10px;
+}
+
+.pending-group.directory-item.list-item:first-child {
+	border-top: none;
+	padding-top: 0px;
 }
 
 .pending-group-buttons {
@@ -5732,6 +5749,24 @@ html,body {
 
 .notification-settings-modal {}
 
+.pending-tab-content {
+	background-color: white;
+	padding: 20px;
+	padding-top: 10px;
+}
+
+.stream-plugins-panel .navpanel {
+	margin: 0;
+}
+
+            
+.gadget-preferences {
+	margin: 10px;
+}
+
+
+/* ---------- Eureka Connect styling ---------- */
+
 .eureka-connect-badge-avatar {
 	float: left;
 	margin-right: 10px;
@@ -6015,7 +6050,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	.eureka-connect-liked-activity {
 		position: relative;
 		left: -25px;
-	}
+		}
 	
 	.plugins-master .image-container .gwt-Image {
 		margin-top: 7px;
@@ -6077,10 +6112,15 @@ body div.eureka-connect-liked-activity-wrapper {
 	.filters .show-more {
 		display: block;
 	}
+	
+	.content-warning > .warningText {
+		top: auto;
+		margin-left: 5px;
+		zoom: 1;
+	}
 }
 
 @if user.agent ie6 ie8 { 
-
 	.scope-form-element .required-form-label {
 		margin-top: -19px;
 	}
@@ -6214,11 +6254,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		zoom: 1;
 	}
 	
-	.header-bar .search-list {
-		height: 22px;
-		top: 3px;
-	}
-	
 	.stream-titlebar {
 		position: static !important;
 	}
@@ -6282,7 +6317,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	.post-to-stream .content-warning {
 		position: static !important;
 	}
-	
+
 	.stream-plugin-conf-panel .form-container {
 		width: 95%;
 		display: inline;

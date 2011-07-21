@@ -23,14 +23,63 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class GotRequestForGroupMembershipResponseEvent extends BaseDataResponseEvent<PagedSet<PersonModelView>>
 {
+    /** Group. */
+    private long groupId;
+
+    /**
+     * Group short name.
+     */
+    private String groupShortName;
+
     /**
      * Constructor.
      * 
+     * @param inGroupId
+     *            Group id.
+     * @param inGroupShortName
+     *            Group short name.
      * @param inResponse
      *            Response.
      */
-    public GotRequestForGroupMembershipResponseEvent(final PagedSet<PersonModelView> inResponse)
+    public GotRequestForGroupMembershipResponseEvent(final long inGroupId, final String inGroupShortName,
+            final PagedSet<PersonModelView> inResponse)
     {
         super(inResponse);
+        groupId = inGroupId;
+        groupShortName = inGroupShortName;
+    }
+
+    /**
+     * @return the groupId
+     */
+    public long getGroupId()
+    {
+        return groupId;
+    }
+
+    /**
+     * @param inGroupId
+     *            the groupId to set
+     */
+    public void setGroupId(final long inGroupId)
+    {
+        groupId = inGroupId;
+    }
+
+    /**
+     * @return the groupShortName
+     */
+    public String getGroupShortName()
+    {
+        return groupShortName;
+    }
+
+    /**
+     * @param inGroupShortName
+     *            the groupShortName to set
+     */
+    public void setGroupShortName(final String inGroupShortName)
+    {
+        groupShortName = inGroupShortName;
     }
 }

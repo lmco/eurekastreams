@@ -202,17 +202,19 @@ public class StreamDetailsComposite extends Composite
     Label followingLink;
 
     /**
+<<<<<<< HEAD
      * UI element for featuring a stream.
      */
     @UiField
     Label featureLink;
     
-    /**
+=======
      * UI element for admin link.
      */
     @UiField
     Label adminLink;
 
+>>>>>>> 3f637e5d0a7559306733aa19c7485f5c4f45e1f7
     /**
      * UI element for toggling details.
      */
