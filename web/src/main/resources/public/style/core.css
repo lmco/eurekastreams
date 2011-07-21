@@ -19,6 +19,7 @@
 @external .post-to-stream;
 @external .auto-complete;
 @external .gwt-*;
+@external .gadget-preferences;
 @external .gadgets-gadget;
 @external .dragdrop*;
 @external .onecolumn;
@@ -5746,6 +5747,17 @@ html,body {
 	padding-top: 10px;
 }
 
+.stream-plugins-panel .navpanel {
+	margin: 0;
+}
+
+            
+.gadget-preferences {
+	margin: 10px;
+}
+
+
+/* ---------- Eureka Connect styling ---------- */
 
 .eureka-connect-badge-avatar {
 	float: left;
