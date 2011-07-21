@@ -84,7 +84,7 @@ public class AddFeaturedStreamExecution implements TaskHandlerExecutionStrategy<
         // kick off the action to rebuild the Discover Page cache - but don't delete the key now, because it takes
         // seconds to rebuild
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("regenerateStreamDiscoverListsJob", null, null));
+                new UserActionRequest("regenerateStreamDiscoverListsAction", null, null));
 
         return entityId;
     }

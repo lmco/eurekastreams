@@ -20,10 +20,13 @@ import java.util.List;
 
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
+import org.eurekastreams.server.action.request.stream.GetFeaturedStreamsPageRequest;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
+import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -35,6 +38,8 @@ import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
@@ -43,6 +48,7 @@ import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.Deletable;
+import org.eurekastreams.web.client.model.FeaturedStreamModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
@@ -53,9 +59,11 @@ import org.eurekastreams.web.client.ui.common.animation.ExpandCollapseAnimation;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.charts.StreamAnalyticsChart;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pager.FollowerPagerUiStrategy;
 import org.eurekastreams.web.client.ui.common.pager.FollowingPagerUiStrategy;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
+import org.eurekastreams.web.client.ui.common.stream.FeatureDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.FollowDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -187,6 +195,12 @@ public class StreamDetailsComposite extends Composite
     @UiField
     Label followingLink;
 
+    /**
+     * UI element for featuring a stream.
+     */
+    @UiField
+    Label featureLink;
+    
     /**
      * UI element for toggling details.
      */
@@ -377,6 +391,11 @@ public class StreamDetailsComposite extends Composite
      * Last following handler.
      */
     private HandlerRegistration lastHandler;
+    
+    /**
+     * Last feature handler;
+     */
+    private HandlerRegistration lastFeatureHandler;
 
     /**
      * Model used to set following status.
@@ -392,7 +411,17 @@ public class StreamDetailsComposite extends Composite
      * Stream ID.
      */
     private Long streamId;
+    
+    /** 
+     * Stream is featured.
+     */
+    private boolean inFeatured;
 
+    /**
+     * Featured streams;
+     */
+    
+    private PagedSet<FeaturedStreamDTO> featuredStreams;
     /**
      * Build page.
      */
@@ -402,7 +431,8 @@ public class StreamDetailsComposite extends Composite
         streamName.setInnerText("Following");
         this.addStyleName(style.condensedStream());
         followLink.setVisible(false);
-
+        featureLink.setText("Feature");
+        featureLink.setVisible(Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN));
         detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, EXPAND_ANIMATION_DURATION);
 
         streamAvatar.add(avatarRenderer.render(0L, null, EntityType.PERSON, Size.Normal));
@@ -479,6 +509,11 @@ public class StreamDetailsComposite extends Composite
         });
 
         addEvents();
+        
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        {
+        	FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+        }
     }
 
     /**
@@ -614,6 +649,16 @@ public class StreamDetailsComposite extends Composite
     {
         final StreamDetailsComposite thisClass = this;
 
+        EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
+        		new Observer<GotFeaturedStreamsPageResponseEvent>()
+        		{
+					public void update(GotFeaturedStreamsPageResponseEvent response) 
+					{
+						featuredStreams = response.getResponse();
+					}
+        		});
+        
+        
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
@@ -636,9 +681,15 @@ public class StreamDetailsComposite extends Composite
                         {
                             configureLink.setVisible(false);
                         }
-
                         updateFollowLink(person.getAccountId(), EntityType.PERSON);
-
+                    	FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+                    	featuredStreamDTO.setDescription(person.getDescription());
+                    	featuredStreamDTO.setStreamId(person.getStreamId());
+                    	featuredStreamDTO.setStreamType(ScopeType.PERSON);
+                    	featuredStreamDTO.setDisplayName(person.getDisplayName());
+                    	
+                        updateFeatureLink(featuredStreamDTO);
+                        
                         streamName.setInnerText(person.getDisplayName());
                         streamMeta.setInnerText(person.getTitle());
                         streamAvatar.clear();
@@ -709,7 +760,14 @@ public class StreamDetailsComposite extends Composite
                             }
 
                             updateFollowLink(group.getShortName(), EntityType.GROUP);
-
+                        	FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+                        	featuredStreamDTO.setDescription(group.getDescription());
+                        	featuredStreamDTO.setStreamId(group.getStreamId());
+                        	featuredStreamDTO.setStreamType(ScopeType.GROUP);
+                        	featuredStreamDTO.setDisplayName(group.getDisplayName());
+                        	
+                            updateFeatureLink(featuredStreamDTO);
+                            
                             streamName.setInnerText(group.getName());
                             streamMeta.setInnerText("");
                             // streamMeta.setInnerText(group.get);
@@ -736,6 +794,57 @@ public class StreamDetailsComposite extends Composite
                 });
     }
 
+    /**
+     * Update the feature link.
+     * @param featuredStreamDTO the stream.
+     */
+    public void updateFeatureLink(final FeaturedStreamDTO featuredStreamDTO)
+    {
+
+    	if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        {
+        	inFeatured = false;
+        	featureLink.removeStyleName("featured");
+        	featureLink.setText("Feature");
+        	
+        	for(FeaturedStreamDTO featured : featuredStreams.getPagedSet())
+        	{
+        		if (featured.getStreamId() == streamId 
+        				&& featured.getEntityType().equals(featuredStreamDTO.getEntityType()))
+        		{
+        			inFeatured = true;
+        			featuredStreamDTO.setId(featured.getId());
+        			featureLink.addStyleName("featured");
+        			featureLink.setText("Unfeature");
+        			break;
+        		}
+        	}
+        	
+        	if (lastFeatureHandler != null)
+            {
+        		lastFeatureHandler.removeHandler();
+            }
+
+        	lastFeatureHandler = featureLink.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent event)
+                {
+                	if (inFeatured)
+                	{
+                		FeaturedStreamModel.getInstance().delete(featuredStreamDTO.getId());
+                		EventBus.getInstance().notifyObservers(
+                				new ShowNotificationEvent(
+                						new Notification("Stream has been removed from the featured streams list.")));
+                	}
+                	else
+                	{
+                        Dialog.showCentered(new FeatureDialogContent(featuredStreamDTO));
+                	}
+                }
+            });
+        	
+        }
+    }
     /**
      * Update the following element.
      * 

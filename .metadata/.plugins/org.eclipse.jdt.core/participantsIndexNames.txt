@@ -1,0 +1,9 @@
+INDEX VERSION 1.126
+/Users/anthony/DevOSX/eurekastreams/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/738488439.index
+/web/src/main/java
+/Users/anthony/DevOSX/eurekastreams/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/2746283240.index
+/web/src/main/java
+/Users/anthony/DevOSX/eurekastreams/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3049339958.index
+/web/src/main/java
+/Users/anthony/DevOSX/eurekastreams/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1384978446.index
+/web/src/main/java
