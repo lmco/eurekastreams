@@ -10,7 +10,7 @@
     <inherits name='com.googlecode.gchart.GChart'/>
     <inherits name='com.google.gwt.widgetideas.GWTCanvas' />
     
-    <set-property name="user.agent" value="gecko1_8, ie6"/>    
+    <set-property name="user.agent" value="gecko1_8"/>    
     <set-configuration-property name="CssResource.style" value="pretty"/>
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
 
