@@ -1984,6 +1984,41 @@ body .post-to-stream .over-character-limit {
     line-height: 1.4;
 }
 
+.messageXPanel {
+	float: right;
+	background-image: url(style/images/modalCloseBtnSmallHover.png);
+	height: 15px;
+	width: 15px;
+	display: none;	
+	cursor: pointer;
+}
+
+div:hover > .messageXPanel {
+	display: block;	
+}
+
+.messageXPanel > div { 
+	display: none;
+	position: absolute;
+	background-color: white;
+    border: 1px solid #BDBDBD;
+    padding: 5px;
+    padding-bottom: 0;
+    margin-top: 15px;
+    margin-left: -30px;
+    width: 35px;
+}
+
+.messageXPanel:hover > div { 
+	display: block;
+}
+
+.messageXPanel > div > div {
+	font-size: 11px;
+	padding-bottom: 5px;
+} 
+
+
 .thumbnail {
 	width: 100px;
 	max-height: 150px;
