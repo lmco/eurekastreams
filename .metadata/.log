@@ -456,3 +456,9 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.
 
 !ENTRY com.google.gdt.eclipse.managedapis 1 0 2011-07-21 16:55:24.916
 !MESSAGE Failed to load icon cache
+
+!ENTRY com.google.gdt.eclipse.managedapis 1 0 2011-07-22 07:17:24.993
+!MESSAGE Failed to load icon cache
+
+!ENTRY com.google.gdt.eclipse.managedapis 1 0 2011-07-22 11:19:07.132
+!MESSAGE Failed to load icon cache
