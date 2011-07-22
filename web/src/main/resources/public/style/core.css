@@ -177,9 +177,9 @@ img {
 	z-index: 900;
 }
 
-.header-bar .site-labeling {
+.main-contents .site-labeling {
 	position: absolute;
-	top: 52px;
+	top: 5px;
 }
 
 .search-list {
@@ -887,10 +887,9 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 
 .master-notifier {
 	position: absolute;
-	top: 40px;
+	top: 70px;
 	margin: 0px auto;
 	z-index: 999;
-	left: 200px;
 }
 
 .message a:link,.message a:visited,.message a:hover,.message a:active {
@@ -4941,7 +4940,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .settings-panel .settings-content {
-	margin: 9px 10px 0;
+	margin: 0px 10px 0;
 	position: relative;
 	z-index: 900;
 }

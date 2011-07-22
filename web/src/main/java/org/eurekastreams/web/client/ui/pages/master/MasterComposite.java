@@ -60,6 +60,11 @@ public class MasterComposite extends Composite
     FlowPanel headerPanel = new FlowPanel();
 
     /**
+     * The Site Labing panel.
+     */
+    FlowPanel siteLabelingContainer = new FlowPanel();
+
+    /**
      * The site Labing Text.
      */
     String siteLabelingText = "";
@@ -150,12 +155,15 @@ public class MasterComposite extends Composite
 
         headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerContainer());
 
+        siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
+
         notifier.addStyleName(StaticResourceBundle.INSTANCE.coreCss().masterNotifier());
         panel.add(notifier);
 
-        mainContents.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainContents());
         panel.add(headerPanel);
 
+        mainContents.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainContents());
+        mainContents.add(siteLabelingContainer);
         mainContents.add(contentPanel);
         contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().content());
         panel.add(mainContents);
@@ -232,7 +240,7 @@ public class MasterComposite extends Composite
         {
             public void update(final SetBannerEvent event)
             {
-                mainContents.insert(banner, 0);
+                mainContents.insert(banner, 1);
 
                 // Banner exists and should override the banner the theme is supplying. (i.e. profile page.)
                 if (event.getBannerableEntity() != null)
@@ -292,15 +300,30 @@ public class MasterComposite extends Composite
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
                         final SystemSettings settings = event.getResponse();
-                        header.setSiteLabelTemplate(settings.getHeaderTemplate(), settings.getSiteLabel());
+
+                        setSiteLabelTemplate(settings.getHeaderTemplate(), settings.getSiteLabel());
                         footerPanel.setSiteLabelTemplate(settings.getFooterTemplate(), settings.getSiteLabel());
                         banner.getElement().setInnerHTML(settings.getBannerTemplate());
                     }
-
                 });
 
         SystemSettingsModel.getInstance().fetch(null, true);
 
         return header;
+    }
+
+    /**
+     * Sets Site labeling.
+     * 
+     * @param inTemplate
+     *            HTML template content to insert in the footer.
+     * @param inSiteLabel
+     *            The text for Site Labeling.
+     */
+    public void setSiteLabelTemplate(final String inTemplate, final String inSiteLabel)
+    {
+        String siteLabel = inSiteLabel == null ? "" : inSiteLabel;
+        String template = inTemplate.replace("%SITELABEL%", siteLabel);
+        siteLabelingContainer.getElement().setInnerHTML(template);
     }
 }
