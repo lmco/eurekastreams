@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * The display for the stream plugin settings tab.
- * 
+ *
  */
 public class StreamPluginsSettingsTabContent extends Composite
 {
@@ -122,7 +122,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * The default constructor.
-     * 
+     *
      * @param inModel
      *            The base model
      */
@@ -246,7 +246,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * Get the metadata for the plugin.
-     * 
+     *
      * @param plugin
      *            the plugin.
      * @return the metadata.
@@ -337,7 +337,9 @@ public class StreamPluginsSettingsTabContent extends Composite
             {
                 GadgetMetaDataDTO currentPlugin = availablePluginsMetaData.get(j);
                 GadgetMetaDataDTO nextPlugin = availablePluginsMetaData.get(j + 1);
-                if (currentPlugin.getTitle().compareToIgnoreCase(nextPlugin.getTitle()) > 0)
+                String currentTitle = currentPlugin.getTitle() == null ? "" : currentPlugin.getTitle();
+                String nextTitle = nextPlugin.getTitle() == null ? "" : nextPlugin.getTitle();
+                if (currentTitle.compareToIgnoreCase(nextTitle) > 0)
                 {
                     availablePluginsMetaData.set(j, nextPlugin);
                     availablePluginsMetaData.set(j + 1, currentPlugin);
@@ -474,7 +476,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * Selects a plugin from the available plugins, allowing the user to add a new one.
-     * 
+     *
      * @param selectedMetaData
      *            MetaData of the selected plugin
      */
@@ -503,7 +505,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * Edits a selected feed subscription.
-     * 
+     *
      * @param feedSubscription
      *            The feed subscription being edited
      * @param selectedMetaData
