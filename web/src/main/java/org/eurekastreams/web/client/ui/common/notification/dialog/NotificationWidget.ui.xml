@@ -132,6 +132,10 @@
 						repeat-x scroll 0 0;
 				}
 			}
+			
+			.fakeLink {
+				cursor: pointer;
+			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.main-outer}">
