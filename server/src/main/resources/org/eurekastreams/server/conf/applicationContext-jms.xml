@@ -8,14 +8,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/tx
 http://www.springframework.org/schema/tx/spring-tx.xsd
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
-
-    <!-- the connection factory to the running JMS server -->
-    <bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
-        <property name="connectionFactory">
-	        <bean class="org.apache.activemq.ActiveMQConnectionFactory" lazy-init="false">
-	            <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
-	        </bean>
-        </property>
+    
+    <!-- the connection factor to the running JMS server -->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" lazy-init="false">
+        <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
     </bean>
 
     <!-- the creation of the queue object to submit async. tasks to -->
