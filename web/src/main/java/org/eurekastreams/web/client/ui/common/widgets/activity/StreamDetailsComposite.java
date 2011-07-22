@@ -30,8 +30,8 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
@@ -105,35 +105,35 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         * 
+         *
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         * 
+         *
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         * 
+         *
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         * 
+         *
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         * 
+         *
          * @return Private avatar.
          */
         String privateAvatar();
@@ -146,7 +146,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -389,7 +389,7 @@ public class StreamDetailsComposite extends Composite
     /**
      * Avatar Renderer.
      */
-    private AvatarRenderer avatarRenderer = new AvatarRenderer();
+    private final AvatarRenderer avatarRenderer = new AvatarRenderer();
 
     /**
      * Expand/Collapse animation.
@@ -439,7 +439,7 @@ public class StreamDetailsComposite extends Composite
     {
         // Default style. Prevent flashing.
         streamName.setInnerText("Following");
-        this.addStyleName(style.condensedStream());
+        addStyleName(style.condensedStream());
         followLink.setVisible(false);
         featureLink.setText("Feature");
         featureLink.setVisible(Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN));
@@ -566,39 +566,42 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
-        {
-            public void update(final GotUsageMetricSummaryEvent event)
-            {
-                UsageMetricSummaryDTO data = event.getResponse();
-
-                List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                for (int i = 0; i < stats.size(); i++)
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
+                new Observer<GotUsageMetricSummaryEvent>()
                 {
-                    if (null == stats.get(i))
+                    public void update(final GotUsageMetricSummaryEvent event)
                     {
-                        chart.addPoint(i, 0.0);
-                    }
-                    else
-                    {
-                        chart.addPoint(i, stats.get(i).getStreamViewCount());
-                    }
-                }
+                        UsageMetricSummaryDTO data = event.getResponse();
 
-                avgComments.setInnerText("" + data.getAverageDailyCommentCount());
-                avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
-                avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
-                avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
-                avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+                        List<DailyUsageSummary> stats = data.getDailyStatistics();
+                        if (stats != null)
+                        {
+                            for (int i = 0; i < stats.size(); i++)
+                            {
+                                if (null == stats.get(i))
+                                {
+                                    chart.addPoint(i, 0.0);
+                                }
+                                else
+                                {
+                                    chart.addPoint(i, stats.get(i).getStreamViewCount());
+                                }
+                            }
+                        }
 
-                Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
-                totalContributors.setInnerText("" + data.getTotalContributorCount());
-                totalMessages.setInnerText(totalMessagesNumber.toString());
-                totalViews.setInnerText("" + data.getTotalStreamViewCount());
-                chart.update();
-            }
-        });
+                        avgComments.setInnerText("" + data.getAverageDailyCommentCount());
+                        avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
+                        avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
+                        avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
+                        avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+
+                        Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
+                        totalContributors.setInnerText("" + data.getTotalContributorCount());
+                        totalMessages.setInnerText(totalMessagesNumber.toString());
+                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
+                        chart.update();
+                    }
+                });
 
         addModelViewEvents();
 
@@ -838,7 +841,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * 
+     *
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -892,7 +895,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     * 
+     *
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -924,16 +927,14 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request = new SetFollowingStatusRequest(
-                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
-                                Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request = new SetFollowingStatusRequest(
-                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
-                                Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
@@ -945,14 +946,16 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
-                    new Observer<GotPersonFollowerStatusResponseEvent>()
-                    {
-                        public void update(final GotPersonFollowerStatusResponseEvent event)
-                        {
-                            onFollowerStatusChanged(event.getResponse());
-                        }
-                    });
+            Session.getInstance()
+                    .getEventBus()
+                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                            new Observer<GotPersonFollowerStatusResponseEvent>()
+                            {
+                                public void update(final GotPersonFollowerStatusResponseEvent event)
+                                {
+                                    onFollowerStatusChanged(event.getResponse());
+                                }
+                            });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);
@@ -1033,7 +1036,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     * 
+     *
      * @param inStatus
      *            status.
      */

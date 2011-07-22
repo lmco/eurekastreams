@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.start;
 
+import java.util.List;
+
 import org.eurekastreams.server.action.request.start.SetGadgetStateRequest;
 import org.eurekastreams.server.action.request.start.SetGadgetStateRequest.State;
 import org.eurekastreams.server.domain.Gadget;
@@ -185,7 +187,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Creates the Gadget render zone and gives the zone a incremented id.
-     * 
+     *
      * @param gadget
      *            The Gadget from the Model you are rendering.
      */
@@ -398,10 +400,12 @@ public class GadgetPanel extends FlowPanel
                                 boolean foundSetting = false;
                                 String titleText = metadata.getTitle();
 
-                                helpButton.setVisible(metadata.getViewNames().contains("help"));
-                                maximizeButton.setVisible(metadata.getViewNames().contains("canvas"));
+                                List<String> viewNames = metadata.getViewNames();
+                                helpButton.setVisible(viewNames != null && viewNames.contains("help"));
+                                maximizeButton.setVisible(viewNames != null && viewNames.contains("canvas"));
 
-                                delegationOn = metadata.getFeatures().contains("eurekastreams-delegation");
+                                List<String> features = metadata.getFeatures();
+                                delegationOn = features != null && features.contains("eurekastreams-delegation");
 
                                 if (metadata.getUserPrefs() != null)
                                 {
@@ -499,7 +503,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the entity type of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
@@ -511,7 +515,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Tell the delegation feature the edit button was clicked.
-     * 
+     *
      * @param gadgetId
      *            the gadget id.
      */
@@ -522,7 +526,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Set the gadget state w/o params.
-     * 
+     *
      * @param state
      *            the gadget state.
      */
@@ -533,7 +537,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the state.
-     * 
+     *
      * @return the state.
      */
     public State getGadgetState()
@@ -543,7 +547,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Setter.
-     * 
+     *
      * @param state
      *            new state of the gadget
      * @param viewParams
@@ -614,7 +618,7 @@ public class GadgetPanel extends FlowPanel
             restoreButton.setVisible(true);
             maximizeButton.setVisible(false);
 
-            gadgetRenderer.maximizeGadgetZone(this.getElement());
+            gadgetRenderer.maximizeGadgetZone(getElement());
             Session.getInstance().getEventBus().notifyObservers(
                     new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
             break;
@@ -634,7 +638,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Make the gadget draggable.
-     * 
+     *
      * @param inGadgetDragController
      *            the gadget drag controller.
      */
@@ -657,7 +661,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Get the gadget data.
-     * 
+     *
      * @return the gadget data.
      */
     public Gadget getGadgetData()
