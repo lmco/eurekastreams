@@ -67,14 +67,32 @@ public class InsertStreamBookmarkExecution implements ExecutionStrategy<Principa
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
+        // TODO: bookmarks should really be promoted to it's own entity (e.g. followers) to make this (and deletes)
+        // more efficient.
+        Long ssIdToInsert = (Long) inActionContext.getParams();
 
         Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
-        StreamScope scope = scopeMapper.execute(new FindByIdRequest("StreamScope", (Long) inActionContext.getParams()));
-
         List<StreamScope> bookmarks = person.getBookmarks();
 
-        bookmarks.add(scope);
-        personMapper.flush();
+        StreamScope scope = null;
+
+        // if already bookmarked, just assign return scope here.
+        for (StreamScope ss : bookmarks)
+        {
+            if (ss.getId() == ssIdToInsert)
+            {
+                scope = ss;
+                break;
+            }
+        }
+
+        // if hasn't been bookmarked, bookmark it.
+        if (scope == null)
+        {
+            scope = scopeMapper.execute(new FindByIdRequest("StreamScope", ssIdToInsert));
+            bookmarks.add(scope);
+            personMapper.flush();
+        }
 
         return scope;
     }

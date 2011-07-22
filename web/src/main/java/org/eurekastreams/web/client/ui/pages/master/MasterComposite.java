@@ -119,7 +119,7 @@ public class MasterComposite extends Composite
     private List<String> currentViews;
 
     /** To tell event manager when system is active. */
-    private PeriodicEventManager evtMgr;
+    private final PeriodicEventManager evtMgr;
 
     /**
      * Have any pages been loaded (prevents an infinite loop for IE only start page refreshing.).
@@ -128,7 +128,7 @@ public class MasterComposite extends Composite
 
     /**
      * Default constructor.
-     * 
+     *
      */
     public MasterComposite()
     {
@@ -254,7 +254,7 @@ public class MasterComposite extends Composite
 
     /**
      * Get the user agent (for detecting IE7).
-     * 
+     *
      * @return the user agent.
      */
     public static native String getUserAgent()
@@ -264,7 +264,7 @@ public class MasterComposite extends Composite
 
     /**
      * Render header and footer.
-     * 
+     *
      */
     public void renderHeaderAndFooter()
     {
@@ -276,7 +276,7 @@ public class MasterComposite extends Composite
 
     /**
      * Get the header composite.
-     * 
+     *
      * @param viewer
      *            the user.
      * @return the header composite.
@@ -294,6 +294,7 @@ public class MasterComposite extends Composite
                         final SystemSettings settings = event.getResponse();
                         header.setSiteLabelTemplate(settings.getHeaderTemplate(), settings.getSiteLabel());
                         footerPanel.setSiteLabelTemplate(settings.getFooterTemplate(), settings.getSiteLabel());
+                        banner.getElement().setInnerHTML(settings.getBannerTemplate());
                     }
 
                 });

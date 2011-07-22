@@ -26,33 +26,36 @@ import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
  */
 public class FindSystemSettingsDbDomainMapperImpl extends ReadMapper<MapperRequest, SystemSettings>
 {
-    /**
-     * HTML content template used on the site labeling line of the header.
-     */
+    /** HTML content template used on the site labeling line of the header. */
     private final String headerTemplate;
 
-    /**
-     * HTML content template used on the site labeling line of the footer.
-     */
+    /** HTML content template used on the site labeling line of the footer. */
     private final String footerTemplate;
+
+    /** HTML content template used in the banner. */
+    private final String bannerTemplate;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inHeaderTemplate
      *            HTML content template used on the site labeling line of the header.
      * @param inFooterTemplate
      *            HTML content template used on the site labeling line of the footer.
+     * @param inBannerTemplate
+     *            HTML content template used in the banner.
      */
-    public FindSystemSettingsDbDomainMapperImpl(final String inHeaderTemplate, final String inFooterTemplate)
+    public FindSystemSettingsDbDomainMapperImpl(final String inHeaderTemplate, final String inFooterTemplate,
+            final String inBannerTemplate)
     {
         headerTemplate = inHeaderTemplate;
         footerTemplate = inFooterTemplate;
+        bannerTemplate = inBannerTemplate;
     }
 
     /**
      * Finds the system settings record.
-     * 
+     *
      * @param inRequest
      *            The MapperRequest.
      * @return the requested domain entity.
@@ -65,6 +68,7 @@ public class FindSystemSettingsDbDomainMapperImpl extends ReadMapper<MapperReque
 
         settings.setHeaderTemplate(headerTemplate);
         settings.setFooterTemplate(footerTemplate);
+        settings.setBannerTemplate(bannerTemplate);
 
         return settings;
     }

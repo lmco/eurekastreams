@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.events.PreSwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.PreventHistoryChangeEvent;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.UpdateRawHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
@@ -44,14 +45,14 @@ import com.google.gwt.user.client.History;
  * current view of this, not change it. It also eats an UpdateHistoryEvent which allows a view to change the history w/o
  * directly touching it, and involves helper methods to create history tokens so that manual Hyperlinks can be made
  * without hardcoding URLs.
- * 
+ *
  */
 public class HistoryHandler implements ValueChangeHandler<String>
 {
     /**
      * The JSNI facade.
      */
-    private WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
 
     /**
      * The values.
@@ -88,22 +89,22 @@ public class HistoryHandler implements ValueChangeHandler<String>
      */
     public HistoryHandler()
     {
-        Session.getInstance().getEventBus().addObserver(UpdateHistoryEvent.class, new Observer<UpdateHistoryEvent>()
+        EventBus eventBus = Session.getInstance().getEventBus();
+        eventBus.addObserver(UpdateHistoryEvent.class, new Observer<UpdateHistoryEvent>()
         {
             public void update(final UpdateHistoryEvent event)
             {
-                previousToken = History.getToken();
-                onValueChange(getHistoryToken(event.getRequest()));
-                fireValueChange = false;
-                jsniFacade.setHistoryToken(getHistoryToken(event.getRequest()), true);
-
-                // in case setting the history token above doesn't cause onValueChange to be called, reset
-                // fireValueChange so it will work properly next time around
-                fireValueChange = true;
+                updateHistory(getHistoryToken(event.getRequest()));
             }
         });
-
-        Session.getInstance().getEventBus().addObserver(PreventHistoryChangeEvent.class,
+        eventBus.addObserver(UpdateRawHistoryEvent.class, new Observer<UpdateRawHistoryEvent>()
+        {
+            public void update(final UpdateRawHistoryEvent event)
+            {
+                updateHistory(event.getHistoryToken());
+            }
+        });
+        eventBus.addObserver(PreventHistoryChangeEvent.class,
                 new Observer<PreventHistoryChangeEvent>()
                 {
                     public void update(final PreventHistoryChangeEvent event)
@@ -112,12 +113,29 @@ public class HistoryHandler implements ValueChangeHandler<String>
                     }
                 });
         History.addValueChangeHandler(this);
+    }
 
+    /**
+     * Handles updating history when requested.
+     *
+     * @param historyToken
+     *            The history token for the new location.
+     */
+    private void updateHistory(final String historyToken)
+    {
+        previousToken = History.getToken();
+        onValueChange(historyToken);
+        fireValueChange = false;
+        jsniFacade.setHistoryToken(historyToken, true);
+
+        // in case setting the history token above doesn't cause onValueChange to be called, reset
+        // fireValueChange so it will work properly next time around
+        fireValueChange = true;
     }
 
     /**
      * On Value Change.
-     * 
+     *
      * @param historyToken
      *            the history token.
      */
@@ -208,6 +226,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
                     fireValueChange = false;
                     jsniFacade.setHistoryToken(previousToken, true);
                     fireValueChange = true;
+
                     return;
                 }
             }
@@ -219,7 +238,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * OnValueChange gets called when the history changes.
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -230,7 +249,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Helper method since I need to do this twice in the method above.
-     * 
+     *
      * @param token
      *            the token.
      */
@@ -252,7 +271,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Gets a history token given the params.
-     * 
+     *
      * @param request
      *            the request.
      * @return the token.
@@ -320,7 +339,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
     /**
      * Get the value of a current parameter. NOTE: Do NOT use this to "monitor" the history param, only to grab a one
      * time instance of it. Use the UpdatedHistoryParametersEvent to listen to a parameter.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
@@ -332,7 +351,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Gets the views.
-     * 
+     *
      * @return the views.
      */
     public List<String> getViews()

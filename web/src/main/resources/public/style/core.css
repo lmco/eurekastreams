@@ -215,6 +215,11 @@ img {
 	height: 50px;
 }
 
+.nav-bar ul.main-nav li {
+	height: 50px;
+}
+
+
 @sprite .external-header-button {
 	gwt-image: "navLogo";
 	cursor: pointer;
@@ -351,7 +356,7 @@ ul.horizontal,ul.horizontal li {
 	min-height: 100%;
 	width: 990px;
 	margin: 0 auto;
-	position: relative;
+  	position: relative;
 	top: -3px;
 }
 
@@ -380,7 +385,7 @@ div.content {
 }
 
 div.banner-container {
-	padding-top: 100px;
+	height: 100px;
 	border-bottom: 1px solid #BBBBBB;
 }
 
@@ -1983,6 +1988,41 @@ body .post-to-stream .over-character-limit {
 	font-size: 14px;
     line-height: 1.4;
 }
+
+.messageXPanel {
+	float: right;
+	background-image: url(style/images/modalCloseBtnSmallHover.png);
+	height: 15px;
+	width: 15px;
+	display: none;	
+	cursor: pointer;
+}
+
+div:hover > .messageXPanel {
+	display: block;	
+}
+
+.messageXPanel > div { 
+	display: none;
+	position: absolute;
+	background-color: white;
+    border: 1px solid #BDBDBD;
+    padding: 5px;
+    padding-bottom: 0;
+    margin-top: 15px;
+    margin-left: -30px;
+    width: 35px;
+}
+
+.messageXPanel:hover > div { 
+	display: block;
+}
+
+.messageXPanel > div > div {
+	font-size: 11px;
+	padding-bottom: 5px;
+} 
+
 
 .thumbnail {
 	width: 100px;

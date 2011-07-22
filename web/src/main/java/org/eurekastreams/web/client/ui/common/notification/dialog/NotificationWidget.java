@@ -87,20 +87,22 @@ public class NotificationWidget extends Composite
     /** Main widget. */
     private final Widget main;
 
+
     /**
      * Constructor.
      *
      * @param inItem
      *            Notification to display.
+     * @param preventInternalLinks
+     *            For internal destinations, simulate links instead of creating real ones (actually they'll still be 'a'
+     *            tags, but they'll have no href attribute).
      */
-    public NotificationWidget(final InAppNotificationDTO inItem)
+    public NotificationWidget(final InAppNotificationDTO inItem, final boolean preventInternalLinks)
     {
         item = inItem;
 
         main = binder.createAndBindUi(this);
         initWidget(main);
-
-        // TODO: allow bolding
 
         messageTextUi.setInnerText(item.getMessage());
         timestampUi.setInnerText(dateFormatter.timeAgo(item.getNotificationDate()));
@@ -119,8 +121,18 @@ public class NotificationWidget extends Composite
             if (url.charAt(0) != '#')
             {
                 mainLinkUi.setTarget("_blank");
+                mainLinkUi.setHref(url);
             }
-            mainLinkUi.setHref(url);
+            else if (preventInternalLinks)
+            {
+                // set style here to look like a link but don't set the href, then let the dialog handle actually
+                // getting the user to the page
+                mainLinkUi.addStyleName(style.fakeLink());
+            }
+            else
+            {
+                mainLinkUi.setHref(url);
+            }
         }
 
         AvatarUrlGenerator urlGen = new AvatarUrlGenerator(item.getAvatarOwnerType());
@@ -183,6 +195,9 @@ public class NotificationWidget extends Composite
 
         /** @return Already read style. */
         String read();
+
+        /** @return Style for making a link with no href still look like a link. */
+        String fakeLink();
     }
 
     /**

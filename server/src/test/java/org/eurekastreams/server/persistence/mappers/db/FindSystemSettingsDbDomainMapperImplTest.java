@@ -18,8 +18,14 @@ package org.eurekastreams.server.persistence.mappers.db;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.ReadMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,11 +34,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FindSystemSettingsDbDomainMapperImplTest extends MapperTest
 {
-    /**
-     * System under test.
-     */
+    /** System under test. */
+    private DomainMapper<MapperRequest, SystemSettings> sut;
+
+    /** Query optimizer. */
     @Autowired
-    private FindSystemSettingsDbDomainMapperImpl sut;
+    QueryOptimizer queryOptimizer;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new FindSystemSettingsDbDomainMapperImpl("HeaderTemplate", "FooterTemplate", "BannerTemplate");
+        ((ReadMapper) sut).setQueryOptimizer(queryOptimizer);
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
+    }
 
     /**
      * Test execute with test data.
@@ -53,5 +71,6 @@ public class FindSystemSettingsDbDomainMapperImplTest extends MapperTest
         assertTrue(settings.getSendWelcomeEmails());
         assertEquals("HeaderTemplate", settings.getHeaderTemplate());
         assertEquals("FooterTemplate", settings.getFooterTemplate());
+        assertEquals("BannerTemplate", settings.getBannerTemplate());
     }
 }

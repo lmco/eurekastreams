@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ import org.eurekastreams.web.client.log.Log;
 import org.eurekastreams.web.client.timer.Timer;
 
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 
 /**
  * The current session.
@@ -135,7 +135,7 @@ public class Session
 
     /**
      * Get mouse X position.
-     * 
+     *
      * @return mouse X position.
      */
     public int getMouseX()
@@ -145,7 +145,7 @@ public class Session
 
     /**
      * Get mouse Y position.
-     * 
+     *
      * @return mouse Y position.
      */
     public int getMouseY()
@@ -155,7 +155,7 @@ public class Session
 
     /**
      * Get the instance of the session.
-     * 
+     *
      * @return the session.
      */
     public static Session getInstance()
@@ -170,7 +170,7 @@ public class Session
 
     /**
      * Sets the instance of the session for unit testing.
-     * 
+     *
      * @param inInstance
      *            New instance.
      */
@@ -181,7 +181,7 @@ public class Session
 
     /**
      * Set the current person.
-     * 
+     *
      * @param inCurrentPerson
      *            the current person.
      */
@@ -192,7 +192,7 @@ public class Session
 
     /**
      * Get the current person.
-     * 
+     *
      * @return the current person.
      */
     public PersonModelView getCurrentPerson()
@@ -202,7 +202,7 @@ public class Session
 
     /**
      * Set the current persons roles.
-     * 
+     *
      * @param inRoles
      *            the roles.
      */
@@ -213,7 +213,7 @@ public class Session
 
     /**
      * Get the current persons roles.
-     * 
+     *
      * @return the roles.
      */
     public Set<Role> getCurrentPersonRoles()
@@ -257,7 +257,7 @@ public class Session
 
     /**
      * Get the timer.
-     * 
+     *
      * @return the timer.
      */
     public Timer getTimer()
@@ -283,8 +283,18 @@ public class Session
     }
 
     /**
+     * Gets the history handler -- don't use this without really good reason!
+     *
+     * @return the history handler
+     */
+    public HistoryHandler getHistoryHandler()
+    {
+        return history;
+    }
+
+    /**
      * Set history handler.
-     * 
+     *
      * @param inHistory
      *            history handler.
      */
@@ -295,7 +305,7 @@ public class Session
 
     /**
      * Get a url.
-     * 
+     *
      * @param request
      *            request.
      * @return the url.
@@ -308,7 +318,7 @@ public class Session
     /**
      * Get the value of a current parameter. NOTE: Do NOT use this to "monitor" the history param, only to grab a one
      * time instance of it. Use the UpdatedHistoryParametersEvent to listen to a parameter.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
@@ -328,7 +338,7 @@ public class Session
 
     /**
      * Get the current views.
-     * 
+     *
      * @return the views.
      */
     public List<String> getUrlViews()
@@ -338,7 +348,7 @@ public class Session
 
     /**
      * Set the title of the page.
-     * 
+     *
      * @param title
      *            the page title.
      */
@@ -366,7 +376,7 @@ public class Session
 
     /**
      * Get the logger.
-     * 
+     *
      * @return the logger.
      */
     public Log getLogger()

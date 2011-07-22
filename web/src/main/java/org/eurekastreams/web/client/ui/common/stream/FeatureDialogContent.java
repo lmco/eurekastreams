@@ -20,9 +20,6 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.model.FeaturedStreamModel;
-import org.eurekastreams.web.client.model.GadgetModel;
-import org.eurekastreams.web.client.model.StreamBookmarksModel;
-import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
@@ -40,7 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class FeatureDialogContent extends BaseDialogContent
 {
 
-
     /**
      * Container flow panel.
      */
@@ -51,26 +47,23 @@ public class FeatureDialogContent extends BaseDialogContent
      */
     private final FlowPanel body = new FlowPanel();
 
-
     /**
      * Default constructor.
      * 
-     * @param featuredStreamDTO the featured stream.
+     * @param featuredStreamDTO
+     *            the featured stream.
      */
     public FeatureDialogContent(final FeaturedStreamDTO featuredStreamDTO)
     {
         Label saveButton = new Label("Feature");
-        
 
         body.add(new Label("Stream Name: " + featuredStreamDTO.getDisplayName()));
 
-        final BasicTextAreaFormElement textArea = new BasicTextAreaFormElement(
-        		Person.MAX_JOB_DESCRIPTION_LENGTH, "Description", "description", 
-        		featuredStreamDTO.getDescription(), "", true);
-        
+        final BasicTextAreaFormElement textArea = new BasicTextAreaFormElement(Person.MAX_JOB_DESCRIPTION_LENGTH,
+                "Description", "description", featuredStreamDTO.getDescription(), "", true);
+
         body.add(textArea);
         body.add(saveButton);
-
 
         saveButton.addClickHandler(new ClickHandler()
         {
@@ -78,13 +71,11 @@ public class FeatureDialogContent extends BaseDialogContent
             {
                 featuredStreamDTO.setDescription(textArea.getValue());
                 FeaturedStreamModel.getInstance().insert(featuredStreamDTO);
-        		EventBus.getInstance().notifyObservers(
-        				new ShowNotificationEvent(
-        						new Notification("Stream has been featured.")));
+                EventBus.getInstance().notifyObservers(
+                        new ShowNotificationEvent(new Notification("Stream has been featured.")));
                 close();
             }
         });
-
 
         container.add(body);
 
@@ -105,6 +96,7 @@ public class FeatureDialogContent extends BaseDialogContent
      * 
      * @return the class.
      */
+    @Override
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().followDialog();

@@ -114,13 +114,6 @@
 	<bean id="updateSystemSettings" class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
 	</bean>
 
-	<bean id="findSystemSettingsDbDomainMapper"
-		class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
-		<constructor-arg value="HeaderTemplate" />
-		<constructor-arg value="FooterTemplate" />
-		<property name="queryOptimizer" ref="queryOptimizer" />
-	</bean>
-
 	<bean id="deleteStarredActivity" class="org.eurekastreams.server.persistence.mappers.DeleteStarredActivity">
 		<property name="cache" ref="testCache" />
 	</bean>

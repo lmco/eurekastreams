@@ -30,20 +30,17 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
-<<<<<<< HEAD
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
-=======
 import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
->>>>>>> 3f637e5d0a7559306733aa19c7485f5c4f45e1f7
+import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
@@ -108,35 +105,35 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         * 
+         *
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         * 
+         *
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         * 
+         *
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         * 
+         *
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         * 
+         *
          * @return Private avatar.
          */
         String privateAvatar();
@@ -149,7 +146,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -206,7 +203,7 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     Label featureLink;
-    
+
     /**
      * UI element for admin link.
      */
@@ -392,7 +389,7 @@ public class StreamDetailsComposite extends Composite
     /**
      * Avatar Renderer.
      */
-    private AvatarRenderer avatarRenderer = new AvatarRenderer();
+    private final AvatarRenderer avatarRenderer = new AvatarRenderer();
 
     /**
      * Expand/Collapse animation.
@@ -403,9 +400,9 @@ public class StreamDetailsComposite extends Composite
      * Last following handler.
      */
     private HandlerRegistration lastHandler;
-    
+
     /**
-     * Last feature handler;
+     * Last feature handler.
      */
     private HandlerRegistration lastFeatureHandler;
 
@@ -423,17 +420,18 @@ public class StreamDetailsComposite extends Composite
      * Stream ID.
      */
     private Long streamId;
-    
-    /** 
+
+    /**
      * Stream is featured.
      */
     private boolean inFeatured;
 
     /**
-     * Featured streams;
+     * Featured streams.
      */
-    
+
     private PagedSet<FeaturedStreamDTO> featuredStreams;
+
     /**
      * Build page.
      */
@@ -441,7 +439,7 @@ public class StreamDetailsComposite extends Composite
     {
         // Default style. Prevent flashing.
         streamName.setInnerText("Following");
-        this.addStyleName(style.condensedStream());
+        addStyleName(style.condensedStream());
         followLink.setVisible(false);
         featureLink.setText("Feature");
         featureLink.setVisible(Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN));
@@ -532,10 +530,10 @@ public class StreamDetailsComposite extends Composite
         });
 
         addEvents();
-        
+
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
-        	FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+            FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
         }
     }
 
@@ -576,16 +574,18 @@ public class StreamDetailsComposite extends Composite
                         UsageMetricSummaryDTO data = event.getResponse();
 
                         List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                        for (int i = 0; i < stats.size(); i++)
+                        if (stats != null)
                         {
-                            if (null == stats.get(i))
+                            for (int i = 0; i < stats.size(); i++)
                             {
-                                chart.addPoint(i, 0.0);
-                            }
-                            else
-                            {
-                                chart.addPoint(i, stats.get(i).getStreamViewCount());
+                                if (null == stats.get(i))
+                                {
+                                    chart.addPoint(i, 0.0);
+                                }
+                                else
+                                {
+                                    chart.addPoint(i, stats.get(i).getStreamViewCount());
+                                }
                             }
                         }
 
@@ -691,15 +691,14 @@ public class StreamDetailsComposite extends Composite
         final StreamDetailsComposite thisClass = this;
 
         EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
-        		new Observer<GotFeaturedStreamsPageResponseEvent>()
-        		{
-					public void update(GotFeaturedStreamsPageResponseEvent response) 
-					{
-						featuredStreams = response.getResponse();
-					}
-        		});
-        
-        
+                new Observer<GotFeaturedStreamsPageResponseEvent>()
+                {
+                    public void update(final GotFeaturedStreamsPageResponseEvent response)
+                    {
+                        featuredStreams = response.getResponse();
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
@@ -724,14 +723,14 @@ public class StreamDetailsComposite extends Composite
                             configureLink.setVisible(false);
                         }
                         updateFollowLink(person.getAccountId(), EntityType.PERSON);
-                    	FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
-                    	featuredStreamDTO.setDescription(person.getDescription());
-                    	featuredStreamDTO.setStreamId(person.getStreamId());
-                    	featuredStreamDTO.setStreamType(ScopeType.PERSON);
-                    	featuredStreamDTO.setDisplayName(person.getDisplayName());
-                    	
+                        FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+                        featuredStreamDTO.setDescription(person.getDescription());
+                        featuredStreamDTO.setStreamId(person.getStreamId());
+                        featuredStreamDTO.setStreamType(ScopeType.PERSON);
+                        featuredStreamDTO.setDisplayName(person.getDisplayName());
+
                         updateFeatureLink(featuredStreamDTO);
-                        
+
                         streamName.setInnerText(person.getDisplayName());
                         streamMeta.setInnerText(person.getTitle());
                         streamAvatar.clear();
@@ -806,14 +805,14 @@ public class StreamDetailsComposite extends Composite
                             }
 
                             updateFollowLink(group.getShortName(), EntityType.GROUP);
-                        	FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
-                        	featuredStreamDTO.setDescription(group.getDescription());
-                        	featuredStreamDTO.setStreamId(group.getStreamId());
-                        	featuredStreamDTO.setStreamType(ScopeType.GROUP);
-                        	featuredStreamDTO.setDisplayName(group.getDisplayName());
-                        	
+                            FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+                            featuredStreamDTO.setDescription(group.getDescription());
+                            featuredStreamDTO.setStreamId(group.getStreamId());
+                            featuredStreamDTO.setStreamType(ScopeType.GROUP);
+                            featuredStreamDTO.setDisplayName(group.getDisplayName());
+
                             updateFeatureLink(featuredStreamDTO);
-                            
+
                             streamName.setInnerText(group.getName());
                             streamMeta.setInnerText("");
                             // streamMeta.setInnerText(group.get);
@@ -842,58 +841,61 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * @param featuredStreamDTO the stream.
+     *
+     * @param featuredStreamDTO
+     *            the stream.
      */
     public void updateFeatureLink(final FeaturedStreamDTO featuredStreamDTO)
     {
 
-    	if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
-        	inFeatured = false;
-        	featureLink.removeStyleName("featured");
-        	featureLink.setText("Feature");
-        	
-        	for(FeaturedStreamDTO featured : featuredStreams.getPagedSet())
-        	{
-        		if (featured.getStreamId() == streamId 
-        				&& featured.getEntityType().equals(featuredStreamDTO.getEntityType()))
-        		{
-        			inFeatured = true;
-        			featuredStreamDTO.setId(featured.getId());
-        			featureLink.addStyleName("featured");
-        			featureLink.setText("Unfeature");
-        			break;
-        		}
-        	}
-        	
-        	if (lastFeatureHandler != null)
+            inFeatured = false;
+            featureLink.removeStyleName("featured");
+            featureLink.setText("Feature");
+
+            for (FeaturedStreamDTO featured : featuredStreams.getPagedSet())
             {
-        		lastFeatureHandler.removeHandler();
+                if (featured.getStreamId() == streamId
+                        && featured.getEntityType().equals(featuredStreamDTO.getEntityType()))
+                {
+                    inFeatured = true;
+                    featuredStreamDTO.setId(featured.getId());
+                    featureLink.addStyleName("featured");
+                    featureLink.setText("Unfeature");
+                    break;
+                }
             }
 
-        	lastFeatureHandler = featureLink.addClickHandler(new ClickHandler()
+            if (lastFeatureHandler != null)
+            {
+                lastFeatureHandler.removeHandler();
+            }
+
+            lastFeatureHandler = featureLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
                 {
-                	if (inFeatured)
-                	{
-                		FeaturedStreamModel.getInstance().delete(featuredStreamDTO.getId());
-                		EventBus.getInstance().notifyObservers(
-                				new ShowNotificationEvent(
-                						new Notification("Stream has been removed from the featured streams list.")));
-                	}
-                	else
-                	{
+                    if (inFeatured)
+                    {
+                        FeaturedStreamModel.getInstance().delete(featuredStreamDTO.getId());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "Stream has been removed from the featured streams list.")));
+                    }
+                    else
+                    {
                         Dialog.showCentered(new FeatureDialogContent(featuredStreamDTO));
-                	}
+                    }
                 }
             });
-        	
+
         }
     }
+
     /**
      * Update the following element.
-     * 
+     *
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -1034,7 +1036,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     * 
+     *
      * @param inStatus
      *            status.
      */
