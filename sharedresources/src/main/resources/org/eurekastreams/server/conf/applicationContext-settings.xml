@@ -23,8 +23,12 @@
 				<![CDATA[
 					<div class="site-label">%SITELABEL%</div>
 			    ]]>
-			</value>
+		    </value>
 		</constructor-arg>
+	</bean>
+	<!-- Content template for banner area (on start page) -->
+	<bean id="bannerContentTemplate" class="java.lang.String">
+		<constructor-arg value="" />
 	</bean>
 </beans>
  

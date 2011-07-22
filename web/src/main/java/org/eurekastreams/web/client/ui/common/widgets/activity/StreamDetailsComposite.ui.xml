@@ -104,11 +104,14 @@
 				font-size: 12px;
 			}
 			
-			.condensedStream .toggle-details-link,.condensedStream .follow-info-container,.condensedStream .stream-meta,.condensedStream .stream-avatar,.condensedStream .headerFollowLink,.condensedStream .configureLink
+			.condensedStream .toggle-details-link,.condensedStream .headerFeatureLink, .condensedStream .follow-info-container,.condensedStream .stream-meta,.condensedStream .stream-avatar,.condensedStream .headerFollowLink,.condensedStream .configureLink
 				{
 				display: none;
 			}
 			
+			.headerFeatureLink
+			{
+			}
 			.condensedStream .header {
 				height: 60px;
 				padding-left: 10px;
@@ -256,6 +259,8 @@
 				<span class="{style.stream-meta}" ui:field="streamMeta"></span>
 				<g:Label addStyleNames="{style.headerFollowLink} {resources.coreCss.followLink}"
 					ui:field="followLink"></g:Label>
+				<g:Label addStyleNames="{style.headerFeatureLink}"
+					ui:field="featureLink"></g:Label>
 				<g:Anchor addStyleNames="{style.configureLink}" ui:field="configureLink">Configure
 				</g:Anchor>
 			</div>
