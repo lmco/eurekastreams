@@ -27,12 +27,14 @@ import org.eurekastreams.web.client.events.NotificationClickedEvent;
 import org.eurekastreams.web.client.events.NotificationDeleteRequestEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UnreadNotificationClearedEvent;
+import org.eurekastreams.web.client.events.UpdateRawHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
 import org.eurekastreams.web.client.model.NotificationListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.notification.NotificationSettingsWidget;
 import org.eurekastreams.web.client.ui.pages.master.CoreCss;
+import org.eurekastreams.web.client.ui.pages.master.MasterComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -134,6 +136,9 @@ public class NotificationsDialogContent extends BaseDialogContent
     /** Currently selected show read option. */
     private boolean currentShowRead = false;
 
+    /** See explanation where this is used. */
+    private final boolean manuallyHandleInternalLinks;
+
     /** Observer (allow unlinking). */
     private final Observer<UnreadNotificationClearedEvent> unreadNotificationClearedObserver = // \n
     new Observer<UnreadNotificationClearedEvent>()
@@ -167,6 +172,9 @@ public class NotificationsDialogContent extends BaseDialogContent
      */
     public NotificationsDialogContent()
     {
+        // -- determine if IE workaround is needed (see explanation where used) --
+        manuallyHandleInternalLinks = MasterComposite.getUserAgent().contains("msie");
+
         // -- build UI --
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
         main = binder.createAndBindUi(this);
@@ -265,6 +273,16 @@ public class NotificationsDialogContent extends BaseDialogContent
         if (hasInternalUrl)
         {
             close();
+
+            // For some reason, in IE (7 & 8), if the URL fragment is completely empty, then clicking one of the
+            // notification links will update the URL in the address bar, but the HistoryHandler will never be notified
+            // of it. So we need to force the app to go to the desired URL.
+            // Also, IE seems to lose the history stack when clicking on a plain link, so we manually handle internal
+            // links for all cases (not just the empty history token).
+            if (manuallyHandleInternalLinks)
+            {
+                EventBus.getInstance().notifyObservers(new UpdateRawHistoryEvent(url.substring(1)));
+            }
         }
     }
 
@@ -408,7 +426,7 @@ public class NotificationsDialogContent extends BaseDialogContent
             if (filter.shouldDisplay(item) && (showRead || !item.isRead()))
             {
                 notifsShowing.add(item);
-                notificationListPanel.add(new NotificationWidget(item));
+                notificationListPanel.add(new NotificationWidget(item, manuallyHandleInternalLinks));
 
             }
         }
