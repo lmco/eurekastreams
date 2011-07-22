@@ -334,8 +334,8 @@ public class PostBoxComposite extends Composite
             public void onKeyDown(final KeyDownEvent event)
             {
 
-                if (event.getNativeKeyCode() == KeyCodes.KEY_TAB && !event.isAnyModifierKeyDown()
-                        && activeItemIndex != null)
+                if ((event.getNativeKeyCode() == KeyCodes.KEY_TAB || event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+                        && !event.isAnyModifierKeyDown() && activeItemIndex != null)
                 {
                     hashTags.getWidget(activeItemIndex).getElement()
                             .dispatchEvent(Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
@@ -362,6 +362,14 @@ public class PostBoxComposite extends Composite
                     event.preventDefault();
                     event.stopPropagation();
                 }
+                else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isControlKeyDown())
+                {
+                    postButton.getElement().dispatchEvent(
+                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
             }
         });
 

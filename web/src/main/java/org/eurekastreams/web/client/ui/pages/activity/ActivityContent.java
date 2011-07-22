@@ -388,6 +388,11 @@ public class ActivityContent extends Composite
     private String sortKeyword = "";
 
     /**
+     * Single activity mode.
+     */
+    private boolean singleActivityMode;
+
+    /**
      * Stream to URL transformer.
      * */
     private static final StreamToUrlTransformer STREAM_URL_TRANSFORMER = new StreamToUrlTransformer();
@@ -526,12 +531,13 @@ public class ActivityContent extends Composite
                     {
                         noResults.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     }
-                    else
-                    {
-                        noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-                    }
 
                     moreLink.setVisible(activitySet.getTotal() > activities.size());
+                }
+
+                if (activitySet.getPagedSet().size() > 0)
+                {
+                    noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                 }
 
             }
@@ -563,7 +569,10 @@ public class ActivityContent extends Composite
                             currentStream.setDisplayName(person.getDisplayName());
                         }
 
-                        EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+                        if (!singleActivityMode)
+                        {
+                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+                        }
                     }
                 });
 
@@ -617,7 +626,10 @@ public class ActivityContent extends Composite
                             currentStream.setDisplayName(group.getName());
                         }
 
-                        EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+                        if (!singleActivityMode)
+                        {
+                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+                        }
                     }
                 });
 
@@ -637,6 +649,7 @@ public class ActivityContent extends Composite
                 {
                     longNewestActivityId = event.getMessage().getId();
                     appendActivity(event.getMessage());
+                    noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                 }
                 else
                 {
@@ -954,7 +967,7 @@ public class ActivityContent extends Composite
         errorPanel.clear();
         errorPanel.setVisible(false);
 
-        boolean singleActivityMode = false;
+        singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         moreLink.setVisible(false);
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());

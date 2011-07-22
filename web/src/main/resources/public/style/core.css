@@ -2609,6 +2609,7 @@ body .previous-arrow:hover {
 }
 
 .followDialog {
+	width: 550px;
 }
 
 .followDialog .title
