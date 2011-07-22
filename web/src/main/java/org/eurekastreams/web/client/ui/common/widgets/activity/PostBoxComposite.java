@@ -543,12 +543,6 @@ public class PostBoxComposite extends Composite
                             public void update(final GotAllPopularHashTagsResponseEvent event)
                             {
                                 allHashTags = new ArrayList<String>(event.getResponse());
-                                allHashTags.add("#test");
-                                allHashTags.add("#status");
-                                allHashTags.add("#eureka");
-                                allHashTags.add("#standup");
-                                allHashTags.add("#hello");
-                                allHashTags.add("#defect");
                             }
                         });
 

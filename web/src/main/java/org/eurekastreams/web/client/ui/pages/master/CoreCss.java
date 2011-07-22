@@ -1401,4 +1401,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("stream-plugins-panel")
     String streamPluginsPanel();
+
+    String messageXPanel();
 }

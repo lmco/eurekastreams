@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.eurekastreams.commons.task;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
+import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.apache.log4j.Logger;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.springframework.util.Assert;
 
 /**
  * This class puts a request into a message and places it on the queue.
@@ -44,16 +47,32 @@ public class QueueTaskHandler implements TaskHandler
     private JmsTemplate jmsTemplate;
 
     /**
-     * Constructor.
-     * 
-     * @param inJmsTemplate
-     *            The JMS template used to place the request on the queue.
+     * The queue that the request will be placed upon.
      */
-    public QueueTaskHandler(final JmsTemplate inJmsTemplate)
+    private Queue jmsQueue;
+
+    /**
+     * The connection factory used to create the jms template.
+     * 
+     * @param connectionFactory
+     *            the connection factory
+     */
+    @Required
+    public void setConnectionFactory(final ConnectionFactory connectionFactory)
     {
-        jmsTemplate = inJmsTemplate;
-        Assert.notNull(jmsTemplate, "JMS template cannot be null");
-        Assert.notNull(jmsTemplate.getDefaultDestination(), "JMS template must have default destination set.");
+        this.jmsTemplate = new JmsTemplate(connectionFactory);
+    }
+
+    /**
+     * The queue that the request will be placed upon.
+     * 
+     * @param queue
+     *            the queue
+     */
+    @Required
+    public void setQueue(final Queue queue)
+    {
+        this.jmsQueue = queue;
     }
 
     /**
@@ -64,7 +83,7 @@ public class QueueTaskHandler implements TaskHandler
      */
     public void handleTask(final UserActionRequest inUserActionRequest)
     {
-        jmsTemplate.send(new MessageCreator()
+        this.jmsTemplate.send(this.jmsQueue, new MessageCreator()
         {
             public Message createMessage(final Session session) throws JMSException
             {
@@ -72,6 +91,6 @@ public class QueueTaskHandler implements TaskHandler
                 return message;
             }
         });
-        logger.debug("Message sent to message broker");
+        logger.info("Message sent to message broker");
     }
 }
