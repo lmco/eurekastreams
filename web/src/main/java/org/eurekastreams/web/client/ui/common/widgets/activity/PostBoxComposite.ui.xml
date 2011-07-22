@@ -101,6 +101,7 @@
 			
 			.hashtags>div.activeHashTag {
 				background-color: #426DF9;
+				color: white;
 			}
 			
 			.post-box-inner-container {

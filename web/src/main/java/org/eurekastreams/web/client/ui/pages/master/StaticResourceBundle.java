@@ -312,4 +312,13 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/unfollow.png")
     ImageResource unFollowBtnHover();
+
+    @Source("style/images/settings/add.png")
+    ImageResource settingsAddButton();
+
+    @Source("style/images/settings/refresh.png")
+    ImageResource settingsRefreshButton();
+
+    @Source("style/images/saveChangesBtn.png")
+    ImageResource saveChangesButton();
 }
