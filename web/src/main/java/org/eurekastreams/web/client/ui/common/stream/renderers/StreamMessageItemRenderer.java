@@ -277,7 +277,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         if (!state.equals(State.READONLY) && !showManageFlagged)
         {
             Label link = new Label("Flag");
-            link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             xPanelOptions.add(link);
 
             link.addClickHandler(new ClickHandler()
@@ -312,7 +311,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         if (!state.equals(State.READONLY) && msg.isDeletable())
         {
             Label deleteLink = new Label("Delete");
-            deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             xPanelOptions.add(deleteLink);
 
             setupDeleteClickHandler(deleteLink, msg, mainPanel);
