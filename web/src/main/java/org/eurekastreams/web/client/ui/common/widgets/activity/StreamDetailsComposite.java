@@ -38,12 +38,9 @@ import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
 import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
-<<<<<<< HEAD
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
-=======
 import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
->>>>>>> 3f637e5d0a7559306733aa19c7485f5c4f45e1f7
+import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
@@ -206,7 +203,7 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     Label featureLink;
-    
+
     /**
      * UI element for admin link.
      */
@@ -403,9 +400,9 @@ public class StreamDetailsComposite extends Composite
      * Last following handler.
      */
     private HandlerRegistration lastHandler;
-    
+
     /**
-     * Last feature handler;
+     * Last feature handler.
      */
     private HandlerRegistration lastFeatureHandler;
 
@@ -423,17 +420,18 @@ public class StreamDetailsComposite extends Composite
      * Stream ID.
      */
     private Long streamId;
-    
-    /** 
+
+    /**
      * Stream is featured.
      */
     private boolean inFeatured;
 
     /**
-     * Featured streams;
+     * Featured streams.
      */
-    
+
     private PagedSet<FeaturedStreamDTO> featuredStreams;
+
     /**
      * Build page.
      */
@@ -532,10 +530,10 @@ public class StreamDetailsComposite extends Composite
         });
 
         addEvents();
-        
+
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
-        	FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+            FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
         }
     }
 
@@ -568,40 +566,39 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
-                new Observer<GotUsageMetricSummaryEvent>()
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
+        {
+            public void update(final GotUsageMetricSummaryEvent event)
+            {
+                UsageMetricSummaryDTO data = event.getResponse();
+
+                List<DailyUsageSummary> stats = data.getDailyStatistics();
+
+                for (int i = 0; i < stats.size(); i++)
                 {
-                    public void update(final GotUsageMetricSummaryEvent event)
+                    if (null == stats.get(i))
                     {
-                        UsageMetricSummaryDTO data = event.getResponse();
-
-                        List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                        for (int i = 0; i < stats.size(); i++)
-                        {
-                            if (null == stats.get(i))
-                            {
-                                chart.addPoint(i, 0.0);
-                            }
-                            else
-                            {
-                                chart.addPoint(i, stats.get(i).getStreamViewCount());
-                            }
-                        }
-
-                        avgComments.setInnerText("" + data.getAverageDailyCommentCount());
-                        avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
-                        avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
-                        avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
-                        avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
-
-                        Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
-                        totalContributors.setInnerText("" + data.getTotalContributorCount());
-                        totalMessages.setInnerText(totalMessagesNumber.toString());
-                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
-                        chart.update();
+                        chart.addPoint(i, 0.0);
                     }
-                });
+                    else
+                    {
+                        chart.addPoint(i, stats.get(i).getStreamViewCount());
+                    }
+                }
+
+                avgComments.setInnerText("" + data.getAverageDailyCommentCount());
+                avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
+                avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
+                avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
+                avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+
+                Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
+                totalContributors.setInnerText("" + data.getTotalContributorCount());
+                totalMessages.setInnerText(totalMessagesNumber.toString());
+                totalViews.setInnerText("" + data.getTotalStreamViewCount());
+                chart.update();
+            }
+        });
 
         addModelViewEvents();
 
@@ -691,15 +688,14 @@ public class StreamDetailsComposite extends Composite
         final StreamDetailsComposite thisClass = this;
 
         EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
-        		new Observer<GotFeaturedStreamsPageResponseEvent>()
-        		{
-					public void update(GotFeaturedStreamsPageResponseEvent response) 
-					{
-						featuredStreams = response.getResponse();
-					}
-        		});
-        
-        
+                new Observer<GotFeaturedStreamsPageResponseEvent>()
+                {
+                    public void update(final GotFeaturedStreamsPageResponseEvent response)
+                    {
+                        featuredStreams = response.getResponse();
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
@@ -724,14 +720,14 @@ public class StreamDetailsComposite extends Composite
                             configureLink.setVisible(false);
                         }
                         updateFollowLink(person.getAccountId(), EntityType.PERSON);
-                    	FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
-                    	featuredStreamDTO.setDescription(person.getDescription());
-                    	featuredStreamDTO.setStreamId(person.getStreamId());
-                    	featuredStreamDTO.setStreamType(ScopeType.PERSON);
-                    	featuredStreamDTO.setDisplayName(person.getDisplayName());
-                    	
+                        FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+                        featuredStreamDTO.setDescription(person.getDescription());
+                        featuredStreamDTO.setStreamId(person.getStreamId());
+                        featuredStreamDTO.setStreamType(ScopeType.PERSON);
+                        featuredStreamDTO.setDisplayName(person.getDisplayName());
+
                         updateFeatureLink(featuredStreamDTO);
-                        
+
                         streamName.setInnerText(person.getDisplayName());
                         streamMeta.setInnerText(person.getTitle());
                         streamAvatar.clear();
@@ -806,14 +802,14 @@ public class StreamDetailsComposite extends Composite
                             }
 
                             updateFollowLink(group.getShortName(), EntityType.GROUP);
-                        	FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
-                        	featuredStreamDTO.setDescription(group.getDescription());
-                        	featuredStreamDTO.setStreamId(group.getStreamId());
-                        	featuredStreamDTO.setStreamType(ScopeType.GROUP);
-                        	featuredStreamDTO.setDisplayName(group.getDisplayName());
-                        	
+                            FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+                            featuredStreamDTO.setDescription(group.getDescription());
+                            featuredStreamDTO.setStreamId(group.getStreamId());
+                            featuredStreamDTO.setStreamType(ScopeType.GROUP);
+                            featuredStreamDTO.setDisplayName(group.getDisplayName());
+
                             updateFeatureLink(featuredStreamDTO);
-                            
+
                             streamName.setInnerText(group.getName());
                             streamMeta.setInnerText("");
                             // streamMeta.setInnerText(group.get);
@@ -842,55 +838,58 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * @param featuredStreamDTO the stream.
+     * 
+     * @param featuredStreamDTO
+     *            the stream.
      */
     public void updateFeatureLink(final FeaturedStreamDTO featuredStreamDTO)
     {
 
-    	if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
-        	inFeatured = false;
-        	featureLink.removeStyleName("featured");
-        	featureLink.setText("Feature");
-        	
-        	for(FeaturedStreamDTO featured : featuredStreams.getPagedSet())
-        	{
-        		if (featured.getStreamId() == streamId 
-        				&& featured.getEntityType().equals(featuredStreamDTO.getEntityType()))
-        		{
-        			inFeatured = true;
-        			featuredStreamDTO.setId(featured.getId());
-        			featureLink.addStyleName("featured");
-        			featureLink.setText("Unfeature");
-        			break;
-        		}
-        	}
-        	
-        	if (lastFeatureHandler != null)
+            inFeatured = false;
+            featureLink.removeStyleName("featured");
+            featureLink.setText("Feature");
+
+            for (FeaturedStreamDTO featured : featuredStreams.getPagedSet())
             {
-        		lastFeatureHandler.removeHandler();
+                if (featured.getStreamId() == streamId
+                        && featured.getEntityType().equals(featuredStreamDTO.getEntityType()))
+                {
+                    inFeatured = true;
+                    featuredStreamDTO.setId(featured.getId());
+                    featureLink.addStyleName("featured");
+                    featureLink.setText("Unfeature");
+                    break;
+                }
             }
 
-        	lastFeatureHandler = featureLink.addClickHandler(new ClickHandler()
+            if (lastFeatureHandler != null)
+            {
+                lastFeatureHandler.removeHandler();
+            }
+
+            lastFeatureHandler = featureLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
                 {
-                	if (inFeatured)
-                	{
-                		FeaturedStreamModel.getInstance().delete(featuredStreamDTO.getId());
-                		EventBus.getInstance().notifyObservers(
-                				new ShowNotificationEvent(
-                						new Notification("Stream has been removed from the featured streams list.")));
-                	}
-                	else
-                	{
+                    if (inFeatured)
+                    {
+                        FeaturedStreamModel.getInstance().delete(featuredStreamDTO.getId());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "Stream has been removed from the featured streams list.")));
+                    }
+                    else
+                    {
                         Dialog.showCentered(new FeatureDialogContent(featuredStreamDTO));
-                	}
+                    }
                 }
             });
-        	
+
         }
     }
+
     /**
      * Update the following element.
      * 
@@ -925,14 +924,16 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
-                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(
+                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
+                                Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
-                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(
+                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
+                                Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
@@ -944,16 +945,14 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance()
-                    .getEventBus()
-                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                            new Observer<GotPersonFollowerStatusResponseEvent>()
-                            {
-                                public void update(final GotPersonFollowerStatusResponseEvent event)
-                                {
-                                    onFollowerStatusChanged(event.getResponse());
-                                }
-                            });
+            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
+                    new Observer<GotPersonFollowerStatusResponseEvent>()
+                    {
+                        public void update(final GotPersonFollowerStatusResponseEvent event)
+                        {
+                            onFollowerStatusChanged(event.getResponse());
+                        }
+                    });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);
