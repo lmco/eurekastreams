@@ -163,7 +163,7 @@ img {
 
 .header-container {
 	position: relative;
-	z-index: 999;
+	z-index: 1001;
 }
 
 .site-labeling {
@@ -1992,9 +1992,12 @@ body .post-to-stream .over-character-limit {
 .messageXPanel {
 	float: right;
 	background-image: url(style/images/modalCloseBtnSmallHover.png);
+	background-repeat: no-repeat;
+	padding-bottom: 5px;
 	height: 15px;
 	width: 15px;
 	display: none;	
+	font-size: 12px;
 	cursor: pointer;
 }
 
@@ -2008,19 +2011,34 @@ div:hover > .messageXPanel {
 	background-color: white;
     border: 1px solid #BDBDBD;
     padding: 5px;
-    padding-bottom: 0;
-    margin-top: 15px;
-    margin-left: -30px;
-    width: 35px;
+    margin-top: 20px;
+    margin-left: -55px;
+    width: 60px;
 }
 
 .messageXPanel:hover > div { 
 	display: block;
 }
 
-.messageXPanel > div > div {
+.messageXPanel > div > div > a {
 	font-size: 11px;
 	padding-bottom: 5px;
+	color: black;
+} 
+
+.messageXPanel > div > div
+{
+	padding: 3px;	
+}
+
+.messageXPanel > div > div:hover {
+	color: white;
+	background-color: #426FD9;
+} 
+
+.messageXPanel > div > div > a:hover {
+	color: white;
+	
 } 
 
 
