@@ -71,7 +71,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 {
     /**
      * State.
-     *
+     * 
      */
     public enum State
     {
@@ -133,7 +133,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     *
+     * 
      * @param inShowRecipient
      *            show the recipient.
      */
@@ -144,7 +144,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     *
+     * 
      * @param inShowRecipient
      *            show the recipient.
      * @param inState
@@ -163,8 +163,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         objectDictionary.put(BaseObjectType.VIDEO, new VideoRenderer());
         objectDictionary.put(BaseObjectType.FILE, new FileRenderer());
 
-        Session.getInstance().getEventBus().addObserver(ChangeShowStreamRecipientEvent.class,
-                new Observer<ChangeShowStreamRecipientEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(ChangeShowStreamRecipientEvent.class, new Observer<ChangeShowStreamRecipientEvent>()
                 {
                     public void update(final ChangeShowStreamRecipientEvent event)
                     {
@@ -175,7 +175,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets showComment.
-     *
+     * 
      * @param inShowComment
      *            value to set.
      */
@@ -213,10 +213,10 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Render a message item.
-     *
+     * 
      * @param msg
      *            the message item.
-     *
+     * 
      * @return the rendered item as a FlowPanel.
      */
     public Panel render(final ActivityDTO msg)
@@ -265,14 +265,14 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         FlowPanel msgContent = new FlowPanel();
         msgContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
         mainPanel.add(msgContent);
-        
+
         FlowPanel xPanel = new FlowPanel();
         xPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageXPanel());
         msgContent.add(xPanel);
-        
+
         FlowPanel xPanelOptions = new FlowPanel();
         xPanel.add(xPanelOptions);
-                     
+
         // Flag (as inappropriate)
         if (!state.equals(State.READONLY) && !showManageFlagged)
         {
@@ -296,8 +296,9 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                                         if (ev.getResponse() == msg.getId())
                                         {
                                             EventBus.getInstance().removeObserver(ev, this);
-                                            EventBus.getInstance().notifyObservers(new ShowNotificationEvent(new Notification(
-                                                    "Activity has been flagged")));
+                                            EventBus.getInstance().notifyObservers(
+                                                    new ShowNotificationEvent(new Notification(
+                                                            "Activity has been flagged")));
                                         }
                                     }
                                 });
@@ -416,8 +417,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         if (verbRenderer.getAllowLike())
         {
-            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(), msg
-                    .isLiked());
+            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(),
+                    msg.isLiked());
             timestampActions.add(likeCount);
         }
         timestampActions.add(buildActions(msg, mainPanel, commentsPanel, verbRenderer));
@@ -443,7 +444,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Builds the action links panel.
-     *
+     * 
      * @param msg
      *            The message.
      * @param mainPanel
@@ -518,7 +519,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Called when user requests to share the activity.
-     *
+     * 
      * @param msg
      *            Activity to share.
      */
@@ -529,7 +530,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Adds a separator (dot).
-     *
+     * 
      * @param panel
      *            Panel to put the separator in.
      */
@@ -542,7 +543,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up the buttons to manage flagged content.
-     *
+     * 
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -564,18 +565,20 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                 buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
                 if (singleView)
                 {
-                    Session.getInstance().getEventBus().addObserver(UpdatedActivityFlagResponseEvent.class,
-                            new Observer<UpdatedActivityFlagResponseEvent>()
-                            {
-                                public void update(final UpdatedActivityFlagResponseEvent ev)
-                                {
-                                    if (ev.getResponse().equals(msg.getId()))
+                    Session.getInstance()
+                            .getEventBus()
+                            .addObserver(UpdatedActivityFlagResponseEvent.class,
+                                    new Observer<UpdatedActivityFlagResponseEvent>()
                                     {
-                                        Session.getInstance().getEventBus().removeObserver(ev, this);
-                                        buttonsPanel.removeFromParent();
-                                    }
-                                }
-                            });
+                                        public void update(final UpdatedActivityFlagResponseEvent ev)
+                                        {
+                                            if (ev.getResponse().equals(msg.getId()))
+                                            {
+                                                Session.getInstance().getEventBus().removeObserver(ev, this);
+                                                buttonsPanel.removeFromParent();
+                                            }
+                                        }
+                                    });
                 }
                 FlaggedActivityModel.getInstance().update(new UpdateActivityFlagRequest(msg.getId(), false));
             }
@@ -602,7 +605,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Wires up the handler for clicking on a delete link/button.
-     *
+     * 
      * @param widget
      *            The delete link/button.
      * @param msg
@@ -628,7 +631,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Action to actually do the delete.
-     *
+     * 
      * @param msg
      *            The activity.
      */
@@ -646,7 +649,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up to remove the activity on deletion.
-     *
+     * 
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -654,8 +657,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
      */
     private void setupDeleteFadeout(final ActivityDTO msg, final Panel mainPanel)
     {
-        Session.getInstance().getEventBus().addObserver(DeletedActivityResponseEvent.class,
-                new Observer<DeletedActivityResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(DeletedActivityResponseEvent.class, new Observer<DeletedActivityResponseEvent>()
                 {
                     public void update(final DeletedActivityResponseEvent ev)
                     {
