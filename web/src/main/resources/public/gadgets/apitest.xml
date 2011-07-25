@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Module>
     <ModulePrefs title="API Test" thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" author="Eureka Streams"
         description="Allows developers and integrators to invoke methods in the programmatic API.  Do not add this to the gallery in a production environment." author_email="support@eurekastreams.org">
@@ -55,7 +55,7 @@
 		
         </style>
         <!--script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js" ></script>
-        <script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js" ></script-->
+<script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js?${timestamp}" ></script-->
 
         <!--script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
             <os:ViewerRequest key="databindviewer"/>
