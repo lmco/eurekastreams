@@ -569,7 +569,7 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
         var linkRe = /(?:^|[^(])((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         updatedStr = str.replace(linkRe," <a href='$1'>$1</a>"); 
 
-        var re = /\[([A-Za-z0-9\s\.\/\:]*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
+        var re = /\[([A-Za-z0-9'\s\.\/\:]*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
         updatedStr = updatedStr.replace(re, '<a href="$2">$1</a>');
 
         var linkRe2 = /\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
