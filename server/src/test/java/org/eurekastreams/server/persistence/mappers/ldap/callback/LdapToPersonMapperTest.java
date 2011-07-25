@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ public class LdapToPersonMapperTest
         sut.setFullNameAttrib("cn");
         sut.setLastNameAttrib("sn");
         sut.setMiddleNameAttrib("middleName");
-        sut.setOrgAttrib("lmcTopTierDesc");
         sut.setTitleAttrib("title");
         sut.setEmailAttrib("mail");
         sut.setCompanyAttrib("companyName");
@@ -82,7 +81,6 @@ public class LdapToPersonMapperTest
         final Attribute givenNameMock = context.mock(Attribute.class, "givenName");
         final Attribute snMock = context.mock(Attribute.class, "sn");
         final Attribute middleNameMock = context.mock(Attribute.class, "middleName");
-        final Attribute orgMock = context.mock(Attribute.class, "lmcTopTierDesc");
         final Attribute titleMock = context.mock(Attribute.class, "title");
         final Attribute emailMock = context.mock(Attribute.class, "email");
         final Attribute propMock = context.mock(Attribute.class, "someKey");
@@ -115,9 +113,6 @@ public class LdapToPersonMapperTest
                 exactly(2).of(attributeMock).get("companyName");
                 will(returnValue(companyMock));
 
-                exactly(2).of(attributeMock).get("lmcTopTierDesc");
-                will(returnValue(orgMock));
-
                 exactly(2).of(attributeMock).get("title");
                 will(returnValue(titleMock));
 
@@ -129,9 +124,6 @@ public class LdapToPersonMapperTest
 
                 oneOf(givenNameMock).get().toString();
                 will(returnValue("First"));
-
-                oneOf(orgMock).get().toString();
-                will(returnValue("Some org"));
 
                 oneOf(titleMock).get().toString();
                 will(returnValue("my title"));
@@ -177,11 +169,8 @@ public class LdapToPersonMapperTest
         final Attribute givenNameMock = context.mock(Attribute.class, "givenName");
         final Attribute snMock = context.mock(Attribute.class, "sn");
         final Attribute middleNameMock = null;
-        final Attribute orgMock = null;
         final Attribute titleMock = null;
         final Attribute companyMock = null;
-
-        sut.setSupportEmail("support@example.com");
 
         context.checking(new Expectations()
         {
@@ -206,9 +195,6 @@ public class LdapToPersonMapperTest
 
                 oneOf(attributeMock).get("middleName");
                 will(returnValue(middleNameMock));
-
-                oneOf(attributeMock).get("lmcTopTierDesc");
-                will(returnValue(orgMock));
 
                 oneOf(attributeMock).get("title");
                 will(returnValue(titleMock));
