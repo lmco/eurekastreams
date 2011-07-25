@@ -1403,4 +1403,8 @@ public interface CoreCss extends CssResource
     String streamPluginsPanel();
 
     String messageXPanel();
+
+    String searchResultsContent();
+
+    String renderContainer();
 }
