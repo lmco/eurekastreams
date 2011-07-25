@@ -81,6 +81,12 @@ public class PagerComposite extends Composite
      * Previous button.
      */
     @UiField
+    Label resultsNum;
+    
+    /**
+     * Previous button.
+     */
+    @UiField
     Label prevButton;
 
     /**
@@ -162,33 +168,43 @@ public class PagerComposite extends Composite
             {
                 if (event.getKey().equals(pagerStrategy.getKey()))
                 {
-                    buttonContainer.setVisible(true);
+                	boolean enablePaging = pagerStrategy.hasNext() || pagerStrategy.hasPrev();
+                    buttonContainer.setVisible(enablePaging);
+                    
+                    if (enablePaging)
+                    {
+                    	String resultsLabel = String.valueOf(pagerStrategy.getStartIndex()+1) 
+                    		+ " - " + String.valueOf(pagerStrategy.getEndIndex()+1)
+                    		+ " of " + String.valueOf(pagerStrategy.getTotal());
+                    
+                    	resultsNum.setText(resultsLabel);
+                    
+                    	if (pageResults.getWidgetCount() != 0)
+                    	{
+                    		slideAnimation.slide(direction, event.getWidget(), pageResults, PAGER_ANIMATION_TIME);
+                    	}
+                    	else
+                    	{
+                    		pageResults.add(event.getWidget());
+                    	}
 
-                    if (pageResults.getWidgetCount() != 0)
-                    {
-                        slideAnimation.slide(direction, event.getWidget(), pageResults, PAGER_ANIMATION_TIME);
-                    }
-                    else
-                    {
-                        pageResults.add(event.getWidget());
-                    }
+                    	if (!pagerStrategy.hasNext())
+                    	{
+                    		nextButton.addStyleName(style.pagingDisabled());
+                    	}
+                    	else
+                    	{
+                    		nextButton.removeStyleName(style.pagingDisabled());
+                    	}
 
-                    if (!pagerStrategy.hasNext())
-                    {
-                        nextButton.addStyleName(style.pagingDisabled());
-                    }
-                    else
-                    {
-                        nextButton.removeStyleName(style.pagingDisabled());
-                    }
-
-                    if (!pagerStrategy.hasPrev())
-                    {
-                        prevButton.addStyleName(style.pagingDisabled());
-                    }
-                    else
-                    {
-                        prevButton.removeStyleName(style.pagingDisabled());
+                    	if (!pagerStrategy.hasPrev())
+                    	{
+                    		prevButton.addStyleName(style.pagingDisabled());
+                    	}
+                    	else
+                    	{
+                        	prevButton.removeStyleName(style.pagingDisabled());
+                    	}
                     }
                 }
             }

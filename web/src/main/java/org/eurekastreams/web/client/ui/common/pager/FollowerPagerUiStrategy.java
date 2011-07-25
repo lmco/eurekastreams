@@ -194,4 +194,29 @@ public class FollowerPagerUiStrategy implements PagerStrategy
     {
         return "follower";
     }
+
+	
+    /**
+     * @return the start index from the pager.
+     */
+	public int getStartIndex() 
+	{
+		return pager.getStartItem();
+	}
+
+    /**
+     * @return the end item fro the pager.
+     */
+	public int getEndIndex()
+	{
+		return pager.getEndItem();
+	}
+	
+    /**
+     * @return the total from the pager.
+     */
+	public int getTotal() 
+	{
+		return pager.getMaxCount();
+	}
 }

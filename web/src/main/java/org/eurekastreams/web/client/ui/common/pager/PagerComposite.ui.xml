@@ -79,6 +79,9 @@
 				padding: 10px;
 				margin-bottom: 20px;
 			}
+			.resultsNum
+			{
+			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.pagerContainer}"
@@ -86,6 +89,7 @@
 		<div class="{style.headerText}" ui:field="headerText"></div>
 		<g:FlowPanel addStyleNames="{style.pageResults}" ui:field="pageResults"></g:FlowPanel>
 		<g:FlowPanel addStyleNames="{style.buttons}" ui:field="buttonContainer">
+			<g:Label addStyleNames="{style.resultsNum}" ui:field="resultsNum"></g:Label>
 			<g:Label addStyleNames="{style.prevButton}" ui:field="prevButton">Prev
 			</g:Label>
 			<g:Label addStyleNames="{style.nextButton}" ui:field="nextButton">Next
