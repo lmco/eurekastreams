@@ -2048,6 +2048,7 @@ div:hover > .messageXPanel {
 	margin-right: 20px;
 	margin-bottom: 10px;
 	float: left;
+	height: auto;
 }
 
 .message-link {

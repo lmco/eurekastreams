@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.directory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -38,26 +39,26 @@ public class GetDirectorySearchResultsExecution implements ExecutionStrategy<Ser
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * The search request builder.
      */
-    private ProjectionSearchRequestBuilder searchRequestBuilder;
+    private final ProjectionSearchRequestBuilder searchRequestBuilder;
 
     /**
      * The transient property populator for search results.
      */
-    private TransientPropertyPopulator transientPropertyPopulator;
+    private final TransientPropertyPopulator transientPropertyPopulator;
 
     /**
      * Strategy to build a Lucene query string for searching the directory.
      */
-    private DirectorySearchLuceneQueryBuilder queryBuilder;
+    private final DirectorySearchLuceneQueryBuilder queryBuilder;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inQueryBuilder
      *            the strategy to build a Lucene query string for searching the directory
      * @param inSearchRequestBuilder
@@ -91,7 +92,17 @@ public class GetDirectorySearchResultsExecution implements ExecutionStrategy<Ser
         // build and parse the query, set its paging
         String nativeLuceneQuery = queryBuilder.buildNativeQuery(searchText, currentRequest.getWeightedField(),
                 userPersonId);
-        FullTextQuery query = searchRequestBuilder.buildQueryFromNativeSearchString(nativeLuceneQuery);
+        FullTextQuery query;
+        // don't bubble up exceptions that occur from invalid search terms - this is annoying for as-you-type results
+        try
+        {
+            query = searchRequestBuilder.buildQueryFromNativeSearchString(nativeLuceneQuery);
+        }
+        catch (Exception ex)
+        {
+            return new PagedSet<ModelView>(currentRequest.getStartIndex(), currentRequest.getEndIndex(), 0,
+                    new ArrayList<ModelView>());
+        }
         searchRequestBuilder.setPaging(query, currentRequest.getStartIndex(), currentRequest.getEndIndex());
 
         // get the results before query.getResultSize() is called for performance (it avoids a second search)
@@ -114,7 +125,7 @@ public class GetDirectorySearchResultsExecution implements ExecutionStrategy<Ser
 
     /**
      * Determine and format the elapsed time for a server request.
-     * 
+     *
      * @param startTime
      *            the starting milliseconds
      * @param endTime

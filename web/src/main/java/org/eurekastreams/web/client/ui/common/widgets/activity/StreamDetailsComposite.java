@@ -30,8 +30,8 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
@@ -554,7 +554,7 @@ public class StreamDetailsComposite extends Composite
                         {
                             tagString += "<a href='#" + tag + "'>" + tag + "</a> ";
                         }
-                        streamInterests.setInnerHTML(tagString);
+                        streamHashtags.setInnerHTML(tagString);
                     }
                 });
 
@@ -722,6 +722,7 @@ public class StreamDetailsComposite extends Composite
                         {
                             configureLink.setVisible(false);
                         }
+
                         updateFollowLink(person.getAccountId(), EntityType.PERSON);
                         FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
                         featuredStreamDTO.setDescription(person.getDescription());
@@ -743,7 +744,7 @@ public class StreamDetailsComposite extends Composite
                         String interestString = "";
                         for (String interest : person.getInterests())
                         {
-                            interestString += "<a href='#" + interest + "'>" + interest + "</a> ";
+                            interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
                         }
                         streamInterests.setInnerHTML(interestString);
 
@@ -825,7 +826,7 @@ public class StreamDetailsComposite extends Composite
                             String interestString = "";
                             for (String interest : group.getCapabilities())
                             {
-                                interestString += "<a href='#" + interest + "'>" + interest + "</a> ";
+                                interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
                             }
                             streamInterests.setInnerHTML(interestString);
 
