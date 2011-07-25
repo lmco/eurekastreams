@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -66,7 +67,7 @@ public class LuceneDataSource implements SortedDataSource
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSearchRequestBuilder
      *            the search request builder
      * @param inUnstemmedRequestBuilder
@@ -92,7 +93,7 @@ public class LuceneDataSource implements SortedDataSource
 
     /**
      * Fetch a page of search results, using the keywords in the input JSON request.
-     * 
+     *
      * @param inRequest
      *            the JSON request containing query->keywords
      * @param userEntityId
@@ -180,7 +181,16 @@ public class LuceneDataSource implements SortedDataSource
         }
         else
         {
-            query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
+            // don't let query parsing throw an exception that bubbles out to the client - it could be from an
+            // incomplete as-you-type search
+            try
+            {
+                query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
+            }
+            catch (Exception ex)
+            {
+                return new ArrayList<Long>();
+            }
         }
 
         if (jsonQuery.containsKey("sortBy"))

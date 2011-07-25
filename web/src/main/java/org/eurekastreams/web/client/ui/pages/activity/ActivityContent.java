@@ -125,63 +125,63 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         * 
+         *
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         * 
+         *
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         * 
+         *
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         * 
+         *
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         * 
+         *
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         * 
+         *
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         * 
+         *
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         * 
+         *
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         * 
+         *
          * @return small avatar style.
          */
         String smallAvatar();
@@ -357,12 +357,12 @@ public class ActivityContent extends Composite
     /**
      * Custom streams map.
      */
-    private HashMap<Long, Panel> customStreamWidgetMap = new HashMap<Long, Panel>();
+    private final HashMap<Long, Panel> customStreamWidgetMap = new HashMap<Long, Panel>();
 
     /**
      * Stream bookmarks map.
      */
-    private HashMap<String, Panel> bookmarksWidgetMap = new HashMap<String, Panel>();
+    private final HashMap<String, Panel> bookmarksWidgetMap = new HashMap<String, Panel>();
 
     /**
      * Currently active stream.
@@ -582,17 +582,17 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setDisplayName(person.getDisplayName());
                         }
-                        if (!person.isStreamPostable() &&
-                        		!person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+                        if (!person.isStreamPostable()
+                                && !person.getAccountId().equals(
+                                        Session.getInstance().getCurrentPerson().getAccountId()))
                         {
-                        	currentStream.setScopeType(null);
+                            currentStream.setScopeType(null);
                         }
                         if (!singleActivityMode)
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
-                        
-                        
+
                     }
                 });
 
@@ -658,9 +658,9 @@ public class ActivityContent extends Composite
                         }
                         if (!group.isStreamPostable() && !isCoordinator)
                         {
-                        	currentStream.setScopeType(null);
+                            currentStream.setScopeType(null);
                         }
-                        
+
                         if (!singleActivityMode)
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
@@ -720,7 +720,7 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     * 
+     *
      * @param inViews
      *            the views.
      */
@@ -758,8 +758,8 @@ public class ActivityContent extends Composite
 
         new Observer<GotCurrentUserStreamBookmarks>()
         {
-            private AvatarUrlGenerator groupUrlGen = new AvatarUrlGenerator(EntityType.GROUP);
-            private AvatarUrlGenerator personUrlGen = new AvatarUrlGenerator(EntityType.PERSON);
+            private final AvatarUrlGenerator groupUrlGen = new AvatarUrlGenerator(EntityType.GROUP);
+            private final AvatarUrlGenerator personUrlGen = new AvatarUrlGenerator(EntityType.PERSON);
 
             public void update(final GotCurrentUserStreamBookmarks event)
             {
@@ -793,7 +793,8 @@ public class ActivityContent extends Composite
                                     urlGen = personUrlGen;
                                 }
 
-                                imgUrl = urlGen.getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
+                                imgUrl = urlGen
+                                        .getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
 
                             }
                         }
@@ -867,13 +868,11 @@ public class ActivityContent extends Composite
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            Panel filterPanel = createPanel(
-                                    filter.getName(),
-                                    "custom/"
-                                            + filter.getId()
-                                            + "/"
-                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                                    Session.getInstance().getCurrentPerson().getAccountId()),
+                            Panel filterPanel = createPanel(filter.getName(), "custom/"
+                                    + filter.getId()
+                                    + "/"
+                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                            Session.getInstance().getCurrentPerson().getAccountId()),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 
@@ -1057,7 +1056,7 @@ public class ActivityContent extends Composite
 
     /**
      * Append a new message.
-     * 
+     *
      * @param message
      *            the messa.ge
      */
@@ -1071,7 +1070,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     * 
+     *
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1231,7 +1230,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     * 
+     *
      * @param panel
      *            the panel.
      */
@@ -1258,7 +1257,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     * 
+     *
      * @param name
      *            the name of the item.
      * @param view

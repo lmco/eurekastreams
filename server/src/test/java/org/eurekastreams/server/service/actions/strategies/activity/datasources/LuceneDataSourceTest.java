@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -58,12 +59,13 @@ public class LuceneDataSourceTest
     /**
      * Search builder.
      */
-    private ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
+    private final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class,
+            "builder");
 
     /**
      * Unstemmed search builder.
      */
-    private ProjectionSearchRequestBuilder unstemmedBuilder = context.mock(ProjectionSearchRequestBuilder.class,
+    private final ProjectionSearchRequestBuilder unstemmedBuilder = context.mock(ProjectionSearchRequestBuilder.class,
             "unstemmed builder");
 
     /**
@@ -117,6 +119,31 @@ public class LuceneDataSourceTest
         });
 
         assertSame(results, sut.fetch(request, 0L));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute method with a bad search.
+     */
+    @Test
+    public void testExecuteWithBadSearch()
+    {
+
+        final JSONObject request = new JSONObject();
+        final JSONObject query = new JSONObject();
+
+        query.put("keywords", "hithere:(foo)");
+        request.put("query", query);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo)) ");
+                will(throwException(new RuntimeException("OOOPS")));
+            }
+        });
+
+        assertEquals(0, sut.fetch(request, 0L).size());
         context.assertIsSatisfied();
     }
 
