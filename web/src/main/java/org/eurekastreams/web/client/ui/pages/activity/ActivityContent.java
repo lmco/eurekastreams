@@ -41,7 +41,6 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
-import org.eurekastreams.web.client.events.data.GotGroupActivitySubscriptionsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
@@ -53,7 +52,6 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
-import org.eurekastreams.web.client.model.BaseActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.GadgetModel;
@@ -465,6 +463,32 @@ public class ActivityContent extends Composite
 
         handleViewsChanged(Session.getInstance().getUrlViews());
     }
+    
+    /**
+     * Got activity.
+     * @param event the event.
+     */
+    private void gotActivity(final GotActivityResponseEvent event)
+    {
+    	streamPanel.clear();
+        activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+
+        EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
+        String actorName = event.getResponse().getDestinationStream().getUniqueId();
+
+        if (actorType.equals(EntityType.GROUP))
+        {
+            GroupModel.getInstance().fetch(actorName, false);
+
+        }
+        else if (actorType.equals(EntityType.PERSON))
+        {
+            PersonalInformationModel.getInstance().fetch(actorName, false);
+        }
+
+        streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
+        streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+    }
 
     /**
      * Add events.
@@ -476,40 +500,20 @@ public class ActivityContent extends Composite
 
             public void update(final GotActivityResponseEvent event)
             {
-                streamPanel.clear();
-                activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-
-                EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
-                String actorName = event.getResponse().getDestinationStream().getUniqueId();
-
-                if (actorType.equals(EntityType.GROUP))
-                {
-                    GroupModel.getInstance().fetch(actorName, false);
-
-                }
-                else if (actorType.equals(EntityType.PERSON))
-                {
-                    PersonalInformationModel.getInstance().fetch(actorName, false);
-                }
-
-                streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
-                streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                gotActivity(event);
             }
         });
-
         EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
             public void update(final GotStreamResponseEvent event)
             {
                 final PagedSet<ActivityDTO> activitySet = event.getStream();
-
                 if (activitySet.getPagedSet().size() > 0)
                 {
                     longNewestActivityId = activitySet.getPagedSet().get(0).getEntityId();
                     longOldestActivityId = activitySet.getPagedSet().get(activitySet.getPagedSet().size() - 1)
                             .getEntityId();
                 }
-
                 if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("minId"))
                 {
                     for (int i = activitySet.getPagedSet().size(); i > 0; i--)
@@ -520,12 +524,10 @@ public class ActivityContent extends Composite
                 else if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("maxId"))
                 {
                     moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-
                     for (ActivityDTO activity : activitySet.getPagedSet())
                     {
                         streamPanel.add(renderer.render(activity));
                     }
-
                     moreLink.setVisible(activitySet.getTotal() > activitySet.getPagedSet().size());
                 }
                 else
@@ -535,25 +537,20 @@ public class ActivityContent extends Composite
                     streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
                     List<ActivityDTO> activities = activitySet.getPagedSet();
-
                     for (ActivityDTO activity : activities)
                     {
                         streamPanel.add(renderer.render(activity));
                     }
-
                     if (activities.size() == 0)
                     {
                         noResults.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     }
-
                     moreLink.setVisible(activitySet.getTotal() > activities.size());
                 }
-
                 if (activitySet.getPagedSet().size() > 0)
                 {
                     noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                 }
-
             }
         });
 
@@ -568,7 +565,6 @@ public class ActivityContent extends Composite
                         if (person.isAccountLocked())
                         {
                             currentStream.setScopeType(null);
-
                             errorPanel.clear();
                             errorPanel.setVisible(true);
                             activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
@@ -592,7 +588,6 @@ public class ActivityContent extends Composite
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
-
                     }
                 });
 
@@ -830,7 +825,7 @@ public class ActivityContent extends Composite
         EventBus.getInstance().addObserver(GotStreamActivitySubscriptionResponseEvent.class,
         		new Observer<GotStreamActivitySubscriptionResponseEvent>()
         		{
-					public void update(
+					public void update(final 
 							GotStreamActivitySubscriptionResponseEvent result) 
 					{
 						if (result.isSubscribed())
