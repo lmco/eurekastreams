@@ -1778,6 +1778,7 @@ body .post-to-stream .over-character-limit {
 
 .share-message-dialog .post-to .auto-complete {
 	padding-right: 8px;
+	width: 350px;
 }
 
 .post-to .auto-complete input {
@@ -1995,13 +1996,13 @@ body .post-to-stream .over-character-limit {
 	padding-bottom: 5px;
 	height: 15px;
 	width: 15px;
-	display: none;	
+	visibility: hidden;	
 	font-size: 12px;
 	cursor: pointer;
 }
 
 div:hover > .messageXPanel {
-	display: block;	
+	visibility: visible;	
 }
 
 .messageXPanel > div { 
@@ -3672,22 +3673,79 @@ width: 330px;
 	top: -3px;
 }
 
+.searchResultsContent .renderContainer
+{
+	overflow: hidden;
+	background-color: white;	
+	border-left: 1px solid #bdbdbd;
+	border-right: 1px solid #bdbdbd;
+	min-height: 300px;
+}
+
+.directory .navpanel, .directory .pager-container 
+{
+	background-color: white;
+	border-left: 1px solid #bdbdbd;
+	border-right: 1px solid #bdbdbd;
+}
+
 .directory .connection-master {
-	margin: 20px;
-	margin-left: 200px;
-	padding: 10px;
+    margin-left: 235px;
+    padding-bottom: 10px;
+    padding-right: 25px;
+    padding-top: 50px;
 }
 
 .directory .options.views {
-	margin-top: -45px;
 	position: absolute;
+	margin-top: -35px;
 	left: 15px;
+	border-top: 1px solid #bbb;
 	width: 180px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	height: auto;
+	overflow: auto;
+}
+
+.directory .options.views > a:first-child {
+	border-top: 1px solid white;
+}
+
+.directory .options.views > a
+{
+	cursor: pointer;
+	display: block;
+	height: 24px;
+	padding-top: 9px;
+	padding-left: 5px;
+	color: #000;
+	zoom: 1;
+	font-size: 14px;
+	margin-right: 0;
+	padding-bottom: 0;
+}
+
+.directory .options.views > a:hover
+{
+	background-color: #e4e4e4;
+	color: #000;
+}
+
+.directory .options.views > a.active
+{
+	background-image: url(style/images/highlight.png);
+	background-position: top right;
+	background-repeat: no-repeat;
+	background-color: #e4e4e4;
 }
 
 .directory .results-header {
-	background-color: #F0DB62;
-	padding: 10px 20px;
+	background-image: url("style/images/activityHeaderBackground.png");
+    color: white;
+    font-size: 17px;
+    font-weight: normal !important;
+    padding: 20px 15px;
 }
 
 .directory .results-header .gwt-InlineLabel:first-child {
@@ -3695,8 +3753,16 @@ width: 330px;
 }
 
 .directory-header {
-	margin: 20px 10px 0;
 	font-size: 18px;
+    left: 25px;
+    position: absolute;
+    top: 50px;
+}
+
+.directory .wait-spinner
+{
+	position: absolute;
+	left: 575px;
 }
 
 .directory .navpanel {
@@ -3713,8 +3779,12 @@ width: 330px;
 .directory .connection-item {
 	width: 728px;
 	margin: 10px;
-	border-top: 1px solid #CCCCCC;
 	padding-top: 10px;
+}
+
+.directory .connection-col-left
+{
+	border-right-width: 0;
 }
 
 .directory .connection-item-info {
@@ -3723,6 +3793,12 @@ width: 330px;
 
 .directory .bottom-pager {
 	margin: 0px;
+	overflow: hidden;
+	padding-bottom: 10px;
+	padding-right: 10px;
+	border-top-width: 0;
+	border-bottom: 1px solid #bdbdbd;
+	
 }
 
 .list-item .avatar {
@@ -4708,9 +4784,10 @@ body .dragdrop-proxy {
 	margin-left: 75px;
 	padding: 5px;
 	background: #EEEEEE;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 3px;
+	margin-bottom: 3px;
 	overflow: auto;
+	margin-right: 50px;
 }
 
 .message-comment-author {
@@ -6791,6 +6868,10 @@ body div.eureka-connect-liked-activity-wrapper {
 	/* Unrelated items which IE lays out wrong unless zoom=1 is specified */
 	.attach-link,.link-panel {
 		zoom: 1;
+	}
+	
+	.directory .options.views {
+		margin-top: -25px;
 	}
 
 } /* END IE SPECIFIC */

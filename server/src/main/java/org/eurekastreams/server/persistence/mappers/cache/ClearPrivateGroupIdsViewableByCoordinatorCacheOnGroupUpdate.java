@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,30 +21,30 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Clear the cache of private group ids visible (via org or group coord status)
- * by people that are coordinators of a group.
+ * Clear the cache of private group ids visible (via org or group coord status) by people that are coordinators of a
+ * group.
  */
-public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate
-        extends CachedDomainMapper
+public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate extends CachedDomainMapper implements
+        DomainMapper<Long, Void>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory
-            .getLog(ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate.class);
+    private final Log log = LogFactory.getLog(ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate.class);
 
     /**
-     * Clear the activity stream search string for user cache for all
-     * coordinators and followers of a domain group.
+     * Clear the activity stream search string for user cache for all coordinators and followers of a domain group.
      * 
      * @param inDomainGroupId
      *            the id of the domain group that's being updated
+     * @return Nothing.
      */
     @SuppressWarnings("unchecked")
-    public void execute(final Long inDomainGroupId)
+    public Void execute(final Long inDomainGroupId)
     {
         String queryTemplate = "SELECT p.id FROM Person p, DomainGroup g "
                 + "WHERE g.id = :groupId AND p MEMBER OF g.coordinators";
@@ -52,16 +52,14 @@ public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate
         Query query = getEntityManager().createQuery(queryTemplate);
         query.setParameter("groupId", inDomainGroupId);
 
-        List<Long> peopleIds = (List<Long>) query.getResultList();
+        List<Long> peopleIds = query.getResultList();
 
         for (Long id : peopleIds)
         {
-            log
-                    .info("Clearing the cached security-scoped activity search string for user with person id: "
-                            + id);
+            log.info("Clearing the cached security-scoped activity search string for user with person id: " + id);
 
-            getCache()
-                    .delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + id);
+            getCache().delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + id);
         }
+        return null;
     }
 }

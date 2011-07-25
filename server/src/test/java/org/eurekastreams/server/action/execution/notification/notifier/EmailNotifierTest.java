@@ -114,6 +114,12 @@ public class EmailNotifierTest
     /** Dummy person. */
     private final PersonModelView person2 = context.mock(PersonModelView.class, "person2");
 
+    /** Dummy person. */
+    private final PersonModelView person1a = context.mock(PersonModelView.class, "person1a");
+
+    /** Dummy person. */
+    private final PersonModelView person2a = context.mock(PersonModelView.class, "person2a");
+
     /** SUT. */
     private EmailNotifier sut;
 
@@ -237,9 +243,36 @@ public class EmailNotifierTest
 
                 allowing(person2).getEmail();
                 will(returnValue(EMAIL2));
+
+                allowing(person1a).getEmail();
+                will(returnValue(""));
+
+                allowing(person2a).getEmail();
+                will(returnValue(""));
             }
         });
 
+    }
+
+    /**
+     * Tests notify.
+     * 
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testNotifyNone() throws Exception
+    {
+        commonSetup();
+
+        recipientIndex.put(RECIPIENT1, person1a);
+        recipientIndex.put(RECIPIENT2, person2a);
+
+        UserActionRequest result = sut.notify(OK_TYPE, Arrays.asList(RECIPIENT1, RECIPIENT2), Collections.EMPTY_MAP,
+                recipientIndex);
+        context.assertIsSatisfied();
+
+        assertNull(result);
     }
 
     /**
@@ -253,7 +286,9 @@ public class EmailNotifierTest
     {
         commonSetup();
 
-        UserActionRequest result = sut.notify(OK_TYPE, Collections.singletonList(RECIPIENT1), Collections.EMPTY_MAP,
+        recipientIndex.put(RECIPIENT2, person2a);
+
+        UserActionRequest result = sut.notify(OK_TYPE, Arrays.asList(RECIPIENT1, RECIPIENT2), Collections.EMPTY_MAP,
                 recipientIndex);
         context.assertIsSatisfied();
 

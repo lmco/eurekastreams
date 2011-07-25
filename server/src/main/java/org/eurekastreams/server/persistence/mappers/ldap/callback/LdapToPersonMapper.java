@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class LdapToPersonMapper implements AttributesMapper
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(LdapToPersonMapper.class);
+    private final Log log = LogFactory.getLog(LdapToPersonMapper.class);
 
     /**
      * User account attribute name.
@@ -55,11 +55,6 @@ public class LdapToPersonMapper implements AttributesMapper
      * User middle name attribute name.
      */
     private String middleNameAttrib;
-
-    /**
-     * User org attribute name.
-     */
-    private String orgAttrib;
 
     /**
      * User title attribute name.
@@ -87,13 +82,8 @@ public class LdapToPersonMapper implements AttributesMapper
     private List<String> additionalProperties;
 
     /**
-     * Support email address - used when no email address was found for a user.
-     */
-    private String supportEmail;
-
-    /**
      * Maps the LDAP attributes to a Person.
-     * 
+     *
      * @param attrs
      *            the attributes.
      * @throws NamingException
@@ -112,12 +102,10 @@ public class LdapToPersonMapper implements AttributesMapper
             String firstName = attrs.get(firstNameAttrib).get().toString();
             String lastName = attrs.get(lastNameAttrib).get().toString();
 
-            String email = (null != attrs.get(emailAttrib)) ? attrs.get(emailAttrib).get().toString() : supportEmail;
+            String email = (null != attrs.get(emailAttrib)) ? attrs.get(emailAttrib).get().toString() : "";
 
             String middleName = (null != attrs.get(middleNameAttrib)) ? attrs.get(middleNameAttrib).get().toString()
                     : "";
-
-            String orgName = (null != attrs.get(orgAttrib)) ? attrs.get(orgAttrib).get().toString() : "";
 
             String companyName = (null != attrs.get(companyAttrib)) ? attrs.get(companyAttrib).get().toString() : "";
 
@@ -170,7 +158,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setAccountAttrib(final String inAccountAttrib)
     {
-        this.accountAttrib = inAccountAttrib;
+        accountAttrib = inAccountAttrib;
     }
 
     /**
@@ -179,7 +167,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setFirstNameAttrib(final String inFirstNameAttrib)
     {
-        this.firstNameAttrib = inFirstNameAttrib;
+        firstNameAttrib = inFirstNameAttrib;
     }
 
     /**
@@ -188,7 +176,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setLastNameAttrib(final String inLastNameAttrib)
     {
-        this.lastNameAttrib = inLastNameAttrib;
+        lastNameAttrib = inLastNameAttrib;
     }
 
     /**
@@ -197,16 +185,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setMiddleNameAttrib(final String inMiddleNameAttrib)
     {
-        this.middleNameAttrib = inMiddleNameAttrib;
-    }
-
-    /**
-     * @param inOrgAttrib
-     *            the orgAttrib to set.
-     */
-    public void setOrgAttrib(final String inOrgAttrib)
-    {
-        this.orgAttrib = inOrgAttrib;
+        middleNameAttrib = inMiddleNameAttrib;
     }
 
     /**
@@ -215,7 +194,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setTitleAttrib(final String inTitleAttrib)
     {
-        this.titleAttrib = inTitleAttrib;
+        titleAttrib = inTitleAttrib;
     }
 
     /**
@@ -224,7 +203,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setFullNameAttrib(final String inFullNameAttrib)
     {
-        this.fullNameAttrib = inFullNameAttrib;
+        fullNameAttrib = inFullNameAttrib;
     }
 
     /**
@@ -233,16 +212,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setEmailAttrib(final String inEmailAttrib)
     {
-        this.emailAttrib = inEmailAttrib;
-    }
-
-    /**
-     * @param inSupportEmail
-     *            the supportEmail to set.
-     */
-    public void setSupportEmail(final String inSupportEmail)
-    {
-        this.supportEmail = inSupportEmail;
+        emailAttrib = inEmailAttrib;
     }
 
     /**
@@ -251,7 +221,7 @@ public class LdapToPersonMapper implements AttributesMapper
      */
     public void setAdditionalProperties(final List<String> inAdditionalProperties)
     {
-        this.additionalProperties = inAdditionalProperties;
+        additionalProperties = inAdditionalProperties;
     }
 
     /**

@@ -89,7 +89,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            The Group Mapper
      * @param inPersonMapper
@@ -116,7 +116,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Returns DomainGroup based on id passed in inFields.
-     *
+     * 
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -141,7 +141,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Persists new group object.
-     *
+     * 
      * @param inGroup
      *            The group.
      * @param inFields
@@ -201,13 +201,13 @@ public class GroupCreator extends GroupPersister
         for (Person coordinator : inGroup.getCoordinators())
         {
             SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
-                    coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(),
-                    isPending);
+                    coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(), inGroup
+                            .getShortName(), isPending);
             ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
                     creatorUserName, principal.getOpenSocialId(), creatorPersonId));
             TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = // \n
-            new TaskHandlerActionContext<PrincipalActionContext>(currentContext,
-                    inActionContext.getUserActionRequests());
+            new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
+                    .getUserActionRequests());
             followStrategy.execute(currentTaskHandlerActionContext);
         }
 
