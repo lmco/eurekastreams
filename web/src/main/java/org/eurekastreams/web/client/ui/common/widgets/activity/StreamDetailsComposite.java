@@ -27,6 +27,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -47,6 +48,7 @@ import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEv
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.Deletable;
@@ -722,6 +724,7 @@ public class StreamDetailsComposite extends Composite
                         {
                             configureLink.setVisible(false);
                         }
+                        
                         updateFollowLink(person.getAccountId(), EntityType.PERSON);
                         FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
                         featuredStreamDTO.setDescription(person.getDescription());

@@ -568,11 +568,16 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setDisplayName(person.getDisplayName());
                         }
-
+                        if (!person.isStreamPostable() &&
+                        		!person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+                        {
+                        	currentStream.setScopeType(null);
+                        }
                         if (!singleActivityMode)
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
+                        
                     }
                 });
 
@@ -625,7 +630,22 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setDisplayName(group.getName());
                         }
+                        boolean isCoordinator = false;
 
+                        for (PersonModelView coordinator : group.getCoordinators())
+                        {
+                            if (coordinator.getAccountId().equals(
+                                    Session.getInstance().getCurrentPerson().getAccountId()))
+                            {
+                                isCoordinator = true;
+                                break;
+                            }
+                        }
+                        if (!group.isStreamPostable() && !isCoordinator)
+                        {
+                        	currentStream.setScopeType(null);
+                        }
+                        
                         if (!singleActivityMode)
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
