@@ -163,7 +163,7 @@ img {
 
 .header-container {
 	position: relative;
-	z-index: 999;
+	z-index: 1001;
 }
 
 .site-labeling {
@@ -177,9 +177,9 @@ img {
 	z-index: 900;
 }
 
-.header-bar .site-labeling {
+.main-contents .site-labeling {
 	position: absolute;
-	top: 52px;
+	top: 5px;
 }
 
 .search-list {
@@ -887,10 +887,9 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 
 .master-notifier {
 	position: absolute;
-	top: 40px;
+	top: 70px;
 	margin: 0px auto;
 	z-index: 999;
-	left: 200px;
 }
 
 .message a:link,.message a:visited,.message a:hover,.message a:active {
@@ -1992,9 +1991,12 @@ body .post-to-stream .over-character-limit {
 .messageXPanel {
 	float: right;
 	background-image: url(style/images/modalCloseBtnSmallHover.png);
+	background-repeat: no-repeat;
+	padding-bottom: 5px;
 	height: 15px;
 	width: 15px;
 	display: none;	
+	font-size: 12px;
 	cursor: pointer;
 }
 
@@ -2008,19 +2010,34 @@ div:hover > .messageXPanel {
 	background-color: white;
     border: 1px solid #BDBDBD;
     padding: 5px;
-    padding-bottom: 0;
-    margin-top: 15px;
-    margin-left: -30px;
-    width: 35px;
+    margin-top: 20px;
+    margin-left: -55px;
+    width: 60px;
 }
 
 .messageXPanel:hover > div { 
 	display: block;
 }
 
-.messageXPanel > div > div {
+.messageXPanel > div > div > a {
 	font-size: 11px;
 	padding-bottom: 5px;
+	color: black;
+} 
+
+.messageXPanel > div > div
+{
+	padding: 3px;	
+}
+
+.messageXPanel > div > div:hover {
+	color: white;
+	background-color: #426FD9;
+} 
+
+.messageXPanel > div > div > a:hover {
+	color: white;
+	
 } 
 
 
@@ -2591,6 +2608,7 @@ body .previous-arrow:hover {
 }
 
 .followDialog {
+	width: 550px;
 }
 
 .followDialog .title
@@ -2886,10 +2904,8 @@ body .previous-arrow:hover {
 	margin-top: -10px;
 }
 
-.access-list-refresh-button {
-	width: 87px;
-	height: 25px;
-	background: url(style/images/refreshAccesListBtn.png);
+@sprite .access-list-refresh-button {
+	gwt-image: "settingsRefreshButton";
 	cursor: pointer;
 	margin-top: 10px;
 }
@@ -3210,6 +3226,11 @@ body .shortname-form-element input {
 	vertical-align: middle;
 	cursor: pointer;
 }
+
+@sprite .form-user-association .add-button-submit {
+	gwt-image: "settingsAddButton";
+}
+
 
 .options {
 	list-style: none;
@@ -4056,10 +4077,15 @@ div.tab-container {
 	gwt-image: "saveChangesBtn";
 }
 
-.profile-settings-tab-content>div>.form-container>.form-submit-button,.stream-settings-tab-content>div>div>div>.form-container>.form-submit-button,.stream-plugins-feed-subscriptions-container-edit a.form-submit-button,.group-profile-settings-panel a.form-submit-button,.form-submit-button,.list-edit-modal a.form-submit-button,.system-settings a.form-submit-button
-	{
-	background-image: url(style/images/saveChangesBtn.png);
-	width: 103px;
+@sprite .profile-settings-tab-content>div>.form-container>.form-submit-button,
+.stream-settings-tab-content>div>div>div>.form-container>.form-submit-button,
+.stream-plugins-feed-subscriptions-container-edit a.form-submit-button,
+.group-profile-settings-panel a.form-submit-button,
+.form-submit-button,
+.list-edit-modal a.form-submit-button,
+.system-settings a.form-submit-button
+{
+	gwt-image: "saveChangesButton";
 }
 
 div.tab-container+div .profile-settings-tab-content .form-container {
@@ -4915,7 +4941,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .settings-panel .settings-content {
-	margin: 9px 10px 0;
+	margin: 0px 10px 0;
 	position: relative;
 	z-index: 900;
 }

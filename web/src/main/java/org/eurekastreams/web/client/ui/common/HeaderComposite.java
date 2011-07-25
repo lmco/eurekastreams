@@ -63,10 +63,6 @@ public class HeaderComposite extends Composite
      * Link Panel to encapsulate external links in header.
      */
     FlowPanel galleryLinkPanel = new FlowPanel();
-    /**
-     * The Site Labing panel.
-     */
-    FlowPanel siteLabelingContainer = new FlowPanel();
 
     /** The search box. */
     private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("Find a Stream");
@@ -192,7 +188,7 @@ public class HeaderComposite extends Composite
         // Style the Elements
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
         navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBar());
-        siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
+
         mainNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainNav());
         userNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().userBar());
 
@@ -201,26 +197,10 @@ public class HeaderComposite extends Composite
         navPanel.add(userNav);
         panel.add(navPanel);
 
-        panel.add(siteLabelingContainer);
-
         initWidget(panel);
         setActive(Session.getInstance().getUrlPage());
     }
 
-    /**
-     * Sets Site labeling.
-     *
-     * @param inTemplate
-     *            HTML template content to insert in the footer.
-     * @param inSiteLabel
-     *            The text for Site Labeling.
-     */
-    public void setSiteLabelTemplate(final String inTemplate, final String inSiteLabel)
-    {
-        String siteLabel = inSiteLabel == null ? "" : inSiteLabel;
-        String template = inTemplate.replace("%SITELABEL%", siteLabel);
-        siteLabelingContainer.getElement().setInnerHTML(template);
-    }
 
     /**
      * Set the top button as active.
