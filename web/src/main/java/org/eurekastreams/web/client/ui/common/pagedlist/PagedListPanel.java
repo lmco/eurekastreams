@@ -157,6 +157,7 @@ public class PagedListPanel extends FlowPanel
         bottomPager = new Pager("filteredPager" + listId, true);
 
         waitSpinner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitSpinner());
+        renderContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().renderContainer());
 
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionMaster());
         filterContainer.add(new Label("View:"));
@@ -472,7 +473,6 @@ public class PagedListPanel extends FlowPanel
         PageableRequest request = requests.get(currentFilter).get(currentSortKey);
         request.setStartIndex(currentStartIndex);
         request.setEndIndex(currentEndIndex);
-        renderContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         fetchers.get(currentFilter).fetch(request, false);
     }
 
@@ -641,7 +641,6 @@ public class PagedListPanel extends FlowPanel
             this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
-        renderContainer.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
         bottomPager.setTotal(items.getTotal());
         waitSpinner.setVisible(false);

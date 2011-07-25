@@ -265,7 +265,7 @@ public class SetFollowingGroupStatusExecutionTest
         });
 
         SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
-                FOLLOWER_ID, GROUP_ID, Follower.FollowerStatus.FOLLOWING, "Group Name", false);
+                FOLLOWER_ID, GROUP_ID, Follower.FollowerStatus.FOLLOWING, "Group Name", "groupName", false);
         TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
                 .createTaskHandlerContextWithPrincipal(currentRequest, principal);
         Serializable result = sut.execute(actionContext);
