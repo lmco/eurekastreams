@@ -24,7 +24,6 @@ import org.eurekastreams.web.client.model.SearchResultsModel;
 import org.eurekastreams.web.client.model.SearchResultsPeopleModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
-import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.TwoColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 

@@ -29,9 +29,9 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
@@ -170,8 +170,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         // and not fail because of additional mapper calls on the DomainGroupModelView and PersonModelView objects.
         if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusRequest)
         {
-            SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext.getActionContext()
-                    .getParams();
+            SetFollowingStatusRequest currentRequest =
+                    (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
             followerStatus = currentRequest.getFollowerStatus();
             followerAccountId = currentRequest.getFollowerUniqueId();
             followerId = getPersonIdFromAccountIdMapper.execute(followerAccountId);
@@ -182,7 +182,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         else if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusByGroupCreatorRequest)
         {
             SetFollowingStatusByGroupCreatorRequest currentRequest = // \n
-            (SetFollowingStatusByGroupCreatorRequest) inActionContext.getActionContext().getParams();
+                    (SetFollowingStatusByGroupCreatorRequest) inActionContext.getActionContext().getParams();
             followerId = currentRequest.getFollowerId();
             targetId = currentRequest.getTargetId();
             targetName = currentRequest.getTargetName();
@@ -235,14 +235,15 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
                 if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusRequest)
                 {
-                    SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext
-                            .getActionContext().getParams();
+                    SetFollowingStatusRequest currentRequest =
+                            (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
                     targetStream = currentRequest.getTargetUniqueId();
                 }
-                else if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusByGroupCreatorRequest)
+                else if (inActionContext.getActionContext().getParams() 
+                        instanceof SetFollowingStatusByGroupCreatorRequest)
                 {
-                    SetFollowingStatusByGroupCreatorRequest currentRequest = (SetFollowingStatusByGroupCreatorRequest) inActionContext
-                            .getActionContext().getParams();
+                    SetFollowingStatusByGroupCreatorRequest currentRequest =
+                            (SetFollowingStatusByGroupCreatorRequest) inActionContext.getActionContext().getParams();
                     targetStream = currentRequest.getTargetUniqueId();
                 }
 
@@ -258,8 +259,9 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
                 if (targetStream.length() > 0)
                 {
-                    content = "%EUREKA:ACTORNAME% has joined the [" + targetName + "](#activity/group/" + targetStream
-                            + ") group";
+                    content =
+                            "%EUREKA:ACTORNAME% has joined the [" + targetName + "](#activity/group/" + targetStream
+                                    + ") group";
                 }
                 else
                 {

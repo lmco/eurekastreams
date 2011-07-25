@@ -227,7 +227,7 @@ public class GroupCreatorTest
                 oneOf(getSystemAdminIdsMapper).execute(null);
                 will(returnValue(adminIds));
 
-                oneOf(groupMock).getShortName();
+                allowing(groupMock).getShortName();
                 will(returnValue("blah"));
 
                 oneOf(groupMock).getCoordinators();
@@ -324,7 +324,7 @@ public class GroupCreatorTest
                 oneOf(getSystemAdminIdsMapper).execute(null);
                 will(returnValue(adminIds));
 
-                oneOf(groupMock).getShortName();
+                allowing(groupMock).getShortName();
                 will(returnValue("blah"));
 
                 oneOf(groupMock).getCoordinators();
@@ -411,7 +411,7 @@ public class GroupCreatorTest
                 oneOf(getSystemSettingsMapper).execute(null);
                 will(returnValue(settings));
 
-                oneOf(groupMock).getShortName();
+                allowing(groupMock).getShortName();
                 will(returnValue("blah"));
 
                 oneOf(groupMock).getCoordinators();
@@ -493,7 +493,7 @@ public class GroupCreatorTest
                 oneOf(getSystemSettingsMapper).execute(null);
                 will(returnValue(settings));
 
-                oneOf(groupMock).getShortName();
+                allowing(groupMock).getShortName();
                 will(returnValue("group1"));
 
                 oneOf(groupMock).getCoordinators();
@@ -544,7 +544,7 @@ public class GroupCreatorTest
                 oneOf(getSystemSettingsMapper).execute(null);
                 will(returnValue(settings));
 
-                oneOf(groupMock).getShortName();
+                allowing(groupMock).getShortName();
                 will(returnValue("group1"));
 
                 oneOf(groupMock).getCoordinators();

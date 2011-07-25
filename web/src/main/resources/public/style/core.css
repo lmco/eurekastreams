@@ -4783,9 +4783,10 @@ body .dragdrop-proxy {
 	margin-left: 75px;
 	padding: 5px;
 	background: #EEEEEE;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 3px;
+	margin-bottom: 3px;
 	overflow: auto;
+	margin-right: 50px;
 }
 
 .message-comment-author {

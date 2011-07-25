@@ -175,10 +175,10 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
     }
 
     /**
-     * @param targetUniqueId
+     * @param inTargetUniqueId
      *            the targetUniqueId to set.
      */
-    public void setTargetUniqueId(String inTargetUniqueId)
+    public void setTargetUniqueId(final String inTargetUniqueId)
     {
         this.targetUniqueId = inTargetUniqueId;
     }
