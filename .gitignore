@@ -1,6 +1,8 @@
 target
 .classpath
 .project
+.metadata
+.metadata/.log
 .settings
 .DS_Store
 Thumbs.db

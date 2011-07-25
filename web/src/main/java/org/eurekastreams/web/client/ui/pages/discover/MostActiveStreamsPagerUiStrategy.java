@@ -162,4 +162,28 @@ public class MostActiveStreamsPagerUiStrategy implements PagerStrategy
         pager.previousPage();
         model.fetch(new GetMostActiveStreamsPageRequest(pager.getStartItem(), pager.getEndItem()), true);
     }
+    
+    /**
+     * @return the start index from the pager.
+     */
+	public int getStartIndex() 
+	{
+		return pager.getStartItem();
+	}
+
+    /**
+     * @return the end item fro the pager.
+     */
+	public int getEndIndex()
+	{
+		return pager.getEndItem();
+	}
+	
+    /**
+     * @return the total from the pager.
+     */
+	public int getTotal() 
+	{
+		return pager.getMaxCount();
+	}
 }

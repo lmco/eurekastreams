@@ -150,5 +150,29 @@ public class GroupMembershipRequestPagerUiStrategy implements PagerStrategy
                 new GetRequestForGroupMembershipRequest(groupId, groupShortName, pager.getStartItem(), pager
                         .getEndItem()), false);
     }
+    
+    /**
+     * @return the start index from the pager.
+     */
+	public int getStartIndex() 
+	{
+		return pager.getStartItem();
+	}
+
+    /**
+     * @return the end item fro the pager.
+     */
+	public int getEndIndex()
+	{
+		return pager.getEndItem();
+	}
+	
+    /**
+     * @return the total from the pager.
+     */
+	public int getTotal() 
+	{
+		return pager.getMaxCount();
+	}
 
 }

@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetDirectorySearchResultsExecution} class.
- * 
+ *
  */
 public class GetDirectorySearchResultsExecutionTest
 {
@@ -87,13 +87,14 @@ public class GetDirectorySearchResultsExecutionTest
     /**
      * Mocked SearchResultAdditionalPropertyPopulator.
      */
-    private SearchResultAdditionalPropertyPopulator additionalPropertyPopulator = context
+    private final SearchResultAdditionalPropertyPopulator additionalPropertyPopulator = context
             .mock(SearchResultAdditionalPropertyPopulator.class);
 
     /**
      * Strategy to build a Lucene search query for directory searching.
      */
-    private DirectorySearchLuceneQueryBuilder queryBuilder = context.mock(DirectorySearchLuceneQueryBuilder.class);
+    private final DirectorySearchLuceneQueryBuilder queryBuilder = context
+            .mock(DirectorySearchLuceneQueryBuilder.class);
 
     /**
      * Setup the context.
@@ -107,7 +108,7 @@ public class GetDirectorySearchResultsExecutionTest
 
     /**
      * Test performAction() with a user that's logged in.
-     * 
+     *
      * @throws Exception
      *             on error
      */
@@ -167,8 +168,54 @@ public class GetDirectorySearchResultsExecutionTest
     }
 
     /**
+     * Test performAction() with a user that's logged in.
+     *
+     * @throws Exception
+     *             on error
+     */
+    @Test
+    public void testPerformActionWithBadSearchText() throws Exception
+    {
+        final String escapedSearchText = "heyNowEscaped";
+        final long personId = 58583L;
+        final String nativeLuceneQuery = "abcdefgh";
+
+        context.checking(new Expectations()
+        {
+            {
+                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT + "*");
+                will(returnValue(escapedSearchText));
+
+                one(principalMock).getId();
+                will(returnValue(personId));
+
+                one(queryBuilder).buildNativeQuery(escapedSearchText, "background", personId);
+                will(returnValue(nativeLuceneQuery));
+
+                one(searchRequestBuilder).buildQueryFromNativeSearchString(nativeLuceneQuery);
+                will(throwException(new RuntimeException("OOPS")));
+            }
+        });
+
+        // invoke
+        GetDirectorySearchResultsRequest currentRequest = new GetDirectorySearchResultsRequest(SEARCH_TEXT,
+                "background", FROM, TO, "");
+
+        ServiceActionContext currentActionContext = new ServiceActionContext(currentRequest, principalMock);
+
+        PagedSet<ModelView> pagedSet = sut.execute(currentActionContext);
+
+        // assert
+        assertEquals(FROM, pagedSet.getFromIndex());
+        assertEquals(TO, pagedSet.getToIndex());
+        assertEquals(0, pagedSet.getTotal());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Test performAction() with a user that's not logged in.
-     * 
+     *
      * @throws Exception
      *             on error
      */

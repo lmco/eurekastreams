@@ -20,6 +20,21 @@ package org.eurekastreams.web.client.ui.common.pager;
  */
 public interface PagerStrategy
 {
+	/**
+	 * 
+	 * @return the amount per page.
+	 */
+	int getEndIndex();
+	/**
+	 * 
+	 * @return the start index.
+	 */
+	int getStartIndex();
+	/**
+	 * 
+	 * @return the total number of things.
+	 */
+	int getTotal();
     /**
      * @return if there is a next page.
      */
