@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.Follower.FollowerStatus;
 /**
  * This class contains the parameters that comprise a request made from the GroupCreator to the
  * SetFollowingGroupStatusExecution strategy.
- *
+ * 
  */
 public class SetFollowingStatusByGroupCreatorRequest implements Serializable
 {
@@ -45,12 +45,17 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
      * Local instance of the {@link FollowerStatus} for this request.
      */
     private FollowerStatus followerStatus;
-    
+
+    /**
+     * Local instance of the target unique id.
+     */
+    private String targetUniqueId;
+
     /**
      * Local instance of the Target name for this request.
      */
     private String targetName;
-    
+
     /**
      * Flag indicating if this request is pending.
      */
@@ -58,7 +63,7 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inFollowerId
      *            - instance of the follower id for this request.
      * @param inTargetId
@@ -67,16 +72,20 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
      *            - instance of the {@link FollowerStatus} for this request.
      * @param inTargetName
      *            - instance of the target name for this request.
+     * @param inTargetUniqueId
+     *            - instance of the target name for this request.
      * @param inIsPending
      *            - instance of the flag for isPenging for this request.
      */
     public SetFollowingStatusByGroupCreatorRequest(final Long inFollowerId, final Long inTargetId,
-            final FollowerStatus inFollowerStatus, final String inTargetName, final boolean inIsPending)
+            final FollowerStatus inFollowerStatus, final String inTargetName, final String inTargetUniqueId,
+            final boolean inIsPending)
     {
         followerId = inFollowerId;
         targetId = inTargetId;
         followerStatus = inFollowerStatus;
         targetName = inTargetName;
+        targetUniqueId = inTargetUniqueId;
         isPending = inIsPending;
     }
 
@@ -163,5 +172,22 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
     public boolean isPending()
     {
         return isPending;
+    }
+
+    /**
+     * @param targetUniqueId
+     *            the targetUniqueId to set.
+     */
+    public void setTargetUniqueId(String inTargetUniqueId)
+    {
+        this.targetUniqueId = inTargetUniqueId;
+    }
+
+    /**
+     * @return the targetUniqueId.
+     */
+    public String getTargetUniqueId()
+    {
+        return targetUniqueId;
     }
 }

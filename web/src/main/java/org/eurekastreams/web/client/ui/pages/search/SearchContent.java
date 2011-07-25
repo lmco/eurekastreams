@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.model.SearchResultsPeopleModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
+import org.eurekastreams.web.client.ui.common.pagedlist.TwoColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -68,9 +69,10 @@ public class SearchContent extends FlowPanel
     {
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().directory());
 
-        searchResultsPanel = new PagedListPanel("searchResults", new SingleColumnPagedListRenderer());
+        searchResultsPanel = new PagedListPanel("searchResults", new TwoColumnPagedListRenderer());
         searchResultsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResults());
         FlowPanel contentPanel = new FlowPanel();
+        contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsContent());
 
         Label header = new Label("Profile Search Results");
         header.addStyleName(StaticResourceBundle.INSTANCE.coreCss().directoryHeader());
@@ -89,9 +91,12 @@ public class SearchContent extends FlowPanel
         Session.getInstance().getEventBus().addObserver(GotSearchResultsResponseEvent.class,
                 new Observer<GotSearchResultsResponseEvent>()
                 {
-                    public void update(final GotSearchResultsResponseEvent arg1)
+                    public void update(final GotSearchResultsResponseEvent event)
                     {
-                        searchResultsPanel.render(arg1.getResponse(), "No matches found");
+                        if ("searchpage".equals(event.getCallerKey()))
+                        {
+                            searchResultsPanel.render(event.getResponse(), "No matches found");
+                        }
                     }
                 });
 

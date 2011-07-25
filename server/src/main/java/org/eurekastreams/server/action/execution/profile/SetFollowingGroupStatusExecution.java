@@ -239,6 +239,12 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                             .getActionContext().getParams();
                     targetStream = currentRequest.getTargetUniqueId();
                 }
+                else if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusByGroupCreatorRequest)
+                {
+                    SetFollowingStatusByGroupCreatorRequest currentRequest = (SetFollowingStatusByGroupCreatorRequest) inActionContext
+                            .getActionContext().getParams();
+                    targetStream = currentRequest.getTargetUniqueId();
+                }
 
                 StreamEntityDTO destination = new StreamEntityDTO();
                 destination.setUniqueIdentifier(followerAccountId);
