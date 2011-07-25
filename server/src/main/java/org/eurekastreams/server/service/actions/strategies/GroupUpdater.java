@@ -37,22 +37,22 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
 
 /**
  * Class to update a Group.
- * 
+ *
  */
 public class GroupUpdater extends GroupPersister
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * The key to use to store the original domain group name into the fields map between Get and Persist.
@@ -67,16 +67,16 @@ public class GroupUpdater extends GroupPersister
     /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
-    private TaskHandlerExecutionStrategy followStrategy;
+    private final TaskHandlerExecutionStrategy followStrategy;
 
     /**
      * Mapper to clear the existing coordinators and followers search text.
      */
-    private ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate clearActivityStreamSearchStringForUsersMapper;
+    private final DomainMapper<Long, Void> clearActivityStreamSearchStringForUsersMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            The group mapper.
      * @param inAccessCheckerMapper
@@ -88,8 +88,8 @@ public class GroupUpdater extends GroupPersister
      */
     public GroupUpdater(final DomainGroupMapper inGroupMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inAccessCheckerMapper,
-            final ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate // \n
-            inClearActivityStreamSearchStringForUsersMapper, final TaskHandlerExecutionStrategy inFollowStrategy)
+            final DomainMapper<Long, Void> inClearActivityStreamSearchStringForUsersMapper,
+            final TaskHandlerExecutionStrategy inFollowStrategy)
     {
         super(inGroupMapper);
         clearActivityStreamSearchStringForUsersMapper = inClearActivityStreamSearchStringForUsersMapper;
@@ -98,7 +98,7 @@ public class GroupUpdater extends GroupPersister
 
     /**
      * Returns Group base on id passed in inFields.
-     * 
+     *
      * @param inActionContext
      *            action context
      * @param inFields
@@ -128,7 +128,7 @@ public class GroupUpdater extends GroupPersister
 
     /**
      * Updates the Group Data.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -166,8 +166,8 @@ public class GroupUpdater extends GroupPersister
                         inActionContext.getActionContext().getPrincipal().getId()));
                 TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
                 // line break
-                new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
-                        .getUserActionRequests());
+                new TaskHandlerActionContext<PrincipalActionContext>(currentContext,
+                        inActionContext.getUserActionRequests());
                 followStrategy.execute(currentTaskHandlerActionContext);
             }
 
@@ -189,11 +189,6 @@ public class GroupUpdater extends GroupPersister
                 inActionContext.getUserActionRequests().add(
                         new UserActionRequest("activityRecipientDomainGroupNameUpdaterAsyncAction", null, inGroup
                                 .getShortName()));
-
-                // group name updated - kick off a task to update all notifications related to the group
-                inActionContext.getUserActionRequests().add(
-                        new UserActionRequest("updateNotificationsOnGroupNameChange", null, inGroup.getId()));
-
             }
         }
         catch (InvalidStateException e)
@@ -214,5 +209,4 @@ public class GroupUpdater extends GroupPersister
             log.error("Failed to persist Group", e);
         }
     }
-
 }

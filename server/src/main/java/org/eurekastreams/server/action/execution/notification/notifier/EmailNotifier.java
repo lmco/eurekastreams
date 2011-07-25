@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -33,7 +34,6 @@ import org.eurekastreams.server.action.execution.notification.NotificationProper
 import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 
 /**
  * Notifier for in-app notifications. Builds the messages and stores them in the database.
@@ -119,19 +119,27 @@ public class EmailNotifier implements Notifier
         vt.merge(velocityContext, writer);
         email.setHtmlBody(writer.toString());
 
-        // set the recipients
-        if (inRecipients.size() == 1)
+        // set the recipients, filtering empty addresses
+        List<String> addresses = new ArrayList<String>(inRecipients.size());
+        for (long recipientId : inRecipients)
         {
-            email.setToRecipient(inRecipientIndex.get(inRecipients.iterator().next()).getEmail());
+            String address = inRecipientIndex.get(recipientId).getEmail();
+            if (StringUtils.isNotBlank(address))
+            {
+                addresses.add(address);
+            }
+        }
+        if (addresses.isEmpty())
+        {
+            return null;
+        }
+        if (addresses.size() == 1)
+        {
+            email.setToRecipient(addresses.get(0));
         }
         else
         {
-            List<PersonModelView> persons = new ArrayList<PersonModelView>();
-            for (Long recipientId : inRecipients)
-            {
-                persons.add(inRecipientIndex.get(recipientId));
-            }
-            email.setBccRecipients(EmailerFactory.buildEmailList(persons));
+            email.setBccRecipients(StringUtils.join(addresses, ','));
         }
 
         // set the reply-to to the actor (so replies to emails go to the actor, not the system)
