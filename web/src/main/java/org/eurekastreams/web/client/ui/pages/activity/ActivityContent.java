@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -738,7 +739,10 @@ public class ActivityContent extends Composite
                 bookmarkList.clear();
                 bookmarksWidgetMap.clear();
 
-                for (final StreamFilter filter : event.getResponse())
+                List<StreamFilter> sortedStreamFilters = event.getResponse();
+                Collections.sort(sortedStreamFilters, new StreamFilterNameComparator());
+
+                for (final StreamFilter filter : sortedStreamFilters)
                 {
                     JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
                     String uniqueId = null;
