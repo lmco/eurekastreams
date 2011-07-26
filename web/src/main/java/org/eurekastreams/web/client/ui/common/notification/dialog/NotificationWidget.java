@@ -53,7 +53,7 @@ public class NotificationWidget extends Composite
     @UiField
     LocalStyle style;
 
-    /** Local styles. */
+    /** UI element for the main link that lets the notification be clicked on. */
     @UiField
     Anchor mainLinkUi;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,41 +35,69 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Global search composite. TODO break this out for testability.
  */
-public class BookmarkSearchComposite extends FlowPanel
+public class BookmarkSearchComposite extends Composite
 {
-    /**
-     * The search term.
-     */
-    private final LabeledTextBox searchTerm;
+    /** Binder for building UI. */
+    private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
-    /**
-     * Results panel.
-     */
-    private final FlowPanel resultsPanel = new FlowPanel();
+    /** Local styles. */
+    @UiField
+    LocalStyle style;
 
-    /**
-     * Results panel container.
-     */
-    private final FocusPanel resultsPanelContainer = new FocusPanel();
+    /** Global styles. */
+    @UiField(provided = true)
+    CoreCss coreCss;
 
-    /**
-     * Last length of search term.
-     */
+    /** Title shown when collapsed. */
+    @UiField
+    Label collapsedTitle;
+
+    /** Title shown when expanded. */
+    @UiField
+    Label expandedTitle;
+
+    /** Panel shown when expanded. */
+    @UiField
+    DivElement expandedPanel;
+
+    /** The search term box. */
+    @UiField
+    LabeledTextBox searchTerm;
+
+    /** Results panel. */
+    @UiField
+    FlowPanel resultsPanel;
+
+    /** Results panel container. */
+    @UiField
+    FocusPanel resultsPanelContainer;
+
+    /** Last length of search term. */
     private int termLength = -1;
 
     /**
@@ -77,37 +105,21 @@ public class BookmarkSearchComposite extends FlowPanel
      */
     public BookmarkSearchComposite()
     {
-        searchTerm = new LabeledTextBox("add a bookmark");
-        resultsPanelContainer.setVisible(false);
+        coreCss = StaticResourceBundle.INSTANCE.coreCss();
+        Widget main = binder.createAndBindUi(this);
+        // resultsPanelContainer.setVisible(false);
+        initWidget(main);
 
-        resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsAutocompleteResults());
+        // addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearch());
 
-        Label bookmarkTitle = new Label("Bookmark a Stream");
+        setupEvents();
+    }
 
-        add(bookmarkTitle);
-
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearch());
-        add(searchTerm);
-
-        add(resultsPanelContainer);
-        resultsPanelContainer.add(resultsPanel);
-
-        bookmarkTitle.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                if (getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive()))
-                {
-                    removeStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive());
-                }
-                else
-                {
-                    addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive());
-                }
-            }
-        });
-
+    /**
+     * Sets up event handling.
+     */
+    private void setupEvents()
+    {
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         searchTerm.addKeyUpHandler(new KeyUpHandler()
@@ -138,16 +150,6 @@ public class BookmarkSearchComposite extends FlowPanel
             }
         });
 
-        resultsPanelContainer.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                searchTerm.reset();
-                resultsPanelContainer.setVisible(false);
-                resultsPanel.clear();
-                removeStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchActive());
-            }
-        });
 
         eventBus.addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
         {
@@ -194,6 +196,7 @@ public class BookmarkSearchComposite extends FlowPanel
                             });
                         }
 
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkNameLink());
                         itemPanel.add(name);
 
                         itemContainer.add(itemPanel);
@@ -216,8 +219,49 @@ public class BookmarkSearchComposite extends FlowPanel
     }
 
     /**
+     * Resets search when results clicked.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("resultsPanelContainer")
+    void onResultsPanelContainerClick(final ClickEvent ev)
+    {
+        searchTerm.reset();
+        resultsPanelContainer.setVisible(false);
+        resultsPanel.clear();
+        removeStyleName(style.searchActive());
+    }
+
+    /**
+     * Expands panel when clicked.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("collapsedTitle")
+    void onExpandClick(final ClickEvent ev)
+    {
+        collapsedTitle.setVisible(false);
+        UIObject.setVisible(expandedPanel, true);
+    }
+
+    /**
+     * Collapses panel when clicked.
+     *
+     * @param ev
+     *            Event.
+     */
+    @UiHandler("expandedTitle")
+    void onCollapseClick(final ClickEvent ev)
+    {
+        collapsedTitle.setVisible(true);
+        UIObject.setVisible(expandedPanel, false);
+    }
+
+    /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.
@@ -229,5 +273,22 @@ public class BookmarkSearchComposite extends FlowPanel
         params.put("startIndex", "0");
         params.put("endIndex", "9");
         return params;
+    }
+
+    /**
+     * Local styles.
+     */
+    interface LocalStyle extends CssResource
+    {
+        /** @return Active style for overall widget. */
+        @ClassName("search-active")
+        String searchActive();
+    }
+
+    /**
+     * Binder for building UI.
+     */
+    interface LocalUiBinder extends UiBinder<Widget, BookmarkSearchComposite>
+    {
     }
 }
