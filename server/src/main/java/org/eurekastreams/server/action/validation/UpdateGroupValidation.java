@@ -22,13 +22,14 @@ import java.util.Set;
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.domain.CompositeEntity;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * 
+ *
  * Validates values entered for a Group.
- * 
+ *
  */
 public class UpdateGroupValidation implements ValidationStrategy<PrincipalActionContext>
 {
@@ -46,6 +47,10 @@ public class UpdateGroupValidation implements ValidationStrategy<PrincipalAction
 
         vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.ID_KEY, true, ve);
         vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.SHORT_NAME_KEY, true, ve);
+
+        String url = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.URL_KEY, false, ve);
+        vHelper.stringMeetsRequirments(DomainGroupModelView.URL_KEY, url, ve, null, null, null,
+                CompositeEntity.URL_REGEX_PATTERN, DomainGroup.WEBSITE_MESSAGE);
 
         if (fields.containsKey(DomainGroupModelView.PRIVACY_KEY))
         {
@@ -70,13 +75,13 @@ public class UpdateGroupValidation implements ValidationStrategy<PrincipalAction
                     DomainGroup.MAX_NAME_LENGTH, DomainGroup.NAME_LENGTH_MESSAGE, null, null);
         }
 
-        String description = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.DESCRIPTION_KEY,
-                true, ve);
+        String description = (String) vHelper.getAndCheckStringFieldExist(fields,
+                DomainGroupModelView.DESCRIPTION_KEY, true, ve);
         vHelper.stringMeetsRequirments(DomainGroupModelView.DESCRIPTION_KEY, description, ve, null,
                 DomainGroup.MAX_DESCRIPTION_LENGTH, DomainGroup.DESCRIPTION_LENGTH_MESSAGE, null, null);
 
-        String keywords = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.KEYWORDS_KEY, true,
-                ve);
+        String keywords = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.KEYWORDS_KEY,
+                true, ve);
 
         if (keywords != null)
         {
