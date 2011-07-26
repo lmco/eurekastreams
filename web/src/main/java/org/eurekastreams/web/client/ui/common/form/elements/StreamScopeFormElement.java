@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamScopeLis
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -144,6 +145,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
             {
                 if (!getEntityType(obj.toString()).equals("NOTSET"))
                 {
+                	Window.alert(obj.toString());
                     EventBus.getInstance().notifyObservers(
                             new StreamScopeAddedEvent(new StreamScope(getDisplayName(obj.toString()), ScopeType
                                     .valueOf(getEntityType(obj.toString())), getUniqueId(obj.toString()), Long

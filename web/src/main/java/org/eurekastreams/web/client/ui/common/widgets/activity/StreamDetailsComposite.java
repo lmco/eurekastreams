@@ -263,6 +263,12 @@ public class StreamDetailsComposite extends Composite
      * UI element for stream description.
      */
     @UiField
+    DivElement contactInfo;
+    
+    /**
+     * UI element for stream description.
+     */
+    @UiField
     DivElement streamDescription;
 
     /**
@@ -755,6 +761,21 @@ public class StreamDetailsComposite extends Composite
                         }
                         streamInterests.setInnerHTML(interestString);
 
+                        String contact = "";
+                        if (person.getEmail() != null)
+                        {
+                        	contact = person.getEmail();
+                        }
+                        if (person.getWorkPhone() != null)
+                        {
+                        	 if (person.getEmail() != null)
+                             {
+                             	contact += "</br>";
+                             }
+                        	 contact += person.getWorkPhone();
+                        }
+                        contactInfo.setInnerHTML(contact);
+                        
                         PopularHashTagsModel.getInstance().fetch(
                                 new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
 
