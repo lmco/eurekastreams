@@ -37,6 +37,8 @@
 @external .delegation-item .avatar-image-Small;
 @external .connection-item-info;
 
+
+
 * {	
 	outline: none;
 }
@@ -107,7 +109,7 @@ div.break {
 }
 
 a:link,a:visited,a:active,.linked-label {
-	color: #0066CC;
+	color: #1481B3;
 }
 
 a:hover,.linked-label:hover {
@@ -893,7 +895,7 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 }
 
 .message a:link,.message a:visited,.message a:hover,.message a:active {
-	color: #0066CC;
+	color: #1481B3;
 }
 
 div.message div {
@@ -1299,7 +1301,7 @@ body .terms-of-service-modal .agree-button-disabled {
 }
 
 .edit,.delete {
-	color: #0066CC;
+	color: #1481B3;
 }
 
 .edit:hover,.delete:hover {
@@ -1605,7 +1607,7 @@ body .bookmarkSearchActive input {
 .stream-titlebar .add-as-gadget:hover {
 	text-indent: 0;
 	width: auto;
-	color: #0066CC;
+	color: #1481B3;
 }
 
 .search-description .search-results-for {
@@ -1642,7 +1644,6 @@ body .bookmarkSearchActive input {
 
 .search-description {
 	background-color: #ffe488;
-	margin: 0 10px;
 	padding: 10px;
 }
 
@@ -2914,7 +2915,7 @@ body .previous-arrow:hover {
 
 .form-lookup-button {
 	width: 150px;
-	color: #0066CC;
+	color: #1481B3;
 	overflow: hidden;
 	cursor: pointer;
 	font-size: 11px;
@@ -5038,7 +5039,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .settings-panel .settings-title-bar a:hover {
-	color: #0066cc;
+	color: #1481B3;
 }
 
 .settings-panel .settings-title-bar .gwt-Hyperlink {
@@ -5369,10 +5370,8 @@ body .stream-view-dialog .delete-button {
 }
 
 .unseen-activity {
-	background: #F3F3F3;
+	background: #FFE488;
 	height: 31px;
-	margin-left: 10px;
-	margin-right: 10px;
 	height: 25px;
 	text-align: right;
 	padding: 3px 0;
@@ -5390,14 +5389,23 @@ body .stream-view-dialog .delete-button {
 }
 
 .unseen-activity a {
-	background: url('style/images/refreshStream.png') no-repeat;
+	background: url('style/images/refreshActivity.png') no-repeat;
+	background-position: 0 2px;
 	height: 20px;
 	overflow: hidden;
-	text-indent: 1000em;
-	width: 83px;
 	margin-left: 10px;
 	display: inline-block;
 	margin-top: 2px;
+	padding-left: 20px;
+    padding-right: 10px;
+    position: relative;
+    top: 2px;
+}
+
+.unseen-activity a:hover
+{
+	color: #1481B3;
+	
 }
 
 .group-private-extra-note {

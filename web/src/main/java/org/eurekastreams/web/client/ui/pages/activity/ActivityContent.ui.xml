@@ -1,6 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
-	xmlns:ewa='urn:import:org.eurekastreams.web.client.ui.common.widgets.activity'>
+	xmlns:ewa='urn:import:org.eurekastreams.web.client.ui.common.widgets.activity'
+	xmlns:stream='urn:import:org.eurekastreams.web.client.ui.common.stream'>
 
 	<ui:image field="subscribeNormal" src="style/images/subscribeNormal.png" />
 	<ui:image field="subscribeActive" src="style/images/subscribeActive.png" />
@@ -12,7 +13,7 @@
 
 	<ui:with field='resources'
 		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
-		
+
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.activity.ActivityContent.ActivityStyle">
@@ -236,7 +237,8 @@
 				padding-top: 5px;
 				display: block;
 				cursor: pointer;
-				color: #0066CC;
+				color: #1481B3;
+				padding-bottom: 20px;
 			}
 			
 			.createFilter {
@@ -264,7 +266,7 @@
 			.streamOptionChild:hover .editCustomStream {
 				display: block;
 				margin-right: 5px;
-				color: #0066CC;
+				color: #1481B3;
 			}
 			
 			.streamOptionChild:hover .editCustomStream:hover {
@@ -316,7 +318,7 @@
 	<g:HTMLPanel addStyleNames="{style.main}">
 		<g:HTMLPanel addStyleNames="{style.stream-container-panel}"
 			ui:field="streamContainerPanel">
-			<ewa:StreamDetailsComposite></ewa:StreamDetailsComposite>
+			<ewa:StreamDetailsComposite ui:field="streamDetailsComposite"></ewa:StreamDetailsComposite>
 			<ewa:PostBoxComposite ui:field="postBox"></ewa:PostBoxComposite>
 			<div ui:field="streamOptionsPanel" class="{style.options-panel}">
 				<g:Hyperlink addStyleNames="{style.sort-option} {style.activeSort}"
@@ -343,10 +345,14 @@
 				</div>
 			</div>
 			<div class="{style.stream-panel}">
-				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
-				<div class="{resources.coreCss.noResults}" ui:field="noResults">This stream does not contain any activity.</div>
 				<g:FlowPanel addStyleNames="{style.errorPanel}"
 					ui:field="errorPanel"></g:FlowPanel>
+				<stream:StreamSearchStatusWidget
+					ui:field="streamSearchStatusWidget"></stream:StreamSearchStatusWidget>
+				<stream:UnseenActivityNotificationPanel></stream:UnseenActivityNotificationPanel>
+				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
+				<div class="{resources.coreCss.noResults}" ui:field="noResults">This stream
+					does not contain any activity.</div>
 				<g:FlowPanel ui:field="streamPanel">
 				</g:FlowPanel>
 				<div class="{style.more-loading-spinner}" ui:field="moreSpinner"></div>
