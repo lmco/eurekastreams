@@ -1444,70 +1444,38 @@ body .post-expanded-panel .content-warning {
 	border-top: 1px solid #999;
 }
 
-body .bookmarkSearch
-{
-   	clear: left;
-   	margin-left: 10px;
-    padding-left: 0;
-    width: 225px;
-    overflow: hidden;
-    margin-bottom: 10px;
-}
-
+/*
 .bookmarkSearch .gwt-Anchor
 {
 	margin-top: 6px;
 }
-
-body .bookmarkSearchActive
-{
-	background-image: url("style/images/bookmarkGradient.png");
-   	background-repeat: repeat-x;
-   	background-color: #c0c0c0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #999999;
-}
-
-body .bookmarkSearch input {
-    background-image: url("style/images/bookmarkSearch.png");
-    border-width: 0;
-    color: black;
-    padding: 4px 22px;
-    width: 150px;
-    background-color: transparent;
-    margin-left: 10px;
-    display: none;
-}
-
-body .bookmarkSearchActive input {
-	display: block;
-}
-
+*/
 .bookmarkSearch .searchResultsAutocompleteResults
 {
-	border-width: 0;
-	background-color: #c0c0c0;
+	border: none;
+	border-top: 1px solid #BBB;
+	border-bottom: 1px solid #BBB;
+	background-color: white;
 }
-
+/*
 .bookmarkSearch .searchResultsAutocompleteResults > div > div:first-child
 {
 	border-top: 1px solid #999;
 }
-
-.bookmarkSearch  > .gwt-Label
-{
-	text-align: right;
-	padding: 5px;
-	cursor: pointer;
-}
-
+*/
 .bookmarkSearch .searchResultsAutocompleteResults > div > div:hover
 {
-	background: #E4E4E4;
+	background: #F0F0F0 url('style/images/bookmarkAdd.png') no-repeat scroll 200px center;
+	font-weight: bold;
 }
 
 .bookmarkSearch .searchResultsAutocompleteResults {
 	margin-left: 0;	
+}
+
+.bookmarkSearch .searchResultsAutocompleteResults .bookmark-name-link
+{
+	line-height: 31px;
 }
 
 .header-bar .search-list input {
