@@ -109,19 +109,17 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                     }
                 });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(AuthorizeUpdateGroupResponseEvent.class,
-                        new Observer<AuthorizeUpdateGroupResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(AuthorizeUpdateGroupResponseEvent.class,
+                new Observer<AuthorizeUpdateGroupResponseEvent>()
+                {
+                    public void update(final AuthorizeUpdateGroupResponseEvent event)
+                    {
+                        if (event.getResponse())
                         {
-                            public void update(final AuthorizeUpdateGroupResponseEvent event)
-                            {
-                                if (event.getResponse())
-                                {
-                                    GroupModel.getInstance().fetch(groupName, true);
-                                }
-                            }
-                        });
+                            GroupModel.getInstance().fetch(groupName, true);
+                        }
+                    }
+                });
 
         GroupModel.getInstance().authorize(groupName, true);
 
@@ -144,16 +142,11 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         {
             public void update(final UpdatedGroupResponseEvent arg1)
             {
-                Session.getInstance()
-                        .getEventBus()
-                        .notifyObservers(
-                                new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS, arg1.getResponse()
-                                        .getShortName())));
+                Session.getInstance().getEventBus().notifyObservers(
+                        new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS, arg1.getResponse().getShortName())));
 
-                Session.getInstance()
-                        .getEventBus()
-                        .notifyObservers(
-                                new ShowNotificationEvent(new Notification("Your group has been successfully saved")));
+                Session.getInstance().getEventBus().notifyObservers(
+                        new ShowNotificationEvent(new Notification("Your group has been successfully saved")));
             }
         });
 
@@ -191,6 +184,10 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         keywords.setMaxLength(MAX_KEYWORDS);
 
         form.addFormElement(keywords);
+        form.addFormDivider();
+
+        form.addFormElement(new BasicTextBoxFormElement("Website URL", "url", entity.getUrl(),
+                "If your group has a website, you can enter the URL above", false));
         form.addFormDivider();
 
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "
@@ -245,8 +242,8 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         // TODO: evidently this is supposed to go away
         BasicCheckBoxFormElement blockWallPost = new BasicCheckBoxFormElement("Stream Moderation",
-                DomainGroupModelView.STREAM_POSTABLE_KEY, "Allow others to post to your group's stream", false,
-                entity.isStreamPostable());
+                DomainGroupModelView.STREAM_POSTABLE_KEY, "Allow others to post to your group's stream", false, entity
+                        .isStreamPostable());
         BasicCheckBoxFormElement blockCommentPost = new BasicCheckBoxFormElement(null,
                 DomainGroupModelView.STREAM_COMMENTABLE_KEY,
                 "Allow others to comment on activity in your group's stream", false, entity.isCommentable());
@@ -300,35 +297,29 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
                     // TODO - might should put this in GroupModel (and mark it as Deletable) but there's no
                     // custom onFailure ability there yet.
-                    Session.getInstance().getActionProcessor()
-                            .makeRequest("deleteGroupAction", entity.getId(), new AsyncCallback<Boolean>()
+                    Session.getInstance().getActionProcessor().makeRequest("deleteGroupAction", entity.getId(),
+                            new AsyncCallback<Boolean>()
                             {
                                 public void onSuccess(final Boolean result)
                                 {
                                     // adds notification to top of page
-                                    Session.getInstance()
-                                            .getEventBus()
-                                            .notifyObservers(
-                                                    new ShowNotificationEvent(new Notification("The group '"
-                                                            + entity.getName() + "' has been deleted")));
+                                    Session.getInstance().getEventBus().notifyObservers(
+                                            new ShowNotificationEvent(new Notification("The group '"
+                                                    + entity.getName() + "' has been deleted")));
 
                                     // navigates away from settings page to the parent org profile page
-                                    Session.getInstance()
-                                            .getEventBus()
-                                            .notifyObservers(
-                                                    new UpdateHistoryEvent(new CreateUrlRequest(Page.PEOPLE, Session
-                                                            .getInstance().getCurrentPerson().getAccountId())));
+                                    Session.getInstance().getEventBus().notifyObservers(
+                                            new UpdateHistoryEvent(new CreateUrlRequest(Page.PEOPLE, Session
+                                                    .getInstance().getCurrentPerson().getAccountId())));
                                 }
 
                                 public void onFailure(final Throwable caught)
                                 {
                                     // adds notification to top of page
-                                    Session.getInstance()
-                                            .getEventBus()
-                                            .notifyObservers(
-                                                    new ShowNotificationEvent(new Notification(
-                                                            "An error has occured and the group '" + entity.getName()
-                                                                    + "' was not deleted")));
+                                    Session.getInstance().getEventBus().notifyObservers(
+                                            new ShowNotificationEvent(new Notification(
+                                                    "An error has occured and the group '" + entity.getName()
+                                                            + "' was not deleted")));
                                 }
                             });
                 }
