@@ -60,23 +60,23 @@ public class GroupUpdaterTest
     /**
      * Mocked person in user.
      */
-    private Person userPerson = context.mock(Person.class);
+    private final Person userPerson = context.mock(Person.class);
 
     /**
      * task handler action context.
      */
-    private TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = context
+    private final TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = context
             .mock(TaskHandlerActionContext.class);
 
     /**
      * Action context.
      */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * Current user principal.
      */
-    private Principal userPrincipal = context.mock(Principal.class);
+    private final Principal userPrincipal = context.mock(Principal.class);
     /**
      * Collection to hold action requests queued up for async processing.
      */
@@ -85,7 +85,7 @@ public class GroupUpdaterTest
     /**
      * Account id of the current user.
      */
-    private String accountId = "slkjfsdljf";
+    private final String accountId = "slkjfsdljf";
 
     /**
      * the user's person id.
@@ -95,18 +95,18 @@ public class GroupUpdaterTest
     /**
      * The mock group mapper to be used by the action.
      */
-    private DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
+    private final DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
 
     /**
      * Mapper to determine if a user has access to update a group.
      */
-    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess accessCheckerMapper = context
+    private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess accessCheckerMapper = context
             .mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
 
     /**
      * mocked mapper to clear user search strings.
      */
-    private ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate activityStreamSearchClearer = context
+    private final ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate activityStreamSearchClearer = context
             .mock(ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate.class);
 
     /**
@@ -153,7 +153,7 @@ public class GroupUpdaterTest
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -186,7 +186,7 @@ public class GroupUpdaterTest
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -238,7 +238,7 @@ public class GroupUpdaterTest
 
     /**
      * Same as previous test, but with org update.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -285,7 +285,7 @@ public class GroupUpdaterTest
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -332,7 +332,7 @@ public class GroupUpdaterTest
 
         // make sure two queued tasks are queued - the domain group cache update task, and the activity update for all
         // activities posted to this group
-        assertEquals(3, taskHandlerActionContext.getUserActionRequests().size());
+        assertEquals(2, taskHandlerActionContext.getUserActionRequests().size());
         assertEquals("domainGroupCacheUpdaterAsyncAction", taskHandlerActionContext.getUserActionRequests().get(0)
                 .getActionKey());
         assertEquals("activityRecipientDomainGroupNameUpdaterAsyncAction", taskHandlerActionContext
@@ -342,7 +342,7 @@ public class GroupUpdaterTest
 
     /**
      * Build an group with new coordinators. Should see new coordinators added to the group.
-     * 
+     *
      * @throws Exception
      *             not expected
      */

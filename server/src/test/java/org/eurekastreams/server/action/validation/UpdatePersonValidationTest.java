@@ -121,10 +121,10 @@ public class UpdatePersonValidationTest
         }
         catch (ValidationException e)
         {
-            assertEquals(3, e.getErrors().size());
+            assertEquals(2, e.getErrors().size());
             assertTrue(e.getErrors().containsKey(PersonModelView.TITILE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.PREFERREDNAME_KEY));
-            assertTrue(e.getErrors().containsKey(PersonModelView.EMAIL_KEY));
+            // email is not in the list - allow empty
             throw e;
         }
     }
@@ -133,7 +133,7 @@ public class UpdatePersonValidationTest
      * test required fields.
      */
     @Test(expected = ValidationException.class)
-    public void testbadvalidationNofieldsSent()
+    public void testBadValidationNofieldsSent()
     {
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);

@@ -1778,6 +1778,7 @@ body .post-to-stream .over-character-limit {
 
 .share-message-dialog .post-to .auto-complete {
 	padding-right: 8px;
+	width: 350px;
 }
 
 .post-to .auto-complete input {

@@ -1472,7 +1472,7 @@ Eureka.getCurrentUserOrg = function(callback)
                 {
                     returnData = "";
                 }
-                else if (data.indexOf("Info Sys & Global") != -1)
+                else if (data.indexOf("Info Sys & Global") != -1 || data.indexOf("IS&GS") != -1)
                 {
                     returnData = "isgs";
                 }

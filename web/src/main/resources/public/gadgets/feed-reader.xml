@@ -127,7 +127,7 @@
         </style>
         <div class='error-message'></div>
         <script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js" ></script>
-        <script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js" ></script>
+	<script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js?${timestamp}" ></script>
         <script type="text/javascript">
             var prefs_ = new gadgets.Prefs();
             var feedUrl = prefs_.getString("feed_url");

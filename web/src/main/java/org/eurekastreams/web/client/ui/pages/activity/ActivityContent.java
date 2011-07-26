@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -41,7 +43,9 @@ import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotStreamActivitySubscriptionResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
@@ -50,9 +54,13 @@ import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
+import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.GadgetModel;
+import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.GroupModel;
+import org.eurekastreams.web.client.model.Insertable;
+import org.eurekastreams.web.client.model.PersonActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.StreamModel;
@@ -369,7 +377,12 @@ public class ActivityContent extends Composite
      * Everyone filter panel.
      */
     private Panel everyoneFilterPanel = null;
-
+    
+    /**
+     * Is subscribed.
+     */
+    private boolean isSubscribed = false;
+    
     /**
      * Post Box.
      */
@@ -445,11 +458,37 @@ public class ActivityContent extends Composite
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
-
+        
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
         handleViewsChanged(Session.getInstance().getUrlViews());
+    }
+    
+    /**
+     * Got activity.
+     * @param event the event.
+     */
+    private void gotActivity(final GotActivityResponseEvent event)
+    {
+    	streamPanel.clear();
+        activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+
+        EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
+        String actorName = event.getResponse().getDestinationStream().getUniqueId();
+
+        if (actorType.equals(EntityType.GROUP))
+        {
+            GroupModel.getInstance().fetch(actorName, false);
+
+        }
+        else if (actorType.equals(EntityType.PERSON))
+        {
+            PersonalInformationModel.getInstance().fetch(actorName, false);
+        }
+
+        streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
+        streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
     }
 
     /**
@@ -462,40 +501,20 @@ public class ActivityContent extends Composite
 
             public void update(final GotActivityResponseEvent event)
             {
-                streamPanel.clear();
-                activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-
-                EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
-                String actorName = event.getResponse().getDestinationStream().getUniqueId();
-
-                if (actorType.equals(EntityType.GROUP))
-                {
-                    GroupModel.getInstance().fetch(actorName, false);
-
-                }
-                else if (actorType.equals(EntityType.PERSON))
-                {
-                    PersonalInformationModel.getInstance().fetch(actorName, false);
-                }
-
-                streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
-                streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                gotActivity(event);
             }
         });
-
         EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
             public void update(final GotStreamResponseEvent event)
             {
                 final PagedSet<ActivityDTO> activitySet = event.getStream();
-
                 if (activitySet.getPagedSet().size() > 0)
                 {
                     longNewestActivityId = activitySet.getPagedSet().get(0).getEntityId();
                     longOldestActivityId = activitySet.getPagedSet().get(activitySet.getPagedSet().size() - 1)
                             .getEntityId();
                 }
-
                 if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("minId"))
                 {
                     for (int i = activitySet.getPagedSet().size(); i > 0; i--)
@@ -506,12 +525,10 @@ public class ActivityContent extends Composite
                 else if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("maxId"))
                 {
                     moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-
                     for (ActivityDTO activity : activitySet.getPagedSet())
                     {
                         streamPanel.add(renderer.render(activity));
                     }
-
                     moreLink.setVisible(activitySet.getTotal() > activitySet.getPagedSet().size());
                 }
                 else
@@ -521,25 +538,20 @@ public class ActivityContent extends Composite
                     streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
                     List<ActivityDTO> activities = activitySet.getPagedSet();
-
                     for (ActivityDTO activity : activities)
                     {
                         streamPanel.add(renderer.render(activity));
                     }
-
                     if (activities.size() == 0)
                     {
                         noResults.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     }
-
                     moreLink.setVisible(activitySet.getTotal() > activities.size());
                 }
-
                 if (activitySet.getPagedSet().size() > 0)
                 {
                     noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                 }
-
             }
         });
 
@@ -554,7 +566,6 @@ public class ActivityContent extends Composite
                         if (person.isAccountLocked())
                         {
                             currentStream.setScopeType(null);
-
                             errorPanel.clear();
                             errorPanel.setVisible(true);
                             activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
@@ -578,7 +589,6 @@ public class ActivityContent extends Composite
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
-
                     }
                 });
 
@@ -651,6 +661,20 @@ public class ActivityContent extends Composite
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
+                        
+                        
+                    }
+                });
+        
+        
+        Session.getInstance()
+        .getEventBus()
+        .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                new Observer<GotPersonFollowerStatusResponseEvent>()
+                {
+                    public void update(final GotPersonFollowerStatusResponseEvent event)
+                    {
+                    	subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
                     }
                 });
 
@@ -738,7 +762,10 @@ public class ActivityContent extends Composite
                 bookmarkList.clear();
                 bookmarksWidgetMap.clear();
 
-                for (final StreamFilter filter : event.getResponse())
+                List<StreamFilter> sortedStreamFilters = event.getResponse();
+                Collections.sort(sortedStreamFilters, new StreamFilterNameComparator());
+
+                for (final StreamFilter filter : sortedStreamFilters)
                 {
                     JSONObject req = StreamJsonRequestFactory.getJSONRequest(filter.getRequest());
                     String uniqueId = null;
@@ -797,6 +824,24 @@ public class ActivityContent extends Composite
             }
         });
 
+        
+        
+        EventBus.getInstance().addObserver(GotStreamActivitySubscriptionResponseEvent.class,
+        		new Observer<GotStreamActivitySubscriptionResponseEvent>()
+        		{
+					public void update(final 
+							GotStreamActivitySubscriptionResponseEvent result) 
+					{
+						if (result.isSubscribed())
+						{
+							isSubscribed = true;
+							subscribeViaEmail.setText("Unsubscribe to Emails");
+						}
+					}
+        		});
+        
+        
+        
         EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
                 new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
@@ -888,6 +933,10 @@ public class ActivityContent extends Composite
             {
                 StreamBookmarksModel.getInstance().insert(currentScopeId);
                 addBookmark.setVisible(false);
+    			EventBus.getInstance().notifyObservers(
+    					new ShowNotificationEvent(
+    							new Notification(
+    			"You have bookmarked this stream.")));
             }
         });
 
@@ -895,6 +944,55 @@ public class ActivityContent extends Composite
         {
             public void onClick(final ClickEvent event)
             {
+            	if (!isSubscribed)
+            	{
+            		Insertable<String> insertable = null;
+            	
+            		if (currentStream.getScopeType().equals(ScopeType.GROUP))
+            		{
+            			insertable = GroupActivitySubscriptionModel.getInstance();
+            		}
+            		else if (currentStream.getScopeType().equals(ScopeType.PERSON))
+            		{
+            			insertable = PersonActivitySubscriptionModel.getInstance();
+            		}
+            	
+            		if (insertable != null)
+            		{
+            			insertable.insert(currentStream.getUniqueKey());
+            			EventBus.getInstance().notifyObservers(
+            					new ShowNotificationEvent(
+            							new Notification(
+            			"You will now receive emails for new activities to this stream")));
+            			isSubscribed = true;
+                		subscribeViaEmail.setText("Unsubscribe to Emails");
+            		}
+            	}
+            	else
+            	{
+            		Deletable<String> deletable = null;
+            		
+            		if (currentStream.getScopeType().equals(ScopeType.GROUP))
+            		{
+            			deletable = GroupActivitySubscriptionModel.getInstance();
+            		}
+            		else if (currentStream.getScopeType().equals(ScopeType.PERSON))
+            		{
+            			deletable = PersonActivitySubscriptionModel.getInstance();
+            		}
+            	
+            		if (deletable != null)
+            		{
+            			deletable.delete(currentStream.getUniqueKey());
+            			EventBus.getInstance().notifyObservers(
+            					new ShowNotificationEvent(
+            							new Notification(
+            			"You will no longer receive emails for new activities to this stream")));
+            			isSubscribed = false;
+                		subscribeViaEmail.setText("Subscribe via Email");
+            		}
+            	}
+            	
             }
         });
 
@@ -905,6 +1003,10 @@ public class ActivityContent extends Composite
                 GadgetModel.getInstance().insert(
                         new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null,
                                 STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString())));
+    			EventBus.getInstance().notifyObservers(
+    					new ShowNotificationEvent(
+    							new Notification(
+    			"This stream will now show up on your start page.")));
             }
         });
 
@@ -999,6 +1101,8 @@ public class ActivityContent extends Composite
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             setAsActiveStream(followingFilterPanel);
             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+            feedLink.setVisible(true);
+
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -1014,6 +1118,8 @@ public class ActivityContent extends Composite
             }
             subscribeViaEmail.setVisible(true);
             feedLink.setVisible(true);
+            
+            PersonActivitySubscriptionModel.getInstance().fetch(currentStream.getUniqueKey(), true);
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
@@ -1029,6 +1135,7 @@ public class ActivityContent extends Composite
             }
             subscribeViaEmail.setVisible(true);
             feedLink.setVisible(true);
+            GroupActivitySubscriptionModel.getInstance().fetch(currentStream.getUniqueKey(), true);
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
@@ -1036,12 +1143,16 @@ public class ActivityContent extends Composite
             setAsActiveStream(customStreamWidgetMap.get(Long.parseLong(views.get(1))));
             currentStream.setScopeType(null);
             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+            feedLink.setVisible(true);
+
         }
         else if (views.get(0).equals("everyone"))
         {
             currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
             setAsActiveStream(everyoneFilterPanel);
             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+            feedLink.setVisible(true);
+
         }
         else if (views.size() == 1)
         {

@@ -30,7 +30,7 @@
         <meta equiv="X-UA-Compatible" content="chrome=1">
 		<link rel="stylesheet" type="text/css" href="${build.web.baseurl}/style/eureka-apps.css" />
 		<script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js" ></script>
-		<script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js" ></script>
+		<script type="text/javascript" src="${build.web.baseurl}/scripts/eureka-apps.js?${timestamp}" ></script>
 	]]>
 	</Content>
 
