@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.widgets.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
@@ -30,12 +29,11 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
-import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
@@ -49,7 +47,6 @@ import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
-import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.FeaturedStreamModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
@@ -147,6 +144,11 @@ public class StreamDetailsComposite extends Composite
          */
         String hideDetails();
 
+        /**
+         * Featured item header link style.
+         * 
+         * @return Featured item header link style.
+         */
         String headerFeatured();
     }
 
@@ -452,7 +454,18 @@ public class StreamDetailsComposite extends Composite
      */
     public enum CustomAvatar
     {
-        EVERYONE, FOLLOWING, CUSTOM
+        /**
+         * Everyone avatar.
+         */
+        EVERYONE,
+        /**
+         * Following avatar.
+         */
+        FOLLOWING,
+        /**
+         * Custom stream avatar.
+         */
+        CUSTOM
     };
 
     /**
@@ -675,6 +688,8 @@ public class StreamDetailsComposite extends Composite
             condensedAvatar.addStyleName(style.everyoneAvatar());
             break;
         case CUSTOM:
+            break;
+        default:
             break;
         }
 

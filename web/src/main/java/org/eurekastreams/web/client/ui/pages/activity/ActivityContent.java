@@ -200,6 +200,9 @@ public class ActivityContent extends Composite
     @UiField
     ActivityStyle style;
 
+    /**
+     * Stream details.
+     */
     @UiField
     StreamDetailsComposite streamDetailsComposite;
 
@@ -589,6 +592,100 @@ public class ActivityContent extends Composite
             }
         });
 
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                        new Observer<GotPersonFollowerStatusResponseEvent>()
+                        {
+                            public void update(final GotPersonFollowerStatusResponseEvent event)
+                            {
+                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                            }
+                        });
+
+        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
+        {
+            public void update(final HistoryViewsChangedEvent event)
+            {
+                handleViewsChanged(event.getViews());
+            }
+        });
+
+        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        {
+            public void update(final MessageStreamAppendEvent event)
+            {
+                if (sortKeyword.equals("date"))
+                {
+                    longNewestActivityId = event.getMessage().getId();
+                    appendActivity(event.getMessage());
+                    noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                }
+                else
+                {
+                    recentSort.getElement().dispatchEvent(
+                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                }
+
+            }
+        });
+
+        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
+        {
+            public void update(final CustomStreamCreatedEvent event)
+            {
+                CustomStreamModel.getInstance().fetch(null, true);
+            }
+        });
+
+        EventBus.getInstance().addObserver(CustomStreamDeletedEvent.class, new Observer<CustomStreamDeletedEvent>()
+        {
+            public void update(final CustomStreamDeletedEvent event)
+            {
+                CustomStreamModel.getInstance().fetch(null, true);
+            }
+        });
+
+        EventBus.getInstance().addObserver(CustomStreamUpdatedEvent.class, new Observer<CustomStreamUpdatedEvent>()
+        {
+            public void update(final CustomStreamUpdatedEvent event)
+            {
+                CustomStreamModel.getInstance().fetch(null, true);
+            }
+        });
+
+        EventBus.getInstance().addObserver(StreamReinitializeRequestEvent.class,
+                new Observer<StreamReinitializeRequestEvent>()
+                {
+                    public void update(final StreamReinitializeRequestEvent event)
+                    {
+                        loadStream(Session.getInstance().getUrlViews(),
+                                Session.getInstance().getParameterValue("search"));
+                    }
+                });
+
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    @Override
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        if (!event.getViewChanged())
+                        {
+                            loadStream(Session.getInstance().getUrlViews(),
+                                    Session.getInstance().getParameterValue("search"));
+                        }
+                    }
+                });
+
+        addEntityObservers();
+    }
+
+    /**
+     * Add entity observers.
+     */
+    private void addEntityObservers()
+    {
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
@@ -696,92 +793,6 @@ public class ActivityContent extends Composite
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
 
-                    }
-                });
-
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                        new Observer<GotPersonFollowerStatusResponseEvent>()
-                        {
-                            public void update(final GotPersonFollowerStatusResponseEvent event)
-                            {
-                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
-                            }
-                        });
-
-        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
-        {
-            public void update(final HistoryViewsChangedEvent event)
-            {
-                handleViewsChanged(event.getViews());
-            }
-        });
-
-        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
-        {
-            public void update(final MessageStreamAppendEvent event)
-            {
-                if (sortKeyword.equals("date"))
-                {
-                    longNewestActivityId = event.getMessage().getId();
-                    appendActivity(event.getMessage());
-                    noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-                }
-                else
-                {
-                    recentSort.getElement().dispatchEvent(
-                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
-                }
-
-            }
-        });
-
-        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
-        {
-            public void update(final CustomStreamCreatedEvent event)
-            {
-                CustomStreamModel.getInstance().fetch(null, true);
-            }
-        });
-
-        EventBus.getInstance().addObserver(CustomStreamDeletedEvent.class, new Observer<CustomStreamDeletedEvent>()
-        {
-            public void update(final CustomStreamDeletedEvent event)
-            {
-                CustomStreamModel.getInstance().fetch(null, true);
-            }
-        });
-
-        EventBus.getInstance().addObserver(CustomStreamUpdatedEvent.class, new Observer<CustomStreamUpdatedEvent>()
-        {
-            public void update(final CustomStreamUpdatedEvent event)
-            {
-                CustomStreamModel.getInstance().fetch(null, true);
-            }
-        });
-
-        EventBus.getInstance().addObserver(StreamReinitializeRequestEvent.class,
-                new Observer<StreamReinitializeRequestEvent>()
-                {
-                    public void update(final StreamReinitializeRequestEvent event)
-                    {
-                        loadStream(Session.getInstance().getUrlViews(),
-                                Session.getInstance().getParameterValue("search"));
-                    }
-                });
-
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    @Override
-                    public void update(UpdatedHistoryParametersEvent event)
-                    {
-                        if (!event.getViewChanged())
-                        {
-                            loadStream(Session.getInstance().getUrlViews(),
-                                    Session.getInstance().getParameterValue("search"));
-                        }
                     }
                 });
 
@@ -968,7 +979,7 @@ public class ActivityContent extends Composite
         EventBus.getInstance().addObserver(StreamSearchBeginEvent.class, new Observer<StreamSearchBeginEvent>()
         {
             @Override
-            public void update(StreamSearchBeginEvent event)
+            public void update(final StreamSearchBeginEvent event)
             {
                 if (null == event.getSearchText())
                 {

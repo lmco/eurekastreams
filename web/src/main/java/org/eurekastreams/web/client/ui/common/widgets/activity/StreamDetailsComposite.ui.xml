@@ -131,7 +131,7 @@
 			}
 			
 			@sprite .headerFeatured {
-				gwt-image: "featuredLink"
+				gwt-image: "featuredLink";
 				cursor: pointer;
 			}
 

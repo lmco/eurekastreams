@@ -1961,14 +1961,21 @@ body .post-to-stream .over-character-limit {
 .messageXPanel {
 	float: right;
 	background-image: url(style/images/modalCloseBtnSmallHover.png);
+	background-position: 2px 2px;
 	background-repeat: no-repeat;
-	padding-bottom: 5px;
 	height: 15px;
 	width: 15px;
 	visibility: hidden;	
 	font-size: 12px;
 	cursor: pointer;
+	padding: 2px;
 }
+
+.messageXPanel:hover
+{
+	background-color: #cccccc;
+}
+
 
 div:hover > .messageXPanel {
 	visibility: visible;	
@@ -1980,7 +1987,7 @@ div:hover > .messageXPanel {
 	background-color: white;
     border: 1px solid #BDBDBD;
     padding: 5px;
-    margin-top: 20px;
+    margin-top: 16px;
     margin-left: -55px;
     width: 60px;
 }
@@ -4151,7 +4158,7 @@ div.tab-container+div .profile-settings-tab-content .form-container {
 .no-results {
 	text-align: center;
 	padding-top: 40px;
-	padding-bottom: 20px;
+	padding-bottom: 40px;
 	color: #666666;
 	font-size: 12px;
 }

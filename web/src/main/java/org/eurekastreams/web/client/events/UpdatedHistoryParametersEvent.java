@@ -38,6 +38,8 @@ public class UpdatedHistoryParametersEvent
      * 
      * @param inParameters
      *            the updated parameters.
+     * @param inViewChanged
+     *            if the view changed.
      */
     public UpdatedHistoryParametersEvent(final HashMap<String, String> inParameters, final Boolean inViewChanged)
     {
@@ -59,7 +61,7 @@ public class UpdatedHistoryParametersEvent
      * @param inViewChanged
      *            the viewChanged to set.
      */
-    public void setViewChanged(Boolean inViewChanged)
+    public void setViewChanged(final Boolean inViewChanged)
     {
         this.viewChanged = inViewChanged;
     }
