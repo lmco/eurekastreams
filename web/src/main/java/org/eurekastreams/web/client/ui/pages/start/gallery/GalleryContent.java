@@ -785,8 +785,10 @@ public class GalleryContent extends SettingsPanel
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
         form.addFormElement(new ValueOnlyFormElement("id", id));
         form.addWidget(new HTML("<em class='gallery-upload-note'><strong>Please Note:</strong><br />"
-                + "Please be sure your XML file includes the required fields. You will not be able to upload the XML "
-                + "without the required fields."));
+                + "Please be sure your XML file includes the "
+                + "<a href='http://docs.eurekastreams.org/Technical-Specification/1.1/Theme%20Format.html' "
+                + "target='_blank'>required fields</a>. "
+                + "You will not be able to upload the XML without the required fields."));
         form.addFormDivider();
 
         form
