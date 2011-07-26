@@ -93,7 +93,7 @@ public class GlobalSearchComposite extends FlowPanel
     /**
      * Hide delay after blur on post box.
      */
-    private static final Integer BLUR_DELAY = 100;
+    private static final Integer BLUR_DELAY = 250;
 
     /**
      * Constructor.
