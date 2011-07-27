@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -592,16 +592,14 @@ public class ActivityContent extends Composite
             }
         });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                        new Observer<GotPersonFollowerStatusResponseEvent>()
-                        {
-                            public void update(final GotPersonFollowerStatusResponseEvent event)
-                            {
-                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
-                            }
-                        });
+        Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
+                new Observer<GotPersonFollowerStatusResponseEvent>()
+                {
+                    public void update(final GotPersonFollowerStatusResponseEvent event)
+                    {
+                        subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                    }
+                });
 
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
@@ -659,8 +657,8 @@ public class ActivityContent extends Composite
                 {
                     public void update(final StreamReinitializeRequestEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(),
-                                Session.getInstance().getParameterValue("search"));
+                        loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue(
+                                "search"));
                     }
                 });
 
@@ -672,8 +670,8 @@ public class ActivityContent extends Composite
                     {
                         if (!event.getViewChanged())
                         {
-                            loadStream(Session.getInstance().getUrlViews(),
-                                    Session.getInstance().getParameterValue("search"));
+                            loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue(
+                                    "search"));
                         }
                     }
                 });
@@ -701,7 +699,7 @@ public class ActivityContent extends Composite
                             errorPanel.setVisible(true);
                             activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                             errorPanel.add(new Label("Employee no longer has access to Eureka Streams"));
-                            errorPanel.add(new Label("This employee no longer has access to Eureka Streams.  "
+                            errorPanel.add(new Label("This employee no longer has access to Eureka Streams. "
                                     + "This could be due to a change in assignment "
                                     + "within the company or due to leaving the company."));
                             streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
@@ -816,16 +814,14 @@ public class ActivityContent extends Composite
         }
 
         views.set(views.size() - 1, "recent");
-        recentSort
-                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
         views.set(views.size() - 1, "popular");
-        popularSort.setTargetHistoryToken(Session.getInstance()
-                .generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        popularSort
+                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
         views.set(views.size() - 1, "active");
-        activeSort
-                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
     }
 
@@ -950,13 +946,11 @@ public class ActivityContent extends Composite
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            StreamNamePanel filterPanel = createPanel(
-                                    filter.getName(),
-                                    "custom/"
-                                            + filter.getId()
-                                            + "/"
-                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                                    Session.getInstance().getCurrentPerson().getAccountId()),
+                            StreamNamePanel filterPanel = createPanel(filter.getName(), "custom/"
+                                    + filter.getId()
+                                    + "/"
+                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                            Session.getInstance().getCurrentPerson().getAccountId()),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 
@@ -1098,9 +1092,25 @@ public class ActivityContent extends Composite
         {
             public void onClick(final ClickEvent event)
             {
+                // For the app's location, use the current URL minus a few parameters we know we don't want. (They are
+                // used by other lists, but get left in the URL when switching tabs.)
+                // We don't build the URL from the stream id, since that doesn't take search terms into account.
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("listId", null);
+                params.put("listFilter", null);
+                params.put("listSort", null);
+                params.put("startIndex", null);
+                params.put("endIndex", null);
+                String url = Session.getInstance().generateUrl(new CreateUrlRequest(params));
+
+                // TODO: get correct title from somewhere.
+                String prefs = "{\"streamQuery\":"
+                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString()))
+                        + ",\"gadgetTitle\":" + makeJsonString("Activity App") + ",\"streamLocation\":"
+                        + makeJsonString(url) + "}";
+
                 GadgetModel.getInstance().insert(
-                        new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null,
-                                STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString())));
+                        new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null, prefs));
                 EventBus.getInstance()
                         .notifyObservers(
                                 new ShowNotificationEvent(new Notification(
@@ -1125,6 +1135,19 @@ public class ActivityContent extends Composite
             }
         });
     }
+
+    /**
+     * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
+     * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
+     * 
+     * @param input
+     *            Input string, possibly null.
+     * @return JSON string representation.
+     */
+    private static native String makeJsonString(final String input)
+    /*-{
+     return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+     }-*/;
 
     /**
      * Append a new message.

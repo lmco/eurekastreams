@@ -164,7 +164,8 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
             // get the owner
 
             // create the new gadget at the top of the last zone
-            Gadget gadget = new Gadget(gadgetDef, 0, 0, owner, "");
+            Gadget gadget = new Gadget(gadgetDef, 0, 0, owner, request.getUserPrefs() == null ? "" : request
+                    .getUserPrefs());
 
             // insert the new gadget - room has been made for it
             tab.getGadgets().add(gadget);
