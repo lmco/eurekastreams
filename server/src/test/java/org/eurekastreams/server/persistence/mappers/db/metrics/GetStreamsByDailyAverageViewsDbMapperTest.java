@@ -58,8 +58,8 @@ public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
         // PERSON: fordp
         StreamDTO dto2 = results.get(1);
 
-        Assert.assertEquals("fordp", dto1.getUniqueId());
-        Assert.assertEquals("fordp2", dto2.getUniqueId());
+        Assert.assertEquals("fordp2", dto1.getUniqueId());
+        Assert.assertEquals("fordp", dto2.getUniqueId());
     }
 
     /**

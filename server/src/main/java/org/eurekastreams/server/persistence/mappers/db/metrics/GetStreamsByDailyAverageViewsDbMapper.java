@@ -37,7 +37,7 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
     /**
      * Number of streams to get.
      */
-    private Integer streamCount;
+    private final Integer streamCount;
 
     /**
      * Constructor.
@@ -61,20 +61,17 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
     public List<StreamDTO> execute(final Serializable inIgnored)
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
-        // to get an idea of how many views were generated in the window we have on the data, look at the max
-        // we've seen - just assume that's the most recent, then look at the minimum number we've seen - assume that's
-        // the earliest. Subtract the two for the delta, then divide by number of days.
-         
+
+        // to get the number of daily stream views, add up all of the counts that we recevied so far for each stream,
+        // then divide that by how many days have passed since the first day's record
         Query q = getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId, "
-                        + "(MAX(totalStreamViewCount) - MIN(totalStreamViewCount))*86400000.0/"
-                        + "(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) "
+                        + "SUM(streamViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
-                        + "GROUP BY streamViewStreamScopeId "
-                        + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) > 0 "
-                        + "ORDER BY (MAX(totalStreamViewCount) - MIN(totalStreamViewCount))*86400000.0"
-                        + "/(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) DESC").setParameter("nowInMS",
-                DateDayExtractor.getStartOfDay(new Date()).getTime());
+                        + "GROUP BY streamViewStreamScopeId " + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs)) > 0 "
+                        + "ORDER BY SUM(streamViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
+                .setParameter("nowInMS", DateDayExtractor.getStartOfDay(new Date()).getTime());
+        System.out.println(DateDayExtractor.getStartOfDay(new Date()).getTime());
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount);
@@ -119,6 +116,7 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
             if (streamObj[1] != null)
             {
                 viewCount = Math.round(((Double) streamObj[1]));
+                System.out.println("ScopeId: " + streamScopeId + " - count: " + viewCount);
             }
 
             // find the StreamDTO with the stream scope
