@@ -74,6 +74,7 @@ public class DiscoverListItemPanel extends FlowPanel
      */
     public DiscoverListItemPanel(final StreamDTO inStreamDTO, final ListItemType inListItemType)
     {
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverConnectionItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());

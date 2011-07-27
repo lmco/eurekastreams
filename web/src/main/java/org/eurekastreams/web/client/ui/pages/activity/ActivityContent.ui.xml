@@ -10,6 +10,7 @@
 	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
 	<ui:image field="deleteBookmarkHover" src="style/images/modalCloseBtnSmallHover.png" />
 	<ui:image field="deleteBookmark" src="style/images/modalCloseBtnSmall.png" />
+	<ui:image field="filterButton" src="style/images/filterButton.png" />
 
 	<ui:with field='resources'
 		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
@@ -79,6 +80,7 @@
 			
 			.stream-option-list>div>div>div.streamName {
 				float: left;
+				width: 140px;
 			}
 			
 			.stream-option-list>.streamOptionChild {
@@ -241,13 +243,13 @@
 				padding-bottom: 20px;
 			}
 			
-			.createFilter {
+			@sprite .createFilter {
+				gwt-image: "filterButton";
 				clear: left;
 				float: left;
 				cursor: pointer;
 				display: inline-block;
-				margin-left: 140px;
-				width: 100px;
+				margin-left: 10px;
 			}
 			
 			@sprite .streamOptionChild:hover .deleteBookmark {
@@ -265,7 +267,7 @@
 			
 			.streamOptionChild:hover .editCustomStream {
 				display: block;
-				margin-right: 5px;
+				margin-right: 15px;
 				color: #1481B3;
 			}
 			
@@ -382,8 +384,7 @@
 		<g:FlowPanel addStyleNames="{style.stream-option-list} {style.dotted-bottom-list}"
 			ui:field="filterList">
 		</g:FlowPanel>
-		<g:Label addStyleNames="{style.createFilter}" ui:field="createFilter">Create
-			a Filter</g:Label>
+		<g:Label addStyleNames="{style.createFilter}" ui:field="createFilter"></g:Label>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

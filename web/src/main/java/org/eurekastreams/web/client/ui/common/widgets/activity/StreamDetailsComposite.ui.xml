@@ -14,6 +14,8 @@
 	<ui:image field="featureLinkHover" src="style/images/featureHover.png" />
 	<ui:image field="featuredLink" src="style/images/featured.png" />
 	<ui:image field="unfeatureLink" src="style/images/unfeature.png" />
+	<ui:image field="metricsEmpty" src="style/images/metricsEmpty.png" />
+
 
 	<ui:with field='resources'
 		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
@@ -90,7 +92,8 @@
 			.stream-details-container h2 {
 				font-weight: bold;
 				height: 16px;
-				margin: 0 0 10px font-size:                      14px;
+				margin: 0 0 10px;
+				font-size: 14px;
 			}
 			
 			.configureLink {
@@ -134,7 +137,7 @@
 				gwt-image: "featuredLink";
 				cursor: pointer;
 			}
-
+			
 			@sprite .headerFeatured:hover {
 				gwt-image: "unfeatureLink"
 			}
@@ -203,6 +206,7 @@
 				display: block;
 				font-weight: bold;
 				font-size: 24px;
+				width: 400px;
 			}
 			
 			.toggle-details-link {
@@ -277,6 +281,14 @@
 				margin-top: 5px;
 				text-align: right;
 			}
+			
+			.emptyDetailStyle {
+				color: #ccc;
+			}
+			
+			@sprite .chart-empty {
+				gwt-image: "metricsEmpty";
+			}
 		</ui:style>
 
 	<g:HTMLPanel>
@@ -285,8 +297,9 @@
 			<g:HTMLPanel addStyleNames="{style.stream-avatar}"
 				ui:field="streamAvatar">
 			</g:HTMLPanel>
-			<div class="{style.stream-info-container}">
-				<div class="{style.stream-name}" ui:field="streamName"></div>
+			<div ui:field="streamInfoContainer" class="{style.stream-info-container}">
+				<div class="{style.stream-name} {resources.coreCss.ellipsis}"
+					ui:field="streamName"></div>
 				<div class="{style.stream-meta}" ui:field="streamMeta"></div>
 				<g:Label addStyleNames="{style.headerFollowLink} {resources.coreCss.followLink}"
 					ui:field="followLink"></g:Label>
@@ -324,7 +337,7 @@
 					<div class="{style.stream-details}">
 						<h2>Description</h2>
 						<div ui:field="streamDescription"></div>
-						<h2>Contact Information</h2>
+						<h2 ui:field="contactInfoTitle"></h2>
 						<div ui:field="contactInfo"></div>
 						<h2>Interests</h2>
 						<div ui:field="streamInterests"></div>
@@ -334,6 +347,7 @@
 					<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}"
 						ui:field="analyticsChartContainer">
 						<chart:StreamAnalyticsChart ui:field="chart"></chart:StreamAnalyticsChart>
+						<div ui:field="chartEmpty" class="{style.chart-empty}"></div>
 						<div class="{style.chart-description}">Stream views over the last 30 days</div>
 						<div class="{style.metrics-data-avg}">
 							<b>Avg Daily Activity</b>

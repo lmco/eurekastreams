@@ -62,6 +62,7 @@ public class LabeledTextArea extends TextArea
                 if (labeled)
                 {
                     thisBuffered.setText("");
+                    thisBuffered.getElement().removeAttribute("spellcheck");
                 }
                 thisBuffered.selectAll();
             }
@@ -99,6 +100,7 @@ public class LabeledTextArea extends TextArea
         {
             labeled = false;
             this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyLabeledTextbox());
+            this.getElement().removeAttribute("spellcheck");
         }
     }
 
@@ -111,11 +113,13 @@ public class LabeledTextArea extends TextArea
         {
             labeled = true;
             this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyLabeledTextbox());
+            this.getElement().setAttribute("spellcheck", "false");
             super.setText(label);
         }
         else
         {
             super.setText("");
+            this.getElement().removeAttribute("spellcheck");
         }
     }
 
@@ -130,6 +134,7 @@ public class LabeledTextArea extends TextArea
     {
         labeled = false;
         this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyLabeledTextbox());
+        this.getElement().removeAttribute("spellcheck");
         super.setText(text);
     }
 

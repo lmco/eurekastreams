@@ -1895,7 +1895,7 @@ body .post-to-stream .over-character-limit {
 	padding-bottom: 5px;
 	padding-top: 10px;
 	margin-left: 10px;
-	margin-right: 35px;
+	margin-right: 85px;
 	margin-bottom: 0px;
 	overflow: auto;
 	word-wrap: break-word;
@@ -2270,6 +2270,16 @@ div:hover > .messageXPanel {
 	margin-top: 10px;
 }
 
+.ellipsis, .ellipsisChild > * {
+	text-overflow: ellipsis;
+	-moz-binding: url('style/ellipsis.xml#ellipsis');
+	width: 50px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+}
+
 .action-link-separator {
 	font-size: 8px;
 	padding-left: 5px;
@@ -2578,6 +2588,26 @@ body .previous-arrow:hover {
 .followDialog {
 	width: 550px;
 }
+
+.featureDialog {
+	width: 400px;
+}
+
+.featureDialog .modal-content-panel {
+	padding: 20px;
+}
+
+.featureDialog .characters-remaining {
+	float: right;	
+}
+
+.featureDialog textarea
+{
+	height: 100px;
+    width: 300px;
+    margin-bottom: 10px;
+}
+
 
 .followDialog .title
 {
@@ -3344,6 +3374,31 @@ body .shortname-form-element input {
 }
 
 
+@sprite .blockSuggestion
+{
+	gwt-image: "smallX";
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	display: none;
+	cursor:pointer;
+}
+
+@sprite .blockSuggestion:hover
+{
+	gwt-image: "smallXHover";
+}
+
+.discoverConnectionItem:hover .blockSuggestion
+{
+	display: block;
+}
+
+.discoverConnectionItem
+{
+	position: relative;
+}
+
 .discoverPageList .followLink {
 	display: none;
     position: absolute;
@@ -3451,11 +3506,13 @@ body .shortname-form-element input {
 .connection-item-name a {
 	font-weight: bold;
 	text-decoration: none;
+	width: 200px;
 }
 
 .connection-item-title {
 	font-size: 11px;
 	line-height: 13px;
+	width: 200px;
 	margin: 2px 0px;
 }
 
@@ -4756,7 +4813,6 @@ body .dragdrop-proxy {
 	margin-top: 3px;
 	margin-bottom: 3px;
 	overflow: auto;
-	margin-right: 50px;
 }
 
 .message-comment-author {

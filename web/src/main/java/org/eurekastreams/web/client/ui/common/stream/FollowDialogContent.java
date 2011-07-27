@@ -76,11 +76,11 @@ public class FollowDialogContent extends BaseDialogContent
             }
         });
 
-        body.add(new Label("You are not following the:"));
+        body.add(new Label("You are now following the:"));
 
         Label streamTitle = new Label(inStreamName + " Stream");
-        streamTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());       
-        
+        streamTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
+
         body.add(streamTitle);
 
         FlowPanel options = new FlowPanel();
@@ -165,6 +165,7 @@ public class FollowDialogContent extends BaseDialogContent
      * 
      * @return the class.
      */
+    @Override
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().followDialog();
