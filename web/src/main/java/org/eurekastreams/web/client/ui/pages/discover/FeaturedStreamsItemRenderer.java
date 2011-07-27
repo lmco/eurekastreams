@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
 
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renderer for Featured Streams.
@@ -27,12 +27,12 @@ public class FeaturedStreamsItemRenderer implements ItemRenderer<FeaturedStreamD
 {
     /**
      * Render an ActiveStreamsItemPanel for the input FeaturedStreamDTOs.
-     * 
+     *
      * @param inFeaturedStreamDTO
      *            Featured Stream DTO to render
      * @return the rendered panel
      */
-    public Panel render(final FeaturedStreamDTO inFeaturedStreamDTO)
+    public Widget render(final FeaturedStreamDTO inFeaturedStreamDTO)
     {
         return new FeaturedStreamItemPanel(inFeaturedStreamDTO);
     }

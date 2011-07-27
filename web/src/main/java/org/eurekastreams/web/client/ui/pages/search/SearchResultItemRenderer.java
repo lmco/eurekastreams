@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,21 +38,21 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
     /**
      * Renders a person.
      */
-    private ItemRenderer<PersonModelView> personRenderer = new PersonRenderer(true);
+    private final ItemRenderer<PersonModelView> personRenderer = new PersonRenderer(true);
 
     /**
      * Renders a group.
      */
-    private ItemRenderer<DomainGroupModelView> groupRenderer = new GroupRenderer();
+    private final ItemRenderer<DomainGroupModelView> groupRenderer = new GroupRenderer();
 
     /**
      * Readable metadata keys.
      */
-    private Map<String, String> humanReadableMetadataKeys = new HashMap<String, String>();
+    private final Map<String, String> humanReadableMetadataKeys = new HashMap<String, String>();
 
     /**
      * Constructor.
-     * 
+     *
      */
     public SearchResultItemRenderer()
     {
@@ -67,7 +67,7 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
     /**
      * @param result
      *            the result to render.
-     * 
+     *
      * @return the result as a widget.
      */
     public Panel render(final ModelView result)
@@ -76,11 +76,11 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
 
         if (result instanceof PersonModelView)
         {
-            resultWidget = personRenderer.render((PersonModelView) result);
+            resultWidget = (Panel) personRenderer.render((PersonModelView) result);
         }
         else if (result instanceof DomainGroupModelView)
         {
-            resultWidget = groupRenderer.render((DomainGroupModelView) result);
+            resultWidget = (Panel) groupRenderer.render((DomainGroupModelView) result);
         }
         else
         {

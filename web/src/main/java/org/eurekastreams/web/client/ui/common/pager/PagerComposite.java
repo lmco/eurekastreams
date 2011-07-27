@@ -45,7 +45,7 @@ public class PagerComposite extends Composite
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, PagerComposite>
@@ -59,7 +59,7 @@ public class PagerComposite extends Composite
     {
         /**
          * Paging disabled style.
-         * 
+         *
          * @return paging disabled.
          */
         String pagingDisabled();
@@ -110,7 +110,7 @@ public class PagerComposite extends Composite
     /**
      * Slide left animation.
      */
-    private SlideAnimation slideAnimation = new SlideAnimation();
+    private final SlideAnimation slideAnimation = new SlideAnimation();
 
     /**
      * Pager strategy.
@@ -137,12 +137,11 @@ public class PagerComposite extends Composite
         headerText.getStyle().setDisplay(Display.NONE);
 
         buildPage();
-
     }
 
     /**
      * Set the header.
-     * 
+     *
      * @param headerTextString
      *            header text.
      */
@@ -154,7 +153,7 @@ public class PagerComposite extends Composite
 
     /**
      * Initialize with strategy.
-     * 
+     *
      * @param inPagerStrategy
      *            the strategy.
      */
@@ -170,15 +169,32 @@ public class PagerComposite extends Composite
                 {
                     boolean enablePaging = pagerStrategy.hasNext() || pagerStrategy.hasPrev();
                     buttonContainer.setVisible(enablePaging);
+                    if (enablePaging)
+                    {
+                        String resultsLabel = String.valueOf(pagerStrategy.getStartIndex() + 1) + " - "
+                                + String.valueOf(pagerStrategy.getEndIndex() + 1) + " of "
+                                + String.valueOf(pagerStrategy.getTotal());
 
-                    buttonContainer.setVisible(enablePaging);
-                    
-                    String resultsLabel =
-                            String.valueOf(pagerStrategy.getStartIndex() + 1) + " - "
-                                    + String.valueOf(pagerStrategy.getEndIndex() + 1) + " of "
-                                    + String.valueOf(pagerStrategy.getTotal());
+                        resultsNum.setText(resultsLabel);
 
-                    resultsNum.setText(resultsLabel);
+                        if (!pagerStrategy.hasNext())
+                        {
+                            nextButton.addStyleName(style.pagingDisabled());
+                        }
+                        else
+                        {
+                            nextButton.removeStyleName(style.pagingDisabled());
+                        }
+
+                        if (!pagerStrategy.hasPrev())
+                        {
+                            prevButton.addStyleName(style.pagingDisabled());
+                        }
+                        else
+                        {
+                            prevButton.removeStyleName(style.pagingDisabled());
+                        }
+                    }
 
                     if (pageResults.getWidgetCount() != 0)
                     {
@@ -187,24 +203,6 @@ public class PagerComposite extends Composite
                     else
                     {
                         pageResults.add(event.getWidget());
-                    }
-
-                    if (!pagerStrategy.hasNext())
-                    {
-                        nextButton.addStyleName(style.pagingDisabled());
-                    }
-                    else
-                    {
-                        nextButton.removeStyleName(style.pagingDisabled());
-                    }
-
-                    if (!pagerStrategy.hasPrev())
-                    {
-                        prevButton.addStyleName(style.pagingDisabled());
-                    }
-                    else
-                    {
-                        prevButton.removeStyleName(style.pagingDisabled());
                     }
                 }
             }

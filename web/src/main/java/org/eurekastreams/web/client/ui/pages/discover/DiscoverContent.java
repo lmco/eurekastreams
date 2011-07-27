@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
@@ -139,13 +140,21 @@ public class DiscoverContent extends Composite
                         buildPage(event.getResponse());
                     }
                 });
+        EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
+                new Observer<GotFeaturedStreamsPageResponseEvent>()
+                {
+                    public void update(final GotFeaturedStreamsPageResponseEvent ev)
+                    {
+                        featuredStreamsComposite.setVisible(ev.getResponse().getTotal() > 0);
+                    }
+                });
 
         StreamsDiscoveryModel.getInstance().fetch(null, true);
     }
 
     /**
      * Build the page.
-     * 
+     *
      * @param inDiscoverLists
      *            the data to display
      */
@@ -169,7 +178,7 @@ public class DiscoverContent extends Composite
 
         // --------------------
         // FEATURED STREAMS
-        // Note: the data needed for this list is built from the MostActiveStreamsModel, but is actually fetched and
+        // Note: the data needed for this list is built from the FeaturedStreamsModel, but is actually fetched and
         // stored in the StreamsDiscoveryModel cache, so this request won't hit the server
         featuredStreamsComposite.setHeader("Featured Streams");
         featuredStreamsComposite.init(new FeaturedStreamsPagerUiStrategy(FEATURED_STREAMS_PAGE_SIZE));
@@ -215,22 +224,22 @@ public class DiscoverContent extends Composite
                         DiscoverListItemPanel.ListItemType.TIME_AGO));
             }
         }
-        
+
         goSearch.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
             {
                 EventBus.getInstance().notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
                         generateParams(searchBox.getText()), false)));
-                
+
             }
         });
     }
-    
+
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

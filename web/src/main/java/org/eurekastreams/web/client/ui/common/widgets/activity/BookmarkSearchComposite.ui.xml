@@ -8,7 +8,6 @@
 	<ui:image field="collapsedTitleImage" src="style/images/bookmarkButton.png" />
 	<ui:image field="topEdgeImage" src="style/images/bookmarkTop.png" />
 	<ui:image field="searchImage" src="style/images/bookmarkSearch.png" />
-	<ui:image field="gradientImage" src="style/images/bookmarkGradient.png" repeatStyle="Horizontal" />
 
 	<ui:with field="coreCss"
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
@@ -29,8 +28,8 @@
 				cursor: pointer;
 			}
 			.expanded-title {
-				padding: 10px;
-				padding-top: 5px;
+				padding: 3px 10px 8px 13px;
+				font-size: 12px;
 				cursor: pointer;
 			}
 			@sprite .top-edge {
@@ -38,10 +37,8 @@
 			}
 			
 			.gray-area {
-				/*gwt-image: "gradientImage";*/
 			   	background-color: #E4E4E4;
 			    padding-bottom: 10px;
-			    /*border-bottom: 1px solid #999999;*/
 			}
 			.search-active {
 			}
@@ -51,7 +48,7 @@
 			    color: black;
 			    padding: 4px 22px !important;
 			    background-color: transparent;
-			    margin-left: 10px;
+			    margin-left: 12px;
 			}
 		</ui:style>
 
