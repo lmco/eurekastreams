@@ -1,0 +1,40 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:eavatar="urn:import:org.eurekastreams.web.client.ui.common.avatar">
+
+	<ui:with field="coreCss"
+		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+
+	<ui:style>
+		.left {
+			display: inline-block;
+		}
+		.stream-name {
+			font-size: 18px;
+		}
+		.stream-name>a:link, .stream-name>a:visited, .stream-name>a:active {
+			color: #CCC;
+		}
+		.stream-description {
+			color: #CCC;
+		}
+		
+		@if user.agent ie6 ie8 {
+			.left {
+				display: inline;
+				zoom: 1;
+			}
+		}
+	</ui:style>
+
+	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person}">
+		<div class="{style.left}" ui:field="leftPanel">
+			<eavatar:AvatarLinkPanel ui:field="avatarPanel" />
+		</div>
+		<div class="{coreCss.connectionItemInfo}">
+			<g:Hyperlink addStyleNames="{style.stream-name}" ui:field="streamNameLink" />
+			<div class="{style.stream-description}" ui:field="streamDescriptionText" />
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

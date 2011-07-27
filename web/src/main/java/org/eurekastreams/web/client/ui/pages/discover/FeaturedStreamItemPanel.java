@@ -22,9 +22,14 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -32,10 +37,33 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * FlowPanel for the "Featured Streams" panel items.
+ * Widget to display a featured stream.
  */
-public class FeaturedStreamItemPanel extends FlowPanel
+public class FeaturedStreamItemPanel extends Composite
 {
+    /** Binder for building UI. */
+    private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
+
+    /** Global styles. */
+    @UiField(provided = true)
+    CoreCss coreCss;
+
+    /** Left column. */
+    @UiField
+    DivElement leftPanel;
+
+    /** Avatar panel. */
+    @UiField(provided = true)
+    AvatarLinkPanel avatarPanel;
+
+    /** Link for stream name. */
+    @UiField
+    Hyperlink streamNameLink;
+
+    /** Text area for stream description. */
+    @UiField
+    DivElement streamDescriptionText;
+
     /**
      * Constructor.
      *
@@ -44,52 +72,56 @@ public class FeaturedStreamItemPanel extends FlowPanel
      */
     public FeaturedStreamItemPanel(final FeaturedStreamDTO inFeaturedStreamDTO)
     {
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
+        coreCss = StaticResourceBundle.INSTANCE.coreCss();
+        avatarPanel = new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
+                inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Normal);
+        Widget main = binder.createAndBindUi(this);
+        initWidget(main);
 
-        add(new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
-                inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Small));
-
-        FlowPanel infoPanel = new FlowPanel();
-        infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
-
-        Widget name;
-
-        Page linkPage;
-        if (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON)
-        {
-            linkPage = Page.PEOPLE;
-        }
-        else
-        {
-            // assume group
-            linkPage = Page.GROUPS;
-        }
-        String nameUrl = Session.getInstance().generateUrl(//
-                new CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId()));
-
-        name = new Hyperlink(inFeaturedStreamDTO.getDisplayName(), nameUrl);
-        name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
-        infoPanel.add(name);
-        insertActionSeparator(infoPanel);
-        infoPanel.add(new Label(inFeaturedStreamDTO.getDescription()));
-
-        FlowPanel followersPanel = new FlowPanel();
-        followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
-
-        insertActionSeparator(followersPanel);
-
+        // add follow controls if not the current person
         if (inFeaturedStreamDTO.getEntityType() != EntityType.PERSON
                 || inFeaturedStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            // not the current person
-            followersPanel.add(new FollowPanel(inFeaturedStreamDTO));
+            leftPanel.appendChild(new FollowPanel(inFeaturedStreamDTO).getElement());
         }
 
-        infoPanel.add(followersPanel);
+        // assume group if not person
+        Page linkPage = (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON) ? Page.PEOPLE : Page.GROUPS;
+        String nameUrl = Session.getInstance().generateUrl(//
+                new CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId()));
+        streamNameLink.setTargetHistoryToken(nameUrl);
+        streamNameLink.setText(inFeaturedStreamDTO.getDisplayName());
 
-        this.add(infoPanel);
+        streamDescriptionText.setInnerText(inFeaturedStreamDTO.getDescription());
+
+        /*
+         * Panel main = new FlowPanel(); Panel left = new FlowPanel();
+         *
+         * left.add(new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
+         * inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Normal));
+         *
+         * // add follow controls if not the current person if (inFeaturedStreamDTO.getEntityType() != EntityType.PERSON
+         * || inFeaturedStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId()) {
+         * left.add(new FollowPanel(inFeaturedStreamDTO)); }
+         *
+         * main.add(left);
+         *
+         * FlowPanel infoPanel = new FlowPanel();
+         * infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
+         *
+         * // assume group if not person Page linkPage = (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON) ?
+         * Page.PEOPLE : Page.GROUPS; String nameUrl = Session.getInstance().generateUrl(// new
+         * CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId())); Widget name = new
+         * Hyperlink(inFeaturedStreamDTO.getDisplayName(), nameUrl);
+         * name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName()); infoPanel.add(name);
+         * infoPanel.add(new Label(inFeaturedStreamDTO.getDescription()));
+         *
+         * main.add(infoPanel); initWidget(main);
+         *
+         * addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+         * addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
+         * addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
+         */
     }
 
     /**
@@ -103,5 +135,12 @@ public class FeaturedStreamItemPanel extends FlowPanel
         Label sep = new InlineLabel("\u2219");
         sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
+    }
+
+    /**
+     * Binder for building UI.
+     */
+    interface LocalUiBinder extends UiBinder<Widget, FeaturedStreamItemPanel>
+    {
     }
 }

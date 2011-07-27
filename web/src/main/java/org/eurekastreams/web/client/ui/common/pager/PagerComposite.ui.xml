@@ -81,6 +81,11 @@
 			}
 			.resultsNum
 			{
+				display: inline-block;
+				line-height: 30px;
+				vertical-align: bottom;
+				margin-right: 10px;
+				color: #CCC;
 			}
 		</ui:style>
 
