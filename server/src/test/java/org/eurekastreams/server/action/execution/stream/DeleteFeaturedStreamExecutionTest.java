@@ -99,7 +99,7 @@ public class DeleteFeaturedStreamExecutionTest
 
         // make sure the discover lists cache is rebuilt
         Assert.assertEquals(1, requests.size());
-        Assert.assertEquals("regenerateStreamDiscoverListsJob", requests.get(0).getActionKey());
+        Assert.assertEquals("regenerateStreamDiscoverListsAction", requests.get(0).getActionKey());
 
         context.assertIsSatisfied();
     }
