@@ -276,7 +276,7 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     DivElement contactInfo;
-    
+
     /**
      * UI element for stream description.
      */
@@ -384,6 +384,11 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     SpanElement totalMessages;
+
+    /**
+     * The number of followers.
+     */
+    private int numberOfFollowers;
 
     /**
      * Current status.
@@ -792,7 +797,8 @@ public class StreamDetailsComposite extends Composite
                         streamAvatar.add(avatarRenderer.render(person.getEntityId(), person.getAvatarId(),
                                 EntityType.PERSON, Size.Normal));
 
-                        followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
+                        numberOfFollowers = person.getFollowersCount();
+                        followerCount.setInnerText(Integer.toString(numberOfFollowers));
                         followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
                         streamDescription.setInnerText(person.getJobDescription());
                         String interestString = "";
@@ -805,18 +811,18 @@ public class StreamDetailsComposite extends Composite
                         String contact = "";
                         if (person.getEmail() != null)
                         {
-                        	contact = person.getEmail();
+                            contact = person.getEmail();
                         }
                         if (person.getWorkPhone() != null)
                         {
-                        	 if (person.getEmail() != null)
-                             {
-                             	contact += "</br>";
-                             }
-                        	 contact += person.getWorkPhone();
+                            if (person.getEmail() != null)
+                            {
+                                contact += "</br>";
+                            }
+                            contact += person.getWorkPhone();
                         }
                         contactInfo.setInnerHTML(contact);
-                        
+
                         PopularHashTagsModel.getInstance().fetch(
                                 new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
 
@@ -890,7 +896,8 @@ public class StreamDetailsComposite extends Composite
                             streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
                                     EntityType.GROUP, Size.Normal));
 
-                            followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
+                            numberOfFollowers = group.getFollowersCount();
+                            followerCount.setInnerText(Integer.toString(numberOfFollowers));
                             streamDescription.setInnerText(group.getDescription());
                             String interestString = "";
                             for (String interest : group.getCapabilities())
@@ -998,6 +1005,7 @@ public class StreamDetailsComposite extends Composite
                         request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
                                 .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
+                        numberOfFollowers--;
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
@@ -1005,6 +1013,7 @@ public class StreamDetailsComposite extends Composite
                                 .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
+                        numberOfFollowers++;
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
                         break;
                     default:
@@ -1115,6 +1124,8 @@ public class StreamDetailsComposite extends Composite
     private void onFollowerStatusChanged(final Follower.FollowerStatus inStatus)
     {
         status = inStatus;
+
+        followerCount.setInnerText(Integer.toString(numberOfFollowers));
 
         switch (inStatus)
         {
