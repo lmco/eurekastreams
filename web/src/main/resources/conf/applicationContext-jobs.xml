@@ -88,6 +88,12 @@
        <property name="concurrent" value="false" />
     </bean>
     
+    <!-- Daily Usage Metrics -->
+    <bean id="generateDailyUsageSummaryJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="generateDailyUsageSummaryAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+    
     <bean id="pluginDefMetaUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
        <property name="targetObject" ref="pluginDefUpdateTransactionalTask" />
        <property name="targetMethod" value="runTransactionalTask" />
@@ -181,6 +187,15 @@
         <property name="repeatInterval" value="${eureka.jobs.addBufferedActivitiesToCacheJobTrigger.repeatInterval}"/>
     </bean> 	
     
+    <!-- Update the daily usage metrics from yesterday - runs every 10 minutes  -->
+    <bean id="generateDailyUsageSummaryJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="generateDailyUsageSummaryJob" />
+        <!-- Start delay of 2 minutes -->
+        <property name="startDelay" value="120000"/>
+        <!-- repeat every 15 minutes (1,500,000 milliseconds) for use in development - this really only needs to be run daily - sometime after midnight -->
+        <property name="repeatInterval" value="1500000"/>
+    </bean> 
+    
     <!-- Update the cache that powers the Streams Discovery page -->
     <bean id="regenerateStreamDiscoverListsJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="regenerateStreamDiscoverListsJob" />
@@ -201,6 +216,7 @@
                 <ref bean="expiredActivitiesCleanupJobTrigger" />
 				<ref bean="pluginDefUserIndexJobTrigger" />
 				<ref bean="regenerateStreamDiscoverListsJobTrigger" />
+				<ref bean="generateDailyUsageSummaryJobTrigger" />
             </list> 
         </property>
     </bean>	

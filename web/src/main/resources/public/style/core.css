@@ -37,6 +37,8 @@
 @external .delegation-item .avatar-image-Small;
 @external .connection-item-info;
 
+
+
 * {	
 	outline: none;
 }
@@ -107,7 +109,7 @@ div.break {
 }
 
 a:link,a:visited,a:active,.linked-label {
-	color: #0066CC;
+	color: #1481B3;
 }
 
 a:hover,.linked-label:hover {
@@ -893,7 +895,7 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 }
 
 .message a:link,.message a:visited,.message a:hover,.message a:active {
-	color: #0066CC;
+	color: #1481B3;
 }
 
 div.message div {
@@ -1299,7 +1301,7 @@ body .terms-of-service-modal .agree-button-disabled {
 }
 
 .edit,.delete {
-	color: #0066CC;
+	color: #1481B3;
 }
 
 .edit:hover,.delete:hover {
@@ -1442,70 +1444,38 @@ body .post-expanded-panel .content-warning {
 	border-top: 1px solid #999;
 }
 
-body .bookmarkSearch
-{
-   	clear: left;
-   	margin-left: 10px;
-    padding-left: 0;
-    width: 225px;
-    overflow: hidden;
-    margin-bottom: 10px;
-}
-
+/*
 .bookmarkSearch .gwt-Anchor
 {
 	margin-top: 6px;
 }
-
-body .bookmarkSearchActive
-{
-	background-image: url("style/images/bookmarkGradient.png");
-   	background-repeat: repeat-x;
-   	background-color: #c0c0c0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #999999;
-}
-
-body .bookmarkSearch input {
-    background-image: url("style/images/bookmarkSearch.png");
-    border-width: 0;
-    color: black;
-    padding: 4px 22px;
-    width: 150px;
-    background-color: transparent;
-    margin-left: 10px;
-    display: none;
-}
-
-body .bookmarkSearchActive input {
-	display: block;
-}
-
+*/
 .bookmarkSearch .searchResultsAutocompleteResults
 {
-	border-width: 0;
-	background-color: #c0c0c0;
+	border: none;
+	border-top: 1px solid #BBB;
+	border-bottom: 1px solid #BBB;
+	background-color: white;
 }
-
+/*
 .bookmarkSearch .searchResultsAutocompleteResults > div > div:first-child
 {
 	border-top: 1px solid #999;
 }
-
-.bookmarkSearch  > .gwt-Label
-{
-	text-align: right;
-	padding: 5px;
-	cursor: pointer;
-}
-
+*/
 .bookmarkSearch .searchResultsAutocompleteResults > div > div:hover
 {
-	background: #E4E4E4;
+	background: #F0F0F0 url('style/images/bookmarkAdd.png') no-repeat scroll 200px center;
+	font-weight: bold;
 }
 
 .bookmarkSearch .searchResultsAutocompleteResults {
 	margin-left: 0;	
+}
+
+.bookmarkSearch .searchResultsAutocompleteResults .bookmark-name-link
+{
+	line-height: 31px;
 }
 
 .header-bar .search-list input {
@@ -1605,7 +1575,7 @@ body .bookmarkSearchActive input {
 .stream-titlebar .add-as-gadget:hover {
 	text-indent: 0;
 	width: auto;
-	color: #0066CC;
+	color: #1481B3;
 }
 
 .search-description .search-results-for {
@@ -1642,7 +1612,6 @@ body .bookmarkSearchActive input {
 
 .search-description {
 	background-color: #ffe488;
-	margin: 0 10px;
 	padding: 10px;
 }
 
@@ -1992,14 +1961,21 @@ body .post-to-stream .over-character-limit {
 .messageXPanel {
 	float: right;
 	background-image: url(style/images/modalCloseBtnSmallHover.png);
+	background-position: 2px 2px;
 	background-repeat: no-repeat;
-	padding-bottom: 5px;
 	height: 15px;
 	width: 15px;
 	visibility: hidden;	
 	font-size: 12px;
 	cursor: pointer;
+	padding: 2px;
 }
+
+.messageXPanel:hover
+{
+	background-color: #cccccc;
+}
+
 
 div:hover > .messageXPanel {
 	visibility: visible;	
@@ -2011,7 +1987,7 @@ div:hover > .messageXPanel {
 	background-color: white;
     border: 1px solid #BDBDBD;
     padding: 5px;
-    margin-top: 20px;
+    margin-top: 16px;
     margin-left: -55px;
     width: 60px;
 }
@@ -2914,7 +2890,7 @@ body .previous-arrow:hover {
 
 .form-lookup-button {
 	width: 150px;
-	color: #0066CC;
+	color: #1481B3;
 	overflow: hidden;
 	cursor: pointer;
 	font-size: 11px;
@@ -3788,7 +3764,7 @@ width: 330px;
 }
 
 .directory .connection-item-info {
-	width: 652px;
+	width: 250px;
 }
 
 .directory .bottom-pager {
@@ -4182,7 +4158,7 @@ div.tab-container+div .profile-settings-tab-content .form-container {
 .no-results {
 	text-align: center;
 	padding-top: 40px;
-	padding-bottom: 20px;
+	padding-bottom: 40px;
 	color: #666666;
 	font-size: 12px;
 }
@@ -5038,7 +5014,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .settings-panel .settings-title-bar a:hover {
-	color: #0066cc;
+	color: #1481B3;
 }
 
 .settings-panel .settings-title-bar .gwt-Hyperlink {
@@ -5369,10 +5345,8 @@ body .stream-view-dialog .delete-button {
 }
 
 .unseen-activity {
-	background: #F3F3F3;
+	background: #FFE488;
 	height: 31px;
-	margin-left: 10px;
-	margin-right: 10px;
 	height: 25px;
 	text-align: right;
 	padding: 3px 0;
@@ -5390,14 +5364,23 @@ body .stream-view-dialog .delete-button {
 }
 
 .unseen-activity a {
-	background: url('style/images/refreshStream.png') no-repeat;
+	background: url('style/images/refreshActivity.png') no-repeat;
+	background-position: 0 2px;
 	height: 20px;
 	overflow: hidden;
-	text-indent: 1000em;
-	width: 83px;
 	margin-left: 10px;
 	display: inline-block;
 	margin-top: 2px;
+	padding-left: 20px;
+    padding-right: 10px;
+    position: relative;
+    top: 2px;
+}
+
+.unseen-activity a:hover
+{
+	color: #1481B3;
+	
 }
 
 .group-private-extra-note {

@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 /**
  * History parameters have been updated.
- *
+ * 
  */
 public class UpdatedHistoryParametersEvent
 {
@@ -29,20 +29,48 @@ public class UpdatedHistoryParametersEvent
     private HashMap<String, String> paramters;
 
     /**
-     * Default constructor.
-     * @param inParameters the updated parameters.
+     * View has changed.
      */
-    public UpdatedHistoryParametersEvent(final HashMap<String, String> inParameters)
+    private Boolean viewChanged;
+
+    /**
+     * Default constructor.
+     * 
+     * @param inParameters
+     *            the updated parameters.
+     * @param inViewChanged
+     *            if the view changed.
+     */
+    public UpdatedHistoryParametersEvent(final HashMap<String, String> inParameters, final Boolean inViewChanged)
     {
         paramters = inParameters;
+        setViewChanged(inViewChanged);
     }
 
     /**
      * Get the parameters.
+     * 
      * @return the parameters.
      */
     public HashMap<String, String> getParameters()
     {
         return paramters;
+    }
+
+    /**
+     * @param inViewChanged
+     *            the viewChanged to set.
+     */
+    public void setViewChanged(final Boolean inViewChanged)
+    {
+        this.viewChanged = inViewChanged;
+    }
+
+    /**
+     * @return the viewChanged.
+     */
+    public Boolean getViewChanged()
+    {
+        return viewChanged;
     }
 }

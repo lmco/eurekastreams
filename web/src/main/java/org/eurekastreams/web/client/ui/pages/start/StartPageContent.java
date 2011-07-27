@@ -233,7 +233,7 @@ public class StartPageContent extends FlowPanel
                                             event.getParameters().put("url", "");
                                             event.getParameters().put("prefs", "");
                                             EventBus.getInstance().notifyObservers(
-                                                    new UpdatedHistoryParametersEvent(event.getParameters()));
+                                                    new UpdatedHistoryParametersEvent(event.getParameters(), false));
 
                                             GadgetModel.getInstance().insert(
                                                     new AddGadgetToStartPageRequest(url, tabsResponse.get(0).getId(),
@@ -243,7 +243,7 @@ public class StartPageContent extends FlowPanel
                                         {
                                             // Clear current action
                                             EventBus.getInstance().notifyObservers(
-                                                    new UpdatedHistoryParametersEvent(event.getParameters()));
+                                                    new UpdatedHistoryParametersEvent(event.getParameters(), false));
                                             String url = event.getParameters().get("url");
                                             ThemeModel.getInstance().set(url);
                                         }

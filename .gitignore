@@ -8,5 +8,7 @@ target
 Thumbs.db
 nohup.out
 server/.checkstyle
+database/bin
+sharedresourced/bin
 hs_err_pid*.log
 .metadata

@@ -219,7 +219,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("content-warning")
     String contentWarning();
-    
+
     String warningText();
 
     String content_text();
@@ -1370,8 +1370,6 @@ public interface CoreCss extends CssResource
 
     String followDialogTips();
 
-    String bookmarkSearchActive();
-
     String followDialogButtonPanel();
 
     String followLink();
@@ -1407,4 +1405,7 @@ public interface CoreCss extends CssResource
     String searchResultsContent();
 
     String renderContainer();
+
+    @ClassName("bookmark-name-link")
+    String bookmarkNameLink();
 }

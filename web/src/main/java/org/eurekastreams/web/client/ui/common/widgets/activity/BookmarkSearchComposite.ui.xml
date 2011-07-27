@@ -1,0 +1,74 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:ea='urn:import:org.eurekastreams.web.client.ui.common.autocomplete'
+	xmlns:eb='urn:import:org.eurekastreams.web.client.ui.common.stream.attach.bookmark'
+	xmlns:ec='urn:import:org.eurekastreams.web.client.ui.common'>
+
+
+	<ui:image field="collapsedTitleImage" src="style/images/bookmarkButton.png" />
+	<ui:image field="topEdgeImage" src="style/images/bookmarkTop.png" />
+	<ui:image field="searchImage" src="style/images/bookmarkSearch.png" />
+	<ui:image field="gradientImage" src="style/images/bookmarkGradient.png" repeatStyle="Horizontal" />
+
+	<ui:with field="coreCss"
+		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+
+	<ui:style
+		type="org.eurekastreams.web.client.ui.common.widgets.activity.BookmarkSearchComposite.LocalStyle">
+			.main {
+				clear: left;
+				margin-left: 10px;
+				padding-left: 0;
+				width: 225px;
+				overflow: hidden;
+				margin-bottom: 10px;
+			}
+			
+			@sprite .collapsed-title {
+				gwt-image: "collapsedTitleImage";
+				cursor: pointer;
+			}
+			.expanded-title {
+				padding: 10px;
+				padding-top: 5px;
+				cursor: pointer;
+			}
+			@sprite .top-edge {
+				gwt-image: "topEdgeImage";
+			}
+			
+			.gray-area {
+				/*gwt-image: "gradientImage";*/
+			   	background-color: #E4E4E4;
+			    padding-bottom: 10px;
+			    /*border-bottom: 1px solid #999999;*/
+			}
+			.search-active {
+			}
+			@sprite .search-box {
+				gwt-image: "searchImage";
+			    border: none !important;
+			    color: black;
+			    padding: 4px 22px !important;
+			    background-color: transparent;
+			    margin-left: 10px;
+			}
+		</ui:style>
+
+	<g:HTMLPanel addStyleNames="{style.main} {coreCss.searchList} {coreCss.bookmarkSearch}">
+		<g:Label addStyleNames="{style.collapsed-title}" ui:field="collapsedTitle" />
+		<div ui:field="expandedPanel" style="display: none">
+			<div class="{style.top-edge}" />
+			<div class="{style.gray-area}">
+				<g:Label addStyleNames="{style.expanded-title}" ui:field="expandedTitle">Bookmark a Stream</g:Label>		
+				<ec:LabeledTextBox ui:field="searchTerm" inLabel="add a bookmark" addStyleNames="{style.search-box}"/>
+			</div>
+			<g:FocusPanel ui:field="resultsPanelContainer" visible="false"
+				addStyleNames="{coreCss.searchResultsAutocompleteResults}">
+				<g:FlowPanel ui:field="resultsPanel" />
+			</g:FocusPanel>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>
+	

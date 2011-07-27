@@ -33,7 +33,7 @@ public class DomainGroupQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     * 
+     *
      * @param hibernateSession
      *            the hibernate session used to create the criteria.
      * @return the base criteria object.
@@ -58,6 +58,7 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("overview"));
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));
+        fields.add(getColumn("url"));
         fields.add(getColumn("suppressPostNotifToMember"));
         fields.add(getColumn("suppressPostNotifToCoordinator"));
         fields.add(Projections.property("cb.accountId").as("personCreatedByAccountId"));
@@ -80,7 +81,7 @@ public class DomainGroupQueryStrategy
 
     /**
      * Build the PropertyProjection with alias.
-     * 
+     *
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

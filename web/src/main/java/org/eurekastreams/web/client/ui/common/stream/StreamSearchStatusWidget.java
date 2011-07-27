@@ -50,7 +50,7 @@ public class StreamSearchStatusWidget extends Composite
     /**
      * Save search button.
      */
-    Label saveSearch = new Label("+ Save Stream");
+    Label saveSearch = new Label("+ Save as a Filter");
 
     /**
      * Close button.

@@ -10,6 +10,11 @@
 	<ui:image field="followingHeader" src="style/images/followingHeader.png" />
 	<ui:image field="privateHeader" src="style/images/privateIcon.png" />
 
+	<ui:image field="featureLinkNormal" src="style/images/feature.png" />
+	<ui:image field="featureLinkHover" src="style/images/featureHover.png" />
+	<ui:image field="featuredLink" src="style/images/featured.png" />
+	<ui:image field="unfeatureLink" src="style/images/unfeature.png" />
+
 	<ui:with field='resources'
 		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
 
@@ -85,7 +90,7 @@
 			.stream-details-container h2 {
 				font-weight: bold;
 				height: 16px;
-				margin: 0 0 10px
+				margin: 0 0 10px font-size:                      14px;
 			}
 			
 			.configureLink {
@@ -104,14 +109,36 @@
 				font-size: 12px;
 			}
 			
-			.condensedStream .toggle-details-link,.condensedStream .headerFeatureLink, .condensedStream .follow-info-container,.condensedStream .stream-meta,.condensedStream .stream-avatar,.condensedStream .headerFollowLink,.condensedStream .configureLink
+			.condensedStream .toggle-details-link,.condensedStream .headerFeatureLink,.condensedStream .follow-info-container,.condensedStream .stream-meta,.condensedStream .stream-avatar,.condensedStream .headerFollowLink,.condensedStream .configureLink
 				{
 				display: none;
 			}
 			
-			.headerFeatureLink
-			{
+			.headerFollowLink {
+				float: left;
 			}
+			
+			@sprite .headerFeatureLink {
+				gwt-image: "featureLinkNormal";
+				float: left;
+				margin-top: 10px;
+				margin-left: 10px;
+				cursor: pointer;
+			}
+			
+			@sprite .headerFeatureLink:hover {
+				gwt-image: "featureLinkHover";
+			}
+			
+			@sprite .headerFeatured {
+				gwt-image: "featuredLink";
+				cursor: pointer;
+			}
+
+			@sprite .headerFeatured:hover {
+				gwt-image: "unfeatureLink"
+			}
+			
 			.condensedStream .header {
 				height: 60px;
 				padding-left: 10px;
@@ -167,7 +194,7 @@
 			}
 			
 			.follow-info-link {
-				color: #0066CC;
+				color: #1481B3;
 				display: block;
 				cursor: pointer;
 			}
@@ -192,6 +219,10 @@
 			
 			@sprite .view-details {
 				gwt-image: "viewDetails";
+			}
+			
+			@sprite .hideDetails {
+				gwt-image: "hideDetails";
 			}
 			
 			.streamAbout {
@@ -255,12 +286,11 @@
 				ui:field="streamAvatar">
 			</g:HTMLPanel>
 			<div class="{style.stream-info-container}">
-				<span class="{style.stream-name}" ui:field="streamName"></span>
-				<span class="{style.stream-meta}" ui:field="streamMeta"></span>
+				<div class="{style.stream-name}" ui:field="streamName"></div>
+				<div class="{style.stream-meta}" ui:field="streamMeta"></div>
 				<g:Label addStyleNames="{style.headerFollowLink} {resources.coreCss.followLink}"
 					ui:field="followLink"></g:Label>
-				<g:Label addStyleNames="{style.headerFeatureLink}"
-					ui:field="featureLink"></g:Label>
+				<g:Label addStyleNames="{style.headerFeatureLink}" ui:field="featureLink"></g:Label>
 				<g:Anchor addStyleNames="{style.configureLink}" ui:field="configureLink">Configure
 				</g:Anchor>
 			</div>
@@ -285,8 +315,8 @@
 					ui:field="followersLink">Followers</g:Label>
 				<g:Label addStyleNames="{style.stream-details-option}"
 					ui:field="followingLink">Following</g:Label>
-				 <g:Label addStyleNames="{style.stream-details-option}"
-                    ui:field="adminLink">Admin</g:Label>	
+				<g:Label addStyleNames="{style.stream-details-option}"
+					ui:field="adminLink">Admin</g:Label>
 			</div>
 			<div class="{style.stream-details-content}">
 				<g:HTMLPanel addStyleNames="{style.streamAbout}"
@@ -294,6 +324,8 @@
 					<div class="{style.stream-details}">
 						<h2>Description</h2>
 						<div ui:field="streamDescription"></div>
+						<h2>Contact Information</h2>
+						<div ui:field="contactInfo"></div>
 						<h2>Interests</h2>
 						<div ui:field="streamInterests"></div>
 						<h2>Popular Hashtags</h2>
@@ -350,8 +382,8 @@
 					ui:field="streamFollowing">
 				</pager:PagerComposite>
 				<pager:PagerComposite addStyleNames="pagerControl"
-                    ui:field="adminContent">
-                </pager:PagerComposite>
+					ui:field="adminContent">
+				</pager:PagerComposite>
 			</div>
 		</div>
 	</g:HTMLPanel>

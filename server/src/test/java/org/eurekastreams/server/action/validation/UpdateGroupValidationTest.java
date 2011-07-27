@@ -25,6 +25,7 @@ import java.util.HashSet;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.CompositeEntity;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -34,14 +35,14 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * 
+ *
  * Test for UpdateGroupValidation class.
- * 
+ *
  */
 public class UpdateGroupValidationTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -51,12 +52,12 @@ public class UpdateGroupValidationTest
     /**
      * principal action context.
      */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * {@link UpdateGroupValidation} system under test.
      */
-    private UpdateGroupValidation sut = new UpdateGroupValidation();
+    private final UpdateGroupValidation sut = new UpdateGroupValidation();
 
     /**
      * Test validateParams() with valid inputs.
@@ -72,6 +73,7 @@ public class UpdateGroupValidationTest
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
+        formData.put(DomainGroupModelView.URL_KEY, "http://lockheedmartin.com");
         formData.put(DomainGroupModelView.ID_KEY, 2L);
         formData.put(DomainGroupModelView.DESCRIPTION_KEY, ValidationTestHelper
                 .generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
@@ -167,6 +169,7 @@ public class UpdateGroupValidationTest
         formData.put(DomainGroupModelView.OVERVIEW_KEY, "this is unlimited length");
         formData.put(DomainGroupModelView.STREAM_COMMENTABLE_KEY, true);
         formData.put(DomainGroupModelView.STREAM_POSTABLE_KEY, true);
+        formData.put(DomainGroupModelView.URL_KEY, "htttttttpppthhhbbbb");
 
         context.checking(new Expectations()
         {
@@ -183,11 +186,12 @@ public class UpdateGroupValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertEquals(4, ve.getErrors().size());
+            assertEquals(5, ve.getErrors().size());
             assertTrue(ve.getErrors().containsValue(DomainGroup.MIN_COORDINATORS_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroupModelView.KEYWORD_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.DESCRIPTION_LENGTH_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.NAME_LENGTH_MESSAGE));
+            assertTrue(ve.getErrors().containsValue(CompositeEntity.WEBSITE_MESSAGE));
             throw ve;
         }
         context.assertIsSatisfied();

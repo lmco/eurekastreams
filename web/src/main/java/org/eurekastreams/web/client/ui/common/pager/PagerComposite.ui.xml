@@ -79,8 +79,22 @@
 				padding: 10px;
 				margin-bottom: 20px;
 			}
-			.resultsNum
-			{
+			
+			.resultsNum {
+				position: relative;
+				margin-right: 10px;
+				top: -10px;
+				display: inline-block;
+			}
+			
+			@if user.agent ie6 ie8 {
+				.resultsNum,.prevButton,.nextButton {
+					display: inline;
+					zoom: 1;
+				}
+				.buttons {
+					width: 100%;
+				}
 			}
 		</ui:style>
 
