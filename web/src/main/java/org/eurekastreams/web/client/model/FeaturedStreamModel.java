@@ -31,7 +31,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Model for featured stream interaction.
- * 
+ *
  */
 public class FeaturedStreamModel extends BaseModel implements Insertable<FeaturedStreamDTO>, Deletable<Long>,
         Fetchable<GetFeaturedStreamsPageRequest>
@@ -44,7 +44,7 @@ public class FeaturedStreamModel extends BaseModel implements Insertable<Feature
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static FeaturedStreamModel getInstance()
@@ -61,6 +61,7 @@ public class FeaturedStreamModel extends BaseModel implements Insertable<Feature
         {
             public void onSuccess(final Long response)
             {
+                StreamsDiscoveryModel.getInstance().clearCache();
                 Session.getInstance().getEventBus().notifyObservers(new AddedFeaturedStreamResponseEvent(response));
             }
         });
@@ -75,6 +76,7 @@ public class FeaturedStreamModel extends BaseModel implements Insertable<Feature
         {
             public void onSuccess(final Boolean response)
             {
+                StreamsDiscoveryModel.getInstance().clearCache();
                 Session.getInstance().getEventBus().notifyObservers(new DeletedFeaturedStreamResponse(inRequest));
             }
         });
@@ -82,7 +84,7 @@ public class FeaturedStreamModel extends BaseModel implements Insertable<Feature
 
     /**
      * Fetch a page of data with the input GetFeaturedStreamsPageRequest.
-     * 
+     *
      * @param inRequest
      *            the request, specifying the start and end index, inclusive
      * @param inUseClientCacheIfAvailable
