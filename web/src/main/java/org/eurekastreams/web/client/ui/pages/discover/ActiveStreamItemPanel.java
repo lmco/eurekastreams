@@ -17,7 +17,7 @@ package org.eurekastreams.web.client.ui.pages.discover;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
+import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -36,9 +37,9 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Widget to display a featured stream.
+ * FlowPanel for the "Most Active Streams" panel items.
  */
-public class FeaturedStreamItemPanel extends Composite
+public class ActiveStreamItemPanel extends Composite
 {
     /** Binder for building UI. */
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
@@ -60,59 +61,60 @@ public class FeaturedStreamItemPanel extends Composite
     @UiField(provided = true)
     CoreCss coreCss;
 
-    /** Left column. */
-    @UiField
-    DivElement leftPanel;
-
     /** Avatar panel. */
     @UiField(provided = true)
     AvatarLinkPanel avatarPanel;
 
-    /** Link for stream name. */
+    /** Panel holding the details. */
+    @UiField
+    DivElement infoPanel;
+
+    /** Name link. */
     @UiField
     Hyperlink streamNameLink;
 
-    /** Text area for stream description. */
+    /** Message count display widget. */
     @UiField
-    DivElement streamDescriptionText;
+    SpanElement messageCount;
 
     /**
      * Constructor.
      *
-     * @param inFeaturedStreamDTO
+     * @param inStreamDTO
      *            the streamDTO to represent
      */
-    public FeaturedStreamItemPanel(final FeaturedStreamDTO inFeaturedStreamDTO)
+    public ActiveStreamItemPanel(final StreamDTO inStreamDTO)
     {
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
-        avatarPanel = new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
-                inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Normal);
+        avatarPanel = new AvatarLinkPanel(inStreamDTO.getEntityType(), inStreamDTO.getUniqueId(), inStreamDTO.getId(),
+                inStreamDTO.getAvatarId(), Size.Small);
         Widget main = binder.createAndBindUi(this);
         initWidget(main);
 
         // add follow controls if not the current person
-        if (inFeaturedStreamDTO.getEntityType() != EntityType.PERSON
-                || inFeaturedStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
+        if (inStreamDTO.getEntityType() != EntityType.PERSON
+                || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            Element followPanelElement = new FollowPanel(inFeaturedStreamDTO).getElement();
+            Element followPanelElement = new FollowPanel(inStreamDTO).getElement();
             followPanelElement.addClassName(style.followPanel());
-            leftPanel.appendChild(followPanelElement);
+            infoPanel.appendChild(followPanelElement);
         }
 
-        // assume group if not person
-        Page linkPage = (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON) ? Page.PEOPLE : Page.GROUPS;
+        // set text and link for name; assume group if not person
+        Page linkPage = (inStreamDTO.getEntityType() == EntityType.PERSON) ? Page.PEOPLE : Page.GROUPS;
         String nameUrl = Session.getInstance().generateUrl(//
-                new CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId()));
+                new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
         streamNameLink.setTargetHistoryToken(nameUrl);
-        streamNameLink.setText(inFeaturedStreamDTO.getDisplayName());
+        streamNameLink.setText(inStreamDTO.getDisplayName());
 
-        streamDescriptionText.setInnerText(inFeaturedStreamDTO.getDescription());
+        messageCount.setInnerText(inStreamDTO.getFollowersCount() == 1 ? "1 Daily Message" : Integer
+                .toString(inStreamDTO.getFollowersCount()) + " Daily Messages");
     }
 
     /**
      * Binder for building UI.
      */
-    interface LocalUiBinder extends UiBinder<Widget, FeaturedStreamItemPanel>
+    interface LocalUiBinder extends UiBinder<Widget, ActiveStreamItemPanel>
     {
     }
 }

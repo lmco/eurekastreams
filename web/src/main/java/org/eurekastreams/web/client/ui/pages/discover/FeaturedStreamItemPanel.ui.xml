@@ -5,7 +5,13 @@
 	<ui:with field="coreCss"
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
 
-	<ui:style>
+	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.FeaturedStreamItemPanel.LocalStyle">
+		@external gwt-Label;
+		@external connection-item-info;
+		
+		.main .connection-item-info {
+			margin-top: 0px;
+		}
 		.left {
 			display: inline-block;
 		}
@@ -13,23 +19,40 @@
 			font-size: 18px;
 		}
 		.stream-name>a:link, .stream-name>a:visited, .stream-name>a:active {
-			color: #CCC;
+			color: white;
 		}
 		.stream-description {
 			color: #CCC;
+			margin-top: 10px;
 		}
+		.left > .followPanel > div.gwt-Label {
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.stream-avatar {
+			background-image: url(style/images/avatarBackground.png);
+			padding: 5px;
+		}
+		.stream-avatar>a>img {
+			padding: 0px;
+			border: none;
+		}
+		.followPanel {}
 		
 		@if user.agent ie6 ie8 {
 			.left {
 				display: inline;
 				zoom: 1;
 			}
+			.followPanel {
+				width: 85px;
+			}
 		}
 	</ui:style>
 
-	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person}">
+	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person} {style.main}">
 		<div class="{style.left}" ui:field="leftPanel">
-			<eavatar:AvatarLinkPanel ui:field="avatarPanel" />
+			<eavatar:AvatarLinkPanel addStyleNames="{style.stream-avatar}" ui:field="avatarPanel" />
 		</div>
 		<div class="{coreCss.connectionItemInfo}">
 			<g:Hyperlink addStyleNames="{style.stream-name}" ui:field="streamNameLink" />

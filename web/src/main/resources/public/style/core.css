@@ -36,6 +36,7 @@
 @external .delegation-item .avatar-image;
 @external .delegation-item .avatar-image-Small;
 @external .connection-item-info;
+@external .connection-col;
 
 
 
@@ -3383,18 +3384,21 @@ body .shortname-form-element input {
 	padding-top: 7px;
 }
 
+.connection-col {}
+
 .connection-col-left,.connection-col-right,.connection-col-middle {
 	display: inline-block;
 	min-height: 30px;
 	vertical-align: top;
 	margin-bottom: -10px;
 	margin-top: -10px;
-width: 330px;
+	width: 285px;
 }
 
 .connection-col-left, .connection-col-middle {
 	border-right: 1px solid #404040;
-	margin-right: 25px;	
+	padding-right: 20px;
+	margin-right: 20px;
 }
 	
 .connection-item-info {
@@ -6118,6 +6122,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	.person-lookup-form-element .form-instructions,
 	.connection-item-info,
 	.connection-col-left,
+	.connection-col-middle,
 	.connection-col-right,
 	.scope-form-element,
 	.message-timestamp-actions-area .via-metadata,

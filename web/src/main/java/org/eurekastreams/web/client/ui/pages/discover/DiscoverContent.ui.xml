@@ -1,10 +1,16 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager' xmlns:common='urn:import:org.eurekastreams.web.client.ui.common' >
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:pager='urn:import:org.eurekastreams.web.client.ui.common.pager'
+	xmlns:common='urn:import:org.eurekastreams.web.client.ui.common'>
 
 	<ui:image field="searchNormal" src="style/images/searchNormal.png" />
 
+	<ui:image field="createGroupButtonImage" src="style/images/createGroup.png" />
+	<ui:image field="createGroupButtonHoverImage" src="style/images/createGroupHover.png" />
+
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.discover.DiscoverContent.DiscoverStyle">
+			@external connection-item-info;
+			@external connection-col;
 			.discoverStreamList {
 				list-style: none;
 				padding-left: 0;
@@ -30,6 +36,7 @@
 			
 			.streamPager {
 				background-color: #252525;
+				color: white;
 			}
 			
 			.discoveryPage {
@@ -37,7 +44,9 @@
 			}
 			
 			h3 {
+				margin-top: 20px;
 				margin-bottom: 5px;
+				font-size: 15px;
 			}
 			
 			.activePager {
@@ -74,7 +83,60 @@
 			
 			.featuredPager {
 				background-image: url("style/images/featured_Bg.png");
-				height: 234px;
+				background-color: #252525;
+				background-repeat: repeat-x;
+				/* height: 234px; */
+			}
+			
+			.featuredPager .connection-col {
+				min-height: 190px;
+			}
+			
+			.featuredPager .connection-item-info {
+				max-width: 185px;
+			}
+			
+			.mostActivePager .connection-item-info {
+				max-width: 215px;
+			}
+			
+			.searchBarAtTop {
+				padding-top: 30px;
+			}
+			
+			.createGroupArea {
+				clear: both;
+				padding-top: 50px;
+			}
+			
+			.createGroupArea>div {
+				margin-left: auto;
+				margin-right: auto;
+			}
+			
+			.createGroupText {
+				color: #777;
+				margin-bottom: 20px;
+				width: 50%;
+			}
+			
+			@sprite .createGroupButton {
+				gwt-image: "createGroupButtonImage";
+				cursor: pointer;
+			}
+			@sprite .createGroupButton:hover {
+				gwt-image: "createGroupButtonHoverImage";
+			}
+			.createGroupButton > a {
+				overflow: hidden;
+    			text-indent: 1000em;
+			}
+			
+			@if user.agent ie6 ie8 {
+				.goSearch {
+					display: inline;
+					zoom: 1;
+				}
 			}
 		</ui:style>
 
@@ -85,15 +147,16 @@
 			</pager:PagerComposite>
 		</div>
 
-		<div class="{style.searchBar}">
+		<div class="{style.searchBar}" ui:field="searchBar">
 			<g:FlowPanel ui:field="searchFlowPanel">
-				<common:LabeledTextBox ui:field="searchBox" inLabel="What are you looking for?" />
+				<common:LabeledTextBox ui:field="searchBox"
+					inLabel="What are you looking for?" />
 				<g:Label ui:field="goSearch" addStyleNames="{style.goSearch}" />
 			</g:FlowPanel>
 		</div>
 
 		<div>
-			<pager:PagerComposite addStyleNames="{style.streamPager}"
+			<pager:PagerComposite addStyleNames="{style.streamPager} {style.mostActivePager}"
 				ui:field="mostActiveStreamsComposite">
 			</pager:PagerComposite>
 		</div>
@@ -116,6 +179,15 @@
 		<div class="{style.discoverStreamList}">
 			<h3>Most Recent</h3>
 			<g:FlowPanel ui:field="mostRecentStreamsPanel" />
+		</div>
+
+		<div class="{style.createGroupArea}">
+			<div class="{style.createGroupText}">Duis condimentum tempor odio eget venenatis. Nullam
+				placerat scelerisque nulla. Duis faucibus ornare massa ac viverra.
+				Proin at massa quis velit semper fermentum. Donec ultricies
+				fermentum convallis. Donec varius eros ut sapien lobortis ut
+				vulputate.</div>
+			<g:Hyperlink addStyleNames="{style.createGroupButton}" ui:field="createGroupButton" />
 		</div>
 	</g:HTMLPanel>
 
