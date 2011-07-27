@@ -1442,12 +1442,6 @@ body .post-expanded-panel .content-warning {
 	border-top: 1px solid #999;
 }
 
-/*
-.bookmarkSearch .gwt-Anchor
-{
-	margin-top: 6px;
-}
-*/
 .bookmarkSearch .searchResultsAutocompleteResults
 {
 	border: none;
@@ -1455,12 +1449,7 @@ body .post-expanded-panel .content-warning {
 	border-bottom: 1px solid #BBB;
 	background-color: white;
 }
-/*
-.bookmarkSearch .searchResultsAutocompleteResults > div > div:first-child
-{
-	border-top: 1px solid #999;
-}
-*/
+
 .bookmarkSearch .searchResultsAutocompleteResults > div > div:hover
 {
 	background: #F0F0F0 url('style/images/bookmarkAdd.png') no-repeat scroll 200px center;
