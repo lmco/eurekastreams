@@ -2277,6 +2277,7 @@ div:hover > .messageXPanel {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	display: block;
 }
 
 .action-link-separator {
@@ -3511,6 +3512,7 @@ body .shortname-form-element input {
 .connection-item-title {
 	font-size: 11px;
 	line-height: 13px;
+	width: 200px;
 	margin: 2px 0px;
 }
 
