@@ -16,12 +16,6 @@
 package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
 
 /**
  * Custom stream model.

@@ -24,8 +24,8 @@ import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsReq
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers are
- * members of, sorted by follow count within that group, and ignoring the input user's followers as suggestions.
+ * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers 
+ * are members of, sorted by follow count within that group, and ignoring the input user's followers as suggestions.
  */
 public class GetSuggestedPeopleForPersonDbMapper extends
         BaseArgDomainMapper<SuggestedStreamsRequest, List<PersonModelView>>
@@ -54,7 +54,8 @@ public class GetSuggestedPeopleForPersonDbMapper extends
                                 + " AND peopleTheyFollow.pk.followingId NOT IN "
                                 + "(SELECT pk.followingId FROM Follower WHERE followerId = :personId) "
                                 + " AND person.streamScope.id NOT IN "
-                                + "(SELECT pk.scopeId FROM PersonBlockedSuggestion WHERE personid = :personBlockedId) "
+                                + "(SELECT pk.scopeId FROM PersonBlockedSuggestion "
+                                + "WHERE personid = :personBlockedId) "
                                 + "AND person.id = peopleTheyFollow.pk.followingId "
                                 + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
                                 + "person.lastName, person.dateAdded, person.streamScope.id "

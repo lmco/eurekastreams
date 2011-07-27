@@ -15,19 +15,10 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Assert;
-
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.PersonBlockedSuggestion;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;

@@ -46,10 +46,13 @@ public class PersonBlockedSuggestionTest
     @Test
     public void testPersonBlockedSuggestionPkEquals()
     {
-        PersonBlockedSuggestion.PersonBlockedSuggestionPk sut = new PersonBlockedSuggestion.PersonBlockedSuggestionPk(1L, 2L);
+        PersonBlockedSuggestion.PersonBlockedSuggestionPk sut = new PersonBlockedSuggestion.PersonBlockedSuggestionPk(
+                1L, 2L);
         assertFalse(sut.equals(new Object()));
 
-        PersonBlockedSuggestion.PersonBlockedSuggestionPk target = new PersonBlockedSuggestion.PersonBlockedSuggestionPk(1L, 2L);
+        PersonBlockedSuggestion.PersonBlockedSuggestionPk target = 
+                new PersonBlockedSuggestion.PersonBlockedSuggestionPk(
+                1L, 2L);
         assertTrue(sut.equals(target));
     }
 
@@ -59,7 +62,9 @@ public class PersonBlockedSuggestionTest
     @Test
     public void testPersonBlockedSuggestionPkHashcode()
     {
-        PersonBlockedSuggestion.PersonBlockedSuggestionPk sut = new PersonBlockedSuggestion.PersonBlockedSuggestionPk(1L, 2L);
+        PersonBlockedSuggestion.PersonBlockedSuggestionPk sut =
+                new PersonBlockedSuggestion.PersonBlockedSuggestionPk(
+                1L, 2L);
         assertNotNull(sut.hashCode());
     }
 }

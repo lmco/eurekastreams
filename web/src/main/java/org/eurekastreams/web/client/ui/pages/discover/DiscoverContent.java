@@ -238,7 +238,7 @@ public class DiscoverContent extends Composite
 
                 block.addClickHandler(new ClickHandler()
                 {
-                    public void onClick(ClickEvent arg0)
+                    public void onClick(final ClickEvent arg0)
                     {
                         if (jsniFacade.confirm("Are you sure you want to block this suggestion?"))
                         {
