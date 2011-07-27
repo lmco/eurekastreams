@@ -1,0 +1,31 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:eavatar="urn:import:org.eurekastreams.web.client.ui.common.avatar">
+
+	<ui:with field="coreCss"
+		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+
+	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.ActiveStreamItemPanel.LocalStyle">
+		.main {}
+		.stream-avatar img {
+			border: none;
+			background-image: url(style/images/avatarBackground.png);
+		}
+		.stream-name {}
+		.message-count {
+			color: #CCC;
+		}
+		.followPanel > div {
+			margin-top: 5px;
+		}
+	</ui:style>
+
+	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person} {style.main}">
+		<eavatar:AvatarLinkPanel addStyleNames="{style.stream-avatar}" ui:field="avatarPanel" />
+		<div class="{coreCss.connectionItemInfo}" ui:field="infoPanel">
+			<g:Hyperlink addStyleNames="{coreCss.connectionItemName} {style.stream-name}" ui:field="streamNameLink" />
+			<span class="{style.message-count}" ui:field="messageCount" />
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

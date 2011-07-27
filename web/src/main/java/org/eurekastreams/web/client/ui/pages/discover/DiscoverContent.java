@@ -27,11 +27,13 @@ import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEv
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -39,6 +41,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,11 +70,20 @@ public class DiscoverContent extends Composite
      */
     interface DiscoverStyle extends CssResource
     {
-
+        /** @return CSS style for search bar when it is the topmost item because the feature streams panel is hidden. */
+        String searchBarAtTop();
     }
 
+    /** Local styles. */
+    @UiField
+    DiscoverStyle style;
+
+    /** Search bar (accessible for styling). */
+    @UiField
+    DivElement searchBar;
+
     /**
-     * Flow Panel ot contain the stream search box.
+     * Flow Panel to contain the stream search box.
      */
     @UiField
     FlowPanel searchFlowPanel;
@@ -124,12 +136,19 @@ public class DiscoverContent extends Composite
     @UiField
     LabeledTextBox searchBox;
 
+    /** Link to create group page. */
+    @UiField
+    Hyperlink createGroupButton;
+
     /**
      * Default constructor.
      */
     public DiscoverContent()
     {
         initWidget(binder.createAndBindUi(this));
+
+        createGroupButton.setTargetHistoryToken(Session.getInstance()
+                .generateUrl(new CreateUrlRequest(Page.NEW_GROUP)));
 
         EventBus.getInstance().addObserver(GotStreamDiscoverListsDTOResponseEvent.class,
                 new Observer<GotStreamDiscoverListsDTOResponseEvent>()
@@ -145,7 +164,16 @@ public class DiscoverContent extends Composite
                 {
                     public void update(final GotFeaturedStreamsPageResponseEvent ev)
                     {
-                        featuredStreamsComposite.setVisible(ev.getResponse().getTotal() > 0);
+                        boolean featuredVisible = ev.getResponse().getTotal() > 0;
+                        featuredStreamsComposite.setVisible(featuredVisible);
+                        if (featuredVisible)
+                        {
+                            searchBar.removeClassName(style.searchBarAtTop());
+                        }
+                        else
+                        {
+                            searchBar.addClassName(style.searchBarAtTop());
+                        }
                     }
                 });
 
@@ -229,13 +257,13 @@ public class DiscoverContent extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                EventBus.getInstance().notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
-                        generateParams(searchBox.getText()), false)));
+                EventBus.getInstance().notifyObservers(
+                        new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchBox.getText()),
+                                false)));
 
             }
         });
     }
-
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.

@@ -1408,4 +1408,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("bookmark-name-link")
     String bookmarkNameLink();
+
+    @ClassName("connection-col")
+    String connectionCol();
 }
