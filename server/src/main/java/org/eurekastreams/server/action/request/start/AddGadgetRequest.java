@@ -26,16 +26,21 @@ public class AddGadgetRequest implements Serializable
      * Serialization id.
      */
     private static final long serialVersionUID = 5892599544872492014L;
-    
+
     /**
      * Tab id.
      */
-	private Long tabId;
-	
-	/**
-	 * Gadget definition URL.
-	 */
-	private String gadgetDefinitionUrl;
+    private Long tabId;
+
+    /**
+     * Gadget definition URL.
+     */
+    private String gadgetDefinitionUrl;
+
+    /**
+     * Gadget user prefs.
+     */
+    private String userPrefs;
 
     /**
      * For serialization only.
@@ -44,8 +49,8 @@ public class AddGadgetRequest implements Serializable
     private AddGadgetRequest()
     {
         // no op.
-    }	
-    
+    }
+
     /**
      * Constructor.
      * 
@@ -56,36 +61,74 @@ public class AddGadgetRequest implements Serializable
      */
     public AddGadgetRequest(final Long inTabId, final String inGadgetDefinitionUrl)
     {
+        this(inTabId, inGadgetDefinitionUrl, null);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inTabId
+     *            Tab id.
+     * @param inGadgetDefinitionUrl
+     *            Tab name.
+     * @param inUserPrefs
+     *            user prefs.
+     */
+    public AddGadgetRequest(final Long inTabId, final String inGadgetDefinitionUrl, final String inUserPrefs)
+    {
         this.tabId = inTabId;
         this.gadgetDefinitionUrl = inGadgetDefinitionUrl;
-    }    
-	
-	/**
-	 * @param inTabId the tabId to set.
-	 */
-	public void setTabId(final Long inTabId) 
-	{
-		this.tabId = inTabId;
-	}
-	/**
-	 * @return the tabId.
-	 */
-	public Long getTabId() 
-	{
-		return tabId;
-	}
-	/**
-	 * @param inGadgetDefinitionUrl the gadgetDefinitionUrl to set.
-	 */
-	public void setGadgetDefinitionUrl(final String inGadgetDefinitionUrl) 
-	{
-		this.gadgetDefinitionUrl = inGadgetDefinitionUrl;
-	}
-	/**
-	 * @return the gadgetDefinitionUrl.
-	 */
-	public String getGadgetDefinitionUrl() 
-	{
-		return gadgetDefinitionUrl;
-	}
+        this.userPrefs = inUserPrefs;
+    }
+
+    /**
+     * @param inTabId
+     *            the tabId to set.
+     */
+    public void setTabId(final Long inTabId)
+    {
+        this.tabId = inTabId;
+    }
+
+    /**
+     * @return the tabId.
+     */
+    public Long getTabId()
+    {
+        return tabId;
+    }
+
+    /**
+     * @param inGadgetDefinitionUrl
+     *            the gadgetDefinitionUrl to set.
+     */
+    public void setGadgetDefinitionUrl(final String inGadgetDefinitionUrl)
+    {
+        this.gadgetDefinitionUrl = inGadgetDefinitionUrl;
+    }
+
+    /**
+     * @return the gadgetDefinitionUrl.
+     */
+    public String getGadgetDefinitionUrl()
+    {
+        return gadgetDefinitionUrl;
+    }
+
+    /**
+     * @return the userPrefs
+     */
+    public String getUserPrefs()
+    {
+        return userPrefs;
+    }
+
+    /**
+     * @param inUserPrefs
+     *            the userPrefs to set
+     */
+    public void setUserPrefs(final String inUserPrefs)
+    {
+        userPrefs = inUserPrefs;
+    }
 }

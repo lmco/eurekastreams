@@ -155,6 +155,9 @@ public class AddGadgetExecutionTest
                 allowing(gadgetRequest).getGadgetDefinitionUrl();
                 will(returnValue(GADGET_DEF_URL));
 
+                allowing(gadgetRequest).getUserPrefs();
+                will(returnValue(null));
+
                 // action has to load the tab by ID
                 allowing(tabMapper).findById(tabId);
                 will(returnValue(tab));
@@ -207,7 +210,7 @@ public class AddGadgetExecutionTest
                 will(returnValue(0));
 
                 oneOf(gadget0).setZoneIndex(1);
-                
+
                 oneOf(person).getId();
                 will(returnValue(0L));
 
@@ -288,7 +291,7 @@ public class AddGadgetExecutionTest
         });
 
         sut.execute(actionContext);
-        
+
         context.assertIsSatisfied();
     }
 }

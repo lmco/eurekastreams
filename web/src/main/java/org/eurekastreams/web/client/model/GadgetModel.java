@@ -30,14 +30,11 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Represents a gadget on someone start page. NOT a gadget definition (see GadgetDefinitionModel for that).
- *
+ * 
  */
-public class GadgetModel extends BaseModel implements
-    Deletable<Long>,
-    Insertable<AddGadgetToStartPageRequest>,
-    Reorderable<ReorderGadgetRequest>
+public class GadgetModel extends BaseModel implements Deletable<Long>, Insertable<AddGadgetToStartPageRequest>,
+        Reorderable<ReorderGadgetRequest>
 {
-
 
     /**
      * Singleton.
@@ -46,7 +43,7 @@ public class GadgetModel extends BaseModel implements
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static GadgetModel getInstance()
@@ -75,18 +72,18 @@ public class GadgetModel extends BaseModel implements
      */
     public void insert(final AddGadgetToStartPageRequest inRequest)
     {
-        super.callWriteAction("addGadget", new AddGadgetRequest(inRequest.getTabId(), inRequest.getUrl()),
-                new OnSuccessCommand<Gadget>()
+        super.callWriteAction("addGadget", new AddGadgetRequest(inRequest.getTabId(), inRequest.getUrl(), inRequest
+                .getPrefs()), new OnSuccessCommand<Gadget>()
+        {
+            public void onSuccess(final Gadget response)
+            {
+                if (inRequest.getPrefs() != null)
                 {
-                    public void onSuccess(final Gadget response)
-                    {
-                        if (inRequest.getPrefs() != null)
-                        {
-                            response.setGadgetUserPref(inRequest.getPrefs());
-                        }
-                        Session.getInstance().getEventBus().notifyObservers(new GadgetAddedToStartPageEvent(response));
-                    }
-                });
+                    response.setGadgetUserPref(inRequest.getPrefs());
+                }
+                Session.getInstance().getEventBus().notifyObservers(new GadgetAddedToStartPageEvent(response));
+            }
+        });
 
         StartTabsModel.getInstance().clearCache();
     }

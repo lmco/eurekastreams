@@ -124,63 +124,63 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         *
+         * 
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         *
+         * 
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         *
+         * 
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         *
+         * 
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         *
+         * 
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         *
+         * 
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         *
+         * 
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         *
+         * 
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         *
+         * 
          * @return small avatar style.
          */
         String smallAvatar();
@@ -377,12 +377,12 @@ public class ActivityContent extends Composite
      * Everyone filter panel.
      */
     private Panel everyoneFilterPanel = null;
-    
+
     /**
      * Is subscribed.
      */
     private boolean isSubscribed = false;
-    
+
     /**
      * Post Box.
      */
@@ -458,20 +458,22 @@ public class ActivityContent extends Composite
 
         CustomStreamModel.getInstance().fetch(null, true);
         StreamBookmarksModel.getInstance().fetch(null, true);
-        
+
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
         handleViewsChanged(Session.getInstance().getUrlViews());
     }
-    
+
     /**
      * Got activity.
-     * @param event the event.
+     * 
+     * @param event
+     *            the event.
      */
     private void gotActivity(final GotActivityResponseEvent event)
     {
-    	streamPanel.clear();
+        streamPanel.clear();
         activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
         EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
@@ -661,20 +663,16 @@ public class ActivityContent extends Composite
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
-                        
-                        
+
                     }
                 });
-        
-        
-        Session.getInstance()
-        .getEventBus()
-        .addObserver(GotPersonFollowerStatusResponseEvent.class,
+
+        Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
                 new Observer<GotPersonFollowerStatusResponseEvent>()
                 {
                     public void update(final GotPersonFollowerStatusResponseEvent event)
                     {
-                    	subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                        subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
                     }
                 });
 
@@ -716,7 +714,7 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     *
+     * 
      * @param inViews
      *            the views.
      */
@@ -732,16 +730,14 @@ public class ActivityContent extends Composite
         }
 
         views.set(views.size() - 1, "recent");
-        recentSort
-                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
         views.set(views.size() - 1, "popular");
-        popularSort.setTargetHistoryToken(Session.getInstance()
-                .generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        popularSort
+                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
         views.set(views.size() - 1, "active");
-        activeSort
-                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
 
     }
 
@@ -792,8 +788,7 @@ public class ActivityContent extends Composite
                                     urlGen = personUrlGen;
                                 }
 
-                                imgUrl = urlGen
-                                        .getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
+                                imgUrl = urlGen.getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
 
                             }
                         }
@@ -824,24 +819,19 @@ public class ActivityContent extends Composite
             }
         });
 
-        
-        
         EventBus.getInstance().addObserver(GotStreamActivitySubscriptionResponseEvent.class,
-        		new Observer<GotStreamActivitySubscriptionResponseEvent>()
-        		{
-					public void update(final 
-							GotStreamActivitySubscriptionResponseEvent result) 
-					{
-						if (result.isSubscribed())
-						{
-							isSubscribed = true;
-							subscribeViaEmail.setText("Unsubscribe to Emails");
-						}
-					}
-        		});
-        
-        
-        
+                new Observer<GotStreamActivitySubscriptionResponseEvent>()
+                {
+                    public void update(final GotStreamActivitySubscriptionResponseEvent result)
+                    {
+                        if (result.isSubscribed())
+                        {
+                            isSubscribed = true;
+                            subscribeViaEmail.setText("Unsubscribe to Emails");
+                        }
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
                 new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
@@ -933,10 +923,8 @@ public class ActivityContent extends Composite
             {
                 StreamBookmarksModel.getInstance().insert(currentScopeId);
                 addBookmark.setVisible(false);
-    			EventBus.getInstance().notifyObservers(
-    					new ShowNotificationEvent(
-    							new Notification(
-    			"You have bookmarked this stream.")));
+                EventBus.getInstance().notifyObservers(
+                        new ShowNotificationEvent(new Notification("You have bookmarked this stream.")));
             }
         });
 
@@ -944,55 +932,53 @@ public class ActivityContent extends Composite
         {
             public void onClick(final ClickEvent event)
             {
-            	if (!isSubscribed)
-            	{
-            		Insertable<String> insertable = null;
-            	
-            		if (currentStream.getScopeType().equals(ScopeType.GROUP))
-            		{
-            			insertable = GroupActivitySubscriptionModel.getInstance();
-            		}
-            		else if (currentStream.getScopeType().equals(ScopeType.PERSON))
-            		{
-            			insertable = PersonActivitySubscriptionModel.getInstance();
-            		}
-            	
-            		if (insertable != null)
-            		{
-            			insertable.insert(currentStream.getUniqueKey());
-            			EventBus.getInstance().notifyObservers(
-            					new ShowNotificationEvent(
-            							new Notification(
-            			"You will now receive emails for new activities to this stream")));
-            			isSubscribed = true;
-                		subscribeViaEmail.setText("Unsubscribe to Emails");
-            		}
-            	}
-            	else
-            	{
-            		Deletable<String> deletable = null;
-            		
-            		if (currentStream.getScopeType().equals(ScopeType.GROUP))
-            		{
-            			deletable = GroupActivitySubscriptionModel.getInstance();
-            		}
-            		else if (currentStream.getScopeType().equals(ScopeType.PERSON))
-            		{
-            			deletable = PersonActivitySubscriptionModel.getInstance();
-            		}
-            	
-            		if (deletable != null)
-            		{
-            			deletable.delete(currentStream.getUniqueKey());
-            			EventBus.getInstance().notifyObservers(
-            					new ShowNotificationEvent(
-            							new Notification(
-            			"You will no longer receive emails for new activities to this stream")));
-            			isSubscribed = false;
-                		subscribeViaEmail.setText("Subscribe via Email");
-            		}
-            	}
-            	
+                if (!isSubscribed)
+                {
+                    Insertable<String> insertable = null;
+
+                    if (currentStream.getScopeType().equals(ScopeType.GROUP))
+                    {
+                        insertable = GroupActivitySubscriptionModel.getInstance();
+                    }
+                    else if (currentStream.getScopeType().equals(ScopeType.PERSON))
+                    {
+                        insertable = PersonActivitySubscriptionModel.getInstance();
+                    }
+
+                    if (insertable != null)
+                    {
+                        insertable.insert(currentStream.getUniqueKey());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "You will now receive emails for new activities to this stream")));
+                        isSubscribed = true;
+                        subscribeViaEmail.setText("Unsubscribe to Emails");
+                    }
+                }
+                else
+                {
+                    Deletable<String> deletable = null;
+
+                    if (currentStream.getScopeType().equals(ScopeType.GROUP))
+                    {
+                        deletable = GroupActivitySubscriptionModel.getInstance();
+                    }
+                    else if (currentStream.getScopeType().equals(ScopeType.PERSON))
+                    {
+                        deletable = PersonActivitySubscriptionModel.getInstance();
+                    }
+
+                    if (deletable != null)
+                    {
+                        deletable.delete(currentStream.getUniqueKey());
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "You will no longer receive emails for new activities to this stream")));
+                        isSubscribed = false;
+                        subscribeViaEmail.setText("Subscribe via Email");
+                    }
+                }
+
             }
         });
 
@@ -1000,13 +986,29 @@ public class ActivityContent extends Composite
         {
             public void onClick(final ClickEvent event)
             {
+                // For the app's location, use the current URL minus a few parameters we know we don't want. (They are
+                // used by other lists, but get left in the URL when switching tabs.)
+                // We don't build the URL from the stream id, since that doesn't take search terms into account.
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("listId", null);
+                params.put("listFilter", null);
+                params.put("listSort", null);
+                params.put("startIndex", null);
+                params.put("endIndex", null);
+                String url = Session.getInstance().generateUrl(new CreateUrlRequest(params));
+
+                // TODO: get correct title.
+                String prefs = "{\"streamQuery\":"
+                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString()))
+                        + ",\"gadgetTitle\":" + makeJsonString("Activity App") + ",\"streamLocation\":"
+                        + makeJsonString(url) + "}";
+
                 GadgetModel.getInstance().insert(
-                        new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null,
-                                STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString())));
-    			EventBus.getInstance().notifyObservers(
-    					new ShowNotificationEvent(
-    							new Notification(
-    			"This stream will now show up on your start page.")));
+                        new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null, prefs));
+                EventBus.getInstance()
+                        .notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "This stream will now show up on your start page.")));
             }
         });
 
@@ -1054,8 +1056,21 @@ public class ActivityContent extends Composite
     }
 
     /**
+     * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
+     * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
+     * 
+     * @param input
+     *            Input string, possibly null.
+     * @return JSON string representation.
+     */
+    private static native String makeJsonString(final String input)
+    /*-{
+     return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+     }-*/;
+
+    /**
      * Append a new message.
-     *
+     * 
      * @param message
      *            the messa.ge
      */
@@ -1069,7 +1084,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     *
+     * 
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1118,7 +1133,7 @@ public class ActivityContent extends Composite
             }
             subscribeViaEmail.setVisible(true);
             feedLink.setVisible(true);
-            
+
             PersonActivitySubscriptionModel.getInstance().fetch(currentStream.getUniqueKey(), true);
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
@@ -1229,7 +1244,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     *
+     * 
      * @param panel
      *            the panel.
      */
@@ -1256,7 +1271,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     *
+     * 
      * @param name
      *            the name of the item.
      * @param view
