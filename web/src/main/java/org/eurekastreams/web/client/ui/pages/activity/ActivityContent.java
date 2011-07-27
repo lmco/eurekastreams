@@ -369,6 +369,11 @@ public class ActivityContent extends Composite
     private long currentScopeId;
 
     /**
+     * Current stream display name.
+     */
+    private String currentDisplayName;
+
+    /**
      * New activity polling.
      */
     private static final int NEW_ACTIVITY_POLLING_DELAY = 1200000;
@@ -690,6 +695,7 @@ public class ActivityContent extends Composite
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
                         PersonModelView person = event.getResponse();
+                        currentDisplayName = person.getDisplayName();
                         currentScopeId = person.getStreamId();
 
                         if (person.isAccountLocked())
@@ -727,6 +733,7 @@ public class ActivityContent extends Composite
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
                         final DomainGroupModelView group = event.getResponse();
+                        currentDisplayName = group.getDisplayName();
                         currentScopeId = group.getStreamId();
 
                         if (group.isRestricted())
@@ -938,7 +945,7 @@ public class ActivityContent extends Composite
 
                         StreamNamePanel likedBy = createPanel("My Liked Items", "custom/1/"
                                 + "{\"query\":{\"likedBy\":[{\"type\":\"PERSON\", \"name\":\""
-                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}",
+                                + Session.getInstance().getCurrentPerson().getAccountId() + "\"}]}}/My Liked Items",
                                 "style/images/customStream.png", null, "", "", false);
 
                         filterList.add(likedBy);
@@ -1106,7 +1113,7 @@ public class ActivityContent extends Composite
                 // TODO: get correct title from somewhere.
                 String prefs = "{\"streamQuery\":"
                         + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString()))
-                        + ",\"gadgetTitle\":" + makeJsonString("Activity App") + ",\"streamLocation\":"
+                        + ",\"gadgetTitle\":" + makeJsonString(currentDisplayName) + ",\"streamLocation\":"
                         + makeJsonString(url) + "}";
 
                 GadgetModel.getInstance().insert(
@@ -1201,6 +1208,7 @@ public class ActivityContent extends Composite
             feedLink.setVisible(true);
             streamDetailsComposite.setStreamTitle("Following", CustomAvatar.FOLLOWING);
             streamDetailsComposite.setCondensedMode(true);
+            currentDisplayName = "Following";
 
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
@@ -1210,10 +1218,16 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(accountId, false);
             currentStream.setScopeType(ScopeType.PERSON);
             currentStream.setUniqueKey(accountId);
-            setAsActiveStream(bookmarksWidgetMap.get("person/" + accountId));
-            if (!bookmarksWidgetMap.containsKey("person/" + accountId))
+            String mapKey = "person/" + accountId;
+            setAsActiveStream(bookmarksWidgetMap.get(mapKey));
+            if (!bookmarksWidgetMap.containsKey(mapKey))
             {
                 addBookmark.setVisible(true);
+            }
+            else
+            {
+                addBookmark.setVisible(false);
+                currentDisplayName = bookmarksWidgetMap.get(mapKey).getStreamName();
             }
             subscribeViaEmail.setVisible(true);
             feedLink.setVisible(true);
@@ -1228,10 +1242,16 @@ public class ActivityContent extends Composite
             GroupModel.getInstance().fetch(shortName, false);
             currentStream.setScopeType(ScopeType.GROUP);
             currentStream.setUniqueKey(shortName);
-            setAsActiveStream(bookmarksWidgetMap.get("group/" + shortName));
-            if (!bookmarksWidgetMap.containsKey("group/" + shortName))
+            String mapKey = "group/" + shortName;
+            setAsActiveStream(bookmarksWidgetMap.get(mapKey));
+            if (!bookmarksWidgetMap.containsKey(mapKey))
             {
                 addBookmark.setVisible(true);
+            }
+            else
+            {
+                addBookmark.setVisible(false);
+                currentDisplayName = bookmarksWidgetMap.get(mapKey).getStreamName();
             }
             subscribeViaEmail.setVisible(true);
             feedLink.setVisible(true);
@@ -1246,9 +1266,10 @@ public class ActivityContent extends Composite
             currentStream.setScopeType(null);
             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
             feedLink.setVisible(true);
-            streamDetailsComposite.setStreamTitle(customStreamWidgetMap.get(Long.parseLong(views.get(1)))
-                    .getStreamName(), CustomAvatar.FOLLOWING);
+            String streamName = customStreamWidgetMap.get(Long.parseLong(views.get(1))).getStreamName();
+            streamDetailsComposite.setStreamTitle(streamName, CustomAvatar.FOLLOWING);
             streamDetailsComposite.setCondensedMode(true);
+            currentDisplayName = streamName;
 
         }
         else if (views.get(0).equals("everyone"))
@@ -1259,6 +1280,7 @@ public class ActivityContent extends Composite
             feedLink.setVisible(true);
             streamDetailsComposite.setStreamTitle("Everyone", CustomAvatar.EVERYONE);
             streamDetailsComposite.setCondensedMode(true);
+            currentDisplayName = "Everyone";
 
         }
         else if (views.size() == 1)
