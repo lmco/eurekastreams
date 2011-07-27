@@ -1421,6 +1421,7 @@ public class ActivityContent extends Composite
 
         Label streamName = new Label(name);
         streamName.addStyleName(style.streamName());
+        streamName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
         innerPanel.add(streamName);
 
         if (modifyClickHandler != null)

@@ -1905,7 +1905,7 @@ body .post-to-stream .over-character-limit {
 	padding-bottom: 5px;
 	padding-top: 10px;
 	margin-left: 10px;
-	margin-right: 35px;
+	margin-right: 85px;
 	margin-bottom: 0px;
 	overflow: auto;
 	word-wrap: break-word;
@@ -2280,6 +2280,12 @@ div:hover > .messageXPanel {
 	margin-top: 10px;
 }
 
+.ellipsis {
+	text-overflow: ellipsis;
+	-moz-binding: url('style/ellipsis.xml#ellipsis');
+	width: 50px;
+}
+
 .action-link-separator {
 	font-size: 8px;
 	padding-left: 5px;
@@ -2588,6 +2594,26 @@ body .previous-arrow:hover {
 .followDialog {
 	width: 550px;
 }
+
+.featureDialog {
+	width: 400px;
+}
+
+.featureDialog .modal-content-panel {
+	padding: 20px;
+}
+
+.featureDialog .characters-remaining {
+	float: right;	
+}
+
+.featureDialog textarea
+{
+	height: 100px;
+    width: 300px;
+    margin-bottom: 10px;
+}
+
 
 .followDialog .title
 {
@@ -3458,6 +3484,7 @@ width: 330px;
 .connection-item-name a {
 	font-weight: bold;
 	text-decoration: none;
+	width: 200px;
 }
 
 .connection-item-title {
@@ -4763,7 +4790,6 @@ body .dragdrop-proxy {
 	margin-top: 3px;
 	margin-bottom: 3px;
 	overflow: auto;
-	margin-right: 50px;
 }
 
 .message-comment-author {

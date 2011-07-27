@@ -55,7 +55,8 @@ public class FeatureDialogContent extends BaseDialogContent
      */
     public FeatureDialogContent(final FeaturedStreamDTO featuredStreamDTO)
     {
-        Label saveButton = new Label("Feature");
+        Label saveButton = new Label("");
+        saveButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().saveChangesButton());
 
         body.add(new Label("Stream Name: " + featuredStreamDTO.getDisplayName()));
 
@@ -99,7 +100,7 @@ public class FeatureDialogContent extends BaseDialogContent
     @Override
     public String getCssName()
     {
-        return StaticResourceBundle.INSTANCE.coreCss().followDialog();
+        return StaticResourceBundle.INSTANCE.coreCss().featureDialog();
     }
 
     /**
@@ -109,6 +110,6 @@ public class FeatureDialogContent extends BaseDialogContent
      */
     public String getTitle()
     {
-        return "Subscribe";
+        return "Feature Stream";
     }
 }

@@ -72,6 +72,7 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
@@ -150,6 +151,11 @@ public class StreamDetailsComposite extends Composite
          * @return Featured item header link style.
          */
         String headerFeatured();
+
+        /**
+         * Empty detail style.
+         */
+        String emptyDetailStyle();
     }
 
     /**
@@ -174,6 +180,12 @@ public class StreamDetailsComposite extends Composite
         initWidget(binder.createAndBindUi(this));
         buildPage();
     }
+
+    /**
+     * Empty chart.
+     */
+    @UiField
+    DivElement chartEmpty;
 
     /**
      * UI element for stream about panel.
@@ -222,6 +234,9 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     Label adminLink;
+
+    @UiField
+    Element contactInfoTitle;
 
     /**
      * UI element for toggling details.
@@ -276,7 +291,7 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     DivElement contactInfo;
-    
+
     /**
      * UI element for stream description.
      */
@@ -354,6 +369,12 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     SpanElement avgContributors;
+
+    /**
+     * Stream info container.
+     */
+    @UiField
+    DivElement streamInfoContainer;
 
     /**
      * Average messages.
@@ -596,6 +617,17 @@ public class StreamDetailsComposite extends Composite
                                     + "\">" + tag + "</a> ");
                         }
                         streamHashtags.setInnerHTML(tagString);
+
+                        if (tagString.length() == 0)
+                        {
+                            streamHashtags.setInnerHTML("No popular hashtags.");
+                            streamHashtags.addClassName(style.emptyDetailStyle());
+                        }
+                        else
+                        {
+                            streamHashtags.removeClassName(style.emptyDetailStyle());
+                        }
+
                     }
                 });
 
@@ -615,6 +647,10 @@ public class StreamDetailsComposite extends Composite
                         UsageMetricSummaryDTO data = event.getResponse();
 
                         List<DailyUsageSummary> stats = data.getDailyStatistics();
+
+                        chart.setVisible(stats != null && stats.size() > 0);
+                        chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
+
                         if (stats != null)
                         {
                             for (int i = 0; i < stats.size(); i++)
@@ -683,7 +719,9 @@ public class StreamDetailsComposite extends Composite
      */
     public void setStreamTitle(final String inStreamTitle, final CustomAvatar avatar)
     {
+        streamName.removeFromParent();
         streamName.setInnerText(inStreamTitle);
+        streamInfoContainer.insertFirst(streamName);
 
         switch (avatar)
         {
@@ -786,7 +824,9 @@ public class StreamDetailsComposite extends Composite
 
                         updateFeatureLink(featuredStreamDTO);
 
+                        streamName.removeFromParent();
                         streamName.setInnerText(person.getDisplayName());
+                        streamInfoContainer.insertFirst(streamName);
                         streamMeta.setInnerText(person.getTitle());
                         streamAvatar.clear();
                         streamAvatar.add(avatarRenderer.render(person.getEntityId(), person.getAvatarId(),
@@ -795,6 +835,17 @@ public class StreamDetailsComposite extends Composite
                         followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
                         followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
                         streamDescription.setInnerText(person.getJobDescription());
+
+                        if (person.getJobDescription() == null || person.getJobDescription().length() == 0)
+                        {
+                            streamDescription.setInnerText("No job description entered.");
+                            streamDescription.addClassName(style.emptyDetailStyle());
+                        }
+                        else
+                        {
+                            streamDescription.removeClassName(style.emptyDetailStyle());
+                        }
+
                         String interestString = "";
                         for (String interest : person.getInterests())
                         {
@@ -802,21 +853,42 @@ public class StreamDetailsComposite extends Composite
                         }
                         streamInterests.setInnerHTML(interestString);
 
+                        if (interestString.length() == 0)
+                        {
+                            streamInterests.setInnerHTML("No interests entered.");
+                            streamInterests.addClassName(style.emptyDetailStyle());
+                        }
+                        else
+                        {
+                            streamInterests.removeClassName(style.emptyDetailStyle());
+                        }
+
+                        contactInfoTitle.setInnerText("Contact Information");
                         String contact = "";
                         if (person.getEmail() != null)
                         {
-                        	contact = person.getEmail();
+                            contact = person.getEmail();
                         }
                         if (person.getWorkPhone() != null)
                         {
-                        	 if (person.getEmail() != null)
-                             {
-                             	contact += "</br>";
-                             }
-                        	 contact += person.getWorkPhone();
+                            if (person.getEmail() != null)
+                            {
+                                contact += "<br />";
+                            }
+                            contact += person.getWorkPhone();
                         }
                         contactInfo.setInnerHTML(contact);
-                        
+
+                        if (contact.length() == 0)
+                        {
+                            contactInfo.setInnerHTML("No contact information entered.");
+                            contactInfo.addClassName(style.emptyDetailStyle());
+                        }
+                        else
+                        {
+                            contactInfo.removeClassName(style.emptyDetailStyle());
+                        }
+
                         PopularHashTagsModel.getInstance().fetch(
                                 new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
 
@@ -874,6 +946,19 @@ public class StreamDetailsComposite extends Composite
                                 configureLink.setVisible(false);
                             }
 
+                            contactInfoTitle.setInnerText("Website");
+                            contactInfo.setInnerText(group.getUrl());
+                            
+                            if (group.getUrl() == null || group.getUrl().length() == 0)
+                            {
+                                contactInfo.setInnerHTML("No contact information entered.");
+                                contactInfo.addClassName(style.emptyDetailStyle());
+                            }
+                            else
+                            {
+                                contactInfo.removeClassName(style.emptyDetailStyle());
+                            }
+
                             updateFollowLink(group.getShortName(), EntityType.GROUP);
                             FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
                             featuredStreamDTO.setDescription(group.getDescription());
@@ -883,21 +968,44 @@ public class StreamDetailsComposite extends Composite
 
                             updateFeatureLink(featuredStreamDTO);
 
+                            streamName.removeFromParent();
                             streamName.setInnerText(group.getName());
+                            streamInfoContainer.insertFirst(streamName);
+
                             streamMeta.setInnerText("");
-                            // streamMeta.setInnerText(group.get);
                             streamAvatar.clear();
                             streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
                                     EntityType.GROUP, Size.Normal));
 
                             followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
                             streamDescription.setInnerText(group.getDescription());
+
+                            if (group.getDescription() == null || group.getDescription().length() == 0)
+                            {
+                                streamDescription.setInnerHTML("No group description entered.");
+                                streamDescription.addClassName(style.emptyDetailStyle());
+                            }
+                            else
+                            {
+                                streamDescription.removeClassName(style.emptyDetailStyle());
+                            }
+
                             String interestString = "";
                             for (String interest : group.getCapabilities())
                             {
                                 interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
                             }
                             streamInterests.setInnerHTML(interestString);
+
+                            if (interestString.length() == 0)
+                            {
+                                streamInterests.setInnerHTML("No interested entered.");
+                                streamInterests.addClassName(style.emptyDetailStyle());
+                            }
+                            else
+                            {
+                                streamInterests.removeClassName(style.emptyDetailStyle());
+                            }
 
                             PopularHashTagsModel.getInstance().fetch(
                                     new StreamPopularHashTagsRequest(ScopeType.GROUP, group.getShortName()), true);
