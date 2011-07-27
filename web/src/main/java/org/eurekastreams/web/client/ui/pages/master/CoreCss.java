@@ -1418,4 +1418,7 @@ public interface CoreCss extends CssResource
     String blockSuggestion();
 
     String discoverConnectionItem();
+
+    @ClassName("connection-col")
+    String connectionCol();
 }

@@ -37,12 +37,15 @@ public class ThreeColumnPagedListRenderer implements PagedListRenderer
     {
         Panel left = new FlowPanel();
         left.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColLeft());
+        left.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionCol());
 
         Panel middle = new FlowPanel();
         middle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColMiddle());
+        middle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionCol());
 
         Panel right = new FlowPanel();
         right.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColRight());
+        right.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionCol());
 
         if (items.getTotal() == 0)
         {

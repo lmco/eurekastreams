@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
 
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renderer for StreamDTOs as Most Active Streams Items..
@@ -27,13 +27,13 @@ public class ActiveStreamsItemRenderer implements ItemRenderer<StreamDTO>
 {
     /**
      * Render an ActiveStreamsItemPanel for the input StreamDTO.
-     * 
+     *
      * @param inStreamDTO
      *            StreamDTO to render
      * @return the rendered panel
      */
-    public Panel render(final StreamDTO inStreamDTO)
+    public Widget render(final StreamDTO inStreamDTO)
     {
-        return new ActiveStreamsItemPanel(inStreamDTO);
+        return new ActiveStreamItemPanel(inStreamDTO);
     }
 }

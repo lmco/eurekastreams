@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,10 @@ public class TwoColumnPagedListRenderer implements PagedListRenderer
     {
         Panel left = new FlowPanel();
         left.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColLeft());
+        left.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionCol());
         Panel right = new FlowPanel();
         right.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColRight());
+        right.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionCol());
 
         int count = 0;
 
