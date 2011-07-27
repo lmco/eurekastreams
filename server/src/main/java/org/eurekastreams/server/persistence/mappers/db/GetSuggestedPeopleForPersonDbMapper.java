@@ -42,21 +42,25 @@ public class GetSuggestedPeopleForPersonDbMapper extends
     @SuppressWarnings("unchecked")
     public List<PersonModelView> execute(final SuggestedStreamsRequest inRequest)
     {
-        Query query = getEntityManager().createQuery(
-                "SELECT new org.eurekastreams.server.search.modelview.PersonModelView("
-                        + "peopleTheyFollow.pk.followingId, "
-                        + "person.accountId, person.preferredName, person.lastName, "
-                        + "COUNT(peopleTheyFollow.pk.followingId), person.dateAdded, person.streamScope.id) "
-                        + "FROM Follower peopleIFollow, Follower peopleTheyFollow, Person person "
-                        + "WHERE peopleIFollow.pk.followingId = peopleTheyFollow.pk.followerId "
-                        + "AND peopleIFollow.pk.followerId = :personId"
-                        + " AND peopleTheyFollow.pk.followingId NOT IN "
-                        + "(SELECT pk.followingId FROM Follower WHERE followerId = :personId) "
-                        + "AND person.id = peopleTheyFollow.pk.followingId "
-                        + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
-                        + "person.lastName, person.dateAdded, person.streamScope.id "
-                        + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC").setParameter("personId",
-                inRequest.getPersonId());
+        Query query = getEntityManager()
+                .createQuery(
+                        "SELECT new org.eurekastreams.server.search.modelview.PersonModelView("
+                                + "peopleTheyFollow.pk.followingId, "
+                                + "person.accountId, person.preferredName, person.lastName, "
+                                + "COUNT(peopleTheyFollow.pk.followingId), person.dateAdded, person.streamScope.id) "
+                                + "FROM Follower peopleIFollow, Follower peopleTheyFollow, Person person "
+                                + "WHERE peopleIFollow.pk.followingId = peopleTheyFollow.pk.followerId "
+                                + "AND peopleIFollow.pk.followerId = :personId"
+                                + " AND peopleTheyFollow.pk.followingId NOT IN "
+                                + "(SELECT pk.followingId FROM Follower WHERE followerId = :personId) "
+                                + " AND person.streamScope.id NOT IN "
+                                + "(SELECT pk.scopeId FROM PersonBlockedSuggestion WHERE personid = :personBlockedId) "
+                                + "AND person.id = peopleTheyFollow.pk.followingId "
+                                + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
+                                + "person.lastName, person.dateAdded, person.streamScope.id "
+                                + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC")
+                .setParameter("personBlockedId", inRequest.getPersonId())
+                .setParameter("personId", inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());
         return query.getResultList();
     }

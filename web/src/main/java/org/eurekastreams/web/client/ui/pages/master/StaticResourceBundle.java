@@ -168,6 +168,12 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/modalCloseBtnSmallHover.png")
     ImageResource modalCloseBtnSmallHover();
 
+    @Source("style/images/smallX.png")
+    ImageResource smallX();
+
+    @Source("style/images/smallXhover.png")
+    ImageResource smallXHover();
+
     @Source("style/images/createOrganizationBtn.png")
     ImageResource createOrganizationBtn();
 

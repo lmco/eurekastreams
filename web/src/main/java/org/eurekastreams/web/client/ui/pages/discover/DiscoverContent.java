@@ -26,6 +26,8 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.model.BlockedSuggestionModel;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
@@ -125,6 +127,11 @@ public class DiscoverContent extends Composite
     LabeledTextBox searchBox;
 
     /**
+     * JSNI.
+     */
+    private WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
+
+    /**
      * Default constructor.
      */
     public DiscoverContent()
@@ -154,7 +161,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     *
+     * 
      * @param inDiscoverLists
      *            the data to display
      */
@@ -194,10 +201,27 @@ public class DiscoverContent extends Composite
 
         if (inDiscoverLists.getSuggestedStreams() != null)
         {
-            for (StreamDTO stream : inDiscoverLists.getSuggestedStreams())
+            for (final StreamDTO stream : inDiscoverLists.getSuggestedStreams())
             {
-                suggestedStreamsPanel.add(new DiscoverListItemPanel(stream,
-                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS));
+                final Label block = new Label("");
+                block .addStyleName(StaticResourceBundle.INSTANCE.coreCss().blockSuggestion());
+                final DiscoverListItemPanel suggestedPanel = new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS);
+
+                block.addClickHandler(new ClickHandler()
+                {
+                    public void onClick(ClickEvent arg0)
+                    {
+                        if (jsniFacade.confirm("Are you sure you want to block this suggestion?"))
+                        {
+                            BlockedSuggestionModel.getInstance().insert(stream.getStreamScopeId());
+                            suggestedPanel.removeFromParent();
+                        }
+                    }
+                });
+
+                suggestedPanel.insert(block, 0);
+                suggestedStreamsPanel.add(suggestedPanel);
             }
         }
         if (inDiscoverLists.getMostViewedStreams() != null)
@@ -229,17 +253,17 @@ public class DiscoverContent extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                EventBus.getInstance().notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
-                        generateParams(searchBox.getText()), false)));
+                EventBus.getInstance().notifyObservers(
+                        new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchBox.getText()),
+                                false)));
 
             }
         });
     }
 
-
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     *
+     * 
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

@@ -71,7 +71,8 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
             {
                 // the user added could have been one who made a membership request, so clear the request model
                 GroupMembershipRequestModel.getInstance().clearCache();
-                
+                StreamsDiscoveryModel.getInstance().clearCache();
+
                 // clear following model 
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
                 
@@ -91,7 +92,8 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
             {
                 // clear following model 
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
-                
+                StreamsDiscoveryModel.getInstance().clearCache();
+
                 Session.getInstance().getEventBus().notifyObservers(new DeletedGroupMemberResponseEvent(response));
             }
         });

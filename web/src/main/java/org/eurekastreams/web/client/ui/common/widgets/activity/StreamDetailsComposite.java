@@ -154,6 +154,8 @@ public class StreamDetailsComposite extends Composite
 
         /**
          * Empty detail style.
+         * 
+         * @return Empty detail style.
          */
         String emptyDetailStyle();
     }
@@ -235,6 +237,9 @@ public class StreamDetailsComposite extends Composite
     @UiField
     Label adminLink;
 
+    /**
+     * Contact info title.
+     */
     @UiField
     Element contactInfoTitle;
 
@@ -680,7 +685,33 @@ public class StreamDetailsComposite extends Composite
                     }
                 });
 
-        addModelViewEvents();
+        EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
+                new Observer<GotFeaturedStreamsPageResponseEvent>()
+                {
+                    public void update(final GotFeaturedStreamsPageResponseEvent response)
+                    {
+                        featuredStreams = response.getResponse();
+                    }
+                });
+
+        EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
+                new Observer<GotPersonalInformationResponseEvent>()
+                {
+                    public void update(final GotPersonalInformationResponseEvent event)
+                    {
+                        gotPerson(event.getResponse());
+                    }
+
+                });
+
+        EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
+                new Observer<GotGroupModelViewInformationResponseEvent>()
+                {
+                    public void update(final GotGroupModelViewInformationResponseEvent event)
+                    {
+                        gotGroup(event.getResponse());
+                    }
+                });
 
         EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
@@ -776,245 +807,121 @@ public class StreamDetailsComposite extends Composite
     }
 
     /**
-     * Add the model view events.
+     * Go the group.
+     * 
+     * @param group
+     *            the group.
      */
-    private void addModelViewEvents()
+    private void gotGroup(final DomainGroupModelView group)
     {
-        final StreamDetailsComposite thisClass = this;
+        showFollowing.setVisible(false);
+        followingCount.getStyle().setDisplay(Display.NONE);
+        followingLink.setVisible(false);
 
-        EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
-                new Observer<GotFeaturedStreamsPageResponseEvent>()
+        Session.getInstance().setPageTitle(group.getName());
+
+        if (group.isRestricted())
+        {
+            condensedAvatar.addStyleName(style.privateAvatar());
+            this.addStyleName(style.condensedStream());
+        }
+        else
+        {
+
+            streamId = group.getStreamId();
+
+            boolean isCoordinator = false;
+
+            for (PersonModelView coordinator : group.getCoordinators())
+            {
+                if (coordinator.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
                 {
-                    public void update(final GotFeaturedStreamsPageResponseEvent response)
-                    {
-                        featuredStreams = response.getResponse();
-                    }
-                });
+                    isCoordinator = true;
+                    break;
+                }
+            }
 
-        EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
-                new Observer<GotPersonalInformationResponseEvent>()
+            if (isCoordinator || Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+            {
+                if (!group.isPublic())
                 {
-                    public void update(final GotPersonalInformationResponseEvent event)
-                    {
-                        showFollowing.setVisible(true);
-                        followingCount.getStyle().setDisplay(Display.INLINE);
-                        followingLink.setVisible(true);
-                        adminLink.setVisible(false);
+                    adminLink.setVisible(true);
+                }
+                configureLink.setVisible(true);
+                configureLink.setHref("#groupsettings/" + group.getShortName());
+            }
+            else
+            {
+                configureLink.setVisible(false);
+            }
 
-                        PersonModelView person = event.getResponse();
-                        streamId = person.getStreamId();
-                        Session.getInstance().setPageTitle(person.getDisplayName());
+            contactInfoTitle.setInnerText("Website");
+            contactInfo.setInnerText(group.getUrl());
 
-                        if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
-                        {
-                            configureLink.setVisible(true);
-                            configureLink.setHref("#personalsettings/" + person.getAccountId());
-                        }
-                        else
-                        {
-                            configureLink.setVisible(false);
-                        }
+            if (group.getUrl() == null || group.getUrl().length() == 0)
+            {
+                contactInfo.setInnerHTML("No contact information entered.");
+                contactInfo.addClassName(style.emptyDetailStyle());
+            }
+            else
+            {
+                contactInfo.removeClassName(style.emptyDetailStyle());
+            }
 
-                        updateFollowLink(person.getAccountId(), EntityType.PERSON);
-                        FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
-                        featuredStreamDTO.setDescription(person.getDescription());
-                        featuredStreamDTO.setStreamId(person.getStreamId());
-                        featuredStreamDTO.setStreamType(ScopeType.PERSON);
-                        featuredStreamDTO.setDisplayName(person.getDisplayName());
+            updateFollowLink(group.getShortName(), EntityType.GROUP);
+            FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+            featuredStreamDTO.setDescription(group.getDescription());
+            featuredStreamDTO.setStreamId(group.getStreamId());
+            featuredStreamDTO.setStreamType(ScopeType.GROUP);
+            featuredStreamDTO.setDisplayName(group.getDisplayName());
 
-                        updateFeatureLink(featuredStreamDTO);
+            updateFeatureLink(featuredStreamDTO);
 
-                        streamName.removeFromParent();
-                        streamName.setInnerText(person.getDisplayName());
-                        streamInfoContainer.insertFirst(streamName);
-                        streamMeta.setInnerText(person.getTitle());
-                        streamAvatar.clear();
-                        streamAvatar.add(avatarRenderer.render(person.getEntityId(), person.getAvatarId(),
-                                EntityType.PERSON, Size.Normal));
+            streamName.removeFromParent();
+            streamName.setInnerText(group.getName());
+            streamInfoContainer.insertFirst(streamName);
 
-                        followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
-                        followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
-                        streamDescription.setInnerText(person.getJobDescription());
+            streamMeta.setInnerText("");
+            streamAvatar.clear();
+            streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(), EntityType.GROUP,
+                    Size.Normal));
 
-                        if (person.getJobDescription() == null || person.getJobDescription().length() == 0)
-                        {
-                            streamDescription.setInnerText("No job description entered.");
-                            streamDescription.addClassName(style.emptyDetailStyle());
-                        }
-                        else
-                        {
-                            streamDescription.removeClassName(style.emptyDetailStyle());
-                        }
+            followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
+            streamDescription.setInnerText(group.getDescription());
 
-                        String interestString = "";
-                        for (String interest : person.getInterests())
-                        {
-                            interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
-                        }
-                        streamInterests.setInnerHTML(interestString);
+            if (group.getDescription() == null || group.getDescription().length() == 0)
+            {
+                streamDescription.setInnerHTML("No group description entered.");
+                streamDescription.addClassName(style.emptyDetailStyle());
+            }
+            else
+            {
+                streamDescription.removeClassName(style.emptyDetailStyle());
+            }
 
-                        if (interestString.length() == 0)
-                        {
-                            streamInterests.setInnerHTML("No interests entered.");
-                            streamInterests.addClassName(style.emptyDetailStyle());
-                        }
-                        else
-                        {
-                            streamInterests.removeClassName(style.emptyDetailStyle());
-                        }
+            String interestString = "";
+            for (String interest : group.getCapabilities())
+            {
+                interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
+            }
+            streamInterests.setInnerHTML(interestString);
 
-                        contactInfoTitle.setInnerText("Contact Information");
-                        String contact = "";
-                        if (person.getEmail() != null)
-                        {
-                            contact = person.getEmail();
-                        }
-                        if (person.getWorkPhone() != null)
-                        {
-                            if (person.getEmail() != null)
-                            {
-                                contact += "<br />";
-                            }
-                            contact += person.getWorkPhone();
-                        }
-                        contactInfo.setInnerHTML(contact);
+            if (interestString.length() == 0)
+            {
+                streamInterests.setInnerHTML("No interested entered.");
+                streamInterests.addClassName(style.emptyDetailStyle());
+            }
+            else
+            {
+                streamInterests.removeClassName(style.emptyDetailStyle());
+            }
 
-                        if (contact.length() == 0)
-                        {
-                            contactInfo.setInnerHTML("No contact information entered.");
-                            contactInfo.addClassName(style.emptyDetailStyle());
-                        }
-                        else
-                        {
-                            contactInfo.removeClassName(style.emptyDetailStyle());
-                        }
+            PopularHashTagsModel.getInstance().fetch(
+                    new StreamPopularHashTagsRequest(ScopeType.GROUP, group.getShortName()), true);
+            UsageMetricModel.getInstance().fetch(
+                    new UsageMetricStreamSummaryRequest(NUM_DAYS_FOR_METRICS, group.getStreamId()), true);
+        }
 
-                        PopularHashTagsModel.getInstance().fetch(
-                                new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
-
-                        UsageMetricModel.getInstance().fetch(
-                                new UsageMetricStreamSummaryRequest(NUM_DAYS_FOR_METRICS, person.getStreamId()), true);
-                    }
-                });
-
-        EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
-                new Observer<GotGroupModelViewInformationResponseEvent>()
-                {
-                    public void update(final GotGroupModelViewInformationResponseEvent event)
-                    {
-                        showFollowing.setVisible(false);
-                        followingCount.getStyle().setDisplay(Display.NONE);
-                        followingLink.setVisible(false);
-
-                        DomainGroupModelView group = event.getResponse();
-                        Session.getInstance().setPageTitle(group.getName());
-
-                        if (group.isRestricted())
-                        {
-                            condensedAvatar.addStyleName(style.privateAvatar());
-                            thisClass.addStyleName(style.condensedStream());
-                        }
-                        else
-                        {
-
-                            streamId = group.getStreamId();
-
-                            boolean isCoordinator = false;
-
-                            for (PersonModelView coordinator : group.getCoordinators())
-                            {
-                                if (coordinator.getAccountId().equals(
-                                        Session.getInstance().getCurrentPerson().getAccountId()))
-                                {
-                                    isCoordinator = true;
-                                    break;
-                                }
-                            }
-
-                            if (isCoordinator
-                                    || Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
-                            {
-                                if (!group.isPublic())
-                                {
-                                    adminLink.setVisible(true);
-                                }
-                                configureLink.setVisible(true);
-                                configureLink.setHref("#groupsettings/" + group.getShortName());
-                            }
-                            else
-                            {
-                                configureLink.setVisible(false);
-                            }
-
-                            contactInfoTitle.setInnerText("Website");
-                            contactInfo.setInnerText(group.getUrl());
-                            
-                            if (group.getUrl() == null || group.getUrl().length() == 0)
-                            {
-                                contactInfo.setInnerHTML("No contact information entered.");
-                                contactInfo.addClassName(style.emptyDetailStyle());
-                            }
-                            else
-                            {
-                                contactInfo.removeClassName(style.emptyDetailStyle());
-                            }
-
-                            updateFollowLink(group.getShortName(), EntityType.GROUP);
-                            FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
-                            featuredStreamDTO.setDescription(group.getDescription());
-                            featuredStreamDTO.setStreamId(group.getStreamId());
-                            featuredStreamDTO.setStreamType(ScopeType.GROUP);
-                            featuredStreamDTO.setDisplayName(group.getDisplayName());
-
-                            updateFeatureLink(featuredStreamDTO);
-
-                            streamName.removeFromParent();
-                            streamName.setInnerText(group.getName());
-                            streamInfoContainer.insertFirst(streamName);
-
-                            streamMeta.setInnerText("");
-                            streamAvatar.clear();
-                            streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(),
-                                    EntityType.GROUP, Size.Normal));
-
-                            followerCount.setInnerText(Integer.toString(group.getFollowersCount()));
-                            streamDescription.setInnerText(group.getDescription());
-
-                            if (group.getDescription() == null || group.getDescription().length() == 0)
-                            {
-                                streamDescription.setInnerHTML("No group description entered.");
-                                streamDescription.addClassName(style.emptyDetailStyle());
-                            }
-                            else
-                            {
-                                streamDescription.removeClassName(style.emptyDetailStyle());
-                            }
-
-                            String interestString = "";
-                            for (String interest : group.getCapabilities())
-                            {
-                                interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
-                            }
-                            streamInterests.setInnerHTML(interestString);
-
-                            if (interestString.length() == 0)
-                            {
-                                streamInterests.setInnerHTML("No interested entered.");
-                                streamInterests.addClassName(style.emptyDetailStyle());
-                            }
-                            else
-                            {
-                                streamInterests.removeClassName(style.emptyDetailStyle());
-                            }
-
-                            PopularHashTagsModel.getInstance().fetch(
-                                    new StreamPopularHashTagsRequest(ScopeType.GROUP, group.getShortName()), true);
-                            UsageMetricModel.getInstance().fetch(
-                                    new UsageMetricStreamSummaryRequest(NUM_DAYS_FOR_METRICS, group.getStreamId()),
-                                    true);
-                        }
-                    }
-                });
     }
 
     /**
@@ -1236,4 +1143,113 @@ public class StreamDetailsComposite extends Composite
             break;
         }
     }
+
+    /**
+     * Got the person.
+     * 
+     * @param person
+     *            the person.
+     */
+    private void gotPerson(final PersonModelView person)
+    {
+        showFollowing.setVisible(true);
+        followingCount.getStyle().setDisplay(Display.INLINE);
+        followingLink.setVisible(true);
+        adminLink.setVisible(false);
+
+        streamId = person.getStreamId();
+        Session.getInstance().setPageTitle(person.getDisplayName());
+
+        if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+        {
+            configureLink.setVisible(true);
+            configureLink.setHref("#personalsettings/" + person.getAccountId());
+        }
+        else
+        {
+            configureLink.setVisible(false);
+        }
+
+        updateFollowLink(person.getAccountId(), EntityType.PERSON);
+        FeaturedStreamDTO featuredStreamDTO = new FeaturedStreamDTO();
+        featuredStreamDTO.setDescription(person.getDescription());
+        featuredStreamDTO.setStreamId(person.getStreamId());
+        featuredStreamDTO.setStreamType(ScopeType.PERSON);
+        featuredStreamDTO.setDisplayName(person.getDisplayName());
+
+        updateFeatureLink(featuredStreamDTO);
+
+        streamName.removeFromParent();
+        streamName.setInnerText(person.getDisplayName());
+        streamInfoContainer.insertFirst(streamName);
+        streamMeta.setInnerText(person.getTitle());
+        streamAvatar.clear();
+        streamAvatar.add(avatarRenderer.render(person.getEntityId(), person.getAvatarId(), EntityType.PERSON,
+                Size.Normal));
+
+        followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
+        followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
+        streamDescription.setInnerText(person.getJobDescription());
+
+        if (person.getJobDescription() == null || person.getJobDescription().length() == 0)
+        {
+            streamDescription.setInnerText("No job description entered.");
+            streamDescription.addClassName(style.emptyDetailStyle());
+        }
+        else
+        {
+            streamDescription.removeClassName(style.emptyDetailStyle());
+        }
+
+        String interestString = "";
+        for (String interest : person.getInterests())
+        {
+            interestString += "<a href='#search?query=" + interest + "'>" + interest + "</a> ";
+        }
+        streamInterests.setInnerHTML(interestString);
+
+        if (interestString.length() == 0)
+        {
+            streamInterests.setInnerHTML("No interests entered.");
+            streamInterests.addClassName(style.emptyDetailStyle());
+        }
+        else
+        {
+            streamInterests.removeClassName(style.emptyDetailStyle());
+        }
+
+        contactInfoTitle.setInnerText("Contact Information");
+        String contact = "";
+        if (person.getEmail() != null)
+        {
+            contact = person.getEmail();
+        }
+        if (person.getWorkPhone() != null)
+        {
+            if (person.getEmail() != null)
+            {
+                contact += "<br />";
+            }
+            contact += person.getWorkPhone();
+        }
+        contactInfo.setInnerHTML(contact);
+
+        if (contact.length() == 0)
+        {
+            contactInfo.setInnerHTML("No contact information entered.");
+            contactInfo.addClassName(style.emptyDetailStyle());
+        }
+        else
+        {
+            contactInfo.removeClassName(style.emptyDetailStyle());
+        }
+
+        PopularHashTagsModel.getInstance().fetch(
+                new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
+
+        UsageMetricModel.getInstance().fetch(
+                new UsageMetricStreamSummaryRequest(NUM_DAYS_FOR_METRICS, person.getStreamId()), true);
+
+    }
+
 }

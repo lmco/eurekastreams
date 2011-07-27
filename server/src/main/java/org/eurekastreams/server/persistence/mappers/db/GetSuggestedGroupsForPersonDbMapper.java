@@ -42,17 +42,20 @@ public class GetSuggestedGroupsForPersonDbMapper extends
     @SuppressWarnings("unchecked")
     public List<DomainGroupModelView> execute(final SuggestedStreamsRequest inRequest)
     {
-        Query query = getEntityManager().createQuery(
-                "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(g.id, "
-                        + "g.shortName, g.name, COUNT(theirGroups.pk.followingId), g.dateAdded, g.streamScope.id) "
-                        + "FROM Follower peopleIFollow, GroupFollower theirGroups, DomainGroup g "
-                        + "WHERE peopleIFollow.pk.followingId = theirGroups.pk.followerId "
-                        + "AND theirGroups.pk.followingId = g.id "
-                        + "AND peopleIFollow.pk.followerId = :personId AND theirGroups.pk.followingId NOT IN "
-                        + "(SELECT pk.followingId FROM GroupFollower WHERE followerId = :personId) "
-                        + "GROUP BY theirGroups.pk.followingId, g.id, g.shortName, g.name, g.dateAdded, "
-                        + "g.streamScope.id ORDER BY COUNT(theirGroups.pk.followingId) DESC").setParameter("personId",
-                inRequest.getPersonId());
+        Query query = getEntityManager()
+                .createQuery(
+                        "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(g.id, "
+                                + "g.shortName, g.name, COUNT(theirGroups.pk.followingId), g.dateAdded, g.streamScope.id) "
+                                + "FROM Follower peopleIFollow, GroupFollower theirGroups, DomainGroup g "
+                                + "WHERE peopleIFollow.pk.followingId = theirGroups.pk.followerId "
+                                + "AND theirGroups.pk.followingId = g.id "
+                                + "AND peopleIFollow.pk.followerId = :personId AND theirGroups.pk.followingId NOT IN "
+                                + "(SELECT pk.followingId FROM GroupFollower WHERE followerId = :personId) "
+                                + " AND g.streamScope.id NOT IN "
+                                + "(SELECT pk.scopeId FROM PersonBlockedSuggestion WHERE personid = :personBlockedId) "
+                                + "GROUP BY theirGroups.pk.followingId, g.id, g.shortName, g.name, g.dateAdded, "
+                                + "g.streamScope.id ORDER BY COUNT(theirGroups.pk.followingId) DESC")
+                .setParameter("personId", inRequest.getPersonId()).setParameter("personBlockedId", inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());
         return query.getResultList();
     }

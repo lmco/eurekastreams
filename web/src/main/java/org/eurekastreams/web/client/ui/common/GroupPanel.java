@@ -83,7 +83,7 @@ public class GroupPanel extends FlowPanel
             name = new Label(group.getName());
         }
         name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
-        name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
+        name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsisChild());
 
         infoPanel.add(name);
 

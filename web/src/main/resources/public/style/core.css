@@ -2269,10 +2269,13 @@ div:hover > .messageXPanel {
 	margin-top: 10px;
 }
 
-.ellipsis {
+.ellipsis, .ellipsisChild > * {
 	text-overflow: ellipsis;
 	-moz-binding: url('style/ellipsis.xml#ellipsis');
 	width: 50px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .action-link-separator {
@@ -3368,6 +3371,31 @@ body .shortname-form-element input {
 		0px;
 }
 
+
+@sprite .blockSuggestion
+{
+	gwt-image: "smallX";
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	display: none;
+	cursor:pointer;
+}
+
+@sprite .blockSuggestion:hover
+{
+	gwt-image: "smallXHover";
+}
+
+.discoverConnectionItem:hover .blockSuggestion
+{
+	display: block;
+}
+
+.discoverConnectionItem
+{
+	position: relative;
+}
 
 .discoverPageList .followLink {
 	display: none;

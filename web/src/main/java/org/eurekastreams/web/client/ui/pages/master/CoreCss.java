@@ -1412,4 +1412,10 @@ public interface CoreCss extends CssResource
     String featureDialog();
     
     String ellipsis();
+
+    String ellipsisChild();
+
+    String blockSuggestion();
+
+    String discoverConnectionItem();
 }
