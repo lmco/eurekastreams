@@ -41,7 +41,7 @@ public interface CompositeEntity
 
     /**
      * Setter for overview.
-     * 
+     *
      * @param overview
      *            the overview.
      */
@@ -49,7 +49,7 @@ public interface CompositeEntity
 
     /**
      * Getter for overview.
-     * 
+     *
      * @return the overview.
      */
     String getOverview();
@@ -65,4 +65,6 @@ public interface CompositeEntity
             + "((/?)|" // slash not required if no file name.
             + "(/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+/?)$";
 
+    /** Used for validation. */
+    String WEBSITE_MESSAGE = "You must supply a valid url (example: http://www.example.com)";
 }

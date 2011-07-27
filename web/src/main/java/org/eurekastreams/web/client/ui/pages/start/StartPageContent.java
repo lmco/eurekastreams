@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -233,7 +233,7 @@ public class StartPageContent extends FlowPanel
                                             event.getParameters().put("url", "");
                                             event.getParameters().put("prefs", "");
                                             EventBus.getInstance().notifyObservers(
-                                                    new UpdatedHistoryParametersEvent(event.getParameters()));
+                                                    new UpdatedHistoryParametersEvent(event.getParameters(), false));
 
                                             GadgetModel.getInstance().insert(
                                                     new AddGadgetToStartPageRequest(url, tabsResponse.get(0).getId(),
@@ -243,7 +243,7 @@ public class StartPageContent extends FlowPanel
                                         {
                                             // Clear current action
                                             EventBus.getInstance().notifyObservers(
-                                                    new UpdatedHistoryParametersEvent(event.getParameters()));
+                                                    new UpdatedHistoryParametersEvent(event.getParameters(), false));
                                             String url = event.getParameters().get("url");
                                             ThemeModel.getInstance().set(url);
                                         }

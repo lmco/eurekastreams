@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.widgets.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
@@ -30,12 +29,11 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
-import org.eurekastreams.web.client.events.HistoryViewsChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
@@ -138,6 +136,20 @@ public class StreamDetailsComposite extends Composite
          * @return Private avatar.
          */
         String privateAvatar();
+
+        /**
+         * Hide details button.
+         * 
+         * @return hide details button.
+         */
+        String hideDetails();
+
+        /**
+         * Featured item header link style.
+         * 
+         * @return Featured item header link style.
+         */
+        String headerFeatured();
     }
 
     /**
@@ -239,13 +251,13 @@ public class StreamDetailsComposite extends Composite
      * UI element for stream name.
      */
     @UiField
-    SpanElement streamName;
+    DivElement streamName;
 
     /**
      * UI element for stream meta info.
      */
     @UiField
-    SpanElement streamMeta;
+    DivElement streamMeta;
 
     /**
      * UI element for stream avatar.
@@ -259,6 +271,12 @@ public class StreamDetailsComposite extends Composite
     @UiField
     HTMLPanel condensedAvatar;
 
+    /**
+     * UI element for stream description.
+     */
+    @UiField
+    DivElement contactInfo;
+    
     /**
      * UI element for stream description.
      */
@@ -435,8 +453,26 @@ public class StreamDetailsComposite extends Composite
     /**
      * Featured streams.
      */
-
     private PagedSet<FeaturedStreamDTO> featuredStreams;
+
+    /**
+     * Custom Avatars.
+     */
+    public enum CustomAvatar
+    {
+        /**
+         * Everyone avatar.
+         */
+        EVERYONE,
+        /**
+         * Following avatar.
+         */
+        FOLLOWING,
+        /**
+         * Custom stream avatar.
+         */
+        CUSTOM
+    };
 
     /**
      * Build page.
@@ -447,7 +483,6 @@ public class StreamDetailsComposite extends Composite
         streamName.setInnerText("Following");
         addStyleName(style.condensedStream());
         followLink.setVisible(false);
-        featureLink.setText("Feature");
         featureLink.setVisible(Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN));
         detailsContainerAnimation = new ExpandCollapseAnimation(streamDetailsContainer, EXPAND_ANIMATION_DURATION);
 
@@ -526,6 +561,7 @@ public class StreamDetailsComposite extends Composite
             {
                 if (detailsContainerAnimation.isExpanded())
                 {
+                    toggleDetails.removeStyleName(style.hideDetails());
                     detailsContainerAnimation.collapse();
                 }
                 else
@@ -548,8 +584,6 @@ public class StreamDetailsComposite extends Composite
      */
     private void addEvents()
     {
-        final StreamDetailsComposite thisClass = this;
-
         EventBus.getInstance().addObserver(GotStreamPopularHashTagsEvent.class,
                 new Observer<GotStreamPopularHashTagsEvent>()
                 {
@@ -558,9 +592,8 @@ public class StreamDetailsComposite extends Composite
                         String tagString = "";
                         for (String tag : event.getPopularHashTags())
                         {
-                            tagString +=
-                                    ("<a href=\"" + streamSearchLinkBuilder.buildHashtagSearchLink(tag, null) + "\">"
-                                            + tag + "</a>");
+                            tagString += ("<a href=\"" + streamSearchLinkBuilder.buildHashtagSearchLink(tag, null)
+                                    + "\">" + tag + "</a> ");
                         }
                         streamHashtags.setInnerHTML(tagString);
                     }
@@ -574,41 +607,42 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
-        {
-            public void update(final GotUsageMetricSummaryEvent event)
-            {
-                UsageMetricSummaryDTO data = event.getResponse();
-
-                List<DailyUsageSummary> stats = data.getDailyStatistics();
-                if (stats != null)
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
+                new Observer<GotUsageMetricSummaryEvent>()
                 {
-                    for (int i = 0; i < stats.size(); i++)
+                    public void update(final GotUsageMetricSummaryEvent event)
                     {
-                        if (null == stats.get(i))
+                        UsageMetricSummaryDTO data = event.getResponse();
+
+                        List<DailyUsageSummary> stats = data.getDailyStatistics();
+                        if (stats != null)
                         {
-                            chart.addPoint(i, 0.0);
+                            for (int i = 0; i < stats.size(); i++)
+                            {
+                                if (null == stats.get(i))
+                                {
+                                    chart.addPoint(i, 0.0);
+                                }
+                                else
+                                {
+                                    chart.addPoint(i, stats.get(i).getStreamViewCount());
+                                }
+                            }
                         }
-                        else
-                        {
-                            chart.addPoint(i, stats.get(i).getStreamViewCount());
-                        }
+
+                        avgComments.setInnerText("" + data.getAverageDailyCommentCount());
+                        avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
+                        avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
+                        avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
+                        avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+
+                        Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
+                        totalContributors.setInnerText("" + data.getTotalContributorCount());
+                        totalMessages.setInnerText(totalMessagesNumber.toString());
+                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
+                        chart.update();
                     }
-                }
-
-                avgComments.setInnerText("" + data.getAverageDailyCommentCount());
-                avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
-                avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
-                avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
-                avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
-
-                Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
-                totalContributors.setInnerText("" + data.getTotalContributorCount());
-                totalMessages.setInnerText(totalMessagesNumber.toString());
-                totalViews.setInnerText("" + data.getTotalStreamViewCount());
-                chart.update();
-            }
-        });
+                });
 
         addModelViewEvents();
 
@@ -619,57 +653,6 @@ public class StreamDetailsComposite extends Composite
                 streamReq = event.getJsonRequest();
             }
         });
-
-        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
-        {
-            public void update(final HistoryViewsChangedEvent event)
-            {
-                chart.clearPoints();
-                chart.update();
-
-                // Collapse right away if open.
-                streamDetailsContainer.getStyle().setHeight(0.0, Unit.PX);
-
-                List<String> views = new ArrayList<String>(event.getViews());
-
-                condensedAvatar.removeStyleName(style.everyoneAvatar());
-                condensedAvatar.removeStyleName(style.followingAvatar());
-                condensedAvatar.removeStyleName(style.privateAvatar());
-
-                if (views == null || views.size() == 0 || views.get(0).equals("following"))
-                {
-                    streamName.setInnerText("Following");
-                    Session.getInstance().setPageTitle("Following");
-                    condensedAvatar.addStyleName(style.followingAvatar());
-                    thisClass.addStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("person") && views.size() >= 2)
-                {
-                    thisClass.removeStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("group") && views.size() >= 2)
-                {
-                    thisClass.removeStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("custom") && views.size() >= 3)
-                {
-                    streamName.setInnerText("Custom");
-                    Session.getInstance().setPageTitle("Custom Stream");
-                    thisClass.addStyleName(style.condensedStream());
-                }
-                else if (views.get(0).equals("everyone"))
-                {
-                    streamName.setInnerText("Everyone");
-                    Session.getInstance().setPageTitle("Everyone");
-                    condensedAvatar.addStyleName(style.everyoneAvatar());
-                    thisClass.addStyleName(style.condensedStream());
-                }
-                else if (views.size() == 1)
-                {
-                    thisClass.removeStyleName(style.condensedStream());
-                }
-            }
-        }, true);
 
         EventBus.getInstance().addObserver(DeletedRequestForGroupMembershipResponseEvent.class,
                 new Observer<DeletedRequestForGroupMembershipResponseEvent>()
@@ -688,6 +671,70 @@ public class StreamDetailsComposite extends Composite
                         openAdmin();
                     }
                 }, true);
+    }
+
+    /**
+     * Set the stream title and avatar.
+     * 
+     * @param inStreamTitle
+     *            the title.
+     * @param avatar
+     *            the avatar.
+     */
+    public void setStreamTitle(final String inStreamTitle, final CustomAvatar avatar)
+    {
+        streamName.setInnerText(inStreamTitle);
+
+        switch (avatar)
+        {
+        case EVERYONE:
+            condensedAvatar.addStyleName(style.followingAvatar());
+            break;
+        case FOLLOWING:
+            condensedAvatar.addStyleName(style.everyoneAvatar());
+            break;
+        case CUSTOM:
+            break;
+        default:
+            break;
+        }
+
+    }
+
+    /**
+     * Initialize the view.
+     */
+    public void init()
+    {
+        chart.clearPoints();
+        chart.update();
+
+        // Collapse right away if open.
+        streamDetailsContainer.getStyle().setHeight(0.0, Unit.PX);
+        toggleDetails.removeStyleName(style.hideDetails());
+
+        condensedAvatar.removeStyleName(style.everyoneAvatar());
+        condensedAvatar.removeStyleName(style.followingAvatar());
+        condensedAvatar.removeStyleName(style.privateAvatar());
+    }
+
+    /**
+     * Set Condensed mode.
+     * 
+     * @param isCondensed
+     *            condensed mode.
+     */
+    public void setCondensedMode(final boolean isCondensed)
+    {
+        if (isCondensed)
+        {
+            this.addStyleName(style.condensedStream());
+
+        }
+        else
+        {
+            this.removeStyleName(style.condensedStream());
+        }
     }
 
     /**
@@ -755,6 +802,21 @@ public class StreamDetailsComposite extends Composite
                         }
                         streamInterests.setInnerHTML(interestString);
 
+                        String contact = "";
+                        if (person.getEmail() != null)
+                        {
+                        	contact = person.getEmail();
+                        }
+                        if (person.getWorkPhone() != null)
+                        {
+                        	 if (person.getEmail() != null)
+                             {
+                             	contact += "</br>";
+                             }
+                        	 contact += person.getWorkPhone();
+                        }
+                        contactInfo.setInnerHTML(contact);
+                        
                         PopularHashTagsModel.getInstance().fetch(
                                 new StreamPopularHashTagsRequest(ScopeType.PERSON, person.getAccountId()), true);
 
@@ -859,8 +921,7 @@ public class StreamDetailsComposite extends Composite
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             inFeatured = false;
-            featureLink.removeStyleName("featured");
-            featureLink.setText("Feature");
+            featureLink.removeStyleName(style.headerFeatured());
 
             for (FeaturedStreamDTO featured : featuredStreams.getPagedSet())
             {
@@ -869,8 +930,7 @@ public class StreamDetailsComposite extends Composite
                 {
                     inFeatured = true;
                     featuredStreamDTO.setId(featured.getId());
-                    featureLink.addStyleName("featured");
-                    featureLink.setText("Unfeature");
+                    featureLink.addStyleName(style.headerFeatured());
                     break;
                 }
             }
@@ -935,16 +995,14 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request =
-                                new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson().getAccountId(),
-                                        entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request =
-                                new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson().getAccountId(),
-                                        entityId, type, false, Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
@@ -956,14 +1014,16 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
-                    new Observer<GotPersonFollowerStatusResponseEvent>()
-                    {
-                        public void update(final GotPersonFollowerStatusResponseEvent event)
-                        {
-                            onFollowerStatusChanged(event.getResponse());
-                        }
-                    });
+            Session.getInstance()
+                    .getEventBus()
+                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                            new Observer<GotPersonFollowerStatusResponseEvent>()
+                            {
+                                public void update(final GotPersonFollowerStatusResponseEvent event)
+                                {
+                                    onFollowerStatusChanged(event.getResponse());
+                                }
+                            });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);
@@ -979,6 +1039,7 @@ public class StreamDetailsComposite extends Composite
      */
     private void openAbout()
     {
+        toggleDetails.addStyleName(style.hideDetails());
         aboutLink.addStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
@@ -996,6 +1057,7 @@ public class StreamDetailsComposite extends Composite
      */
     private void openFollowing()
     {
+        toggleDetails.addStyleName(style.hideDetails());
         aboutLink.removeStyleName(style.activeOption());
         followingLink.addStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
@@ -1013,6 +1075,7 @@ public class StreamDetailsComposite extends Composite
      */
     private void openFollower()
     {
+        toggleDetails.addStyleName(style.hideDetails());
         aboutLink.removeStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.addStyleName(style.activeOption());
@@ -1030,6 +1093,7 @@ public class StreamDetailsComposite extends Composite
      */
     private void openAdmin()
     {
+        toggleDetails.addStyleName(style.hideDetails());
         aboutLink.removeStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());

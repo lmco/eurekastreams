@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamScopeLis
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -144,6 +145,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
             {
                 if (!getEntityType(obj.toString()).equals("NOTSET"))
                 {
+                	Window.alert(obj.toString());
                     EventBus.getInstance().notifyObservers(
                             new StreamScopeAddedEvent(new StreamScope(getDisplayName(obj.toString()), ScopeType
                                     .valueOf(getEntityType(obj.toString())), getUniqueId(obj.toString()), Long

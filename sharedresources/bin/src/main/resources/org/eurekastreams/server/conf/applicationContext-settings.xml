@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- Content template for header site label row in UI -->
+	<bean id="headerContentTemplate" class="java.lang.String">
+		<constructor-arg>
+			<value>
+				<![CDATA[
+					<div class="site-label">%SITELABEL%</div>
+			    ]]>
+			</value>
+		</constructor-arg>
+	</bean>
+	<!-- Content template for footer site label row in UI -->
+	<bean id="footerContentTemplate" class="java.lang.String">
+		<constructor-arg>
+			<value>
+				<![CDATA[
+					<div class="site-label">%SITELABEL%</div>
+			    ]]>
+		    </value>
+		</constructor-arg>
+	</bean>
+	<!-- Content template for banner area (on start page) -->
+	<bean id="bannerContentTemplate" class="java.lang.String">
+		<constructor-arg value="" />
+	</bean>
+</beans>
+ 

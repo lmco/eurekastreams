@@ -231,7 +231,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
                 }
             }
 
-            Session.getInstance().getEventBus().notifyObservers(new UpdatedHistoryParametersEvent(values));
+            Session.getInstance().getEventBus().notifyObservers(new UpdatedHistoryParametersEvent(values, viewUpdated));
         }
         fireValueChange = true;
     }
