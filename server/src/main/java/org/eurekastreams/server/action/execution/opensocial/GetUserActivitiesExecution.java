@@ -174,7 +174,7 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
         if (currentRequest.getActivityIds() != null && currentRequest.getActivityIds().size() > 0)
         {
             List<Long> activityIds = new ArrayList<Long>(currentRequest.getActivityIds());
-            System.out.println("Before: " + activityIds.size());
+
             // only look for IDs that aren't yet in the list
             for (ActivityDTO act : currentActivityDTOs)
             {

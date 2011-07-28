@@ -71,7 +71,7 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
                         + "GROUP BY streamViewStreamScopeId " + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs)) > 0 "
                         + "ORDER BY SUM(streamViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
                 .setParameter("nowInMS", DateDayExtractor.getStartOfDay(new Date()).getTime());
-        System.out.println(DateDayExtractor.getStartOfDay(new Date()).getTime());
+
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount);
@@ -116,7 +116,6 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
             if (streamObj[1] != null)
             {
                 viewCount = Math.round(((Double) streamObj[1]));
-                System.out.println("ScopeId: " + streamScopeId + " - count: " + viewCount);
             }
 
             // find the StreamDTO with the stream scope

@@ -51,11 +51,11 @@ public class GetPreviousDailyUsageSummaryByDateDbMapperTest extends MapperTest
     public void testExecuteWithData()
     {
         final long streamScopeId = 2L;
-        final long april7th2011 = 1302196002000L;
+        final long april8th2011 = 1302282402000L;
 
-        DailyUsageSummary summary = sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(april7th2011),
+        DailyUsageSummary summary = sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(april8th2011),
                 streamScopeId));
-        Assert.assertEquals(5L, summary.getId());
+        Assert.assertEquals(6L, summary.getId());
     }
 
     /**
