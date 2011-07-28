@@ -311,6 +311,7 @@
 			{
 				color: #1481B3;
 				text-decoration: underline;
+				width: 140px;
 			}
 			
 			.userPanel {

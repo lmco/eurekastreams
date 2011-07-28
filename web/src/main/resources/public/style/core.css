@@ -1435,7 +1435,7 @@ body .post-expanded-panel .content-warning {
 
 .bookmarkSearchName
 {
-	width: 140px;
+	width: 140px ! important;
 }
 
 
