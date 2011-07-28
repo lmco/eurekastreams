@@ -34,6 +34,7 @@
 @external .delegation-*;
 @external .delegation-item .avatar;
 @external .delegation-item .avatar-image;
+@external .avatar-image;
 @external .delegation-item .avatar-image-Small;
 @external .connection-item-info;
 @external .connection-col;
@@ -155,6 +156,10 @@ textarea.empty-labeled-textbox {
 	top: -3px;
 }
 
+.globalSearchItemName a {
+	width: 140px;
+}
+
 
 img {
 	literal("-ms-interpolation-mode: bicubic");
@@ -172,7 +177,7 @@ img {
 .site-labeling {
 	width: 100%;
 	text-align: center;
-	color: #CCC;
+	color: #999;
 	background-color: transparent;
 	min-height: 16px;
 	clear: both;
@@ -728,7 +733,7 @@ div.banner-container {
 {
 	font-family: georgia;
 	font-size: 18px ! important;
-	padding: 10px 5px;
+	padding: 5px 0;
 }
 
 div.tab-container table {
@@ -865,7 +870,7 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 	top: 60px;
 }
 
-.notification-bar .message,.notification-bar .notification-left,.notification-bar .notification-right
+.notification-bar .message
 	{
 	display: inline-block;
 	zoom: 1;
@@ -876,21 +881,12 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 	color: #343434;
 	width: auto;
 	vertical-align: top;
-	padding-left: 15px;
-	padding-right: 5px;
-}
-
-@sprite .notification-bar .notification-left {
-	gwt-image: "feedbackMessageBoxLeft";
-}
-
-@sprite .notification-bar .notification-right {
-	gwt-image: "feedbackMessageBoxRight";
+	width: 990px;
 }
 
 .master-notifier {
 	position: absolute;
-	top: 70px;
+	top: 50px;
 	margin: 0px auto;
 	z-index: 999;
 }
@@ -920,7 +916,7 @@ div.message div.content .gwt-Hyperlink {
 	margin-left: 15px;
 }
 
-div.message .close-notification,div.message .undo-notification,div.message .undo-seperator
+div.message .close-notification,div.message .undo-notification
 	{
 	margin-left: 5px;
 	padding: 3px;
@@ -941,14 +937,6 @@ div.message .close-notification {
 
 div.message .close-notification:hover {
 	background-image: url(style/images/modalCloseBtnSmallHover.png);
-}
-
-div.message .undo-seperator {
-	background: transparent url(style/images/feedbackMessageSeperator.png)
-		no-repeat scroll 3px 3px;
-	width: 2px;
-	height: 25px;
-	top: 0;
 }
 
 div.message .undo-notification {
@@ -1445,6 +1433,12 @@ body .post-expanded-panel .content-warning {
 	border-top: 1px solid #999;
 }
 
+.bookmarkSearchName
+{
+	width: 140px;
+}
+
+
 .bookmarkSearch .searchResultsAutocompleteResults
 {
 	border: none;
@@ -1892,7 +1886,7 @@ body .post-to-stream .over-character-limit {
 }
 
 .stream-message-item {
-	padding-bottom: 5px;
+	padding-bottom: 10px;
 	padding-top: 10px;
 	margin-left: 10px;
 	margin-right: 85px;
@@ -2262,6 +2256,12 @@ div:hover > .messageXPanel {
 	margin-top: -2px;
 }
 
+.streamDetailsContainer .avatar-image {
+	border: 0px;
+	background: url(style/images/avatarBackground.png) repeat scroll 0 -26px transparent;
+}
+
+
 .stream-message-item .message-actions-area {
 	display: inline-block;
 }
@@ -2276,7 +2276,6 @@ div:hover > .messageXPanel {
 	width: 50px;
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis;
 	display: block;
 }
 
@@ -6371,7 +6370,7 @@ body div.eureka-connect-liked-activity-wrapper {
 		display: inline;
 	}
 	
-	div.message .close-notification,div.message .undo-notification,div.message .undo-seperator
+	div.message .close-notification,div.message .undo-notification
 		{
 		display: inline;
 	}
@@ -6389,7 +6388,7 @@ body div.eureka-connect-liked-activity-wrapper {
 		padding-right: 0;
 	}
 	
-	.notification-bar .message,.notification-bar .notification-left,.notification-bar .notification-right
+	.notification-bar .message
 		{
 		display: inline;
 	}
@@ -6817,7 +6816,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	
 	.attach-link .add-button-submit {
 		display: block;
-		margin-top: 7px;
+		margin-top: 1px;
 	}
 	
 	body div.portal-boundary div.layout-container {

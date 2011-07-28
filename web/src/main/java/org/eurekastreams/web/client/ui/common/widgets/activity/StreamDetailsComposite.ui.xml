@@ -49,7 +49,7 @@
 			.stream-avatar {
 				background-image: url(style/images/avatarBackground.png);
 				float: left;
-				padding: 5px;
+				padding: 4px 4px 2px 4px;
 				margin: 10px;
 			}
 			
@@ -320,7 +320,7 @@
 			<g:Anchor addStyleNames="{style.toggle-details-link} {style.view-details}"
 				ui:field="toggleDetails">Details</g:Anchor>
 		</div>
-		<div class="{style.stream-details-container}" ui:field="streamDetailsContainer">
+		<div class="{style.stream-details-container}  {resources.coreCss.streamDetailsContainer}" ui:field="streamDetailsContainer">
 			<div class="{style.stream-details-options}">
 				<g:Label addStyleNames="{style.stream-details-option}"
 					ui:field="aboutLink">About</g:Label>

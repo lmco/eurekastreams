@@ -192,6 +192,12 @@ public class ActivityContent extends Composite
          */
         String smallAvatar();
 
+        /**
+         * Current user configure link.
+         * @return current user configure link.
+         */
+        String currentUserConfLink();
+
     }
 
     /**
@@ -488,12 +494,15 @@ public class ActivityContent extends Composite
         String nameUrl = Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PEOPLE, currentPerson.getAccountId()));
         Hyperlink name = new Hyperlink(currentPerson.getDisplayName(), nameUrl);
+        name.setTitle(currentPerson.getDisplayName());
         name.addStyleName(style.currentUserStreamLink());
+        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsisChild());
         userLinkPanel.add(name);
 
         String confUrl = Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PERSONAL_SETTINGS, currentPerson.getAccountId()));
         Hyperlink conf = new Hyperlink("Configure My Stream", confUrl);
+        conf.addStyleName(style.currentUserConfLink());
         userLinkPanel.add(conf);
 
         userPanel.add(userLinkPanel);
@@ -1442,6 +1451,7 @@ public class ActivityContent extends Composite
         innerPanel.add(streamImage);
 
         Label streamName = new Label(name);
+        streamName.setTitle(name);
         streamName.addStyleName(style.streamName());
         streamName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
         innerPanel.add(streamName);

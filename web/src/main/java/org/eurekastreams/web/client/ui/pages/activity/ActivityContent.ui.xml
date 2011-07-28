@@ -123,8 +123,8 @@
 			}
 			
 			.sort-option {
-				height: 19px;
-				padding: 7px 10px;
+				height: 15px;
+				padding: 9px 12px;
 				float: left;
 			}
 			
@@ -236,7 +236,7 @@
 				text-align: center;
 				width: 95%;
 				border-top: 1px solid #bbbbbb;
-				padding-top: 5px;
+				padding-top: 20px;
 				display: block;
 				cursor: pointer;
 				color: #1481B3;
@@ -300,6 +300,17 @@
 			
 			.currentUserStreamLink>a {
 				color: black;
+				width: 160px;
+			}
+
+			.currentUserStreamLink>a:hover {
+				text-decoration: underline;
+			}
+			
+			.currentUserConfLink>a:hover
+			{
+				color: #1481B3;
+				text-decoration: underline;
 			}
 			
 			.userPanel {

@@ -200,6 +200,8 @@ public class GlobalSearchComposite extends FlowPanel
                         final FocusPanel itemContainer = new FocusPanel();
                         final FlowPanel itemPanel = new FlowPanel();
                         final Hyperlink name = new Hyperlink();
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchItemName());
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsisChild());
 
                         if (result instanceof PersonModelView)
                         {
@@ -207,6 +209,7 @@ public class GlobalSearchComposite extends FlowPanel
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
                                     .getEntityId(), person.getAvatarId(), Size.Small));
                             name.setText(person.getDisplayName());
+                            name.setTitle(person.getDisplayName());
                             historyToken = Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
 
@@ -228,6 +231,7 @@ public class GlobalSearchComposite extends FlowPanel
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
                                     .getEntityId(), group.getAvatarId(), Size.Small));
                             name.setText(group.getName());
+                            name.setTitle(group.getName());
                             historyToken = Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.GROUPS, group.getShortName()));
 

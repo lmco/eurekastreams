@@ -174,8 +174,11 @@ public class ShareRenderer implements VerbRenderer
         renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getUniqueIdentifier(), activity
                 .getOriginalActor().getDisplayName()));
 
-        renderers.add(new MetadataLinkRenderer("via", activity.getActor().getUniqueIdentifier(), activity
-                .getActor().getDisplayName()));
+        if (activity.getActor().getEntityId() != activity.getOriginalActor().getEntityId())
+        {
+            renderers.add(new MetadataLinkRenderer("via", activity.getActor().getUniqueIdentifier(), activity
+                    .getActor().getDisplayName()));
+        }
 
         StreamEntityDTO stream = activity.getDestinationStream();
         if (stream.getType() == EntityType.RESOURCE)

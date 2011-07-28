@@ -200,6 +200,8 @@ public class BookmarkSearchComposite extends Composite
                         final FocusPanel itemContainer = new FocusPanel();
                         final FlowPanel itemPanel = new FlowPanel();
                         final Anchor name = new Anchor();
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkSearchName());
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
 
                         if (result instanceof PersonModelView)
                         {
@@ -207,6 +209,7 @@ public class BookmarkSearchComposite extends Composite
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
                                     .getEntityId(), person.getAvatarId(), Size.VerySmall));
                             name.setText(person.getDisplayName());
+                            name.setTitle(person.getDisplayName());
                             itemContainer.addClickHandler(new ClickHandler()
                             {
                                 public void onClick(final ClickEvent event)
@@ -222,6 +225,7 @@ public class BookmarkSearchComposite extends Composite
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
                                     .getEntityId(), group.getAvatarId(), Size.VerySmall));
                             name.setText(group.getName());
+                            name.setTitle(group.getName());
                             itemContainer.addClickHandler(new ClickHandler()
                             {
                                 public void onClick(final ClickEvent event)
