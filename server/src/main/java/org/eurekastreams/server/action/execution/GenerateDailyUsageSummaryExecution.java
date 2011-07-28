@@ -42,123 +42,125 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     /**
      * Logger.
      */
-    private Log logger = LogFactory.make();
+    private final Log logger = LogFactory.make();
 
     /**
      * strategy to get a date from N days ago.
      */
-    private GetDateFromDaysAgoStrategy daysAgoDateStrategy;
+    private final GetDateFromDaysAgoStrategy daysAgoDateStrategy;
 
     /**
      * Number of days of data to generate.
      */
-    private int daysToGenerate;
+    private final int daysToGenerate;
 
     // mappers that apply to the whole system
 
     /**
      * Mapper to get a day's page view count - for the whole system.
      */
-    private DomainMapper<Date, Long> getDailyPageViewCountMapper;
+    private final DomainMapper<Date, Long> getDailyPageViewCountMapper;
 
     /**
      * Mapper to get a day's unique visitor count - for whole system.
      */
-    private DomainMapper<Date, Long> getDailyUniqueVisitorCountMapper;
+    private final DomainMapper<Date, Long> getDailyUniqueVisitorCountMapper;
 
     // mappers that may be scoped to a particular thread
 
     /**
      * Mapper to get a single day's DailyUsageSummary - for a stream or the whole system.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> getDailyUsageSummaryByDateMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
+    getDailyUsageSummaryByDateMapper;
 
     /**
      * Mapper to get the most recent DailyUsageSummary before the input date.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> getPreviousDailyUsageSummaryByDateMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
+    getPreviousDailyUsageSummaryByDateMapper;
 
     /**
      * Mapper to get a day's message count - for a stream or the whole system.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper;
 
     /**
      * Mapper to get a day's stream contributor count - for a stream or the whole system.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamContributorCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamContributorCountMapper;
 
     /**
      * Mapper to get a day's stream view count - for a stream or the whole system.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewCountMapper;
 
     /**
      * Mapper to get a day's stream viewer count - for a stream or the whole system.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper;
 
     /**
      * Mapper to get the total number of activities posted to a stream.
      */
-    private DomainMapper<Long, Long> getTotalActivityCountMapper;
+    private final DomainMapper<Long, Long> getTotalActivityCountMapper;
 
     /**
      * Mapper to get the total number of comments posted to a stream.
      */
-    private DomainMapper<Long, Long> getTotalCommentCountMapper;
+    private final DomainMapper<Long, Long> getTotalCommentCountMapper;
 
     /**
      * Mapper to get the total number of contributors to a stream by stream scope id.
      */
-    private DomainMapper<Long, Long> getTotalStreamContributorMapper;
+    private final DomainMapper<Long, Long> getTotalStreamContributorMapper;
 
     /**
      * Mapper to get day's average activity response time (for those that had responses) - for a stream or the whole
      * system.
      */
-    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper;
+    private final DomainMapper<Date, Long> getDailyMessageResponseTimeMapper;
 
     // helpers
 
     /**
      * Mapper to get all the ids for the stream scopes to generate data for.
      */
-    private DomainMapper<Date, List<Long>> streamScopeIdsMapper;
+    private final DomainMapper<Date, List<Long>> streamScopeIdsMapper;
 
     /**
      * Mapper to delete old UsageMetric data.
      */
-    private DomainMapper<Serializable, Serializable> usageMetricDataCleanupMapper;
+    private final DomainMapper<Serializable, Serializable> usageMetricDataCleanupMapper;
 
     /**
      * Mapper to insert the DailyUsageSummary entity.
      */
-    private DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> insertMapper;
+    private final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> insertMapper;
 
     /**
      * Mapper to clear the entity manager.
      */
-    private DomainMapper<Serializable, Boolean> clearEntityManagerMapper;
+    private final DomainMapper<Serializable, Boolean> clearEntityManagerMapper;
 
     /**
      * Mapper to get the summary data for a stream, or all streams - used for caching.
      */
-    private DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper;
+    private final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper;
 
     /**
      * The number of days to cache summary data for.
      */
-    private int numberOfDaysToCacheSummaryDataFor;
+    private final int numberOfDaysToCacheSummaryDataFor;
 
     /**
      * Strategy to determine if a day is a weekday.
      */
-    private DayOfWeekStrategy dayOfWeekStrategy;
+    private final DayOfWeekStrategy dayOfWeekStrategy;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inDaysToGenerate
      *            the number of days to generate data for
      * @param inDaysAgoDateStrategy
@@ -206,7 +208,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final int inDaysToGenerate,
             final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
-            final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> // 
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
             inGetPreviousDailyUsageSummaryByDateMapper,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyMessageCountMapper,
             final DomainMapper<Date, Long> inGetDailyPageViewCountMapper,
@@ -250,7 +252,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
     /**
      * Generate the daily usage summary for the previous day.
-     * 
+     *
      * @param inActionContext
      *            the action context
      * @return true if data was inserted, false if already existed
@@ -279,7 +281,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
     /**
      * Generate the daily usage summary for all streams for a specific day.
-     * 
+     *
      * @param inDaysAgo
      *            the number of days ago to generate data for
      */
@@ -318,7 +320,7 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
     /**
      * Generate the daily usage summary for the stream scope with the input id, and for the given date.
-     * 
+     *
      * @param inDate
      *            the date to generate for
      * @param inStreamScopeId
