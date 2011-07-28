@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -145,10 +146,18 @@ public class DiscoverContent extends Composite
     @UiField
     Hyperlink createGroupButton;
 
+    /** Element showing message when list is empty. */
+    @UiField
+    DivElement suggestionsEmptyLabel;
+
+    /** Element showing message when list is empty. */
+    @UiField
+    DivElement mostViewedEmptyLabel;
+
     /**
      * JSNI.
      */
-    private WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
 
     /**
      * Default constructor.
@@ -157,6 +166,8 @@ public class DiscoverContent extends Composite
     {
         initWidget(binder.createAndBindUi(this));
 
+        UIObject.setVisible(suggestionsEmptyLabel, false);
+        UIObject.setVisible(mostViewedEmptyLabel, false);
         createGroupButton.setTargetHistoryToken(Session.getInstance()
                 .generateUrl(new CreateUrlRequest(Page.NEW_GROUP)));
 
@@ -192,7 +203,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     * 
+     *
      * @param inDiscoverLists
      *            the data to display
      */
@@ -255,6 +266,7 @@ public class DiscoverContent extends Composite
                 suggestedStreamsPanel.add(suggestedPanel);
             }
         }
+        UIObject.setVisible(suggestionsEmptyLabel, suggestedStreamsPanel.getWidgetCount() == 0);
         if (inDiscoverLists.getMostViewedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostViewedStreams())
@@ -263,6 +275,7 @@ public class DiscoverContent extends Composite
                         DiscoverListItemPanel.ListItemType.DAILY_VIEWERS));
             }
         }
+        UIObject.setVisible(mostViewedEmptyLabel, mostViewedStreamsPanel.getWidgetCount() == 0);
         if (inDiscoverLists.getMostFollowedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostFollowedStreams())
@@ -311,7 +324,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

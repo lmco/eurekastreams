@@ -275,10 +275,19 @@ public class BookmarkSearchComposite extends Composite
     @UiHandler("resultsPanelContainer")
     void onResultsPanelContainerClick(final ClickEvent ev)
     {
+        clearSearchResults();
+    }
+
+    /**
+     * Clears UI associated with the search results.
+     */
+    private void clearSearchResults()
+    {
         searchTerm.reset();
         resultsPanelContainer.setVisible(false);
         resultsPanel.clear();
         removeStyleName(style.searchActive());
+        activeItem = null;
     }
 
     /**
@@ -312,6 +321,7 @@ public class BookmarkSearchComposite extends Composite
     {
         collapsedTitle.setVisible(true);
         UIObject.setVisible(expandedPanel, false);
+        clearSearchResults();
     }
 
     /**
