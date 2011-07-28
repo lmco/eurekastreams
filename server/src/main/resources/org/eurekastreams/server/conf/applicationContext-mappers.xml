@@ -2478,8 +2478,8 @@
 		    </bean>
         </constructor-arg>
         <constructor-arg>
-            <!-- Most viewed streams (sorted by average daily views) -->
-		    <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByDailyAverageViewsDbMapper">
+            <!-- Most viewed streams (sorted by average daily viewers) -->
+		    <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByDailyAverageViewersDbMapper">
 		        <constructor-arg value="10" />
 		    </bean>
         </constructor-arg>

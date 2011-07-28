@@ -30,9 +30,9 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * DB Mapper to get a list of StreamDTOs sorted by the average daily views, descending.
+ * DB Mapper to get a list of StreamDTOs sorted by the average daily viewers, descending.
  */
-public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<Serializable, List<StreamDTO>>
+public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper<Serializable, List<StreamDTO>>
 {
     /**
      * Number of streams to get.
@@ -41,18 +41,18 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamCount
      *            the number of streams to get
      */
-    public GetStreamsByDailyAverageViewsDbMapper(final Integer inStreamCount)
+    public GetStreamsByDailyAverageViewersDbMapper(final Integer inStreamCount)
     {
         streamCount = inStreamCount;
     }
 
     /**
      * Get a list of the stream scope ids for the most viewed streams.
-     * 
+     *
      * @param inIgnored
      *            ignored param - go nuts
      * @return list of stream scope ids
@@ -62,11 +62,11 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
 
-        // to get the number of daily stream views, add up all of the counts that we recevied so far for each stream,
+        // to get the number of daily stream viewers, add up all of the counts that we recevied so far for each stream,
         // then divide that by how many days have passed since the first day's record
         Query q = getEntityManager().createQuery(
                 "SELECT streamViewStreamScopeId, "
-                        + "SUM(streamViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
+                        + "SUM(streamViewerCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId " + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs)) > 0 "
                         + "ORDER BY SUM(streamViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
@@ -108,28 +108,28 @@ public class GetStreamsByDailyAverageViewsDbMapper extends BaseArgDomainMapper<S
         streamDtos.addAll(q.getResultList());
 
         // put the list back together, sorting the list
-        Long streamScopeId, viewCount;
+        Long streamScopeId, viewerCount;
         for (Object[] streamObj : streamObjs)
         {
             streamScopeId = (Long) streamObj[0];
-            viewCount = -1L;
+            viewerCount = -1L;
             if (streamObj[1] != null)
             {
-                viewCount = Math.round(((Double) streamObj[1]));
+                viewerCount = Math.round(((Double) streamObj[1]));
             }
 
-            // find the StreamDTO with the stream scope
+            // find the StreamDTO with the stream scope - hijack the followersCount to display the data
             for (StreamDTO streamDTO : streamDtos)
             {
                 if (streamDTO.getStreamScopeId().equals(streamScopeId))
                 {
                     if (streamDTO.getEntityType() == EntityType.PERSON)
                     {
-                        ((PersonModelView) streamDTO).setFollowersCount(viewCount.intValue());
+                        ((PersonModelView) streamDTO).setFollowersCount(viewerCount.intValue());
                     }
                     else if (streamDTO.getEntityType() == EntityType.GROUP)
                     {
-                        ((DomainGroupModelView) streamDTO).setFollowersCount(viewCount.intValue());
+                        ((DomainGroupModelView) streamDTO).setFollowersCount(viewerCount.intValue());
                     }
 
                     results.add(streamDTO);
