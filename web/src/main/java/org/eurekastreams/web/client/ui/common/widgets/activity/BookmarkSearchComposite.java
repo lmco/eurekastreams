@@ -39,12 +39,17 @@ import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -54,6 +59,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -100,6 +106,9 @@ public class BookmarkSearchComposite extends Composite
     /** Last length of search term. */
     private int termLength = -1;
 
+    /** Currently active item for keyboard selection. */
+    private Panel activeItem = null;
+
     /**
      * Constructor.
      */
@@ -126,11 +135,37 @@ public class BookmarkSearchComposite extends Composite
         {
             public void onKeyUp(final KeyUpEvent ev)
             {
-                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown()
-                        && searchTerm.getText().length() > 0)
+                // ENTER key
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown())
                 {
-                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
-                            generateParams(searchTerm.getText()), false)));
+                    // navigating the list of search results - pick it
+                    if (activeItem != null)
+                    {
+                        activeItem.getElement().dispatchEvent(
+                                Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                    }
+                    // search term in box - go to search page (should this be here?)
+                    else if (!searchTerm.getText().isEmpty())
+                    {
+                        eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
+                                generateParams(searchTerm.getText()), false)));
+                    }
+                }
+                else if (ev.isDownArrow() && activeItem != null)
+                {
+                    int activeIndex = resultsPanel.getWidgetIndex(activeItem);
+                    if (activeIndex + 1 < resultsPanel.getWidgetCount())
+                    {
+                        selectItem((Panel) resultsPanel.getWidget(activeIndex + 1));
+                    }
+                }
+                else if (ev.isUpArrow() && activeItem != null)
+                {
+                    int activeIndex = resultsPanel.getWidgetIndex(activeItem);
+                    if (activeIndex >= 1)
+                    {
+                        selectItem((Panel) resultsPanel.getWidget(activeIndex - 1));
+                    }
                 }
                 else if (termLength != searchTerm.getText().length())
                 {
@@ -150,13 +185,13 @@ public class BookmarkSearchComposite extends Composite
             }
         });
 
-
         eventBus.addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
         {
             public void update(final GotSearchResultsResponseEvent event)
             {
                 if ("bookmark".equals(event.getCallerKey()))
                 {
+                    activeItem = null;
                     resultsPanel.clear();
                     resultsPanelContainer.setVisible(event.getResponse().getPagedSet().size() > 0);
 
@@ -196,11 +231,24 @@ public class BookmarkSearchComposite extends Composite
                             });
                         }
 
+                        itemContainer.addMouseOverHandler(new MouseOverHandler()
+                        {
+                            public void onMouseOver(final MouseOverEvent arg0)
+                            {
+                                selectItem(itemContainer);
+                            }
+                        });
+
                         name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkNameLink());
                         itemPanel.add(name);
 
                         itemContainer.add(itemPanel);
                         resultsPanel.add(itemContainer);
+
+                        if (activeItem == null)
+                        {
+                            selectItem(itemContainer);
+                        }
                     }
                 }
             }
@@ -227,10 +275,19 @@ public class BookmarkSearchComposite extends Composite
     @UiHandler("resultsPanelContainer")
     void onResultsPanelContainerClick(final ClickEvent ev)
     {
+        clearSearchResults();
+    }
+
+    /**
+     * Clears UI associated with the search results.
+     */
+    private void clearSearchResults()
+    {
         searchTerm.reset();
         resultsPanelContainer.setVisible(false);
         resultsPanel.clear();
         removeStyleName(style.searchActive());
+        activeItem = null;
     }
 
     /**
@@ -244,6 +301,13 @@ public class BookmarkSearchComposite extends Composite
     {
         collapsedTitle.setVisible(false);
         UIObject.setVisible(expandedPanel, true);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand()
+        {
+            public void execute()
+            {
+                searchTerm.setFocus(true);
+            }
+        });
     }
 
     /**
@@ -257,6 +321,23 @@ public class BookmarkSearchComposite extends Composite
     {
         collapsedTitle.setVisible(true);
         UIObject.setVisible(expandedPanel, false);
+        clearSearchResults();
+    }
+
+    /**
+     * Select an item.
+     *
+     * @param item
+     *            the item.
+     */
+    private void selectItem(final Panel item)
+    {
+        if (activeItem != null)
+        {
+            activeItem.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+        }
+        item.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+        activeItem = item;
     }
 
     /**

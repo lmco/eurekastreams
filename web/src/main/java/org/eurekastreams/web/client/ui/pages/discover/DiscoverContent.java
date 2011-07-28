@@ -38,6 +38,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -45,6 +48,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -142,10 +146,18 @@ public class DiscoverContent extends Composite
     @UiField
     Hyperlink createGroupButton;
 
+    /** Element showing message when list is empty. */
+    @UiField
+    DivElement suggestionsEmptyLabel;
+
+    /** Element showing message when list is empty. */
+    @UiField
+    DivElement mostViewedEmptyLabel;
+
     /**
      * JSNI.
      */
-    private WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
 
     /**
      * Default constructor.
@@ -154,6 +166,8 @@ public class DiscoverContent extends Composite
     {
         initWidget(binder.createAndBindUi(this));
 
+        UIObject.setVisible(suggestionsEmptyLabel, false);
+        UIObject.setVisible(mostViewedEmptyLabel, false);
         createGroupButton.setTargetHistoryToken(Session.getInstance()
                 .generateUrl(new CreateUrlRequest(Page.NEW_GROUP)));
 
@@ -189,7 +203,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     * 
+     *
      * @param inDiscoverLists
      *            the data to display
      */
@@ -252,6 +266,7 @@ public class DiscoverContent extends Composite
                 suggestedStreamsPanel.add(suggestedPanel);
             }
         }
+        UIObject.setVisible(suggestionsEmptyLabel, suggestedStreamsPanel.getWidgetCount() == 0);
         if (inDiscoverLists.getMostViewedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostViewedStreams())
@@ -260,6 +275,7 @@ public class DiscoverContent extends Composite
                         DiscoverListItemPanel.ListItemType.DAILY_VIEWERS));
             }
         }
+        UIObject.setVisible(mostViewedEmptyLabel, mostViewedStreamsPanel.getWidgetCount() == 0);
         if (inDiscoverLists.getMostFollowedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostFollowedStreams())
@@ -277,21 +293,38 @@ public class DiscoverContent extends Composite
             }
         }
 
+        searchBox.addKeyUpHandler(new KeyUpHandler()
+        {
+            public void onKeyUp(final KeyUpEvent ev)
+            {
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown())
+                {
+                    doSearch();
+                }
+            }
+        });
+
         goSearch.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
             {
-                EventBus.getInstance().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchBox.getText()),
-                                false)));
-
+                doSearch();
             }
         });
     }
 
     /**
+     * Performs the search.
+     */
+    private void doSearch()
+    {
+        EventBus.getInstance().notifyObservers(
+                new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchBox.getText()), false)));
+    }
+
+    /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

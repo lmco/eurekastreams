@@ -131,6 +131,16 @@
 				overflow: hidden;
     			text-indent: 1000em;
 			}
+			.discoverStreamList .suggestions-empty,
+			.discoverStreamList .most-viewed-empty {
+				border-top: 2px solid #BDBDBD;
+				border-left: none;
+				border-right: none;
+				background-color: transparent;
+				color: #666666;
+				padding: 15px;
+				text-align: center;
+			}
 			
 			@if user.agent ie6 ie8 {
 				.goSearch {
@@ -164,11 +174,13 @@
 		<div class="{style.discoverStreamList}">
 			<h3>Suggested</h3>
 			<g:FlowPanel ui:field="suggestedStreamsPanel" />
+			<div class="{style.suggestions-empty}" ui:field="suggestionsEmptyLabel">We have no suggested streams for you at this time. Try searching for people you know in the search box above and follow them to help us generate some suggestions.</div>
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Viewed</h3>
 			<g:FlowPanel ui:field="mostViewedStreamsPanel" />
+			<div class="{style.most-viewed-empty}" ui:field="mostViewedEmptyLabel">Viewing metrics have not yet been collected.  Please check again tomorrow.</div>
 		</div>
 
 		<div class="{style.discoverStreamList}">

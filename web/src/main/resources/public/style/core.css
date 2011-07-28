@@ -1453,7 +1453,7 @@ body .post-expanded-panel .content-warning {
 	background-color: white;
 }
 
-.bookmarkSearch .searchResultsAutocompleteResults > div > div:hover
+.bookmarkSearch .searchResultsAutocompleteResults > div > div.active
 {
 	background: #F0F0F0 url('style/images/bookmarkAdd.png') no-repeat scroll 200px center;
 	font-weight: bold;
