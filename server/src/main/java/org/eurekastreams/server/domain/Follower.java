@@ -43,7 +43,7 @@ public class Follower extends WrappedLightEntity implements Serializable
      * Whether to receive notifications after new activities are posted to this stream.
      */
     @Basic
-    private Boolean receiveNewActivityNotifications = true;
+    private Boolean receiveNewActivityNotifications = false;
 
     /**
      * Constructor.

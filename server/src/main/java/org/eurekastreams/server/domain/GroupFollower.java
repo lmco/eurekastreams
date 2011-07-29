@@ -45,11 +45,11 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
      * Whether to receive notifications after new activities are posted to this group.
      */
     @Basic
-    private Boolean receiveNewActivityNotifications = true;
+    private Boolean receiveNewActivityNotifications = false;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inFollowerId
      *            Follower id.
      * @param inFollowingId
@@ -70,7 +70,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
     /**
      * FollowerId getter.
-     * 
+     *
      * @return Follower id.
      */
     public long getFollowerId()
@@ -80,7 +80,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
     /**
      * FollowingId getter.
-     * 
+     *
      * @return Following id (id of Object being followed).
      */
     public long getFollowingId()
@@ -107,7 +107,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
     /**
      * Composite primary key for follower.
-     * 
+     *
      */
     @Embeddable
     public static class GroupFollowerPk implements Serializable
@@ -131,7 +131,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
         /**
          * Constructor.
-         * 
+         *
          * @param inFollowerId
          *            Follower id.
          * @param inFollowingId
@@ -153,7 +153,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
         /**
          * FollowerId getter.
-         * 
+         *
          * @return Follower id.
          */
         public long getFollowerId()
@@ -163,7 +163,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
         /**
          * FollowingId getter.
-         * 
+         *
          * @return Following id (id of Object being followed).
          */
         public long getFollowingId()
@@ -173,7 +173,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
         /**
          * Override hashCode for comparing pk object.
-         * 
+         *
          * @return The generated hashcode.
          */
         @Override
@@ -187,7 +187,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
         /**
          * Override equals for comparing pk object.
-         * 
+         *
          * @param obj
          *            The object to compare to this one.
          * @return True if obj is equal to this one, false otherwise.
@@ -207,7 +207,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
 
     /**
      * Enumeration for follower/following relationship status.
-     * 
+     *
      */
     public static enum GroupFollowerStatus implements Serializable
     {

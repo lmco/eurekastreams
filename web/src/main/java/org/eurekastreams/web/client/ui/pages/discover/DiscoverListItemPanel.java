@@ -27,10 +27,8 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -97,8 +95,9 @@ public class DiscoverListItemPanel extends FlowPanel
         String nameUrl = Session.getInstance().generateUrl(//
                 new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
 
-        name = new Hyperlink(inStreamDTO.getDisplayName(), nameUrl);
-        name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
+        name = new InlineHyperlink(inStreamDTO.getDisplayName(), nameUrl);
+        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverListItemName());
+        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
         infoPanel.add(name);
 
         FlowPanel followersPanel = new FlowPanel();
@@ -148,7 +147,6 @@ public class DiscoverListItemPanel extends FlowPanel
         default:
             break;
         }
-        insertActionSeparator(followersPanel);
         if (inStreamDTO.getEntityType() != EntityType.PERSON
                 || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
@@ -158,18 +156,5 @@ public class DiscoverListItemPanel extends FlowPanel
         infoPanel.add(followersPanel);
 
         this.add(infoPanel);
-    }
-
-    /**
-     * Adds a separator (dot).
-     *
-     * @param panel
-     *            Panel to put the separator in.
-     */
-    private void insertActionSeparator(final Panel panel)
-    {
-        Label sep = new InlineLabel("\u2219");
-        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
-        panel.add(sep);
     }
 }

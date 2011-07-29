@@ -1398,7 +1398,7 @@ public interface CoreCss extends CssResource
     String bookmarkNameLink();
 
     String featureDialog();
-    
+
     String ellipsis();
 
     String ellipsisChild();
@@ -1410,8 +1410,11 @@ public interface CoreCss extends CssResource
     @ClassName("connection-col")
     String connectionCol();
 
+    @ClassName("discover-list-item-name")
+    String discoverListItemName();
+
     String bookmarkSearchName();
-    
+
     String streamDetailsContainer();
 
     String globalSearchItemName();
