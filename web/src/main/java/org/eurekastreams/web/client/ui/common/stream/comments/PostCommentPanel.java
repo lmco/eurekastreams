@@ -155,7 +155,7 @@ public class PostCommentPanel extends FlowPanel
 
         SimplePanel boxWrapper = new SimplePanel();
         boxWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().boxWrapper());
-        commentBox = new ExtendedTextArea();
+        commentBox = new ExtendedTextArea(true);
         boxWrapper.add(commentBox);
         body.add(boxWrapper);
         commentBox.setFocus(true);

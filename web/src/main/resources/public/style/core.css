@@ -127,6 +127,11 @@ a:hover,.linked-label:hover {
 	height: 1px;
 }
 
+.resizingTextArea
+{
+	overflow: hidden;
+}
+
 input.empty-labeled-textbox {
 	color: #666666 ! important;
 }
@@ -142,7 +147,7 @@ textarea.empty-labeled-textbox {
 .content-warning {
 	font-style: italic;
 	color: #666;
-	width: 100%;
+	width: 500px;
 }
 
 @sprite .content-warning > div:first-child {
@@ -388,7 +393,7 @@ div.message div.content {
 }
 
 div.content {
-	padding-bottom: 135px;
+	padding-bottom: 90px;
 	width: 100%;
 }
 
@@ -404,17 +409,16 @@ div.banner-container {
 	height: 59px;
 }
 
-@sprite .footer-nav .terms-of-service-link {
-	gwt-image: "footerTermsOfService";
-	display: block;
-	height: 7px;
-	left: 10px;
-	overflow: hidden;
-	position: relative;
-	text-indent: -1000em;
-	top: 32px;
-	width: 102px;
+.footer-nav a, .footer-nav a:hover
+{
+	color: #999999;
+    display: block;
+    float: left;
+    font-size: 12px;
+    margin-left: 10px;
+    margin-top: 20px;
 }
+
 
 @sprite .footer-nav .powered-by-eureka {
 	gwt-image: "poweredByEurekaStreams";
@@ -422,13 +426,16 @@ div.banner-container {
 	margin-right: 10px;
 	margin-top: 10px;
 	cursor: pointer;
+	background-position: -90px 0;
+	width: 125px;
 }
 
 @sprite .footer-bar {
 	gwt-image: "footerBackground";
-	margin: -95px auto 0;
+	margin: -70px auto 0;
 	width: 990px;
 	position: relative;
+	height: 70px;
 }
 
 .footer-bar .horizontal {
@@ -440,7 +447,8 @@ div.banner-container {
 }
 
 .footer-bar .site-labeling {
-	padding: 5px 0;
+    position: relative;
+    top: -42px;	
 }
 
 .footer-bar ul li div a,.footer-bar ul li div a:link,.footer-bar ul li div a:visited,.footer-bar ul li div a:hover,.footer-bar ul li div a:active
@@ -727,6 +735,12 @@ div.banner-container {
 
 .portal-boundary div.tab-container {
 	padding-left: 5px;
+}
+
+.singleActivityShowAll
+{
+	background-color: #FFE488;
+    padding: 10px;
 }
 
 .singleActivityPanel .message-body
@@ -4834,7 +4848,6 @@ body .dragdrop-proxy {
 	margin-left: -10px;
 	padding: 6px 10px;
 	font-size: 13px;
-	overflow: auto;
 }
 
 .message-comment .simulated-text-box.unactive {

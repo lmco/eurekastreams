@@ -273,14 +273,6 @@ public class PostBoxComposite extends Composite
             }
         });
 
-        postBox.addChangeHandler(new ChangeHandler()
-        {
-            public void onChange(final ChangeEvent event)
-            {
-                checkPostBox();
-            }
-        });
-
         postBox.addFocusHandler(new FocusHandler()
         {
             public void onFocus(final FocusEvent event)
@@ -561,11 +553,6 @@ public class PostBoxComposite extends Composite
      */
     private void checkPostBox()
     {
-        if (postBox.getElement().getClientHeight() < postBox.getElement().getScrollHeight())
-        {
-            postBox.getElement().getStyle().setHeight(postBox.getElement().getScrollHeight(), Unit.PX);
-        }
-
         postCharCount.setInnerText(Integer.toString(POST_MAX - postBox.getText().length()));
 
         if (POST_MAX - postBox.getText().length() < 0)

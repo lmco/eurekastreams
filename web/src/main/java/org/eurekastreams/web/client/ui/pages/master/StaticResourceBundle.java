@@ -92,9 +92,6 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/global-nav-bar-5px.png")
     ImageResource globalNavBar5px();
 
-    @Source("style/images/footerTermsOfService.png")
-    ImageResource footerTermsOfService();
-
     @Source("style/images/poweredByEurekaStreams.png")
     ImageResource poweredByEurekaStreams();
 

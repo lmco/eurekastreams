@@ -55,9 +55,6 @@ public class FooterComposite extends Composite
 
         FlowPanel navPanel = new FlowPanel();
 
-        Anchor termsOfService = new Anchor("Terms of Service");
-        termsOfService.addStyleName(StaticResourceBundle.INSTANCE.coreCss().termsOfServiceLink());
-
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
                 {
@@ -70,15 +67,8 @@ public class FooterComposite extends Composite
                     }
                 });
 
-        termsOfService.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent arg0)
-            {
-                dialog.showCentered();
-            }
-        });
-
-        navPanel.add(termsOfService);
+        navPanel.add(new Anchor("HELP", "http://www.eurekastreams.org"));
+        navPanel.add(new Anchor("LEARN MORE", "http://www.eurekastreams.org"));
 
         Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org", "_blank");
         poweredBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().poweredByEureka());
