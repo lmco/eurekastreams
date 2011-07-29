@@ -29,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * Notifier for the UI.
@@ -47,11 +46,6 @@ public class UINotifier extends FlowPanel
     FlowPanel contentPanel = new FlowPanel();
 
     /**
-     * Seperator.
-     */
-    Label undoSeperator = new Label();
-
-    /**
      * url parameter for forcing notifications to be shown.
      */
     public static final String NOTIFICATION_PARAM = "notification";
@@ -64,14 +58,7 @@ public class UINotifier extends FlowPanel
         this.setVisible(false);
         contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().message());
 
-        FlowPanel messageLeft = new FlowPanel();
-        messageLeft.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notificationLeft());
-        FlowPanel messageRight = new FlowPanel();
-        messageRight.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notificationRight());
-
-        this.add(messageLeft);
         this.add(contentPanel);
-        this.add(messageRight);
 
         this.setStyleName(StaticResourceBundle.INSTANCE.coreCss().notificationBar());
         closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().closeNotification());
@@ -83,8 +70,6 @@ public class UINotifier extends FlowPanel
             }
         });
 
-        undoSeperator.addStyleName(StaticResourceBundle.INSTANCE.coreCss().undoSeperator());
-
         Session.getInstance().getEventBus().addObserver(ShowNotificationEvent.class,
                 new Observer<ShowNotificationEvent>()
                 {
@@ -93,7 +78,6 @@ public class UINotifier extends FlowPanel
                         Window.scrollTo(0, 0);
                         contentPanel.clear();
                         contentPanel.add(event.getNotification().getWidget());
-                        contentPanel.add(undoSeperator);
                         contentPanel.add(closeButton);
                         setVisible(true);
                     }

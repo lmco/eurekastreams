@@ -753,8 +753,10 @@ public class StreamDetailsComposite extends Composite
      */
     public void setStreamTitle(final String inStreamTitle, final CustomAvatar avatar)
     {
+        Session.getInstance().setPageTitle(inStreamTitle);
         streamName.removeFromParent();
         streamName.setInnerText(inStreamTitle);
+        streamName.setTitle(inStreamTitle);
         streamInfoContainer.insertFirst(streamName);
 
         switch (avatar)
@@ -882,6 +884,7 @@ public class StreamDetailsComposite extends Composite
 
             streamName.removeFromParent();
             streamName.setInnerText(group.getName());
+            streamName.setTitle(group.getName());
             streamInfoContainer.insertFirst(streamName);
 
             streamMeta.setInnerText("");
@@ -1188,6 +1191,7 @@ public class StreamDetailsComposite extends Composite
 
         streamName.removeFromParent();
         streamName.setInnerText(person.getDisplayName());
+        streamName.setTitle(person.getDisplayName());
         streamInfoContainer.insertFirst(streamName);
         streamMeta.setInnerText(person.getTitle());
         streamAvatar.clear();

@@ -94,6 +94,9 @@ public class PersonPanel extends FlowPanel
         {
             name = new Label(person.getDisplayName());
         }
+        
+        name.setTitle(person.getDisplayName());
+        
         name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
         name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsisChild());
 

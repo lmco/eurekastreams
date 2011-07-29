@@ -198,15 +198,9 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/cancelBtn.png")
     ImageResource cancelBtn();
 
-    @Source("style/images/feedbackMessageBoxCenter.png")
+    @Source("style/images/feedbackBG.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource feedbackMessageBoxCenter();
-
-    @Source("style/images/feedbackMessageBoxLeft.png")
-    ImageResource feedbackMessageBoxLeft();
-
-    @Source("style/images/feedbackMessageBoxRight.png")
-    ImageResource feedbackMessageBoxRight();
 
     @Source("style/images/createSubOrgBtn.png")
     ImageResource createSubOrgBtn();

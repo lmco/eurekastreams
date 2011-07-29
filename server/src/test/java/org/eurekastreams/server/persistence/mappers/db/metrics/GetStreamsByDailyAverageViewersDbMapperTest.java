@@ -26,12 +26,12 @@ import org.junit.Test;
 /**
  * Test fixture for GetStreamsByDailyAverageViewsDbMapper.
  */
-public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
+public class GetStreamsByDailyAverageViewersDbMapperTest extends MapperTest
 {
     /**
      * System under test.
      */
-    private GetStreamsByDailyAverageViewsDbMapper sut;
+    private GetStreamsByDailyAverageViewersDbMapper sut;
 
     /**
      * Setup method.
@@ -39,7 +39,7 @@ public class GetStreamsByDailyAverageViewsDbMapperTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetStreamsByDailyAverageViewsDbMapper(10);
+        sut = new GetStreamsByDailyAverageViewersDbMapper(10);
         sut.setEntityManager(getEntityManager());
     }
 

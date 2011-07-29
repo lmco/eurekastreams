@@ -804,12 +804,6 @@ public interface CoreCss extends CssResource
     @ClassName("notification-bar")
     String notificationBar();
 
-    @ClassName("notification-left")
-    String notificationLeft();
-
-    @ClassName("notification-right")
-    String notificationRight();
-
     String options();
 
     @ClassName("optoutable-video-modal")
@@ -1183,9 +1177,6 @@ public interface CoreCss extends CssResource
     @ClassName("undo-notification")
     String undoNotification();
 
-    @ClassName("undo-seperator")
-    String undoSeperator();
-
     String unhide();
 
     @ClassName("unseen-activity")
@@ -1424,4 +1415,10 @@ public interface CoreCss extends CssResource
 
     @ClassName("discover-list-item-name")
     String discoverListItemName();
+
+    String bookmarkSearchName();
+
+    String streamDetailsContainer();
+
+    String globalSearchItemName();
 }
