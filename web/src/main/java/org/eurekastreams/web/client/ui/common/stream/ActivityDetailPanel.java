@@ -67,9 +67,11 @@ public class ActivityDetailPanel extends FlowPanel
         case PERSON:
             page = Page.PEOPLE;
             title = "Show all activity in " + destinationStream.getDisplayName() + "'s stream";
+            break;
         case GROUP:
             page = Page.GROUPS;
             title = "Show all activity in the " + destinationStream.getDisplayName() + " stream";
+            break;
         default:
             page = null; // make checkstyle shut up
         }
