@@ -4883,6 +4883,12 @@ body .dragdrop-proxy {
 	padding-left: 5px;
 }
 
+.show-more-comment-link {
+	cursor: pointer;
+	margin-left: 10px;
+	font-size: 11px;
+}
+
 .message-comment .warning,.share-message-dialog .warning {
 	background: url(style/images/information-circle-icon.png) no-repeat left 2px;
 	color: #666666;
