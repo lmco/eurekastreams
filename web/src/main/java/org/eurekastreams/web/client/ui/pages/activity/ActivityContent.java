@@ -567,6 +567,7 @@ public class ActivityContent extends Composite
                     longOldestActivityId = activitySet.getPagedSet().get(activitySet.getPagedSet().size() - 1)
                             .getEntityId();
                 }
+                
                 if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("minId"))
                 {
                     for (int i = activitySet.getPagedSet().size(); i > 0; i--)
@@ -628,9 +629,10 @@ public class ActivityContent extends Composite
         {
             public void update(final MessageStreamAppendEvent event)
             {
+                longNewestActivityId = event.getMessage().getId();
+                
                 if (sortKeyword.equals("date"))
                 {
-                    longNewestActivityId = event.getMessage().getId();
                     appendActivity(event.getMessage());
                     noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                 }
