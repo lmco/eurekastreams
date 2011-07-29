@@ -240,6 +240,7 @@ public class BookmarkSearchComposite extends Composite
                         });
 
                         name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bookmarkNameLink());
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
                         itemPanel.add(name);
 
                         itemContainer.add(itemPanel);

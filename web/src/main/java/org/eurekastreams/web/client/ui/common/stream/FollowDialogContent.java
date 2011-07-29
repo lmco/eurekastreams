@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import org.eurekastreams.web.client.model.BaseActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
@@ -62,8 +63,13 @@ public class FollowDialogContent extends BaseDialogContent
      *            the stream request.
      * @param inStreamId
      *            the stream id.
+     * @param inSubscribeModel
+     *            Model for subscribing to activity on the stream.
+     * @param inEntityUniqueId
+     *            Unique ID of entity owning the stream.
      */
-    public FollowDialogContent(final String inStreamName, final String streamRequest, final Long inStreamId)
+    public FollowDialogContent(final String inStreamName, final String streamRequest, final Long inStreamId,
+            final BaseActivitySubscriptionModel inSubscribeModel, final String inEntityUniqueId)
     {
         Label saveButton = new Label("");
         Label closeButton = new Label("No Thanks");
@@ -111,8 +117,7 @@ public class FollowDialogContent extends BaseDialogContent
 
                 if (notifyViaEmail.getValue())
                 {
-                    // do nothing for now.
-                    int x = 0;
+                    inSubscribeModel.insert(inEntityUniqueId);
                 }
 
                 close();
@@ -152,7 +157,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -162,7 +167,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     @Override
@@ -173,7 +178,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()

@@ -45,12 +45,15 @@ import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEv
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.model.BaseActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.FeaturedStreamModel;
+import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.Insertable;
+import org.eurekastreams.web.client.model.PersonActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.model.PopularHashTagsModel;
 import org.eurekastreams.web.client.model.UsageMetricModel;
@@ -105,56 +108,56 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         * 
+         *
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         * 
+         *
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         * 
+         *
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         * 
+         *
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         * 
+         *
          * @return Private avatar.
          */
         String privateAvatar();
 
         /**
          * Hide details button.
-         * 
+         *
          * @return hide details button.
          */
         String hideDetails();
 
         /**
          * Featured item header link style.
-         * 
+         *
          * @return Featured item header link style.
          */
         String headerFeatured();
 
         /**
          * Empty detail style.
-         * 
+         *
          * @return Empty detail style.
          */
         String emptyDetailStyle();
@@ -167,7 +170,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -742,7 +745,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set the stream title and avatar.
-     * 
+     *
      * @param inStreamTitle
      *            the title.
      * @param avatar
@@ -789,7 +792,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set Condensed mode.
-     * 
+     *
      * @param isCondensed
      *            condensed mode.
      */
@@ -797,18 +800,18 @@ public class StreamDetailsComposite extends Composite
     {
         if (isCondensed)
         {
-            this.addStyleName(style.condensedStream());
+            addStyleName(style.condensedStream());
 
         }
         else
         {
-            this.removeStyleName(style.condensedStream());
+            removeStyleName(style.condensedStream());
         }
     }
 
     /**
      * Go the group.
-     * 
+     *
      * @param group
      *            the group.
      */
@@ -823,7 +826,7 @@ public class StreamDetailsComposite extends Composite
         if (group.isRestricted())
         {
             condensedAvatar.addStyleName(style.privateAvatar());
-            this.addStyleName(style.condensedStream());
+            addStyleName(style.condensedStream());
         }
         else
         {
@@ -926,7 +929,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * 
+     *
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -978,7 +981,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     * 
+     *
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -990,6 +993,9 @@ public class StreamDetailsComposite extends Composite
         {
             followLink.setVisible(true);
             followModel = GroupMembersModel.getInstance();
+            final BaseActivitySubscriptionModel subscribeModel = EntityType.PERSON.equals(type) ? // \n
+            PersonActivitySubscriptionModel.getInstance()
+                    : GroupActivitySubscriptionModel.getInstance();
 
             if (type.equals(EntityType.PERSON))
             {
@@ -1019,7 +1025,8 @@ public class StreamDetailsComposite extends Composite
                         request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
                                 .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
-                        Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId));
+                        Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId,
+                                subscribeModel, entityId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
                         break;
                     default:
@@ -1123,7 +1130,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     * 
+     *
      * @param inStatus
      *            status.
      */
@@ -1146,7 +1153,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Got the person.
-     * 
+     *
      * @param person
      *            the person.
      */
