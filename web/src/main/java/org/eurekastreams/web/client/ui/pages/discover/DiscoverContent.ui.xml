@@ -191,7 +191,7 @@
 		</div>
 
 		<div class="{style.discoverStreamList}">
-			<h3>Most Recent</h3>
+			<h3>Most Recent Groups</h3>
 			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostRecentStreamsPanel" />
 		</div>
 
