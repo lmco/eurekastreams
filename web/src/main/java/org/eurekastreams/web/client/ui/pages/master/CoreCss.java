@@ -1130,9 +1130,6 @@ public interface CoreCss extends CssResource
     @ClassName("tab-menu")
     String tabMenu();
 
-    @ClassName("terms-of-service-link")
-    String termsOfServiceLink();
-
     @ClassName("terms-of-service-modal")
     String termsOfServiceModal();
 
@@ -1421,4 +1418,8 @@ public interface CoreCss extends CssResource
     String streamDetailsContainer();
 
     String globalSearchItemName();
+
+    String resizingTextArea();
+
+    String singleActivityShowAll();
 }

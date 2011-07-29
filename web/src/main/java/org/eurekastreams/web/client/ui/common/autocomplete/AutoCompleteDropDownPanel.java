@@ -117,7 +117,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         }
         else
         {
-            textWidget = new ExtendedTextArea();
+            textWidget = new ExtendedTextArea(false);
             textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().textareaInputWrapper());
         }
         textWidget.getElement().setAttribute("id", "actb-" + rand);

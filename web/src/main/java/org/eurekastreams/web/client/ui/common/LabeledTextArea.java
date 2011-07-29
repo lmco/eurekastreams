@@ -52,6 +52,8 @@ public class LabeledTextArea extends TextArea
         label = inLabel;
 
         final TextArea thisBuffered = this;
+        
+
 
         this.addFocusListener(new FocusListener()
         {
@@ -137,7 +139,7 @@ public class LabeledTextArea extends TextArea
         this.getElement().removeAttribute("spellcheck");
         super.setText(text);
     }
-
+    
     /**
      * Overrides getText to not return the label.
      * 

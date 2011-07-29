@@ -19,7 +19,7 @@
 				margin-left: 10px;
 			}
 			
-			.discoverStreamList>div {
+			.discoverStreamListChild {
 				background-color: white;
 				border-left: 1px solid #BDBDBD;
 				border-right: 1px solid #BDBDBD;
@@ -146,6 +146,8 @@
 				.goSearch {
 					display: inline;
 					zoom: 1;
+					position: relative;
+					top: -1px;
 				}
 			}
 		</ui:style>
@@ -173,24 +175,24 @@
 
 		<div class="{style.discoverStreamList}">
 			<h3>Suggested</h3>
-			<g:FlowPanel ui:field="suggestedStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="suggestedStreamsPanel" />
 			<div class="{style.suggestions-empty}" ui:field="suggestionsEmptyLabel">We have no suggested streams for you at this time. Try searching for people you know in the search box above and follow them to help us generate some suggestions.</div>
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Viewed</h3>
-			<g:FlowPanel ui:field="mostViewedStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostViewedStreamsPanel" />
 			<div class="{style.most-viewed-empty}" ui:field="mostViewedEmptyLabel">Viewing metrics have not yet been collected.  Please check again tomorrow.</div>
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Followed</h3>
-			<g:FlowPanel ui:field="mostFollowedStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostFollowedStreamsPanel" />
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Recent</h3>
-			<g:FlowPanel ui:field="mostRecentStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostRecentStreamsPanel" />
 		</div>
 
 		<div class="{style.createGroupArea}">

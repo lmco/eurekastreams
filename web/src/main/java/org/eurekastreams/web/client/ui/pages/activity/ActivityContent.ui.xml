@@ -307,11 +307,15 @@
 				text-decoration: underline;
 			}
 			
+			.currentUserConfLink
+			{
+				width: 140px;
+			}
+			
 			.currentUserConfLink>a:hover
 			{
 				color: #1481B3;
 				text-decoration: underline;
-				width: 140px;
 			}
 			
 			.userPanel {

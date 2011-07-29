@@ -15,15 +15,19 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -46,6 +50,21 @@ public class ActivityDetailPanel extends FlowPanel
         boolean manageFlagged = "true".equals(Session.getInstance().getParameterValue("manageFlagged"));
         boolean showComment = "true".equals(Session.getInstance().getParameterValue("showComment"));
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityPanel());
+
+        FlowPanel showAllPanel = new FlowPanel();
+        showAllPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityShowAll());
+
+        Page page = Page.GROUPS;
+        
+        if (activity.getActor().getEntityType().equals(EntityType.PERSON))
+        {
+            page = Page.PEOPLE;
+        }
+
+        showAllPanel.add(new Hyperlink("Show all activity by " + activity.getActor().getDisplayName(), Session
+                .getInstance().generateUrl(new CreateUrlRequest(page , activity.getActor().getUniqueId()))));
+
+        this.add(showAllPanel);
 
         final EventBus bus = Session.getInstance().getEventBus();
 

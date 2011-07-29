@@ -118,7 +118,7 @@
 		<div class="{style.post-box-container}">
 			<div class='{style.post-box-inner-container}'>
 				<ea:ExtendedTextArea addStyleNames="{style.post-box}"
-					ui:field="postBox"></ea:ExtendedTextArea>
+					ui:field="postBox" autoresize="true"></ea:ExtendedTextArea>
 				<g:FlowPanel addStyleNames="{style.hashtags}" ui:field="hashTags"></g:FlowPanel>
 				<div ui:field="postOptions" class="{style.post-options}">
 					<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
