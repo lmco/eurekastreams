@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -49,13 +50,13 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CommentPanel extends Composite
 {
-    /**
-     * JSNI Facade.
-     */
+    /** Length to truncate comments. */
+    private static final int TRUNCATE_LENGTH = 250;
+
+    /** JSNI Facade. */
     private final WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
-    /**
-     * Effects facade.
-     */
+
+    /** Effects facade. */
     private final EffectsFacade effects = new EffectsFacade();
 
     /**
@@ -81,22 +82,41 @@ public class CommentPanel extends Composite
         author.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
         body.add(author);
 
-        // first transform links to hyperlinks
+        // build/display the comment content, truncating if too long
         String commentBody = comment.getBody();
 
-        // Strip out any existing HTML.
-        commentBody = jSNIFacade.escapeHtml(commentBody);
-        commentBody = commentBody.replaceAll("(\r\n|\n|\r)", "<br />");
+        boolean oversize = commentBody.length() > TRUNCATE_LENGTH;
+        if (oversize)
+        {
+            commentBody = commentBody.substring(0, TRUNCATE_LENGTH);
+        }
 
-        // transform links
-        commentBody = new HyperlinkTransformer(jSNIFacade).transform(commentBody);
+        commentBody = prepareCommentBody(commentBody);
 
-        // then transform hashtags to hyperlinks
-        commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);
+        if (oversize)
+        {
+            commentBody = commentBody + "...";
+        }
 
-        Widget text = new InlineHTML(commentBody);
+        final HTML text = new InlineHTML(commentBody);
         text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
         body.add(text);
+
+        if (oversize)
+        {
+            final InlineLabel more = new InlineLabel("show more");
+            more.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showMoreCommentLink());
+            more.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+            more.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent inEvent)
+                {
+                    more.removeFromParent();
+                    text.setHTML(prepareCommentBody(comment.getBody()));
+                }
+            });
+            body.add(more);
+        }
 
         // timestamp and actions
         Panel timestampActions = new FlowPanel();
@@ -155,4 +175,25 @@ public class CommentPanel extends Composite
         initWidget(commentContainer);
     }
 
+    /**
+     * Takes the comment text and converts it to HTML for display.
+     *
+     * @param inCommentBody
+     *            The raw comment text.
+     * @return Comment HTML.
+     */
+    private String prepareCommentBody(final String inCommentBody)
+    {
+        // Strip out any existing HTML.
+        String commentBody = jSNIFacade.escapeHtml(inCommentBody);
+        commentBody = commentBody.replaceAll("(\r\n|\n|\r)", "<br />");
+
+        // first transform links to hyperlinks
+        commentBody = new HyperlinkTransformer(jSNIFacade).transform(commentBody);
+
+        // then transform hashtags to hyperlinks
+        commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);
+
+        return commentBody;
+    }
 }

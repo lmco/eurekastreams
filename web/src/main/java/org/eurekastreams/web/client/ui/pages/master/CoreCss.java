@@ -1422,4 +1422,7 @@ public interface CoreCss extends CssResource
     String resizingTextArea();
 
     String singleActivityShowAll();
+
+    @ClassName("show-more-comment-link")
+    String showMoreCommentLink();
 }
