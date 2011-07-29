@@ -41,7 +41,7 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamCount
      *            the number of streams to get
      */
@@ -52,7 +52,7 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
 
     /**
      * Get a list of the stream scope ids for the most viewed streams.
-     *
+     * 
      * @param inIgnored
      *            ignored param - go nuts
      * @return list of stream scope ids
@@ -69,7 +69,7 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
                         + "SUM(streamViewerCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
                         + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
                         + "GROUP BY streamViewStreamScopeId " + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs)) > 0 "
-                        + "ORDER BY SUM(streamViewCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
+                        + "ORDER BY SUM(streamViewerCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
                 .setParameter("nowInMS", DateDayExtractor.getStartOfDay(new Date()).getTime());
 
         if (streamCount > 0)
