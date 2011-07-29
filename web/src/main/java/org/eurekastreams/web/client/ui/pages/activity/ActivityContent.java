@@ -475,6 +475,7 @@ public class ActivityContent extends Composite
         setupStreamsAndBookmarks();
         moreLink.setVisible(false);
         streamSearchStatusWidget.setVisible(false);
+        errorPanel.setVisible(false);
 
         followingFilterPanel = createPanel("Following", "following", "style/images/customStream.png", null, "", "",
                 false);
