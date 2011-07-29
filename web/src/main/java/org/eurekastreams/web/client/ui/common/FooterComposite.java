@@ -23,8 +23,6 @@ import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
