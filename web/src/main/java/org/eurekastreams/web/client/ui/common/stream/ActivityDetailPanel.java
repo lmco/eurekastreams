@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.ui.common.stream;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
@@ -33,13 +33,13 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Activity detail panel.
- * 
+ *
  */
 public class ActivityDetailPanel extends FlowPanel
 {
     /**
      * Default constructor.
-     * 
+     *
      * @param activity
      *            activity.
      * @param showRecipient
@@ -47,41 +47,48 @@ public class ActivityDetailPanel extends FlowPanel
      */
     public ActivityDetailPanel(final ActivityDTO activity, final ShowRecipient showRecipient)
     {
-        boolean manageFlagged = "true".equals(Session.getInstance().getParameterValue("manageFlagged"));
-        boolean showComment = "true".equals(Session.getInstance().getParameterValue("showComment"));
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityPanel());
-
-        FlowPanel showAllPanel = new FlowPanel();
-        showAllPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityShowAll());
-
-        Page page = Page.GROUPS;
-        
-        if (activity.getActor().getEntityType().equals(EntityType.PERSON))
+        if (activity == null)
         {
-            page = Page.PEOPLE;
+            showNotFound();
+            return;
         }
 
-        showAllPanel.add(new Hyperlink("Show all activity by " + activity.getActor().getDisplayName(), Session
-                .getInstance().generateUrl(new CreateUrlRequest(page , activity.getActor().getUniqueId()))));
+        boolean manageFlagged = "true".equals(Session.getInstance().getParameterValue("manageFlagged"));
+        boolean showComment = "true".equals(Session.getInstance().getParameterValue("showComment"));
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityPanel());
 
-        this.add(showAllPanel);
-
-        final EventBus bus = Session.getInstance().getEventBus();
+        // build link to show all activity in the destination stream
+        StreamEntityDTO destinationStream = activity.getDestinationStream();
+        EntityType entityType = destinationStream.getEntityType();
+        String title = null;
+        Page page = null;
+        switch (entityType)
+        {
+        case PERSON:
+            page = Page.PEOPLE;
+            title = "Show all activity in " + destinationStream.getDisplayName() + "'s stream";
+        case GROUP:
+            page = Page.GROUPS;
+            title = "Show all activity in the " + destinationStream.getDisplayName() + " stream";
+        default:
+            page = null; // make checkstyle shut up
+        }
+        if (page != null)
+        {
+            FlowPanel showAllPanel = new FlowPanel();
+            showAllPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().singleActivityShowAll());
+            showAllPanel.add(new Hyperlink(title, Session.getInstance().generateUrl(
+                    new CreateUrlRequest(page, destinationStream.getUniqueId()))));
+            add(showAllPanel);
+        }
 
         StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(showRecipient);
         renderer.setShowComment(showComment);
         renderer.setShowManageFlagged(manageFlagged);
         renderer.setSingleView(true);
 
-        if (activity != null)
-        {
-            this.add(renderer.render(activity));
-            bus.notifyObservers(new SwitchedToActivityDetailViewEvent());
-        }
-        else
-        {
-            showNotFound();
-        }
+        add(renderer.render(activity));
+        Session.getInstance().getEventBus().notifyObservers(new SwitchedToActivityDetailViewEvent());
     }
 
     /**

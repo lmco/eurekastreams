@@ -1,0 +1,73 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	
+	<ui:image field="followImage" src="style/images/followSmall.png" />
+	<ui:image field="followHoverImage" src="style/images/followSmallHover.png" />
+	<ui:image field="removeImage" src="style/images/removeSmall.png" />
+	<ui:image field="removeHoverImage" src="style/images/removeSmallHover.png" />
+	<ui:image field="followingImage" src="style/images/followingSmall.png" />
+	<ui:image field="unfollowImage" src="style/images/unfollowSmall.png" />
+
+	<ui:with field="coreCss"
+		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+
+	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.DiscoverListItemPanel.LocalStyle">
+		.main {
+			position: relative;
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		.stream-name {
+			font-size: 12px;
+		}
+		.stream-name > a {
+			width: auto;
+		}
+		.follow-controls-panel.multi > div {
+			float: left;
+			margin-left: 5px;
+		}
+		.follow-controls-panel {
+			display: none;
+			top: 15px;
+			right: 10px;
+			position: absolute;
+		}
+		.main:hover .follow-controls-panel {
+			display: block;
+		}
+		.stream-info-text {
+			color: #333;
+			font-size: 11px;
+		}
+		
+        @sprite .follow-button {
+			gwt-image: "followImage";
+		}
+        @sprite .follow-button:hover {
+			gwt-image: "followHoverImage";
+		}
+        @sprite .unfollow-button{
+	gwt-image: "followingImage";
+
+	}
+        @sprite .unfollow-button:hover{
+	gwt-image: "unfollowImage";
+
+	}
+        @sprite .block-button{
+	gwt-image: "removeImage";
+	}
+        @sprite .block-button:hover{
+	gwt-image: "removeHoverImage";
+	}
+		
+	</ui:style>
+
+	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person} {style.main}">
+		<g:Hyperlink addStyleNames="{coreCss.connectionItemName} {coreCss.ellipsisChild} {style.stream-name}" ui:field="streamNameLink" />
+		<span class="{style.stream-info-text}" ui:field="streamInfoText" />
+	</g:HTMLPanel>
+
+</ui:UiBinder>

@@ -57,6 +57,7 @@ import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
+import org.eurekastreams.web.client.events.data.StreamActivitySubscriptionChangedEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
@@ -959,6 +960,14 @@ public class ActivityContent extends Composite
             }
         });
 
+        EventBus.getInstance().addObserver(StreamActivitySubscriptionChangedEvent.class,
+                new Observer<StreamActivitySubscriptionChangedEvent>()
+                {
+                    public void update(final StreamActivitySubscriptionChangedEvent ev)
+                    {
+                        setSubscribeStatus(ev.getResponse().getReceiveNewActivityNotifications());
+                    }
+                });
         EventBus.getInstance().addObserver(GotStreamActivitySubscriptionResponseEvent.class,
                 new Observer<GotStreamActivitySubscriptionResponseEvent>()
                 {

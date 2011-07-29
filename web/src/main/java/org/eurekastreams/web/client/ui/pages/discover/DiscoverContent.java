@@ -27,7 +27,6 @@ import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEv
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.model.BlockedSuggestionModel;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
@@ -245,25 +244,8 @@ public class DiscoverContent extends Composite
         {
             for (final StreamDTO stream : inDiscoverLists.getSuggestedStreams())
             {
-                final Label block = new Label("");
-                block .addStyleName(StaticResourceBundle.INSTANCE.coreCss().blockSuggestion());
-                final DiscoverListItemPanel suggestedPanel = new DiscoverListItemPanel(stream,
-                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS);
-
-                block.addClickHandler(new ClickHandler()
-                {
-                    public void onClick(final ClickEvent arg0)
-                    {
-                        if (jsniFacade.confirm("Are you sure you want to block this suggestion?"))
-                        {
-                            BlockedSuggestionModel.getInstance().insert(stream.getStreamScopeId());
-                            suggestedPanel.removeFromParent();
-                        }
-                    }
-                });
-
-                suggestedPanel.insert(block, 0);
-                suggestedStreamsPanel.add(suggestedPanel);
+                suggestedStreamsPanel.add(new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS, true));
             }
         }
         UIObject.setVisible(suggestionsEmptyLabel, suggestedStreamsPanel.getWidgetCount() == 0);
