@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -52,6 +53,8 @@ import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseE
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamActivitySubscriptionResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -131,69 +134,70 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         * 
+         *
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         * 
+         *
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         * 
+         *
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         * 
+         *
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         * 
+         *
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         * 
+         *
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         * 
+         *
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         * 
+         *
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         * 
+         *
          * @return small avatar style.
          */
         String smallAvatar();
 
         /**
          * Current user configure link.
+         *
          * @return current user configure link.
          */
         String currentUserConfLink();
@@ -517,7 +521,7 @@ public class ActivityContent extends Composite
 
     /**
      * Got activity.
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -567,7 +571,7 @@ public class ActivityContent extends Composite
                     longOldestActivityId = activitySet.getPagedSet().get(activitySet.getPagedSet().size() - 1)
                             .getEntityId();
                 }
-                
+
                 if (StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest()).containsKey("minId"))
                 {
                     for (int i = activitySet.getPagedSet().size(); i > 0; i--)
@@ -608,20 +612,44 @@ public class ActivityContent extends Composite
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
-                new Observer<GotPersonFollowerStatusResponseEvent>()
+        // users are not initially subscribed for emails when following a person/group, so set the status properly (else
+        // if you were following and unsubscribed, then re-subscribed, the status would be old and wrong)
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(InsertedPersonFollowerResponseEvent.class,
+                        new Observer<InsertedPersonFollowerResponseEvent>()
+                        {
+                            public void update(final InsertedPersonFollowerResponseEvent ev)
+                            {
+                                setSubscribeStatus(false);
+                            }
+                        });
+        Session.getInstance().getEventBus()
+                .addObserver(InsertedGroupMemberResponseEvent.class, new Observer<InsertedGroupMemberResponseEvent>()
                 {
-                    public void update(final GotPersonFollowerStatusResponseEvent event)
+                    public void update(final InsertedGroupMemberResponseEvent ev)
                     {
-                        subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                        setSubscribeStatus(false);
                     }
                 });
+
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                        new Observer<GotPersonFollowerStatusResponseEvent>()
+                        {
+                            public void update(final GotPersonFollowerStatusResponseEvent event)
+                            {
+                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                            }
+                        });
 
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
             public void update(final HistoryViewsChangedEvent event)
             {
                 handleViewsChanged(event.getViews());
+                searchBox.setText(Session.getInstance().getParameterValue("search"));
             }
         });
 
@@ -630,7 +658,7 @@ public class ActivityContent extends Composite
             public void update(final MessageStreamAppendEvent event)
             {
                 longNewestActivityId = event.getMessage().getId();
-                
+
                 if (sortKeyword.equals("date"))
                 {
                     appendActivity(event.getMessage());
@@ -674,8 +702,8 @@ public class ActivityContent extends Composite
                 {
                     public void update(final StreamReinitializeRequestEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue(
-                                "search"));
+                        loadStream(Session.getInstance().getUrlViews(),
+                                Session.getInstance().getParameterValue("search"));
                     }
                 });
 
@@ -687,8 +715,7 @@ public class ActivityContent extends Composite
                     {
                         if (!event.getViewChanged())
                         {
-                            loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue(
-                                    "search"));
+                            handleViewsChanged(Session.getInstance().getUrlViews());
                         }
                     }
                 });
@@ -817,13 +844,14 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     * 
+     *
      * @param inViews
      *            the views.
      */
     protected void handleViewsChanged(final List<String> inViews)
     {
-        loadStream(inViews, Session.getInstance().getParameterValue("search"));
+        String search = Session.getInstance().getParameterValue("search");
+        loadStream(inViews, search);
         List<String> views = new ArrayList<String>(inViews);
 
         if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
@@ -832,17 +860,22 @@ public class ActivityContent extends Composite
             views.add("recent");
         }
 
+        Map<String, String> params = (search == null || search.isEmpty()) ? Collections.EMPTY_MAP : Collections
+                .singletonMap("search", search);
+
         views.set(views.size() - 1, "recent");
-        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        recentSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ACTIVITY, views, params)));
 
         views.set(views.size() - 1, "popular");
-        popularSort
-                .setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
+        popularSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ACTIVITY, views, params)));
 
         views.set(views.size() - 1, "active");
-        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.ACTIVITY, views)));
-
+        activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ACTIVITY, views, params)));
     }
+
 
     /**
      * Setup bookmarks and custom streams.
@@ -931,11 +964,7 @@ public class ActivityContent extends Composite
                 {
                     public void update(final GotStreamActivitySubscriptionResponseEvent result)
                     {
-                        if (result.isSubscribed())
-                        {
-                            isSubscribed = true;
-                            subscribeViaEmail.setText("Unsubscribe to Emails");
-                        }
+                        setSubscribeStatus(result.isSubscribed());
                     }
                 });
 
@@ -965,11 +994,13 @@ public class ActivityContent extends Composite
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            StreamNamePanel filterPanel = createPanel(filter.getName(), "custom/"
-                                    + filter.getId()
-                                    + "/"
-                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                            Session.getInstance().getCurrentPerson().getAccountId()),
+                            StreamNamePanel filterPanel = createPanel(
+                                    filter.getName(),
+                                    "custom/"
+                                            + filter.getId()
+                                            + "/"
+                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                                    Session.getInstance().getCurrentPerson().getAccountId()),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 
@@ -998,7 +1029,7 @@ public class ActivityContent extends Composite
                 {
                     EventBus.getInstance().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest("search", "", false)));
-
+                    searchBox.setText("");
                 }
             }
         });
@@ -1034,7 +1065,8 @@ public class ActivityContent extends Composite
                         || searchBox.getText().length() < lastSearchLength)
                 {
                     lastSearchLength = searchBox.getText().length();
-                    loadStream(Session.getInstance().getUrlViews(), searchBox.getText());
+
+                    // don't load stream here - the URL change will cause it to be reloaded
 
                     EventBus.getInstance().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
@@ -1076,8 +1108,7 @@ public class ActivityContent extends Composite
                         EventBus.getInstance().notifyObservers(
                                 new ShowNotificationEvent(new Notification(
                                         "You will now receive emails for new activities to this stream")));
-                        isSubscribed = true;
-                        subscribeViaEmail.setText("Unsubscribe to Emails");
+                        setSubscribeStatus(true);
                     }
                 }
                 else
@@ -1099,11 +1130,9 @@ public class ActivityContent extends Composite
                         EventBus.getInstance().notifyObservers(
                                 new ShowNotificationEvent(new Notification(
                                         "You will no longer receive emails for new activities to this stream")));
-                        isSubscribed = false;
-                        subscribeViaEmail.setText("Subscribe via Email");
+                        setSubscribeStatus(false);
                     }
                 }
-
             }
         });
 
@@ -1156,9 +1185,21 @@ public class ActivityContent extends Composite
     }
 
     /**
+     * Update subscription status consistently.
+     *
+     * @param inIsSubscribed
+     *            New status.
+     */
+    private void setSubscribeStatus(final boolean inIsSubscribed)
+    {
+        isSubscribed = inIsSubscribed;
+        subscribeViaEmail.setText(isSubscribed ? "Unsubscribe to Emails" : "Subscribe via Email");
+    }
+
+    /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     * 
+     *
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
@@ -1170,7 +1211,7 @@ public class ActivityContent extends Composite
 
     /**
      * Append a new message.
-     * 
+     *
      * @param message
      *            the messa.ge
      */
@@ -1184,7 +1225,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     * 
+     *
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1373,7 +1414,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     * 
+     *
      * @param panel
      *            the panel.
      */
@@ -1412,7 +1453,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     * 
+     *
      * @param name
      *            the name of the item.
      * @param view

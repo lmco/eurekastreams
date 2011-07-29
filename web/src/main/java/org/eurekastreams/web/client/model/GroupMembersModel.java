@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@ package org.eurekastreams.web.client.model;
 
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupMembersResponseEvent;
+import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -73,10 +76,15 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
                 GroupMembershipRequestModel.getInstance().clearCache();
                 StreamsDiscoveryModel.getInstance().clearCache();
 
-                // clear following model 
+                // clear following model
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
-                
-                Session.getInstance().getEventBus().notifyObservers(new InsertedGroupMemberResponseEvent(response));
+
+                EventBus eventBus = Session.getInstance().getEventBus();
+                eventBus.notifyObservers(new InsertedGroupMemberResponseEvent(response));
+
+                // simulate a status request for recipients that don't listen for changes. Event type has person in the
+                // name, but that is the event used when querying groups
+                eventBus.notifyObservers(new GotPersonFollowerStatusResponseEvent(FollowerStatus.FOLLOWING));
             }
         });
     }
@@ -90,11 +98,16 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
         {
             public void onSuccess(final Integer response)
             {
-                // clear following model 
+                // clear following model
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
                 StreamsDiscoveryModel.getInstance().clearCache();
 
-                Session.getInstance().getEventBus().notifyObservers(new DeletedGroupMemberResponseEvent(response));
+                EventBus eventBus = Session.getInstance().getEventBus();
+                eventBus.notifyObservers(new DeletedGroupMemberResponseEvent(response));
+
+                // simulate a status request for recipients that don't listen for changes. Event type has person in the
+                // name, but that is the event used when querying groups
+                eventBus.notifyObservers(new GotPersonFollowerStatusResponseEvent(FollowerStatus.NOTFOLLOWING));
             }
         });
     }
