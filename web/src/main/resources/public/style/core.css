@@ -426,8 +426,6 @@ div.banner-container {
 	margin-right: 10px;
 	margin-top: 10px;
 	cursor: pointer;
-	background-position: -90px 0;
-	width: 125px;
 }
 
 @sprite .footer-bar {
