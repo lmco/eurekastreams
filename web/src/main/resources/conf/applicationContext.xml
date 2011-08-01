@@ -67,7 +67,7 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-memcached.xml" />          
     
     <!-- Setup the bean, queue, and connection to the JMS queue implementation  -->
-    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms-pooled.xml" />
     
     <!-- The Quartz scheduled jobs -->
     ${build.system.jobscheduler}

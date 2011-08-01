@@ -16,15 +16,12 @@
 package org.eurekastreams.web.client.ui.common;
 
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Anchor;
@@ -46,37 +43,21 @@ public class FooterComposite extends Composite
     FlowPanel siteLabelingContainer = new FlowPanel();
 
     /**
-     * ToS Dialog.
-     */
-    private Dialog dialog;
-
-    /**
      * Primary constructor for the FooterComposite Widget.
      */
     public FooterComposite()
     {
         FlowPanel panel = new FlowPanel();
+        initWidget(panel);
 
         final FlowPanel navPanel = new FlowPanel();
-
-        Session.getInstance().getEventBus()
-                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
-                {
-                    public void update(final GotSystemSettingsResponseEvent event)
-                    {
-                        TermsOfServiceDialogContent tosDialog = new TermsOfServiceDialogContent(new TermsOfServiceDTO(
-                                event.getResponse().getTermsOfService()), true);
-
-                        dialog = new Dialog(tosDialog);
-                    }
-                });
 
         EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        if (navPanel.getWidgetCount() == 1
+                        if (Session.getInstance().getHistoryHandler() != null && navPanel.getWidgetCount() == 1
                                 && event.getResponse().getSupportStreamGroupShortName() != null
                                 && event.getResponse().getSupportStreamGroupShortName().length() > 0)
                         {
@@ -89,8 +70,7 @@ public class FooterComposite extends Composite
                             {
 
                                 navPanel.add(new Label("|"));
-                                navPanel.add(new Anchor("LEARN MORE", 
-                                        event.getResponse().getSupportStreamWebsite()));
+                                navPanel.add(new Anchor("LEARN MORE", event.getResponse().getSupportStreamWebsite()));
                             }
                         }
                     }
@@ -107,7 +87,6 @@ public class FooterComposite extends Composite
         siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().footerBar());
         SystemSettingsModel.getInstance().fetch(null, true);
-        initWidget(panel);
     }
 
     /**

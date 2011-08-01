@@ -56,7 +56,7 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-memcached.xml" />          	
 	
     <!-- Setup the bean, queue, and connection to the JMS queue implementation  -->
-    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms-pooled.xml" />
 
 	<!--  List of strategies for configuring Guice.  Additional strategies may be added to this list in other projects. -->
 	<util:list id="springGuiceConfigurators" list-class="java.util.ArrayList">

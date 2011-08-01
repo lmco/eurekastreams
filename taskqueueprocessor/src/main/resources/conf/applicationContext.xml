@@ -30,7 +30,7 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-ldap.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-actions.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-mappers.xml" />
-    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms.xml"/>
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms-notpooled.xml"/>
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-cache-initialization.xml" />
 
 	<!-- Extension point for other projects to tie in. -->

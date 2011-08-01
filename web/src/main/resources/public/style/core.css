@@ -409,7 +409,7 @@ div.banner-container {
 	height: 59px;
 }
 
-.footer-nav a, .footer-nav a:hover
+.footer-nav a, .footer-nav a:hover, .footer-nav .gwt-Label
 {
 	color: #999999;
     display: block;
