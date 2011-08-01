@@ -31,7 +31,6 @@ import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamScopeLis
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -44,11 +43,11 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
     /**
      * The label.
      */
-    private Label listMembers;
+    private final Label listMembers;
     /**
      * The scope list panel.
      */
-    private StreamScopeListPanel scopeListPanel;
+    private final StreamScopeListPanel scopeListPanel;
 
     /**
      * The key.
@@ -63,17 +62,17 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
     /**
      * The form element's key/id.
      */
-    private String key;
+    private final String key;
 
     /**
      * Flag to allow multiple stream scopes to be selected.
      */
-    private boolean allowMultiple;
+    private final boolean allowMultiple;
     
     /**
      * Maximum number of items allowed to be added if allowMultiple is set to true.
      */
-    private int maxItems;
+    private final int maxItems;
     
     /**
      * The value.
@@ -145,7 +144,6 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
             {
                 if (!getEntityType(obj.toString()).equals("NOTSET"))
                 {
-                	Window.alert(obj.toString());
                     EventBus.getInstance().notifyObservers(
                             new StreamScopeAddedEvent(new StreamScope(getDisplayName(obj.toString()), ScopeType
                                     .valueOf(getEntityType(obj.toString())), getUniqueId(obj.toString()), Long
