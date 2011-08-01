@@ -84,34 +84,6 @@ public class BookmarkRenderer implements ObjectRenderer
         return main;
     }
 
-    // public Widget OLDgetAttachmentWidget(final ActivityDTO activity)
-    // {
-    // String html = "<div class='" + StaticResourceBundle.INSTANCE.coreCss().messageLink() + " "
-    // + StaticResourceBundle.INSTANCE.coreCss().hasThumbnail() + "'><div>";
-    // String targetUrl = activity.getBaseObjectProperties().get("targetUrl");
-    // String sourceUrl = activity.getBaseObjectProperties().get("source");
-    // if (sourceUrl == null)
-    // {
-    // sourceUrl = getBaseUrl(targetUrl);
-    // }
-    //
-    // if (activity.getBaseObjectProperties().get("thumbnail") != null
-    // && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
-    // {
-    // html += "<img class='" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "' src='"
-    // + activity.getBaseObjectProperties().get("thumbnail") + "'></div>";
-    // }
-    //
-    // html += "<div><a class=\"" + StaticResourceBundle.INSTANCE.coreCss().title() + "\" href=\""
-    // + activity.getBaseObjectProperties().get("targetUrl") + "\" target=\"_blank\">"
-    // + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
-    // + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
-    // + "</a></div>" + "<div class='gwt-Label " + StaticResourceBundle.INSTANCE.coreCss().metaDescription()
-    // + "'>" + activity.getBaseObjectProperties().get("description") + "</div></div>";
-    //
-    // return new HTML(html);
-    // }
-
     /**
      * Gets the base URL (host name and protocol) from a url.
      *

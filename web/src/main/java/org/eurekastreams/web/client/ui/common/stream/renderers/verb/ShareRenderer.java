@@ -26,6 +26,7 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
@@ -179,7 +180,9 @@ public class ShareRenderer implements VerbRenderer
     {
         List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
 
-        if (activity.getOriginalActor() != null)
+        // A lot can go wrong here.
+        // If it fails, fall back to the normal renderer.
+        try
         {
             renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getUniqueIdentifier(), activity
                     .getOriginalActor().getDisplayName()));
@@ -190,10 +193,9 @@ public class ShareRenderer implements VerbRenderer
                         .getActor().getDisplayName()));
             }
         }
-        else
+        catch (Exception e)
         {
-            renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity.getActor()
-                    .getDisplayName()));
+            RenderUtilities.renderActorName(renderers, activity);
         }
 
         StreamEntityDTO stream = activity.getDestinationStream();
