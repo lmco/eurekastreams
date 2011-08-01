@@ -1474,6 +1474,7 @@ body .post-expanded-panel .content-warning {
 .bookmarkSearch .searchResultsAutocompleteResults .bookmark-name-link
 {
 	line-height: 31px;
+	width: 150px;
 }
 
 .header-bar .search-list input {
@@ -2291,6 +2292,15 @@ div:hover > .messageXPanel {
 	white-space: nowrap;
 	overflow: hidden;
 	display: block;
+}
+
+.discover-list-item-name {
+	font-weight: bold;
+	color: #1481B3;
+}
+.discover-list-item-name.ellipsis {
+	display: inline;
+	width: auto;
 }
 
 .action-link-separator {
@@ -3410,6 +3420,10 @@ body .shortname-form-element input {
 .discoverConnectionItem
 {
 	position: relative;
+}
+
+.discoverConnectionItem .connection-item-info {
+	padding-right: 10px;
 }
 
 .discoverPageList .followLink {
@@ -4871,6 +4885,11 @@ body .dragdrop-proxy {
 	padding-left: 5px;
 }
 
+.show-more-comment-link {
+	margin-left: 10px;
+	font-size: 11px;
+}
+
 .message-comment .warning,.share-message-dialog .warning {
 	background: url(style/images/information-circle-icon.png) no-repeat left 2px;
 	color: #666666;
@@ -6210,7 +6229,8 @@ body div.eureka-connect-liked-activity-wrapper {
 	.stream-plugins-add-feed-meta-data>div,
 	.eureka-connect-like-button,
 	.eureka-connect-unlike-button,
-	.eureka-connect-share-button
+	.eureka-connect-share-button,
+	.discover-list-item-name.ellipsis
 	{
 		display: inline;
 		zoom: 1;

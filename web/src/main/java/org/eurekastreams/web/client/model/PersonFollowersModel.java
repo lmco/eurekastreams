@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,12 @@ package org.eurekastreams.web.client.model;
 
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.data.DeletedPersonFollowersResponseEvent;
+import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowersResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -69,11 +72,14 @@ public class PersonFollowersModel extends BaseModel implements Fetchable<GetFoll
         {
             public void onSuccess(final Integer response)
             {
-                // clear following model 
+                // clear following model
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
                 StreamsDiscoveryModel.getInstance().clearCache();
-                
-                Session.getInstance().getEventBus().notifyObservers(new InsertedPersonFollowerResponseEvent(response));
+
+                EventBus eventBus = Session.getInstance().getEventBus();
+                eventBus.notifyObservers(new InsertedPersonFollowerResponseEvent(response));
+
+                eventBus.notifyObservers(new GotPersonFollowerStatusResponseEvent(FollowerStatus.FOLLOWING));
             }
         });
     }
@@ -87,11 +93,14 @@ public class PersonFollowersModel extends BaseModel implements Fetchable<GetFoll
         {
             public void onSuccess(final Integer response)
             {
-                // clear following model 
+                // clear following model
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
                 StreamsDiscoveryModel.getInstance().clearCache();
-                
-                Session.getInstance().getEventBus().notifyObservers(new DeletedPersonFollowersResponseEvent(response));
+
+                EventBus eventBus = Session.getInstance().getEventBus();
+                eventBus.notifyObservers(new DeletedPersonFollowersResponseEvent(response));
+
+                eventBus.notifyObservers(new GotPersonFollowerStatusResponseEvent(FollowerStatus.NOTFOLLOWING));
             }
         });
     }

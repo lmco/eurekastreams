@@ -18,8 +18,8 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -44,6 +44,27 @@ public class FollowPanel extends FlowPanel
      */
     public FollowPanel(final FollowerStatusable inFollowable)
     {
+        this(inFollowable, null, StaticResourceBundle.INSTANCE.coreCss().unFollowLink(), StaticResourceBundle.INSTANCE
+                .coreCss().followLink(), false);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inFollowable
+     *            the stream to show the follow widget for.
+     * @param followStyle
+     *            Style for the follow button.
+     * @param unfollowStyle
+     *            Style for the unfollow button.
+     * @param commonStyle
+     *            Style for both buttons.
+     * @param showTooltips
+     *            Show tooltips.
+     */
+    public FollowPanel(final FollowerStatusable inFollowable, final String followStyle, final String unfollowStyle,
+            final String commonStyle, final boolean showTooltips)
+    {
         FollowerStatus status = inFollowable.getFollowerStatus();
 
         if (status != null)
@@ -53,8 +74,20 @@ public class FollowPanel extends FlowPanel
             final Label followLink = new Label("");
             followLink.setVisible(false);
 
-            unfollowLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unFollowLink());
-            unfollowLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followLink());
+            if (showTooltips)
+            {
+                followLink.setTitle("Follow this stream");
+                unfollowLink.setTitle("Stop following this stream");
+            }
+
+            if (unfollowStyle != null)
+            {
+                unfollowLink.addStyleName(unfollowStyle);
+            }
+            if (commonStyle != null)
+            {
+                unfollowLink.addStyleName(commonStyle);
+            }
             unfollowLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -83,7 +116,14 @@ public class FollowPanel extends FlowPanel
 
             this.add(unfollowLink);
 
-            followLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followLink());
+            if (followStyle != null)
+            {
+                followLink.addStyleName(followStyle);
+            }
+            if (commonStyle != null)
+            {
+                followLink.addStyleName(commonStyle);
+            }
             followLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)

@@ -17,6 +17,7 @@
 		}
 		.stream-name {
 			font-size: 18px;
+			line-height: normal;
 		}
 		.stream-name>a:link, .stream-name>a:visited, .stream-name>a:active {
 			color: white;

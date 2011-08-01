@@ -372,6 +372,7 @@ public class NotificationsDialogContent extends BaseDialogContent
         final Label label = new Label(text);
         label.addStyleName(style.sourceFilter());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().buttonLabel());
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
         if (indent)
         {
             label.addStyleName(style.sourceFilterIndented());

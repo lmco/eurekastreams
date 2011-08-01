@@ -11,7 +11,14 @@
 			border: none;
 			background-image: url(style/images/avatarBackground.png);
 		}
-		.stream-name {}
+		.stream-name {
+			height: 32px;
+		}
+		.stream-name > a {
+			-moz-binding: url("style/ellipsis.xml#ellipsis");
+			overflow: hidden;
+			white-space: normal;			
+		}
 		.message-count {
 			color: #CCC;
 		}
