@@ -142,7 +142,12 @@ public class GetSystemSettingsExecutionTest
         {
             {
                 oneOf(systemSettingDAO).execute(null);
-                will(returnValue(systemSettings));
+                will(returnValue(systemSettings));                
+                
+                allowing(systemSettings).getSupportStreamGroupShortName();
+                will(returnValue("supportstream"));
+                
+                oneOf(groupMapper).execute(with(any(List.class)));
 
                 allowing(actionContext).getParams();
                 will(returnValue(null));
