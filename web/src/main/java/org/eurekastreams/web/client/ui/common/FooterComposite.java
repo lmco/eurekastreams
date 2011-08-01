@@ -15,9 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
@@ -26,10 +30,12 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * This class creates the Composite for the main footer displayed on the page.
- *
+ * 
  */
 public class FooterComposite extends Composite
 {
@@ -51,10 +57,10 @@ public class FooterComposite extends Composite
     {
         FlowPanel panel = new FlowPanel();
 
-        FlowPanel navPanel = new FlowPanel();
+        final FlowPanel navPanel = new FlowPanel();
 
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -65,8 +71,30 @@ public class FooterComposite extends Composite
                     }
                 });
 
-        navPanel.add(new Anchor("HELP", "http://www.eurekastreams.org"));
-        navPanel.add(new Anchor("LEARN MORE", "http://www.eurekastreams.org"));
+        EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
+                {
+                    public void update(final GotSystemSettingsResponseEvent event)
+                    {
+                        if (navPanel.getWidgetCount() == 1
+                                && event.getResponse().getSupportStreamGroupShortName() != null
+                                && event.getResponse().getSupportStreamGroupShortName().length() > 0)
+                        {
+                            navPanel.add(new Hyperlink("HELP", Session.getInstance().generateUrl(
+                                    new CreateUrlRequest(Page.GROUPS, event.getResponse()
+                                            .getSupportStreamGroupShortName()))));
+
+                            if (event.getResponse().getSupportStreamWebsite() != null
+                                    && event.getResponse().getSupportStreamWebsite().length() > 0)
+                            {
+
+                                navPanel.add(new Label("|"));
+                                navPanel.add(new Anchor("LEARN MORE", 
+                                        event.getResponse().getSupportStreamWebsite()));
+                            }
+                        }
+                    }
+                });
 
         Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org", "_blank");
         poweredBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().poweredByEureka());
@@ -78,6 +106,7 @@ public class FooterComposite extends Composite
         navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().footerNav());
         siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().footerBar());
+        SystemSettingsModel.getInstance().fetch(null, true);
         initWidget(panel);
     }
 

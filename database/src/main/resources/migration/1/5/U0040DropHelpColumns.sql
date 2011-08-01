@@ -2,5 +2,4 @@ insert into db_version (major, minor, patch, scriptname, description) values (1,
 
 alter table systemsettings drop column supportemailaddress;
 alter table systemsettings drop column supportphonenumber;
-alter table systemsettings drop column supportstreamgroupshortname;
 

@@ -34,7 +34,7 @@ import org.hibernate.validator.Min;
 
 /**
  * This class represents the System Settings domain object.
- *
+ * 
  */
 @SuppressWarnings("serial")
 @Entity
@@ -102,6 +102,17 @@ public class SystemSettings extends DomainEntity implements Serializable
     @Basic(optional = false)
     @Min(value = MIN_CONTENT_EXPIRATION)
     private Integer contentExpiration = null;
+
+    /**
+     * The short name of the group stream that provides help to users.
+     */
+    private String supportStreamGroupShortName;
+
+    /**
+     * The website of the support group stream.
+     */
+    @Transient
+    private String supportStreamWebsite;
 
     /**
      * the list of ldap groups.
@@ -281,7 +292,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     *
+     * 
      * @param inPluginWarning
      *            the plugin warning setter.
      */
@@ -291,7 +302,7 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     *
+     * 
      * @return the plugin warning text.
      */
     public String getPluginWarning()
@@ -417,4 +428,43 @@ public class SystemSettings extends DomainEntity implements Serializable
     {
         bannerTemplate = inBannerTemplate;
     }
+
+    /**
+     * Get the short name of the group stream that provides help to users.
+     * 
+     * @return the short name of the group stream that provides help to users
+     */
+    public String getSupportStreamGroupShortName()
+    {
+        return supportStreamGroupShortName;
+    }
+
+    /**
+     * Set the short name of the group stream that provides help to users.
+     * 
+     * @param inSupportStreamGroupShortName
+     *            the short name of the group stream that provides help to users
+     */
+    public void setSupportStreamGroupShortName(final String inSupportStreamGroupShortName)
+    {
+        supportStreamGroupShortName = inSupportStreamGroupShortName;
+    }
+
+    /**
+     * @param inSupportStreamWebsite
+     *            the supportStreamGroupDisplayName to set.
+     */
+    public void setSupportStreamWebsite(final String inSupportStreamWebsite)
+    {
+        supportStreamWebsite = inSupportStreamWebsite;
+    }
+
+    /**
+     * @return the supportStreamWebsite.
+     */
+    public String getSupportStreamWebsite()
+    {
+        return supportStreamWebsite;
+    }
+
 }

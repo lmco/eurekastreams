@@ -33,7 +33,11 @@ import org.eurekastreams.server.persistence.GalleryItemMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
+import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Gets the system settings.
@@ -69,6 +73,11 @@ public class GetSystemSettingsExecution implements ExecutionStrategy<ActionConte
     private GalleryItemMapper<GalleryTabTemplateDTO> galleryTabTemplateDAO;
 
     /**
+     * Mapper used to look up the group.
+     */
+    private GetDomainGroupsByShortNames groupByShortNameMapper;
+
+    /**
      * The theme mapper.
      */
     private GalleryItemMapper<Theme> themeDAO;
@@ -98,13 +107,17 @@ public class GetSystemSettingsExecution implements ExecutionStrategy<ActionConte
      *            The theme mapper.
      * @param inThemeTransformer
      *            Theme Transformer.
+     * @param inGroupByShortNameMapper
+     *            group by shortname mapper.
      */
-    public GetSystemSettingsExecution(final DomainMapper<MapperRequest, SystemSettings> inSystemSettingsDAO,
+    public GetSystemSettingsExecution(
+            final DomainMapper<MapperRequest, SystemSettings> inSystemSettingsDAO,
             final DomainMapper<Serializable, List<PersonModelView>> inSystemAdminsMapper,
             final DomainMapper<MapperRequest, List<MembershipCriteriaDTO>> inMembershipCriteriaDAO,
             final GalleryItemMapper<GalleryTabTemplateDTO> inGalleryTabTemplateDAO,
             final GalleryItemMapper<Theme> inThemeDAO, //
-            final Transformer<List<Theme>, List<ThemeDTO>> inThemeTransformer)
+            final Transformer<List<Theme>, List<ThemeDTO>> inThemeTransformer,
+            final GetDomainGroupsByShortNames inGroupByShortNameMapper)
     {
         systemSettingsDAO = inSystemSettingsDAO;
         systemAdminsMapper = inSystemAdminsMapper;
@@ -112,6 +125,7 @@ public class GetSystemSettingsExecution implements ExecutionStrategy<ActionConte
         galleryTabTemplateDAO = inGalleryTabTemplateDAO;
         themeDAO = inThemeDAO;
         themeTransformer = inThemeTransformer;
+        groupByShortNameMapper = inGroupByShortNameMapper;
     }
 
     /**
@@ -125,6 +139,20 @@ public class GetSystemSettingsExecution implements ExecutionStrategy<ActionConte
     public SystemSettings execute(final ActionContext inActionContext)
     {
         SystemSettings settings = systemSettingsDAO.execute(null);
+        if (settings.getSupportStreamGroupShortName() != null
+                && settings.getSupportStreamGroupShortName().length() > 0)
+        {
+            log.debug("looking for group " + settings.getSupportStreamGroupShortName());
+            List<DomainGroupModelView> groups = groupByShortNameMapper.execute(Collections.singletonList(settings
+                    .getSupportStreamGroupShortName()));
+
+            if (groups.size() == 1)
+            {
+                log.debug("setting group website " + groups.get(0).getUrl());
+                settings.setSupportStreamWebsite(groups.get(0).getUrl());
+            }
+        }
+        
         if ((inActionContext.getParams() instanceof Boolean) && (Boolean) inActionContext.getParams())
         {
             log.debug("User wants fully populated system settings - fetch admins and membership criteria.");
@@ -145,8 +173,8 @@ public class GetSystemSettingsExecution implements ExecutionStrategy<ActionConte
             settings.setGalleryTabTemplates(galleryTabTemplateDAO.findSortedByRecent(0, maxGalleryItems).getPagedSet());
 
             // get themes.
-            settings.setThemes(themeTransformer
-                    .transform(themeDAO.findSortedByRecent(0, maxGalleryItems).getPagedSet()));
+            settings.setThemes(themeTransformer.transform(themeDAO.findSortedByRecent(0, maxGalleryItems)
+                    .getPagedSet()));
         }
         return settings;
     }

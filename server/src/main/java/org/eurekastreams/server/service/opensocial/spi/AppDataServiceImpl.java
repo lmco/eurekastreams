@@ -152,7 +152,7 @@ public class AppDataServiceImpl implements AppDataService
         {
             log.error("Error occurred deleting OpenSocial Application Data " + e.toString());
 
-            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
         return ImmediateFuture.newInstance(null);
     }
@@ -226,7 +226,7 @@ public class AppDataServiceImpl implements AppDataService
         {
             log.error("Error occurred retrieving appData " + e.toString());
 
-            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
 
         DataCollection dc = new DataCollection(results);
@@ -274,7 +274,7 @@ public class AppDataServiceImpl implements AppDataService
         catch (Exception e)
         {
             log.error("Error occurred updating AppData " + e.toString());
-            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
 
         return ImmediateFuture.newInstance(null);

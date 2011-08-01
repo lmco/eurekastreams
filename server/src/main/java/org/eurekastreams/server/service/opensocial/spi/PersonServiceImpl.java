@@ -165,7 +165,7 @@ public class PersonServiceImpl implements PersonService
                 Principal currentPrincipal = getPrincipal(token);
                 if (currentPrincipal == null)
                 {
-                    throw new IllegalArgumentException("Invalid requestor");
+                    throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
                 }
 
                 GetFollowersFollowingRequest currentRequest = new GetFollowersFollowingRequest(EntityType.PERSON,
@@ -212,7 +212,7 @@ public class PersonServiceImpl implements PersonService
         catch (Exception ex)
         {
             log.error("Error occurred retrieving people ", ex);
-            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
 
         return ImmediateFuture.newInstance(new RestfulCollection<Person>(osPeople));
@@ -247,7 +247,7 @@ public class PersonServiceImpl implements PersonService
         // userId is null and so is the type cannot proceed.
         {
             log.debug("Id of the person requested was null");
-            throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "No id supplied");
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
 
         try
@@ -277,13 +277,13 @@ public class PersonServiceImpl implements PersonService
         {
             log.error("number format exception " + e.getMessage());
 
-            throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Id supplied is bad.");
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
         catch (Exception e)
         {
             log.error("Error occurred retrieving person " + e.getMessage());
 
-            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
 
         return ImmediateFuture.newInstance(osPerson);

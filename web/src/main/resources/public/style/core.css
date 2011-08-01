@@ -447,6 +447,8 @@ div.banner-container {
 .footer-bar .site-labeling {
     position: relative;
     top: -42px;	
+    width: 600px;
+    margin: 0 auto;
 }
 
 .footer-bar ul li div a,.footer-bar ul li div a:link,.footer-bar ul li div a:visited,.footer-bar ul li div a:hover,.footer-bar ul li div a:active

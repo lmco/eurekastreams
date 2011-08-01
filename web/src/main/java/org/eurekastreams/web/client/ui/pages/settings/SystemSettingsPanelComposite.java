@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.ActivityExpirationFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.HideableRichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.HideableTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 // add more then 255 char into the TOS or a String where it should be an Int.
 /**
  * SystemSettings panel.
- *
+ * 
  */
 public class SystemSettingsPanelComposite extends FlowPanel
 {
@@ -69,6 +70,11 @@ public class SystemSettingsPanelComposite extends FlowPanel
      * Maximum content warning length.
      */
     private static final int MAX_CONTENT_WARNING = 200;
+
+    /**
+     * Maximum group name length.
+     */
+    private static final int MAX_GROUP_NAME = 50;
 
     /**
      * the processor.
@@ -115,7 +121,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inProcessor
      *            The action processor.
      */
@@ -257,7 +263,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Builds the form.
-     *
+     * 
      * @param systemSettingValues
      *            The system settings to use when preloading the form.
      */
@@ -356,6 +362,13 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormElement(promptInterval);
         form.addFormDivider();
 
+        // Help Page
+
+        form.addFormElement(new BasicTextBoxFormElement(MAX_GROUP_NAME, false, "Support Stream",
+                "supportStreamGroupShortName", systemSettingValues.getSupportStreamGroupShortName(),
+                "Enter the name of the stream you want to display on the help page", false));
+        form.addFormDivider();
+
         form.addFormElement(activityExp);
         form.addFormDivider();
 
@@ -384,7 +397,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Setup for refresh button.
-     *
+     * 
      * @return newly configured label/button.
      */
     private Label initializeRefreshButton()

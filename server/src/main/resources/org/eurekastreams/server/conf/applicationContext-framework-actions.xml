@@ -1277,6 +1277,7 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.ThemeToThemeDTOTransformer" />
                 </constructor-arg>              
+                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />                
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

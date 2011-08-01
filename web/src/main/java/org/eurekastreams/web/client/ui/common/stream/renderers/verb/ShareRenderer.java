@@ -128,7 +128,14 @@ public class ShareRenderer implements VerbRenderer
      */
     public Widget getAvatar()
     {
-        return new AvatarRenderer().render(activity.getOriginalActor());
+        if (activity.getOriginalActor() != null)
+        {
+            return new AvatarRenderer().render(activity.getOriginalActor());
+        }
+        else
+        {
+            return new AvatarRenderer().render(activity.getActor());
+        }
     }
 
     /**
@@ -171,14 +178,22 @@ public class ShareRenderer implements VerbRenderer
     public List<StatefulRenderer> getSourceMetaDataItemRenderers()
     {
         List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
-        renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getUniqueIdentifier(), activity
-                .getOriginalActor().getDisplayName()));
 
-        if (activity.getOriginalActor() != null
-                && activity.getActor().getEntityId() != activity.getOriginalActor().getEntityId())
+        if (activity.getOriginalActor() != null)
         {
-            renderers.add(new MetadataLinkRenderer("via", activity.getActor().getUniqueIdentifier(), activity
-                    .getActor().getDisplayName()));
+            renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getUniqueIdentifier(), activity
+                    .getOriginalActor().getDisplayName()));
+
+            if (activity.getActor().getEntityId() != activity.getOriginalActor().getEntityId())
+            {
+                renderers.add(new MetadataLinkRenderer("via", activity.getActor().getUniqueIdentifier(), activity
+                        .getActor().getDisplayName()));
+            }
+        }
+        else
+        {
+            renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity.getActor()
+                    .getDisplayName()));
         }
 
         StreamEntityDTO stream = activity.getDestinationStream();
