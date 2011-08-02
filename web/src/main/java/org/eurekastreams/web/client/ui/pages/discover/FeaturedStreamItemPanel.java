@@ -30,8 +30,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -62,7 +62,7 @@ public class FeaturedStreamItemPanel extends Composite
 
     /** Left column. */
     @UiField
-    DivElement leftPanel;
+    HTMLPanel leftPanel;
 
     /** Avatar panel. */
     @UiField(provided = true)
@@ -78,35 +78,35 @@ public class FeaturedStreamItemPanel extends Composite
 
     /**
      * Constructor.
-     *
-     * @param inFeaturedStreamDTO
+     * 
+     * @param inStreamDTO
      *            the streamDTO to represent
      */
-    public FeaturedStreamItemPanel(final FeaturedStreamDTO inFeaturedStreamDTO)
+    public FeaturedStreamItemPanel(final FeaturedStreamDTO inStreamDTO)
     {
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
-        avatarPanel = new AvatarLinkPanel(inFeaturedStreamDTO.getEntityType(), inFeaturedStreamDTO.getUniqueId(),
-                inFeaturedStreamDTO.getId(), inFeaturedStreamDTO.getAvatarId(), Size.Normal);
+        avatarPanel = new AvatarLinkPanel(inStreamDTO.getEntityType(), inStreamDTO.getUniqueId(), inStreamDTO.getId(),
+                inStreamDTO.getAvatarId(), Size.Normal);
         Widget main = binder.createAndBindUi(this);
         initWidget(main);
 
         // add follow controls if not the current person
-        if (inFeaturedStreamDTO.getEntityType() != EntityType.PERSON
-                || inFeaturedStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
+        if (inStreamDTO.getEntityType() != EntityType.PERSON
+                || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            Element followPanelElement = new FollowPanel(inFeaturedStreamDTO).getElement();
-            followPanelElement.addClassName(style.followPanel());
-            leftPanel.appendChild(followPanelElement);
+            Widget followPanel = new FollowPanel(inStreamDTO);
+            followPanel.addStyleName(style.followPanel());
+            leftPanel.add(followPanel);
         }
 
         // assume group if not person
-        Page linkPage = (inFeaturedStreamDTO.getEntityType() == EntityType.PERSON) ? Page.PEOPLE : Page.GROUPS;
+        Page linkPage = (inStreamDTO.getEntityType() == EntityType.PERSON) ? Page.PEOPLE : Page.GROUPS;
         String nameUrl = Session.getInstance().generateUrl(//
-                new CreateUrlRequest(linkPage, inFeaturedStreamDTO.getUniqueId()));
+                new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
         streamNameLink.setTargetHistoryToken(nameUrl);
-        streamNameLink.setText(inFeaturedStreamDTO.getDisplayName());
+        streamNameLink.setText(inStreamDTO.getDisplayName());
 
-        streamDescriptionText.setInnerText(inFeaturedStreamDTO.getDescription());
+        streamDescriptionText.setInnerText(inStreamDTO.getDescription());
     }
 
     /**

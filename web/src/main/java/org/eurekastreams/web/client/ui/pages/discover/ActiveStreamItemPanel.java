@@ -26,13 +26,12 @@ import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,7 +66,7 @@ public class ActiveStreamItemPanel extends Composite
 
     /** Panel holding the details. */
     @UiField
-    DivElement infoPanel;
+    HTMLPanel infoPanel;
 
     /** Name link. */
     @UiField
@@ -95,9 +94,9 @@ public class ActiveStreamItemPanel extends Composite
         if (inStreamDTO.getEntityType() != EntityType.PERSON
                 || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            Element followPanelElement = new FollowPanel(inStreamDTO).getElement();
-            followPanelElement.addClassName(style.followPanel());
-            infoPanel.appendChild(followPanelElement);
+            Widget followPanel = new FollowPanel(inStreamDTO);
+            followPanel.addStyleName(style.followPanel());
+            infoPanel.add(followPanel);
         }
 
         // set text and link for name; assume group if not person

@@ -50,7 +50,7 @@ public class FollowPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inFollowable
      *            the stream to show the follow widget for.
      * @param followStyle
@@ -67,103 +67,104 @@ public class FollowPanel extends FlowPanel
     {
         FollowerStatus status = inFollowable.getFollowerStatus();
 
-        if (status != null)
+        if (status == null)
         {
-            final Label unfollowLink = new Label("");
-            unfollowLink.setVisible(false);
-            final Label followLink = new Label("");
-            followLink.setVisible(false);
-
-            if (showTooltips)
-            {
-                followLink.setTitle("Follow this stream");
-                unfollowLink.setTitle("Stop following this stream");
-            }
-
-            if (unfollowStyle != null)
-            {
-                unfollowLink.addStyleName(unfollowStyle);
-            }
-            if (commonStyle != null)
-            {
-                unfollowLink.addStyleName(commonStyle);
-            }
-            unfollowLink.addClickHandler(new ClickHandler()
-            {
-                public void onClick(final ClickEvent event)
-                {
-                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
-                            .getCurrentPerson().getAccountId(), inFollowable.getUniqueId(), inFollowable
-                            .getEntityType(), false, Follower.FollowerStatus.NOTFOLLOWING);
-
-                    if (inFollowable.getEntityType() == EntityType.PERSON)
-                    {
-                        PersonFollowersModel.getInstance().insert(request);
-                    }
-                    else if (inFollowable.getEntityType() == EntityType.GROUP)
-                    {
-                        GroupMembersModel.getInstance().insert(request);
-                    }
-                    else
-                    {
-                        Window.alert("Unsupported");
-                    }
-
-                    unfollowLink.setVisible(false);
-                    followLink.setVisible(true);
-                }
-            });
-
-            this.add(unfollowLink);
-
-            if (followStyle != null)
-            {
-                followLink.addStyleName(followStyle);
-            }
-            if (commonStyle != null)
-            {
-                followLink.addStyleName(commonStyle);
-            }
-            followLink.addClickHandler(new ClickHandler()
-            {
-                public void onClick(final ClickEvent event)
-                {
-                    SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
-                            .getCurrentPerson().getAccountId(), inFollowable.getUniqueId(), inFollowable
-                            .getEntityType(), false, Follower.FollowerStatus.FOLLOWING);
-
-                    if (inFollowable.getEntityType() == EntityType.PERSON)
-                    {
-                        PersonFollowersModel.getInstance().insert(request);
-                    }
-                    else if (inFollowable.getEntityType() == EntityType.GROUP)
-                    {
-                        GroupMembersModel.getInstance().insert(request);
-                    }
-                    else
-                    {
-                        Window.alert("Unsupported");
-                    }
-
-                    unfollowLink.setVisible(true);
-                    followLink.setVisible(false);
-                }
-            });
-
-            this.add(followLink);
-
-            switch (status)
-            {
-            case FOLLOWING:
-                unfollowLink.setVisible(true);
-                break;
-            case NOTFOLLOWING:
-                followLink.setVisible(true);
-                break;
-            default:
-                break;
-            }
+            return;
         }
 
+        final Label unfollowLink = new Label("");
+        unfollowLink.setVisible(false);
+        final Label followLink = new Label("");
+        followLink.setVisible(false);
+
+        if (showTooltips)
+        {
+            followLink.setTitle("Follow this stream");
+            unfollowLink.setTitle("Stop following this stream");
+        }
+
+        if (unfollowStyle != null)
+        {
+            unfollowLink.addStyleName(unfollowStyle);
+        }
+        if (commonStyle != null)
+        {
+            unfollowLink.addStyleName(commonStyle);
+        }
+        unfollowLink.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
+                        .getCurrentPerson().getAccountId(), inFollowable.getUniqueId(), inFollowable.getEntityType(),
+                        false, Follower.FollowerStatus.NOTFOLLOWING);
+
+                if (inFollowable.getEntityType() == EntityType.PERSON)
+                {
+                    PersonFollowersModel.getInstance().insert(request);
+                }
+                else if (inFollowable.getEntityType() == EntityType.GROUP)
+                {
+                    GroupMembersModel.getInstance().insert(request);
+                }
+                else
+                {
+                    Window.alert("Unsupported");
+                }
+
+                unfollowLink.setVisible(false);
+                followLink.setVisible(true);
+            }
+        });
+
+        this.add(unfollowLink);
+
+        if (followStyle != null)
+        {
+            followLink.addStyleName(followStyle);
+        }
+        if (commonStyle != null)
+        {
+            followLink.addStyleName(commonStyle);
+        }
+        followLink.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                SetFollowingStatusRequest request = new SetFollowingStatusRequest(Session.getInstance()
+                        .getCurrentPerson().getAccountId(), inFollowable.getUniqueId(), inFollowable.getEntityType(),
+                        false, Follower.FollowerStatus.FOLLOWING);
+
+                if (inFollowable.getEntityType() == EntityType.PERSON)
+                {
+                    PersonFollowersModel.getInstance().insert(request);
+                }
+                else if (inFollowable.getEntityType() == EntityType.GROUP)
+                {
+                    GroupMembersModel.getInstance().insert(request);
+                }
+                else
+                {
+                    Window.alert("Unsupported");
+                }
+
+                unfollowLink.setVisible(true);
+                followLink.setVisible(false);
+            }
+        });
+
+        this.add(followLink);
+
+        switch (status)
+        {
+        case FOLLOWING:
+            unfollowLink.setVisible(true);
+            break;
+        case NOTFOLLOWING:
+            followLink.setVisible(true);
+            break;
+        default:
+            break;
+        }
     }
 }

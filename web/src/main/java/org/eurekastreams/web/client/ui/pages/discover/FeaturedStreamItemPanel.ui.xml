@@ -32,7 +32,7 @@
 		}
 		.stream-avatar {
 			background-image: url(style/images/avatarBackground.png);
-			padding: 5px;
+			padding: 4px 4px 2px;
 		}
 		.stream-avatar>a>img {
 			padding: 0px;
@@ -52,9 +52,9 @@
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person} {style.main}">
-		<div class="{style.left}" ui:field="leftPanel">
+		<g:HTMLPanel addStyleNames="{style.left}" ui:field="leftPanel">
 			<eavatar:AvatarLinkPanel addStyleNames="{style.stream-avatar}" ui:field="avatarPanel" />
-		</div>
+		</g:HTMLPanel>
 		<div class="{coreCss.connectionItemInfo}">
 			<g:Hyperlink addStyleNames="{style.stream-name}" ui:field="streamNameLink" />
 			<div class="{style.stream-description}" ui:field="streamDescriptionText" />
