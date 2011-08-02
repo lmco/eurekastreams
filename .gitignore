@@ -6,3 +6,4 @@ Thumbs.db
 nohup.out
 server/.checkstyle
 hs_err_pid*.log
+database/bin
