@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -32,12 +33,16 @@ import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * This class updates a person object based on the Map of fields that come in and match the properties of the Person
  * object.
- *
+ * 
  */
 public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -62,26 +67,35 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
     private final TaskHandlerExecutionStrategy personPersister;
 
     /**
+     * DAO for deleting cache keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeyDAO;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            - instance of {@link PersonMapper} for this execution strategy.
      * @param inPersonPersister
      *            - instance of {@link PersistResourceExecution} for a Person.
      * @param inBackgroundMapper
      *            - instance of {@link BackgroundMapper} for this execution strategy.
+     * @param inDeleteCacheKeyDAO
+     *            DAO for deleting cache keys.
      */
     public UpdatePersonExecution(final PersonMapper inPersonMapper,
-            final TaskHandlerExecutionStrategy inPersonPersister, final BackgroundMapper inBackgroundMapper)
+            final TaskHandlerExecutionStrategy inPersonPersister, final BackgroundMapper inBackgroundMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteCacheKeyDAO)
     {
         personMapper = inPersonMapper;
         personPersister = inPersonPersister;
         backgroundMapper = inBackgroundMapper;
+        deleteCacheKeyDAO = inDeleteCacheKeyDAO;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * This method updates the person object with the data from the form.
      */
     @Override
@@ -107,13 +121,14 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
         background.setBackgroundItems(skills, BackgroundItemType.SKILL);
 
         personMapper.flush();
+        deleteCacheKeyDAO.execute(Collections.singleton(CacheKeys.PERSON_BY_ID + person.getId()));
 
         return person;
     }
 
     /**
      * Converts a String of comma separated elements to a list of background items.
-     *
+     * 
      * @param bgItems
      *            String of Background Items.
      * @param type

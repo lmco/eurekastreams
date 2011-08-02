@@ -3216,6 +3216,7 @@
                     </bean>
                 </constructor-arg>
                 <constructor-arg ref="jpaBackgroundMapper"/>
+                <constructor-arg ref="deleteCacheKeys"/>                
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
