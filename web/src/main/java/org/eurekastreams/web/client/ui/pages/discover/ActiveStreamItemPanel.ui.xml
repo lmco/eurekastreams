@@ -15,6 +15,7 @@
 			height: 32px;
 		}
 		.stream-name > a {
+			text-overflow: ellipsis;
 			-moz-binding: url("style/ellipsis.xml#ellipsis");
 			overflow: hidden;
 			white-space: normal;			
