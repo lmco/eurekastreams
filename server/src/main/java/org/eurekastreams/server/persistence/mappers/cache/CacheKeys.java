@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- *
+ * 
  */
 public final class CacheKeys
 {
@@ -228,4 +228,14 @@ public final class CacheKeys
      * Key for theme css hash by theme uuid.
      */
     public static final String THEME_HASH_BY_UUID = "ThemeHashByUuid:";
+
+    /**
+     * Cache key to get the stream scope of a person by their account id.
+     */
+    public static final String STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID = "PerSSID:";
+
+    /**
+     * Cache key to get the stream scope of a group by the short name.
+     */
+    public static final String STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME = "GrpSSID:";
 }

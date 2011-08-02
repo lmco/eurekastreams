@@ -41,6 +41,8 @@
 	<util:constant id="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+	<util:constant id="CacheKeys.STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID" />
+	<util:constant id="CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME" />
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -2654,5 +2656,74 @@
         <constructor-arg ref="bulkActivitiesMapper" />
         <constructor-arg value="false" />
     </bean>
+    
+    <!-- Get the stream scope id for a person by their account id - using cache if available -->
+    <bean id="getStreamScopeIdForPersonByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="CacheKeys.STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID" />
+                        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKeyDbMapper">
+                <constructor-arg>
+                    <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">PERSON</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="CacheKeys.STREAM_SCOPE_ID_BY_PERSON_ACCOUNT_ID" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- Get the stream scope id for a group by its short name - using cache if available -->
+    <bean id="getStreamScopeIdForGroupTypeByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME" />
+                        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdForScopeTypeByUniqueKeyDbMapper">
+		        <constructor-arg>
+		            <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">GROUP</value>
+		        </constructor-arg>
+		    </bean>
+        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
     
 </beans>
