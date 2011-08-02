@@ -147,17 +147,21 @@
         <constructor-arg value="true" />
     </bean>
     
-    <bean id="registerUsageMetric" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+     <bean id="registerUsageMetric" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
         <!-- Authorization -->
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution"/>
+            <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution">
+                <constructor-arg ref="getStreamScopeIdForPersonByUniqueKeyMapper" />
+                <constructor-arg ref="getStreamScopeIdForGroupTypeByUniqueKeyMapper" />
+                <constructor-arg ref="dayOfWeekStrategy" />
+            </bean>
         </constructor-arg>
         <constructor-arg value="true" />
         <constructor-arg ref="taskHandler" />
-    </bean> 
+    </bean>  
     
     <bean id="persistUserMetricAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
