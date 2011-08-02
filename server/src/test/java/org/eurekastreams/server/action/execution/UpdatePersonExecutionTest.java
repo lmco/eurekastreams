@@ -17,12 +17,15 @@ package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
@@ -33,9 +36,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 /**
  * This class contains the test suite for the {@link UpdatePersonExecution} class.
- *
+ * 
  */
 public class UpdatePersonExecutionTest
 {
@@ -85,12 +90,18 @@ public class UpdatePersonExecutionTest
     private HashMap<String, Serializable> fields;
 
     /**
+     * DAO for deleting cache keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeyDAO = context.mock(DomainMapper.class);
+
+    /**
      * Prepare the system under test.
      */
     @Before
     public void setup()
     {
-        sut = new UpdatePersonExecution(personMapperMock, persistResourceExecutionMock, backgroundMapperMock);
+        sut = new UpdatePersonExecution(personMapperMock, persistResourceExecutionMock, backgroundMapperMock,
+                deleteCacheKeyDAO);
         fields = new HashMap<String, Serializable>();
         fields.put("skills", "stuff, things");
     }
@@ -109,6 +120,12 @@ public class UpdatePersonExecutionTest
 
                 oneOf(personMock).getOpenSocialId();
                 will(returnValue("53"));
+
+                oneOf(personMock).getId();
+                will(returnValue(5L));
+
+                oneOf(deleteCacheKeyDAO).execute(Collections.singleton(CacheKeys.PERSON_BY_ID + 5L));
+
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
 
                 oneOf(personMapperMock).flush();
@@ -138,6 +155,11 @@ public class UpdatePersonExecutionTest
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
 
                 oneOf(personMapperMock).flush();
+
+                oneOf(personMock).getId();
+                will(returnValue(5L));
+
+                oneOf(deleteCacheKeyDAO).execute(Collections.singleton(CacheKeys.PERSON_BY_ID + 5L));
             }
         });
 
@@ -164,6 +186,11 @@ public class UpdatePersonExecutionTest
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
 
                 oneOf(personMapperMock).flush();
+
+                oneOf(personMock).getId();
+                will(returnValue(5L));
+
+                oneOf(deleteCacheKeyDAO).execute(Collections.singleton(CacheKeys.PERSON_BY_ID + 5L));
             }
         });
 
@@ -195,6 +222,11 @@ public class UpdatePersonExecutionTest
                 oneOf(backgroundMapperMock).findOrCreatePersonBackground("53");
 
                 oneOf(personMapperMock).flush();
+
+                oneOf(personMock).getId();
+                will(returnValue(5L));
+
+                oneOf(deleteCacheKeyDAO).execute(Collections.singleton(CacheKeys.PERSON_BY_ID + 5L));
             }
         });
 
