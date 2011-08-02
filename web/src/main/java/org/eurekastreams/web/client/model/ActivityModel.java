@@ -82,6 +82,12 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
             {
                 Session.getInstance().getEventBus().notifyObservers(new GotActivityResponseEvent(response));
             }
+        }, new OnFailureCommand()
+        {
+            public void onFailure(final Throwable inEx)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotActivityResponseEvent(null));
+            }
         }, inUseClientCacheIfAvailable);
     }
 

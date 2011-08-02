@@ -23,9 +23,9 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -135,70 +135,70 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         *
+         * 
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         *
+         * 
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         *
+         * 
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         *
+         * 
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         *
+         * 
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         *
+         * 
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         *
+         * 
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         *
+         * 
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         *
+         * 
          * @return small avatar style.
          */
         String smallAvatar();
 
         /**
          * Current user configure link.
-         *
+         * 
          * @return current user configure link.
          */
         String currentUserConfLink();
@@ -522,7 +522,7 @@ public class ActivityContent extends Composite
 
     /**
      * Got activity.
-     *
+     * 
      * @param event
      *            the event.
      */
@@ -531,17 +531,20 @@ public class ActivityContent extends Composite
         streamPanel.clear();
         activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
-        EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
-        String actorName = event.getResponse().getDestinationStream().getUniqueId();
-
-        if (actorType.equals(EntityType.GROUP))
+        if (event.getResponse() != null)
         {
-            GroupModel.getInstance().fetch(actorName, false);
+            EntityType actorType = event.getResponse().getDestinationStream().getEntityType();
+            String actorName = event.getResponse().getDestinationStream().getUniqueId();
 
-        }
-        else if (actorType.equals(EntityType.PERSON))
-        {
-            PersonalInformationModel.getInstance().fetch(actorName, false);
+            if (actorType.equals(EntityType.GROUP))
+            {
+                GroupModel.getInstance().fetch(actorName, false);
+
+            }
+            else if (actorType.equals(EntityType.PERSON))
+            {
+                PersonalInformationModel.getInstance().fetch(actorName, false);
+            }
         }
 
         streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.YES));
@@ -615,18 +618,16 @@ public class ActivityContent extends Composite
 
         // users are not initially subscribed for emails when following a person/group, so set the status properly (else
         // if you were following and unsubscribed, then re-subscribed, the status would be old and wrong)
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(InsertedPersonFollowerResponseEvent.class,
-                        new Observer<InsertedPersonFollowerResponseEvent>()
-                        {
-                            public void update(final InsertedPersonFollowerResponseEvent ev)
-                            {
-                                setSubscribeStatus(false);
-                            }
-                        });
-        Session.getInstance().getEventBus()
-                .addObserver(InsertedGroupMemberResponseEvent.class, new Observer<InsertedGroupMemberResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(InsertedPersonFollowerResponseEvent.class,
+                new Observer<InsertedPersonFollowerResponseEvent>()
+                {
+                    public void update(final InsertedPersonFollowerResponseEvent ev)
+                    {
+                        setSubscribeStatus(false);
+                    }
+                });
+        Session.getInstance().getEventBus().addObserver(InsertedGroupMemberResponseEvent.class,
+                new Observer<InsertedGroupMemberResponseEvent>()
                 {
                     public void update(final InsertedGroupMemberResponseEvent ev)
                     {
@@ -634,16 +635,14 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                        new Observer<GotPersonFollowerStatusResponseEvent>()
-                        {
-                            public void update(final GotPersonFollowerStatusResponseEvent event)
-                            {
-                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
-                            }
-                        });
+        Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
+                new Observer<GotPersonFollowerStatusResponseEvent>()
+                {
+                    public void update(final GotPersonFollowerStatusResponseEvent event)
+                    {
+                        subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                    }
+                });
 
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
@@ -703,15 +702,14 @@ public class ActivityContent extends Composite
                 {
                     public void update(final StreamReinitializeRequestEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(),
-                                Session.getInstance().getParameterValue("search"));
+                        loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue(
+                                "search"));
                     }
                 });
 
         EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
-                    @Override
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
                         if (!event.getViewChanged())
@@ -845,7 +843,7 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     *
+     * 
      * @param inViews
      *            the views.
      */
@@ -876,7 +874,6 @@ public class ActivityContent extends Composite
         activeSort.setTargetHistoryToken(Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ACTIVITY, views, params)));
     }
-
 
     /**
      * Setup bookmarks and custom streams.
@@ -1003,13 +1000,11 @@ public class ActivityContent extends Composite
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            StreamNamePanel filterPanel = createPanel(
-                                    filter.getName(),
-                                    "custom/"
-                                            + filter.getId()
-                                            + "/"
-                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                                    Session.getInstance().getCurrentPerson().getAccountId()),
+                            StreamNamePanel filterPanel = createPanel(filter.getName(), "custom/"
+                                    + filter.getId()
+                                    + "/"
+                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                            Session.getInstance().getCurrentPerson().getAccountId()),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 
@@ -1031,7 +1026,6 @@ public class ActivityContent extends Composite
 
         EventBus.getInstance().addObserver(StreamSearchBeginEvent.class, new Observer<StreamSearchBeginEvent>()
         {
-            @Override
             public void update(final StreamSearchBeginEvent event)
             {
                 if (null == event.getSearchText())
@@ -1195,7 +1189,7 @@ public class ActivityContent extends Composite
 
     /**
      * Update subscription status consistently.
-     *
+     * 
      * @param inIsSubscribed
      *            New status.
      */
@@ -1208,7 +1202,7 @@ public class ActivityContent extends Composite
     /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     *
+     * 
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
@@ -1220,7 +1214,7 @@ public class ActivityContent extends Composite
 
     /**
      * Append a new message.
-     *
+     * 
      * @param message
      *            the messa.ge
      */
@@ -1234,7 +1228,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     *
+     * 
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1429,7 +1423,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     *
+     * 
      * @param panel
      *            the panel.
      */
@@ -1468,7 +1462,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     *
+     * 
      * @param name
      *            the name of the item.
      * @param view
