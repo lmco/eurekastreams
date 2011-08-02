@@ -28,7 +28,6 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
-import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
@@ -58,7 +57,7 @@ public class PostRenderer implements VerbRenderer
     /**
      * Whether or not to show the recipient.
      */
-    ShowRecipient showRecipient;
+    boolean showRecipient;
 
     /**
      * Setup.
@@ -73,8 +72,7 @@ public class PostRenderer implements VerbRenderer
      *            the recipient.
      */
     public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
-            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState,
-            final ShowRecipient inShowRecipient)
+            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState, final boolean inShowRecipient)
     {
         objectRendererDictionary = inObjectRendererDictionary;
         activity = inActivity;
@@ -180,18 +178,18 @@ public class PostRenderer implements VerbRenderer
 
         RenderUtilities.renderActorName(renderers, activity);
 
-        StreamEntityDTO stream = activity.getDestinationStream();
-        if (stream.getType() == EntityType.RESOURCE)
+        if (showRecipient)
         {
-            if (showRecipient != ShowRecipient.NONE)
+            StreamEntityDTO stream = activity.getDestinationStream();
+            if (stream.getType() == EntityType.RESOURCE)
             {
                 renderers.add(new ResourceDestinationRenderer(activity));
             }
-        }
-        else if (showRecipient == ShowRecipient.ALL)
-        {
-            renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
-                    .getDisplayName()));
+            else
+            {
+                renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
+                        .getDisplayName()));
+            }
         }
 
         return renderers;

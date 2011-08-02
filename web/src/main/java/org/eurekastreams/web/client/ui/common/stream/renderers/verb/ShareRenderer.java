@@ -28,7 +28,6 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
-import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
@@ -39,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Render a share verb activity.
- * 
+ *
  */
 public class ShareRenderer implements VerbRenderer
 {
@@ -58,11 +57,11 @@ public class ShareRenderer implements VerbRenderer
     /**
      * Whether or not to show the recipient.
      */
-    ShowRecipient showRecipient;
+    boolean showRecipient;
 
     /**
      * Setup.
-     * 
+     *
      * @param inObjectRendererDictionary
      *            object dictionary.
      * @param inActivity
@@ -73,8 +72,7 @@ public class ShareRenderer implements VerbRenderer
      *            the recipient.
      */
     public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
-            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState,
-            final ShowRecipient inShowRecipient)
+            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState, final boolean inShowRecipient)
     {
         objectRendererDictionary = inObjectRendererDictionary;
         activity = inActivity;
@@ -84,7 +82,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow commenting.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowComment()
@@ -94,7 +92,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow sharing.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowShare()
@@ -104,7 +102,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow starring.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowStar()
@@ -114,7 +112,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow liking.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowLike()
@@ -124,7 +122,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the avatar.
-     * 
+     *
      * @return the avatar.
      */
     public Widget getAvatar()
@@ -141,7 +139,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the content.
-     * 
+     *
      * @return the content.
      */
     public Widget getContent()
@@ -165,7 +163,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Return a list of appropriate metadata link renderers.
-     * 
+     *
      * @return the list.
      */
     public List<StatefulRenderer> getMetaDataItemRenderers()
@@ -198,18 +196,18 @@ public class ShareRenderer implements VerbRenderer
             RenderUtilities.renderActorName(renderers, activity);
         }
 
-        StreamEntityDTO stream = activity.getDestinationStream();
-        if (stream.getType() == EntityType.RESOURCE)
+        if (showRecipient)
         {
-            if (showRecipient != ShowRecipient.NONE)
+            StreamEntityDTO stream = activity.getDestinationStream();
+            if (stream.getType() == EntityType.RESOURCE)
             {
                 renderers.add(new ResourceDestinationRenderer(activity));
             }
-        }
-        else if (showRecipient == ShowRecipient.ALL)
-        {
-            renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
-                    .getDisplayName()));
+            else
+            {
+                renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
+                        .getDisplayName()));
+            }
         }
 
         return renderers;

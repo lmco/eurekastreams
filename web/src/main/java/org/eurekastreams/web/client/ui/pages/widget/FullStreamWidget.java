@@ -44,7 +44,7 @@ public class FullStreamWidget extends Composite
      */
     public FullStreamWidget(final String jsonRequest)
     {
-        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL,
+        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.YES,
                 new FullStreamWidgetStreamMessageItemRenderer());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectFullStreamWidget());
@@ -105,7 +105,7 @@ public class FullStreamWidget extends Composite
          */
         public FullStreamWidgetStreamMessageItemRenderer()
         {
-            super(ShowRecipient.ALL);
+            super(ShowRecipient.YES);
         }
 
         /**

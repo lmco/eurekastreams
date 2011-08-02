@@ -201,7 +201,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         Session.getInstance().getEventBus().notifyObservers(new SwitchedToCustomStreamEvent());
-        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(ShowRecipient.ALL));
+        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(ShowRecipient.YES));
     }
 
     /**

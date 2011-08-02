@@ -157,7 +157,7 @@ public class PendingGroupsAndFlaggedActivitiesPanelComposite extends SimpleTab
 
         // prepare the StaticResourceBundle.INSTANCE.coreCss().filters()
         // flagged content StaticResourceBundle.INSTANCE.coreCss().filter()
-        StreamMessageItemRenderer flaggedRenderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
+        StreamMessageItemRenderer flaggedRenderer = new StreamMessageItemRenderer(ShowRecipient.YES);
         flaggedRenderer.setShowManageFlagged(true);
         flaggedRenderer.setShowComment(true);
 

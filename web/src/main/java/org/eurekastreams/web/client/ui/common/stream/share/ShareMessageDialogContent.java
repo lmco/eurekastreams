@@ -131,7 +131,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
         postToPanel = new PostToPanel(postScope, true);
         body.add(postToPanel);
 
-        StreamMessageItemRenderer messageRenderer = new StreamMessageItemRenderer(ShowRecipient.NONE, State.READONLY);
+        StreamMessageItemRenderer messageRenderer = new StreamMessageItemRenderer(ShowRecipient.NO, State.READONLY);
 
         body.add(messageRenderer.render(sharedMessage));
 

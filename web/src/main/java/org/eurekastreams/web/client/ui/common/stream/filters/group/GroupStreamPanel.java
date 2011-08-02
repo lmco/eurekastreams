@@ -198,7 +198,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
         Session.getInstance().getEventBus().notifyObservers(new StreamRequestEvent(group.getName(), jsonRequest));
         Session.getInstance().getEventBus()
-                .notifyObservers(new ChangeShowStreamRecipientEvent(ShowRecipient.FOREIGN_ONLY));
+                .notifyObservers(new ChangeShowStreamRecipientEvent(ShowRecipient.RESOURCE_ONLY));
         Session.getInstance().getEventBus().notifyObservers(new SwitchedToGroupStreamEvent(group));
 
     }

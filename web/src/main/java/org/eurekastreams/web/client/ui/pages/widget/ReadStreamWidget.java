@@ -58,8 +58,8 @@ public class ReadStreamWidget extends Composite
      */
     public ReadStreamWidget(final String jsonRequest)
     {
-        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL, new StreamMessageItemRenderer(
-                ShowRecipient.ALL)
+        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.YES, new StreamMessageItemRenderer(
+                ShowRecipient.YES)
         {
             {
                 setCreatePermalink(false);

@@ -20,10 +20,17 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
  */
 public enum ShowRecipient
 {
-    /** Always show. */
-    ALL,
-    /** Show for items which don't belong to the stream. */
-    FOREIGN_ONLY,
+    /**
+     * Show for all activities, except where the author posted to their own stream. (Don't want to see
+     * "John Doe to John Doe".) Author may be a group, such as for stream plugins.
+     */
+    YES,
+    /**
+     * Only show when the activity is in a resource stream. This will cause activities which are "shared to Eureka" from
+     * the Comment Widget to have the "commented on ..." when shown in normal streams without having the "to ..." for
+     * everything else.
+     */
+    RESOURCE_ONLY,
     /** Never show. */
-    NONE
+    NO
 }

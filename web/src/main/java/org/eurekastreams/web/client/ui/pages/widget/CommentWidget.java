@@ -101,7 +101,7 @@ public class CommentWidget extends Composite
 
         StreamScope streamScope = new StreamScope(ScopeType.RESOURCE, resourceId);
 
-        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.NONE,
+        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.NO,
                 new CommentWidgetStreamMessageItemRenderer(),
                 new CommentWidgetPostToStreamComposite(streamScope));
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
@@ -144,7 +144,7 @@ public class CommentWidget extends Composite
          */
         public CommentWidgetStreamMessageItemRenderer()
         {
-            super(ShowRecipient.NONE);
+            super(ShowRecipient.NO);
             setCreatePermalink(false);
             getObjectDictionary().put(BaseObjectType.BOOKMARK, new NoteRenderer());
 
@@ -267,30 +267,26 @@ public class CommentWidget extends Composite
          */
         public List<StatefulRenderer> getSourceMetaDataItemRenderers()
         {
+            List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
+
+            RenderUtilities.renderActorName(renderers, activity);
+
             if (activity.getBaseObjectType() == BaseObjectType.BOOKMARK
                     && activity.getDestinationStream().getType() != EntityType.RESOURCE)
             {
-                List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
-
-                RenderUtilities.renderActorName(renderers, activity);
-
                 StreamEntityDTO stream = activity.getDestinationStream();
                 renderers.add(new MetadataLinkRenderer("shared this link to", stream.getType(), stream
                         .getUniqueIdentifier(), stream.getDisplayName()));
+            }
 
-                return renderers;
-            }
-            else
-            {
-                return decorated.getSourceMetaDataItemRenderers();
-            }
+            return renderers;
         }
 
         /**
          * {@inheritDoc}
          */
         public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
-                final ActivityDTO inActivity, final State inState, final ShowRecipient inShowRecipient)
+                final ActivityDTO inActivity, final State inState, final boolean inShowRecipient)
         {
             activity = inActivity;
             decorated.setup(inObjectRendererDictionary, inActivity, inState, inShowRecipient);

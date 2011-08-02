@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
-import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.ObjectRenderer;
@@ -102,5 +101,5 @@ public interface VerbRenderer
      *            whether to show the recipient.
      */
     void setup(final Map<BaseObjectType, ObjectRenderer> objectRendererDictionary, final ActivityDTO activity,
-            final StreamMessageItemRenderer.State state, final ShowRecipient showRecipient);
+            final StreamMessageItemRenderer.State state, final boolean showRecipient);
 }

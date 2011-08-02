@@ -340,7 +340,7 @@ public class ActivityContent extends Composite
     /**
      * Message Renderer.
      */
-    StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
+    StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.YES);
 
     /**
      * Newest activity ID.
@@ -544,7 +544,7 @@ public class ActivityContent extends Composite
             PersonalInformationModel.getInstance().fetch(actorName, false);
         }
 
-        streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.ALL));
+        streamPanel.add(new ActivityDetailPanel(event.getResponse(), ShowRecipient.YES));
         streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
     }
 
@@ -1261,6 +1261,7 @@ public class ActivityContent extends Composite
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
         currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
+        ShowRecipient showRecipient = ShowRecipient.YES;
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
@@ -1275,6 +1276,7 @@ public class ActivityContent extends Composite
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
+            showRecipient = ShowRecipient.RESOURCE_ONLY;
             String accountId = views.get(1);
             currentRequestObj = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, accountId, currentRequestObj);
             PersonalInformationModel.getInstance().fetch(accountId, false);
@@ -1299,6 +1301,7 @@ public class ActivityContent extends Composite
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
+            showRecipient = ShowRecipient.RESOURCE_ONLY;
             String shortName = views.get(1);
             currentRequestObj = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, shortName, currentRequestObj);
             GroupModel.getInstance().fetch(shortName, false);
@@ -1347,6 +1350,7 @@ public class ActivityContent extends Composite
         }
         else if (views.size() == 1)
         {
+            showRecipient = ShowRecipient.RESOURCE_ONLY;
             singleActivityMode = true;
         }
 
@@ -1362,6 +1366,8 @@ public class ActivityContent extends Composite
             streamSearchStatusWidget.onSearchCanceled();
             searchContainer.removeClassName(style.activeSearch());
         }
+
+        renderer.setShowRecipientInStream(showRecipient);
 
         if (!singleActivityMode)
         {

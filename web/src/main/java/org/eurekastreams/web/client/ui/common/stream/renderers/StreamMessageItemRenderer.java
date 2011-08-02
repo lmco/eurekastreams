@@ -71,7 +71,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 {
     /**
      * State.
-     * 
+     *
      */
     public enum State
     {
@@ -91,11 +91,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     private final EffectsFacade effects = new EffectsFacade();
 
     /**
-     * Show the recipient.
-     */
-    private ShowRecipient showRecipient;
-    /**
-     * Show the recipient.
+     * Whether to show the recipient (in general).
      */
     private ShowRecipient showRecipientInStream;
 
@@ -133,7 +129,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     * 
+     *
      * @param inShowRecipient
      *            show the recipient.
      */
@@ -144,7 +140,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     * 
+     *
      * @param inShowRecipient
      *            show the recipient.
      * @param inState
@@ -175,7 +171,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets showComment.
-     * 
+     *
      * @param inShowComment
      *            value to set.
      */
@@ -213,21 +209,36 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Render a message item.
-     * 
+     *
      * @param msg
      *            the message item.
-     * 
+     *
      * @return the rendered item as a FlowPanel.
      */
     public Panel render(final ActivityDTO msg)
     {
-        if (msg.getDestinationStream().getUniqueIdentifier().equals(msg.getActor().getUniqueIdentifier()))
+        boolean showRecipientInThisInstance;
+        switch (showRecipientInStream)
         {
-            showRecipient = ShowRecipient.FOREIGN_ONLY;
-        }
-        else
-        {
-            showRecipient = showRecipientInStream;
+        case YES:
+            // YES: show recipients unless it's a user posting to their own stream (don't want to see
+            // "John Doe to John Doe")
+            showRecipientInThisInstance = msg.getDestinationStream().getType() != msg.getActor().getEntityType()
+                    || !msg.getDestinationStream().getUniqueIdentifier().equals(msg.getActor().getUniqueIdentifier());
+            break;
+        case RESOURCE_ONLY:
+            // RESOURCE_ONLY: Only show the destination if it was a post to a resource stream - this is to handle posts
+            // from the Comment Widget to resource streams which are being shown in the author's personal stream due to
+            // the user selecting the "Post to Eureka" box. The condition in the code doesn't exactly match the
+            // described condition -- the code only checks for resource posts -- but that is the only scenario in which
+            // resource posts will be encountered here.
+            showRecipientInThisInstance = (msg.getDestinationStream().getType() == EntityType.RESOURCE);
+            break;
+        case NO:
+        default:
+            showRecipientInThisInstance = false;
+            // @SuppressWarnings("unused")
+            // int thisIsImpossibleBecauseThereAreNoOtherValuesButCheckstyleIsTooAnnoyingToUnderstandThat = 1;
         }
 
         Panel mainPanel = new FlowPanel();
@@ -236,7 +247,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         mainPanel.addStyleName(state.toString());
 
         VerbRenderer verbRenderer = verbDictionary.get(msg.getVerb());
-        verbRenderer.setup(objectDictionary, msg, state, showRecipient);
+        verbRenderer.setup(objectDictionary, msg, state, showRecipientInThisInstance);
 
         boolean doManageFlagged = showManageFlagged && !state.equals(State.READONLY) && msg.isDeletable();
 
@@ -442,7 +453,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Builds the action links panel.
-     * 
+     *
      * @param msg
      *            The message.
      * @param mainPanel
@@ -517,7 +528,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Called when user requests to share the activity.
-     * 
+     *
      * @param msg
      *            Activity to share.
      */
@@ -528,7 +539,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */
@@ -541,7 +552,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up the buttons to manage flagged content.
-     * 
+     *
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -603,7 +614,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Wires up the handler for clicking on a delete link/button.
-     * 
+     *
      * @param widget
      *            The delete link/button.
      * @param msg
@@ -629,7 +640,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Action to actually do the delete.
-     * 
+     *
      * @param msg
      *            The activity.
      */
@@ -647,7 +658,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up to remove the activity on deletion.
-     * 
+     *
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -692,5 +703,14 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     protected Map<ActivityVerb, VerbRenderer> getVerbDictionary()
     {
         return verbDictionary;
+    }
+
+    /**
+     * @param inShowRecipientInStream
+     *            the showRecipientInStream to set
+     */
+    public void setShowRecipientInStream(final ShowRecipient inShowRecipientInStream)
+    {
+        showRecipientInStream = inShowRecipientInStream;
     }
 }
