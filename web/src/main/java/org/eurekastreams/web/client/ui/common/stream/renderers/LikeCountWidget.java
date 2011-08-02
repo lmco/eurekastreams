@@ -257,7 +257,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inActivityId
      *            activity id.
      * @param inLikeCount
@@ -351,7 +351,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Update the panel.
-     * 
+     *
      * @param likeActionType
      *            the action that's being taken.
      */
@@ -362,25 +362,44 @@ public class LikeCountWidget extends Composite
             thisIsLiked = !thisIsLiked;
             if (likeActionType == LikeActionType.ADD_LIKE)
             {
-                PersonModelView currentPerson = new PersonModelView();
-                currentPerson.setEntityId(Session.getInstance().getCurrentPerson().getId());
-                currentPerson.setAvatarId(Session.getInstance().getCurrentPerson().getAvatarId());
-                currentPerson.setDisplayName(Session.getInstance().getCurrentPerson().getDisplayName());
-                currentPerson.setAccountId(Session.getInstance().getCurrentPerson().getAccountId());
-
-                if (likers.size() >= MAXLIKERSSHOWN)
+                // if user is already in list, then don't add again. This can happen if the server is slow. Since it is
+                // the response from the server to a like request that "disables" the like button, the user can continue
+                // to click until the response comes back. Each click would cause another like request to be sent, and
+                // each will eventually come back with success.
+                boolean ignore = false;
+                long id = Session.getInstance().getCurrentPerson().getId();
+                for (PersonModelView liker : likers)
                 {
-                    likerOverflow = likers.get(MAXLIKERSSHOWN - 1);
-                    likers.remove(MAXLIKERSSHOWN - 1);
+                    if (liker.getId() == id)
+                    {
+                        // could just do a return here, but if we're in this state, it's probably good to insure the
+                        // text and visibility are set correctly (as done at the bottom of the method)
+                        ignore = true;
+                        break;
+                    }
                 }
-
-                likers.add(0, currentPerson);
-
-                likeCount++;
-
-                if (!widget.isVisible())
+                if (!ignore)
                 {
-                    EffectsFacade.nativeFadeIn(widget.getElement(), true);
+                    PersonModelView currentPerson = new PersonModelView();
+                    currentPerson.setEntityId(Session.getInstance().getCurrentPerson().getId());
+                    currentPerson.setAvatarId(Session.getInstance().getCurrentPerson().getAvatarId());
+                    currentPerson.setDisplayName(Session.getInstance().getCurrentPerson().getDisplayName());
+                    currentPerson.setAccountId(Session.getInstance().getCurrentPerson().getAccountId());
+
+                    if (likers.size() >= MAXLIKERSSHOWN)
+                    {
+                        likerOverflow = likers.get(MAXLIKERSSHOWN - 1);
+                        likers.remove(MAXLIKERSSHOWN - 1);
+                    }
+
+                    likers.add(0, currentPerson);
+
+                    likeCount++;
+
+                    if (!widget.isVisible())
+                    {
+                        EffectsFacade.nativeFadeIn(widget.getElement(), true);
+                    }
                 }
             }
             else
