@@ -34,7 +34,9 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	
-	<bean id="clearActivityStreamSearchStringCacheOnGroupUpdate" class="org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate" />
+	<bean id="clearActivityStreamSearchStringCacheOnGroupUpdate" class="org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate">
+        <property name="cache" ref="memcachedCache" />
+    </bean>
 	
 	<!-- ========== CACHE KEYS ========== -->
 	
