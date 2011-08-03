@@ -36,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test for person update validation.
- *
+ * 
  */
 public class UpdatePersonValidationTest
 {
@@ -83,16 +83,16 @@ public class UpdatePersonValidationTest
 
         HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put(PersonModelView.TITILE_KEY, ValidationTestHelper.generateString(Person.MAX_TITLE_LENGTH));
-        formData.put(PersonModelView.PREFERREDNAME_KEY,
-                ValidationTestHelper.generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH));
-        formData.put(PersonModelView.DESCRIPTION_KEY,
-                ValidationTestHelper.generateString(Person.MAX_JOB_DESCRIPTION_LENGTH));
+        formData.put(PersonModelView.PREFERREDNAME_KEY, ValidationTestHelper
+                .generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH));
+        formData.put(PersonModelView.DESCRIPTION_KEY, ValidationTestHelper
+                .generateString(Person.MAX_JOB_DESCRIPTION_LENGTH));
         formData.put(PersonModelView.WORKPHONE_KEY,
         // line break
                 ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH));
         formData.put(PersonModelView.EMAIL_KEY, "email@email.com");
-        formData.put(PersonModelView.SKILLS_KEY,
-                ValidationTestHelper.generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH));
+        formData.put(PersonModelView.SKILLS_KEY, ValidationTestHelper
+                .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH));
 
         final ServiceActionContext currentContext = new ServiceActionContext(formData, principalMock);
 
@@ -121,10 +121,10 @@ public class UpdatePersonValidationTest
         }
         catch (ValidationException e)
         {
-            assertEquals(2, e.getErrors().size());
+            assertEquals(3, e.getErrors().size());
             assertTrue(e.getErrors().containsKey(PersonModelView.TITILE_KEY));
             assertTrue(e.getErrors().containsKey(PersonModelView.PREFERREDNAME_KEY));
-            // email is not in the list - allow empty
+            assertTrue(e.getErrors().containsKey(PersonModelView.EMAIL_KEY));
             throw e;
         }
     }
@@ -158,15 +158,15 @@ public class UpdatePersonValidationTest
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
 
         formdata.put(PersonModelView.TITILE_KEY, ValidationTestHelper.generateString(Person.MAX_TITLE_LENGTH + 1));
-        formdata.put(PersonModelView.PREFERREDNAME_KEY,
-                ValidationTestHelper.generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
-        formdata.put(PersonModelView.DESCRIPTION_KEY,
-                ValidationTestHelper.generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
-        formdata.put(PersonModelView.WORKPHONE_KEY,
-                ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
+        formdata.put(PersonModelView.PREFERREDNAME_KEY, ValidationTestHelper
+                .generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
+        formdata.put(PersonModelView.DESCRIPTION_KEY, ValidationTestHelper
+                .generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
+        formdata.put(PersonModelView.WORKPHONE_KEY, ValidationTestHelper
+                .generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
         formdata.put(PersonModelView.EMAIL_KEY, "notanemail");
-        formdata.put(PersonModelView.SKILLS_KEY,
-                ValidationTestHelper.generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
+        formdata.put(PersonModelView.SKILLS_KEY, ValidationTestHelper
+                .generateString(BackgroundItem.MAX_BACKGROUND_ITEM_NAME_LENGTH + 1));
 
         final ServiceActionContext currentContext = new ServiceActionContext(formdata, principalMock);
 
@@ -199,12 +199,12 @@ public class UpdatePersonValidationTest
         HashMap<String, Serializable> formdata = new HashMap<String, Serializable>();
 
         formdata.put(PersonModelView.TITILE_KEY, ValidationTestHelper.generateString(Person.MAX_TITLE_LENGTH + 1));
-        formdata.put(PersonModelView.PREFERREDNAME_KEY,
-                ValidationTestHelper.generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
-        formdata.put(PersonModelView.DESCRIPTION_KEY,
-                ValidationTestHelper.generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
-        formdata.put(PersonModelView.WORKPHONE_KEY,
-                ValidationTestHelper.generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
+        formdata.put(PersonModelView.PREFERREDNAME_KEY, ValidationTestHelper
+                .generateString(UpdatePersonValidation.DEFAULT_MAX_STRING_LENGTH + 1));
+        formdata.put(PersonModelView.DESCRIPTION_KEY, ValidationTestHelper
+                .generateString(Person.MAX_JOB_DESCRIPTION_LENGTH + 1));
+        formdata.put(PersonModelView.WORKPHONE_KEY, ValidationTestHelper
+                .generateString(Person.MAX_PHONE_NUMBER_LENGTH + 1));
         formdata.put(PersonModelView.EMAIL_KEY, "notanemail@ss..das");
         formdata.put(PersonModelView.SKILLS_KEY, "");
 

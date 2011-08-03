@@ -28,29 +28,34 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Validation for updating person.
- *
+ * 
  */
 public class UpdatePersonValidation implements ValidationStrategy<ServiceActionContext>
 {
 
     /**
      * Use when no length is provided by the Domain Object.
-     *
+     * 
      * This is package protected for use in testing.
      */
     static final int DEFAULT_MAX_STRING_LENGTH = 255;
 
     /**
      * These messages are one off messages only used in this validation.
-     *
+     * 
      * they are package protected for verification in tests.
-     *
+     * 
      */
     /**
      * email length message.
      */
     static final String EMAIL_LENGTH_MESSAGE = "Email Adresses should be less then " + DEFAULT_MAX_STRING_LENGTH
             + " charecters.";
+
+    /**
+     * Email required message.
+     */
+    static final String EMAIL_REQUIRED_MESSAGE = "Email Address is required";
 
     /**
      * perferred name length message.
@@ -72,7 +77,7 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
     }
 
     /**
-     *
+     * 
      * @param inActionContext
      *            context for the action.
      * @throws ValidationException
@@ -128,8 +133,9 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
         // Person.FAX_NUMBER_MESSAGE, null, null);
 
         String email = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.EMAIL_KEY, true, ve);
-        if (vHelper.stringMeetsRequirments(PersonModelView.EMAIL_KEY, email, ve, null, DEFAULT_MAX_STRING_LENGTH,
-                EMAIL_LENGTH_MESSAGE, null, null) && StringUtils.isNotBlank(email))
+        if (vHelper.stringMeetsRequirments(PersonModelView.EMAIL_KEY, email, ve, EMAIL_REQUIRED_MESSAGE,
+                DEFAULT_MAX_STRING_LENGTH, EMAIL_LENGTH_MESSAGE, null, null)
+                && StringUtils.isNotBlank(email))
         {
             try
             {
