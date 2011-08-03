@@ -2495,8 +2495,11 @@
             <!-- Most recent streams (sorted by created date) -->
 		    <bean id="getStreamsByMostRecentDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByMostRecentDbMapper">
 		        <constructor-arg value="10" />
-		    </bean>        
+		    </bean>
         </constructor-arg>
+        <constructor-arg ref="repopulateTempWeekdaysSinceDateStrategy" />
+        <!-- Calculate the number of weekdays since today for the past 30 days -->
+        <constructor-arg value="30" />
     </bean>
     <bean id="streamDiscoverListsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
@@ -2550,5 +2553,16 @@
     <bean id="getSuggestedPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSuggestedPeopleForPersonDbMapper" />
     <bean id="getSuggestedGroupsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSuggestedGroupsForPersonDbMapper" />
     
+    <bean id="deleteAllTempWeekdaysSinceDateDbMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteAllTempWeekdaysSinceDateDbMapper" />
     
+    <bean id="repopulateTempWeekdaysSinceDateStrategy" class="org.eurekastreams.server.service.actions.strategies.RepopulateTempWeekdaysSinceDateStrategy">
+    	<constructor-arg>
+    		<bean class="org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy" />
+    	</constructor-arg>
+    	<constructor-arg ref="getDateFromDaysAgoStrategy"/>
+    	<constructor-arg ref="deleteAllTempWeekdaysSinceDateDbMapper" />
+			<constructor-arg>
+				<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+			</constructor-arg>
+    </bean>
 </beans>

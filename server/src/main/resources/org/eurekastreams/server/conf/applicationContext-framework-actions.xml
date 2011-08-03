@@ -4407,6 +4407,7 @@
     <!-- Execution strategy to generate a daily usage summary record for the previous day - takes no input
 -->
     <bean id="generateDailyUsageSummaryExecution" class="org.eurekastreams.server.action.execution.GenerateDailyUsageSummaryExecution">
+    		<!-- Days to try to process data for - it skips the date if it's already got data -->
         <constructor-arg value="7" />
         <constructor-arg ref="getDateFromDaysAgoStrategy"/>
         <constructor-arg ref="getDailyUsageSummaryByDateDbMapper" />

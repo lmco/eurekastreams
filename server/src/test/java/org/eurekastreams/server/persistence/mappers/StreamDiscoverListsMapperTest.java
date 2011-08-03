@@ -27,6 +27,7 @@ import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.domain.dto.SublistWithResultCount;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.actions.strategies.RepopulateTempWeekdaysSinceDateStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -78,10 +79,22 @@ public class StreamDiscoverListsMapperTest
             "mostRecentStreamsMapper");
 
     /**
+     * Strategy to repopulate the TempWeekdaysSinceDate table.
+     */
+    private final RepopulateTempWeekdaysSinceDateStrategy repopulateTempWeekdaysSinceDateStrategy = context
+            .mock(RepopulateTempWeekdaysSinceDateStrategy.class);
+
+    /**
+     * Number of days to generate weekday count data for.
+     */
+    private final long numberOfDaysOfWeekdayCountDataToGenerate = 999;
+
+    /**
      * System under test.
      */
     private StreamDiscoverListsMapper sut = new StreamDiscoverListsMapper(featuredStreamDTOMapper,
-            mostActiveStreamsMapper, mostViewedStreamsMapper, mostFollowedStreamsMapper, mostRecentStreamsMapper);
+            mostActiveStreamsMapper, mostViewedStreamsMapper, mostFollowedStreamsMapper, mostRecentStreamsMapper,
+            repopulateTempWeekdaysSinceDateStrategy, numberOfDaysOfWeekdayCountDataToGenerate);
 
     /**
      * Test execute.
@@ -116,6 +129,8 @@ public class StreamDiscoverListsMapperTest
         context.checking(new Expectations()
         {
             {
+                oneOf(repopulateTempWeekdaysSinceDateStrategy).execute(numberOfDaysOfWeekdayCountDataToGenerate);
+
                 oneOf(featuredStreamDTOMapper).execute(null);
                 will(returnValue(featuredDTOs));
 
