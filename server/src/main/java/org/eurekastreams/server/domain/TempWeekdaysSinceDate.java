@@ -16,12 +16,9 @@
 package org.eurekastreams.server.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.eurekastreams.commons.model.DomainEntityIdentifiable;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * Model that's only used for helping generate metrics for the Discover page. Before generating the Discover Page lists,
@@ -32,16 +29,9 @@ import org.hibernate.annotations.NaturalId;
 public class TempWeekdaysSinceDate implements DomainEntityIdentifiable
 {
     /**
-     * Primary key ID field for ORM.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    /**
      * The unix timestamp of the date - at 12:00:00.000 AM in milliseconds.
      */
-    @NaturalId
+    @Id
     private long dateTimeStampInMilliseconds;
 
     /**
@@ -71,25 +61,14 @@ public class TempWeekdaysSinceDate implements DomainEntityIdentifiable
     }
 
     /**
-     * Get the id.
+     * Return the unique key - the timestamp.
      * 
-     * @return the id
+     * @return the unique key - the timestamp
      */
     @Override
     public long getId()
     {
-        return id;
-    }
-
-    /**
-     * Set the id.
-     * 
-     * @param inId
-     *            the id
-     */
-    public void setId(final long inId)
-    {
-        id = inId;
+        return dateTimeStampInMilliseconds;
     }
 
     /**
