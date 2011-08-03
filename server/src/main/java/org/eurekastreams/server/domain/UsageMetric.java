@@ -177,6 +177,7 @@ public class UsageMetric implements Serializable, DomainEntityIdentifiable
     /**
      * @return the id
      */
+    @Override
     public long getId()
     {
         return id;

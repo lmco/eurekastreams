@@ -26,6 +26,7 @@ import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.DailyUsageSummary;
+import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
@@ -57,13 +58,13 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get a single day's DailyUsageSummary.
      */
-    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> // 
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
     getDailyUsageSummaryByDateMapper = context.mock(DomainMapper.class, "getDailyUsageSummaryByDateMapper");
 
     /**
      * Mapper to get the most recent DailyUsageSummary before the input date.
      */
-    private DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> // 
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
     getPreviousDailyUsageSummaryByDateMapper = context.mock(DomainMapper.class,
             "getPreviousDailyUsageSummaryByDateMapper");
 
@@ -94,8 +95,8 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get a day's stream viewer count.
      */
-    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper = context.mock(
-            DomainMapper.class, "getDailyStreamViewerCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyStreamViewerCountMapper = context
+            .mock(DomainMapper.class, "getDailyStreamViewerCountMapper");
 
     /**
      * Mapper to get a day's unique visitor count.
@@ -117,48 +118,55 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get day's average activity response time (for those that had responses).
      */
-    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Date, Long> getDailyMessageResponseTimeMapper = context.mock(DomainMapper.class,
             "getDailyMessageResponseTimeMapper");
 
     /**
      * Mapper to get stream scope ids to generate metrics for.
      */
-    private DomainMapper<Date, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Date, List<Long>> streamScopeIdsMapper = context.mock(DomainMapper.class,
             "streamScopeIdsMapper");
     /**
      * Mapper to get the total number of activities posted to a stream.
      */
-    private DomainMapper<Long, Long> getTotalActivityCountMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, Long> getTotalActivityCountMapper = context.mock(DomainMapper.class,
             "getTotalActivityCountMapper");
 
     /**
      * Mapper to get the total number of comments posted to a stream.
      */
-    private DomainMapper<Long, Long> getTotalCommentCountMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, Long> getTotalCommentCountMapper = context.mock(DomainMapper.class,
             "getTotalCommentCountMapper");
 
     /**
      * Mapper to get the total number of contributors to a stream by stream scope id.
      */
-    private DomainMapper<Long, Long> getTotalStreamContributorMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, Long> getTotalStreamContributorMapper = context.mock(DomainMapper.class,
             "getTotalStreamContributorMapper");
 
     /**
      * Day of week strategy.
      */
-    private DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
+    private final DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
 
     /**
      * Mapper to clear the entity manager.
      */
-    private DomainMapper<Serializable, Boolean> clearEntityManagerMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<Serializable, Boolean> clearEntityManagerMapper = context.mock(DomainMapper.class,
             "clearEntityManagerMapper");
+
+    /**
+     * Mapper to get the lists for the discover page - this should be a cache refreshing mapper, b/c that's how it's
+     * used.
+     */
+    private final DomainMapper<Serializable, StreamDiscoverListsDTO> discoverPageListsCacheRefreshingMapper = context
+            .mock(DomainMapper.class, "discoverPageListsCacheRefreshingMapper");
 
     /**
      * Mapper to get the summary data for a stream, or all streams - used for caching.
      */
-    private DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper = context.mock(
-            DomainMapper.class, "summaryDataMapper");
+    private final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper = context
+            .mock(DomainMapper.class, "summaryDataMapper");
 
     /**
      * The number of days to cache summary data for.
@@ -177,12 +185,13 @@ public class GenerateDailyUsageSummaryExecutionTest
     public void testExecuteWithDataAlreadyExisting()
     {
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
-                getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper, getDailyMessageCountMapper,
-                getDailyPageViewCountMapper, getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper,
-                getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
-                insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
-                getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper,
-                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
+                getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper,
+                getDailyMessageCountMapper, getDailyPageViewCountMapper, getDailyStreamContributorCountMapper,
+                getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper,
+                getDailyMessageResponseTimeMapper, insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy,
+                streamScopeIdsMapper, getTotalCommentCountMapper, getTotalCommentCountMapper,
+                getTotalStreamContributorMapper, clearEntityManagerMapper, summaryDataMapper,
+                discoverPageListsCacheRefreshingMapper, numberOfDaysToCacheSummaryDataFor);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date(2011, 1, 22);
@@ -204,6 +213,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(usageMetricDataCleanupMapper).execute(null);
 
                 allowing(clearEntityManagerMapper).execute(null);
+
+                oneOf(discoverPageListsCacheRefreshingMapper).execute(null);
             }
         });
 
@@ -219,12 +230,13 @@ public class GenerateDailyUsageSummaryExecutionTest
     public void executeWithNoDataAlreadyExisting()
     {
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(1, daysAgoDateStrategy,
-                getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper, getDailyMessageCountMapper,
-                getDailyPageViewCountMapper, getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper,
-                getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper,
-                insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy, streamScopeIdsMapper,
-                getTotalCommentCountMapper, getTotalCommentCountMapper, getTotalStreamContributorMapper,
-                clearEntityManagerMapper, summaryDataMapper, numberOfDaysToCacheSummaryDataFor);
+                getDailyUsageSummaryByDateMapper, getPreviousDailyUsageSummaryByDateMapper,
+                getDailyMessageCountMapper, getDailyPageViewCountMapper, getDailyStreamContributorCountMapper,
+                getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper,
+                getDailyMessageResponseTimeMapper, insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy,
+                streamScopeIdsMapper, getTotalCommentCountMapper, getTotalCommentCountMapper,
+                getTotalStreamContributorMapper, clearEntityManagerMapper, summaryDataMapper,
+                discoverPageListsCacheRefreshingMapper, numberOfDaysToCacheSummaryDataFor);
 
         final Date dateRaw = new Date(2011, 1, 22);
         final Date date = DateDayExtractor.getStartOfDay(dateRaw);
@@ -287,6 +299,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                                 numberOfDaysToCacheSummaryDataFor, null))));
 
                 allowing(clearEntityManagerMapper).execute(null);
+
+                oneOf(discoverPageListsCacheRefreshingMapper).execute(null);
             }
         });
 

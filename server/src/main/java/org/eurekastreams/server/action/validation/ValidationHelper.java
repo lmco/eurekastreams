@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.validation;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainFormatUtility;
@@ -91,7 +92,7 @@ public class ValidationHelper
             final String patternMatchMessage)
     {
 
-        if (field == null || field.isEmpty())
+        if (StringUtils.isBlank(field))
         {
             if (nonNullMessage != null)
             {
@@ -120,7 +121,7 @@ public class ValidationHelper
 
         return true;
     }
-    
+
     /**
      * checks if keywords are valid.
      * 

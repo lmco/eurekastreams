@@ -4447,6 +4447,8 @@
         <constructor-arg ref="clearMapper" />
         <!-- Generate the usage metrics and dump into cache -->
         <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
+        <!-- Generate the discover page lists and dump into cache -->
+        <constructor-arg ref="streamDiscoverListsMapper_FORCE_REFRESH" />
         <!-- 30 days of summary data caching -->
         <constructor-arg value="30" />
     </bean>
