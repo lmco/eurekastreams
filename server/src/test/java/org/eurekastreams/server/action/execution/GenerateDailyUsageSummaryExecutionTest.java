@@ -213,6 +213,8 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(usageMetricDataCleanupMapper).execute(null);
 
                 allowing(clearEntityManagerMapper).execute(null);
+
+                oneOf(discoverPageListsCacheRefreshingMapper).execute(null);
             }
         });
 

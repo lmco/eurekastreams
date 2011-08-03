@@ -287,6 +287,11 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
         logger.info("Completed generating usage metrics in " + (System.currentTimeMillis() - start) + "ms");
 
+        // now ask for the discover page lists from the refresh mapper, which will cause the cache to update
+        logger.info("Updating the Discover Page cache.");
+        discoverPageListsCacheRefreshingMapper.execute(null);
+        logger.info("Completed generating Discover Page cache.");
+
         return Boolean.TRUE;
     }
 
@@ -326,9 +331,6 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         {
             generateDailyUsageSummaryForStreamScope(reportDate, streamScopeId);
         }
-
-        // now ask for the discover page lists from the refresh mapper, which will cause the cache to update
-        discoverPageListsCacheRefreshingMapper.execute(null);
 
         logger.info("Inserted Daily Summary metrics for " + reportDate);
     }
