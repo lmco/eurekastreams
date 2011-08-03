@@ -860,8 +860,8 @@ public class StreamDetailsComposite extends Composite
             }
 
             contactInfoTitle.setInnerText("Website");
-            contactInfo.setInnerText(group.getUrl());
 
+            String groupUrl = group.getUrl();
             if (group.getUrl() == null || group.getUrl().length() == 0)
             {
                 contactInfo.setInnerHTML("No contact information entered.");
@@ -869,6 +869,7 @@ public class StreamDetailsComposite extends Composite
             }
             else
             {
+                contactInfo.setInnerHTML("<a href=\"" + groupUrl + "\">" + group.getUrl() + "</a>");
                 contactInfo.removeClassName(style.emptyDetailStyle());
             }
 
@@ -1233,7 +1234,7 @@ public class StreamDetailsComposite extends Composite
         String email = person.getEmail();
         if (email != null)
         {
-            contact = "<a href=mailto:" + email + ">" + email + "</a>";
+            contact = "<a href=\"mailto:" + email + "\">" + email + "</a>";
         }
         if (person.getWorkPhone() != null)
         {
