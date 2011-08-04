@@ -34,67 +34,67 @@ public class UsageMetricSummaryDTO implements Serializable
     /**
      * Number of weekday records this summary is based on.
      */
-    private long weekdayRecordCount;
+    private long weekdayRecordCount = 0;
 
     /**
      * average daily number of unique visitors.
      */
-    private long averageDailyUniqueVisitorCount;
+    private long averageDailyUniqueVisitorCount = 0;
 
     /**
      * average daily number of page views.
      */
-    private long averageDailyPageViewCount;
+    private long averageDailyPageViewCount = 0;
 
     /**
      * average daily number of people viewing streams.
      */
-    private long averageDailyStreamViewerCount;
+    private long averageDailyStreamViewerCount = 0;
 
     /**
      * average daily number of streams viewed.
      */
-    private long averageDailyStreamViewCount;
+    private long averageDailyStreamViewCount = 0;
 
     /**
      * average daily number of people contributing to streams (comment and activities).
      */
-    private long averageDailyStreamContributorCount;
+    private long averageDailyStreamContributorCount = 0;
 
     /**
      * average daily number of activities and comments posted.
      */
-    private long averageDailyMessageCount;
+    private long averageDailyMessageCount = 0;
 
     /**
      * Avg time (mins) to first comment (for activities that have comments).
      */
-    private long averageDailyActivityResponseTime;
+    private long averageDailyActivityResponseTime = 0;
 
     /**
      * average daily number of comments.
      */
-    private long averageDailyCommentCount;
+    private long averageDailyCommentCount = 0;
 
     /**
      * Total number of views of streams for all time.
      */
-    private Long totalStreamViewCount;
+    private Long totalStreamViewCount = 0L;
 
     /**
      * Total activity count for all time.
      */
-    private Long totalActivityCount;
+    private Long totalActivityCount = 0L;
 
     /**
      * Total comment count for all time.
      */
-    private Long totalCommentCount;
+    private Long totalCommentCount = 0L;
 
     /**
      * Total contributor count - for all time - applies to streams only.
      */
-    private Long totalContributorCount;
+    private Long totalContributorCount = 0L;
 
     /**
      * A list of the daily usage metrics from the past 30 days, omitting weekends.
