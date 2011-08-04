@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -189,19 +191,15 @@ public class StartPageTab extends SimpleTab
             }
         });
 
-        textBox.addKeyPressHandler(new KeyPressHandler()
+        textBox.addKeyUpHandler(new KeyUpHandler()
         {
-            public void onKeyPress(final KeyPressEvent event)
+            public void onKeyUp(final KeyUpEvent ev)
             {
-                if (event.getCharCode() == KeyCodes.KEY_ENTER || event.getCharCode() == KeyCodes.KEY_ESCAPE)
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown())
                 {
-                    if (event.getCharCode() == KeyCodes.KEY_ENTER)
-                    {
-                        tab.setTabName(textBox.getText());
-                        StartTabsModel.getInstance().rename(new RenameTabRequest(tab.getId(), textBox.getText()));
-                    }
+                    tab.setTabName(textBox.getText());
+                    StartTabsModel.getInstance().rename(new RenameTabRequest(tab.getId(), textBox.getText()));
                 }
-
             }
         });
 
