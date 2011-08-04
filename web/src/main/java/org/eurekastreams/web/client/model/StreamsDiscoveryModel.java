@@ -22,7 +22,9 @@ import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTORespons
 import org.eurekastreams.web.client.ui.Session;
 
 /**
- * Model for fetching the lists for the Stream Discovery page.
+ * Model for fetching the lists for the Stream Discovery page. Note: you might notice that fetch is being called once no
+ * matter what page is current - but only for admins, because admins need to have the featured list because of the
+ * feature/unfeature button on each stream. In other words - it's a performance trade-off for admins - not a concern.
  */
 public class StreamsDiscoveryModel extends BaseModel implements Fetchable<Serializable>
 {
@@ -33,7 +35,7 @@ public class StreamsDiscoveryModel extends BaseModel implements Fetchable<Serial
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static StreamsDiscoveryModel getInstance()
@@ -43,7 +45,7 @@ public class StreamsDiscoveryModel extends BaseModel implements Fetchable<Serial
 
     /**
      * Fetch a StreamDiscoverListsDTO response from the server, fire a GotStreamDiscoverListsDTOResponseEvent.
-     * 
+     *
      * @param inRequest
      *            the request - ignored
      * @param inUseClientCacheIfAvailable
