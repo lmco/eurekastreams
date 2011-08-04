@@ -101,7 +101,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     /**
      * The URL of the generated CSS file.
      */
-    @Basic
+    @Transient
     private String cssFile;
 
     /**

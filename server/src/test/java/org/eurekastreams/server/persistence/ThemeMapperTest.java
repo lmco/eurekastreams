@@ -50,9 +50,8 @@ public class ThemeMapperTest extends DomainEntityMapperTest
     @Test
     public void testInsert()
     {
-        Theme t =
-                new Theme("url", "name", "desc", "css", UUID.randomUUID().toString(), "bannerId", "authorName",
-                        "vswatter@gmail.com");
+        Theme t = new Theme("url", "name", "desc", "css", UUID.randomUUID().toString(), "bannerId", "authorName",
+                "vswatter@gmail.com");
         jpaThemeMapper.insert(t);
         assertTrue(t.getId() > 0);
     }
@@ -66,7 +65,6 @@ public class ThemeMapperTest extends DomainEntityMapperTest
         Theme theme = jpaThemeMapper.findById(testThemeId);
 
         assertEquals("Name does not match.", "Test Theme", theme.getName());
-        assertEquals("CSS File does not match.", "generated.css", theme.getCssFile());
         assertEquals("Theme URL File does not match.", "http://www.eurekastreams.org/theme.xml", theme.getUrl());
         assertEquals("Theme UUID does not match.", "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", theme.getUUID());
     }
@@ -96,7 +94,7 @@ public class ThemeMapperTest extends DomainEntityMapperTest
 
     /**
      * Utility to method to ensure a created theme was built and persisted correctly.
-     *
+     * 
      * @param theme
      *            the created theme
      * @param themeURL
