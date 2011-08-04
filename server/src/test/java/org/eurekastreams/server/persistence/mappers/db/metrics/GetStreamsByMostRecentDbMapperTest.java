@@ -55,35 +55,42 @@ public class GetStreamsByMostRecentDbMapperTest extends MapperTest
     {
         Calendar cal = Calendar.getInstance();
 
-        // setup the data for: Group5, Group7, Group6, Group8 - add in some people, but they should be ignored in the
+        // setup the data for: Group5, Group7 (ignored b/c pending), Group1, Group2, Group3, add in some people, but
+        // they should
+        // be ignored in the
         // results
         // -- the last two with the same date
         System.out.println("TIME: " + cal.getTime());
-        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id")
-                .setParameter("id", 5L).setParameter("dateAdded", cal.getTime()).executeUpdate();
+        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id").setParameter(
+                "id", 5L).setParameter("dateAdded", cal.getTime()).executeUpdate();
 
         cal.add(Calendar.HOUR, -1);
-        getEntityManager().createQuery("UPDATE Person SET dateAdded = :dateAdded WHERE id=:id")
-                .setParameter("id", 4507L).setParameter("dateAdded", cal.getTime()).executeUpdate();
+        getEntityManager().createQuery("UPDATE Person SET dateAdded = :dateAdded WHERE id=:id").setParameter("id",
+                4507L).setParameter("dateAdded", cal.getTime()).executeUpdate();
+
+        // ignored b/c PENDING
+        cal.add(Calendar.HOUR, -1);
+        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id").setParameter(
+                "id", 7L).setParameter("dateAdded", cal.getTime()).executeUpdate();
 
         cal.add(Calendar.HOUR, -1);
-        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id")
-                .setParameter("id", 7L).setParameter("dateAdded", cal.getTime()).executeUpdate();
-
-        cal.add(Calendar.HOUR, -1);
-        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id")
-                .setParameter("id", 6L).setParameter("dateAdded", cal.getTime()).executeUpdate();
+        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id").setParameter(
+                "id", 1L).setParameter("dateAdded", cal.getTime()).executeUpdate();
 
         cal.add(Calendar.HOUR, -1);
         getEntityManager().createQuery("UPDATE Person SET dateAdded = :dateAdded WHERE id=:id")
                 .setParameter("id", 99L).setParameter("dateAdded", cal.getTime()).executeUpdate();
 
         cal.add(Calendar.HOUR, -1);
-        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id")
-                .setParameter("id", 8L).setParameter("dateAdded", cal.getTime()).executeUpdate();
+        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id").setParameter(
+                "id", 2L).setParameter("dateAdded", cal.getTime()).executeUpdate();
 
         getEntityManager().createQuery("UPDATE Person SET dateAdded = :dateAdded WHERE id=:id")
                 .setParameter("id", 42L).setParameter("dateAdded", cal.getTime()).executeUpdate();
+
+        cal.add(Calendar.HOUR, -1);
+        getEntityManager().createQuery("UPDATE DomainGroup SET dateAdded = :dateAdded WHERE id=:id").setParameter(
+                "id", 3L).setParameter("dateAdded", cal.getTime()).executeUpdate();
 
         getEntityManager().clear();
 
@@ -98,12 +105,12 @@ public class GetStreamsByMostRecentDbMapperTest extends MapperTest
         Assert.assertEquals(5, results.get(0).getId());
 
         Assert.assertEquals(EntityType.GROUP, results.get(1).getEntityType());
-        Assert.assertEquals(7, results.get(1).getId());
+        Assert.assertEquals(1, results.get(1).getId());
 
         Assert.assertEquals(EntityType.GROUP, results.get(2).getEntityType());
-        Assert.assertEquals(6, results.get(2).getId());
+        Assert.assertEquals(2, results.get(2).getId());
 
         Assert.assertEquals(EntityType.GROUP, results.get(3).getEntityType());
-        Assert.assertEquals(8, results.get(3).getId());
+        Assert.assertEquals(3, results.get(3).getId());
     }
 }

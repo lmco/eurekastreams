@@ -35,11 +35,11 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
     /**
      * Number of streams to get.
      */
-    private Integer streamCount;
+    private final Integer streamCount;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamCount
      *            the number of streams to fetch
      */
@@ -50,7 +50,7 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
     /**
      * Get the top N streams sorted by follower count.
-     * 
+     *
      * @param inIgnored
      *            I don't personally care what you pass in here
      * @return a list of StreamDTOs of the most followed streams
@@ -74,7 +74,8 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
                         + "shortName, name, followersCount, dateAdded, streamScope.id) "
-                        + "FROM DomainGroup WHERE followersCount > 0 ORDER BY followersCount DESC");
+                        + "FROM DomainGroup WHERE isPending = false AND followersCount > 0 "
+                        + "ORDER BY followersCount DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();

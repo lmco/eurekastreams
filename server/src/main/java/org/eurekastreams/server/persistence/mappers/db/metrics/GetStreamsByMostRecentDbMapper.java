@@ -35,7 +35,7 @@ public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializ
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamCount
      *            the number of streams to fetch
      */
@@ -46,7 +46,7 @@ public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializ
 
     /**
      * Get the top N streams sorted by most recent.
-     * 
+     *
      * @param inIgnored
      *            I don't personally care what you pass in here
      * @return a list of StreamDTOs of the most recent streams
@@ -58,7 +58,7 @@ public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializ
         Query q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
                         + "shortName, name, followersCount, dateAdded, streamScope.id) "
-                        + "FROM DomainGroup ORDER BY dateAdded DESC");
+                        + "FROM DomainGroup WHERE isPending=false ORDER BY dateAdded DESC");
         if (streamCount > 0)
         {
             q.setMaxResults(streamCount).getResultList();
