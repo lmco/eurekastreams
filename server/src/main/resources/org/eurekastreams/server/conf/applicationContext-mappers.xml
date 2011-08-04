@@ -2560,9 +2560,10 @@
     		<bean class="org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy" />
     	</constructor-arg>
     	<constructor-arg ref="getDateFromDaysAgoStrategy"/>
-    	<constructor-arg ref="deleteAllTempWeekdaysSinceDateDbMapper" />
-			<constructor-arg>
-				<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
-			</constructor-arg>
+   		<constructor-arg ref="deleteAllTempWeekdaysSinceDateDbMapper" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+		</constructor-arg>
+		<constructor-arg ref="flushMapper" />		
     </bean>
 </beans>
