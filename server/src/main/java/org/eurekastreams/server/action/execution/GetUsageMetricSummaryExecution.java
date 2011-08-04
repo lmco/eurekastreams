@@ -61,7 +61,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSummaryDataMapper
      *            mapper to get the summary data for a stream, or all streams
      * @param inWeekdaysInDateRangeStrategy
@@ -81,7 +81,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Get the daily usage summary for all streams or for a specific stream.
-     * 
+     *
      * @param inActionContext
      *            the action context containing the UsageMetricDailyStreamInfoRequest
      * @return the UsageMetricSummaryDTO
@@ -114,6 +114,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         long avgActivityResponseTime = 0;
 
         long startingCommentCount = 0, finalCommentCount = 0;
+        long startingActivityCount = 0, finalActivityCount = 0;
 
         Long totalActivityCount = null;
         Long totalCommentCount = null;
@@ -155,6 +156,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 totalContributorCount = dus.getTotalContributorCount();
 
                 finalCommentCount = dus.getTotalCommentCount() == null ? 0 : dus.getTotalCommentCount();
+                finalActivityCount = dus.getTotalActivityCount() == null ? 0 : dus.getTotalActivityCount();
             }
 
             if (oldestAvailableReportDate == null || summaryDate.before(oldestAvailableReportDate))
@@ -163,6 +165,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 oldestAvailableReportDate = summaryDate;
 
                 startingCommentCount = dus.getTotalCommentCount() == null ? 0 : dus.getTotalCommentCount();
+                startingActivityCount = dus.getTotalActivityCount() == null ? 0 : dus.getTotalActivityCount();
             }
 
             msgCount += dus.getMessageCount();
@@ -200,11 +203,14 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             result.setAverageDailyActivityResponseTime(Math.round(Math.ceil(avgActivityResponseTime * 1.0
                     / weekdaysCount)));
 
-            if (weekdaysCount > 1)
+            double top = (finalCommentCount - startingCommentCount) * 1.0;
+            double bottom = (finalActivityCount - startingActivityCount) * 1.0;
+            long averageCommentPerActivity = 0;
+            if (bottom > 0)
             {
-                result.setAverageDailyCommentCount(//
-                Math.round(Math.ceil((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1))));
+                averageCommentPerActivity = Math.round(Math.ceil(top / bottom));
             }
+            result.setAverageDailyCommentPerActivityCount(averageCommentPerActivity);
         }
 
         result.setDailyStatistics(new ArrayList<DailyUsageSummary>());

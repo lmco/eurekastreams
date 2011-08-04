@@ -372,15 +372,19 @@
 								Comments Per Activity
 							</div>
 						</div>
-						<b>Total Activity</b>
 						<div class="{style.metrics-data-total}">
+							<b>Total Activity</b>
 							<div>
 								<span ui:field="totalContributors"></span>
 								Contributors
 							</div>
 							<div>
-								<span ui:field="totalMessages"></span>
-								Messages
+								<span ui:field="totalActivities"></span>
+								Posts
+							</div>
+							<div>
+								<span ui:field="totalComments"></span>
+								Comments
 							</div>
 						</div>
 					</g:HTMLPanel>

@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.DailyUsageSummary;
 
 /**
  * Contains Summary usage metrics.
- * 
+ *
  */
 public class UsageMetricSummaryDTO implements Serializable
 {
@@ -72,9 +72,9 @@ public class UsageMetricSummaryDTO implements Serializable
     private long averageDailyActivityResponseTime = 0;
 
     /**
-     * average daily number of comments.
+     * average daily number of comments per activity.
      */
-    private long averageDailyCommentCount = 0;
+    private long averageDailyCommentPerActivityCount = 0;
 
     /**
      * Total activity count for all time.
@@ -301,19 +301,24 @@ public class UsageMetricSummaryDTO implements Serializable
     }
 
     /**
-     * @return the averageDailyCommentCount
+     * Get the setAverageDailyCommentPerActivityCount.
+     *
+     * @return the averageDailyCommentPerActivityCount
      */
-    public long getAverageDailyCommentCount()
+    public long getAverageDailyCommentPerActivityCount()
     {
-        return averageDailyCommentCount;
+        return averageDailyCommentPerActivityCount;
     }
 
     /**
-     * @param inAverageDailyCommentCount
-     *            the averageDailyCommentCount to set
+     * Set the setAverageDailyCommentPerActivityCount.
+     *
+     * @param inAverageDailyCommentPerActivityCount
+     *            the averageDailyCommentPerActivityCount to set
      */
-    public void setAverageDailyCommentCount(final long inAverageDailyCommentCount)
+    public void setAverageDailyCommentPerActivityCount(final long inAverageDailyCommentPerActivityCount)
     {
-        averageDailyCommentCount = inAverageDailyCommentCount;
+        averageDailyCommentPerActivityCount = inAverageDailyCommentPerActivityCount;
     }
+
 }

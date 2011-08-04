@@ -150,7 +150,7 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(new Long(120), result.getTotalActivityCount());
         Assert.assertEquals(new Long(130), result.getTotalCommentCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
-        Assert.assertEquals(3, result.getAverageDailyCommentCount());
+        Assert.assertEquals(1, result.getAverageDailyCommentPerActivityCount());
     }
 
     /**
@@ -231,7 +231,7 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(new Long(120), result.getTotalActivityCount());
         Assert.assertEquals(new Long(130), result.getTotalCommentCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
-        Assert.assertEquals(4, result.getAverageDailyCommentCount());
+        Assert.assertEquals(1, result.getAverageDailyCommentPerActivityCount());
     }
 
     /**
@@ -312,6 +312,6 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(new Long(120), result.getTotalActivityCount());
         Assert.assertEquals(new Long(130), result.getTotalCommentCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
-        Assert.assertEquals(4, result.getAverageDailyCommentCount());
+        Assert.assertEquals(1, result.getAverageDailyCommentPerActivityCount());
     }
 }

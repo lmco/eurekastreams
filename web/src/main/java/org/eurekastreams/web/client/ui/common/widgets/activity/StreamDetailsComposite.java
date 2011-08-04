@@ -29,8 +29,8 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
@@ -108,56 +108,56 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         * 
+         *
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         * 
+         *
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         * 
+         *
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         * 
+         *
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         * 
+         *
          * @return Private avatar.
          */
         String privateAvatar();
 
         /**
          * Hide details button.
-         * 
+         *
          * @return hide details button.
          */
         String hideDetails();
 
         /**
          * Featured item header link style.
-         * 
+         *
          * @return Featured item header link style.
          */
         String headerFeatured();
 
         /**
          * Empty detail style.
-         * 
+         *
          * @return Empty detail style.
          */
         String emptyDetailStyle();
@@ -170,7 +170,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -403,10 +403,16 @@ public class StreamDetailsComposite extends Composite
     SpanElement totalContributors;
 
     /**
-     * Total messages.
+     * Total activities.
      */
     @UiField
-    SpanElement totalMessages;
+    SpanElement totalActivities;
+
+    /**
+     * Total activities.
+     */
+    @UiField
+    SpanElement totalComments;
 
     /**
      * Current status.
@@ -668,15 +674,15 @@ public class StreamDetailsComposite extends Composite
                             }
                         }
 
-                        avgComments.setInnerText("" + data.getAverageDailyCommentCount());
+                        avgComments.setInnerText("" + data.getAverageDailyCommentPerActivityCount());
                         avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
                         avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
                         avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
                         avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
 
-                        Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
                         totalContributors.setInnerText("" + data.getTotalContributorCount());
-                        totalMessages.setInnerText(totalMessagesNumber.toString());
+                        totalActivities.setInnerText(data.getTotalActivityCount().toString());
+                        totalComments.setInnerText(data.getTotalCommentCount().toString());
                         chart.update();
                     }
                 });
@@ -738,7 +744,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set the stream title and avatar.
-     * 
+     *
      * @param inStreamTitle
      *            the title.
      * @param avatar
@@ -787,7 +793,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set Condensed mode.
-     * 
+     *
      * @param isCondensed
      *            condensed mode.
      */
@@ -806,7 +812,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Go the group.
-     * 
+     *
      * @param group
      *            the group.
      */
@@ -926,7 +932,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * 
+     *
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -978,7 +984,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     * 
+     *
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -1033,16 +1039,14 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance()
-                    .getEventBus()
-                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                            new Observer<GotPersonFollowerStatusResponseEvent>()
-                            {
-                                public void update(final GotPersonFollowerStatusResponseEvent event)
-                                {
-                                    onFollowerStatusChanged(event.getResponse());
-                                }
-                            });
+            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
+                    new Observer<GotPersonFollowerStatusResponseEvent>()
+                    {
+                        public void update(final GotPersonFollowerStatusResponseEvent event)
+                        {
+                            onFollowerStatusChanged(event.getResponse());
+                        }
+                    });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);
@@ -1127,7 +1131,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     * 
+     *
      * @param inStatus
      *            status.
      */
@@ -1150,7 +1154,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Got the person.
-     * 
+     *
      * @param person
      *            the person.
      */
