@@ -397,12 +397,6 @@ public class StreamDetailsComposite extends Composite
     SpanElement avgComments;
 
     /**
-     * Total views.
-     */
-    @UiField
-    SpanElement totalViews;
-
-    /**
      * Total contributors.
      */
     @UiField
@@ -683,7 +677,6 @@ public class StreamDetailsComposite extends Composite
                         Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
                         totalContributors.setInnerText("" + data.getTotalContributorCount());
                         totalMessages.setInnerText(totalMessagesNumber.toString());
-                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
                         chart.update();
                     }
                 });

@@ -4411,9 +4411,6 @@
         <constructor-arg value="7" />
         <constructor-arg ref="getDateFromDaysAgoStrategy"/>
         <constructor-arg ref="getDailyUsageSummaryByDateDbMapper" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetPreviousDailyUsageSummaryByDateDbMapper" />
-        </constructor-arg>
         <constructor-arg ref="getDailyMessageCountDbMapper" />
         <constructor-arg ref="getDailyPageViewCountDbMapper" />
         <constructor-arg ref="getDailyStreamContributorCountDbMapper" />

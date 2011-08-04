@@ -115,7 +115,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
         long startingCommentCount = 0, finalCommentCount = 0;
 
-        Long totalStreamViewCount = null;
         Long totalActivityCount = null;
         Long totalCommentCount = null;
         Long totalContributorCount = null;
@@ -151,7 +150,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 newestAvailableReportDate = summaryDate;
 
                 // this is currently the most recent record - store the totals
-                totalStreamViewCount = dus.getTotalStreamViewCount();
                 totalActivityCount = dus.getTotalActivityCount();
                 totalCommentCount = dus.getTotalCommentCount();
                 totalContributorCount = dus.getTotalContributorCount();
@@ -184,7 +182,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                     DateDayExtractor.getStartOfDay(new Date()));
         }
         result.setWeekdayRecordCount(weekdaysCount);
-        result.setTotalStreamViewCount(totalStreamViewCount);
         result.setTotalActivityCount(totalActivityCount);
         result.setTotalCommentCount(totalCommentCount);
         result.setTotalContributorCount(totalContributorCount);

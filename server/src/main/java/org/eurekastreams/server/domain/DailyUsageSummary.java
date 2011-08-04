@@ -90,11 +90,6 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     private long messageCount;
 
     /**
-     * Total number of views of streams for all time.
-     */
-    private Long totalStreamViewCount;
-
-    /**
      * Total activity count for all time.
      */
     private Long totalActivityCount;
@@ -166,16 +161,14 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
      *            the total activity count
      * @param inTotalCommentCount
      *            the total comment count
-     * @param inTotalStreamViewCount
-     *            the total stream views since records started
      * @param inTotalContributorCount
      *            the total contributors for the stream
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
             final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
-            final Long inUsageDateTimeStampInMs, final Long inStreamViewStreamScopeId, final Long inTotalActivityCount,
-            final Long inTotalCommentCount, final Long inTotalStreamViewCount, final Long inTotalContributorCount)
+            final Long inUsageDateTimeStampInMs, final Long inStreamViewStreamScopeId,
+            final Long inTotalActivityCount, final Long inTotalCommentCount, final Long inTotalContributorCount)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -189,13 +182,13 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
         streamViewStreamScopeId = inStreamViewStreamScopeId;
         totalActivityCount = inTotalActivityCount;
         totalCommentCount = inTotalCommentCount;
-        totalStreamViewCount = inTotalStreamViewCount;
         totalContributorCount = inTotalContributorCount;
     }
 
     /**
      * @return the id
      */
+    @Override
     public long getId()
     {
         return id;
@@ -412,23 +405,6 @@ public class DailyUsageSummary implements Serializable, DomainEntityIdentifiable
     public void setTotalCommentCount(final Long inTotalCommentCount)
     {
         totalCommentCount = inTotalCommentCount;
-    }
-
-    /**
-     * @return the totalStreamViewCount
-     */
-    public Long getTotalStreamViewCount()
-    {
-        return totalStreamViewCount;
-    }
-
-    /**
-     * @param inTotalStreamViewCount
-     *            the totalStreamViewCount to set
-     */
-    public void setTotalStreamViewCount(final Long inTotalStreamViewCount)
-    {
-        totalStreamViewCount = inTotalStreamViewCount;
     }
 
     /**
