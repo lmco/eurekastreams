@@ -78,7 +78,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
      * Terms of Service Prompt Interval Minimal Value Error Message.
      */
     public static final String MIN_TOS_PROMPT_INTERVAL_ERROR_MESSAGE = "Prompt Interval for Terms of "
-            + "Service must be greater than " + (SystemSettings.MIN_TOS_PROMPT_INTERVAL - 1);
+            + "Service must be " + (SystemSettings.MIN_TOS_PROMPT_INTERVAL) + " or greater";
 
     /**
      * Content Warning Required Error Message.

@@ -15,25 +15,31 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
  * Mapper to get total activity count for a stream by stream scope id.
  */
-public class GetStreamTotalActivityCountDbMapper extends BaseArgDomainMapper<Long, Long>
+public class GetStreamTotalActivityCountDbMapper extends BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
-     * Get the total number of activities for a stream by stream scope id.
+     * Get the total number of activities for a stream by stream scope id and date.
      * 
-     * @param inRecipientStreamScopeId
-     *            the destination stream scope id to check for activities count
+     * @param inRequest
+     *            the destination stream scope id and date to check for activities count
      * @return the number of comments in a stream with the input destination stream scope id
      */
     @Override
-    public Long execute(final Long inRecipientStreamScopeId)
+    public Long execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
-        return (Long) getEntityManager().createQuery(
-                "SELECT COUNT(id) FROM Activity WHERE recipientStreamScope.id = :recipientStreamScopeId").setParameter(
-                "recipientStreamScopeId", inRecipientStreamScopeId).getSingleResult();
+        return (Long) getEntityManager()
+                .createQuery(
+                        "SELECT COUNT(id) FROM Activity WHERE recipientStreamScope.id = :recipientStreamScopeId "
+                                + "AND postedTime < :reportDate")
+                .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId())
+                .setParameter("reportDate", DateDayExtractor.getEndOfDay(inRequest.getMetricsDate()))
+                .getSingleResult();
     }
 }

@@ -112,7 +112,7 @@
 
 	<!-- Tab Group Themes -->
 	<!-- Tab Group Themes -->
-	<Theme id="102" version="1133" cssFile="generated.css"
+	<Theme id="102" version="1133"
 		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf6" themeUrl="http://www.eurekastreams.org/theme.xml"
 		description="Test Theme 102 Description" bannerId="banner id"
 		authorName="mortimer Snerd" authorEmail="vswatter@gmail.com" name="Test Theme"
@@ -195,21 +195,21 @@
 	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP" requestorId="42" />
 	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP" requestorId="42" />
 
-	<Theme id="103" version="1134" cssFile="generated1.css"
+	<Theme id="103" version="1134"
 		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf7" themeUrl="http://www.eurekastreams.org/theme1.xml"
 		description="Test Theme 103 Description" bannerId="banner id" name="Test Theme"
 		authorId="42" themeCategoryId="4328" authorName="mortimer Snerd"
 		authorEmail="vswatter@gmail.com" numberOfUsers="0"
 		created="2008-01-01 12:00:00.000" />
 
-	<Theme id="104" version="1135" cssFile="generated2.css"
+	<Theme id="104" version="1135"
 		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf8" themeUrl="http://www.eurekastreams.org/theme2.xml"
 		description="Test Theme 104 Description" bannerId="banner id" name="Test Theme"
 		authorId="42" themeCategoryId="4566" authorName="mortimer Snerd"
 		authorEmail="vswatter@gmail.com" numberOfUsers="56"
 		created="2009-01-01 12:00:00.000" />
 
-	<Theme id="105" version="1136" cssFile="generated3.css"
+	<Theme id="105" version="1136"
 		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf9" themeUrl="http://www.eurekastreams.org/theme3.xml"
 		description="Test Theme 105 Description" bannerId="banner id" name="Test Theme"
 		authorId="142" themeCategoryId="4328" authorName="mortimer Snerd"
@@ -744,7 +744,7 @@
        videowidth="200" /> 
     
     <DailyUsageSummary id="4" messagecount="9" pageviewcount="99" streamcontributorcount="999" 
-        streamviewcount="9999" streamviewercount="99999" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
+        streamviewcount="9999" streamviewercount="100000" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
         streamViewStreamScopeId="1" totalActivityCount="3" totalCommentCount="4" totalContributorCount="5"
         />
     
@@ -766,10 +766,15 @@
         />
    
     <DailyUsageSummary id="6" messagecount="9" pageviewcount="99" streamcontributorcount="999" 
-        streamviewcount="9999" streamviewercount="99999" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
+        streamviewcount="9999" streamviewercount="100000" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
         streamViewStreamScopeId="2" totalActivityCount="3" totalCommentCount="5" totalContributorCount="6" totalStreamViewCount="85"
         />
         
+    <!-- Pretend this is 4/10 and 4/7 is a Monday -->
+    <TempWeekdaysSinceDate dateTimeStampInMilliseconds="1302148800000" numberOfWeekdaysSinceDate="3" />
+    <TempWeekdaysSinceDate dateTimeStampInMilliseconds="1302235200000" numberOfWeekdaysSinceDate="2" />
+    <TempWeekdaysSinceDate dateTimeStampInMilliseconds="1302321600000" numberOfWeekdaysSinceDate="1" />
+    
     <GalleryTabTemplate id="1"  version="0" created="2009-01-01 12:00:00.000" description="GalleryTabTemplate1" title="Welcome"
         categoryid="1235" tabtemplateid="5555" />         
     <GalleryTabTemplate id="2"  version="0" created="2009-02-02 12:00:00.000" description="GalleryTabTemplate2" title="Welcome"

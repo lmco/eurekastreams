@@ -30,7 +30,7 @@ import org.springframework.test.annotation.ExpectedException;
 
 /**
  * Integration test with UpdateMapper for system settings.
- *
+ * 
  */
 public class UpdateSystemSettingsTest extends MapperTest
 {
@@ -53,7 +53,7 @@ public class UpdateSystemSettingsTest extends MapperTest
         List<SystemSettings> results = q.getResultList();
         assertTrue(results.size() == 1);
 
-        SystemSettings systemSettings = (SystemSettings) results.get(0);
+        SystemSettings systemSettings = results.get(0);
         systemSettings.setSiteLabel("some other site label");
         systemSettings.setContentExpiration(1);
         systemSettings.setTosPromptInterval(1);
@@ -64,7 +64,7 @@ public class UpdateSystemSettingsTest extends MapperTest
         // verify it's still there and not duplicated.
         assertTrue(q.getResultList().size() == 1);
 
-        systemSettings = (SystemSettings) results.get(0);
+        systemSettings = results.get(0);
         assertEquals(systemSettings.getSiteLabel(), "some other site label");
     }
 
@@ -82,8 +82,8 @@ public class UpdateSystemSettingsTest extends MapperTest
         List<SystemSettings> results = q.getResultList();
         assertTrue(results.size() == 1);
 
-        SystemSettings systemSettings = (SystemSettings) results.get(0);
-        systemSettings.setTosPromptInterval(0);
+        SystemSettings systemSettings = results.get(0);
+        systemSettings.setTosPromptInterval(-1);
 
         // update.
         updateMapper.execute(null);
@@ -103,7 +103,7 @@ public class UpdateSystemSettingsTest extends MapperTest
         List<SystemSettings> results = q.getResultList();
         assertTrue(results.size() == 1);
 
-        SystemSettings systemSettings = (SystemSettings) results.get(0);
+        SystemSettings systemSettings = results.get(0);
         systemSettings.setContentExpiration(-1);
 
         // update.

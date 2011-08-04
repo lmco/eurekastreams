@@ -4407,12 +4407,10 @@
     <!-- Execution strategy to generate a daily usage summary record for the previous day - takes no input
 -->
     <bean id="generateDailyUsageSummaryExecution" class="org.eurekastreams.server.action.execution.GenerateDailyUsageSummaryExecution">
+    		<!-- Days to try to process data for - it skips the date if it's already got data -->
         <constructor-arg value="7" />
         <constructor-arg ref="getDateFromDaysAgoStrategy"/>
         <constructor-arg ref="getDailyUsageSummaryByDateDbMapper" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetPreviousDailyUsageSummaryByDateDbMapper" />
-        </constructor-arg>
         <constructor-arg ref="getDailyMessageCountDbMapper" />
         <constructor-arg ref="getDailyPageViewCountDbMapper" />
         <constructor-arg ref="getDailyStreamContributorCountDbMapper" />
@@ -4447,6 +4445,8 @@
         <constructor-arg ref="clearMapper" />
         <!-- Generate the usage metrics and dump into cache -->
         <constructor-arg ref="getUsageMetricSummaryMapper_FORCE_REFRESH" />
+        <!-- Generate the discover page lists and dump into cache -->
+        <constructor-arg ref="streamDiscoverListsMapper_FORCE_REFRESH" />
         <!-- 30 days of summary data caching -->
         <constructor-arg value="30" />
     </bean>

@@ -90,10 +90,37 @@ public class TermsOfServiceAcceptanceStrategyImplTest
 
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue(null));
+
+                oneOf(systemSettings).getTosPromptInterval();
+                will(returnValue(1));
             }
         });
 
         assertTrue(sut.isValidTermsOfServiceAcceptanceDate(new Date()));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test the isValidTermsOfServiceAcceptanceDate method with prompt interval of 0 (return true).
+     */
+    @Test
+    public void testIsValidTermsOfServiceAcceptanceZeroPromptInterval()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(systemSettingsDAO).execute(null);
+                will(returnValue(systemSettings));
+
+                oneOf(systemSettings).getTermsOfService();
+                will(returnValue("ToS"));
+
+                oneOf(systemSettings).getTosPromptInterval();
+                will(returnValue(0));
+            }
+        });
+
+        assertTrue(sut.isValidTermsOfServiceAcceptanceDate(null));
         context.assertIsSatisfied();
     }
 
@@ -111,6 +138,9 @@ public class TermsOfServiceAcceptanceStrategyImplTest
 
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
+
+                oneOf(systemSettings).getTosPromptInterval();
+                will(returnValue(1));
             }
         });
 

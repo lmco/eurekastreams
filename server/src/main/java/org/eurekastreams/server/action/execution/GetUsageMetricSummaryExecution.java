@@ -61,7 +61,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSummaryDataMapper
      *            mapper to get the summary data for a stream, or all streams
      * @param inWeekdaysInDateRangeStrategy
@@ -81,7 +81,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Get the daily usage summary for all streams or for a specific stream.
-     *
+     * 
      * @param inActionContext
      *            the action context containing the UsageMetricDailyStreamInfoRequest
      * @return the UsageMetricSummaryDTO
@@ -115,7 +115,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
         long startingCommentCount = 0, finalCommentCount = 0;
 
-        Long totalStreamViewCount = null;
         Long totalActivityCount = null;
         Long totalCommentCount = null;
         Long totalContributorCount = null;
@@ -132,7 +131,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         Date oldestAvailableReportDate = null;
         Date newestAvailableReportDate = null;
 
-        int recordCount = 0;
         logger.debug("Looking for data between " + oldestAllowableReportDate + " and " + latestReportDate);
         for (DailyUsageSummary dus : results)
         {
@@ -152,7 +150,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 newestAvailableReportDate = summaryDate;
 
                 // this is currently the most recent record - store the totals
-                totalStreamViewCount = dus.getTotalStreamViewCount();
                 totalActivityCount = dus.getTotalActivityCount();
                 totalCommentCount = dus.getTotalCommentCount();
                 totalContributorCount = dus.getTotalContributorCount();
@@ -160,7 +157,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 finalCommentCount = dus.getTotalCommentCount() == null ? 0 : dus.getTotalCommentCount();
             }
 
-            recordCount++;
             if (oldestAvailableReportDate == null || summaryDate.before(oldestAvailableReportDate))
             {
                 // this is the earliest reporting date we've seen
@@ -186,7 +182,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                     DateDayExtractor.getStartOfDay(new Date()));
         }
         result.setWeekdayRecordCount(weekdaysCount);
-        result.setTotalStreamViewCount(totalStreamViewCount);
         result.setTotalActivityCount(totalActivityCount);
         result.setTotalCommentCount(totalCommentCount);
         result.setTotalContributorCount(totalContributorCount);
@@ -195,18 +190,20 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 + latestReportDate);
         if (weekdaysCount > 0)
         {
-            result.setAverageDailyMessageCount(Math.round(msgCount * 1.0 / weekdaysCount));
-            result.setAverageDailyPageViewCount(Math.round(pageViewCount * 1.0 / weekdaysCount));
-            result.setAverageDailyStreamContributorCount(Math.round(streamContributorCount * 1.0 / weekdaysCount));
-            result.setAverageDailyStreamViewCount(Math.round(streamViewCount * 1.0 / weekdaysCount));
-            result.setAverageDailyStreamViewerCount(Math.round(streamViewerCount * 1.0 / weekdaysCount));
-            result.setAverageDailyUniqueVisitorCount(Math.round(uniqueVisitorCount * 1.0 / weekdaysCount));
-            result.setAverageDailyActivityResponseTime(Math.round(avgActivityResponseTime * 1.0 / weekdaysCount));
+            result.setAverageDailyMessageCount(Math.round(Math.ceil(msgCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyPageViewCount(Math.round(Math.ceil(pageViewCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyStreamContributorCount(Math.round(Math.ceil(streamContributorCount * 1.0
+                    / weekdaysCount)));
+            result.setAverageDailyStreamViewCount(Math.round(Math.ceil(streamViewCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyStreamViewerCount(Math.round(Math.ceil(streamViewerCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyUniqueVisitorCount(Math.round(Math.ceil(uniqueVisitorCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyActivityResponseTime(Math.round(Math.ceil(avgActivityResponseTime * 1.0
+                    / weekdaysCount)));
 
             if (weekdaysCount > 1)
             {
                 result.setAverageDailyCommentCount(//
-                        Math.round((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1)));
+                Math.round(Math.ceil((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1))));
             }
         }
 

@@ -56,7 +56,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      * Minimum number of days for the Terms of Service Prompt Interval.
      */
     @Transient
-    public static final int MIN_TOS_PROMPT_INTERVAL = 1;
+    public static final int MIN_TOS_PROMPT_INTERVAL = 0;
 
     /**
      * Minimum number of days for Content Expiration.

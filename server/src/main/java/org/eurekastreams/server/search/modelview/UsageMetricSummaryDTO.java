@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.DailyUsageSummary;
 
 /**
  * Contains Summary usage metrics.
- *
+ * 
  */
 public class UsageMetricSummaryDTO implements Serializable
 {
@@ -75,11 +75,6 @@ public class UsageMetricSummaryDTO implements Serializable
      * average daily number of comments.
      */
     private long averageDailyCommentCount = 0;
-
-    /**
-     * Total number of views of streams for all time.
-     */
-    private Long totalStreamViewCount = 0L;
 
     /**
      * Total activity count for all time.
@@ -235,23 +230,6 @@ public class UsageMetricSummaryDTO implements Serializable
     public void setAverageDailyActivityResponseTime(final long inAverageDailyActivityResponseTime)
     {
         averageDailyActivityResponseTime = inAverageDailyActivityResponseTime;
-    }
-
-    /**
-     * @return the totalStreamViewCount
-     */
-    public Long getTotalStreamViewCount()
-    {
-        return totalStreamViewCount;
-    }
-
-    /**
-     * @param inTotalStreamViewCount
-     *            the totalStreamViewCount to set
-     */
-    public void setTotalStreamViewCount(final Long inTotalStreamViewCount)
-    {
-        totalStreamViewCount = inTotalStreamViewCount;
     }
 
     /**

@@ -17,12 +17,10 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.SublistWithResultCount;
@@ -31,7 +29,8 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * DB Mapper to get a list of streams ordered by the daily average number of messages (most active).
+ * DB Mapper to get a list of streams ordered by the daily average number of messages (most active). This mapper
+ * requires TempWeekdaysSinceDate to be populated with current data.
  */
 public class GetStreamsByDailyAverageMessageCountDbMapper extends
         BaseArgDomainMapper<Serializable, SublistWithResultCount<StreamDTO>>
@@ -53,7 +52,8 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
     }
 
     /**
-     * Get a list of the stream scope ids for the most active streams.
+     * Get a list of the stream scope ids for the most active streams. Note that this mapper expects
+     * TempWeekdaysSinceDate to be populated with current data.
      * 
      * @param inIgnored
      *            ignored param - go nuts
@@ -64,28 +64,21 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
 
-        // to get an idea of how many activities were generated in the window we have on the data, look at the max
-        // number of messages we've seen - just assume that's the most recent, then look at the minimum number of
-        // messages we've seen - assume that's the earliest. Subtract the two for the delta, then divide by number of
-        // days.
-        // The "-86400000.0" is there because we're calculating the deltas between dates, so we ignore the first date in
-        // the
-        // count
+        // to get the number of daily messages, add up all of the counts that we received so far for each stream,
+        // then divide that by how many week days have passed since the first day's record
         Query q = getEntityManager().createQuery(
-                "SELECT streamViewStreamScopeId, (MAX(totalActivityCount) + MAX(totalCommentCount)"
-                        + " - MIN(totalActivityCount) - MIN(totalCommentCount))*86400000.0/"
-                        + "(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) "
-                        + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
-                        + "GROUP BY streamViewStreamScopeId "
-                        + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) > 0 "
-                        + "ORDER BY (MAX(totalActivityCount) + MAX(totalCommentCount)"
-                        + " - MIN(totalActivityCount) - MIN(totalCommentCount))*86400000.0"
-                        + "/(:nowInMS - MIN(usageDateTimeStampInMs) - 86400000.0) DESC").setParameter("nowInMS",
-                DateDayExtractor.getStartOfDay(new Date()).getTime());
+                "SELECT dus.streamViewStreamScopeId, "
+                        + "sum(dus.messageCount * 1.0)/max(week.numberOfWeekdaysSinceDate * 1.0) "
+                        + "FROM DailyUsageSummary dus, TempWeekdaysSinceDate week "
+                        + "WHERE dus.streamViewStreamScopeId IS NOT NULL "
+                        + "AND week.numberOfWeekdaysSinceDate IS NOT NULL AND dus.messageCount IS NOT NULL "
+                        + "AND dus.usageDateTimeStampInMs = week.dateTimeStampInMilliseconds "
+                        + "GROUP BY streamViewStreamScopeId HAVING MAX(week.numberOfWeekdaysSinceDate * 1.0) > 0 "
+                        + "AND sum(dus.messageCount * 1.0) > 0 "
+                        + "ORDER BY SUM(dus.messageCount * 1.0)/MAX(week.numberOfWeekdaysSinceDate * 1.0) DESC");
 
         List<Object[]> scopeIdAndMessageCountArray = q.getResultList();
-        int resultCount = scopeIdAndMessageCountArray.size();
-        if (streamCount > 0 && resultCount > streamCount)
+        if (streamCount > 0 && scopeIdAndMessageCountArray.size() > streamCount)
         {
             scopeIdAndMessageCountArray = scopeIdAndMessageCountArray.subList(0, streamCount);
         }
@@ -99,7 +92,7 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
 
         if (streamScopeIds.size() == 0)
         {
-            return new SublistWithResultCount<StreamDTO>(results, new Long(resultCount));
+            return new SublistWithResultCount<StreamDTO>(results, new Long(0));
         }
 
         // List of object arrays [streamScopeId, StreamDTO]
@@ -127,29 +120,31 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
             messageCount = -1L;
             if (streamObj[1] != null)
             {
-                messageCount = Math.round(((Double) streamObj[1]));
+                messageCount = Math.round(Math.ceil((Double) streamObj[1]));
             }
 
-            // find the StreamDTO with the stream scope
-            for (StreamDTO streamDTO : streamDtos)
+            if (messageCount > -1)
             {
-                if (streamDTO.getStreamScopeId().equals(streamScopeId))
+                // find the StreamDTO with the stream scope
+                for (StreamDTO streamDTO : streamDtos)
                 {
-                    if (streamDTO.getEntityType() == EntityType.PERSON)
+                    if (streamDTO.getStreamScopeId().equals(streamScopeId))
                     {
-                        ((PersonModelView) streamDTO).setFollowersCount(messageCount.intValue());
-                    }
-                    else if (streamDTO.getEntityType() == EntityType.GROUP)
-                    {
-                        ((DomainGroupModelView) streamDTO).setFollowersCount(messageCount.intValue());
-                    }
+                        if (streamDTO.getEntityType() == EntityType.PERSON)
+                        {
+                            ((PersonModelView) streamDTO).setFollowersCount(messageCount.intValue());
+                        }
+                        else if (streamDTO.getEntityType() == EntityType.GROUP)
+                        {
+                            ((DomainGroupModelView) streamDTO).setFollowersCount(messageCount.intValue());
+                        }
 
-                    results.add(streamDTO);
-                    break;
+                        results.add(streamDTO);
+                        break;
+                    }
                 }
             }
         }
-        return new SublistWithResultCount<StreamDTO>(results, new Long(resultCount));
+        return new SublistWithResultCount<StreamDTO>(results, new Long(results.size()));
     }
-
 }

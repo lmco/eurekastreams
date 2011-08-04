@@ -372,12 +372,8 @@
 								Comments Per Activity
 							</div>
 						</div>
+						<b>Total Activity</b>
 						<div class="{style.metrics-data-total}">
-							<b>Total</b>
-							<div>
-								<span ui:field="totalViews"></span>
-								Views
-							</div>
 							<div>
 								<span ui:field="totalContributors"></span>
 								Contributors

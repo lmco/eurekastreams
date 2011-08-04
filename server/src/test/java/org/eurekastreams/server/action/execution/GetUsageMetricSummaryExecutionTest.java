@@ -112,13 +112,13 @@ public class GetUsageMetricSummaryExecutionTest
 
         // first result is ignored b/c it's outside the date range
         results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, fourDaysAgo, //
-                1308238511000L, 80L, 91L, 101L, 111L, 121L));
+                1308238511000L, 80L, 91L, 101L, 121L));
         results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, threeDaysAgo, //
-                1308238511000L, 90L, 100L, 110L, 120L, 130L));
+                1308238511000L, 90L, 100L, 110L, 130L));
         results.add(new DailyUsageSummary(30L, 40L, 50L, 60L, 70L, 80L, 90L, twoDaysAgo, //
-                1308238511000L, 100L, 110L, 120L, 130L, 140L));
+                1308238511000L, 100L, 110L, 120L, 140L));
         results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, yesterday, //
-                1308238511000L, 110L, 120L, 130L, 140L, 150L));
+                1308238511000L, 110L, 120L, 130L, 150L));
 
         context.checking(new Expectations()
         {
@@ -149,9 +149,8 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(24, result.getAverageDailyMessageCount());
         Assert.assertEquals(new Long(120), result.getTotalActivityCount());
         Assert.assertEquals(new Long(130), result.getTotalCommentCount());
-        Assert.assertEquals(new Long(140), result.getTotalStreamViewCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
-        Assert.assertEquals(2, result.getAverageDailyCommentCount());
+        Assert.assertEquals(3, result.getAverageDailyCommentCount());
     }
 
     /**
@@ -181,11 +180,11 @@ public class GetUsageMetricSummaryExecutionTest
         final Date fourDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
 
         results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, fourDaysAgo, //
-                1308238511000L, 80L, 91L, 101L, 111L, 121L));
+                1308238511000L, 80L, 91L, 101L, 121L));
         results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, threeDaysAgo, //
-                1308238511000L, 90L, 100L, 110L, 120L, 130L));
+                1308238511000L, 90L, 100L, 110L, 130L));
         results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, yesterday, //
-                1308238511000L, 110L, 120L, 130L, 140L, 150L));
+                1308238511000L, 110L, 120L, 130L, 150L));
 
         context.checking(new Expectations()
         {
@@ -231,9 +230,8 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(22, result.getAverageDailyMessageCount());
         Assert.assertEquals(new Long(120), result.getTotalActivityCount());
         Assert.assertEquals(new Long(130), result.getTotalCommentCount());
-        Assert.assertEquals(new Long(140), result.getTotalStreamViewCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
-        Assert.assertEquals(3, result.getAverageDailyCommentCount());
+        Assert.assertEquals(4, result.getAverageDailyCommentCount());
     }
 
     /**
@@ -263,11 +261,11 @@ public class GetUsageMetricSummaryExecutionTest
         final Date fourDaysAgo = DateDayExtractor.getStartOfDay(cal.getTime());
 
         results.add(new DailyUsageSummary(10L, 20L, 30L, 40L, 50L, 60L, 70L, fourDaysAgo, //
-                1308238511000L, 80L, 91L, 101L, 111L, 121L));
+                1308238511000L, 80L, 91L, 101L, 121L));
         results.add(new DailyUsageSummary(20L, 30L, 40L, 50L, 60L, 70L, 80L, threeDaysAgo, //
-                1308238511000L, 90L, 100L, 110L, 120L, 130L));
+                1308238511000L, 90L, 100L, 110L, 130L));
         results.add(new DailyUsageSummary(40L, 50L, 60L, 70L, 80L, 90L, 110L, yesterday, //
-                1308238511000L, 110L, 120L, 130L, 140L, 150L));
+                1308238511000L, 110L, 120L, 130L, 150L));
 
         context.checking(new Expectations()
         {
@@ -313,8 +311,7 @@ public class GetUsageMetricSummaryExecutionTest
         Assert.assertEquals(22, result.getAverageDailyMessageCount());
         Assert.assertEquals(new Long(120), result.getTotalActivityCount());
         Assert.assertEquals(new Long(130), result.getTotalCommentCount());
-        Assert.assertEquals(new Long(140), result.getTotalStreamViewCount());
         Assert.assertEquals(new Long(150), result.getTotalContributorCount());
-        Assert.assertEquals(3, result.getAverageDailyCommentCount());
+        Assert.assertEquals(4, result.getAverageDailyCommentCount());
     }
 }

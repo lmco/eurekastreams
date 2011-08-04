@@ -105,6 +105,7 @@ public class ActiveStreamItemPanel extends Composite
                 new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
         streamNameLink.setTargetHistoryToken(nameUrl);
         streamNameLink.setText(inStreamDTO.getDisplayName());
+        streamNameLink.setTitle(inStreamDTO.getDisplayName());
 
         messageCount.setInnerText(inStreamDTO.getFollowersCount() == 1 ? "1 Daily Message" : Integer
                 .toString(inStreamDTO.getFollowersCount()) + " Daily Messages");

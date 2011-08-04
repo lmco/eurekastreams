@@ -29,6 +29,7 @@ import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.DailyUsageSummary;
+import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
@@ -75,12 +76,6 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     getDailyUsageSummaryByDateMapper;
 
     /**
-     * Mapper to get the most recent DailyUsageSummary before the input date.
-     */
-    private final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
-    getPreviousDailyUsageSummaryByDateMapper;
-
-    /**
      * Mapper to get a day's message count - for a stream or the whole system.
      */
     private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getDailyMessageCountMapper;
@@ -103,17 +98,17 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     /**
      * Mapper to get the total number of activities posted to a stream.
      */
-    private final DomainMapper<Long, Long> getTotalActivityCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalActivityCountMapper;
 
     /**
      * Mapper to get the total number of comments posted to a stream.
      */
-    private final DomainMapper<Long, Long> getTotalCommentCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalCommentCountMapper;
 
     /**
      * Mapper to get the total number of contributors to a stream by stream scope id.
      */
-    private final DomainMapper<Long, Long> getTotalStreamContributorMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalStreamContributorMapper;
 
     /**
      * Mapper to get day's average activity response time (for those that had responses) - for a stream or the whole
@@ -149,6 +144,12 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     private final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> summaryDataMapper;
 
     /**
+     * Mapper to get the lists for the discover page - this should be a cache refreshing mapper, b/c that's how it's
+     * used.
+     */
+    private final DomainMapper<Serializable, StreamDiscoverListsDTO> discoverPageListsCacheRefreshingMapper;
+
+    /**
      * The number of days to cache summary data for.
      */
     private final int numberOfDaysToCacheSummaryDataFor;
@@ -160,15 +161,14 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
     /**
      * Constructor.
-     *
+     * 
      * @param inDaysToGenerate
      *            the number of days to generate data for
      * @param inDaysAgoDateStrategy
      *            strategy to get a date from yesterday
      * @param inGetDailyUsageSummaryByDateMapper
      *            Mapper to get a single day's DailyUsageSummary
-     * @param inGetPreviousDailyUsageSummaryByDateMapper
-     *            Mapper to get the most recent DailyUsageSummary before the input date
+     * 
      * @param inGetDailyMessageCountMapper
      *            Mapper to get a day's message count
      * @param inGetDailyPageViewCountMapper
@@ -201,6 +201,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
      *            mapper to clear entity manager
      * @param inSummaryDataMapper
      *            mapper to fetch & cache the stream scope's summary data
+     * @param inDiscoverPageListsCacheRefreshingMapper
+     *            mapper to fetch and refresh the discover page lists in cache
      * @param inNumberOfDaysToCacheSummaryDataFor
      *            the number of days to cache the summary data for
      */
@@ -208,8 +210,6 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final int inDaysToGenerate,
             final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
-            final DomainMapper<UsageMetricDailyStreamInfoRequest, DailyUsageSummary> //
-            inGetPreviousDailyUsageSummaryByDateMapper,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyMessageCountMapper,
             final DomainMapper<Date, Long> inGetDailyPageViewCountMapper,
             final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetDailyStreamContributorCountMapper,
@@ -220,17 +220,17 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
             final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper,
             final DayOfWeekStrategy inDayOfWeekStrategy, final DomainMapper<Date, List<Long>> inStreamScopeIdsMapper,
-            final DomainMapper<Long, Long> inGetTotalActivityCountMapper,
-            final DomainMapper<Long, Long> inGetTotalCommentCountMapper,
-            final DomainMapper<Long, Long> inGetTotalStreamContributorMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetTotalActivityCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetTotalCommentCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetTotalStreamContributorMapper,
             final DomainMapper<Serializable, Boolean> inClearEntityManagerMapper,
             final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> inSummaryDataMapper,
+            final DomainMapper<Serializable, StreamDiscoverListsDTO> inDiscoverPageListsCacheRefreshingMapper,
             final int inNumberOfDaysToCacheSummaryDataFor)
     {
         daysToGenerate = inDaysToGenerate;
         daysAgoDateStrategy = inDaysAgoDateStrategy;
         getDailyUsageSummaryByDateMapper = inGetDailyUsageSummaryByDateMapper;
-        getPreviousDailyUsageSummaryByDateMapper = inGetPreviousDailyUsageSummaryByDateMapper;
         getDailyMessageCountMapper = inGetDailyMessageCountMapper;
         getDailyPageViewCountMapper = inGetDailyPageViewCountMapper;
         getDailyStreamContributorCountMapper = inGetDailyStreamContributorCountMapper;
@@ -247,12 +247,13 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         getTotalStreamContributorMapper = inGetTotalStreamContributorMapper;
         clearEntityManagerMapper = inClearEntityManagerMapper;
         summaryDataMapper = inSummaryDataMapper;
+        discoverPageListsCacheRefreshingMapper = inDiscoverPageListsCacheRefreshingMapper;
         numberOfDaysToCacheSummaryDataFor = inNumberOfDaysToCacheSummaryDataFor;
     }
 
     /**
      * Generate the daily usage summary for the previous day.
-     *
+     * 
      * @param inActionContext
      *            the action context
      * @return true if data was inserted, false if already existed
@@ -276,12 +277,17 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
 
         logger.info("Completed generating usage metrics in " + (System.currentTimeMillis() - start) + "ms");
 
+        // now ask for the discover page lists from the refresh mapper, which will cause the cache to update
+        logger.info("Updating the Discover Page cache.");
+        discoverPageListsCacheRefreshingMapper.execute(null);
+        logger.info("Completed generating Discover Page cache.");
+
         return Boolean.TRUE;
     }
 
     /**
      * Generate the daily usage summary for all streams for a specific day.
-     *
+     * 
      * @param inDaysAgo
      *            the number of days ago to generate data for
      */
@@ -315,12 +321,13 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
         {
             generateDailyUsageSummaryForStreamScope(reportDate, streamScopeId);
         }
+
         logger.info("Inserted Daily Summary metrics for " + reportDate);
     }
 
     /**
      * Generate the daily usage summary for the stream scope with the input id, and for the given date.
-     *
+     * 
      * @param inDate
      *            the date to generate for
      * @param inStreamScopeId
@@ -345,7 +352,6 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             long messageCount = 0;
             long avgActvityResponeTime = 0;
 
-            Long totalStreamViewCount = null;
             Long totalActivityCount = null;
             Long totalCommentCount = null;
             Long totalContributorCount = null;
@@ -379,33 +385,18 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
                 // these are only generated for individual streams
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                totalActivityCount = getTotalActivityCountMapper.execute(inStreamScopeId);
+                totalActivityCount = getTotalActivityCountMapper.execute(streamInfoRequest);
                 timerLog += "\t2: " + (System.currentTimeMillis() - start);
 
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                totalCommentCount = getTotalCommentCountMapper.execute(inStreamScopeId);
+                totalCommentCount = getTotalCommentCountMapper.execute(streamInfoRequest);
                 timerLog += "\t3: " + (System.currentTimeMillis() - start);
 
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                totalContributorCount = getTotalStreamContributorMapper.execute(inStreamScopeId);
+                totalContributorCount = getTotalStreamContributorMapper.execute(streamInfoRequest);
                 timerLog += "\t4: " + (System.currentTimeMillis() - start);
-
-                start = System.currentTimeMillis();
-                clearEntityManagerMapper.execute(null);
-                DailyUsageSummary priorDayData = getPreviousDailyUsageSummaryByDateMapper
-                        .execute(new UsageMetricDailyStreamInfoRequest(inDate, inStreamScopeId));
-                timerLog += "\t5: " + (System.currentTimeMillis() - start);
-
-                if (priorDayData != null && priorDayData.getTotalStreamViewCount() != null)
-                {
-                    totalStreamViewCount = priorDayData.getTotalStreamViewCount() + streamViewCount;
-                }
-                else
-                {
-                    totalStreamViewCount = streamViewCount;
-                }
             }
 
             logger.info("Generating number of stream viewers for " + inDate);
@@ -427,9 +418,8 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             timerLog += "\t8: " + (System.currentTimeMillis() - start);
 
             DailyUsageSummary data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount,
-                    streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate, inDate
-                            .getTime(), inStreamScopeId, totalActivityCount, totalCommentCount, totalStreamViewCount,
-                    totalContributorCount);
+                    streamViewCount, streamContributorCount, messageCount, avgActvityResponeTime, inDate,
+                    inDate.getTime(), inStreamScopeId, totalActivityCount, totalCommentCount, totalContributorCount);
 
             // store this
             logger.info("Inserting daily usage metric data for " + inDate);

@@ -108,56 +108,56 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         *
+         * 
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         *
+         * 
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         *
+         * 
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         *
+         * 
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         *
+         * 
          * @return Private avatar.
          */
         String privateAvatar();
 
         /**
          * Hide details button.
-         *
+         * 
          * @return hide details button.
          */
         String hideDetails();
 
         /**
          * Featured item header link style.
-         *
+         * 
          * @return Featured item header link style.
          */
         String headerFeatured();
 
         /**
          * Empty detail style.
-         *
+         * 
          * @return Empty detail style.
          */
         String emptyDetailStyle();
@@ -170,7 +170,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     *
+     * 
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -395,12 +395,6 @@ public class StreamDetailsComposite extends Composite
      */
     @UiField
     SpanElement avgComments;
-
-    /**
-     * Total views.
-     */
-    @UiField
-    SpanElement totalViews;
 
     /**
      * Total contributors.
@@ -683,7 +677,6 @@ public class StreamDetailsComposite extends Composite
                         Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
                         totalContributors.setInnerText("" + data.getTotalContributorCount());
                         totalMessages.setInnerText(totalMessagesNumber.toString());
-                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
                         chart.update();
                     }
                 });
@@ -745,7 +738,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set the stream title and avatar.
-     *
+     * 
      * @param inStreamTitle
      *            the title.
      * @param avatar
@@ -794,7 +787,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set Condensed mode.
-     *
+     * 
      * @param isCondensed
      *            condensed mode.
      */
@@ -813,7 +806,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Go the group.
-     *
+     * 
      * @param group
      *            the group.
      */
@@ -861,8 +854,8 @@ public class StreamDetailsComposite extends Composite
             }
 
             contactInfoTitle.setInnerText("Website");
-            contactInfo.setInnerText(group.getUrl());
 
+            String groupUrl = group.getUrl();
             if (group.getUrl() == null || group.getUrl().length() == 0)
             {
                 contactInfo.setInnerHTML("No contact information entered.");
@@ -870,6 +863,7 @@ public class StreamDetailsComposite extends Composite
             }
             else
             {
+                contactInfo.setInnerHTML("<a href=\"" + groupUrl + "\">" + group.getUrl() + "</a>");
                 contactInfo.removeClassName(style.emptyDetailStyle());
             }
 
@@ -932,7 +926,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     *
+     * 
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -984,7 +978,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     *
+     * 
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -1133,7 +1127,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     *
+     * 
      * @param inStatus
      *            status.
      */
@@ -1156,7 +1150,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Got the person.
-     *
+     * 
      * @param person
      *            the person.
      */
@@ -1231,13 +1225,14 @@ public class StreamDetailsComposite extends Composite
 
         contactInfoTitle.setInnerText("Contact Information");
         String contact = "";
-        if (person.getEmail() != null)
+        String email = person.getEmail();
+        if (email != null)
         {
-            contact = person.getEmail();
+            contact = "<a href=\"mailto:" + email + "\">" + email + "</a>";
         }
         if (person.getWorkPhone() != null)
         {
-            if (person.getEmail() != null)
+            if (email != null)
             {
                 contact += "<br />";
             }

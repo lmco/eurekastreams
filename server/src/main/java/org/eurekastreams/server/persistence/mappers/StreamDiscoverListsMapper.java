@@ -25,6 +25,7 @@ import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.domain.dto.SublistWithResultCount;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
+import org.eurekastreams.server.service.actions.strategies.RepopulateTempWeekdaysSinceDateStrategy;
 
 /**
  * Mapper to piece together the results of different mappers to feed the streams discovery page.
@@ -62,6 +63,16 @@ public class StreamDiscoverListsMapper extends BaseArgDomainMapper<Serializable,
     private DomainMapper<Serializable, List<StreamDTO>> mostRecentStreamsMapper;
 
     /**
+     * Strategy to repopulate the TempWeekdaysSinceDate table.
+     */
+    private final RepopulateTempWeekdaysSinceDateStrategy repopulateTempWeekdaysSinceDateStrategy;
+
+    /**
+     * Number of days to generate weekday count data for.
+     */
+    private final long numberOfDaysOfWeekdayCountDataToGenerate;
+
+    /**
      * Constructor.
      * 
      * @param inFeaturedStreamDTOMapper
@@ -74,19 +85,27 @@ public class StreamDiscoverListsMapper extends BaseArgDomainMapper<Serializable,
      *            mapper to retrieve the most followed stream DTOs.
      * @param inMostRecentStreamsMapper
      *            mapper to retrieve the most recent stream DTOs.
+     * @param inRepopulateTempWeekdaysSinceDateStrategy
+     *            strategy to repopulate the TempWeekdaysSinceDate table
+     * @param inNumberOfDaysOfWeekdayCountDataToGenerate
+     *            number of days to generate weekday count data for.
      */
     public StreamDiscoverListsMapper(
             final DomainMapper<MapperRequest< ? >, List<FeaturedStreamDTO>> inFeaturedStreamDTOMapper,
             final DomainMapper<Serializable, SublistWithResultCount<StreamDTO>> inMostActiveStreamsMapper,
             final DomainMapper<Serializable, List<StreamDTO>> inMostViewedStreamsMapper,
             final DomainMapper<Serializable, List<StreamDTO>> inMostFollowedStreamsMapper,
-            final DomainMapper<Serializable, List<StreamDTO>> inMostRecentStreamsMapper)
+            final DomainMapper<Serializable, List<StreamDTO>> inMostRecentStreamsMapper,
+            final RepopulateTempWeekdaysSinceDateStrategy inRepopulateTempWeekdaysSinceDateStrategy,
+            final long inNumberOfDaysOfWeekdayCountDataToGenerate)
     {
         featuredStreamDTOMapper = inFeaturedStreamDTOMapper;
         mostActiveStreamsMapper = inMostActiveStreamsMapper;
         mostViewedStreamsMapper = inMostViewedStreamsMapper;
         mostFollowedStreamsMapper = inMostFollowedStreamsMapper;
         mostRecentStreamsMapper = inMostRecentStreamsMapper;
+        repopulateTempWeekdaysSinceDateStrategy = inRepopulateTempWeekdaysSinceDateStrategy;
+        numberOfDaysOfWeekdayCountDataToGenerate = inNumberOfDaysOfWeekdayCountDataToGenerate;
     }
 
     /**
@@ -100,6 +119,9 @@ public class StreamDiscoverListsMapper extends BaseArgDomainMapper<Serializable,
     public StreamDiscoverListsDTO execute(final Serializable inRequest)
     {
         log.info("Beginning to generate Stream Discovery lists for all users.");
+
+        log.info("Regenerating weekday count temp data for " + numberOfDaysOfWeekdayCountDataToGenerate + " days");
+        repopulateTempWeekdaysSinceDateStrategy.execute(numberOfDaysOfWeekdayCountDataToGenerate);
 
         StreamDiscoverListsDTO result = new StreamDiscoverListsDTO();
 
@@ -121,5 +143,4 @@ public class StreamDiscoverListsMapper extends BaseArgDomainMapper<Serializable,
         log.info("Finished generating Stream Discovery lists for all users.");
         return result;
     }
-
 }

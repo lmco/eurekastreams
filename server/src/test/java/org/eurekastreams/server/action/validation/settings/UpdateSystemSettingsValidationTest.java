@@ -377,7 +377,7 @@ public class UpdateSystemSettingsValidationTest
     {
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put("contentExpiration", -1);
-        formData.put("tosPromptInterval", 0);
+        formData.put("tosPromptInterval", -1);
 
         context.checking(new Expectations()
         {

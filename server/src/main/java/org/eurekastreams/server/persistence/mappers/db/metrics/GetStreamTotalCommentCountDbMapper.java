@@ -15,26 +15,32 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
 /**
- * Mapper to get total comment count for a stream by stream scope id.
+ * Mapper to get total comment count for a stream by stream scope id before the input date.
  */
-public class GetStreamTotalCommentCountDbMapper extends BaseArgDomainMapper<Long, Long>
+public class GetStreamTotalCommentCountDbMapper extends BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
      * Get the total number of comments for a stream by stream scope id.
      * 
-     * @param inRecipientStreamScopeId
-     *            the recipient stream scope id to check for comment count
+     * @param inRequest
+     *            request containing the recipient stream scope id and date to check for comment count for
      * @return the number of comments in a stream with the input destination stream scope id
      */
     @Override
-    public Long execute(final Long inRecipientStreamScopeId)
+    public Long execute(final UsageMetricDailyStreamInfoRequest inRequest)
     {
-        return (Long) getEntityManager().createQuery(
-                "SELECT COUNT(id) FROM Comment WHERE target.recipientStreamScope.id = :recipientStreamScopeId")
-                .setParameter("recipientStreamScopeId", inRecipientStreamScopeId).getSingleResult();
+        return (Long) getEntityManager()
+                .createQuery(
+                        "SELECT COUNT(id) FROM Comment WHERE target.recipientStreamScope.id = :recipientStreamScopeId "
+                                + "AND timeSent < :requestDate")
+                .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId())
+                .setParameter("requestDate", DateDayExtractor.getEndOfDay(inRequest.getMetricsDate()))
+                .getSingleResult();
     }
 
 }
