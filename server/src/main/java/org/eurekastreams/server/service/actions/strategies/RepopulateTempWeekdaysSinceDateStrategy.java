@@ -23,6 +23,7 @@ import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.date.WeekdaysInDateRangeStrategy;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.TempWeekdaysSinceDate;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.db.DeleteAllTempWeekdaysSinceDateDbMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -37,38 +38,13 @@ public class RepopulateTempWeekdaysSinceDateStrategy
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
-
-    /**
-     * Constructor.
-     * 
-     * @param inWeekdaysInDateRangeStrategy
-     *            Strategy to populate the number of weekdays since different dates in the database for Discover page
-     *            list generation.
-     * @param inDaysAgoDateStrategy
-     *            strategy to get a date from N days ago.
-     * @param inDeleteAllTempWeekdaysSinceDateDbMapper
-     *            Mapper to delete all data in TempWeekdaysSinceDateDbMapper.
-     * @param inInsertMapper
-     *            Mapper to insert TempWeekdaysSinceDate.
-     */
-    public RepopulateTempWeekdaysSinceDateStrategy(final WeekdaysInDateRangeStrategy inWeekdaysInDateRangeStrategy,
-            final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
-            final DeleteAllTempWeekdaysSinceDateDbMapper inDeleteAllTempWeekdaysSinceDateDbMapper,
-            final InsertMapper<TempWeekdaysSinceDate> inInsertMapper)
-    {
-        super();
-        weekdaysInDateRangeStrategy = inWeekdaysInDateRangeStrategy;
-        daysAgoDateStrategy = inDaysAgoDateStrategy;
-        deleteAllTempWeekdaysSinceDateDbMapper = inDeleteAllTempWeekdaysSinceDateDbMapper;
-        insertMapper = inInsertMapper;
-    }
+    private final Log log = LogFactory.make();
 
     /**
      * Strategy to populate the number of weekdays since different dates in the database for Discover page list
      * generation.
      */
-    private WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy;
+    private final WeekdaysInDateRangeStrategy weekdaysInDateRangeStrategy;
 
     /**
      * strategy to get a date from N days ago.
@@ -78,16 +54,51 @@ public class RepopulateTempWeekdaysSinceDateStrategy
     /**
      * Mapper to delete all data in TempWeekdaysSinceDateDbMapper.
      */
-    private DeleteAllTempWeekdaysSinceDateDbMapper deleteAllTempWeekdaysSinceDateDbMapper;
+    private final DeleteAllTempWeekdaysSinceDateDbMapper deleteAllTempWeekdaysSinceDateDbMapper;
 
     /**
      * Mapper to insert TempWeekdaysSinceDate.
      */
-    private InsertMapper<TempWeekdaysSinceDate> insertMapper;
+    private final InsertMapper<TempWeekdaysSinceDate> insertMapper;
+
+    /**
+     * Mapper to flush the database session after we insert the TempWeekdaysSinceDate data so we can query it in this
+     * session.
+     */
+    private final DomainMapper<PersistenceRequest, Boolean> flushMapper;
+
+    /**
+     * Constructor.
+     *
+     * @param inWeekdaysInDateRangeStrategy
+     *            Strategy to populate the number of weekdays since different dates in the database for Discover page
+     *            list generation.
+     * @param inDaysAgoDateStrategy
+     *            strategy to get a date from N days ago.
+     * @param inDeleteAllTempWeekdaysSinceDateDbMapper
+     *            Mapper to delete all data in TempWeekdaysSinceDateDbMapper.
+     * @param inInsertMapper
+     *            Mapper to insert TempWeekdaysSinceDate.
+     * @param inFlushMapper
+     *            mapper to flush after the inserts
+     */
+    public RepopulateTempWeekdaysSinceDateStrategy(final WeekdaysInDateRangeStrategy inWeekdaysInDateRangeStrategy,
+            final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
+            final DeleteAllTempWeekdaysSinceDateDbMapper inDeleteAllTempWeekdaysSinceDateDbMapper,
+            final InsertMapper<TempWeekdaysSinceDate> inInsertMapper,
+            final DomainMapper<PersistenceRequest, Boolean> inFlushMapper)
+    {
+        super();
+        weekdaysInDateRangeStrategy = inWeekdaysInDateRangeStrategy;
+        daysAgoDateStrategy = inDaysAgoDateStrategy;
+        deleteAllTempWeekdaysSinceDateDbMapper = inDeleteAllTempWeekdaysSinceDateDbMapper;
+        insertMapper = inInsertMapper;
+        flushMapper = inFlushMapper;
+    }
 
     /**
      * Update the TempWeekdaysSinceDate table with the data for the last N days.
-     * 
+     *
      * @param inDaysToCalculate
      *            the number of days to calculate.
      */
@@ -110,5 +121,6 @@ public class RepopulateTempWeekdaysSinceDateStrategy
             log.info("Calculated " + weekdaysCount + " weekdays between now and " + date);
             insertMapper.execute(new PersistenceRequest<TempWeekdaysSinceDate>(record));
         }
+        flushMapper.execute(null);
     }
 }

@@ -20,7 +20,7 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
  * Mapper used for inserting DomainEntities.
- * 
+ *
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
@@ -29,7 +29,7 @@ public class InsertMapper<TDomainEntityType extends DomainEntityIdentifiable> ex
 {
     /**
      * Inserts the DomainEntity.
-     * 
+     *
      * @param inRequest
      *            The MapperRequest.
      * @return true if inserted.
