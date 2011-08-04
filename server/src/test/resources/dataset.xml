@@ -744,7 +744,7 @@
        videowidth="200" /> 
     
     <DailyUsageSummary id="4" messagecount="9" pageviewcount="99" streamcontributorcount="999" 
-        streamviewcount="9999" streamviewercount="99999" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
+        streamviewcount="9999" streamviewercount="100000" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
         streamViewStreamScopeId="1" totalActivityCount="3" totalCommentCount="4" totalContributorCount="5"
         />
     
@@ -766,7 +766,7 @@
         />
    
     <DailyUsageSummary id="6" messagecount="9" pageviewcount="99" streamcontributorcount="999" 
-        streamviewcount="9999" streamviewercount="99999" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
+        streamviewcount="9999" streamviewercount="100000" uniquevisitorcount="999999" usagedate="2011-04-07" usageDateTimeStampInMs="1302148800000" avgactivityresponsetime="9999999" 
         streamViewStreamScopeId="2" totalActivityCount="3" totalCommentCount="5" totalContributorCount="6" totalStreamViewCount="85"
         />
         

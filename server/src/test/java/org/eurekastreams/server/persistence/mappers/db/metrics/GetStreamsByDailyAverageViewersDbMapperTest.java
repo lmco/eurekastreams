@@ -60,6 +60,12 @@ public class GetStreamsByDailyAverageViewersDbMapperTest extends MapperTest
 
         Assert.assertEquals("fordp2", dto1.getUniqueId());
         Assert.assertEquals("fordp", dto2.getUniqueId());
+
+        // two data points - 100000 and 99999, 3 days. we round up, so get 66667
+        Assert.assertEquals(66667, dto1.getFollowersCount());
+
+        // one data point - 100000, 3 days. we round up, so get 33334
+        Assert.assertEquals(33334, dto2.getFollowersCount());
     }
 
     /**

@@ -64,6 +64,8 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
 
+        // to get the number of daily messages, add up all of the counts that we received so far for each stream,
+        // then divide that by how many week days have passed since the first day's record
         Query q = getEntityManager().createQuery(
                 "SELECT dus.streamViewStreamScopeId, "
                         + "sum(dus.messageCount * 1.0)/max(week.numberOfWeekdaysSinceDate * 1.0) "
@@ -72,6 +74,7 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
                         + "AND week.numberOfWeekdaysSinceDate IS NOT NULL AND dus.messageCount IS NOT NULL "
                         + "AND dus.usageDateTimeStampInMs = week.dateTimeStampInMilliseconds "
                         + "GROUP BY streamViewStreamScopeId HAVING MAX(week.numberOfWeekdaysSinceDate * 1.0) > 0 "
+                        + "AND sum(dus.messageCount * 1.0) > 0 "
                         + "ORDER BY SUM(dus.messageCount * 1.0)/MAX(week.numberOfWeekdaysSinceDate * 1.0) DESC");
 
         List<Object[]> scopeIdAndMessageCountArray = q.getResultList();

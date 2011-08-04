@@ -17,12 +17,10 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
@@ -61,16 +59,20 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
     public List<StreamDTO> execute(final Serializable inIgnored)
     {
         List<StreamDTO> results = new ArrayList<StreamDTO>();
+        Query q;
 
-        // to get the number of daily stream viewers, add up all of the counts that we recevied so far for each stream,
-        // then divide that by how many days have passed since the first day's record
-        Query q = getEntityManager().createQuery(
-                "SELECT streamViewStreamScopeId, "
-                        + "SUM(streamViewerCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) "
-                        + "FROM DailyUsageSummary WHERE streamViewStreamScopeId IS NOT NULL "
-                        + "GROUP BY streamViewStreamScopeId " + "HAVING (:nowInMS - MIN(usageDateTimeStampInMs)) > 0 "
-                        + "ORDER BY SUM(streamViewerCount)*86400000.0/(:nowInMS - MIN(usageDateTimeStampInMs)) DESC")
-                .setParameter("nowInMS", DateDayExtractor.getStartOfDay(new Date()).getTime());
+        // to get the number of daily stream viewers, add up all of the counts that we received so far for each stream,
+        // then divide that by how many week days have passed since the first day's record
+        q = getEntityManager().createQuery(
+                "SELECT dus.streamViewStreamScopeId, "
+                        + "sum(dus.streamViewerCount * 1.0)/max(week.numberOfWeekdaysSinceDate * 1.0) "
+                        + "FROM DailyUsageSummary dus, TempWeekdaysSinceDate week "
+                        + "WHERE dus.streamViewStreamScopeId IS NOT NULL "
+                        + "AND week.numberOfWeekdaysSinceDate IS NOT NULL AND dus.streamViewerCount IS NOT NULL "
+                        + "AND dus.usageDateTimeStampInMs = week.dateTimeStampInMilliseconds "
+                        + "GROUP BY streamViewStreamScopeId HAVING MAX(week.numberOfWeekdaysSinceDate * 1.0) > 0 "
+                        + "AND sum(dus.streamViewerCount * 1.0) > 0 "
+                        + "ORDER BY SUM(dus.streamViewerCount * 1.0)/MAX(week.numberOfWeekdaysSinceDate * 1.0) DESC");
 
         if (streamCount > 0)
         {
@@ -115,25 +117,28 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
             viewerCount = -1L;
             if (streamObj[1] != null)
             {
-                viewerCount = Math.round(((Double) streamObj[1]));
+                viewerCount = Math.round(Math.ceil((Double) streamObj[1]));
             }
 
-            // find the StreamDTO with the stream scope - hijack the followersCount to display the data
-            for (StreamDTO streamDTO : streamDtos)
+            if (viewerCount > -1)
             {
-                if (streamDTO.getStreamScopeId().equals(streamScopeId))
+                // find the StreamDTO with the stream scope - hijack the followersCount to display the data
+                for (StreamDTO streamDTO : streamDtos)
                 {
-                    if (streamDTO.getEntityType() == EntityType.PERSON)
+                    if (streamDTO.getStreamScopeId().equals(streamScopeId))
                     {
-                        ((PersonModelView) streamDTO).setFollowersCount(viewerCount.intValue());
-                    }
-                    else if (streamDTO.getEntityType() == EntityType.GROUP)
-                    {
-                        ((DomainGroupModelView) streamDTO).setFollowersCount(viewerCount.intValue());
-                    }
+                        if (streamDTO.getEntityType() == EntityType.PERSON)
+                        {
+                            ((PersonModelView) streamDTO).setFollowersCount(viewerCount.intValue());
+                        }
+                        else if (streamDTO.getEntityType() == EntityType.GROUP)
+                        {
+                            ((DomainGroupModelView) streamDTO).setFollowersCount(viewerCount.intValue());
+                        }
 
-                    results.add(streamDTO);
-                    break;
+                        results.add(streamDTO);
+                        break;
+                    }
                 }
             }
         }

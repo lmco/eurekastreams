@@ -193,13 +193,15 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 + latestReportDate);
         if (weekdaysCount > 0)
         {
-            result.setAverageDailyMessageCount(Math.round(msgCount * 1.0 / weekdaysCount));
-            result.setAverageDailyPageViewCount(Math.round(pageViewCount * 1.0 / weekdaysCount));
-            result.setAverageDailyStreamContributorCount(Math.round(streamContributorCount * 1.0 / weekdaysCount));
-            result.setAverageDailyStreamViewCount(Math.round(streamViewCount * 1.0 / weekdaysCount));
-            result.setAverageDailyStreamViewerCount(Math.round(streamViewerCount * 1.0 / weekdaysCount));
-            result.setAverageDailyUniqueVisitorCount(Math.round(uniqueVisitorCount * 1.0 / weekdaysCount));
-            result.setAverageDailyActivityResponseTime(Math.round(avgActivityResponseTime * 1.0 / weekdaysCount));
+            result.setAverageDailyMessageCount(Math.round(Math.ceil(msgCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyPageViewCount(Math.round(Math.ceil(pageViewCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyStreamContributorCount(Math.round(Math.ceil(streamContributorCount * 1.0
+                    / weekdaysCount)));
+            result.setAverageDailyStreamViewCount(Math.round(Math.ceil(streamViewCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyStreamViewerCount(Math.round(Math.ceil(streamViewerCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyUniqueVisitorCount(Math.round(Math.ceil(uniqueVisitorCount * 1.0 / weekdaysCount)));
+            result.setAverageDailyActivityResponseTime(Math.round(Math.ceil(avgActivityResponseTime * 1.0
+                    / weekdaysCount)));
 
             if (weekdaysCount > 1)
             {
