@@ -29,8 +29,8 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
@@ -647,45 +647,46 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
-        {
-            public void update(final GotUsageMetricSummaryEvent event)
-            {
-                UsageMetricSummaryDTO data = event.getResponse();
-
-                List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                chart.setVisible(stats != null && stats.size() > 0);
-                chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
-
-                if (stats != null)
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
+                new Observer<GotUsageMetricSummaryEvent>()
                 {
-                    for (int i = 0; i < stats.size(); i++)
+                    public void update(final GotUsageMetricSummaryEvent event)
                     {
-                        if (null == stats.get(i))
+                        UsageMetricSummaryDTO data = event.getResponse();
+
+                        List<DailyUsageSummary> stats = data.getDailyStatistics();
+
+                        chart.setVisible(stats != null && stats.size() > 0);
+                        chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
+
+                        if (stats != null)
                         {
-                            chart.addPoint(i, 0.0);
+                            for (int i = 0; i < stats.size(); i++)
+                            {
+                                if (null == stats.get(i))
+                                {
+                                    chart.addPoint(i, 0.0);
+                                }
+                                else
+                                {
+                                    chart.addPoint(i, stats.get(i).getStreamViewCount());
+                                }
+                            }
                         }
-                        else
-                        {
-                            chart.addPoint(i, stats.get(i).getStreamViewCount());
-                        }
+
+                        avgComments.setInnerText("" + data.getAverageDailyCommentCount());
+                        avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
+                        avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
+                        avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
+                        avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
+
+                        Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
+                        totalContributors.setInnerText("" + data.getTotalContributorCount());
+                        totalMessages.setInnerText(totalMessagesNumber.toString());
+                        totalViews.setInnerText("" + data.getTotalStreamViewCount());
+                        chart.update();
                     }
-                }
-
-                avgComments.setInnerText("" + data.getAverageDailyCommentCount());
-                avgContributors.setInnerText("" + data.getAverageDailyStreamContributorCount());
-                avgMessages.setInnerText("" + data.getAverageDailyMessageCount());
-                avgViewers.setInnerText("" + data.getAverageDailyStreamViewerCount());
-                avgViews.setInnerText("" + data.getAverageDailyStreamViewCount());
-
-                Long totalMessagesNumber = (data.getTotalActivityCount() + data.getTotalCommentCount());
-                totalContributors.setInnerText("" + data.getTotalContributorCount());
-                totalMessages.setInnerText(totalMessagesNumber.toString());
-                totalViews.setInnerText("" + data.getTotalStreamViewCount());
-                chart.update();
-            }
-        });
+                });
 
         EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
                 new Observer<GotFeaturedStreamsPageResponseEvent>()
@@ -1019,16 +1020,14 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request = new SetFollowingStatusRequest(
-                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
-                                Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request = new SetFollowingStatusRequest(
-                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
-                                Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
+                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId,
                                 subscribeModel, entityId));
@@ -1041,14 +1040,16 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
-                    new Observer<GotPersonFollowerStatusResponseEvent>()
-                    {
-                        public void update(final GotPersonFollowerStatusResponseEvent event)
-                        {
-                            onFollowerStatusChanged(event.getResponse());
-                        }
-                    });
+            Session.getInstance()
+                    .getEventBus()
+                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                            new Observer<GotPersonFollowerStatusResponseEvent>()
+                            {
+                                public void update(final GotPersonFollowerStatusResponseEvent event)
+                                {
+                                    onFollowerStatusChanged(event.getResponse());
+                                }
+                            });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);

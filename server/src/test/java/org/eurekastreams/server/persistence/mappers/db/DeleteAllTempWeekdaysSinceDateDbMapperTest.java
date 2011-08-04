@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import org.eurekastreams.server.domain.TempWeekdaysSinceDate;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,13 +30,6 @@ public class DeleteAllTempWeekdaysSinceDateDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        // insert a few records first
-        getEntityManager().persist(new TempWeekdaysSinceDate(100, 100));
-        getEntityManager().persist(new TempWeekdaysSinceDate(200, 100));
-        getEntityManager().persist(new TempWeekdaysSinceDate(300, 100));
-        getEntityManager().flush();
-        getEntityManager().clear();
-
         Assert.assertEquals(3L, getEntityManager().createQuery("SELECT COUNT(*) from TempWeekdaysSinceDate")
                 .getSingleResult());
 

@@ -6,3 +6,4 @@ insert into db_version (major, minor, patch, scriptname, description) values (1,
         numberOfWeekdaysSinceDate int8 not null,
         primary key (dateTimeStampInMilliseconds)
     );
+    

@@ -770,6 +770,11 @@
         streamViewStreamScopeId="2" totalActivityCount="3" totalCommentCount="5" totalContributorCount="6" totalStreamViewCount="85"
         />
         
+    <!-- Pretend this is 4/10 and 4/7 is a Monday -->
+    <TempWeekdaysSinceDate dateTimeStampInMilliseconds="1302148800000" numberOfWeekdaysSinceDate="3" />
+    <TempWeekdaysSinceDate dateTimeStampInMilliseconds="1302235200000" numberOfWeekdaysSinceDate="2" />
+    <TempWeekdaysSinceDate dateTimeStampInMilliseconds="1302321600000" numberOfWeekdaysSinceDate="1" />
+    
     <GalleryTabTemplate id="1"  version="0" created="2009-01-01 12:00:00.000" description="GalleryTabTemplate1" title="Welcome"
         categoryid="1235" tabtemplateid="5555" />         
     <GalleryTabTemplate id="2"  version="0" created="2009-02-02 12:00:00.000" description="GalleryTabTemplate2" title="Welcome"

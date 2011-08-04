@@ -2475,7 +2475,7 @@
         <constructor-arg>
             <!-- Most Active Streams (sorted by average daily message count) -->
 	        <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.GetStreamsByDailyAverageMessageCountDbMapper">
-		        <!-- 180 = 20 pages of data that will be sent to the client -->
+		        <!-- 200 = 20 pages of data that will be sent to the client -->
 		        <constructor-arg value="200" />
 		    </bean>
         </constructor-arg>

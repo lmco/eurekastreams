@@ -61,7 +61,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSummaryDataMapper
      *            mapper to get the summary data for a stream, or all streams
      * @param inWeekdaysInDateRangeStrategy
@@ -81,7 +81,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Get the daily usage summary for all streams or for a specific stream.
-     *
+     * 
      * @param inActionContext
      *            the action context containing the UsageMetricDailyStreamInfoRequest
      * @return the UsageMetricSummaryDTO
@@ -132,7 +132,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
         Date oldestAvailableReportDate = null;
         Date newestAvailableReportDate = null;
 
-        int recordCount = 0;
         logger.debug("Looking for data between " + oldestAllowableReportDate + " and " + latestReportDate);
         for (DailyUsageSummary dus : results)
         {
@@ -160,7 +159,6 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
                 finalCommentCount = dus.getTotalCommentCount() == null ? 0 : dus.getTotalCommentCount();
             }
 
-            recordCount++;
             if (oldestAvailableReportDate == null || summaryDate.before(oldestAvailableReportDate))
             {
                 // this is the earliest reporting date we've seen
@@ -206,7 +204,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             if (weekdaysCount > 1)
             {
                 result.setAverageDailyCommentCount(//
-                        Math.round((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1)));
+                Math.round((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1)));
             }
         }
 
