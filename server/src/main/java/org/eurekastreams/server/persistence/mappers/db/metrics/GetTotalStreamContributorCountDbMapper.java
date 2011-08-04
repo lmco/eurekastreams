@@ -19,6 +19,7 @@ import java.util.HashSet;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
@@ -48,7 +49,7 @@ public class GetTotalStreamContributorCountDbMapper extends
                                 + "AND recipientStreamScope.id = :recipientStreamScopeId AND postedTime < :reportDate")
                 .setParameter("actorType", EntityType.PERSON)
                 .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId())
-                .setParameter("reportDate", inRequest.getMetricsDate());
+                .setParameter("reportDate", DateDayExtractor.getEndOfDay(inRequest.getMetricsDate()));
 
         commentQuery = getEntityManager()
                 .createQuery(
@@ -56,7 +57,7 @@ public class GetTotalStreamContributorCountDbMapper extends
                                 + "WHERE target.recipientStreamScope.id = :recipientStreamScopeId "
                                 + "AND timeSent < :reportDate")
                 .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId())
-                .setParameter("reportDate", inRequest.getMetricsDate());
+                .setParameter("reportDate", DateDayExtractor.getEndOfDay(inRequest.getMetricsDate()));
 
         // need to use a set here to find the uniques between the activity and comment authors
         peopleIds.addAll(activityQuery.getResultList());

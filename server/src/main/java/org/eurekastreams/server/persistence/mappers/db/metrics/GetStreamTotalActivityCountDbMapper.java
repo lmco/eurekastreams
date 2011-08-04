@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
@@ -24,7 +25,7 @@ import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamI
 public class GetStreamTotalActivityCountDbMapper extends BaseArgDomainMapper<UsageMetricDailyStreamInfoRequest, Long>
 {
     /**
-     * Get the total number of activities for a stream by stream scope id.
+     * Get the total number of activities for a stream by stream scope id and date.
      * 
      * @param inRequest
      *            the destination stream scope id and date to check for activities count
@@ -38,6 +39,7 @@ public class GetStreamTotalActivityCountDbMapper extends BaseArgDomainMapper<Usa
                         "SELECT COUNT(id) FROM Activity WHERE recipientStreamScope.id = :recipientStreamScopeId "
                                 + "AND postedTime < :reportDate")
                 .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId())
-                .setParameter("reportDate", inRequest.getMetricsDate()).getSingleResult();
+                .setParameter("reportDate", DateDayExtractor.getEndOfDay(inRequest.getMetricsDate()))
+                .getSingleResult();
     }
 }

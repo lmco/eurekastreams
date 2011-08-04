@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 
@@ -38,7 +39,8 @@ public class GetStreamTotalCommentCountDbMapper extends BaseArgDomainMapper<Usag
                         "SELECT COUNT(id) FROM Comment WHERE target.recipientStreamScope.id = :recipientStreamScopeId "
                                 + "AND timeSent < :requestDate")
                 .setParameter("recipientStreamScopeId", inRequest.getStreamRecipientStreamScopeId())
-                .setParameter("requestDate", inRequest.getMetricsDate()).getSingleResult();
+                .setParameter("requestDate", DateDayExtractor.getEndOfDay(inRequest.getMetricsDate()))
+                .getSingleResult();
     }
 
 }
