@@ -33,13 +33,13 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Activity detail panel.
- *
+ * 
  */
 public class ActivityDetailPanel extends FlowPanel
 {
     /**
      * Default constructor.
-     *
+     * 
      * @param activity
      *            activity.
      * @param showRecipient
@@ -111,7 +111,7 @@ public class ActivityDetailPanel extends FlowPanel
         Label msgHeader = new Label("Activity not found");
         msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
 
-        Label msgText = new Label("The activity you were looking for could not be found.");
+        Label msgText = new Label("The activity you were looking for has already been deleted or could not be found.");
         FlowPanel text = new FlowPanel();
         text.add(msgText);
         text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
