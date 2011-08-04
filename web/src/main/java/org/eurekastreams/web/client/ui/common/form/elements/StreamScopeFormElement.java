@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Form element for stream scopes.
- *
+ * 
  */
 public class StreamScopeFormElement extends FlowPanel implements FormElement
 {
@@ -51,7 +51,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
 
     /**
      * The key.
-     *
+     * 
      * @return the key.
      */
     public String getKey()
@@ -68,15 +68,15 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      * Flag to allow multiple stream scopes to be selected.
      */
     private final boolean allowMultiple;
-    
+
     /**
      * Maximum number of items allowed to be added if allowMultiple is set to true.
      */
     private final int maxItems;
-    
+
     /**
      * The value.
-     *
+     * 
      * @return the value.
      */
     public Serializable getValue()
@@ -93,7 +93,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inKey
      *            the key name for the element.
      * @param inScopes
@@ -127,7 +127,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
 
         final Label instructions = new Label(inInstructions);
         instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
-        
+
         final Set<String> uniqueKeys = new HashSet<String>();
         for (StreamScope scope : inScopes)
         {
@@ -151,7 +151,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
                 }
             }
         });
-        
+
         EventBus.getInstance().addObserver(StreamScopeAddedEvent.getEvent(), new Observer<StreamScopeAddedEvent>()
         {
             public void update(final StreamScopeAddedEvent obj)
@@ -201,66 +201,55 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets the display name of the JSON object.
-     *
+     * 
      * @param jsObj
      *            the JSON object.
      * @return the display name.
      */
     private native String getDisplayName(final String jsObj) /*-{
-           var jsArray = jsObj.split(",");
-
-           var ret = "";
-
-           for(var i=0;i<jsArray.length-3;i++)
-           {
-               ret = ret + jsArray[i];
-               if (i != jsArray.length-4)
-               {
-                   ret = ret + ",";
-               }
-           }
-           return ret;
-       }-*/;
+                                                       var jsArray = jsObj.split(",");                
+                                                       return jsArray[3];               
+                                                   }-*/;
 
     /**
      * Gets the entity type of the JSON object.
-     *
+     * 
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
      */
     private native String getEntityType(final String jsObj) /*-{
-       var jsArray = jsObj.split(",");
-       return jsArray[jsArray.length-3];
-    }-*/;
+                                                       var jsArray = jsObj.split(",");            
+                                                       return jsArray[0];
+                                                    }-*/;
 
     /**
      * Gets the unique id of the JSON object.
-     *
+     * 
      * @param jsObj
      *            the JSON object.
      * @return the unique id.
      */
     private native String getUniqueId(final String jsObj) /*-{
-       var jsArray = jsObj.split(",");
-       return jsArray[jsArray.length-2];
-    }-*/;
+                                                       var jsArray = jsObj.split(",");
+                                                       return jsArray[1];
+                                                    }-*/;
 
     /**
      * Gets the StreamScope id of the JSON object.
-     *
+     * 
      * @param jsObj
      *            the JSON object.
      * @return the StreamScope id.
      */
     private native String getStreamScopeId(final String jsObj) /*-{
-       var jsArray = jsObj.split(",");
-       return jsArray[jsArray.length-1];
-    }-*/;
+                                                       var jsArray = jsObj.split(",");
+                                                       return jsArray[2];
+                                                    }-*/;
 
     /**
      * Gets called if this element has an error.
-     *
+     * 
      * @param errMessage
      *            the error Message.
      */
