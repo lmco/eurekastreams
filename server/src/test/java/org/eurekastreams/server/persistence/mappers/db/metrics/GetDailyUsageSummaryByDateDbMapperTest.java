@@ -86,7 +86,7 @@ public class GetDailyUsageSummaryByDateDbMapperTest extends MapperTest
         final long pageviewcount = 99L;
         final long streamcontributorcount = 999L;
         final long streamviewcount = 9999L;
-        final long streamviewercount = 99999L;
+        final long streamviewercount = 100000L;
         final long uniquevisitorcount = 999999L;
         final long responseTime = 9999999L;
 
