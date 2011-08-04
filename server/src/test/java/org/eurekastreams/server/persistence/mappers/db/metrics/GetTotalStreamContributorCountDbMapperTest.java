@@ -15,9 +15,12 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import java.util.Date;
+
 import junit.framework.Assert;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,6 +51,7 @@ public class GetTotalStreamContributorCountDbMapperTest extends MapperTest
     public void testExecute()
     {
         final Long streamScopeId = 87433L;
-        Assert.assertEquals(new Long(3L), sut.execute(streamScopeId));
+        Assert.assertEquals(new Long(3L),
+                sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(), streamScopeId)));
     }
 }

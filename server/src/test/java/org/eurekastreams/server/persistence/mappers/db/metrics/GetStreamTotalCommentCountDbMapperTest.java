@@ -15,7 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import java.util.Date;
+
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.service.actions.requests.UsageMetricDailyStreamInfoRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +50,8 @@ public class GetStreamTotalCommentCountDbMapperTest extends MapperTest
     public void testExecuteWithResults()
     {
         final Long streamScopeId = 87433L;
-        Assert.assertEquals(new Long(6L), sut.execute(streamScopeId));
+        Assert.assertEquals(new Long(6L),
+                sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(), streamScopeId)));
     }
 
     /**
@@ -57,6 +61,6 @@ public class GetStreamTotalCommentCountDbMapperTest extends MapperTest
     public void testExecuteWithNoResults()
     {
         final Long streamScopeId = 87433388L;
-        Assert.assertEquals(new Long(0), sut.execute(streamScopeId));
+        Assert.assertEquals(new Long(0), sut.execute(new UsageMetricDailyStreamInfoRequest(new Date(), streamScopeId)));
     }
 }

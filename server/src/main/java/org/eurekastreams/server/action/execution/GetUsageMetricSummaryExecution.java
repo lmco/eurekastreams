@@ -206,7 +206,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             if (weekdaysCount > 1)
             {
                 result.setAverageDailyCommentCount(//
-                Math.round((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1)));
+                Math.round(Math.ceil((finalCommentCount - startingCommentCount) * 1.0 / (weekdaysCount - 1))));
             }
         }
 

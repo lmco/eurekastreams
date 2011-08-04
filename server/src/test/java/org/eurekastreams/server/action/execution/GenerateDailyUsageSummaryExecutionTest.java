@@ -129,20 +129,20 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Mapper to get the total number of activities posted to a stream.
      */
-    private final DomainMapper<Long, Long> getTotalActivityCountMapper = context.mock(DomainMapper.class,
-            "getTotalActivityCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalActivityCountMapper = context.mock(
+            DomainMapper.class, "getTotalActivityCountMapper");
 
     /**
      * Mapper to get the total number of comments posted to a stream.
      */
-    private final DomainMapper<Long, Long> getTotalCommentCountMapper = context.mock(DomainMapper.class,
-            "getTotalCommentCountMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalCommentCountMapper = context.mock(
+            DomainMapper.class, "getTotalCommentCountMapper");
 
     /**
      * Mapper to get the total number of contributors to a stream by stream scope id.
      */
-    private final DomainMapper<Long, Long> getTotalStreamContributorMapper = context.mock(DomainMapper.class,
-            "getTotalStreamContributorMapper");
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalStreamContributorMapper = context
+            .mock(DomainMapper.class, "getTotalStreamContributorMapper");
 
     /**
      * Day of week strategy.
@@ -189,7 +189,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyMessageCountMapper, getDailyPageViewCountMapper, getDailyStreamContributorCountMapper,
                 getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper,
                 getDailyMessageResponseTimeMapper, insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy,
-                streamScopeIdsMapper, getTotalCommentCountMapper, getTotalCommentCountMapper,
+                streamScopeIdsMapper, getTotalActivityCountMapper, getTotalCommentCountMapper,
                 getTotalStreamContributorMapper, clearEntityManagerMapper, summaryDataMapper,
                 discoverPageListsCacheRefreshingMapper, numberOfDaysToCacheSummaryDataFor);
 
@@ -234,7 +234,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyMessageCountMapper, getDailyPageViewCountMapper, getDailyStreamContributorCountMapper,
                 getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper, getDailyUniqueVisitorCountMapper,
                 getDailyMessageResponseTimeMapper, insertMapper, usageMetricDataCleanupMapper, dayOfWeekStrategy,
-                streamScopeIdsMapper, getTotalCommentCountMapper, getTotalCommentCountMapper,
+                streamScopeIdsMapper, getTotalActivityCountMapper, getTotalCommentCountMapper,
                 getTotalStreamContributorMapper, clearEntityManagerMapper, summaryDataMapper,
                 discoverPageListsCacheRefreshingMapper, numberOfDaysToCacheSummaryDataFor);
 

@@ -104,17 +104,17 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
     /**
      * Mapper to get the total number of activities posted to a stream.
      */
-    private final DomainMapper<Long, Long> getTotalActivityCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalActivityCountMapper;
 
     /**
      * Mapper to get the total number of comments posted to a stream.
      */
-    private final DomainMapper<Long, Long> getTotalCommentCountMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalCommentCountMapper;
 
     /**
      * Mapper to get the total number of contributors to a stream by stream scope id.
      */
-    private final DomainMapper<Long, Long> getTotalStreamContributorMapper;
+    private final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> getTotalStreamContributorMapper;
 
     /**
      * Mapper to get day's average activity response time (for those that had responses) - for a stream or the whole
@@ -229,9 +229,9 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
             final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper,
             final DayOfWeekStrategy inDayOfWeekStrategy, final DomainMapper<Date, List<Long>> inStreamScopeIdsMapper,
-            final DomainMapper<Long, Long> inGetTotalActivityCountMapper,
-            final DomainMapper<Long, Long> inGetTotalCommentCountMapper,
-            final DomainMapper<Long, Long> inGetTotalStreamContributorMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetTotalActivityCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetTotalCommentCountMapper,
+            final DomainMapper<UsageMetricDailyStreamInfoRequest, Long> inGetTotalStreamContributorMapper,
             final DomainMapper<Serializable, Boolean> inClearEntityManagerMapper,
             final DomainMapper<UsageMetricStreamSummaryRequest, List<DailyUsageSummary>> inSummaryDataMapper,
             final DomainMapper<Serializable, StreamDiscoverListsDTO> inDiscoverPageListsCacheRefreshingMapper,
@@ -396,23 +396,22 @@ public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionS
                 // these are only generated for individual streams
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                totalActivityCount = getTotalActivityCountMapper.execute(inStreamScopeId);
+                totalActivityCount = getTotalActivityCountMapper.execute(streamInfoRequest);
                 timerLog += "\t2: " + (System.currentTimeMillis() - start);
 
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                totalCommentCount = getTotalCommentCountMapper.execute(inStreamScopeId);
+                totalCommentCount = getTotalCommentCountMapper.execute(streamInfoRequest);
                 timerLog += "\t3: " + (System.currentTimeMillis() - start);
 
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                totalContributorCount = getTotalStreamContributorMapper.execute(inStreamScopeId);
+                totalContributorCount = getTotalStreamContributorMapper.execute(streamInfoRequest);
                 timerLog += "\t4: " + (System.currentTimeMillis() - start);
 
                 start = System.currentTimeMillis();
                 clearEntityManagerMapper.execute(null);
-                DailyUsageSummary priorDayData = getPreviousDailyUsageSummaryByDateMapper
-                        .execute(new UsageMetricDailyStreamInfoRequest(inDate, inStreamScopeId));
+                DailyUsageSummary priorDayData = getPreviousDailyUsageSummaryByDateMapper.execute(streamInfoRequest);
                 timerLog += "\t5: " + (System.currentTimeMillis() - start);
 
                 if (priorDayData != null && priorDayData.getTotalStreamViewCount() != null)
