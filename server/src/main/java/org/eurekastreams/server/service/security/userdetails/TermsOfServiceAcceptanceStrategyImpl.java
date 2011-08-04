@@ -17,6 +17,7 @@ package org.eurekastreams.server.service.security.userdetails;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
@@ -57,9 +58,10 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
         // grab system settings.
         SystemSettings settings = systemSettingsDAO.execute(null);
 
-        // short circuit if no ToS to display.
+        // short circuit if no ToS to display or prompt interval = 0.
         String tos = settings.getTermsOfService();
-        if (null == tos || tos.equals(""))
+        int tosPromptInterval = settings.getTosPromptInterval();
+        if (StringUtils.isBlank(tos) || tosPromptInterval <= 0)
         {
             return true;
         }
@@ -70,7 +72,7 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
             return false;
         }
 
-        long validFor = MILLISECONDS_IN_A_DAY * settings.getTosPromptInterval();
+        long validFor = MILLISECONDS_IN_A_DAY * tosPromptInterval;
         Date now = new Date();
 
         return validFor >= (now.getTime() - inDateLastAccepted.getTime());
