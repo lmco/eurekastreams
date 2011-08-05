@@ -85,7 +85,10 @@ public class AddLinkComposite extends FlowPanel
     private static final String UNVERIFIED_URL_MESSAGE = "URL may be invalid.  "
             + "Please confirm it was entered correctly.";
 
-    public Label linkError = new Label("You must supply a valid url (example: http://www.example.com)");
+    /**
+     * Link error panel.
+     */
+    private Label linkError = new Label("You must supply a valid url (example: http://www.example.com)");
 
     /**
      * Constructor.
