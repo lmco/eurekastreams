@@ -61,7 +61,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSummaryDataMapper
      *            mapper to get the summary data for a stream, or all streams
      * @param inWeekdaysInDateRangeStrategy
@@ -81,7 +81,7 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
 
     /**
      * Get the daily usage summary for all streams or for a specific stream.
-     *
+     * 
      * @param inActionContext
      *            the action context containing the UsageMetricDailyStreamInfoRequest
      * @return the UsageMetricSummaryDTO
@@ -203,12 +203,18 @@ public class GetUsageMetricSummaryExecution implements ExecutionStrategy<Princip
             result.setAverageDailyActivityResponseTime(Math.round(Math.ceil(avgActivityResponseTime * 1.0
                     / weekdaysCount)));
 
-            double top = (finalCommentCount - startingCommentCount) * 1.0;
-            double bottom = (finalActivityCount - startingActivityCount) * 1.0;
             long averageCommentPerActivity = 0;
-            if (bottom > 0)
+            if (weekdaysCount > 1)
             {
-                averageCommentPerActivity = Math.round(Math.ceil(top / bottom));
+                double top = (finalCommentCount - startingCommentCount) * 1.0;
+                double bottom = (finalActivityCount - startingActivityCount) * 1.0;
+                if (bottom > 0)
+                {
+                    // Note: this is average comments per activity per day = (delta comments)/(delta activities) divided
+                    // by weekdaysCount-1. The -1 is necessary because we calculate this number by subtracting oldest
+                    // day from newest
+                    averageCommentPerActivity = Math.round(Math.ceil(top / (bottom * (weekdaysCount - 1))));
+                }
             }
             result.setAverageDailyCommentPerActivityCount(averageCommentPerActivity);
         }
