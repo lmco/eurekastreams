@@ -23,7 +23,11 @@
 	                    
         <!-- AsyncActionController execute method -->
         <aop:pointcut id="AsyncActionControllerExecute"
-                        expression="execution(* org.eurekastreams.commons.server.async.AsyncActionController.execute(..))"/>	                    
+                        expression="execution(* org.eurekastreams.commons.server.async.AsyncActionController.execute(..))"/>	
+                        
+        <!-- AsyncActionController execute method -->
+        <aop:pointcut id="PersonDTOTransform"
+                        expression="execution(* org.eurekastreams.server.persistence.mappers.cache.PersonToPersonPagePropertiesTransformer.transform(..))"/>                          
 	                    	                                  
         <!-- All validation strategies' validate methods             
 	    <aop:pointcut id="Validation"
@@ -53,6 +57,9 @@
                     
            <aop:around pointcut-ref="Execution"
                     method="profile"/>
+                    
+           <aop:around pointcut-ref="PersonDTOTransform"
+                    method="profile"/>                    
 		
 		</aop:aspect>
 		
