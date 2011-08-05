@@ -1425,4 +1425,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("show-more-comment-link")
     String showMoreCommentLink();
+
+    String attachLinkErrorBox();
 }

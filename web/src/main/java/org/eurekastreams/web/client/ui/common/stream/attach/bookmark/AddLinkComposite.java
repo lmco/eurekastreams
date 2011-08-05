@@ -21,7 +21,6 @@ import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ParseLinkEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
@@ -64,9 +63,6 @@ public class AddLinkComposite extends FlowPanel
     /** Link URL. */
     private final Label linkUrlDisplay = new Label();
 
-    /** The title link. */
-    private final FlowPanel titleLink = new FlowPanel();
-
     /** Link Description. */
     private final Label linkDesc = new Label();
 
@@ -89,16 +85,18 @@ public class AddLinkComposite extends FlowPanel
     private static final String UNVERIFIED_URL_MESSAGE = "URL may be invalid.  "
             + "Please confirm it was entered correctly.";
 
-    /** Message for URLs which returned missing link information. */
-    private static final String INCOMPLETE_INFO_URL_MESSAGE = "Details about URL could not be retrieved.  "
-            + "Please confirm it was entered correctly.";
+    public Label linkError = new Label("You must supply a valid url (example: http://www.example.com)");
 
     /**
      * Constructor.
      */
     public AddLinkComposite()
     {
+        linkError.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
+        linkError.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkErrorBox());
+        linkError.setVisible(false);
         // add the three main widgets
+        add(linkError);
         add(addLink);
         add(displayPanel);
         add(addPanel);
@@ -176,15 +174,6 @@ public class AddLinkComposite extends FlowPanel
             }
         });
 
-        eventBus.addObserver(new ErrorPostingMessageToNullScopeEvent(),
-                new Observer<ErrorPostingMessageToNullScopeEvent>()
-                {
-                    public void update(final ErrorPostingMessageToNullScopeEvent event)
-                    {
-                        fetchLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
-                    }
-                });
-
         fetchLink.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -251,12 +240,13 @@ public class AddLinkComposite extends FlowPanel
     public void close()
     {
         fetchedLink = "";
+        linkError.setVisible(false);
         Session.getInstance().getEventBus().notifyObservers(new MessageAttachmentChangedEvent(null));
     }
 
     /**
      * Called when a link is added to the message.
-     *
+     * 
      * @param link
      *            the link that was added.
      */
@@ -307,19 +297,20 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Fetch link.
-     *
+     * 
      * @param inLinkUrl
      *            link url.
      */
     public void fetchLink(final String inLinkUrl)
     {
+        linkError.setVisible(false);
+
         // very basic url validation
         final EventBus eventBus = Session.getInstance().getEventBus();
         if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.contains("://"))
         {
-            ErrorPostingMessageToNullScopeEvent error = new ErrorPostingMessageToNullScopeEvent();
-            error.setErrorMsg("You must supply a valid url (example: http://www.example.com)");
-            eventBus.notifyObservers(error);
+            linkError.setVisible(true);
+            fetchLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
         }
         else if (inLinkUrl != fetchedLink)
         {

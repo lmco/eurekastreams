@@ -9,7 +9,7 @@
 
 	<ui:with field='resources'
 		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
-		
+
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite.PostBoxStyle">
 			.post-container {
@@ -28,7 +28,7 @@
 				overflow: hidden;
 				padding: 5px;
 				height: 44px;
-				font: 14px/18px Arial,sans-serif;
+				font: 14px/18px Arial, sans-serif;
 			}
 			
 			.post-box-container {
@@ -40,6 +40,7 @@
 			.post-options {
 				overflow: visible;
 				display: none;
+				margin-top: 0;
 			}
 			
 			@sprite .post-button {
@@ -105,9 +106,10 @@
 			}
 			
 			.post-box-inner-container {
-				position: relative;			
+				position: relative;
 				z-index: 800;
 			}
+			
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.post-container}"
@@ -126,7 +128,8 @@
 					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
 					<div class="{resources.coreCss.contentWarning}" ui:field="contentWarningContainer">
 						<div></div>
-						<g:Label addStyleNames="{resources.coreCss.warningText}" ui:field="contentWarning"></g:Label>
+						<g:Label addStyleNames="{resources.coreCss.warningText}"
+							ui:field="contentWarning"></g:Label>
 					</div>
 				</div>
 			</div>

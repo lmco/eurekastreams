@@ -568,6 +568,12 @@ div.banner-container {
 	margin: 0;
 }
 
+.attachLinkErrorBox {
+	margin-left: 0 ! important;
+	width:auto ! important;
+	padding-top: 15px ! important;
+}
+
 .login-content-container .form-error-box {
 	width: 280px;
 	margin: auto auto 20px;
@@ -1792,6 +1798,8 @@ body .post-to-stream .over-character-limit {
 
 .link-panel {
 	padding: 20px;
+	border: 1px solid #c6c6c6;
+	margin-bottom: 10px;
 }
 
 .attach-link {

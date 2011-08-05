@@ -172,7 +172,7 @@ public class PostBoxComposite extends Composite
      */
     @UiField
     AddLinkComposite addLinkComposite;
-
+    
     /**
      * Hash Tags.
      */
