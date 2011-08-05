@@ -38,19 +38,19 @@ public class FollowPanel extends FlowPanel
 {
     /**
      * Constructor.
-     *
+     * 
      * @param inFollowable
      *            the stream to show the follow widget for.
      */
     public FollowPanel(final FollowerStatusable inFollowable)
     {
         this(inFollowable, null, StaticResourceBundle.INSTANCE.coreCss().unFollowLink(), StaticResourceBundle.INSTANCE
-                .coreCss().followLink(), false);
+                .coreCss().followLink(), false, null);
     }
 
     /**
      * Constructor.
-     *
+     * 
      * @param inFollowable
      *            the stream to show the follow widget for.
      * @param followStyle
@@ -64,6 +64,28 @@ public class FollowPanel extends FlowPanel
      */
     public FollowPanel(final FollowerStatusable inFollowable, final String followStyle, final String unfollowStyle,
             final String commonStyle, final boolean showTooltips)
+    {
+        this(inFollowable, followStyle, unfollowStyle, commonStyle, showTooltips, null);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inFollowable
+     *            the stream to show the follow widget for.
+     * @param followStyle
+     *            Style for the follow button.
+     * @param unfollowStyle
+     *            Style for the unfollow button.
+     * @param commonStyle
+     *            Style for both buttons.
+     * @param showTooltips
+     *            Show tooltips.
+     * @param onFollowHandler
+     *            additional handler to call on follow.
+     */
+    public FollowPanel(final FollowerStatusable inFollowable, final String followStyle, final String unfollowStyle,
+            final String commonStyle, final boolean showTooltips, final ClickHandler onFollowHandler)
     {
         FollowerStatus status = inFollowable.getFollowerStatus();
 
@@ -143,15 +165,16 @@ public class FollowPanel extends FlowPanel
                 {
                     GroupMembersModel.getInstance().insert(request);
                 }
-                else
-                {
-                    Window.alert("Unsupported");
-                }
 
                 unfollowLink.setVisible(true);
                 followLink.setVisible(false);
             }
         });
+
+        if (null != onFollowHandler)
+        {
+            followLink.addClickHandler(onFollowHandler);
+        }
 
         this.add(followLink);
 

@@ -295,7 +295,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
         hideableSiteLabel = new HideableTextAreaFormElement(MAX_SITELABEL, "Site Labeling", "siteLabel",
                 systemSettingValues.getSiteLabel(), "I would like to add a label to the system.",
                 "The site label will be displayed above the global navigation bar and below the "
-                        + "footer on all pages in the system. If left blank, no label area will "
+                        + "footer on all pages in the system. If disabled, no label area will "
                         + "appear on your pages.", true);
 
         hideablePluginWarning = new HideableRichTextAreaFormElement("Plugin Configuration Warning", "pluginWarning",

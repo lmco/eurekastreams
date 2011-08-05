@@ -738,6 +738,7 @@ public class ActivityContent extends Composite
 
                         if (person.isAccountLocked())
                         {
+                            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
                             currentStream.setScopeType(null);
                             errorPanel.clear();
                             errorPanel.setVisible(true);

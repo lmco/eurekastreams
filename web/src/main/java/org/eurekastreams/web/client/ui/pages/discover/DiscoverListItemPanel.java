@@ -123,7 +123,7 @@ public class DiscoverListItemPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -136,7 +136,7 @@ public class DiscoverListItemPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -203,8 +203,25 @@ public class DiscoverListItemPanel extends Composite
         if (inStreamDTO.getEntityType() != EntityType.PERSON
                 || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            FollowPanel followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
-                    coreCss.buttonLabel(), true);
+            FollowPanel followPanel = null;
+
+            if (showBlockSuggestion)
+            {
+                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
+                        coreCss.buttonLabel(), true, new ClickHandler()
+                        {
+                            public void onClick(final ClickEvent event)
+                            {
+                                removeFromParent();
+                            }
+                        });
+            }
+            else
+            {
+                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
+                        coreCss.buttonLabel(), true);
+            }
+
             if (!showBlockSuggestion)
             {
                 followPanel.addStyleName(style.followControlsPanel());

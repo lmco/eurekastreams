@@ -49,6 +49,7 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -183,6 +184,12 @@ public class PostBoxComposite extends Composite
      */
     @UiField
     Label contentWarning;
+
+    /**
+     * The content warning container.
+     */
+    @UiField
+    DivElement contentWarningContainer;
 
     /**
      * Hide delay after blur on post box.
@@ -529,6 +536,7 @@ public class PostBoxComposite extends Composite
                         else
                         {
                             contentWarning.setVisible(false);
+                            contentWarningContainer.getStyle().setDisplay(Display.NONE);
                         }
                     }
                 });
