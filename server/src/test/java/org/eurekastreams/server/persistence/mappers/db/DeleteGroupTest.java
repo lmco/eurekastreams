@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse;
 import org.junit.Test;
@@ -53,6 +54,9 @@ public class DeleteGroupTest extends MapperTest
         // verify associated items are present as expected.
         assertEquals(1, getEntityManager().createQuery("FROM DomainGroup WHERE id = 2").getResultList().size());
         assertEquals(1, getEntityManager().createQuery("FROM StreamScope WHERE id = 875").getResultList().size());
+        assertEquals(1, getEntityManager().createQuery(
+                "FROM StreamHashTag WHERE streamEntityUniqueKey = :uniqueKey AND streamScopeType = :type")
+                .setParameter("uniqueKey", "group2").setParameter("type", ScopeType.GROUP).getResultList().size());
 
         DeleteGroupResponse response = sut.execute(groupId);
 
@@ -68,5 +72,8 @@ public class DeleteGroupTest extends MapperTest
         // TODO: This could be filled out with more related entities to ensure cascading doesn't change for DomainGroup.
         assertEquals(0, getEntityManager().createQuery("FROM DomainGroup WHERE id = 2").getResultList().size());
         assertEquals(0, getEntityManager().createQuery("FROM StreamScope WHERE id = 875").getResultList().size());
+        assertEquals(0, getEntityManager().createQuery(
+                "FROM StreamHashTag WHERE streamEntityUniqueKey = :uniqueKey AND streamScopeType = :type")
+                .setParameter("uniqueKey", "group2").setParameter("type", ScopeType.GROUP).getResultList().size());
     }
 }

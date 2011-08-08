@@ -603,6 +603,8 @@
 		activityDate="2009-10-27 06:54:00" />
 	<StreamHashTag id="16" version="0" hashTagId="5" activityId="6793" streamScopeType="PERSON" streamEntityUniqueKey="smithers" 
 		activityDate="2009-10-27 06:54:00" />
+    <StreamHashTag id="17" version="0" hashTagId="5" activityId="6793" streamScopeType="GROUP" streamEntityUniqueKey="group2" 
+        activityDate="2009-10-27 06:54:00" />		
 	 
 		
 	<OAuthConsumer id="100" version="1" consumerKey="key0"
