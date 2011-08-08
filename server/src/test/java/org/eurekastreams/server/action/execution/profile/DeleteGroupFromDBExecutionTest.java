@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteAllFeedSubscriberByEntityTypeAndId;
 import org.eurekastreams.server.persistence.mappers.db.DeleteGroup;
@@ -137,13 +138,15 @@ public class DeleteGroupFromDBExecutionTest
 
         // check to make sure the right cache keys will be cleared
         Set<String> keysToDelete = (Set<String>) (requests.get(0)).getParams();
-        Assert.assertEquals(6, keysToDelete.size());
+        Assert.assertEquals(7, keysToDelete.size());
         Assert.assertTrue(keysToDelete.contains(CacheKeys.GROUP_BY_SHORT_NAME + shortName));
         Assert.assertTrue(keysToDelete.contains(CacheKeys.FOLLOWERS_BY_GROUP + groupId));
         Assert.assertTrue(keysToDelete.contains(CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID + groupId));
         Assert.assertTrue(keysToDelete.contains(CacheKeys.GROUP_BY_ID + groupId));
         Assert.assertTrue(keysToDelete.contains(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + 3));
         Assert.assertTrue(keysToDelete.contains(CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME + shortName));
+        Assert.assertTrue(keysToDelete.contains(CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME
+                + ScopeType.GROUP + "-" + shortName));
 
         context.assertIsSatisfied();
     }
