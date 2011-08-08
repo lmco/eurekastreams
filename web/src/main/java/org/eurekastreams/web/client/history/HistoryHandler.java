@@ -17,8 +17,10 @@ package org.eurekastreams.web.client.history;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eurekastreams.server.domain.Page;
@@ -349,6 +351,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
         return values.get(key);
     }
 
+
     /**
      * Gets the views.
      *
@@ -365,5 +368,13 @@ public class HistoryHandler implements ValueChangeHandler<String>
     public Page getPage()
     {
         return page;
+    }
+
+    /**
+     * @return A collection holding the current history parameters.
+     */
+    public Map<String, String> getParameters()
+    {
+        return Collections.unmodifiableMap(values);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.eurekastreams.web.client.ui.pages.search;
+
+import java.util.Map;
 
 import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
 import org.eurekastreams.web.client.events.Observer;
@@ -68,6 +70,19 @@ public class SearchContent extends FlowPanel
     {
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().directory());
 
+        // When the history changes, update the query and reset the pager, triggering a re-search.
+        // IMPORTANT: Wire up URL change event first, so we see it before the PagedList does. This way we can change the
+        // search term in the search requests before PagedList sees the event. Otherwise PagedList may see the change in
+        // the page range and send out a search request using the old search term.
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        onHistoryParameterChange(event.getParameters());
+                    }
+                });
+
         searchResultsPanel = new PagedListPanel("searchResults", new TwoColumnPagedListRenderer());
         searchResultsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResults());
         FlowPanel contentPanel = new FlowPanel();
@@ -99,35 +114,24 @@ public class SearchContent extends FlowPanel
                     }
                 });
 
-        // When the history changes, update the query and reset the pager, triggering a re-search.
-        // IMPORTANT: Wire up URL change event first, so we see it before the PagedList does. This way we can change the
-        // search term in the search requests before PagedList sees the event. Otherwise PagedList may see the change in
-        // the page range and send out a search request using the old search term.
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        onHistoryParameterChange(event);
-                    }
-                }, true);
-
+        // trigger initial load
+        onHistoryParameterChange(Session.getInstance().getHistoryHandler().getParameters());
     }
 
     /**
      * When the history changes, update the query and reset the pager, triggering a re-search.
      * 
-     * @param event
-     *            Event containing URL parameters.
+     * @param inParameters
+     *            URL parameters.
      */
-    private void onHistoryParameterChange(final UpdatedHistoryParametersEvent event)
+    private void onHistoryParameterChange(final Map<String, String> inParameters)
     {
-        String boost = event.getParameters().get("boost");
+        String boost = inParameters.get("boost");
         if (boost == null)
         {
             boost = "";
         }
-        String query = event.getParameters().get("query");
+        String query = inParameters.get("query");
         if (query == null)
         {
             query = "";
