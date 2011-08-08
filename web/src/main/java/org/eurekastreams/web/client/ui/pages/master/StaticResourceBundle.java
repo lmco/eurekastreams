@@ -318,4 +318,20 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/saveChangesBtn.png")
     ImageResource saveChangesButton();
+
+    @Source("style/images/allowflaggedBtn.png")
+    ImageResource allowFlaggedButton();
+
+    @Source("style/images/deleteBtnSmall.png")
+    ImageResource deleteFlaggedButton();
+
+    @Source("style/images/submitBtn.png")
+    ImageResource submitButton();
+
+    @Source("style/images/postBtnSmall.png")
+    ImageResource commentPostButton();
+
+    @Source("style/images/postBtnSmallInactive.png")
+    ImageResource commentPostButtonInactive();
+
 }

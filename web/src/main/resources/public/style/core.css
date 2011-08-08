@@ -1938,22 +1938,15 @@ body .post-to-stream .over-character-limit {
 .flag-ignore-button,.flag-delete-button {
 	text-indent: 100%;
 	overflow: hidden;
-}
-
-.flag-ignore-button {
-	background: transparent url(style/images/allowflaggedBtn.png) no-repeat
-		scroll 0 0;
-	width: 58px;
-	height: 16px;
 	cursor: pointer;
 }
 
-.flag-delete-button {
-	background: transparent url(style/images/deleteBtnSmall.png) no-repeat
-		scroll 0 0;
-	width: 58px;
-	height: 16px;
-	cursor: pointer;
+@sprite .flag-ignore-button {
+	gwt-image: "allowFlaggedButton";
+}
+
+@sprite .flag-delete-button {
+	gwt-image: "deleteFlaggedButton";
 }
 
 .stream-message-item .description {
@@ -2845,19 +2838,24 @@ body .previous-arrow:hover {
 	margin-top: 20px;
 	margin-left: 30px;
 	margin-right: 20px;
-	width: 77px;
+}
+
+.form-submit-button a,.form-update-button a,a.form-submit-button,a.form-update-button {
+	display: inline-block;
+	overflow: hidden;
+}
+
+@sprite .form-submit-button a,a.form-submit-button {
+	gwt-image: "submitButton";
+}
+
+@sprite .form-update-button a,a.form-update-button {
+	gwt-image: "saveChangesButton";
 }
 
 .form-cancel-button {
 	width: 43px;
 	margin-top: 20px;
-}
-
-.form-submit-button a,.form-update-button a,a.form-submit-button,a.form-update-button
-	{
-	display: inline-block;
-	height: 25px;
-	overflow: hidden;
 }
 
 .form-cancel-button a,a.form-cancel-button {
@@ -2869,16 +2867,6 @@ body .previous-arrow:hover {
 	text-decoration: none;
 	margin: 5px 0 0;
 	text-align: left;
-}
-
-.form-submit-button a,a.form-submit-button {
-	background: url(style/images/submitBtn.png);
-	width: 77px;
-}
-
-.form-update-button a,a.form-update-button {
-	background-image: url(style/images/saveChangesBtn.png);
-	width: 103px;
 }
 
 .form-photo-button-panel {
@@ -4927,11 +4915,8 @@ body .dragdrop-proxy {
 	margin-right: -5px;
 }
 
-.message-comment .post-button {
-	background: transparent url(style/images/postBtnSmall.png) no-repeat
-		scroll 0 0;
-	width: 40px;
-	height: 16px;
+@sprite .message-comment .post-button {
+	gwt-image: "commentPostButton";
 	margin-top: 5px;
 	overflow: hidden;
 	text-indent: -1000em;
@@ -4939,8 +4924,8 @@ body .dragdrop-proxy {
 	float: right;
 }
 
-.message-comment .post-button.inactive {
-	background-image: url(style/images/postBtnSmallInactive.png);
+@sprite .message-comment .post-button.inactive {
+	gwt-image: "commentPostButtonInactive";
 }
 
 .over-character-limit {
