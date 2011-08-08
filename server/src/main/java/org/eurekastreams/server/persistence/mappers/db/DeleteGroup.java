@@ -16,6 +16,7 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse;
@@ -57,6 +58,10 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
 
         DeleteGroupResponse response = new DeleteGroupResponse(groupId, group.getShortName(), new Long(group
                 .getStreamScope().getId()));
+
+        getEntityManager().createQuery(
+                "DELETE FROM StreamHashTag WHERE streamEntityUniqueKey = :uniqueKey AND streamScopeType = :type")
+                .setParameter("uniqueKey", group.getUniqueId()).setParameter("type", ScopeType.GROUP).executeUpdate();
 
         // delete the group hibernate should take care of following since we are deleting via entity manager.
         // Hibernate: delete from Group_Capability where domainGroupId=?

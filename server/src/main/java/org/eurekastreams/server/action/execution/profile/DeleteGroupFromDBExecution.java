@@ -35,6 +35,7 @@ import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteAllFeedSubscriberByEntityTypeAndId;
 import org.eurekastreams.server.persistence.mappers.db.DeleteGroup;
@@ -420,6 +421,10 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
         // remove the group stream scope id by short name cache key
         keysToPurgeFromCache.add(CacheKeys.STREAM_SCOPE_ID_BY_GROUP_SHORT_NAME + inRequest.getGroupShortName());
+
+        // remove popular hashtags cache entry for group.
+        keysToPurgeFromCache.add(CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME + ScopeType.GROUP + "-"
+                + inRequest.getGroupShortName());
 
         return keysToPurgeFromCache;
     }
