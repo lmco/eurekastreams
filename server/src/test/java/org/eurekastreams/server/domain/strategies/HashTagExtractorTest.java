@@ -153,17 +153,6 @@ public class HashTagExtractorTest
     }
 
     /**
-     * Test extract finds hashtag in parens.
-     */
-    @Test
-    public void testExtractFindsHashtagInParens()
-    {
-        String content = "test content (#foo) foobar.";
-        Substring expectedResult = new Substring(9 + 5, 4, "#foo"); // 14
-        assertTrue(IsEqualInternally.areEqualInternally(expectedResult, sut.extract(content, 0)));
-    }
-
-    /**
      * Test extract finds hashtag in content with period at the end of hashtag.
      */
     @Test
