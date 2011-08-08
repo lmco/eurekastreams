@@ -1237,6 +1237,7 @@ public class ActivityContent extends Composite
      */
     private void loadStream(final List<String> views, final String searchTerm)
     {
+        Window.scrollTo(0, 0);
         noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         Session.getInstance().getActionProcessor().setQueueRequests(true);
 

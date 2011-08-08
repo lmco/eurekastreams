@@ -127,7 +127,6 @@
 					<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>
 					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
 					<div class="{resources.coreCss.contentWarning}" ui:field="contentWarningContainer">
-						<div></div>
 						<g:Label addStyleNames="{resources.coreCss.warningText}"
 							ui:field="contentWarning"></g:Label>
 					</div>

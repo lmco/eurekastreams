@@ -150,15 +150,11 @@ textarea.empty-labeled-textbox {
 	width: 500px;
 }
 
-@sprite .content-warning > div:first-child {
-	gwt-image: "informationCircleIcon";
-	display: inline-block;
-}
-
 .content-warning > .warningText {
+	background-image: url(style/images/information-circle-icon.png);
+	background-repeat: no-repeat;
 	position: relative;
-	display: inline;
-	top: -3px;
+	padding-left: 20px;
 }
 
 .globalSearchItemName a {
@@ -1965,6 +1961,11 @@ body .post-to-stream .over-character-limit {
     line-height: 1.4;
 }
 
+.share-message-dialog .messageXPanel
+{
+	visibility: hidden ! important;
+}
+
 .messageXPanel {
 	float: right;
 	background-image: url(style/images/modalCloseBtnSmallHover.png);
@@ -2873,7 +2874,8 @@ body .previous-arrow:hover {
 
 .form-submit-button a,a.form-submit-button {
 	background: url(style/images/submitBtn.png);
-	width: 77px;
+	width: 69px;
+	height: 30px;
 }
 
 .form-update-button a,a.form-update-button {
@@ -3958,6 +3960,7 @@ div.gadget-zone.maximized {
 .gadget-zone {
 	margin-top: 10px;
 	background-color: white;
+	overflow: hidden;
 }
 
 .gadget-zone-chrome-title-bar {

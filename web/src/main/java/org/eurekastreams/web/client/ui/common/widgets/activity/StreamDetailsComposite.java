@@ -510,7 +510,7 @@ public class StreamDetailsComposite extends Composite
     private void buildPage()
     {
         // Default style. Prevent flashing.
-        streamName.setInnerText("Following");
+        streamName.setInnerText("");
         addStyleName(style.condensedStream());
         followLink.setVisible(false);
         featureLink.setVisible(Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN));
@@ -1002,7 +1002,6 @@ public class StreamDetailsComposite extends Composite
     {
         if (!entityId.equals(Session.getInstance().getCurrentPerson().getAccountId()))
         {
-            followLink.setVisible(true);
             followModel = GroupMembersModel.getInstance();
             final BaseActivitySubscriptionModel subscribeModel = EntityType.PERSON.equals(type) ? // \n
             PersonActivitySubscriptionModel.getInstance()
@@ -1147,6 +1146,7 @@ public class StreamDetailsComposite extends Composite
      */
     private void onFollowerStatusChanged(final Follower.FollowerStatus inStatus)
     {
+        followLink.setVisible(true);
         status = inStatus;
 
         switch (inStatus)

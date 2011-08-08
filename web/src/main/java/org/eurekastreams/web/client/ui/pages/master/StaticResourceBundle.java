@@ -86,9 +86,6 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/red-error-icon-sm.png")
     ImageResource redErrorIconSmall();
 
-    @Source("style/images/information-circle-icon.png")
-    ImageResource informationCircleIcon();
-
     @Source("style/images/global-nav-bar-5px.png")
     ImageResource globalNavBar5px();
 
