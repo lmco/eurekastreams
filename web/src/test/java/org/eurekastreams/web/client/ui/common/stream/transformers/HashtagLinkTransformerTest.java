@@ -209,26 +209,6 @@ public class HashtagLinkTransformerTest
      * Test.
      */
     @Test
-    public void testWithHashTag5()
-    {
-        String input = "hello there, (#12345)'s up?";
-        String expected = "hello there, (<a href=\"FOOBAR-12345\">#12345</a>)'s up?";
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(linkBuilder).buildHashtagSearchLink("#12345", null);
-                will(returnValue("FOOBAR-12345"));
-            }
-        });
-
-        assertEquals(expected, sut.transform(input));
-    }
-
-    /**
-     * Test.
-     */
-    @Test
     public void testWithHashTag6()
     {
         String input = "hello there, #1(2345)'s up?";
