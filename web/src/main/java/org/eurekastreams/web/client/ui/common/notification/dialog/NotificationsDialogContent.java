@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.notification.dialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,6 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.NotificationClickedEvent;
 import org.eurekastreams.web.client.events.NotificationDeleteRequestEvent;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.UnreadNotificationClearedEvent;
 import org.eurekastreams.web.client.events.UpdateRawHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
 import org.eurekastreams.web.client.model.NotificationListModel;
@@ -47,6 +47,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
@@ -59,9 +60,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NotificationsDialogContent extends BaseDialogContent
 {
-    /** Style applied to the list to make all the notifications in it show as read. */
-    private static final String ALL_READ = "all-read";
-
     /** Main content widget. */
     private final Widget main;
 
@@ -121,6 +119,9 @@ public class NotificationsDialogContent extends BaseDialogContent
     /** Notifications. */
     private List<InAppNotificationDTO> allNotifications;
 
+    /** All notification widgets (cached to prevent re-creating when changing filters). */
+    private final Map<Long, NotificationWidget> notifWidgetIndex = new HashMap<Long, NotificationWidget>();
+
     /** The notifications currently being displayed. */
     private final Collection<InAppNotificationDTO> notifsShowing = new ArrayList<InAppNotificationDTO>();
 
@@ -139,15 +140,6 @@ public class NotificationsDialogContent extends BaseDialogContent
     /** See explanation where this is used. */
     private final boolean manuallyHandleInternalLinks;
 
-    /** Observer (allow unlinking). */
-    private final Observer<UnreadNotificationClearedEvent> unreadNotificationClearedObserver = // \n
-    new Observer<UnreadNotificationClearedEvent>()
-    {
-        public void update(final UnreadNotificationClearedEvent ev)
-        {
-            reduceUnreadCount(ev.getResponse());
-        }
-    };
     /** Observer (allow unlinking). */
     private final Observer<NotificationClickedEvent> notificationClickedObserver = // \n
     new Observer<NotificationClickedEvent>()
@@ -192,7 +184,6 @@ public class NotificationsDialogContent extends BaseDialogContent
                 selectSource(currentSource);
             }
         });
-        eventBus.addObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
         eventBus.addObserver(NotificationClickedEvent.class, notificationClickedObserver);
         eventBus.addObserver(NotificationDeleteRequestEvent.class, notificationDeleteRequestObserver);
 
@@ -211,7 +202,6 @@ public class NotificationsDialogContent extends BaseDialogContent
             Session.getInstance().getEventBus().removeObserver(DialogLinkClickedEvent.class, linkClickedObserver);
             linkClickedObserver = null;
         }
-        EventBus.getInstance().removeObserver(UnreadNotificationClearedEvent.class, unreadNotificationClearedObserver);
         EventBus.getInstance().removeObserver(NotificationClickedEvent.class, notificationClickedObserver);
         EventBus.getInstance().removeObserver(NotificationDeleteRequestEvent.class, notificationDeleteRequestObserver);
     }
@@ -251,25 +241,16 @@ public class NotificationsDialogContent extends BaseDialogContent
      */
     private void handleNotificationClicked(final InAppNotificationDTO item, final Widget widget)
     {
-        final String url = item.getUrl();
-        boolean hasInternalUrl = url != null && !url.isEmpty() && url.charAt(0) == '#';
+        // tell server notification is read
         if (!item.isRead())
         {
-            item.setRead(true);
-
             NotificationListModel.getInstance().update(item.getId());
-
-            // don't bother fixing up the counts if the notification has an internal URL, because we will close the
-            // dialog momentarily
-            if (!hasInternalUrl)
-            {
-                reduceUnreadCount(item);
-                if (!currentShowRead)
-                {
-                    widget.removeFromParent();
-                }
-            }
         }
+
+        // dismiss the dialog when clicking on a notification with an internal URL. (Dialog will be discarded, so no
+        // UI or local data updates are required.)
+        final String url = item.getUrl();
+        boolean hasInternalUrl = url != null && !url.isEmpty() && url.charAt(0) == '#';
         if (hasInternalUrl)
         {
             close();
@@ -282,6 +263,41 @@ public class NotificationsDialogContent extends BaseDialogContent
             if (manuallyHandleInternalLinks)
             {
                 EventBus.getInstance().notifyObservers(new UpdateRawHistoryEvent(url.substring(1)));
+            }
+        }
+        // not closing dialog, so update UI and local data if item was just read
+        else if (!item.isRead())
+        {
+            item.setRead(true);
+
+            // work up the source tree, reducing the unread count and hiding sources as applicable. (Note that the
+            // starting source may not be the current source. This happens when the user is viewing "All" or
+            // "Streams"/"Apps".)
+            Source source = getSource(item);
+            while (source != null)
+            {
+                source.decrementUnreadCount();
+                updateDisplayString(source);
+                if (source.getUnreadCount() == 0 && source != rootSource)
+                {
+                    source.getWidget().addStyleName(style.sourceFilterAllRead());
+                }
+
+                source = source.getParent();
+            }
+
+            // in unread view, insure no read items or empty sources are showing
+            if (!currentShowRead)
+            {
+                if (currentSource.getUnreadCount() == 0)
+                {
+                    // Note: if already showing the root source, then this will redraw it with the "none" message.
+                    selectSource(rootSource);
+                }
+                else
+                {
+                    widget.removeFromParent();
+                }
             }
         }
     }
@@ -297,35 +313,53 @@ public class NotificationsDialogContent extends BaseDialogContent
         if (notifsShowing.remove(item))
         {
             allNotifications.remove(item);
-            if (!item.isRead())
+            notifWidgetIndex.remove(item.getId());
+
+            // work up the source tree, updating/hiding/removing sources as applicable. (Note that the starting source
+            // may not be the current source. This happens when the user is viewing "All" or "Streams"/"Apps".)
+            Source source = getSource(item);
+            while (source != null)
             {
-                reduceUnreadCount(item);
+                source.decrementTotalCount();
+                if (source.getTotalCount() == 0 && source != rootSource)
+                {
+                    source.getWidget().removeFromParent();
+                }
+                else if (!item.isRead())
+                {
+                    source.decrementUnreadCount();
+                    updateDisplayString(source);
+                    if (source.getUnreadCount() == 0 && source != rootSource)
+                    {
+                        source.getWidget().addStyleName(style.sourceFilterAllRead());
+                    }
+                }
+
+                source = source.getParent();
             }
+
             NotificationListModel.getInstance().delete(item.getId());
+
+            // switch source if no notifications left to show. (If already showing the root source, this will just
+            // redraw it with the "none" message.)
+            if (currentSource.getTotalCount() == 0 || (!currentShowRead && currentSource.getUnreadCount() == 0))
+            {
+                selectSource(rootSource);
+            }
         }
     }
 
     /**
-     * Reduces the unread count for all applicable sources.
+     * Gets the source for a given notification.
      *
      * @param item
-     *            Notification read / deleted.
+     *            Notification.
+     * @return Source.
      */
-    private void reduceUnreadCount(final InAppNotificationDTO item)
+    private Source getSource(final InAppNotificationDTO item)
     {
-        Source source = sourceIndex.get(item.getSourceType() + item.getSourceUniqueId());
-        if (source == null)
-        {
-            source = rootSource;
-        }
-
-        // work from the specific source up, reducing the unread count
-        while (source != null)
-        {
-            source.decrementUnreadCount();
-            source.getWidget().setText(source.getDisplayString());
-            source = source.getParent();
-        }
+        Source source = sourceIndex.get(SourceListBuilder.buildSourceKey(item));
+        return source == null ? rootSource : source;
     }
 
     /**
@@ -346,7 +380,7 @@ public class NotificationsDialogContent extends BaseDialogContent
         shadowPanel.setVisible(false);
         for (Source source : builder.getSourceList())
         {
-            addSourceFilter(source, source.getParent() != null && source.getParent() != rootSource);
+            addSourceFilter(source, !source.isCategorySource());
         }
 
         currentSource = rootSource;
@@ -373,6 +407,10 @@ public class NotificationsDialogContent extends BaseDialogContent
         label.addStyleName(style.sourceFilter());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().buttonLabel());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
+        if (count == 0 && source != rootSource)
+        {
+            label.addStyleName(style.sourceFilterAllRead());
+        }
         if (indent)
         {
             label.addStyleName(style.sourceFilterIndented());
@@ -419,7 +457,6 @@ public class NotificationsDialogContent extends BaseDialogContent
         notificationListScrollPanel.setVisible(false);
 
         notificationListPanel.clear();
-        notificationListPanel.removeStyleName(ALL_READ);
         notifsShowing.clear();
 
         for (InAppNotificationDTO item : allNotifications)
@@ -427,8 +464,7 @@ public class NotificationsDialogContent extends BaseDialogContent
             if (filter.shouldDisplay(item) && (showRead || !item.isRead()))
             {
                 notifsShowing.add(item);
-                notificationListPanel.add(new NotificationWidget(item, manuallyHandleInternalLinks));
-
+                notificationListPanel.add(getNotificationWidget(item));
             }
         }
         if (notifsShowing.isEmpty())
@@ -443,13 +479,31 @@ public class NotificationsDialogContent extends BaseDialogContent
     }
 
     /**
-     * Shows all (unread+read) notifications.
+     * Gets/creates a notification widget for the given notification.
+     *
+     * @param item
+     *            Notification.
+     * @return Widget.
+     */
+    private NotificationWidget getNotificationWidget(final InAppNotificationDTO item)
+    {
+        NotificationWidget widget = notifWidgetIndex.get(item.getId());
+        if (widget == null)
+        {
+            widget = new NotificationWidget(item, manuallyHandleInternalLinks);
+            notifWidgetIndex.put(item.getId(), widget);
+        }
+        return widget;
+    }
+
+    /**
+     * Shows all (unread+read) or just unread notifications.
      *
      * @param ev
      *            Event.
      */
     @UiHandler({ "allFilterUi", "unreadFilterUi" })
-    void onAllFilterClick(final ClickEvent ev)
+    void onFilterClick(final ClickEvent ev)
     {
         Widget selector = (Widget) ev.getSource();
         if (selector != currentReadFilterWidget)
@@ -458,6 +512,21 @@ public class NotificationsDialogContent extends BaseDialogContent
             currentReadFilterWidget = selector;
             currentReadFilterWidget.addStyleName(style.filterSelected());
             currentShowRead = !currentShowRead;
+
+            if (currentShowRead)
+            {
+                sourceFiltersPanel.removeStyleName(style.sourceFilterListUnreadOnly());
+            }
+            else
+            {
+                sourceFiltersPanel.addStyleName(style.sourceFilterListUnreadOnly());
+                if (currentSource != rootSource && currentSource.getUnreadCount() == 0)
+                {
+                    selectSource(rootSource);
+                    return;
+                }
+            }
+
             displayNotifications(currentSource.getFilter(), currentShowRead);
         }
     }
@@ -487,23 +556,67 @@ public class NotificationsDialogContent extends BaseDialogContent
         }
         NotificationListModel.getInstance().update(ids);
 
-        // update UI
-        if (currentShowRead)
+        // update the sources (unread counts and display)
+        // This process needs to work upwards and downwards from the currently-displayed source. (e.g. marking all as
+        // read on the Streams source needs to both decrement the appropriate number from "All"'s unread count as well
+        // as zero out the unread count for every one of its child sources.) Given there are only three levels and very
+        // few non-leaf sources, it is easiest to code for the specific cases.
+
+        if (currentSource == rootSource)
         {
-            notificationListPanel.addStyleName(ALL_READ);
+            // Root source. The root source contains everything, so set every source's unread count to zero.
+            for (Source source : sourceIndex.values())
+            {
+                source.setUnreadCount(0);
+                updateDisplayString(source);
+                if (source != rootSource)
+                {
+                    source.getWidget().addStyleName(style.sourceFilterAllRead());
+                }
+            }
+        }
+        else if (currentSource.isCategorySource())
+        {
+            // Non-root category source. Set its and children's unread counts to zero; subtract from root's count.
+            for (Source source : sourceIndex.values())
+            {
+                if (source == currentSource || source.getParent() == currentSource)
+                {
+                    source.setUnreadCount(0);
+                    updateDisplayString(source);
+                    source.getWidget().addStyleName(style.sourceFilterAllRead());
+                }
+            }
+            rootSource.setUnreadCount(rootSource.getUnreadCount() - ids.size());
+            updateDisplayString(rootSource);
         }
         else
         {
-            notificationListPanel.clear();
-            noNotificationsUi.getStyle().clearDisplay();
+            // Leaf source. Work upwards.
+            int number = ids.size();
+            for (Source source = currentSource; source != null; source = source.getParent())
+            {
+                int unreadCount = source.getUnreadCount() - number;
+                source.setUnreadCount(unreadCount);
+                updateDisplayString(source);
+                if (source != rootSource && unreadCount == 0)
+                {
+                    source.getWidget().addStyleName(style.sourceFilterAllRead());
+                }
+            }
         }
 
-        // update unread counts
-        int number = currentSource.getUnreadCount();
-        for (Source source = currentSource; source != null; source = source.getParent())
+        // select a different source (or redraw root) if unread-only filter is active
+        if (!currentShowRead)
         {
-            source.setUnreadCount(source.getUnreadCount() - number);
-            source.getWidget().setText(source.getDisplayString());
+            selectSource(rootSource);
+        }
+
+        // add the already-read style to all the individual notification widgets (since the widgets are cached and
+        // reused until the dialog is closed)
+        for (long id : ids)
+        {
+            notifWidgetIndex.get(id).addReadStyle();
         }
     }
 
@@ -533,6 +646,45 @@ public class NotificationsDialogContent extends BaseDialogContent
     }
 
     /**
+     * Causes the source to apply the current display string to the widget.
+     *
+     * @param source
+     *            Source.
+     */
+    private void updateDisplayString(final Source source)
+    {
+        Label widget = source.getWidget();
+        if (usingMozillaBinding(widget.getElement()))
+        {
+            int index = sourceFiltersPanel.getWidgetIndex(widget);
+            if (index >= 0)
+            {
+                widget.removeFromParent();
+                widget.setText(source.getDisplayString());
+                sourceFiltersPanel.insert(widget, index);
+            }
+        }
+        else
+        {
+            widget.setText(source.getDisplayString());
+        }
+    }
+
+    /**
+     * Determines if the source's widget is using a Mozilla binding. The purpose is to check for the XUL ellipsis
+     * binding, since that binding causes text updates to fail, thus we must do some trickery to work around it.
+     *
+     * @param elem
+     *            Element to check.
+     * @return If using -moz-binding.
+     */
+    private static native boolean usingMozillaBinding(final Element elem)
+    /*-{
+            var v = $wnd.jQuery(elem).css('-moz-binding');
+            return v ? v !== 'none' : false;
+    }-*/;
+
+    /**
      * Local styles.
      */
     interface LocalStyle extends CssResource
@@ -540,6 +692,14 @@ public class NotificationsDialogContent extends BaseDialogContent
         /** @return Extra style for entire modal. */
         @ClassName("modal")
         String modal();
+
+        /** @return Style applied to the source list to only show sources with unread notifs. */
+        @ClassName("source-filter-list-unread-only")
+        String sourceFilterListUnreadOnly();
+
+        /** @return Style applied to sources where all notifs are read. */
+        @ClassName("source-filter-all-read")
+        String sourceFilterAllRead();
 
         /** @return Style for sources. */
         @ClassName("source-filter")
