@@ -298,6 +298,7 @@ public class NotificationsDialogContent extends BaseDialogContent
                 {
                     widget.removeFromParent();
                 }
+                setShadowHeight();
             }
         }
     }
@@ -346,6 +347,8 @@ public class NotificationsDialogContent extends BaseDialogContent
             {
                 selectSource(rootSource);
             }
+
+            setShadowHeight();
         }
     }
 
@@ -386,8 +389,17 @@ public class NotificationsDialogContent extends BaseDialogContent
         currentSource = rootSource;
 
         // set up shadow
-        shadowPanel.setHeight(sourceFiltersPanel.getOffsetHeight() + "px");
+        setShadowHeight();
         shadowPanel.setVisible(true);
+    }
+
+    /**
+     * Adjusts the height of the shadow to the displayed sources.
+     */
+    private void setShadowHeight()
+    {
+        shadowPanel.setHeight("0px");
+        shadowPanel.setHeight(sourceFiltersPanel.getOffsetHeight() + "px");
     }
 
     /**
@@ -522,11 +534,13 @@ public class NotificationsDialogContent extends BaseDialogContent
                 sourceFiltersPanel.addStyleName(style.sourceFilterListUnreadOnly());
                 if (currentSource != rootSource && currentSource.getUnreadCount() == 0)
                 {
+                    setShadowHeight();
                     selectSource(rootSource);
                     return;
                 }
             }
 
+            setShadowHeight();
             displayNotifications(currentSource.getFilter(), currentShowRead);
         }
     }
@@ -609,6 +623,7 @@ public class NotificationsDialogContent extends BaseDialogContent
         // select a different source (or redraw root) if unread-only filter is active
         if (!currentShowRead)
         {
+            setShadowHeight();
             selectSource(rootSource);
         }
 
