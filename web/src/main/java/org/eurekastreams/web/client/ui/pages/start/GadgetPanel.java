@@ -202,6 +202,7 @@ public class GadgetPanel extends FlowPanel
         // Style the pieces of the title bar
         title.setStylePrimaryName(StaticResourceBundle.INSTANCE.coreCss().gadgetZoneChromeTitleBarTitleButton());
         titleLabel.getElement().setId(gadgetTitleLabelPrefix + gadgetIdModifier.toString() + "_title");
+        titleLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetTitleLabel());
         title.add(restoreButton);
         title.add(titleLabel);
         restoreButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetRestore());

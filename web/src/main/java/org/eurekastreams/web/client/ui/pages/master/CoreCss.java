@@ -1427,4 +1427,6 @@ public interface CoreCss extends CssResource
     String showMoreCommentLink();
 
     String attachLinkErrorBox();
+
+    String gadgetTitleLabel();
 }
