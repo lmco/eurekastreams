@@ -70,13 +70,14 @@ public class FooterComposite extends Composite
                             {
 
                                 navPanel.add(new Label("|"));
-                                navPanel.add(new Anchor("LEARN MORE", event.getResponse().getSupportStreamWebsite()));
+                                navPanel.add(new Anchor("LEARN MORE", event.getResponse().getSupportStreamWebsite(),
+                                        "_blank"));
                             }
                         }
                     }
                 });
 
-        Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org", "_blank");
+        Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org");
         poweredBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().poweredByEureka());
         navPanel.add(poweredBy);
 

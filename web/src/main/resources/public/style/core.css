@@ -2287,6 +2287,16 @@ div:hover > .messageXPanel {
 	margin-top: 10px;
 }
 
+.gadgetTitleLabel
+{
+	text-overflow: ellipsis;
+	width: 200px;
+	white-space: nowrap;
+	overflow: hidden;
+	display: block;
+}
+
+
 .ellipsis, .ellipsisChild > * {
 	text-overflow: ellipsis;
 	-moz-binding: url('style/ellipsis.xml#ellipsis');
@@ -3544,6 +3554,14 @@ body .shortname-form-element input {
 	width: 200px;
 }
 
+
+.short-bio, .mission-statement
+{
+	width: 200px;	
+	font-size: 11px;
+	line-height: 13px;
+}
+
 .connection-item-title {
 	font-size: 11px;
 	line-height: 13px;
@@ -3740,7 +3758,6 @@ body .shortname-form-element input {
 	background-color: white;	
 	border-left: 1px solid #bdbdbd;
 	border-right: 1px solid #bdbdbd;
-	min-height: 300px;
 }
 
 .directory .navpanel, .directory .pager-container 
@@ -5427,7 +5444,8 @@ body .stream-view-dialog .delete-button {
 }
 
 .pending-buttons>div.gwt-Label,.pending-group-buttons>div.gwt-Label {
-	margin-bottom: 5px;
+	float: left;
+	margin-right: 10px;
 }
 
 .unseen-activity {
@@ -5763,6 +5781,8 @@ body .stream-view-dialog .delete-button {
 .pending-group-membership-item:first-child {
 	border-top: none;
 	padding-top: 0;
+	height: 80px;
+	overflow: hidden;
 }
 
 .pending-group-membership-item>div {
@@ -5772,6 +5792,9 @@ body .stream-view-dialog .delete-button {
 .pending-group-membership-item>.pending-buttons {
 	vertical-align: top;
 	margin-right: 20px;
+	position: relative;
+	left: 65px;
+	top: -40px;
 }
 
 .pending-group-membership-item>.connection-item {
@@ -6330,7 +6353,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	
 	.content-warning > .warningText {
 		top: auto;
-		margin-left: 5px;
 		zoom: 1;
 	}
 }
@@ -6956,8 +6978,6 @@ body div.eureka-connect-liked-activity-wrapper {
 
 /* Empty rules needed since they are referenced by methods in CoreCss.  
    The methods in CoreCss are called, but probably the widgets that use them are not used. */  
-.short-bio,
-.mission-statement,
 .extended-info,
 .group,
 .private,
