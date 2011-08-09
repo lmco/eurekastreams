@@ -96,7 +96,9 @@ public class GroupPanel extends FlowPanel
             if (descriptionText != null && !descriptionText.isEmpty())
             {
                 Label about = new Label(descriptionText);
+                about.setTitle(descriptionText);
                 about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().missionStatement());
+                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());                
                 infoPanel.add(about);
             }
         }

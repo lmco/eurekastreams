@@ -302,18 +302,16 @@
 				color: black;
 				width: 160px;
 			}
-
+			
 			.currentUserStreamLink>a:hover {
 				text-decoration: underline;
 			}
 			
-			.currentUserConfLink
-			{
+			.currentUserConfLink {
 				width: 140px;
 			}
 			
-			.currentUserConfLink>a:hover
-			{
+			.currentUserConfLink>a:hover {
 				color: #1481B3;
 				text-decoration: underline;
 			}
@@ -334,7 +332,14 @@
 			
 			.dotted-bottom-list {
 				padding-bottom: 10px;
-				border-bottom:  1px dashed #BBB;
+				border-bottom: 1px dashed #BBB;
+			}
+			
+			@if user.agent ie6 ie8 {
+				.search-box {
+					padding-top: 8px;
+					padding-bottom: 4px;
+				}
 			}
 		</ui:style>
 
