@@ -73,7 +73,7 @@ public class ActivityDTO extends ModelView implements Serializable
     /**
      * The original creator of the activity - used during sharing.
      */
-    private StreamEntityDTO originalActor;
+    private StreamEntityDTO originalActor = new StreamEntityDTO();
 
     /**
      * Information regarding the stream that this activity was posted to.
