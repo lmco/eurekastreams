@@ -80,6 +80,10 @@
 				width: auto;
 			}
 			
+			.source-filter-list-unread-only .source-filter-all-read {
+				display: none;
+			}
+			
 			@sprite .filter-selected {
 				gwt-image: "activeBackground";
 			}
@@ -127,7 +131,7 @@
 
 	<g:HTMLPanel addStyleNames="{style.main}">
 		<g:ScrollPanel addStyleNames="{style.source-filters-scroll-panel}">
-			<g:FlowPanel ui:field="sourceFiltersPanel">
+			<g:FlowPanel addStyleNames="{style.source-filter-list-unread-only}" ui:field="sourceFiltersPanel">
 				<g:SimplePanel addStyleNames="{style.shadow-panel}"
 					ui:field="shadowPanel" />
 			</g:FlowPanel>
@@ -147,7 +151,7 @@
 				</div>
 			</div>
 			<div class="{style.no-notifications}" style="display: none;"
-				ui:field="noNotificationsUi">No notifications</div>
+				ui:field="noNotificationsUi">No matching notifications</div>
 			<g:ScrollPanel addStyleNames="{style.notification-list-scroll-panel}"
 				ui:field="notificationListScrollPanel">
 				<g:FlowPanel ui:field="notificationListPanel">
