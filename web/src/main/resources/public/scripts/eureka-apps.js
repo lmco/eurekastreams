@@ -985,6 +985,8 @@ Eureka.PostBox = function(text, postcb, maxlength, contentWarning)
 		{	
 			commentInput.val("");
 			postComment.hide();
+			jQuery('.post-count-down').html(maxlength);		
+			jQuery('.post-button').addClass('post-button-disabled');			
 		});
 
 		postComment.append(cancel);

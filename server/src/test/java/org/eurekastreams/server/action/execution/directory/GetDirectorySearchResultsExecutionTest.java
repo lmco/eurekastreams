@@ -125,7 +125,7 @@ public class GetDirectorySearchResultsExecutionTest
         context.checking(new Expectations()
         {
             {
-                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT + "*");
+                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT);
                 will(returnValue(escapedSearchText));
 
                 one(principalMock).getId();
@@ -183,7 +183,7 @@ public class GetDirectorySearchResultsExecutionTest
         context.checking(new Expectations()
         {
             {
-                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT + "*");
+                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT);
                 will(returnValue(escapedSearchText));
 
                 one(principalMock).getId();
@@ -232,7 +232,7 @@ public class GetDirectorySearchResultsExecutionTest
         context.checking(new Expectations()
         {
             {
-                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT + "*");
+                one(searchRequestBuilder).escapeAllButWildcardCharacters(SEARCH_TEXT);
                 will(returnValue(escapedSearchText));
 
                 one(principalMock).getId();

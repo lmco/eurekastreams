@@ -22,7 +22,7 @@ import org.eurekastreams.server.domain.ResourceSortCriteria;
 
 /**
  * This class carries the request information for a call to the GetDirectorSearchResults action.
- * 
+ *
  */
 public class GetDirectorySearchResultsRequest implements Serializable, PageableRequest
 {
@@ -71,7 +71,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSearchTerm
      *            - instance of the search term for this request.
      * @param inWeightedField
@@ -87,11 +87,9 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
             final int inPagingFrom, final int inPagingTo, final String inCallerKey)
     {
         searchTerm = inSearchTerm;
-        searchTerm.replace(" ", "* ");
-        searchTerm += "*";
         searchTerm.replace("OR", "or");
         searchTerm.replace("AND", "and");
-        
+
         weightedField = inWeightedField;
         pagingFrom = inPagingFrom;
         pagingTo = inPagingTo;
@@ -100,7 +98,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPagingFrom
      *            Instance of the count to start with for paging on this request.
      * @param inPagingTo
@@ -130,7 +128,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      */
     public void setSearchTerm(final String inSearchTerm)
     {
-        this.searchTerm = inSearchTerm;
+        searchTerm = inSearchTerm;
     }
 
     /**
@@ -147,7 +145,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      */
     public void setWeightedField(final String inWeightedField)
     {
-        this.weightedField = inWeightedField;
+        weightedField = inWeightedField;
     }
 
     /**
@@ -164,7 +162,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      */
     public void setStartIndex(final Integer inPagingFrom)
     {
-        this.pagingFrom = inPagingFrom;
+        pagingFrom = inPagingFrom;
     }
 
     /**
@@ -181,7 +179,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      */
     public void setEndIndex(final Integer inPagingTo)
     {
-        this.pagingTo = inPagingTo;
+        pagingTo = inPagingTo;
     }
 
     /**
@@ -207,7 +205,7 @@ public class GetDirectorySearchResultsRequest implements Serializable, PageableR
      */
     public void setCallerKey(final String inCallerKey)
     {
-        this.callerKey = inCallerKey;
+        callerKey = inCallerKey;
     }
 
     /**
