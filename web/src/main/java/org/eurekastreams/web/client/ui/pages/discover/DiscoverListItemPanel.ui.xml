@@ -9,14 +9,23 @@
 	<ui:image field="followingImage" src="style/images/followingSmall.png" />
 	<ui:image field="unfollowImage" src="style/images/unfollowSmall.png" />
 	
-	<ui:image field="requestAccessBtnSmall" src="style/images/requestAccessBtnSmall.png" />
-	<ui:image field="requestAccessBtnPendingSmall" src="style/images/requestAccessBtnPendingSmall.png" />
-	<ui:image field="privateGroupLockSmall" src="style/images/privateGroupLockSmall.png" />
-
+	<ui:image field="lockedButton" src="style/images/privateGroupLockSmall.png" />
+	<ui:image field="requestButton" src="style/images/requestAccessBtnSmall.png" />
+	<ui:image field="pendingButton" src="style/images/requestPendingSmall.png" />
+	
 	<ui:with field="coreCss"
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
 
 	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.DiscoverListItemPanel.LocalStyle">
+	@sprite .locked-button{
+		gwt-image:"lockedButton";
+	}
+	@sprite .request-button{
+		gwt-image:"requestButton";
+	}
+	@sprite .pending-button{
+		gwt-image:"pendingButton";
+	}
 		.main {
 			position: relative;
 			padding-left: 10px;
@@ -65,18 +74,6 @@
 	}
         @sprite .block-button:hover{
 	gwt-image: "removeHoverImage";
-	}
-	
-	@sprite .request-access-button-small {
-		gwt-image: "requestAccessBtnSmall";
-	}
-	
-	@sprite .pending-access-button-small {
-		gwt-image: "requestAccessBtnPendingSmall";
-	}
-	
-	@sprite .private-group-lock-small {
-		gwt-image: "privateGroupLockSmall";
 	}
 	
 	</ui:style>
