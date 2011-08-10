@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.hibernate.Criteria;
@@ -36,12 +38,12 @@ public class GetIdsFromPointersDbMapper<PointerType> extends BaseArgDomainMapper
     /**
      * Name of the pointer field.
      */
-    private String pointerFieldName;
+    private final String pointerFieldName;
 
     /**
      * Entity class to select from.
      */
-    private Class< ? > entityClass;
+    private final Class< ? > entityClass;
 
     /**
      * Constructor.
@@ -67,13 +69,14 @@ public class GetIdsFromPointersDbMapper<PointerType> extends BaseArgDomainMapper
     @Override
     public List<Long> execute(final List<PointerType> inPointerValues)
     {
-        if (inPointerValues == null || inPointerValues.size() == 0)
+        if (inPointerValues == null || inPointerValues.isEmpty())
         {
             return new ArrayList<Long>();
         }
 
         Criteria criteria = getHibernateSession().createCriteria(entityClass);
         ProjectionList fields = Projections.projectionList();
+        fields.add(Projections.property(pointerFieldName).as("key"));
         fields.add(Projections.property("id").as("itemId"));
         criteria.setProjection(fields);
 
@@ -90,8 +93,24 @@ public class GetIdsFromPointersDbMapper<PointerType> extends BaseArgDomainMapper
                 restriction = Restrictions.or(Restrictions.eq(pointerFieldName, pointer), restriction);
             }
         }
-
         criteria.add(restriction);
-        return criteria.list();
+
+        // Build the list of results
+        // Insure a 1-to-1 correspondence to the input pointers (same order and nulls for missing values)
+        // Note: results is a list of Object arrays. Each array contains the fields for the given row in the same order
+        // as they were added to the ProjectionList above.
+        List<Object[]> dbResults = criteria.list();
+        Map<PointerType, Long> dbIndex = new HashMap<PointerType, Long>();
+        for (Object[] row : dbResults)
+        {
+            dbIndex.put((PointerType) row[0], (Long) row[1]);
+        }
+        List<Long> results = new ArrayList<Long>(inPointerValues.size());
+        for (PointerType key : inPointerValues)
+        {
+            // Note: this automatically handles nulls for unknown elements
+            results.add(dbIndex.get(key));
+        }
+        return results;
     }
 }
