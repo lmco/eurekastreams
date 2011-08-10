@@ -73,7 +73,7 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
-                        + "shortName, name, followersCount, dateAdded, streamScope.id) "
+                        + "shortName, name, followersCount, dateAdded, streamScope.id, publicGroup) "
                         + "FROM DomainGroup WHERE isPending = false AND followersCount > 0 "
                         + "ORDER BY followersCount DESC");
         if (streamCount > 0)
