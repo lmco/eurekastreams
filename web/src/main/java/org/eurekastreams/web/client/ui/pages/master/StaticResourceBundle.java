@@ -325,10 +325,10 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/submitBtn.png")
     ImageResource submitButton();
 
-    @Source("style/images/postBtnSmall.png")
+    @Source("style/images/postComment.png")
     ImageResource commentPostButton();
 
-    @Source("style/images/postBtnSmallInactive.png")
+    @Source("style/images/postCommentInactive.png")
     ImageResource commentPostButtonInactive();
 
 }
