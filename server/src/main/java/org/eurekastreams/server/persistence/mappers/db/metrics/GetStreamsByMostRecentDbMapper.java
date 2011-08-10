@@ -57,7 +57,7 @@ public class GetStreamsByMostRecentDbMapper extends BaseArgDomainMapper<Serializ
     {
         Query q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
-                        + "shortName, name, followersCount, dateAdded, streamScope.id) "
+                        + "shortName, name, followersCount, dateAdded, streamScope.id, publicGroup) "
                         + "FROM DomainGroup WHERE isPending=false ORDER BY dateAdded DESC");
         if (streamCount > 0)
         {

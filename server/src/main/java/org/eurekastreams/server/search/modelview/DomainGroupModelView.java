@@ -292,6 +292,36 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      *            the date added
      * @param inStreamScopeId
      *            the stream scope id
+     * @param inIsPublic
+     *            whether the group is public
+     */
+    public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
+            final Long inFollowerCount, final Date inDateAdded, final Long inStreamScopeId, final Boolean inIsPublic)
+    {
+        setEntityId(inId);
+        setShortName(inShortName);
+        setName(inName);
+        setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
+        setStreamScopeId(inStreamScopeId);
+        setIsPublic(inIsPublic);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param inId
+     *            the domain group id
+     * @param inShortName
+     *            the domain group short name
+     * @param inName
+     *            the domain group name
+     * @param inFollowerCount
+     *            the number of followers
+     * @param inDateAdded
+     *            the date added
+     * @param inStreamScopeId
+     *            the stream scope id
      */
     public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
             final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
@@ -302,6 +332,36 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         setFollowersCount(inFollowerCount.intValue());
         setDateAdded(inDateAdded);
         setStreamScopeId(inStreamScopeId);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param inId
+     *            the domain group id
+     * @param inShortName
+     *            the domain group short name
+     * @param inName
+     *            the domain group name
+     * @param inFollowerCount
+     *            the number of followers
+     * @param inDateAdded
+     *            the date added
+     * @param inStreamScopeId
+     *            the stream scope id
+     * @param inIsPublic
+     *            whether the group is public
+     */
+    public DomainGroupModelView(final Long inId, final String inShortName, final String inName,
+            final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId, final Boolean inIsPublic)
+    {
+        setEntityId(inId);
+        setShortName(inShortName);
+        setName(inName);
+        setFollowersCount(inFollowerCount.intValue());
+        setDateAdded(inDateAdded);
+        setStreamScopeId(inStreamScopeId);
+        setIsPublic(inIsPublic);
     }
 
     /**
