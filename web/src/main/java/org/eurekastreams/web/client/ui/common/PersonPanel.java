@@ -42,7 +42,7 @@ public class PersonPanel extends FlowPanel
 {
     /**
      * Constructor.
-     *
+     * 
      * @param inPerson
      *            to display
      * @param showFollowers
@@ -58,7 +58,7 @@ public class PersonPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param person
      *            to display
      * @param showFollowers
@@ -94,15 +94,15 @@ public class PersonPanel extends FlowPanel
         {
             name = new Label(person.getDisplayName());
         }
-        
+
         name.setTitle(person.getDisplayName());
-        
+
         name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
         name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsisChild());
 
         Label title = new Label(person.getTitle());
         title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemTitle());
-        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsisChild());
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
 
         infoPanel.add(name);
         infoPanel.add(title);
@@ -113,8 +113,9 @@ public class PersonPanel extends FlowPanel
             if (descriptionText != null && !descriptionText.isEmpty())
             {
                 Label about = new Label(descriptionText);
+                about.setTitle(descriptionText);
                 about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shortBio());
-                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().extendedInfo());
+                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
                 infoPanel.add(about);
             }
         }
@@ -165,7 +166,7 @@ public class PersonPanel extends FlowPanel
 
     /**
      * Adds a separator (dot).
-     *
+     * 
      * @param panel
      *            Panel to put the separator in.
      */

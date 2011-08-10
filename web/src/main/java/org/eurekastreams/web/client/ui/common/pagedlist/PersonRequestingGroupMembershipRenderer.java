@@ -71,7 +71,6 @@ public class PersonRequestingGroupMembershipRenderer implements ItemRenderer<Per
 
         final Panel buttonsPanel = new FlowPanel();
         buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingButtons());
-        panel.add(buttonsPanel);
 
         final Label approveButton = new Label("Approve");
         approveButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().approveButton());
@@ -82,7 +81,8 @@ public class PersonRequestingGroupMembershipRenderer implements ItemRenderer<Per
         buttonsPanel.add(denyButton);
 
         // person panel (right side)
-        panel.add(new PersonPanel(item, true, true));
+        panel.add(new PersonPanel(item, false, true));
+        panel.add(buttonsPanel);
 
         // -- wire events --
 

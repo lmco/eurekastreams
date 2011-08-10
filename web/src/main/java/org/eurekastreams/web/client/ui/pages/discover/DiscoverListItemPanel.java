@@ -85,6 +85,18 @@ public class DiscoverListItemPanel extends Composite
      */
     interface LocalStyle extends CssResource
     {
+        /** @return Button style. */
+        @ClassName("locked-button")
+        String lockedButton();
+
+        /** @return Button style. */
+        @ClassName("request-button")
+        String requestButton();
+
+        /** @return Button style. */
+        @ClassName("pending-button")
+        String pendingButton();
+
         /** @return Apply to the follow panel to allow custom styling. */
         @ClassName("follow-controls-panel")
         String followControlsPanel();
@@ -221,6 +233,16 @@ public class DiscoverListItemPanel extends Composite
                 followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
                         coreCss.buttonLabel(), true);
             }
+
+            // Panel p1 = new FlowPanel();
+            // p1.addStyleName(style.requestAccessButtonPendingSmall());
+            // main.add(p1);
+            // p1 = new FlowPanel();
+            // p1.addStyleName(style.requestAccessBtnPendingSmall());
+            // main.add(p1);
+            // p1 = new FlowPanel();
+            // p1.addStyleName(style.requestAccessBtnSmall());
+            // main.add(p1);
 
             if (!showBlockSuggestion)
             {
