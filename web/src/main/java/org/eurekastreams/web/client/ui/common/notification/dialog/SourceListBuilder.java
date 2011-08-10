@@ -32,6 +32,18 @@ import org.eurekastreams.server.domain.InAppNotificationDTO;
 public class SourceListBuilder
 {
     /**
+     * Returns the source key for a given notification.
+     *
+     * @param item
+     *            Notification.
+     * @return Source key.
+     */
+    public static String buildSourceKey(final InAppNotificationDTO item)
+    {
+        return item.getSourceType() + item.getSourceUniqueId();
+    }
+
+    /**
      * Filter to match only notifications from a specific source.
      */
     static class SpecificSourceFilter implements Source.Filter
@@ -83,7 +95,7 @@ public class SourceListBuilder
 
     /**
      * Constructor - analyzes and builds lists.
-     * 
+     *
      * @param list
      *            Notifications to process.
      * @param currentUserAccountId
@@ -122,7 +134,7 @@ public class SourceListBuilder
         int unread = 0;
         for (InAppNotificationDTO item : list)
         {
-            String sourceKey = item.getSourceType() + item.getSourceUniqueId();
+            String sourceKey = buildSourceKey(item);
             Source source = sourceIndex.get(sourceKey);
             if (source == null && item.getSourceType() != null)
             {
@@ -173,20 +185,31 @@ public class SourceListBuilder
                     }
                 }
             }
+            if (source != null)
+            {
+                source.incrementTotalCount();
+                if (source.getParent() != null)
+                {
+                    source.getParent().incrementTotalCount();
+                }
+            }
         }
         rootSource.setUnreadCount(unread);
+        rootSource.setTotalCount(list.size());
 
         // -- build list in display order --
-        sourceList = new ArrayList<Source>(sourceIndex.size());
+        sourceList = new ArrayList<Source>(sourceIndex.size() + 3);
 
         // "all"
         sourceList.add(rootSource);
+        sourceIndex.put("@root", rootSource);
 
         // streams
         if (!streamSources.isEmpty())
         {
             // all streams
             sourceList.add(streamSource);
+            sourceIndex.put("@Streams", streamSource);
 
             // prepare list of stream sources: sort, set name on "My Stream"
             Collections.sort(streamSources, SOURCE_SORTER);
@@ -202,6 +225,7 @@ public class SourceListBuilder
         {
             // all apps
             sourceList.add(appSource);
+            sourceIndex.put("@Apps", appSource);
 
             // prepare list of sources: sort
             Collections.sort(appSources, SOURCE_SORTER);

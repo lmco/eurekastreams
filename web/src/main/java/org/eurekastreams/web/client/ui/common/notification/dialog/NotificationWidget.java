@@ -186,6 +186,14 @@ public class NotificationWidget extends Composite
     }
 
     /**
+     * Adds the read style.
+     */
+    public void addReadStyle()
+    {
+        addStyleName(style.read());
+    }
+
+    /**
      * Local styles.
      */
     interface LocalStyle extends CssResource

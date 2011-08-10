@@ -49,6 +49,9 @@ class Source
     /** The name to display for the source. */
     private String displayName;
 
+    /** Total count. */
+    private int totalCount;
+
     /** Unread count. */
     private int unreadCount;
 
@@ -112,6 +115,22 @@ class Source
     }
 
     /**
+     * increment total Count.
+     */
+    public void incrementTotalCount()
+    {
+        totalCount++;
+    }
+
+    /**
+     * decrement total Count.
+     */
+    public void decrementTotalCount()
+    {
+        totalCount--;
+    }
+
+    /**
      * @return the uniqueId
      */
     public String getUniqueId()
@@ -133,6 +152,23 @@ class Source
     public String getDisplayName()
     {
         return displayName;
+    }
+
+    /**
+     * @return the total Count
+     */
+    public int getTotalCount()
+    {
+        return totalCount;
+    }
+
+    /**
+     * @param inCount
+     *            the total Count to set
+     */
+    public void setTotalCount(final int inCount)
+    {
+        totalCount = inCount;
     }
 
     /**
@@ -201,5 +237,13 @@ class Source
     public void setFilter(final Filter inFilter)
     {
         filter = inFilter;
+    }
+
+    /**
+     * @return If this source represents a general category instead of a specific source.
+     */
+    public boolean isCategorySource()
+    {
+        return entityType == null;
     }
 }

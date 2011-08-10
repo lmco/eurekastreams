@@ -12,13 +12,11 @@
 
 	<ui:style
 		type="org.eurekastreams.web.client.ui.common.notification.dialog.NotificationWidget.LocalStyle">
-			/* Externalize all-read so the parent can apply it on the entire list. */
-			@external all-read;
 			.highPriority .main-inner {
 				border-right: 10px solid red;
 			}
 			
-			@sprite .read.main-outer,.all-read .main-outer {
+			@sprite .read.main-outer {
 				gwt-image: "readBackgroundImage";
 				background-color: #E1E1E1;
 				height: auto;
@@ -127,7 +125,7 @@
 						url("style/images/notifications/UnreadBackground.png") repeat-x
 						scroll 0 0;
 				}
-				.read.main-outer,.all-read .main-outer {
+				.read.main-outer {
 					background: #E1E1E1 url("style/images/notifications/ReadBackground.png")
 						repeat-x scroll 0 0;
 				}
