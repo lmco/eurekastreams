@@ -8,6 +8,10 @@
 	<ui:image field="removeHoverImage" src="style/images/removeSmallHover.png" />
 	<ui:image field="followingImage" src="style/images/followingSmall.png" />
 	<ui:image field="unfollowImage" src="style/images/unfollowSmall.png" />
+	
+	<ui:image field="requestAccessBtnSmall" src="style/images/requestAccessBtnSmall.png" />
+	<ui:image field="requestAccessBtnPendingSmall" src="style/images/requestAccessBtnPendingSmall.png" />
+	<ui:image field="privateGroupLockSmall" src="style/images/privateGroupLockSmall.png" />
 
 	<ui:with field="coreCss"
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
@@ -42,7 +46,7 @@
 			font-size: 11px;
 		}
 		
-        @sprite .follow-button {
+		@sprite .follow-button {
 			gwt-image: "followImage";
 		}
         @sprite .follow-button:hover {
@@ -54,7 +58,7 @@
 	}
         @sprite .unfollow-button:hover{
 	gwt-image: "unfollowImage";
-
+ 
 	}
         @sprite .block-button{
 	gwt-image: "removeImage";
@@ -62,7 +66,19 @@
         @sprite .block-button:hover{
 	gwt-image: "removeHoverImage";
 	}
-		
+	
+	@sprite .request-access-button-small {
+		gwt-image: "requestAccessBtnSmall";
+	}
+	
+	@sprite .pending-access-button-small {
+		gwt-image: "requestAccessBtnPendingSmall";
+	}
+	
+	@sprite .private-group-lock-small {
+		gwt-image: "privateGroupLockSmall";
+	}
+	
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person} {style.main}">

@@ -33,7 +33,7 @@ public class GetSuggestedGroupsForPersonDbMapper extends
     /**
      * Get a list of suggested group streams for a person by getting all groups that their followers are members of,
      * sorted by follow count within that group.
-     * 
+     *
      * @param inRequest
      *            the request containing the person and stream count
      * @return the top NN suggested groups by their followers
@@ -46,7 +46,7 @@ public class GetSuggestedGroupsForPersonDbMapper extends
                 .createQuery(
                         "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(g.id, "
                                 + "g.shortName, g.name, COUNT(theirGroups.pk.followingId), "
-                                + "g.dateAdded, g.streamScope.id) "
+                                + "g.dateAdded, g.streamScope.id, g.publicGroup) "
                                 + "FROM Follower peopleIFollow, GroupFollower theirGroups, DomainGroup g "
                                 + "WHERE peopleIFollow.pk.followingId = theirGroups.pk.followerId "
                                 + "AND theirGroups.pk.followingId = g.id "
@@ -56,7 +56,7 @@ public class GetSuggestedGroupsForPersonDbMapper extends
                                 + "(SELECT pk.scopeId FROM PersonBlockedSuggestion WHERE "
                                 + "personid = :personBlockedId) "
                                 + "GROUP BY theirGroups.pk.followingId, g.id, g.shortName, g.name, g.dateAdded, "
-                                + "g.streamScope.id ORDER BY COUNT(theirGroups.pk.followingId) DESC")
+                                + "g.streamScope.id, g.publicGroup ORDER BY COUNT(theirGroups.pk.followingId) DESC")
                 .setParameter("personId", inRequest.getPersonId())
                 .setParameter("personBlockedId", inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());

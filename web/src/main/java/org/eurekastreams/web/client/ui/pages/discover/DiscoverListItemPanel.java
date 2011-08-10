@@ -101,6 +101,18 @@ public class DiscoverListItemPanel extends Composite
         @ClassName("block-button")
         String blockButton();
 
+        /** @return Button style. */
+        @ClassName("request-access-button-small")
+        String requestAccessButtonSmall();
+
+        // /** @return Button style. */
+        // @ClassName("pending-access-button-small")
+        // String requestAccessButtonPendingSmall();
+        //
+        // /** @return Button style. */
+        // @ClassName("private-group-lock-small")
+        // String privateGroupLockSmall();
+
         /** @return When multiple controls are in the follower controls panel. */
         String multi();
     }
@@ -123,7 +135,7 @@ public class DiscoverListItemPanel extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -136,7 +148,7 @@ public class DiscoverListItemPanel extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -207,20 +219,30 @@ public class DiscoverListItemPanel extends Composite
 
             if (showBlockSuggestion)
             {
-                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
-                        coreCss.buttonLabel(), true, new ClickHandler()
-                        {
-                            public void onClick(final ClickEvent event)
-                            {
-                                removeFromParent();
-                            }
-                        });
+                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(), coreCss
+                        .buttonLabel(), true, new ClickHandler()
+                {
+                    public void onClick(final ClickEvent event)
+                    {
+                        removeFromParent();
+                    }
+                });
             }
             else
             {
-                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
-                        coreCss.buttonLabel(), true);
+                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(), coreCss
+                        .buttonLabel(), true);
             }
+
+            // Panel p1 = new FlowPanel();
+            // p1.addStyleName(style.requestAccessButtonPendingSmall());
+            // main.add(p1);
+            // p1 = new FlowPanel();
+            // p1.addStyleName(style.requestAccessBtnPendingSmall());
+            // main.add(p1);
+            // p1 = new FlowPanel();
+            // p1.addStyleName(style.requestAccessBtnSmall());
+            // main.add(p1);
 
             if (!showBlockSuggestion)
             {
