@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Render a share verb activity.
- *
+ * 
  */
 public class ShareRenderer implements VerbRenderer
 {
@@ -61,7 +61,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Setup.
-     *
+     * 
      * @param inObjectRendererDictionary
      *            object dictionary.
      * @param inActivity
@@ -82,7 +82,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow commenting.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowComment()
@@ -92,7 +92,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow sharing.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowShare()
@@ -102,7 +102,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow starring.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowStar()
@@ -112,7 +112,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow liking.
-     *
+     * 
      * @return the value.
      */
     public boolean getAllowLike()
@@ -122,7 +122,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the avatar.
-     *
+     * 
      * @return the avatar.
      */
     public Widget getAvatar()
@@ -139,7 +139,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the content.
-     *
+     * 
      * @return the content.
      */
     public Widget getContent()
@@ -163,7 +163,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Return a list of appropriate metadata link renderers.
-     *
+     * 
      * @return the list.
      */
     public List<StatefulRenderer> getMetaDataItemRenderers()
@@ -182,8 +182,8 @@ public class ShareRenderer implements VerbRenderer
         // If it fails, fall back to the normal renderer.
         try
         {
-            renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getUniqueIdentifier(), activity
-                    .getOriginalActor().getDisplayName()));
+            renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getEntityType(), activity
+                    .getOriginalActor().getUniqueIdentifier(), activity.getOriginalActor().getDisplayName()));
 
             if (activity.getActor().getEntityId() != activity.getOriginalActor().getEntityId())
             {

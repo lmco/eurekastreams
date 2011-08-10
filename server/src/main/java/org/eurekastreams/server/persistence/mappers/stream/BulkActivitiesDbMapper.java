@@ -22,8 +22,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
@@ -44,6 +47,11 @@ import org.hibernate.criterion.Restrictions;
 public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List<ActivityDTO>> implements
         DomainMapper<List<Long>, List<ActivityDTO>>
 {
+    /**
+     * Local logger instance.
+     */
+    private final Log logger = LogFactory.make();
+
     /**
      * Mapper to get PersonModelView by account id.
      */
@@ -96,7 +104,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * Looks in cache for the necessary activity DTOs and returns them if found. Otherwise, makes a database call, puts
      * them in cache, and returns them.
-     *
+     * 
      * @param activityIds
      *            the list of ids that should be found.
      * @return list of ActivityDTO objects.
@@ -193,17 +201,45 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
             }
             // fills in data from cached view of original actor
             final StreamEntityDTO originalActor = activity.getOriginalActor();
-            if (originalActor != null && originalActor.getType() == EntityType.PERSON)
+            if (originalActor != null)
             {
-                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(Collections
-                        .singletonList(originalActor.getUniqueIdentifier()));
-                if (!people.isEmpty())
+                StreamDTO originalActorStreamDTO = null;
+
+                if (originalActor.getType() == EntityType.PERSON)
                 {
-                    final PersonModelView person = people.get(0);
-                    originalActor.setId(person.getEntityId());
-                    originalActor.setDestinationEntityId(person.getEntityId());
-                    originalActor.setDisplayName(person.getDisplayName());
-                    originalActor.setAvatarId(person.getAvatarId());
+                    List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(Collections
+                            .singletonList(originalActor.getUniqueIdentifier()));
+                    if (!people.isEmpty())
+                    {
+                        originalActorStreamDTO = people.get(0);
+                    }
+                }
+                if (originalActor.getType() == EntityType.GROUP)
+                {
+                    List<DomainGroupModelView> oagroups = groupMapper.execute(Collections.singletonList(originalActor
+                            .getUniqueIdentifier()));
+                    if (!oagroups.isEmpty())
+                    {
+                        originalActorStreamDTO = oagroups.get(0);
+                    }
+                }
+
+                if (originalActorStreamDTO != null)
+                {
+                    originalActor.setId(originalActorStreamDTO.getEntityId());
+                    originalActor.setDestinationEntityId(originalActorStreamDTO.getEntityId());
+                    originalActor.setDisplayName(originalActorStreamDTO.getDisplayName());
+                    originalActor.setAvatarId(originalActorStreamDTO.getAvatarId());
+                }
+                else
+                {
+                    // this is to prevent JSON serializer from dying on a nulled out StreamEntityDTO.
+                    activity.setOriginalActor(null);
+
+                    // log this out so we don't just swallow problem.
+                    logger.warn("Nulled out originalActor value for activity " + activity.getId()
+                            + ". Could not find values for uniqueId: " + originalActor.getUniqueIdentifier()
+                            + " type: " + originalActor.getType());
                 }
             }
 
@@ -225,7 +261,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
 
     /**
      * Load the first/last comments of an activity if present, also sets the comment count.
-     *
+     * 
      * @param activity
      *            ActivityDTO to load comment info for.
      */
