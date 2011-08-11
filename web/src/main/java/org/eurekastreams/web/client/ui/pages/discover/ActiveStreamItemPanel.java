@@ -107,6 +107,8 @@ public class ActiveStreamItemPanel extends Composite
             final Widget followPanel;
             // it's not the current user - see if it's a private group, and if we're not admin
             if (inStreamDTO.getEntityType() == EntityType.GROUP && inStreamDTO instanceof DomainGroupModelView
+                    && ((DomainGroupModelView) inStreamDTO).isPublic() != null
+                    && !((DomainGroupModelView) inStreamDTO).isPublic()
                     && !Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
             {
                 // this is a private group and we're not an admin, so we gotta request access

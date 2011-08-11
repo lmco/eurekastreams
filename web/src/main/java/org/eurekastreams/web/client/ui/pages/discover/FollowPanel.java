@@ -55,6 +55,11 @@ public class FollowPanel extends FlowPanel
     private String pendingGroupJoinedStateStyleName;
 
     /**
+     * Whether request is required to join this group.
+     */
+    private boolean requestRequiredToJoin;
+
+    /**
      * Constructor.
      * 
      * @param inFollowable
@@ -87,7 +92,6 @@ public class FollowPanel extends FlowPanel
     {
         this(inFollowable, followStyle, unfollowStyle, commonStyle, showTooltips, (ClickHandler) null,
                 inPendingGroupJoinedStateStyleName);
-        pendingGroupJoinedStateStyleName = inPendingGroupJoinedStateStyleName;
     }
 
     /**
@@ -112,7 +116,19 @@ public class FollowPanel extends FlowPanel
             final String commonStyle, final boolean showTooltips, final ClickHandler onFollowHandler,
             final String inPendingGroupJoinedStateStyleName)
     {
+        pendingGroupJoinedStateStyleName = inPendingGroupJoinedStateStyleName;
         FollowerStatus status = inFollowable.getFollowerStatus();
+
+        if (inFollowable instanceof DomainGroupModelView && ((DomainGroupModelView) inFollowable).isPublic() != null
+                && !((DomainGroupModelView) inFollowable).isPublic()
+                && !Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            this.requestRequiredToJoin = true;
+        }
+        else
+        {
+            this.requestRequiredToJoin = false;
+        }
 
         if (status == null)
         {
@@ -124,7 +140,14 @@ public class FollowPanel extends FlowPanel
 
         if (showTooltips)
         {
-            followLink.setTitle("Follow this stream");
+            if (requestRequiredToJoin)
+            {
+                followLink.setTitle("Request access to this stream");
+            }
+            else
+            {
+                followLink.setTitle("Follow this stream");
+            }
             unfollowLink.setTitle("Stop following this stream");
         }
 
@@ -186,9 +209,7 @@ public class FollowPanel extends FlowPanel
                 }
                 else if (inFollowable.getEntityType() == EntityType.GROUP)
                 {
-                    if (inFollowable instanceof DomainGroupModelView
-                            && !((DomainGroupModelView) inFollowable).isPublic()
-                            && !Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+                    if (requestRequiredToJoin)
                     {
                         // private group, we're not admin - request access
                         GroupMembershipRequestModel.getInstance().insert(inFollowable.getUniqueId());
@@ -207,6 +228,7 @@ public class FollowPanel extends FlowPanel
                             clear();
                             Label newLabel = new Label("");
                             newLabel.setStyleName(pendingGroupJoinedStateStyleName);
+                            newLabel.setTitle("Access to this stream has been requested.");
                             add(newLabel);
                         }
                     }
