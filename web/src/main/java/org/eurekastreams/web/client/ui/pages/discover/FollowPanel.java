@@ -20,7 +20,10 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.FollowerStatusable;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.model.GroupMembersModel;
+import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -37,6 +40,21 @@ import com.google.gwt.user.client.ui.Label;
 public class FollowPanel extends FlowPanel
 {
     /**
+     * The unfollow link.
+     */
+    private final Label unfollowLink = new Label("");
+
+    /**
+     * The follow link.
+     */
+    private final Label followLink = new Label("");
+
+    /**
+     * A style name to switch this state to after the user requests access to a private group.
+     */
+    private String pendingGroupJoinedStateStyleName;
+
+    /**
      * Constructor.
      * 
      * @param inFollowable
@@ -45,7 +63,7 @@ public class FollowPanel extends FlowPanel
     public FollowPanel(final FollowerStatusable inFollowable)
     {
         this(inFollowable, null, StaticResourceBundle.INSTANCE.coreCss().unFollowLink(), StaticResourceBundle.INSTANCE
-                .coreCss().followLink(), false, null);
+                .coreCss().followLink(), false, (ClickHandler) null, (String) null);
     }
 
     /**
@@ -61,11 +79,15 @@ public class FollowPanel extends FlowPanel
      *            Style for both buttons.
      * @param showTooltips
      *            Show tooltips.
+     * @param inPendingGroupJoinedStateStyleName
+     *            style name to show pending group join
      */
     public FollowPanel(final FollowerStatusable inFollowable, final String followStyle, final String unfollowStyle,
-            final String commonStyle, final boolean showTooltips)
+            final String commonStyle, final boolean showTooltips, final String inPendingGroupJoinedStateStyleName)
     {
-        this(inFollowable, followStyle, unfollowStyle, commonStyle, showTooltips, null);
+        this(inFollowable, followStyle, unfollowStyle, commonStyle, showTooltips, (ClickHandler) null,
+                inPendingGroupJoinedStateStyleName);
+        pendingGroupJoinedStateStyleName = inPendingGroupJoinedStateStyleName;
     }
 
     /**
@@ -83,9 +105,12 @@ public class FollowPanel extends FlowPanel
      *            Show tooltips.
      * @param onFollowHandler
      *            additional handler to call on follow.
+     * @param inPendingGroupJoinedStateStyleName
+     *            style name to show pending group join
      */
     public FollowPanel(final FollowerStatusable inFollowable, final String followStyle, final String unfollowStyle,
-            final String commonStyle, final boolean showTooltips, final ClickHandler onFollowHandler)
+            final String commonStyle, final boolean showTooltips, final ClickHandler onFollowHandler,
+            final String inPendingGroupJoinedStateStyleName)
     {
         FollowerStatus status = inFollowable.getFollowerStatus();
 
@@ -94,9 +119,7 @@ public class FollowPanel extends FlowPanel
             return;
         }
 
-        final Label unfollowLink = new Label("");
         unfollowLink.setVisible(false);
-        final Label followLink = new Label("");
         followLink.setVisible(false);
 
         if (showTooltips)
@@ -163,7 +186,35 @@ public class FollowPanel extends FlowPanel
                 }
                 else if (inFollowable.getEntityType() == EntityType.GROUP)
                 {
-                    GroupMembersModel.getInstance().insert(request);
+                    if (inFollowable instanceof DomainGroupModelView
+                            && !((DomainGroupModelView) inFollowable).isPublic()
+                            && !Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+                    {
+                        // private group, we're not admin - request access
+                        GroupMembershipRequestModel.getInstance().insert(inFollowable.getUniqueId());
+
+                        if (pendingGroupJoinedStateStyleName != null)
+                        {
+                            // the page gave us a style to switch to to show pending state
+                            if (followLink != null)
+                            {
+                                followLink.setVisible(false);
+                            }
+                            if (unfollowLink != null)
+                            {
+                                unfollowLink.setVisible(false);
+                            }
+                            clear();
+                            Label newLabel = new Label("");
+                            newLabel.setStyleName(pendingGroupJoinedStateStyleName);
+                            add(newLabel);
+                        }
+                    }
+                    else
+                    {
+                        // public group - join
+                        GroupMembersModel.getInstance().insert(request);
+                    }
                 }
 
                 unfollowLink.setVisible(true);
@@ -190,4 +241,5 @@ public class FollowPanel extends FlowPanel
             break;
         }
     }
+
 }
