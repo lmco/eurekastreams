@@ -24,14 +24,14 @@ import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 /**
  * DB mapper for getting {@link FeaturedStreamDTO}s. NOTE these are not full {@link FeaturedStreamDTO}s, just the
  * cachable version excluding per-request info such as following status and dynamic info like avatar id.
- * 
+ *
  */
 public class GetFeaturedStreamDTOsDbMapper extends BaseArgDomainMapper<MapperRequest, List<FeaturedStreamDTO>>
 {
 
     /**
      * Return list of {@link FeaturedStreamDTO}s.
-     * 
+     *
      * @param inRequest
      *            ignored.
      * @return {@link FeaturedStreamDTO}s from DB, ordered by date desc.

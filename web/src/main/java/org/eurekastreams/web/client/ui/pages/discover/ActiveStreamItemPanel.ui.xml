@@ -4,9 +4,25 @@
 
 	<ui:with field="coreCss"
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+	
+	<ui:image field="request" src="style/images/request.png" />
+	<ui:image field="requestHov" src="style/images/requestHov.png" />
+	<ui:image field="requestPen" src="style/images/requestPending.png" />
+		
 
 	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.ActiveStreamItemPanel.LocalStyle">
 		.main {}
+		
+		@sprite .request{
+			gwt-image:"request";
+		}
+		@sprite .request:hover{
+			gwt-image:"requestHov";
+		}
+		@sprite .pending{
+			gwt-image:"requestPen";
+		}
+		
 		.stream-avatar img {
 			border: none;
 			background-image: url(style/images/avatarBackground.png);

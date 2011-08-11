@@ -196,11 +196,9 @@
 		</div>
 
 		<div class="{style.createGroupArea}">
-			<div class="{style.createGroupText}">Duis condimentum tempor odio eget venenatis. Nullam
-				placerat scelerisque nulla. Duis faucibus ornare massa ac viverra.
-				Proin at massa quis velit semper fermentum. Donec ultricies
-				fermentum convallis. Donec varius eros ut sapien lobortis ut
-				vulputate.</div>
+			<div class="{style.createGroupText}">Group Streams allow you to collaborate with individuals in a team, 
+			or centered around a special interest group or topic. If you can't find a business relevant group you're 
+			looking for, or need one for your team, create a group by clicking the button below.</div>
 			<g:Hyperlink addStyleNames="{style.createGroupButton}" ui:field="createGroupButton" />
 		</div>
 	</g:HTMLPanel>

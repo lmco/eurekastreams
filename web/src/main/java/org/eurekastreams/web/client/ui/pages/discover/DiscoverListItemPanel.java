@@ -21,6 +21,8 @@ import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BlockedSuggestionModel;
@@ -85,6 +87,14 @@ public class DiscoverListItemPanel extends Composite
      */
     interface LocalStyle extends CssResource
     {
+        /** @return Button style. */
+        @ClassName("request-button")
+        String requestButton();
+
+        /** @return Button style. */
+        @ClassName("pending-button")
+        String pendingButton();
+
         /** @return Apply to the follow panel to allow custom styling. */
         @ClassName("follow-controls-panel")
         String followControlsPanel();
@@ -203,23 +213,38 @@ public class DiscoverListItemPanel extends Composite
         if (inStreamDTO.getEntityType() != EntityType.PERSON
                 || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            FollowPanel followPanel = null;
-
+            final FollowPanel followPanel;
+            ClickHandler clickHandler = null;
             if (showBlockSuggestion)
             {
-                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
-                        coreCss.buttonLabel(), true, new ClickHandler()
-                        {
-                            public void onClick(final ClickEvent event)
-                            {
-                                removeFromParent();
-                            }
-                        });
+                // NOTE: this is a hack - this doesn't have anything to do with blocking suggestions, it just happens
+                // that the only list that removes streams after joining them happens to be the one that allows streams
+                // to be blocked
+                clickHandler = new ClickHandler()
+                {
+                    public void onClick(final ClickEvent event)
+                    {
+                        removeFromParent();
+                    }
+                };
+            }
+
+            // it's not the current user - see if it's a private group, and if we're not admin
+            if (inStreamDTO.getEntityType() == EntityType.GROUP && inStreamDTO instanceof DomainGroupModelView
+                    && ((DomainGroupModelView) inStreamDTO).isPublic() != null
+                    && !((DomainGroupModelView) inStreamDTO).isPublic()
+                    && !Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+            {
+                // this is a private group and we're not an admin, so we gotta request access
+                // note: no click handler since you can't join this group - just show it as pending
+                followPanel = new FollowPanel(inStreamDTO, style.requestButton(), style.unfollowButton(),
+                        coreCss.buttonLabel(), true, style.pendingButton());
             }
             else
             {
+                // either not a private group, or we're admin and it doesn't matter - just show join/unjoin
                 followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
-                        coreCss.buttonLabel(), true);
+                        coreCss.buttonLabel(), true, clickHandler, null);
             }
 
             if (!showBlockSuggestion)

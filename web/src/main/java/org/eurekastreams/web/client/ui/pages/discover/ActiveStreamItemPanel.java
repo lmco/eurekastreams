@@ -18,6 +18,8 @@ package org.eurekastreams.web.client.ui.pages.discover;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
@@ -48,6 +50,14 @@ public class ActiveStreamItemPanel extends Composite
      */
     interface LocalStyle extends CssResource
     {
+        /** @return Button style. */
+        @ClassName("request")
+        String request();
+
+        /** @return Button style. */
+        @ClassName("pending")
+        String pending();
+
         /** @return Apply to the follow panel to allow custom styling. */
         String followPanel();
     }
@@ -78,7 +88,7 @@ public class ActiveStreamItemPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamDTO
      *            the streamDTO to represent
      */
@@ -94,7 +104,21 @@ public class ActiveStreamItemPanel extends Composite
         if (inStreamDTO.getEntityType() != EntityType.PERSON
                 || inStreamDTO.getEntityId() != Session.getInstance().getCurrentPerson().getEntityId())
         {
-            Widget followPanel = new FollowPanel(inStreamDTO);
+            final Widget followPanel;
+            // it's not the current user - see if it's a private group, and if we're not admin
+            if (inStreamDTO.getEntityType() == EntityType.GROUP && inStreamDTO instanceof DomainGroupModelView
+                    && ((DomainGroupModelView) inStreamDTO).isPublic() != null
+                    && !((DomainGroupModelView) inStreamDTO).isPublic()
+                    && !Session.getInstance().getCurrentPerson().getRoles().contains(Role.SYSTEM_ADMIN))
+            {
+                // this is a private group and we're not an admin, so we gotta request access
+                followPanel = new FollowPanel(inStreamDTO, style.request(), StaticResourceBundle.INSTANCE.coreCss()
+                        .unFollowLink(), StaticResourceBundle.INSTANCE.coreCss().followLink(), false, style.pending());
+            }
+            else
+            {
+                followPanel = new FollowPanel(inStreamDTO);
+            }
             followPanel.addStyleName(style.followPanel());
             infoPanel.add(followPanel);
         }
