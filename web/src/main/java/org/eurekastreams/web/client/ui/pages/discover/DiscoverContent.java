@@ -202,7 +202,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Build the page.
-     *
+     * 
      * @param inDiscoverLists
      *            the data to display
      */
@@ -306,7 +306,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     *
+     * 
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.
