@@ -17,10 +17,10 @@
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
 
 	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.DiscoverListItemPanel.LocalStyle">
-	@sprite .locked-button{
+	@sprite .request-button{
 		gwt-image:"lockedButton";
 	}
-	@sprite .request-button{
+	@sprite .request-button:hover{
 		gwt-image:"requestButton";
 	}
 	@sprite .pending-button{
