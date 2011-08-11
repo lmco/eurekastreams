@@ -85,6 +85,18 @@ public class DiscoverListItemPanel extends Composite
      */
     interface LocalStyle extends CssResource
     {
+        /** @return Button style. */
+        @ClassName("locked-button")
+        String lockedButton();
+
+        /** @return Button style. */
+        @ClassName("request-button")
+        String requestButton();
+
+        /** @return Button style. */
+        @ClassName("pending-button")
+        String pendingButton();
+
         /** @return Apply to the follow panel to allow custom styling. */
         @ClassName("follow-controls-panel")
         String followControlsPanel();
@@ -100,18 +112,6 @@ public class DiscoverListItemPanel extends Composite
         /** @return Button style. */
         @ClassName("block-button")
         String blockButton();
-
-        /** @return Button style. */
-        @ClassName("request-access-button-small")
-        String requestAccessButtonSmall();
-
-        // /** @return Button style. */
-        // @ClassName("pending-access-button-small")
-        // String requestAccessButtonPendingSmall();
-        //
-        // /** @return Button style. */
-        // @ClassName("private-group-lock-small")
-        // String privateGroupLockSmall();
 
         /** @return When multiple controls are in the follower controls panel. */
         String multi();
@@ -135,7 +135,7 @@ public class DiscoverListItemPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -148,7 +148,7 @@ public class DiscoverListItemPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamDTO
      *            the streamDTO to represent
      * @param inListItemType
@@ -219,19 +219,19 @@ public class DiscoverListItemPanel extends Composite
 
             if (showBlockSuggestion)
             {
-                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(), coreCss
-                        .buttonLabel(), true, new ClickHandler()
-                {
-                    public void onClick(final ClickEvent event)
-                    {
-                        removeFromParent();
-                    }
-                });
+                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
+                        coreCss.buttonLabel(), true, new ClickHandler()
+                        {
+                            public void onClick(final ClickEvent event)
+                            {
+                                removeFromParent();
+                            }
+                        });
             }
             else
             {
-                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(), coreCss
-                        .buttonLabel(), true);
+                followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
+                        coreCss.buttonLabel(), true);
             }
 
             // Panel p1 = new FlowPanel();

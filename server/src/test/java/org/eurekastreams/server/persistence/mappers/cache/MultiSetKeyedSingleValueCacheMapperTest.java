@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,9 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *  Tests refreshing a collection with one item.
+ * Tests MultiSetKeyedSingleValueCacheMapper.
  */
-public class SetKeyedSingleItemCollectionCacheMapperTest
+public class MultiSetKeyedSingleValueCacheMapperTest
 {
     /** Test data. */
     private static final String KEY_PREFIX = "MyPrefix:";
@@ -36,7 +37,7 @@ public class SetKeyedSingleItemCollectionCacheMapperTest
     private static final List<Integer> KEYS = Collections.singletonList(42);
 
     /** Test data. */
-    private static final String CACHE_KEY = KEY_PREFIX + KEYS.get(0);
+    private static final String CACHE_KEY = makeKey(KEYS.get(0));
 
     /** Test data. */
     private static final List<Long> CACHE_DATA = Collections.singletonList(1L);
@@ -45,7 +46,19 @@ public class SetKeyedSingleItemCollectionCacheMapperTest
     private SimpleMemoryCache cache;
 
     /** SUT. */
-    private SetKeyedSingleItemCollectionCacheMapper<Integer> sut;
+    private MultiSetKeyedSingleValueCacheMapper<Integer> sut;
+
+    /**
+     * Creates a key.
+     *
+     * @param suffix
+     *            Key suffix.
+     * @return Key.
+     */
+    private static String makeKey(final Integer suffix)
+    {
+        return KEY_PREFIX + suffix;
+    }
 
     /**
      * Setup before each test.
@@ -54,7 +67,7 @@ public class SetKeyedSingleItemCollectionCacheMapperTest
     public void setUp()
     {
         cache = new SimpleMemoryCache();
-        sut = new SetKeyedSingleItemCollectionCacheMapper<Integer>(KEY_PREFIX);
+        sut = new MultiSetKeyedSingleValueCacheMapper<Integer>(KEY_PREFIX);
         sut.setCache(cache);
     }
 
@@ -62,10 +75,10 @@ public class SetKeyedSingleItemCollectionCacheMapperTest
      * Tests refreshing.
      */
     @Test
-    public void testRefreshNew()
+    public void testRefreshSingleNew()
     {
         sut.refresh(KEYS, CACHE_DATA);
-        
+
         assertEquals(CACHE_DATA.get(0), cache.get(CACHE_KEY));
     }
 
@@ -73,15 +86,54 @@ public class SetKeyedSingleItemCollectionCacheMapperTest
      * Tests refreshing.
      */
     @Test
-    public void testRefreshOverwrite()
+    public void testRefreshSingleOverwrite()
     {
         Long oldData = 4L;
-        
+
         cache.set(CACHE_KEY, oldData);
         assertEquals(oldData, cache.get(CACHE_KEY));
 
         sut.refresh(KEYS, CACHE_DATA);
 
         assertEquals(CACHE_DATA.get(0), cache.get(CACHE_KEY));
+    }
+
+    /**
+     * Tests refreshing.
+     */
+    @Test
+    public void testRefreshMultiNew()
+    {
+        List<Integer> keys = Arrays.asList(2, 4, 6, 8);
+        List<Long> values = Arrays.asList(3L, 5L, 7L, 9L);
+
+        sut.refresh(keys, values);
+
+        for (int i = 0; i < 4; i++)
+        {
+            assertEquals(values.get(i), cache.get(makeKey(keys.get(i))));
+        }
+    }
+
+    /**
+     * Tests refreshing.
+     */
+    @Test
+    public void testRefreshMultiOverwrite()
+    {
+        List<Integer> keys = Arrays.asList(2, 4, 6, 8);
+        List<Long> values = Arrays.asList(3L, 5L, 7L, 9L);
+
+        for (int i = 0; i < 4; i++)
+        {
+            cache.set(makeKey(keys.get(i)), 1L);
+        }
+
+        sut.refresh(keys, values);
+
+        for (int i = 0; i < 4; i++)
+        {
+            assertEquals(values.get(i), cache.get(makeKey(keys.get(i))));
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,17 +40,29 @@ public class GetIdsFromPointersDbMapperTest extends MapperTest
         sut.setEntityManager(getEntityManager());
         final Long fordId = 42L;
         final Long ford2Id = 142L;
+        final Long csaganId = 4507L;
+        final Long smithersId = 98L;
+        final Long mrburnsId = 99L;
 
         List<String> accountIds = new ArrayList<String>();
         accountIds.add("fordp");
         accountIds.add("fordp2");
+        accountIds.add("DOESNOTEXIST1");
+        accountIds.add("mrburns");
+        accountIds.add("smithers");
+        accountIds.add("DOESNOTEXIST2");
+        accountIds.add("csagan");
 
         List<Long> results = sut.execute(accountIds);
-        assertEquals(2, results.size());
-        System.out.println(results.get(0));
-        System.out.println(results.get(1));
-        assertTrue(results.contains(fordId));
-        assertTrue(results.contains(ford2Id));
+        System.out.println(results);
+        assertEquals(7, results.size());
+        assertEquals(fordId, results.get(0));
+        assertEquals(ford2Id, results.get(1));
+        assertNull(results.get(2));
+        assertEquals(mrburnsId, results.get(3));
+        assertEquals(smithersId, results.get(4));
+        assertNull(results.get(5));
+        assertEquals(csaganId, results.get(6));
     }
 
     /**
@@ -66,7 +78,10 @@ public class GetIdsFromPointersDbMapperTest extends MapperTest
         accountIds.add("xxx");
         accountIds.add("yyy");
 
-        assertEquals(0, sut.execute(accountIds).size());
+        List<Long> results = sut.execute(accountIds);
+        assertEquals(2, results.size());
+        assertNull(results.get(0));
+        assertNull(results.get(1));
     }
 
     /**
