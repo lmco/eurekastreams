@@ -30,9 +30,9 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.Identifiable;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 
 /**
@@ -267,7 +267,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * A person's interests - null if not set, empty list if none.
      */
     private List<String> interests = null;
-
 
     /**
      * Banner id.
@@ -547,6 +546,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * 
      * @return the dateAdded
      */
+    @Override
     public Date getDateAdded()
     {
         return dateAdded;
@@ -610,6 +610,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * 
      * @return the title
      */
+    @Override
     public String getTitle()
     {
         return title;
@@ -703,6 +704,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * @param inDisplayName
      *            the displayName to set
      */
+    @Override
     public void setDisplayName(final String inDisplayName)
     {
         displayName = inDisplayName;
@@ -768,6 +770,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return the streamId
      */
+    @Override
     public long getStreamId()
     {
         return streamId;
@@ -1226,7 +1229,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         interests = inInterests;
     }
-    
+
     /**
      * @see org.eurekastreams.server.domain.Bannerable#getBannerEntityId()
      * @return the Person id
@@ -1314,6 +1317,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return the streamScopeId
      */
+    @Override
     public Long getStreamScopeId()
     {
         return streamScopeId;
@@ -1326,5 +1330,16 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setStreamScopeId(final Long inStreamScopeId)
     {
         streamScopeId = inStreamScopeId;
+    }
+
+    /**
+     * Get whether this stream is public (always true for Person).
+     * 
+     * @return true
+     */
+    @Override
+    public Boolean isPublic()
+    {
+        return true;
     }
 }

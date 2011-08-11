@@ -4,7 +4,7 @@
 
 	<ui:with field="coreCss"
 		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
-
+		
 	<ui:style type="org.eurekastreams.web.client.ui.pages.discover.FeaturedStreamItemPanel.LocalStyle">
 		@external gwt-Label;
 		@external connection-item-info;

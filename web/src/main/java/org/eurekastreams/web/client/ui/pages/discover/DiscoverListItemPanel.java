@@ -226,23 +226,13 @@ public class DiscoverListItemPanel extends Composite
                             {
                                 removeFromParent();
                             }
-                        });
+                        }, null);
             }
             else
             {
                 followPanel = new FollowPanel(inStreamDTO, style.followButton(), style.unfollowButton(),
-                        coreCss.buttonLabel(), true);
+                        coreCss.buttonLabel(), true, null);
             }
-
-            // Panel p1 = new FlowPanel();
-            // p1.addStyleName(style.requestAccessButtonPendingSmall());
-            // main.add(p1);
-            // p1 = new FlowPanel();
-            // p1.addStyleName(style.requestAccessBtnPendingSmall());
-            // main.add(p1);
-            // p1 = new FlowPanel();
-            // p1.addStyleName(style.requestAccessBtnSmall());
-            // main.add(p1);
 
             if (!showBlockSuggestion)
             {
