@@ -22,10 +22,12 @@ import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -230,6 +232,13 @@ public class FollowPanel extends FlowPanel
                             newLabel.setStyleName(pendingGroupJoinedStateStyleName);
                             newLabel.setTitle("Access to this stream has been requested.");
                             add(newLabel);
+
+                            // show a notification
+                            Session.getInstance()
+                                    .getEventBus()
+                                    .notifyObservers(
+                                            new ShowNotificationEvent(new Notification(
+                                                    "Your request for access has been sent")));
                         }
                     }
                     else
