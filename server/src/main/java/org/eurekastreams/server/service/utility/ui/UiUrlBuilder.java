@@ -30,7 +30,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to a single activity.
-     *
+     * 
      * @param activityId
      *            The activity ID.
      * @return URL.
@@ -42,7 +42,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to an entity's profile.
-     *
+     * 
      * @param entity
      *            Entity.
      * @return URL.
@@ -54,7 +54,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to an entity's profile.
-     *
+     * 
      * @param type
      *            Entity type.
      * @param uniqueId
@@ -76,7 +76,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to the flagged activity review page.
-     *
+     * 
      * @return URL.
      */
     public static String relativeUrlForFlaggedActivity()
@@ -86,7 +86,7 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to the pending group approval page.
-     *
+     * 
      * @return URL.
      */
     public static String relativeUrlForPendingGroupRequest()
@@ -96,14 +96,13 @@ public final class UiUrlBuilder
 
     /**
      * Returns the relative URL to the group access approval page.
-     *
+     * 
      * @param uniqueId
      *            Group unique id.
      * @return URL.
      */
     public static String relativeUrlForGroupAccessRequest(final String uniqueId)
     {
-        // TODO: Need the correct page or tab on the page
-        return "#groupsettings/" + uniqueId;
+        return "#activity/group/" + uniqueId;
     }
 }
