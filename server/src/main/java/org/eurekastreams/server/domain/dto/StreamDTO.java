@@ -49,4 +49,11 @@ public interface StreamDTO extends Followable, DisplayInfoSettable
      * @return the stream scope id.
      */
     Long getStreamScopeId();
+
+    /**
+     * Whether the stream is public.
+     * 
+     * @return whether the stream is public
+     */
+    Boolean isPublic();
 }

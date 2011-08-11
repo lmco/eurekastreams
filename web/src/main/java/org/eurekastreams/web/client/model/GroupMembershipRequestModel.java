@@ -56,9 +56,11 @@ public class GroupMembershipRequestModel extends BaseModel implements Fetchable<
                 {
                     public void onSuccess(final PagedSet<PersonModelView> response)
                     {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotRequestForGroupMembershipResponseEvent(inRequest.getGroupId(), inRequest
-                                        .getGroupShortName(), response));
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new GotRequestForGroupMembershipResponseEvent(inRequest.getGroupId(),
+                                                inRequest.getGroupShortName(), response));
                     }
                 }, inUseClientCacheIfAvailable);
     }
@@ -72,8 +74,8 @@ public class GroupMembershipRequestModel extends BaseModel implements Fetchable<
         {
             public void onSuccess(final Boolean response)
             {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new DeletedRequestForGroupMembershipResponseEvent(inRequest, response));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new DeletedRequestForGroupMembershipResponseEvent(inRequest, response));
             }
         });
     }
@@ -88,8 +90,10 @@ public class GroupMembershipRequestModel extends BaseModel implements Fetchable<
                 {
                     public void onSuccess(final Boolean response)
                     {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new InsertedRequestForGroupMembershipResponseEvent(inRequest, response));
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new InsertedRequestForGroupMembershipResponseEvent(inRequest, response));
                     }
                 });
     }
