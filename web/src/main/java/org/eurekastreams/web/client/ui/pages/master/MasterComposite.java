@@ -24,10 +24,12 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GetTutorialVideoResponseEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
+import org.eurekastreams.web.client.events.UpdateRawHistoryEvent;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
@@ -228,11 +230,18 @@ public class MasterComposite extends Composite
                         mainContents.remove(banner);
                         notifier.setVisible(false);
                         contentPanel.clear();
-                        factory.createPage(event.getPage(), event.getViews(), contentPanel);
+                        String redirect = factory.createPage(event.getPage(), event.getViews(), contentPanel);
                         currentPage = event.getPage();
                         currentViews = event.getViews();
                         pageHasBeenLoaded = true;
-                        TutorialVideoModel.getInstance().fetch(null, true);
+                        if (redirect == null)
+                        {
+                            TutorialVideoModel.getInstance().fetch(null, true);
+                        }
+                        else
+                        {
+                            EventBus.getInstance().notifyObservers(new UpdateRawHistoryEvent(redirect));
+                        }
                     }
                 });
 
@@ -314,7 +323,7 @@ public class MasterComposite extends Composite
 
     /**
      * Sets Site labeling.
-     * 
+     *
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel

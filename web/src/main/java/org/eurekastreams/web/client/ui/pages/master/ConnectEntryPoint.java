@@ -128,7 +128,9 @@ public class ConnectEntryPoint implements EntryPoint
                         switch (ev.getPage())
                         {
                         case PEOPLE:
+                        case PEOPLE_LEGACY:
                         case GROUPS:
+                        case GROUPS_LEGACY:
                         case DISCOVER:
                             String url = mainAppLaunchUrl + Window.Location.getHash();
                             Window.open(url, "_blank", "");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,24 +21,27 @@ import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Generic mapper to set single values in cache for a list of input requests.
- * 
+ * Generic mapper to set multiple keyed single values in cache at one time. The keys come from the list of requests and
+ * the values come from the list of responses. IMPORTANT: There MUST be a 1-to-1 correspondence between the requests and
+ * the responses (rqst[i] must go with resp[i]) - both order and placeholders for missing values - else keys will be
+ * associated with the wrong values in cache!
+ *
  * @param <TRequestType>
  *            Request type; toString must return the value used in the cache key.
  */
-public class SetKeyedSingleItemCollectionCacheMapper<TRequestType> extends CachedDomainMapper implements
+public class MultiSetKeyedSingleValueCacheMapper<TRequestType> extends CachedDomainMapper implements
         RefreshStrategy<List<TRequestType>, List<Long>>
 {
     /** Prefix on the cache key. */
-    private String keyPrefix;
+    private final String keyPrefix;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inKeyPrefix
      *            Prefix on the cache key.
      */
-    public SetKeyedSingleItemCollectionCacheMapper(final String inKeyPrefix)
+    public MultiSetKeyedSingleValueCacheMapper(final String inKeyPrefix)
     {
         keyPrefix = inKeyPrefix;
     }
@@ -50,7 +53,7 @@ public class SetKeyedSingleItemCollectionCacheMapper<TRequestType> extends Cache
     {
         for (int i = 0; i < inRequest.size() && i < inResponse.size(); i++)
         {
-            getCache().set(keyPrefix + inRequest.get(i).toString(), inResponse.get(0));
+            getCache().set(keyPrefix + inRequest.get(i).toString(), inResponse.get(i));
         }
 
     }

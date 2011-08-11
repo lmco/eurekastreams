@@ -4705,7 +4705,8 @@ table.header-zone .dragdrop-positioner {
 }
 
 .stream-scope {
-	background: url(style/images/stream-scope-bg.png);
+	background-color: white;
+	border: 1px solid #999;
 	display: inline-block;
 	width: 103px;
 	height: 17px;
@@ -4952,6 +4953,7 @@ body .dragdrop-proxy {
 	text-indent: -1000em;
 	clear: both;
 	float: right;
+	margin-bottom: 1px;
 }
 
 @sprite .message-comment .post-button.inactive {
@@ -6366,13 +6368,15 @@ body div.eureka-connect-liked-activity-wrapper {
 		margin-top: -3px;
 		display: inline;
 		zoom: 1;
+		height: 20px;
+		line-height: 20px;
 	}
 	
 	.stream-scope {
 		display: inline;
 		zoom: 1;
 		position: relative;
-		top: 5px;
+		top: -5px;
 	}
 	
 	.share-message-dialog-body .stream-scope {
