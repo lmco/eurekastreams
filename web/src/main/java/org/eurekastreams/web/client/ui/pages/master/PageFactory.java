@@ -36,13 +36,12 @@ import org.eurekastreams.web.client.ui.pages.start.gallery.GalleryContent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Creates a page given a page and view.
- * 
+ *
  */
 public class PageFactory
 {
@@ -55,8 +54,9 @@ public class PageFactory
      *            the views.
      * @param contentPanel
      *            panel to add page to.
+     * @return Page to go to instead; null if no redirect.
      */
-    public void createPage(final Page page, final List<String> views, final FlowPanel contentPanel)
+    public String createPage(final Page page, final List<String> views, final FlowPanel contentPanel)
     {
         RootPanel.get().setStyleName("");
 
@@ -144,11 +144,9 @@ public class PageFactory
             contentPanel.add(new ActivityContent());
             break;
         case PEOPLE_LEGACY:
-            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
-            break;
+            return Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views));
         case GROUPS_LEGACY:
-            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
-            break;
+            return Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views));
         case PERSONAL_SETTINGS:
             Session.getInstance().setPageTitle("Settings");
             GWT.runAsync(new RunAsyncCallback()
@@ -164,7 +162,7 @@ public class PageFactory
             });
             break;
         case GROUP_SETTINGS:
-            Session.getInstance().setPageTitle("Settings");            
+            Session.getInstance().setPageTitle("Settings");
             GWT.runAsync(new RunAsyncCallback()
             {
                 public void onFailure(final Throwable reason)
@@ -220,14 +218,15 @@ public class PageFactory
             });
             break;
         case NOTIFICATION_SETTINGS:
-            Session.getInstance().setPageTitle("Notification Settings");            
+            Session.getInstance().setPageTitle("Notification Settings");
             contentPanel.add(new NotificationSettingsPage());
             break;
         default:
-            Session.getInstance().setPageTitle("Start Page");            
+            Session.getInstance().setPageTitle("Start Page");
             contentPanel.add(new StartPageContent());
             break;
         }
 
+        return null;
     }
 }
