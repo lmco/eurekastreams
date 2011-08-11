@@ -496,7 +496,7 @@
     
         <!-- Refresher -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.MultiSetKeyedSingleValueCacheMapper">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
                 <property name="cache" ref="memcachedCache" />
             </bean>
@@ -528,7 +528,7 @@
     
         <!-- Refresher -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.MultiSetKeyedSingleValueCacheMapper">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_OPEN_SOCIAL_ID" />
                 <property name="cache" ref="memcachedCache" />
             </bean>
@@ -561,7 +561,7 @@
     
         <!-- Refresher -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.MultiSetKeyedSingleValueCacheMapper">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_SHORT_NAME" />
                 <property name="cache" ref="memcachedCache" />
             </bean>
