@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -36,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Test for DisplayInfoSettableDataPopulator.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class DisplayInfoSettableDataPopulatorTest
@@ -54,20 +53,20 @@ public class DisplayInfoSettableDataPopulatorTest
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
-    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper = context.mock(
-            DomainMapper.class, "getPersonModelViewsByAccountIdsMapper");
+    private final DomainMapper<List<Long>, List<PersonModelView>> getPersonModelViewsByIdsMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewsByIdsMapper");
 
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
-    private GetItemsByPointerIds<DomainGroupModelView> getGroupModelViewsByShortNameMapper = context.mock(
-            GetItemsByPointerIds.class, "getGroupModelViewsByShortNameMapper");
+    private final DomainMapper<List<Long>, List<DomainGroupModelView>> getGroupModelViewsByIdsMapper = context.mock(
+            DomainMapper.class, "getGroupModelViewsByIdsMapper");
 
     /**
      * System under test.
      */
-    private DisplayInfoSettableDataPopulator sut = new DisplayInfoSettableDataPopulator(
-            getPersonModelViewsByAccountIdsMapper, getGroupModelViewsByShortNameMapper);
+    private final DisplayInfoSettableDataPopulator sut = new DisplayInfoSettableDataPopulator(
+            getPersonModelViewsByIdsMapper, getGroupModelViewsByIdsMapper);
 
     /**
      * Test.
@@ -75,30 +74,34 @@ public class DisplayInfoSettableDataPopulatorTest
     @Test
     public void test()
     {
-        String personUniqueKey = "personUniqueKey";
+        Long personId = 392L;
         String personDisplayName = "personDisplayName";
         String personAvatarId = "personAvatarId";
 
-        String groupUniqueKey = "groupUniqueKey";
+        Long groupId = 989L;
         String groupDisplayName = "groupDisplayName";
         String groupAvatarId = "groupAvatarId";
 
         FeaturedStreamDTO personStream = new FeaturedStreamDTO();
         FeaturedStreamDTO groupStream = new FeaturedStreamDTO();
         personStream.setStreamType(ScopeType.PERSON);
-        personStream.setStreamUniqueKey(personUniqueKey);
+        personStream.setStreamEntityId(personId);
+        personStream.setStreamUniqueKey("personA");
         groupStream.setStreamType(ScopeType.GROUP);
-        groupStream.setStreamUniqueKey(groupUniqueKey);
+        groupStream.setStreamEntityId(groupId);
+        groupStream.setStreamUniqueKey("groupA");
 
         final PersonModelView p = new PersonModelView();
+        p.setEntityId(personId);
         p.setDisplayName(personDisplayName);
-        p.setAccountId(personUniqueKey);
         p.setAvatarId("personAvatarId");
+        p.setAccountId("personA");
 
         final DomainGroupModelView g = new DomainGroupModelView();
+        g.setEntityId(groupId);
         g.setName(groupDisplayName);
-        g.setShortName(groupUniqueKey);
         g.setAvatarId(groupAvatarId);
+        g.setShortName("groupA");
 
         final List<DisplayInfoSettable> fsList = new ArrayList<DisplayInfoSettable>(Arrays.asList(personStream,
                 groupStream));
@@ -106,10 +109,10 @@ public class DisplayInfoSettableDataPopulatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
+                oneOf(getPersonModelViewsByIdsMapper).execute(with(any(List.class)));
                 will(returnValue(new ArrayList<PersonModelView>(Arrays.asList(p))));
 
-                oneOf(getGroupModelViewsByShortNameMapper).execute(with(any(List.class)));
+                oneOf(getGroupModelViewsByIdsMapper).execute(with(any(List.class)));
                 will(returnValue(new ArrayList<DomainGroupModelView>(Arrays.asList(g))));
             }
         });

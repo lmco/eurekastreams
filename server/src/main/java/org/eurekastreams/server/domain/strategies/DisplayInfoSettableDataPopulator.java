@@ -23,7 +23,6 @@ import java.util.Map;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -36,32 +35,32 @@ public class DisplayInfoSettableDataPopulator implements
     /**
      * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
-    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
+    private final DomainMapper<List<Long>, List<PersonModelView>> getPersonModelViewsByIdsMapper;
 
     /**
      * Mapper to get a list of DomainGroupModelViews from a list of group short names.
      */
-    private GetItemsByPointerIds<DomainGroupModelView> getGroupModelViewsByShortNameMapper;
+    private final DomainMapper<List<Long>, List<DomainGroupModelView>> getGroupModelViewsByIdsMapper;
 
     /**
      * Constructor.
-     * 
-     * @param inGetPersonModelViewsByAccountIdsMapper
-     *            Mapper to get a list of PersonModelViews from a list of AccountIds.
-     * @param inGetGroupModelViewsByShortNameMapper
-     *            Mapper to get a list of GroupModelViews from a list of group shortNames.
+     *
+     * @param inGetPersonModelViewsByIdsMapper
+     *            Mapper to get a list of PersonModelViews from a list of IDs.
+     * @param inGetGroupModelViewsByIdsMapper
+     *            Mapper to get a list of GroupModelViews from a list of group IDs.
      */
     public DisplayInfoSettableDataPopulator(
-            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
-            final GetItemsByPointerIds<DomainGroupModelView> inGetGroupModelViewsByShortNameMapper)
+            final DomainMapper<List<Long>, List<PersonModelView>> inGetPersonModelViewsByIdsMapper,
+            final DomainMapper<List<Long>, List<DomainGroupModelView>> inGetGroupModelViewsByIdsMapper)
     {
-        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
-        getGroupModelViewsByShortNameMapper = inGetGroupModelViewsByShortNameMapper;
+        getPersonModelViewsByIdsMapper = inGetPersonModelViewsByIdsMapper;
+        getGroupModelViewsByIdsMapper = inGetGroupModelViewsByIdsMapper;
     }
 
     /**
      * Populate transient data in DisplaySettables.
-     * 
+     *
      * @param inDisplaySettables
      *            the DTOs to update display settings for
      * @return Populated DisplayInfoSettable.
@@ -69,25 +68,25 @@ public class DisplayInfoSettableDataPopulator implements
     public List<DisplayInfoSettable> execute(final List<DisplayInfoSettable> inDisplaySettables)
     {
         // sort by entity type to optimize calls to cache.
-        List<String> personAccountIds = new ArrayList<String>();
-        List<String> groupShortNames = new ArrayList<String>();
+        List<Long> personIds = new ArrayList<Long>();
+        List<Long> groupIds = new ArrayList<Long>();
 
-        String uniqueKey;
+        Long id;
         for (DisplayInfoSettable ds : inDisplaySettables)
         {
-            uniqueKey = ds.getStreamUniqueKey();
+            id = ds.getEntityId();
             switch (ds.getEntityType())
             {
             case PERSON:
-                if (!personAccountIds.contains(uniqueKey))
+                if (!personIds.contains(id))
                 {
-                    personAccountIds.add(uniqueKey);
+                    personIds.add(id);
                 }
                 break;
             case GROUP:
-                if (!groupShortNames.contains(uniqueKey))
+                if (!groupIds.contains(id))
                 {
-                    groupShortNames.add(uniqueKey);
+                    groupIds.add(id);
                 }
                 break;
             default:
@@ -96,8 +95,8 @@ public class DisplayInfoSettableDataPopulator implements
         }
 
         // get group/person dtos from cache/db
-        List<PersonModelView> personDTOs = getPersonModelViewsByAccountIdsMapper.execute(personAccountIds);
-        List<DomainGroupModelView> groupDTOs = getGroupModelViewsByShortNameMapper.execute(groupShortNames);
+        List<PersonModelView> personDTOs = getPersonModelViewsByIdsMapper.execute(personIds);
+        List<DomainGroupModelView> groupDTOs = getGroupModelViewsByIdsMapper.execute(groupIds);
 
         // map the people and groups by short names
         Map<String, PersonModelView> peopleByAccountIdsMap = new HashMap<String, PersonModelView>();
