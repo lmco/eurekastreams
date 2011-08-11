@@ -405,7 +405,7 @@ div.banner-container {
 	height: 59px;
 }
 
-.footer-nav a, .footer-nav a:hover, .footer-nav .gwt-Label
+.footer-nav a, .footer-nav .gwt-Label
 {
 	color: #999999;
     display: block;
@@ -445,15 +445,6 @@ div.banner-container {
     top: -42px;	
     width: 600px;
     margin: 0 auto;
-}
-
-.footer-bar ul li div a,.footer-bar ul li div a:link,.footer-bar ul li div a:visited,.footer-bar ul li div a:hover,.footer-bar ul li div a:active
-	{
-	color: #666666;
-	text-decoration: none;
-	font-size: 11px;
-	margin-left: 15px;
-	padding-left: 15px;
 }
 
 .gwt-PopupPanel {
