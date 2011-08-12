@@ -56,7 +56,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inStreamName
      *            the stream name.
      * @param streamRequest
@@ -146,7 +146,7 @@ public class FollowDialogContent extends BaseDialogContent
 
         tips.add(new Label("These options allow you to control over how to access the activity of this stream."));
         tips.add(new Label(
-                "Don't worry, these selections are not permantent.  You can always change them in the future."));
+                "Don't worry, these selections are not permanent.  You can always change them in the future."));
 
         container.add(tips);
 
