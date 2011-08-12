@@ -45,6 +45,7 @@ import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamSearchBeginEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
+import org.eurekastreams.web.client.events.data.AddedFeaturedStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamBookmarks;
@@ -716,6 +717,16 @@ public class ActivityContent extends Composite
                         {
                             handleViewsChanged(Session.getInstance().getUrlViews());
                         }
+                    }
+                });
+
+        EventBus.getInstance().addObserver(AddedFeaturedStreamResponseEvent.class,
+                new Observer<AddedFeaturedStreamResponseEvent>()
+                {
+                    public void update(final AddedFeaturedStreamResponseEvent event)
+                    {
+                        EventBus.getInstance().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Stream has been featured.")));
                     }
                 });
 
