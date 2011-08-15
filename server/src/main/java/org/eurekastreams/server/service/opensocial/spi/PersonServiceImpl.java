@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,9 @@ import org.apache.shindig.social.opensocial.model.ListField;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
+import org.apache.shindig.social.opensocial.spi.GroupId.Type;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
-import org.apache.shindig.social.opensocial.spi.GroupId.Type;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -61,7 +61,7 @@ import com.google.inject.name.Named;
 /**
  * This class is the Eureka Streams implementation of the Shindig interface for retrieving OpenSocial information about
  * People.
- * 
+ *
  */
 public class PersonServiceImpl implements PersonService
 {
@@ -100,7 +100,7 @@ public class PersonServiceImpl implements PersonService
 
     /**
      * Basic constructor for the PersonService implementation.
-     * 
+     *
      * @param inGetPeopleAction
      *            - this is the GetPeopleAction that is injected into this class with Spring. This action is used to
      *            retrieve multiple person objects in a single request.
@@ -136,7 +136,7 @@ public class PersonServiceImpl implements PersonService
     /**
      * This is the implementation method to retrieve a number of people generally associated with a group or by a set of
      * userids.
-     * 
+     *
      * @param userIds
      *            - set of userids to retrieve.
      * @param groupId
@@ -147,9 +147,9 @@ public class PersonServiceImpl implements PersonService
      *            - fields to retrieve with these users.
      * @param token
      *            - security token for this request.
-     * 
+     *
      * @return instance of person
-     * 
+     *
      */
     @SuppressWarnings("unchecked")
     public Future<RestfulCollection<Person>> getPeople(final Set<UserId> userIds, final GroupId groupId,
@@ -221,14 +221,14 @@ public class PersonServiceImpl implements PersonService
     /**
      * This is the implementation of the getPerson method specified by Shindig. This is how Shindig's OpenSocial api
      * will interact with our database.
-     * 
+     *
      * @param id
      *            - userid making the request.
      * @param fields
      *            - set of fields to be retrieved with this request.
      * @param token
      *            - token that goes with this request.
-     * 
+     *
      * @return instance of Person object
      */
     public Future<Person> getPerson(final UserId id, final Set<String> fields, final SecurityToken token)
@@ -266,7 +266,7 @@ public class PersonServiceImpl implements PersonService
 
             // execute action.
             LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(
-                    (ServiceActionContext) ac, getPeopleAction);
+                    ac, getPeopleAction);
 
             if (people.size() > 0)
             {
@@ -279,9 +279,9 @@ public class PersonServiceImpl implements PersonService
 
             throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            log.error("Error occurred retrieving person " + e.getMessage());
+            log.error("Error occurred retrieving person.", ex);
 
             throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server Error");
         }
@@ -294,7 +294,7 @@ public class PersonServiceImpl implements PersonService
      * opensocial information about a user. The authentication is handled within shindig, not here. There may be a need
      * for an authorization strategy to not allow this access even if you have anonymous auth configured in shindig.
      * TODO: Put in authorization strategy for the underlying action.
-     * 
+     *
      * @param inSecurityToken
      *            - current security token for the request.
      * @return Principal object based on the security token or null if an anonymous request.
@@ -311,7 +311,7 @@ public class PersonServiceImpl implements PersonService
 
     /**
      * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
-     * 
+     *
      * @param inPerson
      *            - eurekastreams person to be converted.
      * @return converted person object.
