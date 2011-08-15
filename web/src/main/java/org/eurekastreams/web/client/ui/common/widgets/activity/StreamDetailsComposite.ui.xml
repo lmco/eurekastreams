@@ -289,6 +289,10 @@
 			@sprite .chart-empty {
 				gwt-image: "metricsEmpty";
 			}
+			
+			.group-contact-info {
+				word-wrap: break-word;
+			}
 		</ui:style>
 
 	<g:HTMLPanel>
