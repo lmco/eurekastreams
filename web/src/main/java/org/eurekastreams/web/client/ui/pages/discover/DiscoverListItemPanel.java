@@ -167,6 +167,7 @@ public class DiscoverListItemPanel extends Composite
                 new CreateUrlRequest(linkPage, inStreamDTO.getUniqueId()));
         streamNameLink.setTargetHistoryToken(nameUrl);
         streamNameLink.setText(inStreamDTO.getDisplayName());
+        streamNameLink.setTitle(inStreamDTO.getDisplayName());
 
         // set info text
         switch (inListItemType)
