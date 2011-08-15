@@ -29,8 +29,8 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
@@ -111,59 +111,63 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         * 
+         *
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         * 
+         *
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         * 
+         *
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         * 
+         *
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         * 
+         *
          * @return Private avatar.
          */
         String privateAvatar();
 
         /**
          * Hide details button.
-         * 
+         *
          * @return hide details button.
          */
         String hideDetails();
 
         /**
          * Featured item header link style.
-         * 
+         *
          * @return Featured item header link style.
          */
         String headerFeatured();
 
         /**
          * Empty detail style.
-         * 
+         *
          * @return Empty detail style.
          */
         String emptyDetailStyle();
+
+        /** @return Style for the group contact info link (website URL). */
+        @ClassName("group-contact-info")
+        String groupContactInfo();
     }
 
     /**
@@ -173,7 +177,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -777,7 +781,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set the stream title and avatar.
-     * 
+     *
      * @param inStreamTitle
      *            the title.
      * @param avatar
@@ -826,7 +830,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set Condensed mode.
-     * 
+     *
      * @param isCondensed
      *            condensed mode.
      */
@@ -845,7 +849,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Go the group.
-     * 
+     *
      * @param group
      *            the group.
      */
@@ -894,15 +898,18 @@ public class StreamDetailsComposite extends Composite
             contactInfoTitle.setInnerText("Website");
 
             String groupUrl = group.getUrl();
-            if (group.getUrl() == null || group.getUrl().length() == 0)
+            if (groupUrl == null || groupUrl.isEmpty())
             {
                 contactInfo.setInnerHTML("No contact information entered.");
                 contactInfo.addClassName(style.emptyDetailStyle());
             }
             else
             {
-                contactInfo.setInnerHTML("<a href=\"" + groupUrl + "\">" + group.getUrl() + "</a>");
+                // insert wbr tags to help IE break line somewhere nice.
+                String displayUrl = groupUrl.replaceAll("([/?&=]+)", "$1<wbr />");
+                contactInfo.setInnerHTML("<a href=\"" + groupUrl + "\">" + displayUrl + "</a>");
                 contactInfo.removeClassName(style.emptyDetailStyle());
+                contactInfo.addClassName(style.groupContactInfo());
             }
 
             updateFollowLink(group.getShortName(), EntityType.GROUP);
@@ -969,7 +976,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * 
+     *
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -1019,7 +1026,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     * 
+     *
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -1167,7 +1174,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     * 
+     *
      * @param inStatus
      *            status.
      */
@@ -1191,7 +1198,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Got the person.
-     * 
+     *
      * @param person
      *            the person.
      */
