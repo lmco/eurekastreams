@@ -18,11 +18,11 @@ package org.eurekastreams.web.client.ui.common.stream;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.AddedFeaturedStreamResponseEvent;
 import org.eurekastreams.web.client.model.FeaturedStreamModel;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
-import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -72,11 +72,17 @@ public class FeatureDialogContent extends BaseDialogContent
             {
                 featuredStreamDTO.setDescription(textArea.getValue());
                 FeaturedStreamModel.getInstance().insert(featuredStreamDTO);
-                EventBus.getInstance().notifyObservers(
-                        new ShowNotificationEvent(new Notification("Stream has been featured.")));
-                close();
             }
         });
+
+        EventBus.getInstance().addObserver(AddedFeaturedStreamResponseEvent.class,
+                new Observer<AddedFeaturedStreamResponseEvent>()
+                {
+                    public void update(final AddedFeaturedStreamResponseEvent event)
+                    {
+                        close();
+                    }
+                });
 
         container.add(body);
 

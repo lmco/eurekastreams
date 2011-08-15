@@ -29,14 +29,16 @@ import org.eurekastreams.server.domain.dto.FeaturedStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.actions.requests.UsageMetricStreamSummaryRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.GotStreamPopularHashTagsEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerResponseEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.data.AddedFeaturedStreamResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedFeaturedStreamResponse;
 import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
@@ -481,6 +483,11 @@ public class StreamDetailsComposite extends Composite
     private boolean inFeatured;
 
     /**
+     * FeaturedStreamDTO object representing current person/group.
+     */
+    private FeaturedStreamDTO currentFeaturedStreamDTO;
+
+    /**
      * Featured streams.
      */
     private PagedSet<FeaturedStreamDTO> featuredStreams;
@@ -602,11 +609,6 @@ public class StreamDetailsComposite extends Composite
         });
 
         addEvents();
-
-        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
-        {
-            FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
-        }
     }
 
     /**
@@ -648,52 +650,48 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
-                new Observer<GotUsageMetricSummaryEvent>()
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
+        {
+            public void update(final GotUsageMetricSummaryEvent event)
+            {
+                UsageMetricSummaryDTO data = event.getResponse();
+
+                List<DailyUsageSummary> stats = data.getDailyStatistics();
+
+                chart.setVisible(stats != null && stats.size() > 0);
+                chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
+
+                if (stats != null)
                 {
-                    public void update(final GotUsageMetricSummaryEvent event)
+                    for (int i = 0; i < stats.size(); i++)
                     {
-                        UsageMetricSummaryDTO data = event.getResponse();
-
-                        List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                        chart.setVisible(stats != null && stats.size() > 0);
-                        chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
-
-                        if (stats != null)
+                        if (null == stats.get(i))
                         {
-                            for (int i = 0; i < stats.size(); i++)
-                            {
-                                if (null == stats.get(i))
-                                {
-                                    chart.addPoint(i, 0.0);
-                                }
-                                else
-                                {
-                                    chart.addPoint(i, stats.get(i).getStreamViewCount());
-                                }
-                            }
+                            chart.addPoint(i, 0.0);
                         }
-
-                        avgComments.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyCommentPerActivityCount()));
-                        avgContributors.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyStreamContributorCount()));
-                        avgMessages.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyMessageCount()));
-                        avgViewers.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyStreamViewerCount()));
-                        avgViews.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyStreamViewCount()));
-
-                        totalContributors.setInnerText(""
-                                + NumberFormat.getDecimalFormat().format(data.getTotalContributorCount()));
-                        totalActivities.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getTotalActivityCount()));
-                        totalComments.setInnerText(NumberFormat.getDecimalFormat().format(data.getTotalCommentCount()));
-                        chart.update();
+                        else
+                        {
+                            chart.addPoint(i, stats.get(i).getStreamViewCount());
+                        }
                     }
-                });
+                }
+
+                avgComments.setInnerText(NumberFormat.getDecimalFormat().format(
+                        data.getAverageDailyCommentPerActivityCount()));
+                avgContributors.setInnerText(NumberFormat.getDecimalFormat().format(
+                        data.getAverageDailyStreamContributorCount()));
+                avgMessages.setInnerText(NumberFormat.getDecimalFormat().format(data.getAverageDailyMessageCount()));
+                avgViewers
+                        .setInnerText(NumberFormat.getDecimalFormat().format(data.getAverageDailyStreamViewerCount()));
+                avgViews.setInnerText(NumberFormat.getDecimalFormat().format(data.getAverageDailyStreamViewCount()));
+
+                totalContributors.setInnerText(""
+                        + NumberFormat.getDecimalFormat().format(data.getTotalContributorCount()));
+                totalActivities.setInnerText(NumberFormat.getDecimalFormat().format(data.getTotalActivityCount()));
+                totalComments.setInnerText(NumberFormat.getDecimalFormat().format(data.getTotalCommentCount()));
+                chart.update();
+            }
+        });
 
         EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
                 new Observer<GotFeaturedStreamsPageResponseEvent>()
@@ -701,6 +699,7 @@ public class StreamDetailsComposite extends Composite
                     public void update(final GotFeaturedStreamsPageResponseEvent response)
                     {
                         featuredStreams = response.getResponse();
+                        updateFeatureLink(currentFeaturedStreamDTO);
                     }
                 });
 
@@ -748,6 +747,32 @@ public class StreamDetailsComposite extends Composite
                         openAdmin();
                     }
                 }, true);
+
+        EventBus.getInstance().addObserver(AddedFeaturedStreamResponseEvent.class,
+                new Observer<AddedFeaturedStreamResponseEvent>()
+                {
+                    public void update(final AddedFeaturedStreamResponseEvent event)
+                    {
+                        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+                        {
+                            FeaturedStreamModel.getInstance().fetch(
+                                    new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+                        }
+                    }
+                });
+
+        EventBus.getInstance().addObserver(DeletedFeaturedStreamResponse.class,
+                new Observer<DeletedFeaturedStreamResponse>()
+                {
+                    public void update(final DeletedFeaturedStreamResponse event)
+                    {
+                        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+                        {
+                            FeaturedStreamModel.getInstance().fetch(
+                                    new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+                        }
+                    }
+                });
     }
 
     /**
@@ -839,7 +864,6 @@ public class StreamDetailsComposite extends Composite
         }
         else
         {
-
             streamId = group.getStreamId();
 
             boolean isCoordinator = false;
@@ -888,7 +912,12 @@ public class StreamDetailsComposite extends Composite
             featuredStreamDTO.setStreamType(ScopeType.GROUP);
             featuredStreamDTO.setDisplayName(group.getDisplayName());
 
-            updateFeatureLink(featuredStreamDTO);
+            currentFeaturedStreamDTO = featuredStreamDTO;
+
+            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+            {
+                FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+            }
 
             streamName.removeFromParent();
             streamName.setInnerText(group.getName());
@@ -946,7 +975,6 @@ public class StreamDetailsComposite extends Composite
      */
     public void updateFeatureLink(final FeaturedStreamDTO featuredStreamDTO)
     {
-
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
         {
             inFeatured = false;
@@ -954,8 +982,7 @@ public class StreamDetailsComposite extends Composite
 
             for (FeaturedStreamDTO featured : featuredStreams.getPagedSet())
             {
-                if (featured.getStreamId() == streamId
-                        && featured.getEntityType().equals(featuredStreamDTO.getEntityType()))
+                if (featured.getStreamId().longValue() == streamId.longValue())
                 {
                     inFeatured = true;
                     featuredStreamDTO.setId(featured.getId());
@@ -1026,14 +1053,16 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
-                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(
+                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
+                                Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
-                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(
+                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
+                                Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId,
                                 subscribeModel, entityId));
@@ -1046,16 +1075,14 @@ public class StreamDetailsComposite extends Composite
                 }
             });
 
-            Session.getInstance()
-                    .getEventBus()
-                    .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                            new Observer<GotPersonFollowerStatusResponseEvent>()
-                            {
-                                public void update(final GotPersonFollowerStatusResponseEvent event)
-                                {
-                                    onFollowerStatusChanged(event.getResponse());
-                                }
-                            });
+            Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
+                    new Observer<GotPersonFollowerStatusResponseEvent>()
+                    {
+                        public void update(final GotPersonFollowerStatusResponseEvent event)
+                        {
+                            onFollowerStatusChanged(event.getResponse());
+                        }
+                    });
 
             CurrentUserPersonFollowingStatusModel.getInstance().fetch(
                     new GetCurrentUserFollowingStatusRequest(entityId, type), true);
@@ -1195,7 +1222,12 @@ public class StreamDetailsComposite extends Composite
         featuredStreamDTO.setStreamType(ScopeType.PERSON);
         featuredStreamDTO.setDisplayName(person.getDisplayName());
 
-        updateFeatureLink(featuredStreamDTO);
+        currentFeaturedStreamDTO = featuredStreamDTO;
+
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN))
+        {
+            FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
+        }
 
         streamName.removeFromParent();
         streamName.setInnerText(person.getDisplayName());
