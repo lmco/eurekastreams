@@ -136,7 +136,7 @@ public class NotificationWidget extends Composite
         }
 
         AvatarUrlGenerator urlGen = new AvatarUrlGenerator(item.getAvatarOwnerType());
-        avatarUi.setSrc(urlGen.getSmallAvatarUrl(null, item.getAvatarId()));
+        avatarUi.setSrc(urlGen.getSmallAvatarUrl(item.getAvatarId()));
 
         if (item.getFilterCategory() == null)
         {

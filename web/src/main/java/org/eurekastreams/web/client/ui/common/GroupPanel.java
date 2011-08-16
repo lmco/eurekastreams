@@ -59,7 +59,7 @@ public class GroupPanel extends FlowPanel
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
 
-        add(new AvatarLinkPanel(EntityType.GROUP, group.getUniqueId(), group.getId(), group.getAvatarId(), Size.Small));
+        add(new AvatarLinkPanel(EntityType.GROUP, group.getUniqueId(), group.getAvatarId(), Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());

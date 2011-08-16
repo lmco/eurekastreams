@@ -53,7 +53,7 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
         groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
 
-        groupPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group.getEntityId(), group
+        groupPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
                 .getAvatarId(), Size.Small));
 
         FlowPanel groupAbout = new FlowPanel();

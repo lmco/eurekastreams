@@ -375,7 +375,7 @@ public class ApplicationEntryPoint implements EntryPoint
             {
                 PersonModelView result = dialogContent.getPerson();
                 AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                String imageUrl = urlGen.getSmallAvatarUrl(result.getId(), result.getAvatarId());
+                String imageUrl = urlGen.getSmallAvatarUrl(result.getAvatarId());
 
                 callEmployeeSelectedHandler(result.getAccountId(), result.getDisplayName(), imageUrl);
             }
@@ -436,8 +436,7 @@ public class ApplicationEntryPoint implements EntryPoint
                                 if (ntidList.contains(personMV.getAccountId()))
                                 {
                                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                                    String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(),
-                                            personMV.getAvatarId());
+                                    String imageUrl = urlGen.getSmallAvatarUrl(personMV.getAvatarId());
 
                                     JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
                                     personJSON.set(0, personMV.getAccountId());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,8 +77,7 @@ public class PersonPanel extends FlowPanel
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
 
-        add(new AvatarLinkPanel(EntityType.PERSON, person.getUniqueId(), person.getId(), person.getAvatarId(),
-                Size.Small));
+        add(new AvatarLinkPanel(EntityType.PERSON, person.getUniqueId(), person.getAvatarId(), Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());

@@ -78,14 +78,14 @@ public class FeaturedStreamItemPanel extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStreamDTO
      *            the streamDTO to represent
      */
     public FeaturedStreamItemPanel(final FeaturedStreamDTO inStreamDTO)
     {
         coreCss = StaticResourceBundle.INSTANCE.coreCss();
-        avatarPanel = new AvatarLinkPanel(inStreamDTO.getEntityType(), inStreamDTO.getUniqueId(), inStreamDTO.getId(),
+        avatarPanel = new AvatarLinkPanel(inStreamDTO.getEntityType(), inStreamDTO.getUniqueId(),
                 inStreamDTO.getAvatarId(), Size.Normal);
         Widget main = binder.createAndBindUi(this);
         initWidget(main);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class GlobalSearchComposite extends FlowPanel
     /**
      * Timer factory.
      */
-    private TimerFactory timerFactory = new TimerFactory();
+    private final TimerFactory timerFactory = new TimerFactory();
 
     /**
      * Hide delay after blur on post box.
@@ -97,7 +97,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param label
      *            the label for the uninitialized textbox.
      */
@@ -207,7 +207,7 @@ public class GlobalSearchComposite extends FlowPanel
                         {
                             final PersonModelView person = (PersonModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
-                                    .getEntityId(), person.getAvatarId(), Size.Small));
+                                    .getAvatarId(), Size.Small));
                             name.setText(person.getDisplayName());
                             name.setTitle(person.getDisplayName());
                             historyToken = Session.getInstance().generateUrl(
@@ -229,7 +229,7 @@ public class GlobalSearchComposite extends FlowPanel
                         {
                             final DomainGroupModelView group = (DomainGroupModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
-                                    .getEntityId(), group.getAvatarId(), Size.Small));
+                                    .getAvatarId(), Size.Small));
                             name.setText(group.getName());
                             name.setTitle(group.getName());
                             historyToken = Session.getInstance().generateUrl(
@@ -322,12 +322,12 @@ public class GlobalSearchComposite extends FlowPanel
         searchTerm.reset();
         resultsPanelContainer.setVisible(false);
         resultsPanel.clear();
-        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
+        removeStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
     }
 
     /**
      * Select an item.
-     * 
+     *
      * @param item
      *            the item.
      */
@@ -343,7 +343,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

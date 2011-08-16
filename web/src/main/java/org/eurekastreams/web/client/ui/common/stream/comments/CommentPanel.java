@@ -71,7 +71,7 @@ public class CommentPanel extends Composite
         commentContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
 
         commentContainer.add(new AvatarLinkPanel(EntityType.PERSON, comment.getAuthorAccountId(), comment
-                .getAuthorId(), comment.getAuthorAvatarId(), Size.VerySmall));
+                .getAuthorAvatarId(), Size.VerySmall));
 
         FlowPanel body = new FlowPanel();
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());

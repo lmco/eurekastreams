@@ -200,7 +200,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
     public Widget getImage(final String imageId)
     {
         entity.setAvatarId(imageId);
-        return new AvatarWidget(entity.getId(), imageId, entityType, AvatarWidget.Size.Normal);
+        return new AvatarWidget(imageId, entityType, AvatarWidget.Size.Normal);
     }
 
     /**

@@ -50,7 +50,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Constructor: Doesn't specify whose avatar, for setting dynamically later.
-     * 
+     *
      * @param size
      *            the avatar size.
      */
@@ -61,8 +61,86 @@ public class AvatarWidget extends Composite
     }
 
     /**
+     * Creates a generic avatar for the given entity type.
+     *
+     * @param type
+     *            the entity type.
+     * @param size
+     *            the avatar size.
+     */
+    public AvatarWidget(final EntityType type, final Size size)
+    {
+        this(size);
+        setAvatar(null, type);
+    }
+
+    /**
+     * Creates an avatar for the given entity.
+     *
+     * @param entity
+     *            the entity that has the avatar.
+     * @param type
+     *            the entity type.
+     * @param size
+     *            the avatar size.
+     */
+    public AvatarWidget(final AvatarEntity entity, final EntityType type, final Size size)
+    {
+        this(entity.getAvatarId(), type, size);
+    }
+
+    /**
+     * Creates an avatar for the given entity.
+     * @param avatarId
+     *            the ID of the avatar.
+     * @param type
+     *            the entity type.
+     * @param size
+     *            the avatar size.
+     */
+    public AvatarWidget(final String avatarId, final EntityType type, final Size size)
+    {
+        this(size);
+        setAvatar(avatarId, type);
+    }
+
+    /**
+     * Creates an avatar for the given entity.
+     * @param avatarId
+     *            the ID of the avatar.
+     * @param type
+     *            the entity type.
+     * @param size
+     *            the avatar size.
+     * @param title
+     *            the title.
+     */
+    public AvatarWidget(final String avatarId, final EntityType type, final Size size, final String title)
+    {
+        this(size);
+        setAvatar(avatarId, type, title);
+    }
+
+    /**
+     * Creates an avatar for the given entity.
+     *
+     * @param entity
+     *            the entity that has the avatar.
+     * @param type
+     *            the entity type.
+     * @param size
+     *            the avatar size.
+     * @param title
+     *            the title.
+     */
+    public AvatarWidget(final AvatarEntity entity, final EntityType type, final Size size, final String title)
+    {
+        this(entity.getAvatarId(), type, size, title);
+    }
+
+    /**
      * Set the size of the avatar.
-     * 
+     *
      * @param size
      *            the size;
      */
@@ -86,96 +164,20 @@ public class AvatarWidget extends Composite
     }
 
     /**
-     * Creates an avatar for the given entity.
-     * 
-     * @param entity
-     *            the entity that has the avatar.
-     * @param type
-     *            the entity type.
-     * @param size
-     *            the avatar size.
-     */
-    public AvatarWidget(final AvatarEntity entity, final EntityType type, final Size size)
-    {
-        this(entity.getId(), entity.getAvatarId(), type, size);
-    }
-
-    /**
-     * Creates an avatar for the given entity.
-     * 
-     * @param entityId
-     *            the entity ID.
+     * Sets the avatar to be for the given entity (for dynamically changing it).
+     *
      * @param avatarId
      *            the ID of the avatar.
      * @param type
      *            the entity type.
-     * @param size
-     *            the avatar size.
      */
-    public AvatarWidget(final long entityId, final String avatarId, final EntityType type, final Size size)
+    public void setAvatar(final String avatarId, final EntityType type)
     {
-        this(size);
-        setAvatar(entityId, avatarId, type);
-    }
-
-    /**
-     * Creates an avatar for the given entity.
-     * 
-     * @param entityId
-     *            the entity ID.
-     * @param avatarId
-     *            the ID of the avatar.
-     * @param type
-     *            the entity type.
-     * @param size
-     *            the avatar size.
-     * @param title
-     *            the title.
-     */
-    public AvatarWidget(final long entityId, final String avatarId, final EntityType type, final Size size,
-            final String title)
-    {
-        this(size);
-        setAvatar(entityId, avatarId, type, title);
-    }
-
-    /**
-     * Creates an avatar for the given entity.
-     * 
-     * @param entity
-     *            the entity that has the avatar.
-     * @param type
-     *            the entity type.
-     * @param size
-     *            the avatar size.
-     * @param title
-     *            the title.
-     */
-    public AvatarWidget(final AvatarEntity entity, final EntityType type, final Size size, final String title)
-    {
-        this(entity.getId(), entity.getAvatarId(), type, size, title);
+        setAvatar(avatarId, type, "");
     }
 
     /**
      * Sets the avatar to be for the given entity (for dynamically changing it).
-     * 
-     * @param entityId
-     *            the entity ID.
-     * @param avatarId
-     *            the ID of the avatar.
-     * @param type
-     *            the entity type.
-     */
-    public void setAvatar(final long entityId, final String avatarId, final EntityType type)
-    {
-        setAvatar(entityId, avatarId, type, "");
-    }
-
-    /**
-     * Sets the avatar to be for the given entity (for dynamically changing it).
-     * 
-     * @param entityId
-     *            the entity ID.
      * @param avatarId
      *            the ID of the avatar.
      * @param type
@@ -183,11 +185,11 @@ public class AvatarWidget extends Composite
      * @param title
      *            the title.
      */
-    public void setAvatar(final long entityId, final String avatarId, final EntityType type, final String title)
+    public void setAvatar(final String avatarId, final EntityType type, final String title)
     {
         AvatarUrlGenerator urlGen = new AvatarUrlGenerator(type);
-        String imageUrl = imageSize.equals(Size.Normal) ? urlGen.getNormalAvatarUrl(entityId, avatarId) : urlGen
-                .getSmallAvatarUrl(entityId, avatarId);
+        String imageUrl = imageSize.equals(Size.Normal) ? urlGen.getNormalAvatarUrl(avatarId) : urlGen
+                .getSmallAvatarUrl(avatarId);
         image.setUrl(imageUrl);
         if (title.length() > 0)
         {

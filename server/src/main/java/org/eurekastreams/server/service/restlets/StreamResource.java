@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,14 +45,14 @@ import org.restlet.resource.Variant;
 
 /**
  * REST end point for stream filters.
- * 
+ *
  */
 public class StreamResource extends SmpResource
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(StreamResource.class);
+    private final Log log = LogFactory.getLog(StreamResource.class);
 
     /**
      * Open Social Id. TODO: this should be eliminated when we have OAuth.
@@ -62,17 +62,17 @@ public class StreamResource extends SmpResource
     /**
      * Action.
      */
-    private ServiceAction action;
+    private final ServiceAction action;
 
     /**
      * Service Action Controller.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Principal populator.
      */
-    private PrincipalPopulator principalPopulator;
+    private final PrincipalPopulator principalPopulator;
 
     /**
      * JSONP Callback.
@@ -106,11 +106,11 @@ public class StreamResource extends SmpResource
     private long streamId;
 
     /** Extracts the query out of the request path. */
-    private RestletQueryRequestParser requestParser;
+    private final RestletQueryRequestParser requestParser;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inAction
      *            the action.
      * @param inServiceActionController
@@ -135,7 +135,7 @@ public class StreamResource extends SmpResource
 
     /**
      * init the params.
-     * 
+     *
      * @param request
      *            the request object.
      */
@@ -155,7 +155,7 @@ public class StreamResource extends SmpResource
 
     /**
      * GET the activites.
-     * 
+     *
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -202,10 +202,10 @@ public class StreamResource extends SmpResource
                 log.debug("Making request using: " + queryJson);
             }
 
-            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator.getPrincipal(
-                    openSocialId, ""));
+            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(),
+                    principalPopulator.getPrincipal(openSocialId, ""));
             PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
-                    (ServiceActionContext) ac, action);
+                    ac, action);
 
             responseJson.put("query", queryJson.getJSONObject("query"));
 
@@ -221,8 +221,7 @@ public class StreamResource extends SmpResource
                 jsonActivity.put("destinationDisplayName", activity.getDestinationStream().getDisplayName());
                 jsonActivity.put("destinationUniqueIdentifier", activity.getDestinationStream().getUniqueIdentifier());
                 jsonActivity.put("destinationType", activity.getDestinationStream().getType());
-                jsonActivity.put("actorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getActor().getId(), activity
-                        .getActor().getAvatarId()));
+                jsonActivity.put("actorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getActor().getAvatarId()));
                 jsonActivity.put("actorDisplayName", activity.getActor().getDisplayName());
                 jsonActivity.put("actorUniqueIdentifier", activity.getActor().getUniqueIdentifier());
                 jsonActivity.put("actorType", activity.getActor().getType());
@@ -230,8 +229,8 @@ public class StreamResource extends SmpResource
                 jsonActivity.put("postedTimeAgo", dateFormatter.timeAgo(activity.getPostedTime()));
                 jsonActivity.put("baseObjectType", activity.getBaseObjectType().toString());
                 jsonActivity.put("activityId", activity.getId());
-                jsonActivity.put("originalActorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getOriginalActor()
-                        .getId(), activity.getOriginalActor().getAvatarId()));
+                jsonActivity.put("originalActorAvatarPath",
+                        actorUrlGen.getSmallAvatarUrl(activity.getOriginalActor().getAvatarId()));
                 jsonActivity.put("originalActorActivityId", activity.getOriginalActor().getAvatarId());
                 jsonActivity.put("originalActorDisplayName", activity.getOriginalActor().getDisplayName());
                 jsonActivity.put("originalActorUniqueIdentifier", activity.getOriginalActor().getUniqueIdentifier());
@@ -272,7 +271,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Overrides the path.
-     * 
+     *
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -283,7 +282,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Get the path.
-     * 
+     *
      * @return the path.
      */
     public String getPath()

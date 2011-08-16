@@ -23,9 +23,9 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -77,6 +77,7 @@ import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SpinnerLabelButton;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarBadgeManager;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -136,70 +137,70 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         * 
+         *
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         * 
+         *
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         * 
+         *
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         * 
+         *
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         * 
+         *
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         * 
+         *
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         * 
+         *
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         * 
+         *
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         * 
+         *
          * @return small avatar style.
          */
         String smallAvatar();
 
         /**
          * Current user configure link.
-         * 
+         *
          * @return current user configure link.
          */
         String currentUserConfLink();
@@ -493,7 +494,7 @@ public class ActivityContent extends Composite
         final PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
 
         AvatarLinkPanel userAvatar = new AvatarLinkPanel(currentPerson.getEntityType(), currentPerson.getAccountId(),
-                currentPerson.getEntityId(), currentPerson.getAvatarId(), Size.Small, currentPerson.getDisplayName());
+                currentPerson.getAvatarId(), Size.Small, currentPerson.getDisplayName());
         userPanel.add(userAvatar);
 
         FlowPanel userLinkPanel = new FlowPanel();
@@ -523,7 +524,7 @@ public class ActivityContent extends Composite
 
     /**
      * Got activity.
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -831,11 +832,11 @@ public class ActivityContent extends Composite
 
                         for (PersonModelView coordinator : group.getCoordinators())
                         {
+                            AvatarBadgeManager.getInstance().setBadge(null, coordinator.getUniqueId());
                             if (coordinator.getAccountId().equals(
                                     Session.getInstance().getCurrentPerson().getAccountId()))
                             {
                                 isCoordinator = true;
-                                break;
                             }
                         }
                         if (!group.isStreamPostable() && !isCoordinator)
@@ -855,7 +856,7 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     * 
+     *
      * @param inViews
      *            the views.
      */
@@ -934,7 +935,7 @@ public class ActivityContent extends Composite
                                     urlGen = personUrlGen;
                                 }
 
-                                imgUrl = urlGen.getSmallAvatarUrl(filter.getOwnerEntityId(), filter.getOwnerAvatarId());
+                                imgUrl = urlGen.getSmallAvatarUrl(filter.getOwnerAvatarId());
 
                             }
                         }
@@ -1201,7 +1202,7 @@ public class ActivityContent extends Composite
 
     /**
      * Update subscription status consistently.
-     * 
+     *
      * @param inIsSubscribed
      *            New status.
      */
@@ -1214,7 +1215,7 @@ public class ActivityContent extends Composite
     /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     * 
+     *
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
@@ -1226,7 +1227,7 @@ public class ActivityContent extends Composite
 
     /**
      * Append a new message.
-     * 
+     *
      * @param message
      *            the messa.ge
      */
@@ -1240,7 +1241,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     * 
+     *
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1261,6 +1262,8 @@ public class ActivityContent extends Composite
 
         errorPanel.clear();
         errorPanel.setVisible(false);
+
+        AvatarBadgeManager.getInstance().clearBadges();
 
         singleActivityMode = false;
         activitySpinner.removeClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
@@ -1436,7 +1439,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     * 
+     *
      * @param panel
      *            the panel.
      */
@@ -1475,7 +1478,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     * 
+     *
      * @param name
      *            the name of the item.
      * @param view

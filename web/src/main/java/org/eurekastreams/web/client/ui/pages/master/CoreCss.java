@@ -1429,4 +1429,16 @@ public interface CoreCss extends CssResource
     String attachLinkErrorBox();
 
     String gadgetTitleLabel();
+
+    @ClassName("avatar-badge-overlay")
+    String avatarBadgeOverlay();
+
+    @ClassName("size-normal")
+    String sizeNormal();
+
+    @ClassName("size-small")
+    String sizeSmall();
+
+    @ClassName("size-very-small")
+    String sizeVerySmall();
 }

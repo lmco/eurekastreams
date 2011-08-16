@@ -138,42 +138,33 @@ public class AvatarUrlGenerator
 
     /**
      * Gets the original avatar url.
-     *
-     * @param entityId
-     *            the entity id.
      * @param avatarId
      *            the avatar id.
      * @return the avatar url.
      */
-    public String getOriginalAvatarUrl(final Long entityId, final String avatarId)
+    public String getOriginalAvatarUrl(final String avatarId)
     {
         return generateUrl(avatarId, "o");
     }
 
     /**
      * Gets the normal avatar url.
-     *
-     * @param entityId
-     *            the entity id.
      * @param avatarId
      *            the avatar id.
      * @return the url.
      */
-    public String getNormalAvatarUrl(final Long entityId, final String avatarId)
+    public String getNormalAvatarUrl(final String avatarId)
     {
         return generateUrl(avatarId, "n");
     }
 
     /**
      * Gets the small avatar url.
-     *
-     * @param entityId
-     *            the entity id.
      * @param avatarId
      *            the avatar id.
      * @return the url.
      */
-    public String getSmallAvatarUrl(final Long entityId, final String avatarId)
+    public String getSmallAvatarUrl(final String avatarId)
     {
         return generateUrl(avatarId, "s");
     }

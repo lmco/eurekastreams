@@ -39,8 +39,7 @@ public class AvatarRenderer
      */
     public Widget render(final StreamEntityDTO entity)
     {
-        return new AvatarLinkPanel(entity.getType(), entity.getUniqueIdentifier(), new AvatarWidget(entity.getId(),
-                entity.getAvatarId(), entity.getType(), Size.Small));
+        return new AvatarLinkPanel(entity.getType(), entity.getUniqueIdentifier(), entity.getAvatarId(), Size.Small);
     }
 
     /**
@@ -54,7 +53,7 @@ public class AvatarRenderer
      */
     public Widget render(final Long id, final String avatarId)
     {
-        AvatarWidget avatar = new AvatarWidget(id, avatarId, EntityType.PERSON, Size.Small);
+        AvatarWidget avatar = new AvatarWidget(avatarId, EntityType.PERSON, Size.Small);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }
@@ -72,7 +71,7 @@ public class AvatarRenderer
      */
     public Widget render(final Long id, final String avatarId, final EntityType type)
     {
-        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, Size.Small);
+        AvatarWidget avatar = new AvatarWidget(avatarId, type, Size.Small);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }
@@ -92,7 +91,7 @@ public class AvatarRenderer
      */
     public Widget render(final Long id, final String avatarId, final EntityType type, final Size size)
     {
-        AvatarWidget avatar = new AvatarWidget(id, avatarId, type, size);
+        AvatarWidget avatar = new AvatarWidget(avatarId, type, size);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }

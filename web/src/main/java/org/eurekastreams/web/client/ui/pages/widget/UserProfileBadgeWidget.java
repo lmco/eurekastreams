@@ -63,7 +63,7 @@ public class UserProfileBadgeWidget extends Composite
 
                         if (entity == null)
                         {
-                            final AvatarWidget blankAvatar = new AvatarWidget(0, null, EntityType.PERSON, Size.Normal);
+                            final AvatarWidget blankAvatar = new AvatarWidget(EntityType.PERSON, Size.Normal);
                             blankAvatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
                                     .eurekaConnectBadgeAvatar());
 
@@ -77,8 +77,7 @@ public class UserProfileBadgeWidget extends Composite
                         else
                         {
                             AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
-                                    new AvatarWidget(entity.getId(), entity.getAvatarId(), EntityType.PERSON,
-                                            Size.Normal));
+                                    entity.getAvatarId(), Size.Normal);
                             linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
 
                             widget.add(linkPanel);

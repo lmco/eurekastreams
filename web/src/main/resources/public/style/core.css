@@ -5997,6 +5997,28 @@ html,body {
 	margin: 10px;
 }
 
+.avatar-badge-overlay {
+	display: none;
+	position: absolute;
+}
+
+@sprite .avatar-badge-overlay.size-normal {
+	gwt-image: "coordinatorAvatarOverlayNormal";
+	margin-left: 53px;
+	margin-top: 53px;
+}
+
+@sprite .avatar-badge-overlay.size-small {
+	gwt-image: "coordinatorAvatarOverlaySmall";
+	margin-left: 28px;
+	margin-top: 28px;
+}
+
+@sprite .avatar-badge-overlay.size-very-small {
+	gwt-image: "coordinatorAvatarOverlayVerySmall";
+	margin-left: 13px;
+	margin-top: 13px;
+}
 
 /* ---------- Eureka Connect styling ---------- */
 

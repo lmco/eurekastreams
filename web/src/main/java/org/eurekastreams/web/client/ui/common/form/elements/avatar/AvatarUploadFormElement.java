@@ -260,7 +260,7 @@ public class AvatarUploadFormElement extends FlowPanel
                     // resize dialog, this method determines the avatar url and sets image url.
                     // The load event of that image being loaded will kick off the resize modal.
                     AvatarUrlGenerator urlGenerator = new AvatarUrlGenerator(EntityType.PERSON);
-                    hiddenImage.setUrl(urlGenerator.getOriginalAvatarUrl(strategy.getId(), avatarId));
+                    hiddenImage.setUrl(urlGenerator.getOriginalAvatarUrl(avatarId));
                 }
             });
             hiddenImage.addLoadHandler(new LoadHandler()

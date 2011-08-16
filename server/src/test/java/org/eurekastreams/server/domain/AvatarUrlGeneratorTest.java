@@ -55,9 +55,9 @@ public class AvatarUrlGeneratorTest
     public void getOriginalAvatarUrl()
     {
         String expected = "/eurekastreams/photos?img=oburrito";
-        String returned = personSut.getOriginalAvatarUrl(id, avatarId);
+        String returned = personSut.getOriginalAvatarUrl(avatarId);
         assertEquals(expected, returned);
-        returned = groupSut.getOriginalAvatarUrl(id, avatarId);
+        returned = groupSut.getOriginalAvatarUrl(avatarId);
         assertEquals(expected, returned);
     }
 
@@ -68,9 +68,9 @@ public class AvatarUrlGeneratorTest
     public void getNormalAvatarUrl()
     {
         String expected = "/eurekastreams/photos?img=nburrito";
-        String returned = personSut.getNormalAvatarUrl(id, avatarId);
+        String returned = personSut.getNormalAvatarUrl(avatarId);
         assertEquals(expected, returned);
-        returned = groupSut.getNormalAvatarUrl(id, avatarId);
+        returned = groupSut.getNormalAvatarUrl(avatarId);
         assertEquals(expected, returned);
     }
 
@@ -81,9 +81,9 @@ public class AvatarUrlGeneratorTest
     public void getSmallAvatarUrl()
     {
         String expected = "/eurekastreams/photos?img=sburrito";
-        String returned = personSut.getSmallAvatarUrl(id, avatarId);
+        String returned = personSut.getSmallAvatarUrl(avatarId);
         assertEquals(expected, returned);
-        returned = groupSut.getSmallAvatarUrl(id, avatarId);
+        returned = groupSut.getSmallAvatarUrl(avatarId);
         assertEquals(expected, returned);
     }
 

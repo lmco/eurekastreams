@@ -332,7 +332,7 @@ public class PersonServiceImpl implements PersonService
 
         AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
         osPerson.setThumbnailUrl(containerBaseUrl
-                + generator.getNormalAvatarUrl(inPerson.getId(), inPerson.getAvatarId()));
+                + generator.getNormalAvatarUrl(inPerson.getAvatarId()));
 
         osPerson.setAccounts(Collections.singletonList((Account) new AccountImpl(accountTopLevelDomain, null, inPerson
                 .getAccountId())));

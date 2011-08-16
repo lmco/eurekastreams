@@ -35,15 +35,18 @@ public class AvatarLinkPanel extends Composite
 {
     /**
      * Constructor.
-     * 
+     *
      * @param entityType
      *            Type of entity the avatar belongs to.
      * @param entityUniqueId
      *            Short name / account id of entity the avatar belongs to.
+     * @param size
+     *            the avatar size.
      * @param avatar
      *            Avatar image widget.
      */
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final AvatarWidget avatar)
+    private AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final Size size,
+            final AvatarWidget avatar)
     {
         Panel main = new FlowPanel();
         main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
@@ -53,6 +56,9 @@ public class AvatarLinkPanel extends Composite
         switch (entityType)
         {
         case PERSON:
+            // add overlay for people
+            main.add(AvatarBadgeManager.getInstance().createOverlay(entityUniqueId, size));
+
             page = Page.PEOPLE;
             break;
         case GROUP:
@@ -62,7 +68,7 @@ public class AvatarLinkPanel extends Composite
             // this should never happen
             return;
         }
-        
+
         String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId));
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
@@ -72,43 +78,37 @@ public class AvatarLinkPanel extends Composite
 
     /**
      * Constructor.
-     * 
-     * @param entityId
-     *            the entity ID.
+     * @param entityType
+     *            the entity type.
      * @param entityUniqueId
      *            Short name / account id of entity the avatar belongs to.
      * @param avatarId
      *            the ID of the avatar.
-     * @param entityType
-     *            the entity type.
      * @param size
      *            the avatar size.
      * @param title
      *            the titleText.
      */
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final long entityId,
-            final String avatarId, final Size size, final String title)
+    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
+            final Size size, final String title)
     {
-        this(entityType, entityUniqueId, new AvatarWidget(entityId, avatarId, entityType, size, title));
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size, title));
     }
 
     /**
      * Constructor.
-     * 
-     * @param entityId
-     *            the entity ID.
+     * @param entityType
+     *            the entity type.
      * @param entityUniqueId
      *            Short name / account id of entity the avatar belongs to.
      * @param avatarId
      *            the ID of the avatar.
-     * @param entityType
-     *            the entity type.
      * @param size
      *            the avatar size.
      */
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final long entityId,
-            final String avatarId, final Size size)
+    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
+            final Size size)
     {
-        this(entityType, entityUniqueId, new AvatarWidget(entityId, avatarId, entityType, size));
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size));
     }
 }

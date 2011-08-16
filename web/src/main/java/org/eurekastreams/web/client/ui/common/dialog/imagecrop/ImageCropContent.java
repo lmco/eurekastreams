@@ -113,7 +113,7 @@ public class ImageCropContent extends BaseDialogContent
                 "Drag or resize the box to change your avatar. When you are finished click the save button."));
         baseImage = new Image();
         baseImage.setSize(inImageWidth, inImageHeight);
-        baseImage.setUrl(urlGenerator.getOriginalAvatarUrl(strategy.getId(), inAvatarId));
+        baseImage.setUrl(urlGenerator.getOriginalAvatarUrl(inAvatarId));
         baseImage.getElement().setAttribute("id", "avatarBase");
 
         FlowPanel imageContainer = new FlowPanel();

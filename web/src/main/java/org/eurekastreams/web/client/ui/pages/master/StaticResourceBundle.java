@@ -331,4 +331,12 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/postCommentInactive.png")
     ImageResource commentPostButtonInactive();
 
+    @Source("style/images/coordinatorAvatarOverlay.png")
+    ImageResource coordinatorAvatarOverlayNormal();
+
+    @Source("style/images/coordinatorAvatarOverlay.png")
+    ImageResource coordinatorAvatarOverlaySmall();
+
+    @Source("style/images/coordinatorAvatarOverlayVerySmall.png")
+    ImageResource coordinatorAvatarOverlayVerySmall();
 }

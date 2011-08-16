@@ -145,7 +145,7 @@ public class PostCommentPanel extends FlowPanel
     {
         this.clear();
         this.setVisible(true);
-        Widget avatar = new AvatarWidget(Session.getInstance().getCurrentPerson().getId(), Session.getInstance()
+        Widget avatar = new AvatarWidget(Session.getInstance()
                 .getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.VerySmall);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         this.add(avatar);
