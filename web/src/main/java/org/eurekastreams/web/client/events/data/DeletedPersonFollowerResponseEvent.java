@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,24 @@
  */
 package org.eurekastreams.web.client.events.data;
 
+import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
+
 /**
  * Response event object.
- *
  */
-public class DeletedPersonFollowersResponseEvent extends BaseDataResponseEvent<Integer>
+public class DeletedPersonFollowerResponseEvent extends
+        BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer>
 {
     /**
-     * Default constructor.
-     * @param inResponse response/
+     * Constructor.
+     *
+     * @param inRequest
+     *            request.
+     * @param inResponse
+     *            response.
      */
-    public DeletedPersonFollowersResponseEvent(final Integer inResponse)
+    public DeletedPersonFollowerResponseEvent(final SetFollowingStatusRequest inRequest, final Integer inResponse)
     {
-        super(inResponse);
+        super(inRequest, inResponse);
     }
-
 }

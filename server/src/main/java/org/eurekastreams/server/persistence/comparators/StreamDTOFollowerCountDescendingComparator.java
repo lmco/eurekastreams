@@ -28,7 +28,7 @@ public class StreamDTOFollowerCountDescendingComparator implements Comparator<St
 {
     /**
      * Compare the input StreamDTOs, based on follower count, descending, returning groups before people on tie.
-     * 
+     *
      * @param inA
      *            the first to compare
      * @param inB
@@ -49,7 +49,9 @@ public class StreamDTOFollowerCountDescendingComparator implements Comparator<St
             {
                 return 1;
             }
-            return 0;
+            // finally compare by unique ID, to 1) maintain a consistent/repeatable/deterministic ordering, and 2) it's
+            // best if comparators only equal on truly equivalent items
+            return inA.getUniqueId().compareTo(inB.getUniqueId());
         }
         if (inA.getFollowersCount() > inB.getFollowersCount())
         {

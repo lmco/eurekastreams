@@ -17,9 +17,12 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.data.InsertedBlockedSuggestionResponseEvent;
+
 /**
  * Custom stream model.
- * 
+ *
  */
 public class BlockedSuggestionModel extends BaseModel implements Insertable<Long>
 {
@@ -30,7 +33,7 @@ public class BlockedSuggestionModel extends BaseModel implements Insertable<Long
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static BlockedSuggestionModel getInstance()
@@ -48,6 +51,7 @@ public class BlockedSuggestionModel extends BaseModel implements Insertable<Long
             public void onSuccess(final Serializable response)
             {
                 StreamsDiscoveryModel.getInstance().clearCache();
+                EventBus.getInstance().notifyObservers(new InsertedBlockedSuggestionResponseEvent(request));
             }
         });
     }

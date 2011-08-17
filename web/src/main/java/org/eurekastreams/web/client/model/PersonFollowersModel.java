@@ -21,7 +21,7 @@ import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.data.DeletedPersonFollowersResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowersResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
@@ -77,7 +77,7 @@ public class PersonFollowersModel extends BaseModel implements Fetchable<GetFoll
                 StreamsDiscoveryModel.getInstance().clearCache();
 
                 EventBus eventBus = Session.getInstance().getEventBus();
-                eventBus.notifyObservers(new InsertedPersonFollowerResponseEvent(response));
+                eventBus.notifyObservers(new InsertedPersonFollowerResponseEvent(request, response));
 
                 eventBus.notifyObservers(new GotPersonFollowerStatusResponseEvent(FollowerStatus.FOLLOWING));
             }
@@ -98,7 +98,7 @@ public class PersonFollowersModel extends BaseModel implements Fetchable<GetFoll
                 StreamsDiscoveryModel.getInstance().clearCache();
 
                 EventBus eventBus = Session.getInstance().getEventBus();
-                eventBus.notifyObservers(new DeletedPersonFollowersResponseEvent(response));
+                eventBus.notifyObservers(new DeletedPersonFollowerResponseEvent(request, response));
 
                 eventBus.notifyObservers(new GotPersonFollowerStatusResponseEvent(FollowerStatus.NOTFOLLOWING));
             }

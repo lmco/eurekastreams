@@ -15,22 +15,31 @@
  */
 package org.eurekastreams.web.client.ui.pages.discover;
 
+import java.util.Collection;
 import java.util.HashMap;
 
+import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.dto.StreamDTO;
 import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.data.BaseDataRequestResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFeaturedStreamsPageResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStreamDiscoverListsDTOResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedBlockedSuggestionResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.StreamsDiscoveryModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.pager.PagerComposite;
+import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -82,6 +91,10 @@ public class DiscoverContent extends Composite
     /** Local styles. */
     @UiField
     DiscoverStyle style;
+
+    /** Global styles. */
+    @UiField(provided = true)
+    CoreCss coreCss;
 
     /** Search bar (accessible for styling). */
     @UiField
@@ -163,6 +176,7 @@ public class DiscoverContent extends Composite
      */
     public DiscoverContent()
     {
+        coreCss = StaticResourceBundle.INSTANCE.coreCss();
         initWidget(binder.createAndBindUi(this));
 
         UIObject.setVisible(suggestionsEmptyLabel, false);
@@ -175,8 +189,18 @@ public class DiscoverContent extends Composite
                 {
                     public void update(final GotStreamDiscoverListsDTOResponseEvent event)
                     {
-                        EventBus.getInstance().removeObserver(GotStreamDiscoverListsDTOResponseEvent.class, this);
-                        buildPage(event.getResponse());
+                        if (event.getResponse() != null)
+                        {
+                            // Note: Need to detach the observer before building the page to avoid an ininite loop. One
+                            // of the paged lists on the page (featured streams?) causes a fetch from its model; that
+                            // model gets its data from the StreamsDiscoveryModel, so another
+                            // GotStreamDiscoverListsDTOResponseEvent gets raised. Since the EventBus dispatches events
+                            // immediately (instead of the queuing them which would be preferred), the event will fire
+                            // before buildPage returns.
+                            EventBus.getInstance().removeObserver(event, this);
+
+                            buildPage(event.getResponse());
+                        }
                     }
                 });
         EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
@@ -196,34 +220,38 @@ public class DiscoverContent extends Composite
                         }
                     }
                 });
+        // when someone follows or unfollows any stream, update the suggestions
+        EventBus.getInstance().addObservers(
+                new Observer<BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer>>()
+                {
+                    public void update(final BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer> inArg1)
+                    {
+                        updateSuggestionsIfNeeded();
+                    }
+                }, InsertedPersonFollowerResponseEvent.class, InsertedGroupMemberResponseEvent.class,
+                DeletedPersonFollowerResponseEvent.class, DeletedGroupMemberResponseEvent.class);
+        // also when someone blocks a suggestion
+        EventBus.getInstance().addObserver(InsertedBlockedSuggestionResponseEvent.class,
+                new Observer<InsertedBlockedSuggestionResponseEvent>()
+                {
+                    public void update(final InsertedBlockedSuggestionResponseEvent inArg1)
+                    {
+                        updateSuggestionsIfNeeded();
+                    }
+                });
 
+        // now fetch the data!
         StreamsDiscoveryModel.getInstance().fetch(null, true);
     }
 
     /**
      * Build the page.
-     * 
+     *
      * @param inDiscoverLists
      *            the data to display
      */
     private void buildPage(final StreamDiscoverListsDTO inDiscoverLists)
     {
-        if (inDiscoverLists == null)
-        {
-            return;
-        }
-        suggestedStreamsPanel.clear();
-        suggestedStreamsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverPageList());
-
-        mostViewedStreamsPanel.clear();
-        mostViewedStreamsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverPageList());
-
-        mostFollowedStreamsPanel.clear();
-        mostFollowedStreamsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverPageList());
-
-        mostRecentStreamsPanel.clear();
-        mostRecentStreamsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverPageList());
-
         // --------------------
         // FEATURED STREAMS
         // Note: the data needed for this list is built from the FeaturedStreamsModel, but is actually fetched and
@@ -240,15 +268,8 @@ public class DiscoverContent extends Composite
         mostActiveStreamsComposite.init(new MostActiveStreamsPagerUiStrategy(MOST_ACTIVE_STREAMS_PAGE_SIZE));
         mostActiveStreamsComposite.load();
 
-        if (inDiscoverLists.getSuggestedStreams() != null)
-        {
-            for (final StreamDTO stream : inDiscoverLists.getSuggestedStreams())
-            {
-                suggestedStreamsPanel.add(new DiscoverListItemPanel(stream,
-                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS, true));
-            }
-        }
-        UIObject.setVisible(suggestionsEmptyLabel, suggestedStreamsPanel.getWidgetCount() == 0);
+        populateSuggestedStreams(inDiscoverLists.getSuggestedStreams());
+
         if (inDiscoverLists.getMostViewedStreams() != null)
         {
             for (StreamDTO stream : inDiscoverLists.getMostViewedStreams())
@@ -296,6 +317,54 @@ public class DiscoverContent extends Composite
     }
 
     /**
+     * Displays the list of suggested streams.
+     *
+     * @param inSuggestedStreams
+     *            list of suggested streams.
+     */
+    private void populateSuggestedStreams(final Collection<StreamDTO> inSuggestedStreams)
+    {
+        suggestedStreamsPanel.clear();
+        if (inSuggestedStreams != null)
+        {
+            for (final StreamDTO stream : inSuggestedStreams)
+            {
+                suggestedStreamsPanel.add(new DiscoverListItemPanel(stream,
+                        DiscoverListItemPanel.ListItemType.MUTUAL_FOLLOWERS, true));
+            }
+        }
+        UIObject.setVisible(suggestionsEmptyLabel, suggestedStreamsPanel.getWidgetCount() == 0);
+    }
+
+    /**
+     * Decides if the suggestions list should be refreshed and triggers the refresh if so.
+     */
+    private void updateSuggestionsIfNeeded()
+    {
+        // Note: Currently the suggestions list is "live" - any follow or unfollow will cause it to refresh, since a
+        // user's list of followed streams determines what the suggestions should be. But should that decision change
+        // (e.g. only refresh when following one of the suggested streams), this would be the place to put in the check.
+
+        EventBus.getInstance().addObserver(GotStreamDiscoverListsDTOResponseEvent.class,
+                new Observer<GotStreamDiscoverListsDTOResponseEvent>()
+                {
+                    public void update(final GotStreamDiscoverListsDTOResponseEvent event)
+                    {
+                        // Note: Wire up a "one-shot" observer so we only hear about this one query. The paging on the
+                        // active and featured streams also generates GotStreamDiscoverListsDTOResponseEvents, and we
+                        // don't want to refresh everytime someone switches pages.
+                        EventBus.getInstance().removeObserver(event, this);
+                        populateSuggestedStreams(event.getResponse().getSuggestedStreams());
+                    }
+                });
+
+        // Note: ok to use the cached data flag because we are being called from a person/group follow/unfollow success
+        // event, and the models that raise those events clear the StreamsDiscoveryModel. So if the data comes from
+        // cache, it was just loaded by another subscriber asking for it.
+        StreamsDiscoveryModel.getInstance().fetch(null, true);
+    }
+
+    /**
      * Performs the search.
      */
     private void doSearch()
@@ -306,7 +375,7 @@ public class DiscoverContent extends Composite
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

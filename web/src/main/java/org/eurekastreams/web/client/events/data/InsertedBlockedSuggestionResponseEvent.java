@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,20 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 
 /**
- * Response event object.
- *
+ * Event indicating that a stream suggestion has been blocked.
  */
-public class InsertedPersonFollowerResponseEvent extends
-        BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer>
+public class InsertedBlockedSuggestionResponseEvent extends BaseDataRequestResultEvent<Long>
 {
     /**
      * Constructor.
-     * 
+     *
      * @param inRequest
-     *            request.
-     * @param inResponse
-     *            response.
+     *            Stream scope id of blocked suggested stream.
      */
-    public InsertedPersonFollowerResponseEvent(final SetFollowingStatusRequest inRequest, final Integer inResponse)
+    public InsertedBlockedSuggestionResponseEvent(final Long inRequest)
     {
-        super(inRequest, inResponse);
+        super(inRequest);
     }
 }
