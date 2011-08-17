@@ -7,6 +7,8 @@
 	<ui:image field="createGroupButtonImage" src="style/images/createGroup.png" />
 	<ui:image field="createGroupButtonHoverImage" src="style/images/createGroupHover.png" />
 
+	<ui:with field="coreCss" type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+
 	<ui:style
 		type="org.eurekastreams.web.client.ui.pages.discover.DiscoverContent.DiscoverStyle">
 			@external connection-item-info;
@@ -175,24 +177,24 @@
 
 		<div class="{style.discoverStreamList}">
 			<h3>Suggested</h3>
-			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="suggestedStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild} {coreCss.discoverPageList}" ui:field="suggestedStreamsPanel" />
 			<div class="{style.suggestions-empty}" ui:field="suggestionsEmptyLabel">We have no suggested streams for you at this time. Try searching for people you know in the search box above and follow them to help us generate some suggestions.</div>
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Viewed</h3>
-			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostViewedStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild} {coreCss.discoverPageList}" ui:field="mostViewedStreamsPanel" />
 			<div class="{style.most-viewed-empty}" ui:field="mostViewedEmptyLabel">Viewing metrics have not yet been collected.  Please check again tomorrow.</div>
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Followed</h3>
-			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostFollowedStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild} {coreCss.discoverPageList}" ui:field="mostFollowedStreamsPanel" />
 		</div>
 
 		<div class="{style.discoverStreamList}">
 			<h3>Most Recent Groups</h3>
-			<g:FlowPanel addStyleNames="{style.discoverStreamListChild}" ui:field="mostRecentStreamsPanel" />
+			<g:FlowPanel addStyleNames="{style.discoverStreamListChild} {coreCss.discoverPageList}" ui:field="mostRecentStreamsPanel" />
 		</div>
 
 		<div class="{style.createGroupArea}">

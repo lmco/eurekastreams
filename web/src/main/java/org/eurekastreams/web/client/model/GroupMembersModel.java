@@ -80,7 +80,7 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
                 CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
 
                 EventBus eventBus = Session.getInstance().getEventBus();
-                eventBus.notifyObservers(new InsertedGroupMemberResponseEvent(response));
+                eventBus.notifyObservers(new InsertedGroupMemberResponseEvent(request, response));
 
                 // simulate a status request for recipients that don't listen for changes. Event type has person in the
                 // name, but that is the event used when querying groups
@@ -103,7 +103,7 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
                 StreamsDiscoveryModel.getInstance().clearCache();
 
                 EventBus eventBus = Session.getInstance().getEventBus();
-                eventBus.notifyObservers(new DeletedGroupMemberResponseEvent(response));
+                eventBus.notifyObservers(new DeletedGroupMemberResponseEvent(request, response));
 
                 // simulate a status request for recipients that don't listen for changes. Event type has person in the
                 // name, but that is the event used when querying groups

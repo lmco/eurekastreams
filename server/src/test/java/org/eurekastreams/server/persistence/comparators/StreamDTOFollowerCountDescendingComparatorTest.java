@@ -30,7 +30,7 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     /**
      * System under test.
      */
-    private StreamDTOFollowerCountDescendingComparator sut = new StreamDTOFollowerCountDescendingComparator();
+    private final StreamDTOFollowerCountDescendingComparator sut = new StreamDTOFollowerCountDescendingComparator();
 
     /**
      * Test compare when PersonModelView and DomainGroupModelView are passed in with the same follower count.
@@ -49,10 +49,22 @@ public class StreamDTOFollowerCountDescendingComparatorTest
      * Test compare when two PersonModelViews are passed in with equal followers count.
      */
     @Test
-    public void testCompareWhenTwoPeopleEqual()
+    public void testCompareWhenTwoPeopleEqualCount()
     {
         PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date(), 6L);
         PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, new Date(), 7L);
+
+        Assert.assertTrue(sut.compare(pmv1, pmv2) < 0);
+    }
+
+    /**
+     * Test compare when two PersonModelViews are passed in with equal followers count.
+     */
+    @Test
+    public void testCompareWhenTwoPeopleEqual()
+    {
+        PersonModelView pmv1 = new PersonModelView(1L, "personz", "Person", "ZA", 50L, new Date(), 6L);
+        PersonModelView pmv2 = new PersonModelView(2L, "personz", "Person", "ZB", 50L, new Date(), 7L);
 
         Assert.assertEquals(0, sut.compare(pmv1, pmv2));
     }
@@ -61,10 +73,22 @@ public class StreamDTOFollowerCountDescendingComparatorTest
      * Test compare when two DomainGroupModelViews are passed in with equal followers count.
      */
     @Test
-    public void testCompareWhenTwoGroupsEqual()
+    public void testCompareWhenTwoGroupsEqualCount()
     {
         DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupa", "Group A", 50L, new Date(), 8L);
         DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupb", "Group B", 50L, new Date(), 9L);
+
+        Assert.assertTrue(sut.compare(gmv1, gmv2) < 0);
+    }
+
+    /**
+     * Test compare when two DomainGroupModelViews are passed in with equal followers count.
+     */
+    @Test
+    public void testCompareWhenTwoGroupsEqual()
+    {
+        DomainGroupModelView gmv1 = new DomainGroupModelView(1L, "groupz", "Group ZA", 50L, new Date(), 8L);
+        DomainGroupModelView gmv2 = new DomainGroupModelView(2L, "groupz", "Group ZB", 50L, new Date(), 9L);
 
         Assert.assertEquals(0, sut.compare(gmv1, gmv2));
     }
