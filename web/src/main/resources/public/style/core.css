@@ -6014,9 +6014,10 @@ html,body {
 	margin-top: 9px;
 }
 
-.stream-details-container .avatar-badge-overlay.size-small {
-	margin-left: 9px;
-	margin-top: 8px;
+@sprite .stream-details-container .avatar-badge-overlay.size-small {
+	gwt-image: "coordinatorAvatarOverlayFollowingSmall";
+	margin-left: 2px;
+	margin-top: 2px;
 }
 
 

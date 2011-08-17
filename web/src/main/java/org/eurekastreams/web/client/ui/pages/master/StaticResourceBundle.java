@@ -339,4 +339,7 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/coordinatorAvatarOverlayVerySmall.png")
     ImageResource coordinatorAvatarOverlayVerySmall();
+
+    @Source("style/images/groupCoordinatorMask_Following.png")
+    ImageResource coordinatorAvatarOverlayFollowingSmall();
 }
