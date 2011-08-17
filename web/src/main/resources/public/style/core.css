@@ -2264,7 +2264,7 @@ div:hover > .messageXPanel {
 	margin-top: -2px;
 }
 
-.streamDetailsContainer .avatar-image {
+.stream-details-container .avatar-image {
 	border: 0px;
 	background: url(style/images/avatarBackground.png) repeat scroll 0 -26px transparent;
 }
@@ -6004,20 +6004,26 @@ html,body {
 
 @sprite .avatar-badge-overlay.size-normal {
 	gwt-image: "coordinatorAvatarOverlayNormal";
-	margin-left: 53px;
-	margin-top: 53px;
+	margin-left: 35px;
+	margin-top: 34px;
 }
 
 @sprite .avatar-badge-overlay.size-small {
 	gwt-image: "coordinatorAvatarOverlaySmall";
-	margin-left: 28px;
-	margin-top: 28px;
+	margin-left: 10px;
+	margin-top: 9px;
 }
+
+.stream-details-container .avatar-badge-overlay.size-small {
+	margin-left: 9px;
+	margin-top: 8px;
+}
+
 
 @sprite .avatar-badge-overlay.size-very-small {
 	gwt-image: "coordinatorAvatarOverlayVerySmall";
-	margin-left: 13px;
-	margin-top: 13px;
+	margin-left: 5px;
+	margin-top: 6px;
 }
 
 /* ---------- Eureka Connect styling ---------- */

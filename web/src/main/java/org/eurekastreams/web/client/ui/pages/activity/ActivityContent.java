@@ -205,6 +205,9 @@ public class ActivityContent extends Composite
          */
         String currentUserConfLink();
 
+        /** @return The stream container panel. */
+        @ClassName("stream-container-panel")
+        String streamContainerPanel();
     }
 
     /**
@@ -620,16 +623,18 @@ public class ActivityContent extends Composite
 
         // users are not initially subscribed for emails when following a person/group, so set the status properly (else
         // if you were following and unsubscribed, then re-subscribed, the status would be old and wrong)
-        Session.getInstance().getEventBus().addObserver(InsertedPersonFollowerResponseEvent.class,
-                new Observer<InsertedPersonFollowerResponseEvent>()
-                {
-                    public void update(final InsertedPersonFollowerResponseEvent ev)
-                    {
-                        setSubscribeStatus(false);
-                    }
-                });
-        Session.getInstance().getEventBus().addObserver(InsertedGroupMemberResponseEvent.class,
-                new Observer<InsertedGroupMemberResponseEvent>()
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(InsertedPersonFollowerResponseEvent.class,
+                        new Observer<InsertedPersonFollowerResponseEvent>()
+                        {
+                            public void update(final InsertedPersonFollowerResponseEvent ev)
+                            {
+                                setSubscribeStatus(false);
+                            }
+                        });
+        Session.getInstance().getEventBus()
+                .addObserver(InsertedGroupMemberResponseEvent.class, new Observer<InsertedGroupMemberResponseEvent>()
                 {
                     public void update(final InsertedGroupMemberResponseEvent ev)
                     {
@@ -637,14 +642,16 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(GotPersonFollowerStatusResponseEvent.class,
-                new Observer<GotPersonFollowerStatusResponseEvent>()
-                {
-                    public void update(final GotPersonFollowerStatusResponseEvent event)
-                    {
-                        subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
-                    }
-                });
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotPersonFollowerStatusResponseEvent.class,
+                        new Observer<GotPersonFollowerStatusResponseEvent>()
+                        {
+                            public void update(final GotPersonFollowerStatusResponseEvent event)
+                            {
+                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                            }
+                        });
 
         EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
@@ -704,8 +711,8 @@ public class ActivityContent extends Composite
                 {
                     public void update(final StreamReinitializeRequestEvent event)
                     {
-                        loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue(
-                                "search"));
+                        loadStream(Session.getInstance().getUrlViews(),
+                                Session.getInstance().getParameterValue("search"));
                     }
                 });
 
@@ -832,7 +839,8 @@ public class ActivityContent extends Composite
 
                         for (PersonModelView coordinator : group.getCoordinators())
                         {
-                            AvatarBadgeManager.getInstance().setBadge(null, coordinator.getUniqueId());
+                            AvatarBadgeManager.getInstance().setBadge(style.streamContainerPanel(),
+                                    coordinator.getUniqueId());
                             if (coordinator.getAccountId().equals(
                                     Session.getInstance().getCurrentPerson().getAccountId()))
                             {
@@ -1013,11 +1021,13 @@ public class ActivityContent extends Composite
 
                         for (final StreamFilter filter : event.getResponse().getStreamFilters())
                         {
-                            StreamNamePanel filterPanel = createPanel(filter.getName(), "custom/"
-                                    + filter.getId()
-                                    + "/"
-                                    + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                            Session.getInstance().getCurrentPerson().getAccountId()),
+                            StreamNamePanel filterPanel = createPanel(
+                                    filter.getName(),
+                                    "custom/"
+                                            + filter.getId()
+                                            + "/"
+                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                                    Session.getInstance().getCurrentPerson().getAccountId()),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 

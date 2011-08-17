@@ -77,7 +77,7 @@ public class UserProfileBadgeWidget extends Composite
                         else
                         {
                             AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
-                                    entity.getAvatarId(), Size.Normal);
+                                    entity.getAvatarId(), Size.Normal, false);
                             linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
 
                             widget.add(linkPanel);

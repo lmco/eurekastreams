@@ -207,7 +207,7 @@ public class BookmarkSearchComposite extends Composite
                         {
                             final PersonModelView person = (PersonModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
-                                    .getAvatarId(), Size.VerySmall));
+                                    .getAvatarId(), Size.VerySmall, false));
                             name.setText(person.getDisplayName());
                             name.setTitle(person.getDisplayName());
                             itemContainer.addClickHandler(new ClickHandler()
@@ -223,7 +223,7 @@ public class BookmarkSearchComposite extends Composite
                         {
                             final DomainGroupModelView group = (DomainGroupModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
-                                    .getAvatarId(), Size.VerySmall));
+                                    .getAvatarId(), Size.VerySmall, false));
                             name.setText(group.getName());
                             name.setTitle(group.getName());
                             itemContainer.addClickHandler(new ClickHandler()

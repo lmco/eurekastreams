@@ -1415,6 +1415,7 @@ public interface CoreCss extends CssResource
 
     String bookmarkSearchName();
 
+    @ClassName("stream-details-container")
     String streamDetailsContainer();
 
     String globalSearchItemName();

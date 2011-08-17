@@ -207,7 +207,7 @@ public class GlobalSearchComposite extends FlowPanel
                         {
                             final PersonModelView person = (PersonModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
-                                    .getAvatarId(), Size.Small));
+                                    .getAvatarId(), Size.Small, false));
                             name.setText(person.getDisplayName());
                             name.setTitle(person.getDisplayName());
                             historyToken = Session.getInstance().generateUrl(
@@ -229,7 +229,7 @@ public class GlobalSearchComposite extends FlowPanel
                         {
                             final DomainGroupModelView group = (DomainGroupModelView) result;
                             itemPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group
-                                    .getAvatarId(), Size.Small));
+                                    .getAvatarId(), Size.Small, false));
                             name.setText(group.getName());
                             name.setTitle(group.getName());
                             historyToken = Session.getInstance().generateUrl(

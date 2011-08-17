@@ -44,9 +44,11 @@ public class AvatarLinkPanel extends Composite
      *            the avatar size.
      * @param avatar
      *            Avatar image widget.
+     * @param allowBadge
+     *            If overlay badges should be created.
      */
     private AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final Size size,
-            final AvatarWidget avatar)
+            final AvatarWidget avatar, final boolean allowBadge)
     {
         Panel main = new FlowPanel();
         main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
@@ -57,7 +59,10 @@ public class AvatarLinkPanel extends Composite
         {
         case PERSON:
             // add overlay for people
-            main.add(AvatarBadgeManager.getInstance().createOverlay(entityUniqueId, size));
+            if (allowBadge)
+            {
+                main.add(AvatarBadgeManager.getInstance().createOverlay(entityUniqueId, size));
+            }
 
             page = Page.PEOPLE;
             break;
@@ -78,6 +83,7 @@ public class AvatarLinkPanel extends Composite
 
     /**
      * Constructor.
+     *
      * @param entityType
      *            the entity type.
      * @param entityUniqueId
@@ -92,11 +98,12 @@ public class AvatarLinkPanel extends Composite
     public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
             final Size size, final String title)
     {
-        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size, title));
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size, title), true);
     }
 
     /**
      * Constructor.
+     *
      * @param entityType
      *            the entity type.
      * @param entityUniqueId
@@ -109,6 +116,26 @@ public class AvatarLinkPanel extends Composite
     public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
             final Size size)
     {
-        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size));
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size), true);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param entityType
+     *            the entity type.
+     * @param entityUniqueId
+     *            Short name / account id of entity the avatar belongs to.
+     * @param avatarId
+     *            the ID of the avatar.
+     * @param size
+     *            the avatar size.
+     * @param allowBadge
+     *            If overlay badges should be created.
+     */
+    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
+            final Size size, final boolean allowBadge)
+    {
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size), allowBadge);
     }
 }
