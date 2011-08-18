@@ -1570,3 +1570,102 @@ var Url = {
 	}
  
 }
+
+Eureka.Util = 
+{
+	isArray : function (v)
+	{
+		// technique from "JavaScript: The Good Parts" by Douglas Crockford
+		return Object.prototype.toString.apply(v) === '[object Array]';
+	}
+}
+
+Eureka.Api = function(version,access)
+{
+	var baseUrl = '${build.web.baseurl}/api/' + version + '/' + access;
+	
+	// Builds the URL for the Eureka Streams action API.
+	// apiName = [string] Name of API to call (e.g. getSystemSettings)
+	// request = [string/number/object, optional] request data for the API.  (Note:  This is the request itself, not
+	//     the entire parameter set.  Does not include the keyword 'request' needed by the API because this method will
+	//     add that.)
+	// params = [string/object, optional] the entire parameter set for the API.
+	// Use request or params, not both.
+	this.buildUrl = function(apiName, request, params)
+	{
+		if (params)
+		{
+			if (typeof params != 'string')
+				params = JSON.stringify(params);
+		}
+		else if (request)
+		{
+			if (typeof request == 'object')
+				request = JSON.stringify(request);
+			params = '{"request":' + request + '}';
+		}
+		else
+			params = '{}';
+		
+		return baseUrl + '/' + apiName + '/' + encodeURIComponent(params);
+	}
+
+	// Sends a set of Eureka Streams API requests in parallel and invokes a callback when all have returned.
+	// requests = [object/array] An object or array of objects representing the requests to make.  Each contains the
+	//     following fields:
+	//     - api:  [string] name of API to invoke
+	//     - request:  [object/number/string, optional] API request object (the value of 'request' in the API parameter 
+	//         set; see buildUrl's 'request' parameter)
+	//     - params:  [object/string, optional] API parameter set (see buildUrl's 'params' parameter) 
+	//     - refreshInterval:  [number, optional] value for gadgets.io.RequestParameters.REFRESH_INTERVAL.  Default is 1.
+	//     - callback:  [function(results), optional] a callback invoked when this request's results are received
+	// finalCallback = [function(responseMap), optional] the callback invoked when all API calls have completed.  Passed
+	//     an object whose keys are the names of the APIs called and whose values are the responses.
+	//
+	// Notes:
+	// - If the request list specifies the same API more than once, each will be called properly, but only one of the
+	// results will end up in the response map.
+	// - The final callback will not be invoked if the request list is empty.
+	this.makeRequests = function (requests, finalCallback)
+	{
+		var makeApiRequest = function(apiName,url,refreshInterval,callback)
+		{
+			Eureka.makeOauthRequest(url,
+				function(results)
+				{
+					responseMap[apiName] = results;
+					outstanding--;
+					if (callback)
+					{
+						try
+						{
+							callback(results);
+						}
+						catch(ex)
+						{
+							gadgets.log('Callback for ' + apiName + ' threw an exception (' + ex.name + ' - ' + ex.message + ')');
+						}
+					}
+					if (!outstanding && finalCallback)
+					{
+						finalCallback(responseMap);
+					}
+				}, refreshInterval || 1);
+		};
+	
+		var responseMap = {};
+		if (!Eureka.Util.isArray(requests))
+			requests = [requests];
+		var outstanding = requests.length;
+		var i;
+		var rqst;
+		for (i=0; i < requests.length; i++)
+		{
+			rqst = requests[i];
+			makeApiRequest(rqst.api, this.buildUrl(rqst.api, rqst.request, rqst.params), rqst.refreshInterval, rqst.callback);
+		}
+	}
+}
+
+Eureka.Api.Full = new Eureka.Api('0', 'full');
+Eureka.Api.ReadOnly = new Eureka.Api('0', 'read');
