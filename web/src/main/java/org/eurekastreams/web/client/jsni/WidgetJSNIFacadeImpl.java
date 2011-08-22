@@ -557,7 +557,7 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     {
         return nativeGetCenteredPopupFeatureString(width, height);
     }
-    
+
     /**
      * Adds links based on a subset of markdown..
      *
@@ -566,18 +566,21 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      */
     public static native String addMarkDownLinks(final String str)
     /*-{
+        // first, replace bare URLs that are not in parens (ones that aren't markdown)
         var linkRe = /(?:^|[^(])((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        updatedStr = str.replace(linkRe," <a href='$1'>$1</a>"); 
+        updatedStr = str.replace(linkRe," <a href='$1'>$1</a>");
 
-        var re = /\[([A-Za-z\-\(\)0-9'&@;#!?\+\s\.\/\:]*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
+        // next, replace markdown links
+        var re = /\[((?:[^\]\[]*|\[[^\]\[]*\])*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
         updatedStr = updatedStr.replace(re, '<a href="$2">$1</a>');
 
+        // finally, replace URLs in parens
         var linkRe2 = /\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
-        updatedStr = updatedStr.replace(linkRe2," (<a href='$1'>$1</a>)"); 
+        updatedStr = updatedStr.replace(linkRe2," (<a href='$1'>$1</a>)");
 
         return updatedStr;
     }-*/;
-    
+
     /**
      * Builds the portion of the Window.open feature string to center a dialog over the current window.
      *
