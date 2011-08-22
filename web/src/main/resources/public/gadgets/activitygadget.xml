@@ -435,7 +435,7 @@
 			activity.commentCount++;
 			jQuery(".comment-count-number.item" + activityId).text(activity.commentCount);
 			
-		}, 250, warningText);
+		}, 1000, warningText);
 		commentDiv.append(postCommentBox.getContainer());
 	}
 
