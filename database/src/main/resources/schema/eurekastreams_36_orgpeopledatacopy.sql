@@ -54,7 +54,7 @@ COPY organization_coordinators (organization_id, coordinators_id) FROM stdin;
 --
 
 COPY person (id, version, accountid, avatarcropsize, avatarcropx, avatarcropy, avatarid, biography, cellphone, dateadded, email, fax, firstname, followerscount, followingcount, groupscount, lastname, location, middlename, opensocialid, overview, preferredname, quote, title, workphone, parentorganizationid, profiletabgroupid, starttabgroupid, themeid, personid, updatescount, entitystreamviewid, streamsearchhiddenlineindex, streamviewhiddenlineindex, lastacceptedtermsofservice, streamscopeid, commentable, streampostable, accountlocked) FROM stdin;
-1	1	sysadmin	\N	\N	\N	\N	\N	\N	2010-01-01 00:00:00.000	sysadmin@localhost	\N	Administrator	0	0	0	Administrator	\N	A	F95CE1FC-893D-11DF-B0FB-5F0BE0D72085	\N	Administrator	\N	System Administrator	\N	1	5	6	\N	\N	0	6	2	3	2010-01-01 00:00:00.000	6	t	t	f
+1	1	sysadmin	\N	\N	\N	\N	\N	\N	2010-01-01 00:00:00.000	sysadmin@localhost	\N	Administrator	0	0	0	Administrator	\N	A	8c628ef3-8f07-4015-9017-2588b64b67d6	\N	Administrator	\N	System Administrator	\N	1	5	6	\N	\N	0	6	2	3	2010-01-01 00:00:00.000	6	t	t	f
 \.
 
 
