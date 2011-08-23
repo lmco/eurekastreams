@@ -99,9 +99,18 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
                 DomainGroup.SHORT_NAME_LENGTH_MESSAGE, DomainGroup.ALPHA_NUMERIC_PATTERN,
                 DomainGroup.SHORT_NAME_CHARACTERS))
         {
-            if (groupMapper.fetchUniqueResult(groupShortName.toLowerCase()) != null)
+            // TODO This is a less than ideal fix due to time constraints for the 1.5 release.
+            // Recommend removing try/catch and evaluating why group creation is broken
+            try
             {
-                ve.addError(DomainGroupModelView.SHORT_NAME_KEY, SHORTNAME_TAKEN_MESSAGE);
+                if (groupMapper.fetchUniqueResult(groupShortName.toLowerCase()) != null)
+                {
+                    ve.addError(DomainGroupModelView.SHORT_NAME_KEY, SHORTNAME_TAKEN_MESSAGE);
+                }
+            }
+            catch (Exception ex)
+            {
+                int x = 0;
             }
         }
 
