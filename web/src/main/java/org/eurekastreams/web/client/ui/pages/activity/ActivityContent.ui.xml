@@ -183,6 +183,7 @@
 				overflow: visible;
 				margin-left: 2px;
 				border-left: 1px solid #BDBDBD;
+				z-index: 1;
 			}
 			
 			@sprite .subscribe-box:hover {
