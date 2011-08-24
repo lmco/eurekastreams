@@ -1669,3 +1669,31 @@ Eureka.Api = function(version,access)
 
 Eureka.Api.Full = new Eureka.Api('0', 'full');
 Eureka.Api.ReadOnly = new Eureka.Api('0', 'read');
+
+Eureka.Format =
+{
+	// Generates HTML for a markdown string.  Somewhat clumsy, and only supports links.
+	markdownToHtml : function (str)
+	{
+		// HTML escape content
+		str = jQuery('<div/>').text(str).html();
+		// convert newlines
+		str = str.replace(/(?:\r\n|\n|\r)/g, '<br />');
+		
+		// markdown link conversion
+		
+	    // first, replace bare URLs that are not in parens (ones that aren't markdown)
+        var linkRe = /(?:^|[^(])((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        str = str.replace(linkRe," <a href='$1' target='_blank'>$1</a>");
+
+        // next, replace markdown links
+        var re = /\[((?:[^\]\[]*|\[[^\]\[]*\])*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
+        str = str.replace(re, '<a href="$2" target="_blank">$1</a>');
+
+        // finally, replace URLs in parens
+        var linkRe2 = /\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
+        str = str.replace(linkRe2," (<a href='$1' target='_blank'>$1</a>)");
+
+        return str;
+	}
+}
