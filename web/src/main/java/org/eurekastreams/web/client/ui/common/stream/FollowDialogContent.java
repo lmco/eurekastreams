@@ -15,10 +15,15 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import java.util.HashMap;
+
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BaseActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
 import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -104,10 +109,25 @@ public class FollowDialogContent extends BaseDialogContent
             {
                 if (addToStartPage.getValue())
                 {
+                    // For the app's location, use the current URL minus a few parameters we know we don't want. (They
+                    // are used by other lists, but get left in the URL when switching tabs.)
+                    // We don't build the URL from the stream id, since that doesn't take search terms into account.
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("listId", null);
+                    params.put("listFilter", null);
+                    params.put("listSort", null);
+                    params.put("startIndex", null);
+                    params.put("endIndex", null);
+                    String url = Session.getInstance().generateUrl(new CreateUrlRequest(params));
+
+                    String prefs = "{\"streamQuery\":"
+                            + WidgetJSNIFacadeImpl.makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, streamRequest))
+                            + ",\"gadgetTitle\":" + WidgetJSNIFacadeImpl.makeJsonString(inStreamName)
+                            + ",\"streamLocation\":" + WidgetJSNIFacadeImpl.makeJsonString(url) + "}";
+
                     GadgetModel.getInstance().insert(
                             new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null,
-                                    STREAM_URL_TRANSFORMER.getUrl(null, streamRequest)));
-
+                                    STREAM_URL_TRANSFORMER.getUrl(null, prefs)));
                 }
 
                 if (bookmarkStream.getValue())
