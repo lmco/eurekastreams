@@ -1571,30 +1571,41 @@ var Url = {
  
 }
 
-Eureka.Format =
-{
-	// Generates HTML for a markdown string.  Somewhat clumsy, and only supports links.
-	markdownToHtml : function (str)
+Eureka.Format = function() {
+
+	var markdownLinkReplacer = function (t, r1, r2)
 	{
-		// HTML escape content
-		str = jQuery('<div/>').text(str).html();
-		// convert newlines
-		str = str.replace(/(?:\r\n|\n|\r)/g, '<br />');
-		
-		// markdown link conversion
-		
-	    // first, replace bare URLs that are not in parens (ones that aren't markdown)
-        var linkRe = /(?:^|[^(])((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        str = str.replace(linkRe," <a href='$1' target='_blank'>$1</a>");
+		if (!r2)
+			r2 = r1;
+		if (r2.charAt(0) === '#')
+			r2 = 'http://fwolcken.dev.smp.isgs.lmco.com' + r2;
+		return ' <a href="' + r2 + '" target="_blank">' + r1 + '</a>';
+	};
 
-        // next, replace markdown links
-        var re = /\[((?:[^\]\[]*|\[[^\]\[]*\])*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
-        str = str.replace(re, '<a href="$2" target="_blank">$1</a>');
+	return {
+		// Generates HTML for a markdown string.  Somewhat clumsy, and only supports links.
+		markdownToHtml : function (str)
+		{
+			// HTML escape content
+			str = jQuery('<div/>').text(str).html();
+			// convert newlines
+			str = str.replace(/(?:\r\n|\n|\r)/g, '<br />');
+			
+			// markdown link conversion
+			
+			// first, replace bare URLs that are not in parens (ones that aren't markdown)
+			var linkRe = /(?:^|[^(])((?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			str = str.replace(linkRe, markdownLinkReplacer);
 
-        // finally, replace URLs in parens
-        var linkRe2 = /\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
-        str = str.replace(linkRe2," (<a href='$1' target='_blank'>$1</a>)");
+			// next, replace markdown links
+			var re = /\[((?:[^\]\[]*|\[[^\]\[]*\])*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
+			str = str.replace(re, markdownLinkReplacer);
 
-        return str;
-	}
-}
+			// finally, replace URLs in parens
+			var linkRe2 = /\(((?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
+			str = str.replace(linkRe2, markdownLinkReplacer);
+
+			return str;
+		}
+	};
+}();
