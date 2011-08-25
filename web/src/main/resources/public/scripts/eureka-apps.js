@@ -1677,7 +1677,7 @@ Eureka.Format = function() {
 	{
 		if (!r2)
 			r2 = r1;
-		if (r2.charAt(0) === '#')
+		if (r2 && r2.charAt && r2.charAt(0) === '#')
 			r2 = 'http://fwolcken.dev.smp.isgs.lmco.com' + r2;
 		return ' <a href="' + r2 + '" target="_blank">' + r1 + '</a>';
 	};
