@@ -36,8 +36,7 @@ public class NotificationMessageBuilderHelper
     private static final String VARIABLE_END_MARKER = "%";
 
     /** Regex for extracting markdown links. */
-    private static final String MARKDOWN_LINK_REGEX = // \n
-    "\\[((?:[^\\]\\[]*|\\[[^\\]\\[]*\\])*)\\]\\(([\\:\\.-A-Za-z0-9+&@#\\/%=~_|]*)\\)";
+    private static final String MARKDOWN_LINK_REGEX = "\\[([^\\]\\[]+)\\]\\(([^()]+)\\)";
     // TODO: Need better markdown conversion
 
     /** Compiled regex for extracting markdown links. */
