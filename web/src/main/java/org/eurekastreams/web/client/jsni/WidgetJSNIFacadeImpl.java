@@ -422,9 +422,10 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      *
      * @return the current theme.
      */
-    public static native String nativeGetCurrentTheme() /*-{
-                                                        return $wnd.currentThemeUuid;
-                                                        }-*/;
+    public static native String nativeGetCurrentTheme()
+    /*-{
+       return $wnd.currentThemeUuid;
+    }-*/;
 
     /**
      * Sets the current theme uuid.
@@ -561,21 +562,22 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     /**
      * Adds links based on a subset of markdown..
      *
-     * @param str the string to work on.
-     * @return  the html with links.
+     * @param str
+     *            the string to work on.
+     * @return the html with links.
      */
     public static native String addMarkDownLinks(final String str)
     /*-{
         // first, replace bare URLs that are not in parens (ones that aren't markdown)
-        var linkRe = /(?:^|[^(])((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var linkRe = /(?:^|[^(])((?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         updatedStr = str.replace(linkRe," <a href='$1'>$1</a>");
 
         // next, replace markdown links
-        var re = /\[((?:[^\]\[]*|\[[^\]\[]*\])*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
+        var re = /\[([^\]\[]+)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
         updatedStr = updatedStr.replace(re, '<a href="$2">$1</a>');
 
         // finally, replace URLs in parens
-        var linkRe2 = /\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
+        var linkRe2 = /\(((?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
         updatedStr = updatedStr.replace(linkRe2," (<a href='$1'>$1</a>)");
 
         return updatedStr;
@@ -625,4 +627,17 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
 
         return positionString;
     }-*/;
+
+    /**
+     * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
+     * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
+     *
+     * @param input
+     *            Input string, possibly null.
+     * @return JSON string representation.
+     */
+    public static native String makeJsonString(final String input)
+    /*-{
+     return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+     }-*/;
 }
