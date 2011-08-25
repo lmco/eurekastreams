@@ -56,7 +56,7 @@ public class PageFactory
      * @param contentPanel
      *            panel to add page to.
      */
-    public void createPage(final Page page, final List<String> views, final FlowPanel contentPanel)
+    public String createPage(final Page page, final List<String> views, final FlowPanel contentPanel)
     {
         RootPanel.get().setStyleName("");
 
@@ -146,23 +146,21 @@ public class PageFactory
         case PEOPLE_LEGACY:
         	if (Session.getInstance().getHistoryHandler().getParameters().containsKey("activityId"))
         	{
-                Window.Location.assign("/#"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
+                return Session.getInstance().getHistoryHandler().getParameters().get("activityId");
         	}
         	else
         	{
-        		Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
+        		return Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views));
         	}
-        	break;
         case GROUPS_LEGACY:
         	if (Session.getInstance().getHistoryHandler().getParameters().containsKey("activityId"))
         	{
-                Window.Location.assign("/#"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
+                return Session.getInstance().getHistoryHandler().getParameters().get("activityId");
         	}
         	else
         	{
-        		Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
+        		return Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views));
         	}
-        	break;
         case PERSONAL_SETTINGS:
             Session.getInstance().setPageTitle("Settings");
             GWT.runAsync(new RunAsyncCallback()
@@ -242,6 +240,7 @@ public class PageFactory
             contentPanel.add(new StartPageContent());
             break;
         }
-
+        
+        return null;
     }
 }
