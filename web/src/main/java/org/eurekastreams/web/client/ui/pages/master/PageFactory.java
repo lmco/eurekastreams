@@ -144,11 +144,25 @@ public class PageFactory
             contentPanel.add(new ActivityContent());
             break;
         case PEOPLE_LEGACY:
-            Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
-            break;
+        	if (Session.getInstance().getHistoryHandler().getParameters().containsKey("activityId"))
+        	{
+                Window.Location.assign("/#"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
+        	}
+        	else
+        	{
+        		Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
+        	}
+        	break;
         case GROUPS_LEGACY:
-            Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
-            break;
+        	if (Session.getInstance().getHistoryHandler().getParameters().containsKey("activityId"))
+        	{
+                Window.Location.assign("/#"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
+        	}
+        	else
+        	{
+        		Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
+        	}
+        	break;
         case PERSONAL_SETTINGS:
             Session.getInstance().setPageTitle("Settings");
             GWT.runAsync(new RunAsyncCallback()
