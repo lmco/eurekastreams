@@ -146,7 +146,7 @@ public class PageFactory
         case PEOPLE_LEGACY:
         	if (Session.getInstance().getHistoryHandler().getParameters().containsKey("activityId"))
         	{
-                Window.Location.assign("/#"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
+                Window.Location.assign("/#activity/"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
         	}
         	else
         	{
@@ -156,7 +156,7 @@ public class PageFactory
         case GROUPS_LEGACY:
         	if (Session.getInstance().getHistoryHandler().getParameters().containsKey("activityId"))
         	{
-                Window.Location.assign("/#"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
+                Window.Location.assign("/#activity/"+Session.getInstance().getHistoryHandler().getParameters().get("activityId"));
         	}
         	else
         	{
