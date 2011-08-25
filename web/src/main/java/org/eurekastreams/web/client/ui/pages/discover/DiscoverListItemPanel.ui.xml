@@ -88,6 +88,7 @@
 			
 			@sprite .block-button:hover {
 				gwt-image: "removeHoverImage";
+				cursor: pointer;
 			}
 		</ui:style>
 
