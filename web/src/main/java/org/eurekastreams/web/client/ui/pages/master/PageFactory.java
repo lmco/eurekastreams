@@ -55,6 +55,7 @@ public class PageFactory
      *            the views.
      * @param contentPanel
      *            panel to add page to.
+     * @return the page.
      */
     public String createPage(final Page page, final List<String> views, final FlowPanel contentPanel)
     {
