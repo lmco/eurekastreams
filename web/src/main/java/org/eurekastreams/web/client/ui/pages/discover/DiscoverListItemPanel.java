@@ -175,7 +175,7 @@ public class DiscoverListItemPanel extends Composite
         case MUTUAL_FOLLOWERS:
             if (inStreamDTO.getFollowersCount() == 1)
             {
-                streamInfoText.setInnerText("1 Mutal Follower");
+                streamInfoText.setInnerText("1 Mutual Follower");
             }
             else
             {
