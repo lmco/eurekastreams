@@ -75,8 +75,8 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
         ValidationException ve = new ValidationException();
         ValidationHelper vHelper = new ValidationHelper();
 
-        String groupName = (String) vHelper
-                .getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true, ve);
+        String groupName = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true,
+                ve);
         if (groupName == null || groupName.isEmpty())
         {
             ve.addError(DomainGroupModelView.NAME_KEY, DomainGroup.NAME_REQUIRED);
@@ -85,7 +85,7 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
         {
             vHelper.stringMeetsRequirments(DomainGroupModelView.NAME_KEY, groupName, ve,
                     DomainGroup.NAME_LENGTH_MESSAGE, DomainGroup.MAX_NAME_LENGTH, DomainGroup.NAME_LENGTH_MESSAGE,
-                    null, null);
+                    DomainGroup.GROUP_NAME_PATTERN, DomainGroup.GROUP_NAME_MESSAGE);
         }
 
         String groupShortName = (String) vHelper.getAndCheckStringFieldExist(fields,

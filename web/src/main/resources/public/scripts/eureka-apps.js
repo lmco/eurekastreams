@@ -1598,7 +1598,7 @@ Eureka.Format = function() {
 			str = str.replace(linkRe, markdownLinkReplacer);
 
 			// next, replace markdown links
-			var re = /\[((?:[^\]\[]*|\[[^\]\[]*\])*)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
+			var re = /\[([^\]\[]+)\]\(([\:\.-A-Za-z0-9+&@#\/%=~_|]*)\)/g;
 			str = str.replace(re, markdownLinkReplacer);
 
 			// finally, replace URLs in parens

@@ -72,7 +72,8 @@ public class UpdateGroupValidation implements ValidationStrategy<PrincipalAction
         else
         {
             vHelper.stringMeetsRequirments(DomainGroupModelView.NAME_KEY, name, ve, DomainGroup.NAME_LENGTH_MESSAGE,
-                    DomainGroup.MAX_NAME_LENGTH, DomainGroup.NAME_LENGTH_MESSAGE, null, null);
+                    DomainGroup.MAX_NAME_LENGTH, DomainGroup.NAME_LENGTH_MESSAGE, DomainGroup.GROUP_NAME_PATTERN,
+                    DomainGroup.GROUP_NAME_MESSAGE);
         }
 
         String description = (String) vHelper.getAndCheckStringFieldExist(fields,
