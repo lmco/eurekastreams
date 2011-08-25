@@ -20,11 +20,6 @@
         applicationContext-servletcontextaware-framework-actions.xml file.
     -->
 
-    <!-- Authorization strategy for ensuring the current user is a system admin -->
-    <bean id="isSystemAdminAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserIsSystemAdministratorAuthorization">
-        <constructor-arg ref="getSystemAdministratorIds" />
-    </bean>
-
     <!-- ************************* -->
     <!-- TaskHandler configuration -->
     <!-- ************************* -->
@@ -85,6 +80,23 @@
     <bean id="wrapInListRequestTransformer" class="org.eurekastreams.server.action.request.transformer.WrapInListRequestTransformer"/>
 
 	<bean id="usePrincipalPersonIdRequestTransformer" class="org.eurekastreams.server.action.request.transformer.UsePrincipalPersonIdRequestTransformer" />
+
+
+	<!-- ========== AUTHORIZATIONS ========== -->
+
+    <!-- Ensures the current user is a system admin -->
+    <bean id="isSystemAdminAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserIsSystemAdministratorAuthorization">
+        <constructor-arg ref="getSystemAdministratorIds" />
+    </bean>
+
+    <!-- Ensures the current user is a a system admin or a group coordinator for the group referenced in the request -->
+    <bean id="groupCoordinatorAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserGroupCoordinatorRecursivelyAuthorization">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.request.transformer.HasGroupIdToGroupIdRequestTransformer" />
+        </constructor-arg>
+        <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess"/>
+    </bean>
+
 
 	<!-- ========== BASE ACTIONS ========== -->
 
@@ -1034,13 +1046,14 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.GetDomainGroupModelViewByShortNameExectution">
+            <bean class="org.eurekastreams.server.action.execution.GetDomainGroupModelViewByShortNameExecution">
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
                 <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="activityDTOMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1934,15 +1947,7 @@
 
     <bean id="getRequestsForGroupMembershipByGroupAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <!-- Authorization -->
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserGroupCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.HasGroupIdToGroupIdRequestTransformer" />
-                </constructor-arg>
-                <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="groupCoordinatorAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetRequestsForGroupMembershipByGroupExecution">
                 <constructor-arg ref="getRequestsForGroupMembershipMapper" />
@@ -1954,15 +1959,7 @@
 
     <bean id="deleteRequestForGroupMembershipAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <!-- Authorization -->
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserGroupCoordinatorRecursivelyAuthorization">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.request.transformer.HasGroupIdToGroupIdRequestTransformer" />
-                </constructor-arg>
-                <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess"/>
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="groupCoordinatorAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.DeleteRequestForGroupMembershipExecution">
                 <constructor-arg ref="deleteRequestForGroupMembershipMapper" />
@@ -4449,6 +4446,21 @@
         <constructor-arg ref="streamDiscoverListsMapper_FORCE_REFRESH" />
         <!-- 30 days of summary data caching -->
         <constructor-arg value="30" />
+    </bean>
+
+
+	<bean id="updateGroupStickyActivity" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="groupCoordinatorAuthorization" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="passThruRequestTransformer" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.db.UpdateGroupStickyActivityDbMapper" />
+                </constructor-arg>              
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
     </bean>
 
     <!--

@@ -16,12 +16,15 @@
 package org.eurekastreams.server.search.modelview;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.junit.Test;
 
 /**
@@ -97,16 +100,16 @@ public class DomainGroupModelViewTest
     /**
      * Flag to determine if group's activities can be commented on.
      */
-    private boolean commentable = false;
+    private final boolean commentable = false;
 
     /**
      * Flag to determine if group's stream can be posted on.
      */
-    private boolean streamPostable = false;
+    private final boolean streamPostable = false;
 
     /**
      * Test helper method to assert all properties.
-     * 
+     *
      * @param sut
      *            the SUT
      */
@@ -133,7 +136,7 @@ public class DomainGroupModelViewTest
 
     /**
      * Test helper method to assert the default values.
-     * 
+     *
      * @param sut
      *            the SUT
      */
@@ -150,6 +153,8 @@ public class DomainGroupModelViewTest
         assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getStreamId());
         assertEquals(true, sut.isCommentable());
         assertEquals(true, sut.isStreamPostable());
+        assertNull(sut.getStickyActivity());
+        assertNull(sut.getStickyActivityId());
     }
 
     /**
@@ -175,6 +180,25 @@ public class DomainGroupModelViewTest
         sut.setStreamPostable(streamPostable);
 
         assertAll(sut);
+    }
+
+    /**
+     * Tests sticky activity getters/setters.
+     */
+    @Test
+    public void testStickyActivity()
+    {
+        DomainGroupModelView sut = new DomainGroupModelView();
+        assertDefaultValues(sut);
+        sut.setStickyActivityId(8L);
+        assertEquals((Long) 8L, sut.getStickyActivityId());
+        assertNull(sut.getStickyActivity());
+
+        ActivityDTO activity = new ActivityDTO();
+        activity.setId(7L);
+        sut.setStickyActivity(activity);
+        assertEquals((Long) 8L, sut.getStickyActivityId());
+        assertSame(activity, sut.getStickyActivity());
     }
 
     /**
@@ -230,12 +254,15 @@ public class DomainGroupModelViewTest
         p.put("compositeStreamId", compositeStreamId);
         p.put("commentable", commentable);
         p.put("streamPostable", streamPostable);
+        p.put("stickyActivityId", 9L);
 
         DomainGroupModelView sut = new DomainGroupModelView();
         sut.loadProperties(p);
         assertAll(sut);
         assertEquals(domainGroupId, sut.getEntityId());
         assertEquals(searchScore, sut.getSearchIndexScore(), 0);
+        assertEquals((Long) 9L, sut.getStickyActivityId());
+        assertNull(sut.getStickyActivity());
     }
 
     /**

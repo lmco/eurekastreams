@@ -27,9 +27,9 @@ import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShor
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * 
+ *
  * Validates values entered for a Group.
- * 
+ *
  */
 public class CreateGroupValidation implements ValidationStrategy<ActionContext>
 {

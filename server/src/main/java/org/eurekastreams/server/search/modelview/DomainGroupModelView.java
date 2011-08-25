@@ -26,9 +26,10 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
-import org.eurekastreams.server.domain.Identifiable;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.Identifiable;
 import org.eurekastreams.server.domain.dto.StreamDTO;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 
 /**
  * ModelView for DomainGroup.
@@ -88,12 +89,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * form Key.
      */
     public static final String STREAM_COMMENTABLE_KEY = "commentable";
-
-    /** Form key. */
-    public static final String SUPPRESS_POST_NOTIF_TO_MEMBER_KEY = "suppressPostNotifToMember";
-
-    /** Form key. */
-    public static final String SUPPRESS_POST_NOTIF_TO_COORDINATOR_KEY = "suppressPostNotifToCoordinator";
 
     /**
      * form error message.
@@ -228,19 +223,15 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private List<String> capabilities;
 
     /**
-     * Suppresses notifications to group coordinators when new activities are posted.
-     */
-    private boolean suppressPostNotifToCoordinator;
-
-    /**
-     * Suppresses notifications to group members when new activities are posted.
-     */
-    private boolean suppressPostNotifToMember;
-
-    /**
      * The stream scope id.
      */
     private Long streamScopeId;
+
+    /** ID of the activity stuck at the top of the stream. Null if none. */
+    private Long stickyActivityId;
+
+    /** Activity stuck at the top of the stream. Null if none. Used to send to client; not stored in memcache. */
+    private ActivityDTO stickyActivity;
 
     /**
      * Constructor.
@@ -461,17 +452,13 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         {
             setOverview((String) properties.get("overview"));
         }
-        if (properties.containsKey("suppressPostNotifToCoordinator"))
-        {
-            setSuppressPostNotifToCoordinator((Boolean) properties.get("suppressPostNotifToCoordinator"));
-        }
-        if (properties.containsKey("suppressPostNotifToMember"))
-        {
-            setSuppressPostNotifToMember((Boolean) properties.get("suppressPostNotifToMember"));
-        }
         if (properties.containsKey("url"))
         {
             setUrl((String) properties.get("url"));
+        }
+        if (properties.containsKey("stickyActivityId"))
+        {
+            setStickyActivityId((Long) properties.get("stickyActivityId"));
         }
     }
 
@@ -960,40 +947,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     }
 
     /**
-     * @return the suppressPostNotifToCoordinator
-     */
-    public boolean isSuppressPostNotifToCoordinator()
-    {
-        return suppressPostNotifToCoordinator;
-    }
-
-    /**
-     * @param inSuppressPostNotifToCoordinator
-     *            the suppressPostNotifToCoordinator to set
-     */
-    public void setSuppressPostNotifToCoordinator(final boolean inSuppressPostNotifToCoordinator)
-    {
-        suppressPostNotifToCoordinator = inSuppressPostNotifToCoordinator;
-    }
-
-    /**
-     * @return the suppressPostNotifToMember
-     */
-    public boolean isSuppressPostNotifToMember()
-    {
-        return suppressPostNotifToMember;
-    }
-
-    /**
-     * @param inSuppressPostNotifToMember
-     *            the suppressPostNotifToMember to set
-     */
-    public void setSuppressPostNotifToMember(final boolean inSuppressPostNotifToMember)
-    {
-        suppressPostNotifToMember = inSuppressPostNotifToMember;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -1084,5 +1037,39 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public void setUrl(final String inUrl)
     {
         url = inUrl;
+    }
+
+    /**
+     * @return the stuckActivityId
+     */
+    public Long getStickyActivityId()
+    {
+        return stickyActivityId;
+    }
+
+    /**
+     * @param inStickyActivityId
+     *            the stuckActivityId to set
+     */
+    public void setStickyActivityId(final Long inStickyActivityId)
+    {
+        stickyActivityId = inStickyActivityId;
+    }
+
+    /**
+     * @return the stuckActivity
+     */
+    public ActivityDTO getStickyActivity()
+    {
+        return stickyActivity;
+    }
+
+    /**
+     * @param inStickyActivity
+     *            the stuckActivity to set
+     */
+    public void setStickyActivity(final ActivityDTO inStickyActivity)
+    {
+        stickyActivity = inStickyActivity;
     }
 }
