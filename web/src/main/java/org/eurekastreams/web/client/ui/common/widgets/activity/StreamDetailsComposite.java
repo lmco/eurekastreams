@@ -449,7 +449,7 @@ public class StreamDetailsComposite extends Composite
     /**
      * The helper to build hyperlinks to stream search.
      */
-    private StreamSearchLinkBuilder streamSearchLinkBuilder;
+    private StreamSearchLinkBuilder streamSearchLinkBuilder = new StreamSearchLinkBuilder();
 
     /**
      * Expand/Collapse animation.
