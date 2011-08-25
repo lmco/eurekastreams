@@ -129,6 +129,14 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public static final String SHORT_NAME_CHARACTERS = "A short name can only contain "
             + "alphanumeric characters and no spaces.";
 
+    /** Pattern for validating legal group names. */
+    @Transient
+    public static final String GROUP_NAME_PATTERN = "^[ a-zA-Z0-9~!@#$%^&*()\\-_=+;:'\",./?]+$";
+
+    /** Message for failure to validate group names. */
+    @Transient
+    public static final String GROUP_NAME_MESSAGE = "Name has invalid characters.";
+
     /**
      * The name of the group.
      */
