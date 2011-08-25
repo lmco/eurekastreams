@@ -144,10 +144,10 @@ public class PageFactory
             contentPanel.add(new ActivityContent());
             break;
         case PEOPLE_LEGACY:
-            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
+            Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, views)));
             break;
         case GROUPS_LEGACY:
-            Window.Location.assign("#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
+            Window.Location.assign("/#" + Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, views)));
             break;
         case PERSONAL_SETTINGS:
             Session.getInstance().setPageTitle("Settings");
