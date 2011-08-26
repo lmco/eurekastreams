@@ -179,7 +179,7 @@ public class DiscoverListItemPanel extends Composite
             }
             else
             {
-                streamInfoText.setInnerText(Integer.toString(inStreamDTO.getFollowersCount()) + " Mutal Followers");
+                streamInfoText.setInnerText(Integer.toString(inStreamDTO.getFollowersCount()) + " Mutual Followers");
             }
             break;
         case DAILY_VIEWERS:
