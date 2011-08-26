@@ -11,6 +11,7 @@
 	<ui:image field="deleteBookmarkHover" src="style/images/modalCloseBtnSmallHover.png" />
 	<ui:image field="deleteBookmark" src="style/images/modalCloseBtnSmall.png" />
 	<ui:image field="filterButton" src="style/images/filterButton.png" />
+	<ui:image field="stickyActivityPinImage" src="style/images/PushPin.png" />
 
 	<ui:with field='resources'
 		type='org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle' />
@@ -336,6 +337,18 @@
 				border-bottom: 1px dashed #BBB;
 			}
 			
+			.sticky-activity-holder {
+				background-color: #FEA;
+				border-bottom: 2px solid #C6C6C6;
+			}
+			
+			@sprite .sticky-activity-pin {
+				gwt-image: "stickyActivityPinImage";
+				float:right; 
+				margin-top: 10px;
+				margin-right: 10px;
+			} 
+			
 			@if user.agent ie6 ie8 {
 				.search-box {
 					padding-top: 8px;
@@ -379,6 +392,10 @@
 				<stream:StreamSearchStatusWidget
 					ui:field="streamSearchStatusWidget"></stream:StreamSearchStatusWidget>
 				<stream:UnseenActivityNotificationPanel></stream:UnseenActivityNotificationPanel>
+				<div class="{style.sticky-activity-holder}" ui:field="stickyActivityArea">
+					<div class="{style.sticky-activity-pin}" />
+					<g:SimplePanel ui:field="stickyActivityHolder" />
+				</div>
 				<div class="{style.stream-loading-spinner}" ui:field="activitySpinner"></div>
 				<div class="{resources.coreCss.noResults}" ui:field="noResults">This stream
 					does not contain any activity.</div>

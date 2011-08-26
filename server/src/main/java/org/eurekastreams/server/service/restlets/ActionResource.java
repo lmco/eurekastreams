@@ -100,7 +100,7 @@ public class ActionResource extends SmpResource
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inServiceActionController
      *            the action controller.
      * @param inPrincipalExtractors
@@ -147,6 +147,7 @@ public class ActionResource extends SmpResource
         }
         catch (UnsupportedEncodingException ex)
         {
+            log.error("Error initializing parameters from restlet.", ex);
             throw new ExecutionException(ex);
         }
     }
@@ -214,9 +215,17 @@ public class ActionResource extends SmpResource
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "Error executing action.");
         }
 
-        Representation rep = new StringRepresentation(jsString, MediaType.TEXT_PLAIN);
-        rep.setExpirationDate(new Date(0L));
-        return rep;
+        try
+        {
+            Representation rep = new StringRepresentation(jsString, MediaType.TEXT_PLAIN);
+            rep.setExpirationDate(new Date(0L));
+            return rep;
+        }
+        catch (RuntimeException ex)
+        {
+            log.error("Error converting return value of action " + actionKey + " from restlet.", ex);
+            throw ex;
+        }
     }
 
     /**

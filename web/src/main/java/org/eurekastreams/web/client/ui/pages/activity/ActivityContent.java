@@ -59,6 +59,7 @@ import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEv
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.PostableStreamScopeChangeEvent;
 import org.eurekastreams.web.client.events.data.StreamActivitySubscriptionChangedEvent;
+import org.eurekastreams.web.client.events.data.UpdatedGroupStickyActivityEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
@@ -88,6 +89,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamSearchStatusWidget;
 import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StickyActivityRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.widgets.activity.PostBoxComposite;
 import org.eurekastreams.web.client.ui.common.widgets.activity.StreamDetailsComposite;
@@ -119,7 +121,9 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -347,6 +351,9 @@ public class ActivityContent extends Composite
      */
     StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.YES);
 
+    /** Sticky activity renderer (for groups only). */
+    private static StickyActivityRenderer stickyActivityRenderer = new StickyActivityRenderer();
+
     /**
      * Newest activity ID.
      */
@@ -466,6 +473,14 @@ public class ActivityContent extends Composite
      * */
     private static final StreamToUrlTransformer STREAM_URL_TRANSFORMER = new StreamToUrlTransformer();
 
+    /** Place to put sticky activity. */
+    @UiField
+    SimplePanel stickyActivityHolder;
+
+    /** Area containing the sticky activity. */
+    @UiField
+    DivElement stickyActivityArea;
+
     /**
      * Default constructor.
      */
@@ -561,7 +576,8 @@ public class ActivityContent extends Composite
      */
     private void addObservers()
     {
-        EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
+        final EventBus eventBus = EventBus.getInstance();
+        eventBus.addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
         {
 
             public void update(final GotActivityResponseEvent event)
@@ -569,7 +585,7 @@ public class ActivityContent extends Composite
                 gotActivity(event);
             }
         });
-        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        eventBus.addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
             public void update(final GotStreamResponseEvent event)
             {
@@ -623,37 +639,33 @@ public class ActivityContent extends Composite
 
         // users are not initially subscribed for emails when following a person/group, so set the status properly (else
         // if you were following and unsubscribed, then re-subscribed, the status would be old and wrong)
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(InsertedPersonFollowerResponseEvent.class,
-                        new Observer<InsertedPersonFollowerResponseEvent>()
-                        {
-                            public void update(final InsertedPersonFollowerResponseEvent ev)
-                            {
-                                setSubscribeStatus(false);
-                            }
-                        });
-        Session.getInstance().getEventBus()
-                .addObserver(InsertedGroupMemberResponseEvent.class, new Observer<InsertedGroupMemberResponseEvent>()
+        eventBus.addObserver(InsertedPersonFollowerResponseEvent.class,
+                new Observer<InsertedPersonFollowerResponseEvent>()
                 {
-                    public void update(final InsertedGroupMemberResponseEvent ev)
+                    public void update(final InsertedPersonFollowerResponseEvent ev)
                     {
                         setSubscribeStatus(false);
                     }
                 });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotPersonFollowerStatusResponseEvent.class,
-                        new Observer<GotPersonFollowerStatusResponseEvent>()
-                        {
-                            public void update(final GotPersonFollowerStatusResponseEvent event)
-                            {
-                                subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
-                            }
-                        });
+        eventBus.addObserver(InsertedGroupMemberResponseEvent.class, new Observer<InsertedGroupMemberResponseEvent>()
+        {
+            public void update(final InsertedGroupMemberResponseEvent ev)
+            {
+                setSubscribeStatus(false);
+            }
+        });
 
-        EventBus.getInstance().addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
+        eventBus.addObserver(GotPersonFollowerStatusResponseEvent.class,
+                new Observer<GotPersonFollowerStatusResponseEvent>()
+                {
+                    public void update(final GotPersonFollowerStatusResponseEvent event)
+                    {
+                        subscribeViaEmail.setVisible(event.getResponse().equals(FollowerStatus.FOLLOWING));
+                    }
+                });
+
+        eventBus.addObserver(HistoryViewsChangedEvent.class, new Observer<HistoryViewsChangedEvent>()
         {
             public void update(final HistoryViewsChangedEvent event)
             {
@@ -662,7 +674,7 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        eventBus.addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
             public void update(final MessageStreamAppendEvent event)
             {
@@ -682,7 +694,7 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
+        eventBus.addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
         {
             public void update(final CustomStreamCreatedEvent event)
             {
@@ -690,7 +702,7 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(CustomStreamDeletedEvent.class, new Observer<CustomStreamDeletedEvent>()
+        eventBus.addObserver(CustomStreamDeletedEvent.class, new Observer<CustomStreamDeletedEvent>()
         {
             public void update(final CustomStreamDeletedEvent event)
             {
@@ -698,7 +710,7 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(CustomStreamUpdatedEvent.class, new Observer<CustomStreamUpdatedEvent>()
+        eventBus.addObserver(CustomStreamUpdatedEvent.class, new Observer<CustomStreamUpdatedEvent>()
         {
             public void update(final CustomStreamUpdatedEvent event)
             {
@@ -706,37 +718,53 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(StreamReinitializeRequestEvent.class,
-                new Observer<StreamReinitializeRequestEvent>()
-                {
-                    public void update(final StreamReinitializeRequestEvent event)
-                    {
-                        loadStream(Session.getInstance().getUrlViews(),
-                                Session.getInstance().getParameterValue("search"));
-                    }
-                });
+        eventBus.addObserver(StreamReinitializeRequestEvent.class, new Observer<StreamReinitializeRequestEvent>()
+        {
+            public void update(final StreamReinitializeRequestEvent event)
+            {
+                loadStream(Session.getInstance().getUrlViews(), Session.getInstance().getParameterValue("search"));
+            }
+        });
 
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        eventBus.addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        {
+            public void update(final UpdatedHistoryParametersEvent event)
+            {
+                if (!event.getViewChanged())
                 {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        if (!event.getViewChanged())
-                        {
-                            handleViewsChanged(Session.getInstance().getUrlViews());
-                        }
-                    }
-                });
+                    handleViewsChanged(Session.getInstance().getUrlViews());
+                }
+            }
+        });
 
-        EventBus.getInstance().addObserver(AddedFeaturedStreamResponseEvent.class,
-                new Observer<AddedFeaturedStreamResponseEvent>()
+        eventBus.addObserver(AddedFeaturedStreamResponseEvent.class, new Observer<AddedFeaturedStreamResponseEvent>()
+        {
+            public void update(final AddedFeaturedStreamResponseEvent event)
+            {
+                eventBus.notifyObservers(new ShowNotificationEvent(new Notification("Stream has been featured.")));
+            }
+        });
+
+        eventBus.addObserver(UpdatedGroupStickyActivityEvent.class, new Observer<UpdatedGroupStickyActivityEvent>()
+        {
+            public void update(final UpdatedGroupStickyActivityEvent ev)
+            {
+                // TODO: ### need to make sure event applies to the current view (which may not even be a group)
+                if (ev.getActivity() == null)
                 {
-                    public void update(final AddedFeaturedStreamResponseEvent event)
-                    {
-                        EventBus.getInstance().notifyObservers(
-                                new ShowNotificationEvent(new Notification("Stream has been featured.")));
-                    }
-                });
+                    stickyActivityHolder.clear();
+                    UIObject.setVisible(stickyActivityArea, false);
+
+                    // TODO: ### reload the stream to get the sticky activity back in it
+                }
+                else
+                {
+                    stickyActivityHolder.add(stickyActivityRenderer.render(ev.getActivity()));
+                    UIObject.setVisible(stickyActivityArea, true);
+                }
+            }
+        });
+
 
         addEntityObservers();
     }
@@ -834,6 +862,12 @@ public class ActivityContent extends Composite
                         else
                         {
                             currentStream.setDisplayName(group.getName());
+
+                            if (group.getStickyActivity() != null)
+                            {
+                                stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
+                                UIObject.setVisible(stickyActivityArea, true);
+                            }
                         }
                         boolean isCoordinator = false;
 
@@ -1282,6 +1316,9 @@ public class ActivityContent extends Composite
         currentRequestObj = StreamJsonRequestFactory.getEmptyRequest();
         currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
         ShowRecipient showRecipient = ShowRecipient.YES;
+
+        stickyActivityHolder.clear();
+        UIObject.setVisible(stickyActivityArea, false);
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {

@@ -25,6 +25,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
@@ -34,43 +35,34 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Return DomainGroupModelView for provided group shortName.
- * 
+ *
  */
-public class GetDomainGroupModelViewByShortNameExectution implements ExecutionStrategy<PrincipalActionContext>
+public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStrategy<PrincipalActionContext>
 {
-    /**
-     * Mapper used to look up the group.
-     */
-    private GetDomainGroupsByShortNames groupByShortNameMapper;
+    /** Mapper used to look up the group. */
+    private final GetDomainGroupsByShortNames groupByShortNameMapper;
 
-    /**
-     * Mapper to get all person ids that have group coordinator access for a given group.
-     */
-    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorIdsDAO;
+    /** Mapper to get all person ids that have group coordinator access for a given group. */
+    private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinatorIdsDAO;
 
-    /**
-     * Mapper to get followers for a group.
-     */
-    private DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
+    /** Mapper to get followers for a group. */
+    private final DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
 
-    /**
-     * Get ids for direct group coordinators.
-     */
-    private DomainMapper<Long, List<Long>> groupCoordinatorIdsByGroupIdMapper;
+    /** Get ids for direct group coordinators. */
+    private final DomainMapper<Long, List<Long>> groupCoordinatorIdsByGroupIdMapper;
 
-    /**
-     * Get PersonModelViews by id.
-     */
-    private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsByIdMapper;
+    /** Get PersonModelViews by id. */
+    private final DomainMapper<List<Long>, List<PersonModelView>> personModelViewsByIdMapper;
 
-    /**
-     * Mapper for getting group entity.
-     */
-    private DomainMapper<FindByIdRequest, DomainGroup> groupEntityMapper;
+    /** Mapper for getting group entity. */
+    private final DomainMapper<FindByIdRequest, DomainGroup> groupEntityMapper;
+
+    /** Mapper to get an activity. */
+    private final DomainMapper<Long, ActivityDTO> activityMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupByShortNameMapper
      *            injecting the mapper.
      * @param inGroupCoordinatorIdsDAO
@@ -83,14 +75,16 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      *            Get PersonModelViews by id.
      * @param inGroupEntityMapper
      *            Mapper for getting group entity.
+     * @param inActivityMapper
+     *            Mapper to get an activity.
      */
-    @SuppressWarnings("unchecked")
-    public GetDomainGroupModelViewByShortNameExectution(final GetDomainGroupsByShortNames inGroupByShortNameMapper,
+    public GetDomainGroupModelViewByShortNameExecution(final GetDomainGroupsByShortNames inGroupByShortNameMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinatorIdsDAO,
             final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
             final DomainMapper<Long, List<Long>> inGroupCoordinatorIdsByGroupIdMapper,
             final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsByIdMapper,
-            final DomainMapper<FindByIdRequest, DomainGroup> inGroupEntityMapper)
+            final DomainMapper<FindByIdRequest, DomainGroup> inGroupEntityMapper,
+            final DomainMapper<Long, ActivityDTO> inActivityMapper)
     {
         groupByShortNameMapper = inGroupByShortNameMapper;
         groupCoordinatorIdsDAO = inGroupCoordinatorIdsDAO;
@@ -98,6 +92,7 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         groupCoordinatorIdsByGroupIdMapper = inGroupCoordinatorIdsByGroupIdMapper;
         personModelViewsByIdMapper = inPersonModelViewsByIdMapper;
         groupEntityMapper = inGroupEntityMapper;
+        activityMapper = inActivityMapper;
     }
 
     @Override
@@ -132,6 +127,12 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
                     .getId())));
 
             result.setCapabilities(getCapabilities(result.getId()));
+
+            // return the sticky activity with the group
+            if (result.getStickyActivityId() != null)
+            {
+                result.setStickyActivity(activityMapper.execute(result.getStickyActivityId()));
+            }
         }
 
         return result;
@@ -139,7 +140,7 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
 
     /**
      * Get group capabilities.
-     * 
+     *
      * @param groupId
      *            id
      * @return list of capabilities (strings).
@@ -161,7 +162,7 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
 
     /**
      * Check whether this group has restricted access and whether the current user is allowed access.
-     * 
+     *
      * @param inPrincipal
      *            user principal.
      * @param inGroup
@@ -178,7 +179,7 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
 
     /**
      * Checks to see if user is following a group.
-     * 
+     *
      * @param userId
      *            the user id being checked.
      * @param groupId

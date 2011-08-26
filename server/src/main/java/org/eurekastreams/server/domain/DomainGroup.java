@@ -322,13 +322,9 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     @Field(name = "isPending", index = Index.UN_TOKENIZED, store = Store.NO)
     private boolean isPending;
 
-    /** Suppresses notifications to group members when new activities are posted. */
-    @Basic(optional = false)
-    private boolean suppressPostNotifToMember;
-
-    /** Suppresses notifications to group coordinators when new activities are posted. */
-    @Basic(optional = false)
-    private boolean suppressPostNotifToCoordinator;
+    /** ID of the activity stuck at the top of the stream. Null if none. */
+    @Basic(optional = true)
+    private Long stickyActivityId;
 
     /**
      * Retrieve the name of the DomainEntity. This is to allow for the super class to identify the table within
@@ -371,7 +367,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     @Override
     public boolean equals(final Object rhs)
     {
-        return (rhs instanceof DomainGroup && this.getId() == ((DomainGroup) rhs).getId());
+        return (rhs instanceof DomainGroup && getId() == ((DomainGroup) rhs).getId());
     }
 
     /**
@@ -932,40 +928,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     }
 
     /**
-     * @return If notifications to group members when new activities are posted should be suppressed.
-     */
-    public boolean isSuppressPostNotifToMember()
-    {
-        return suppressPostNotifToMember;
-    }
-
-    /**
-     * @param inSuppressPostNotifToMember
-     *            If notifications to group members when new activities are posted should be suppressed.
-     */
-    public void setSuppressPostNotifToMember(final boolean inSuppressPostNotifToMember)
-    {
-        suppressPostNotifToMember = inSuppressPostNotifToMember;
-    }
-
-    /**
-     * @return If notifications to group coordinators when new activities are posted should be suppressed.
-     */
-    public boolean isSuppressPostNotifToCoordinator()
-    {
-        return suppressPostNotifToCoordinator;
-    }
-
-    /**
-     * @param inSuppressPostNotifToCoordinator
-     *            If notifications to group coordinators when new activities are posted should be suppressed.
-     */
-    public void setSuppressPostNotifToCoordinator(final boolean inSuppressPostNotifToCoordinator)
-    {
-        suppressPostNotifToCoordinator = inSuppressPostNotifToCoordinator;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -1007,5 +969,22 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public void setUrl(final String inUrl)
     {
         url = inUrl;
+    }
+
+    /**
+     * @return the stuckActivityId
+     */
+    public Long getStickyActivityId()
+    {
+        return stickyActivityId;
+    }
+
+    /**
+     * @param inStickyActivityId
+     *            the stuckActivityId to set
+     */
+    public void setStickyActivityId(final Long inStickyActivityId)
+    {
+        stickyActivityId = inStickyActivityId;
     }
 }

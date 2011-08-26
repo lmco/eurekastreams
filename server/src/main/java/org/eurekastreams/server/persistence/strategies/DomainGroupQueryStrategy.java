@@ -59,8 +59,7 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));
         fields.add(getColumn("url"));
-        fields.add(getColumn("suppressPostNotifToMember"));
-        fields.add(getColumn("suppressPostNotifToCoordinator"));
+        fields.add(getColumn("stickyActivityId"));
         fields.add(Projections.property("cb.accountId").as("personCreatedByAccountId"));
         fields.add(Projections.property("cb.displayName").as("personCreatedByDisplayName"));
         fields.add(Projections.property("stream.id").as("streamId"));

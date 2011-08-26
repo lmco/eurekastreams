@@ -127,13 +127,10 @@ public class DomainGroupTest
         sut.setCreatedBy(creator);
         assertEquals(creator, sut.getCreatedBy());
 
-        sut.setSuppressPostNotifToMember(true);
-        assertTrue(sut.isSuppressPostNotifToMember());
-
-        sut.setSuppressPostNotifToCoordinator(true);
-        assertTrue(sut.isSuppressPostNotifToCoordinator());
-
         assertEquals(EntityType.GROUP, sut.getEntityType());
+
+        sut.setStickyActivityId(7L);
+        assertEquals((Long) 7L, sut.getStickyActivityId());
     }
 
     /**
