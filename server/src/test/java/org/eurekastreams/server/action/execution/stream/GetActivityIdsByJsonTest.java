@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import org.junit.Test;
 
 /**
  * Test for GetActivityIdsByJson class.
- * 
+ *
  */
 public class GetActivityIdsByJsonTest
 {
@@ -70,7 +70,7 @@ public class GetActivityIdsByJsonTest
     /**
      * Filter Mock.
      */
-    private ActivityFilter filterMock = context.mock(ActivityFilter.class);
+    private final ActivityFilter filterMock = context.mock(ActivityFilter.class);
 
     /**
      * List of all activity ids.
@@ -80,33 +80,36 @@ public class GetActivityIdsByJsonTest
     /**
      * Memcache data source.
      */
-    private DescendingOrderDataSource memcacheDS = context.mock(DescendingOrderDataSource.class, "memcache");
+    private final DescendingOrderDataSource memcacheDS = context.mock(DescendingOrderDataSource.class, "memcache");
 
     /**
      * Lucene Data source.
      */
-    private SortedDataSource luceneDS = context.mock(SortedDataSource.class, "lucene");
+    private final SortedDataSource luceneDS = context.mock(SortedDataSource.class, "lucene");
+
+    /** Factory for a trimmer that doesn't apply. */
+    private final ActivityQueryListTrimmerFactory nonApplicableTrimmerFactory = context.mock(
+            ActivityQueryListTrimmerFactory.class, "nonApplicableTrimmerFactory");
 
     /**
      * Security mapper.
      */
-
-    private ActivitySecurityTrimmer securityTrimmer = context.mock(ActivitySecurityTrimmer.class);
+    private final ActivitySecurityTrimmer securityTrimmer = context.mock(ActivitySecurityTrimmer.class);
 
     /**
      * AND Collider.
      */
-    private ListCollider andCollider = context.mock(ListCollider.class);
+    private final ListCollider andCollider = context.mock(ListCollider.class);
 
     /**
      * People mapper.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = context.mock(DomainMapper.class);
 
     /**
      * Replace string.
      */
-    private String replaceString = "USER_ID";
+    private final String replaceString = "USER_ID";
 
     /**
      * 10.
@@ -127,8 +130,8 @@ public class GetActivityIdsByJsonTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
 
-        sut = new GetActivityIdsByJson(memcacheDS, luceneDS, andCollider, securityTrimmer, peopleMapper,
-                replaceString);
+        sut = new GetActivityIdsByJson(memcacheDS, luceneDS, andCollider, Arrays.asList(nonApplicableTrimmerFactory,
+                securityTrimmer), peopleMapper, replaceString);
 
         // create the activity ids list
         allActivityIds.add(9L);
@@ -140,11 +143,22 @@ public class GetActivityIdsByJsonTest
         allActivityIds.add(3L);
         allActivityIds.add(2L);
         allActivityIds.add(1L);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(securityTrimmer).getTrimmer(with(any(JSONObject.class)), with(equal(personId)));
+                will(returnValue(securityTrimmer));
+
+                oneOf(nonApplicableTrimmerFactory).getTrimmer(with(any(JSONObject.class)), with(equal(personId)));
+                will(returnValue(null));
+            }
+        });
     }
 
     /**
      * Perform action test with one item in the list.
-     * 
+     *
      * @throws Exception
      *             on failure.
      */
@@ -192,7 +206,7 @@ public class GetActivityIdsByJsonTest
 
     /**
      * Perform action test with one item in the list. Tests with a replace done for the user string.
-     * 
+     *
      * @throws Exception
      *             on failure.
      */
@@ -355,6 +369,7 @@ public class GetActivityIdsByJsonTest
         context.checking(new Expectations()
         {
             {
+
                 allowing(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(null));
 

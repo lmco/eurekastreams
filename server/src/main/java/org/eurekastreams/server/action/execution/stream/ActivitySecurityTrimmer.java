@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
@@ -29,26 +31,26 @@ import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedA
 /**
  * Trims activities that a user does not have permission to see.
  */
-public class ActivitySecurityTrimmer
+public class ActivitySecurityTrimmer implements ListTrimmer, ActivityQueryListTrimmerFactory
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Activity filter.
      */
-    private DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper;
+    private final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper;
 
     /**
      * Mapper to get the list of group ids that includes private groups the current user can see activity for.
      */
-    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
+    private final GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSecurityMapper
      *            security mapper.
      * @param inGetVisibleGroupsForUserMapper
@@ -63,7 +65,7 @@ public class ActivitySecurityTrimmer
 
     /**
      * Trim activities that the user does not have permission to see.
-     * 
+     *
      * @param activityIds
      *            the activityIDs.
      * @param userPersonId
@@ -106,5 +108,16 @@ public class ActivitySecurityTrimmer
         }
 
         return orderedActivities;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Note: Trimmer is stateless. So as a shortcut, we can put the class and the factory in one class.
+     */
+    @Override
+    public ListTrimmer getTrimmer(final JSONObject inRequest, final Long inUserEntityId)
+    {
+        return this;
     }
 }

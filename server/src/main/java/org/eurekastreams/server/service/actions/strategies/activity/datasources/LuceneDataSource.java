@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,7 +137,7 @@ public class LuceneDataSource implements SortedDataSource
             if (jsonQuery.containsKey(req))
             {
                 String searchWord = jsonQuery.getString(req);
-                // remove semicolons, which can be used to search other fields
+                // remove colons, which can be used to search other fields
                 searchWord = searchWord.replace(":", "");
 
                 if (transformers.containsKey(req))

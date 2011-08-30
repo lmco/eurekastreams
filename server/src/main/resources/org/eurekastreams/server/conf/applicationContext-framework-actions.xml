@@ -1794,7 +1794,12 @@
                 <bean
                     class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />
             </constructor-arg>
-            <constructor-arg ref="securityTrimmer" />
+            <constructor-arg>
+            	<list>
+            		<bean class="org.eurekastreams.server.action.execution.stream.ExcludeItemsTrimmerFactory" />
+            		<ref bean="securityTrimmer" />
+            	</list>
+            </constructor-arg>
             <constructor-arg ref="getPersonsByIdsMapper" />
             <constructor-arg value="%%CURRENT_USER_ACCOUNT_ID%%" />
     </bean>

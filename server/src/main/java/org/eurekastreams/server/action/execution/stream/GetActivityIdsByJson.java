@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -36,7 +37,7 @@ public class GetActivityIdsByJson
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Data source that MUST provide results in descending order of ID.
@@ -52,6 +53,9 @@ public class GetActivityIdsByJson
      * AND collider.
      */
     private ListCollider andCollider;
+
+    /** List of trimmer factories (for excluding items from the result set). */
+    private Collection<ActivityQueryListTrimmerFactory> listTrimmerFactories;
 
     /**
      * Security trimmer.
@@ -77,15 +81,15 @@ public class GetActivityIdsByJson
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inDescendingOrderdataSource
      *            the data sources to fetch the sorted descending data from.
      * @param inSortedDataSource
      *            the data sources to fetch the sorted data from.
      * @param inAndCollider
      *            the and collider to merge results.
-     * @param inSecurityTrimmer
-     *            the security trimmer;
+     * @param inListTrimmerFactories
+     *            List of trimmer factories.
      * @param inPersonMapper
      *            the person mapper.
      * @param inUserRelaceString
@@ -93,20 +97,20 @@ public class GetActivityIdsByJson
      */
     public GetActivityIdsByJson(final DescendingOrderDataSource inDescendingOrderdataSource,
             final SortedDataSource inSortedDataSource, final ListCollider inAndCollider,
-            final ActivitySecurityTrimmer inSecurityTrimmer,
+            final Collection<ActivityQueryListTrimmerFactory> inListTrimmerFactories,
             final DomainMapper<List<Long>, List<PersonModelView>> inPersonMapper, final String inUserRelaceString)
     {
         descendingOrderdataSource = inDescendingOrderdataSource;
         sortedDataSource = inSortedDataSource;
         andCollider = inAndCollider;
-        securityTrimmer = inSecurityTrimmer;
+        listTrimmerFactories = inListTrimmerFactories;
         personMapper = inPersonMapper;
         userReplaceString = inUserRelaceString;
     }
 
     /**
      * Get activity ids base on a request and user entity ID.
-     * 
+     *
      * @param inRequest
      *            the request.
      * @param userEntityId
@@ -142,6 +146,17 @@ public class GetActivityIdsByJson
         if (jsonRequest.containsKey("maxId"))
         {
             maxActivityId = jsonRequest.getLong("maxId");
+        }
+
+        // build list of trimmers
+        List<ListTrimmer> trimmers = new ArrayList<ListTrimmer>();
+        for (ActivityQueryListTrimmerFactory factory : listTrimmerFactories)
+        {
+            ListTrimmer trimmer = factory.getTrimmer(jsonRequest, userEntityId);
+            if (trimmer != null)
+            {
+                trimmers.add(trimmer);
+            }
         }
 
         // used for paging, this is the next activity in the list to add to the
@@ -217,13 +232,16 @@ public class GetActivityIdsByJson
                 {
                     page.add(allKeys.get(i));
 
+                    // we've filled up a page - either by hitting our batch size or by hitting the end of allKeys,
+                    // so trim it (for security, etc.)
                     if (page.size() == batchSize || i == allKeys.size() - 1)
                     {
                         log.debug("Sending a page of " + page.size() + " out for security trimming.");
 
-                        // we've filled up a page - either by hitting our batch size or by hitting the end of allKeys,
-                        // so security trim it
-                        page = securityTrimmer.trim(page, userEntityId);
+                        for (ListTrimmer trimmer : trimmers)
+                        {
+                            page = trimmer.trim(page, userEntityId);
+                        }
 
                         // add the trimmed results to our return list
                         for (Long item : page)
@@ -261,8 +279,12 @@ public class GetActivityIdsByJson
         // least as many as we needed for the recent batch
 
         if (results.size() < maxResults && page.size() > 0)
-        { // we haven't gotten all our results yet, and we still have results to security trim
-            page = securityTrimmer.trim(page, userEntityId);
+        {
+            // we haven't gotten all our results yet, and we still have results to security trim
+            for (ListTrimmer trimmer : trimmers)
+            {
+                page = trimmer.trim(page, userEntityId);
+            }
             for (Long item : page)
             {
                 results.add(item);

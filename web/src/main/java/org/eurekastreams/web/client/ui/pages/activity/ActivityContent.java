@@ -477,10 +477,26 @@ public class ActivityContent extends Composite
      */
     private boolean hasInited = false;
 
-    /**
-     * Stream to URL transformer.
-     * */
+    /** Stream to URL transformer. */
     private static final StreamToUrlTransformer STREAM_URL_TRANSFORMER = new StreamToUrlTransformer();
+
+    /**
+     * If the entity still needs to be received before making the activity query.
+     *
+     * Explanation: Fetching the activities for a group requires knowing which activity is sticky so it can be excluded
+     * on the query. So the query must be built in loadStream and the DomainGroupModelView must be recieved.
+     * Unfortunately, the event bus notifies inline instead of queuing, thus the call to the GroupModel in loadStream
+     * may fire its event immediately (if the group is in cache), causing the group to be received before loadStream
+     * finishes. So we have to handle two different possible orders. The approach taken is to set this flag and the one
+     * below; whenever they are both reset, the activity query is sent.
+     */
+    private boolean deferLoadAwaitingEntityReceived;
+
+    /**
+     * If the activity query isn't done being constructed yet (before making the activity query). See
+     * deferLoadAwaitingEntityReceived.
+     */
+    private boolean deferLoadAwaitingQueryBuilt;
 
     /** Place to put sticky activity. */
     @UiField
@@ -832,90 +848,103 @@ public class ActivityContent extends Composite
                 {
                     public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
-                        final DomainGroupModelView group = event.getResponse();
-                        currentDisplayName = group.getDisplayName();
-                        currentScopeId = group.getStreamId();
-
-                        if (group.isRestricted())
-                        {
-                            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
-                            currentStream.setScopeType(null);
-
-                            errorPanel.clear();
-                            errorPanel.setVisible(true);
-                            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-                            errorPanel.add(new Label("Access to this group is restricted"));
-                            errorPanel.add(new Label(
-                                    "To view this group's stream please request access from its coordinator"));
-
-                            final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
-                            {
-                                public void onClick(final ClickEvent inArg0)
-                                {
-                                    GroupMembershipRequestModel.getInstance().insert(group.getShortName());
-                                }
-                            });
-
-                            EventBus.getInstance().addObserver(InsertedRequestForGroupMembershipResponseEvent.class,
-                                    new Observer<InsertedRequestForGroupMembershipResponseEvent>()
-                                    {
-                                        public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
-                                        {
-                                            button.disable();
-                                            EventBus.getInstance().notifyObservers(
-                                                    new ShowNotificationEvent(new Notification(
-                                                            "Your request for access has been sent")));
-                                        }
-                                    });
-
-                            button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
-                            errorPanel.add(button);
-
-                            streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-                        }
-                        else
-                        {
-                            currentStream.setDisplayName(group.getName());
-                            currentStreamEntity = group;
-
-                            if (group.getStickyActivity() != null && !singleActivityMode)
-                            {
-                                stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
-                                UIObject.setVisible(stickyActivityArea, true);
-                            }
-                        }
-                        boolean isCoordinator = false;
-
-                        for (PersonModelView coordinator : group.getCoordinators())
-                        {
-                            AvatarBadgeManager.getInstance().setBadge(style.streamContainerPanel(),
-                                    coordinator.getUniqueId());
-                            if (coordinator.getAccountId().equals(
-                                    Session.getInstance().getCurrentPerson().getAccountId()))
-                            {
-                                isCoordinator = true;
-                            }
-                        }
-                        if (!group.isStreamPostable() && !isCoordinator)
-                        {
-                            currentStream.setScopeType(null);
-                        }
-
-                        if (!singleActivityMode)
-                        {
-                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN)
-                                    || isCoordinator)
-                            {
-                                streamContainerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
-                                        .hasOwnerRights());
-                            }
-
-                            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
-                        }
-
+                        onGroupModelViewReceived(event.getResponse());
                     }
                 });
+    }
 
+    /**
+     * Processing when group information is received.
+     *
+     * @param group
+     *            The group.
+     */
+    private void onGroupModelViewReceived(final DomainGroupModelView group)
+    {
+        currentDisplayName = group.getDisplayName();
+        currentScopeId = group.getStreamId();
+
+        if (group.isRestricted())
+        {
+            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
+            currentStream.setScopeType(null);
+
+            errorPanel.clear();
+            errorPanel.setVisible(true);
+            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+            errorPanel.add(new Label("Access to this group is restricted"));
+            errorPanel.add(new Label("To view this group's stream please request access from its coordinator"));
+
+            final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
+            {
+                public void onClick(final ClickEvent inArg0)
+                {
+                    GroupMembershipRequestModel.getInstance().insert(group.getShortName());
+                }
+            });
+
+            EventBus.getInstance().addObserver(InsertedRequestForGroupMembershipResponseEvent.class,
+                    new Observer<InsertedRequestForGroupMembershipResponseEvent>()
+                    {
+                        public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
+                        {
+                            button.disable();
+                            EventBus.getInstance().notifyObservers(
+                                    new ShowNotificationEvent(
+                                            new Notification("Your request for access has been sent")));
+                        }
+                    });
+
+            button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
+            errorPanel.add(button);
+
+            streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        }
+        else
+        {
+            currentStream.setDisplayName(group.getName());
+            currentStreamEntity = group;
+
+            if (group.getStickyActivity() != null && !singleActivityMode)
+            {
+                stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
+                UIObject.setVisible(stickyActivityArea, true);
+            }
+        }
+        boolean isCoordinator = false;
+
+        for (PersonModelView coordinator : group.getCoordinators())
+        {
+            AvatarBadgeManager.getInstance().setBadge(style.streamContainerPanel(), coordinator.getUniqueId());
+            if (coordinator.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+            {
+                isCoordinator = true;
+            }
+        }
+        if (!group.isStreamPostable() && !isCoordinator)
+        {
+            currentStream.setScopeType(null);
+        }
+
+        if (!singleActivityMode)
+        {
+            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN) || isCoordinator)
+            {
+                streamContainerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasOwnerRights());
+            }
+
+            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+        }
+
+        if (deferLoadAwaitingEntityReceived)
+        {
+            deferLoadAwaitingEntityReceived = false;
+            currentRequestObj = StreamJsonRequestFactory.setExcludeId(group.getStickyActivityId(), currentRequestObj);
+            if (!deferLoadAwaitingQueryBuilt)
+            {
+                StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
+            }
+        }
     }
 
     /**
@@ -1347,6 +1376,8 @@ public class ActivityContent extends Composite
         renderer.setShowStickActivity(false);
 
         currentStreamEntity = null;
+        deferLoadAwaitingQueryBuilt = false;
+        deferLoadAwaitingEntityReceived = false;
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
@@ -1357,7 +1388,6 @@ public class ActivityContent extends Composite
             streamDetailsComposite.setStreamTitle("Following", CustomAvatar.FOLLOWING);
             streamDetailsComposite.setCondensedMode(true);
             currentDisplayName = "Following";
-
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
@@ -1410,6 +1440,9 @@ public class ActivityContent extends Composite
             // Note: the links this will generate will only be visible if user is an admin/coordinator (via CSS)
             renderer.setShowStickActivity(true);
 
+            deferLoadAwaitingEntityReceived = true;
+            deferLoadAwaitingQueryBuilt = true;
+
             GroupActivitySubscriptionModel.getInstance().fetch(currentStream.getUniqueKey(), true);
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
@@ -1423,7 +1456,6 @@ public class ActivityContent extends Composite
             streamDetailsComposite.setStreamTitle(streamName, CustomAvatar.FOLLOWING);
             streamDetailsComposite.setCondensedMode(true);
             currentDisplayName = streamName;
-
         }
         else if (views.get(0).equals("everyone"))
         {
@@ -1434,7 +1466,6 @@ public class ActivityContent extends Composite
             streamDetailsComposite.setStreamTitle("Everyone", CustomAvatar.EVERYONE);
             streamDetailsComposite.setCondensedMode(true);
             currentDisplayName = "Everyone";
-
         }
         else if (views.size() == 1)
         {
@@ -1492,7 +1523,12 @@ public class ActivityContent extends Composite
 
             currentRequestObj = StreamJsonRequestFactory.setSort(sortKeyword, currentRequestObj);
 
+            // see notes where field declared
+            deferLoadAwaitingQueryBuilt = false;
+            if (!deferLoadAwaitingEntityReceived)
+            {
             StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
+            }
         }
         else
         {
