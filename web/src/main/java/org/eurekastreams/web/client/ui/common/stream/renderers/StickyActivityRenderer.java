@@ -23,6 +23,7 @@ import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.model.GroupStickyActivityModel;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
@@ -43,6 +44,7 @@ import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -94,7 +96,7 @@ public class StickyActivityRenderer implements ItemRenderer<ActivityDTO>
         mainPanel.addStyleName(State.READONLY.toString());
 
         VerbRenderer verbRenderer = verbDictionary.get(msg.getVerb());
-        verbRenderer.setup(objectDictionary, msg, State.READONLY, false);
+        verbRenderer.setup(objectDictionary, msg, State.DEFAULT, false);
 
         // left column items
         Panel leftColumn = null;
@@ -167,6 +169,8 @@ public class StickyActivityRenderer implements ItemRenderer<ActivityDTO>
      */
     private Widget buildActionsLine(final ActivityDTO msg, final VerbRenderer verbRenderer)
     {
+        StreamEntityDTO destinationStream = msg.getDestinationStream();
+
         // timestamp and actions
         Panel timestampActions = new FlowPanel();
         timestampActions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageTimestampActionsArea());
@@ -182,8 +186,8 @@ public class StickyActivityRenderer implements ItemRenderer<ActivityDTO>
         // create timestamp as permalink
         String date = new DateFormatter(new Date()).timeAgo(msg.getPostedTime());
         Widget dateLink;
-        String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream()
-                .getType(), msg.getDestinationStream().getUniqueIdentifier());
+        String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), destinationStream.getType(),
+                destinationStream.getUniqueIdentifier());
         dateLink = new InlineHyperlink(date, permalinkUrl);
         dateLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageTimestampLink());
         timestampActions.add(dateLink);
@@ -210,12 +214,17 @@ public class StickyActivityRenderer implements ItemRenderer<ActivityDTO>
             // available to coordinators.
         }
 
-        Panel actionsPanel = new FlowPanel();
+        ComplexPanel actionsPanel = new FlowPanel();
         actionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageActionsArea());
+
+        // Show comments
+        InlineHyperlink showCommentsLink = new InlineHyperlink("Show Comments", permalinkUrl);
+        actionsPanel.add(showCommentsLink);
 
         // Share
         if (verbRenderer.getAllowShare() && msg.isShareable())
         {
+            insertActionSeparator(actionsPanel, null);
             Label shareLink = new InlineLabel("Share");
             shareLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             actionsPanel.add(shareLink);
@@ -230,27 +239,21 @@ public class StickyActivityRenderer implements ItemRenderer<ActivityDTO>
         }
 
         // Unstick
-        // TODO: ## add user validation
-        if (true)
+        // Note: using the cheating way: always create the link, let CSS hide it unless the user is actually a
+        // coordinator
+        insertActionSeparator(actionsPanel, StaticResourceBundle.INSTANCE.coreCss().ownerOnlyInline());
+        Label link = new InlineLabel("Unstick");
+        link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+        link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ownerOnlyInline());
+        actionsPanel.add(link);
+
+        link.addClickHandler(new ClickHandler()
         {
-            insertActionSeparator(actionsPanel);
-            Label link = new InlineLabel("Unstick");
-            link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
-            actionsPanel.add(link);
-
-            link.addClickHandler(new ClickHandler()
+            public void onClick(final ClickEvent event)
             {
-                public void onClick(final ClickEvent event)
-                {
-                    GroupStickyActivityModel.getInstance().delete(msg.getDestinationStream().getDestinationEntityId());
-                }
-            });
-        }
-
-        // Show comments
-        insertActionSeparator(actionsPanel);
-        InlineHyperlink showCommentsLink = new InlineHyperlink("Show Comments", permalinkUrl);
-        actionsPanel.add(showCommentsLink);
+                GroupStickyActivityModel.getInstance().delete(msg.getDestinationStream().getDestinationEntityId());
+            }
+        });
 
         timestampActions.add(actionsPanel);
 
@@ -262,11 +265,17 @@ public class StickyActivityRenderer implements ItemRenderer<ActivityDTO>
      *
      * @param panel
      *            Panel to put the separator in.
+     * @param extraStyle
+     *            Extra style to add.
      */
-    private void insertActionSeparator(final Panel panel)
+    private void insertActionSeparator(final ComplexPanel panel, final String extraStyle)
     {
         Label sep = new InlineLabel("\u2219");
         sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
+        if (extraStyle != null)
+        {
+            sep.addStyleName(extraStyle);
+        }
         panel.add(sep);
     }
 }

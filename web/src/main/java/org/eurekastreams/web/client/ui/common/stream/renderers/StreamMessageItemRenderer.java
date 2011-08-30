@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.FlaggedActivityModel;
+import org.eurekastreams.web.client.model.GroupStickyActivityModel;
 import org.eurekastreams.web.client.model.requests.UpdateActivityFlagRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -97,6 +98,9 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /** Show controls for managing flagged content. */
     private boolean showManageFlagged;
+
+    /** Show controls for sticking an activity. */
+    private boolean showStickActivity;
 
     /** Render specifically for a single-activity view. */
     private boolean singleView;
@@ -187,6 +191,15 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     public void setShowManageFlagged(final boolean inShowManageFlagged)
     {
         showManageFlagged = inShowManageFlagged;
+    }
+
+    /**
+     * @param inShowStickActivity
+     *            If the controls for sticking an activity should be shown.
+     */
+    public void setShowStickActivity(final boolean inShowStickActivity)
+    {
+        showStickActivity = inShowStickActivity;
     }
 
     /**
@@ -523,6 +536,30 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             actionsPanel.add(star);
         }
 
+        // Stick (for group coordinators only)
+        if (showStickActivity)
+        {
+            // Note: using the cheating way: always create the link, let CSS hide it unless the user is actually a
+            // coordinator
+            insertActionSeparator(actionsPanel)
+                    .addStyleName(StaticResourceBundle.INSTANCE.coreCss().ownerOnlyInline());
+            Label link = new InlineLabel("Stick");
+            link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+            link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ownerOnlyInline());
+            actionsPanel.add(link);
+
+            link.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent inEvent)
+                {
+                    // Note: for now we assume the destination entity is a group (because that's all we've implemented
+                    // sticky activities for). Update here if that if sticky activities are allowed on other kinds of
+                    // streams.
+                    GroupStickyActivityModel.getInstance().insert(msg);
+                }
+            });
+        }
+
         return actionsPanel;
     }
 
@@ -542,12 +579,14 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
      *
      * @param panel
      *            Panel to put the separator in.
+     * @return The separator widget.
      */
-    private void insertActionSeparator(final Panel panel)
+    private Widget insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
         sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
+        return sep;
     }
 
     /**

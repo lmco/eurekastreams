@@ -1442,4 +1442,10 @@ public interface CoreCss extends CssResource
 
     @ClassName("size-very-small")
     String sizeVerySmall();
+
+    @ClassName("has-owner-rights")
+    String hasOwnerRights();
+
+    @ClassName("owner-only-inline")
+    String ownerOnlyInline();
 }

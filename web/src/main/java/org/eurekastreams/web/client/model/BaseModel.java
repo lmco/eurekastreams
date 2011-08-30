@@ -124,6 +124,24 @@ public abstract class BaseModel
     }
 
     /**
+     * Synchronously returns the cached value for a given request (if available).
+     *
+     * @param actionKey
+     *            the name of the action.
+     * @param request
+     *            the request.
+     * @param <T>
+     *            Type of the response.
+     * @return The cached response if available, else null.
+     */
+    protected <T extends Serializable> T getCachedResponse(final String actionKey, final Serializable request)
+    {
+        T cachedResponse = (T) cachedData.get(actionKey);
+        return (cachedResponse != null && areRequestsEqual(cachedRequests.get(actionKey), request)) ? cachedResponse
+                : null;
+    }
+
+    /**
      * Call write action.
      *
      * @param actionKey

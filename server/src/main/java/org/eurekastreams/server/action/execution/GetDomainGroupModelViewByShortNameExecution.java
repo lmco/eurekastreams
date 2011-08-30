@@ -121,18 +121,20 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
             else
             {
                 result.setRestricted(false);
+
+                // return the sticky activity with the group
+                if (result.getStickyActivityId() != null)
+                {
+                    final ActivityDTO activity = activityMapper.execute(result.getStickyActivityId());
+                    result.setStickyActivity(activity);
+                    activity.setShareable(result.isPublic());
+                }
             }
 
             result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper.execute(result
                     .getId())));
 
             result.setCapabilities(getCapabilities(result.getId()));
-
-            // return the sticky activity with the group
-            if (result.getStickyActivityId() != null)
-            {
-                result.setStickyActivity(activityMapper.execute(result.getStickyActivityId()));
-            }
         }
 
         return result;

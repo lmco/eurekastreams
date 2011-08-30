@@ -213,7 +213,7 @@ public class GetDomainGroupModelViewByShortNameExecutionTest
                 allowing(dgmv).getStickyActivityId();
                 will(returnValue(activityId));
 
-                oneOf(dgmv).isPublic();
+                allowing(dgmv).isPublic();
                 will(returnValue(true));
 
                 oneOf(dgmv).setRestricted(false);
@@ -222,6 +222,7 @@ public class GetDomainGroupModelViewByShortNameExecutionTest
                 will(returnValue(activity));
 
                 oneOf(dgmv).setStickyActivity(activity);
+                oneOf(activity).setShareable(true);
             }
         });
 

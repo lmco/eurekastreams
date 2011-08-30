@@ -6027,6 +6027,14 @@ html,body {
 	margin-top: 6px;
 }
 
+.owner-only-inline {
+	display: none;
+}
+
+.has-owner-rights .owner-only-inline {
+	display: inline;
+}
+
 /* ---------- Eureka Connect styling ---------- */
 
 .eureka-connect-badge-avatar {

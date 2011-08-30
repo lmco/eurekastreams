@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.Identifiable;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -33,6 +34,7 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.CustomStreamDeletedEvent;
 import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
@@ -397,6 +399,13 @@ public class ActivityContent extends Composite
     private String currentDisplayName;
 
     /**
+     * Entity for the current stream. Used by the sticky activity logic to determine if any stick/unstick events pertain
+     * to the current view. Would use currentStream, but there is other code that clobbers the entity type if the stream
+     * isn't postable and thus renders currentStream useless for the purpose.
+     */
+    private Identifiable currentStreamEntity;
+
+    /**
      * New activity polling.
      */
     private static final int NEW_ACTIVITY_POLLING_DELAY = 1200000;
@@ -749,22 +758,27 @@ public class ActivityContent extends Composite
         {
             public void update(final UpdatedGroupStickyActivityEvent ev)
             {
-                // TODO: ### need to make sure event applies to the current view (which may not even be a group)
-                if (ev.getActivity() == null)
+                // make sure event applies to the current view (since current view may not even be a group)
+                if (currentStreamEntity != null && currentStreamEntity.getEntityType() == EntityType.GROUP
+                        && ev.getGroupId() == currentStreamEntity.getEntityId() && !singleActivityMode)
                 {
-                    stickyActivityHolder.clear();
-                    UIObject.setVisible(stickyActivityArea, false);
+                    if (ev.getActivity() == null)
+                    {
+                        stickyActivityHolder.clear();
+                        UIObject.setVisible(stickyActivityArea, false);
+                    }
+                    else
+                    {
+                        stickyActivityHolder.clear();
+                        stickyActivityHolder.add(stickyActivityRenderer.render(ev.getActivity()));
+                        UIObject.setVisible(stickyActivityArea, true);
+                    }
 
-                    // TODO: ### reload the stream to get the sticky activity back in it
-                }
-                else
-                {
-                    stickyActivityHolder.add(stickyActivityRenderer.render(ev.getActivity()));
-                    UIObject.setVisible(stickyActivityArea, true);
+                    // reload the stream to get prior sticky activities back in it (and a freshly stuck activity out)
+                    eventBus.notifyObservers(StreamReinitializeRequestEvent.getEvent());
                 }
             }
         });
-
 
         addEntityObservers();
     }
@@ -862,8 +876,9 @@ public class ActivityContent extends Composite
                         else
                         {
                             currentStream.setDisplayName(group.getName());
+                            currentStreamEntity = group;
 
-                            if (group.getStickyActivity() != null)
+                            if (group.getStickyActivity() != null && !singleActivityMode)
                             {
                                 stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
                                 UIObject.setVisible(stickyActivityArea, true);
@@ -888,6 +903,13 @@ public class ActivityContent extends Composite
 
                         if (!singleActivityMode)
                         {
+                            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN)
+                                    || isCoordinator)
+                            {
+                                streamContainerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                        .hasOwnerRights());
+                            }
+
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
                         }
 
@@ -1317,8 +1339,14 @@ public class ActivityContent extends Composite
         currentStream = new StreamScope(ScopeType.PERSON, Session.getInstance().getCurrentPerson().getAccountId());
         ShowRecipient showRecipient = ShowRecipient.YES;
 
+        streamContainerPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hasOwnerRights());
+
         stickyActivityHolder.clear();
         UIObject.setVisible(stickyActivityArea, false);
+
+        renderer.setShowStickActivity(false);
+
+        currentStreamEntity = null;
 
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
@@ -1378,6 +1406,9 @@ public class ActivityContent extends Composite
             subscribeViaEmail.setVisible(true);
             feedLink.setVisible(true);
             streamDetailsComposite.setCondensedMode(false);
+
+            // Note: the links this will generate will only be visible if user is an admin/coordinator (via CSS)
+            renderer.setShowStickActivity(true);
 
             GroupActivitySubscriptionModel.getInstance().fetch(currentStream.getUniqueKey(), true);
         }

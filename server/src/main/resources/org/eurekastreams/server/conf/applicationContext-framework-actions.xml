@@ -80,6 +80,8 @@
     <bean id="wrapInListRequestTransformer" class="org.eurekastreams.server.action.request.transformer.WrapInListRequestTransformer"/>
 
 	<bean id="usePrincipalPersonIdRequestTransformer" class="org.eurekastreams.server.action.request.transformer.UsePrincipalPersonIdRequestTransformer" />
+	
+	<bean id="hasGroupIdToGroupIdRequestTransformer" class="org.eurekastreams.server.action.request.transformer.HasGroupIdToGroupIdRequestTransformer" />
 
 
 	<!-- ========== AUTHORIZATIONS ========== -->
@@ -91,9 +93,7 @@
 
     <!-- Ensures the current user is a a system admin or a group coordinator for the group referenced in the request -->
     <bean id="groupCoordinatorAuthorization" class="org.eurekastreams.server.action.authorization.CurrentUserGroupCoordinatorRecursivelyAuthorization">
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.request.transformer.HasGroupIdToGroupIdRequestTransformer" />
-        </constructor-arg>
+        <constructor-arg ref="hasGroupIdToGroupIdRequestTransformer" />
         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess"/>
     </bean>
 
@@ -4448,19 +4448,22 @@
         <constructor-arg value="30" />
     </bean>
 
-
-	<bean id="updateGroupStickyActivity" class="org.eurekastreams.commons.actions.service.ServiceAction">
+	<bean id="updateGroupStickyActivity" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="groupCoordinatorAuthorization" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperClearCacheExecution">
                 <constructor-arg ref="passThruRequestTransformer" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.db.UpdateGroupStickyActivityDbMapper" />
                 </constructor-arg>              
+                <constructor-arg ref="memcachedCache" />
+                <constructor-arg ref="CacheKeys.GROUP_BY_ID" />
+                <constructor-arg ref="hasGroupIdToGroupIdRequestTransformer" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
     </bean>
 
     <!--

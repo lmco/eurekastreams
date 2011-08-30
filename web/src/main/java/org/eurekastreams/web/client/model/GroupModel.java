@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,11 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Group model.
- * 
+ *
  */
 public class GroupModel extends BaseModel implements Authorizable<String>, Fetchable<String>,
-        Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>
+        CacheFetchable<String, DomainGroupModelView>, Insertable<HashMap<String, Serializable>>,
+        Updateable<HashMap<String, Serializable>>
 {
     /**
      * Singleton.
@@ -39,7 +40,7 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static GroupModel getInstance()
@@ -84,10 +85,18 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
         {
             public void onSuccess(final DomainGroupModelView response)
             {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new GotGroupModelViewInformationResponseEvent(response));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new GotGroupModelViewInformationResponseEvent(response));
             }
         }, useClientCacheIfAvailable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DomainGroupModelView fetchFromCache(final String request)
+    {
+        return super.getCachedResponse("getGroupModelView", request);
     }
 
     /**
@@ -103,5 +112,4 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
             }
         });
     }
-
 }
