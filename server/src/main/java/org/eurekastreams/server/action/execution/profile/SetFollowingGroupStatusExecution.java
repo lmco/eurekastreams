@@ -260,12 +260,12 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                 if (targetStream.length() > 0)
                 {
                     content =
-                            "%EUREKA:ACTORNAME% has joined the [" + targetName + "](#activity/group/" + targetStream
-                                    + ") group";
+                            "%EUREKA:ACTORNAME% is now following the [" + targetName + "](#activity/group/"
+                                    + targetStream + ") group";
                 }
                 else
                 {
-                    content = "%EUREKA:ACTORNAME% has joined the " + targetName + " group";
+                    content = "%EUREKA:ACTORNAME% is now following the " + targetName + " group";
                 }
 
                 activity.getBaseObjectProperties().put("content", content);

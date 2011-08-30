@@ -3831,7 +3831,8 @@ body .shortname-form-element input {
 .directory .wait-spinner
 {
 	position: absolute;
-	left: 575px;
+	left: 525px;
+	top: 300px;
 }
 
 .directory .navpanel {
