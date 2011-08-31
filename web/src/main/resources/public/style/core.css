@@ -3356,21 +3356,16 @@ body .shortname-form-element input {
 	height: 23px;
 	margin-top: 2px;
 	cursor: pointer;
-	background-image: url('style/images/pagingRightBtnActive.png');
+	background: transparent url('style/images/pagingRightSprite.png') no-repeat scroll 0 0;
 }
 
 .pager-forward:hover {
-	background-image: url('style/images/pagingRightBtnHover.png');
-}
-
-.pager-forward-disabled:hover {
-	background-image: url('style/images/pagingRightBtnInactive.png');
-	cursor: default;
+	background: transparent url('style/images/pagingRightSprite.png') no-repeat scroll 0 -23px;
 }
 
 .pager-forward-disabled {
 	cursor: default;
-	background-image: url('style/images/pagingRightBtnInactive.png');
+	background: transparent url('style/images/pagingRightSprite.png') no-repeat scroll 0 -46px;
 }
 
 .pager-backward {
@@ -3378,33 +3373,23 @@ body .shortname-form-element input {
 	text-indent: -1000em;
 	float: right;
 	right: 40px;
-	width: 35px;
+	width: 34px;
 	height: 23px;
 	margin-top: 2px;
 	display: inline-block;
 	cursor: pointer;
 	padding-left: 10px;
-	background: url('style/images/pagingLeftBtnActive.png') no-repeat 11px
-		0px;
+	background: transparent url('style/images/pagingLeftSprite.png') no-repeat scroll 0 0;
 }
 
 .pager-backward:hover {
-	background: url('style/images/pagingLeftBtnHover.png') no-repeat 11px
-		0px;
-}
-
-.pager-backward-disabled:hover {
-	background: url('style/images/pagingLeftBtnInactive.png') no-repeat 11px
-		0px;
-	cursor: default;
+	background: transparent url('style/images/pagingLeftSprite.png') no-repeat scroll 0 -23px;
 }
 
 .pager-backward-disabled {
 	cursor: default;
-	background: url('style/images/pagingLeftBtnInactive.png') no-repeat 11px
-		0px;
+	background: transparent url('style/images/pagingLeftSprite.png') no-repeat scroll 0 -46px;
 }
-
 
 @sprite .blockSuggestion
 {
