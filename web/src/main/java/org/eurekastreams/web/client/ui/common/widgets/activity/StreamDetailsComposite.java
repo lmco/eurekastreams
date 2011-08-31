@@ -1246,7 +1246,7 @@ public class StreamDetailsComposite extends Composite
                 Size.Normal));
 
         followerCount.setInnerText(Integer.toString(person.getFollowersCount()));
-        followingCount.setInnerText(Integer.toString(person.getFollowingCount()));
+        followingCount.setInnerText(Integer.toString(person.getFollowingCount() + person.getGroupsCount()));
         streamDescription.setInnerText(person.getJobDescription());
 
         if (person.getJobDescription() == null || person.getJobDescription().length() == 0)
