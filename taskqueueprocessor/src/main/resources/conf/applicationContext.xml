@@ -46,6 +46,7 @@
 		// must have the applicationContext-jms.xml file active
 	-->
 	<alias alias="taskHandler" name="queueTaskHandler" />
+	<alias alias="taskHandler-nonui" name="queueTaskHandler-nonui" />
     
     <!-- Initialize Class and Field Bridges with singleton setters -->
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-bridges-initialization.xml" />    
