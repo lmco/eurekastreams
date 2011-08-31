@@ -5972,6 +5972,7 @@ html,body {
 	background-color: white;
 	padding: 20px;
 	padding-top: 10px;
+	border: 1px solid #BBBBBB;
 }
 
 .stream-plugins-panel .navpanel {
