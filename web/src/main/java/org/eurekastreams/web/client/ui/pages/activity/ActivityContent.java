@@ -1262,9 +1262,15 @@ public class ActivityContent extends Composite
                 params.put("endIndex", null);
                 String url = Session.getInstance().generateUrl(new CreateUrlRequest(params));
 
+                // make a version of the query that doesn't have the exclusion list
+                JSONObject request = currentRequestObj;
+                if (request.containsKey("exclude"))
+                {
+                    request.put("exclude", new JSONObject());
+                }
                 // TODO: get correct title from somewhere.
                 String prefs = "{\"streamQuery\":"
-                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, currentRequestObj.toString()))
+                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, request.toString()))
                         + ",\"gadgetTitle\":" + makeJsonString(currentDisplayName) + ",\"streamLocation\":"
                         + makeJsonString(url) + "}";
 
