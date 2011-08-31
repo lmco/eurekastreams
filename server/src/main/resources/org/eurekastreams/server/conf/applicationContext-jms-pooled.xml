@@ -38,5 +38,24 @@ http://www.springframework.org/schema/jee http://www.springframework.org/schema/
     <bean id="queueTaskHandler" class="org.eurekastreams.commons.task.QueueTaskHandler" lazy-init="false">
         <constructor-arg ref="jmsTemplate"/>
     </bean>
+    
+    <!-- *** BEGIN non ui-related (i.e. lower priority) specific JMS queue config. *** -->
+    
+    <!-- the creation of the queue object to submit async. tasks to -->
+    <bean id="eurekaQueue-nonui" class="org.apache.activemq.command.ActiveMQQueue" lazy-init="false">
+        <constructor-arg value="${build.queue.nonui.name}" />
+    </bean>
+    
+    <!-- Spring Non-ui JMS Template -->
+    <bean id="jmsTemplate-nonui" class="org.springframework.jms.core.JmsTemplate">
+       <property name="connectionFactory" ref="connectionFactory"/>
+       <property name="defaultDestination" ref="eurekaQueue-nonui"/>
+    </bean>
+    
+    <!-- Queue task handler configured for nonui queue  -->
+    <bean id="queueTaskHandler-nonui" class="org.eurekastreams.commons.task.QueueTaskHandler" lazy-init="false">
+        <constructor-arg ref="jmsTemplate-nonui"/>
+    </bean>    
 
+    <!-- *** END non ui-related (i.e. lower priority) specific JMS queue config. *** -->
 </beans>
