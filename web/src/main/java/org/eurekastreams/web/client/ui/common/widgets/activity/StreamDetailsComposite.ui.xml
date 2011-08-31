@@ -36,7 +36,7 @@
 			}
 			
 			.stream-details>div {
-				margin-bottom: 10px;
+				margin-bottom: 30px;
 			}
 			
 			.stream-details-options {
