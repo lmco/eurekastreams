@@ -44,13 +44,13 @@
 -->
     <bean id="refreshFeedsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
         <constructor-arg value="refreshFeedsAction" />
-        <constructor-arg ref="taskHandler" />
+        <constructor-arg ref="taskHandler-nonui" />
     </bean>
     
     <!-- Propogate feed changes to denormalized lists in memcached -->
     <bean id="addBufferedActivitiesToCacheJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
         <constructor-arg value="insertBufferedActivitiesAction" />
-        <constructor-arg ref="taskHandler" />
+        <constructor-arg ref="taskHandler-nonui" />
     </bean> 
     
 	<!-- Memebership Refresh -->
