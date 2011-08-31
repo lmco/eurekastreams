@@ -51,6 +51,8 @@ public class InlineExecutionStrategyExecutor
     {
         needsPrincipal = inNeedsPrincipal;
         plainExecution = inPlainExecution;
+
+        assert plainExecution != null;
     }
 
     /**
@@ -66,6 +68,8 @@ public class InlineExecutionStrategyExecutor
     {
         needsPrincipal = inNeedsPrincipal;
         taskHandlerExecution = inTaskHandlerExecution;
+
+        assert taskHandlerExecution != null;
     }
 
     /**
@@ -99,12 +103,7 @@ public class InlineExecutionStrategyExecutor
                     inActionContext.getUserActionRequests());
             return taskHandlerExecution.execute(outerContext);
         }
-        if (plainExecution != null)
-        {
-            return plainExecution.execute(innerContext);
-        }
-
-        throw new ExecutionException("No execution strategy provided.");
+        return plainExecution.execute(innerContext);
     }
 
     /**
@@ -119,8 +118,7 @@ public class InlineExecutionStrategyExecutor
      *             If execution strategy threw an exception or call did not provide all data needed for the execution
      *             strategy.
      */
-    public Serializable execute(final ExecutionStrategy< ? extends ActionContext> inActionContext,
-            final Serializable params)
+    public Serializable execute(final ActionContext inActionContext, final Serializable params)
             throws ExecutionException
     {
         boolean hasPrincipalContext = inActionContext instanceof PrincipalActionContext;
@@ -134,10 +132,6 @@ public class InlineExecutionStrategyExecutor
         {
             throw new ExecutionException("Incorrect action execution invocation.  Execution requires user action "
                     + "request list (TaskHandlerActionContext) but none was provided on call.");
-        }
-        if (plainExecution == null)
-        {
-            throw new ExecutionException("No execution strategy provided.");
         }
 
         ActionContext context = hasPrincipalContext ? new ServiceActionContext(params,

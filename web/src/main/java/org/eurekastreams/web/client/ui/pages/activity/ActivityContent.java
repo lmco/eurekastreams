@@ -1266,7 +1266,14 @@ public class ActivityContent extends Composite
                 JSONObject request = currentRequestObj;
                 if (request.containsKey("exclude"))
                 {
-                    request.put("exclude", new JSONObject());
+                    request = new JSONObject();
+                    for (String key : currentRequestObj.keySet())
+                    {
+                        if (!"exclude".equals(key))
+                        {
+                            request.put(key, currentRequestObj.get(key));
+                        }
+                    }
                 }
                 // TODO: get correct title from somewhere.
                 String prefs = "{\"streamQuery\":"
