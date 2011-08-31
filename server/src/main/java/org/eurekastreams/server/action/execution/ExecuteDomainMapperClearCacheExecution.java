@@ -91,7 +91,7 @@ public class ExecuteDomainMapperClearCacheExecution implements TaskHandlerExecut
         String key = cacheKeyPrefix + cacheKeyParameterSupplier.transform(realContext);
         cache.delete(key);
         inActionContext.getUserActionRequests().add(
-                new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections.singletonList(key)));
+                new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections.singleton(key)));
 
         return result;
     }

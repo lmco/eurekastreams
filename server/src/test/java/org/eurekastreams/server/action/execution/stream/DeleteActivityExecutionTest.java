@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,20 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.commons.test.EasyMatcher;
+import org.eurekastreams.server.action.request.UpdateStickyActivityRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteActivityRequest;
 import org.eurekastreams.server.persistence.mappers.stream.DeleteActivity;
 import org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -38,10 +43,13 @@ import org.junit.Test;
 
 /**
  * Test for DeleteActivityExecution class.
- * 
+ *
  */
 public class DeleteActivityExecutionTest
 {
+    /** Test data. */
+    private static final Long GROUP_ID = 500L;
+
     /**
      * Context for building mock objects.
      */
@@ -55,130 +63,77 @@ public class DeleteActivityExecutionTest
     /**
      * Delete activity DAO.
      */
-    private DeleteActivity deleteActivityDAO = context.mock(DeleteActivity.class);
+    private final DeleteActivity deleteActivityDAO = context.mock(DeleteActivity.class);
 
     /**
      * DAO for finding comment ids.
      */
-    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = context.mock(DomainMapper.class);
 
     /**
      * DAO for getting person Ids for users that have deleted activity starred.
      */
-    private GetPersonIdsWithStarredActivity getPersonIdsWithStarredActivityDAO = context
+    private final GetPersonIdsWithStarredActivity getPersonIdsWithStarredActivityDAO = context
             .mock(GetPersonIdsWithStarredActivity.class);
-
-    /**
-     * {@link TaskHandlerActionContext}.
-     */
-    @SuppressWarnings("unchecked")
-    private TaskHandlerActionContext taskActionContext = context.mock(TaskHandlerActionContext.class);
-
-    /**
-     * {@link PrincipalActionContext}.
-     */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * Activity id used in tests.
      */
-    private Long activityId = 5L;
+    private final Long activityId = 5L;
 
     /**
      * Current user id for tests.
      */
-    private Long currentUserId = 1L;
+    private final Long currentUserId = 1L;
 
     /**
      * List of comment ids for an activity.
      */
-    private List<Long> commentIds = new ArrayList<Long>();
+    private final List<Long> commentIds = new ArrayList<Long>();
 
     /**
      * List of user ids that have activity as starred item.
      */
-    private List<Long> personIdsWithActivityStarred = new ArrayList<Long>();
+    private final List<Long> personIdsWithActivityStarred = new ArrayList<Long>();
 
     /**
      * Activity mock.
      */
-    private ActivityDTO activity = context.mock(ActivityDTO.class);
+    private final ActivityDTO activity = context.mock(ActivityDTO.class);
 
-    /**
-     * {@link Principal}.
-     */
-    private Principal principal = context.mock(Principal.class);
+    /** Fixture: activity's stream. */
+    private final StreamEntityDTO stream = context.mock(StreamEntityDTO.class);
+
+    /** For getting the group for clearing sticky activities. */
+    private final DomainMapper<Long, DomainGroupModelView> groupMapper = context.mock(DomainMapper.class,
+            "groupMapper");
+
+    /** Group. */
+    private final DomainGroupModelView group = context.mock(DomainGroupModelView.class, "group");
+
+    /** For clearing a group's sticky activity. */
+    private final InlineExecutionStrategyExecutor clearGroupStickyActivityExecutor = context.mock(
+            InlineExecutionStrategyExecutor.class, "clearGroupStickyActivityExecutor");
 
     /**
      * System under test.
      */
-    private DeleteActivityExecution sut = new DeleteActivityExecution(deleteActivityDAO, commentIdsByActivityIdDAO,
-            getPersonIdsWithStarredActivityDAO);
+    private final DeleteActivityExecution sut = new DeleteActivityExecution(deleteActivityDAO,
+            commentIdsByActivityIdDAO, getPersonIdsWithStarredActivityDAO, groupMapper,
+            clearGroupStickyActivityExecutor);
 
     /**
      * Test.
      */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testExecute()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                allowing(taskActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(actionContext).getParams();
-                will(returnValue(activityId));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
-                allowing(commentIdsByActivityIdDAO).execute(activityId);
-                will(returnValue(commentIds));
-
-                allowing(getPersonIdsWithStarredActivityDAO).execute(activityId);
-                will(returnValue(personIdsWithActivityStarred));
-
-                allowing(deleteActivityDAO).execute(with(any(DeleteActivityRequest.class)));
-                will(returnValue(activity));
-
-                allowing(taskActionContext).getUserActionRequests();
-                will(returnValue(new ArrayList<UserActionRequest>()));
-
-            }
-        });
-
-        assertTrue(sut.execute(taskActionContext));
-        assertEquals(2, taskActionContext.getUserActionRequests().size());
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test.
-     */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecuteNullActivity()
     {
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(activityId, null, currentUserId);
+
         context.checking(new Expectations()
         {
             {
-                allowing(taskActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(actionContext).getParams();
-                will(returnValue(activityId));
-
-                oneOf(principal).getId();
-                will(returnValue(currentUserId));
-
                 allowing(commentIdsByActivityIdDAO).execute(activityId);
                 will(returnValue(commentIds));
 
@@ -190,7 +145,157 @@ public class DeleteActivityExecutionTest
             }
         });
 
-        assertTrue(sut.execute(taskActionContext));
+        assertTrue(sut.execute(actionContext));
+        context.assertIsSatisfied();
+        assertTrue(actionContext.getUserActionRequests().isEmpty());
+    }
+
+    /**
+     * Shared expectations.
+     */
+    private void commonExpectations()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(commentIdsByActivityIdDAO).execute(activityId);
+                will(returnValue(commentIds));
+
+                allowing(getPersonIdsWithStarredActivityDAO).execute(activityId);
+                will(returnValue(personIdsWithActivityStarred));
+
+                allowing(deleteActivityDAO).execute(with(any(DeleteActivityRequest.class)));
+                will(returnValue(activity));
+
+                allowing(activity).getDestinationStream();
+                will(returnValue(stream));
+            }
+        });
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testExecuteStreamNotGroup()
+    {
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(activityId, null, currentUserId);
+
+        commonExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(stream).getEntityType();
+                will(returnValue(EntityType.PERSON));
+            }
+        });
+
+        assertTrue(sut.execute(actionContext));
+        context.assertIsSatisfied();
+        assertEquals(2, actionContext.getUserActionRequests().size());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testExecuteStreamGroupNotFound()
+    {
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(activityId, null, currentUserId);
+
+        commonExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(stream).getEntityType();
+                will(returnValue(EntityType.GROUP));
+
+                allowing(stream).getDestinationEntityId();
+                will(returnValue(GROUP_ID));
+
+                oneOf(groupMapper).execute(GROUP_ID);
+                will(returnValue(null));
+            }
+        });
+
+        assertTrue(sut.execute(actionContext));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testExecuteStreamNotSticky()
+    {
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(activityId, null, currentUserId);
+
+        commonExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(stream).getEntityType();
+                will(returnValue(EntityType.GROUP));
+
+                allowing(stream).getDestinationEntityId();
+                will(returnValue(GROUP_ID));
+
+                oneOf(groupMapper).execute(GROUP_ID);
+                will(returnValue(group));
+
+                allowing(group).getStickyActivityId();
+                will(returnValue(activityId + 1));
+            }
+        });
+
+        assertTrue(sut.execute(actionContext));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testExecuteStreamSticky()
+    {
+        final TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(activityId, null, currentUserId);
+
+        commonExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(stream).getEntityType();
+                will(returnValue(EntityType.GROUP));
+
+                allowing(stream).getDestinationEntityId();
+                will(returnValue(GROUP_ID));
+
+                oneOf(groupMapper).execute(GROUP_ID);
+                will(returnValue(group));
+
+                allowing(group).getStickyActivityId();
+                will(returnValue(activityId));
+
+                allowing(group).getId();
+                will(returnValue(GROUP_ID));
+
+                oneOf(clearGroupStickyActivityExecutor).execute(with(same(actionContext)),
+                        with(new EasyMatcher<UpdateStickyActivityRequest>()
+                        {
+                            @Override
+                            protected boolean isMatch(final UpdateStickyActivityRequest rqst)
+                            {
+                                return rqst.getActivityId() == null && rqst.getGroupId() == GROUP_ID;
+                            }
+                        }));
+            }
+        });
+
+        assertTrue(sut.execute(actionContext));
         context.assertIsSatisfied();
     }
 }

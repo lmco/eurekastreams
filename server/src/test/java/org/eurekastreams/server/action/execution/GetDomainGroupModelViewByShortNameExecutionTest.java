@@ -231,4 +231,35 @@ public class GetDomainGroupModelViewByShortNameExecutionTest
         sut.execute(pac);
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicStickyActivityMissing()
+    {
+        final Long activityId = 888L;
+        final ActivityDTO activity = context.mock(ActivityDTO.class);
+        groupFoundExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(dgmv).getStickyActivityId();
+                will(returnValue(activityId));
+
+                allowing(dgmv).isPublic();
+                will(returnValue(true));
+
+                oneOf(dgmv).setRestricted(false);
+
+                oneOf(activityMapper).execute(activityId);
+                will(returnValue(null));
+            }
+        });
+
+        PrincipalActionContext pac = TestContextCreator.createPrincipalActionContext(shortname, null, USER_ID);
+
+        sut.execute(pac);
+        context.assertIsSatisfied();
+    }
 }

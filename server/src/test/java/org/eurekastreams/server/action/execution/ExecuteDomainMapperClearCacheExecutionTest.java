@@ -17,9 +17,10 @@ package org.eurekastreams.server.action.execution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
@@ -97,6 +98,7 @@ public class ExecuteDomainMapperClearCacheExecutionTest
         assertEquals(1, actionContext.getUserActionRequests().size());
         UserActionRequest request = actionContext.getUserActionRequests().get(0);
         assertEquals("deleteCacheKeysAction", request.getActionKey());
-        assertEquals(cacheKey, ((List<String>) request.getParams()).get(0));
+        assertEquals(1, ((Set<String>) request.getParams()).size());
+        assertTrue(((Set<String>) request.getParams()).contains(cacheKey));
     }
 }
