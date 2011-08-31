@@ -17,8 +17,8 @@
     <bean id="mdbSearchController" class="org.eurekastreams.server.search.indexing.MDBSearchController" />
     
     <!-- given the connection factory, start the listener container and wire up the queue beans -->
-    <jms:listener-container connection-factory="connectionFactory" concurrency="16" prefetch="5">
-        <jms:listener destination="queue/eurekaActivity" ref="asyncActionProcessorMDB" />
+    <jms:listener-container connection-factory="connectionFactory-notpooled" concurrency="16">
+        <jms:listener destination="${eureka.queue.activity.queuename}" ref="asyncActionProcessorMDB" />
     </jms:listener-container>
     
 

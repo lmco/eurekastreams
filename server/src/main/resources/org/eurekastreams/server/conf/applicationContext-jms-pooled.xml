@@ -17,6 +17,11 @@ http://www.springframework.org/schema/jee http://www.springframework.org/schema/
 	       </bean>
 	   </property>
 	</bean>
+	
+	<!-- Non-pooled connection factory to the running JMS server -->
+	<bean id="connectionFactory-notpooled"  class="org.apache.activemq.ActiveMQConnectionFactory" lazy-init="false">
+	   <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
+	</bean>
 
     <!-- the creation of the queue object to submit async. tasks to -->
     <bean id="eurekaActivityQueue" class="org.apache.activemq.command.ActiveMQQueue" lazy-init="false">
