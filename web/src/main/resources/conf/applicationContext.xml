@@ -47,6 +47,8 @@
 		// must have the applicationContext-jms.xml file active
 	-->
 	<alias alias="taskHandler" name="${build.jms.taskhandler}" />
+	<alias alias="taskHandler-nonui" name="${build.jms.taskhandler.nonui}" />
+	
 	
 	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-gilead.xml" />

@@ -596,6 +596,7 @@
             </activation>
             <properties>
                 <build.jms.taskhandler>queueTaskHandler</build.jms.taskhandler>
+                <build.jms.taskhandler.nonui>queueTaskHandler-nonui</build.jms.taskhandler.nonui>
             </properties>
         </profile>
         <profile>
@@ -1286,6 +1287,7 @@
                 <build.system.nodetype>webNode</build.system.nodetype>
                 <build.system.jobscheduler><![CDATA[<!-- No job scheduler -->]]></build.system.jobscheduler>
                 <build.jms.taskhandler>queueTaskHandler</build.jms.taskhandler>
+                <build.jms.taskhandler.nonui>queueTaskHandler-nonui</build.jms.taskhandler.nonui>
             </properties>
         </profile>
         <profile>
