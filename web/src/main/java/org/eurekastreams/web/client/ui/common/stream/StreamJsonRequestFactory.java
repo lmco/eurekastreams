@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 
 /**
  * Constructs a stream JSON request.
@@ -105,7 +106,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Gets an empty request. Used for everyone stream.
-     * 
+     *
      * @return new empty JSON request.
      */
     public static JSONObject getEmptyRequest()
@@ -115,7 +116,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Get a JSON object from a String.
-     * 
+     *
      * @param request
      *            the request.
      * @return the JSON object.
@@ -127,7 +128,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds a recipient to a request.
-     * 
+     *
      * @param type
      *            the type of recipient.
      * @param uniqueId
@@ -143,7 +144,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds a recipient to a request.
-     * 
+     *
      * @param type
      *            the type of author.
      * @param uniqueId
@@ -159,7 +160,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds a liker to a request.
-     * 
+     *
      * @param type
      *            the type of liker.
      * @param uniqueId
@@ -175,7 +176,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Init the recipient array.
-     * 
+     *
      * @param json
      *            the JSON object.
      */
@@ -186,7 +187,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Init the likers array.
-     * 
+     *
      * @param json
      *            the JSON object.
      */
@@ -197,7 +198,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Init the authors array.
-     * 
+     *
      * @param json
      *            the JSON object.
      */
@@ -208,9 +209,9 @@ public final class StreamJsonRequestFactory
 
     /**
      * Init an entity array.
-     * 
+     *
      * @param key
-     *  jj          the key.
+     *            jj the key.
      * @param json
      *            the JSON object.
      */
@@ -227,7 +228,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds an entity to a request.
-     * 
+     *
      * @param key
      *            the JSON key.
      * @param type
@@ -266,7 +267,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Set the org stream in the request.
-     * 
+     *
      * @param orgShortName
      *            the org short name.
      * @param json
@@ -284,7 +285,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the search term in a request..
-     * 
+     *
      * @param searchText
      *            the search text.
      * @param json
@@ -302,7 +303,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the sorting of a request.
-     * 
+     *
      * @param sortBy
      *            the type of sort.
      * @param json
@@ -320,7 +321,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's parent org.
-     * 
+     *
      * @param json
      *            the json.
      * @return the json.
@@ -334,7 +335,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's joined groups..
-     * 
+     *
      * @param json
      *            the json.
      * @return the json.
@@ -348,7 +349,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's saved..
-     * 
+     *
      * @param json
      *            the json.
      * @return the json.
@@ -362,7 +363,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's following.
-     * 
+     *
      * @param json
      *            the json.
      * @return the json.
@@ -376,7 +377,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the min ID of a request.
-     * 
+     *
      * @param minId
      *            the min ID.
      * @param json
@@ -392,7 +393,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the max ID of a request.
-     * 
+     *
      * @param maxId
      *            the max ID.
      * @param json
@@ -408,7 +409,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the max number of results for the request.
-     * 
+     *
      * @param maxResults
      *            the max results.
      * @param json
@@ -427,5 +428,41 @@ public final class StreamJsonRequestFactory
      */
     private StreamJsonRequestFactory()
     {
+    }
+
+    /**
+     * Sets (or clears) the excluded activity id.
+     *
+     * @param inExcludeId
+     *            ID to exclude (null for none).
+     * @param json
+     *            the request.
+     * @return The request
+     */
+    public static JSONObject setExcludeId(final Long inExcludeId, final JSONObject json)
+    {
+        if (inExcludeId == null || inExcludeId == 0)
+        {
+            // ok to clobber the entire "exclude" field, since the ids are the only thing that goes in it at this point
+            if (json.containsKey("exclude"))
+            {
+                json.put("exclude", new JSONObject());
+            }
+        }
+        else
+        {
+            JSONValue raw = json.get("exclude");
+            JSONObject exclude = raw == null ? null : raw.isObject();
+            if (exclude == null)
+            {
+                exclude = new JSONObject();
+                json.put("exclude", exclude);
+            }
+            JSONArray array = new JSONArray();
+            array.set(0, new JSONString(inExcludeId.toString()));
+            exclude.put("ids", array);
+        }
+
+        return json;
     }
 }

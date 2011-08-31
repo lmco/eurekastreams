@@ -596,6 +596,13 @@
                 <constructor-arg ref="deleteActivity" />
                 <constructor-arg ref="getOrderedCommentIdsByActivityIdMapper" />
                 <constructor-arg ref="getPersonIdsWithStarredActivity" />
+                <constructor-arg ref="getGroupByIdMapperAllowNullResult" />
+                <constructor-arg>
+                	<bean class="org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor">
+                		<constructor-arg value="true" />
+                		<constructor-arg ref="updateGroupStickyActivityExecution" />
+                	</bean>
+                </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -1794,7 +1801,12 @@
                 <bean
                     class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />
             </constructor-arg>
-            <constructor-arg ref="securityTrimmer" />
+            <constructor-arg>
+            	<list>
+            		<bean class="org.eurekastreams.server.action.execution.stream.ExcludeItemsTrimmerFactory" />
+            		<ref bean="securityTrimmer" />
+            	</list>
+            </constructor-arg>
             <constructor-arg ref="getPersonsByIdsMapper" />
             <constructor-arg value="%%CURRENT_USER_ACCOUNT_ID%%" />
     </bean>
@@ -4448,20 +4460,20 @@
         <constructor-arg value="30" />
     </bean>
 
+    <bean id="updateGroupStickyActivityExecution" class="org.eurekastreams.server.action.execution.ExecuteDomainMapperClearCacheExecution">
+        <constructor-arg ref="passThruRequestTransformer" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.UpdateGroupStickyActivityDbMapper" />
+        </constructor-arg>              
+        <constructor-arg ref="memcachedCache" />
+        <constructor-arg ref="CacheKeys.GROUP_BY_ID" />
+        <constructor-arg ref="hasGroupIdToGroupIdRequestTransformer" />
+    </bean>
+
 	<bean id="updateGroupStickyActivity" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="groupCoordinatorAuthorization" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperClearCacheExecution">
-                <constructor-arg ref="passThruRequestTransformer" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.db.UpdateGroupStickyActivityDbMapper" />
-                </constructor-arg>              
-                <constructor-arg ref="memcachedCache" />
-                <constructor-arg ref="CacheKeys.GROUP_BY_ID" />
-                <constructor-arg ref="hasGroupIdToGroupIdRequestTransformer" />
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="updateGroupStickyActivityExecution" />
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
