@@ -48,6 +48,7 @@
 		// must have the applicationContext-jms.xml file active
 	-->
 	<alias alias="taskHandler" name="executingTaskHandler" />
+	<alias alias="taskHandler-nonui" name="executingTaskHandler" />
 	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />

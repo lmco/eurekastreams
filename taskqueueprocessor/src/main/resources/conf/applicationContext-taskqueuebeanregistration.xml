@@ -21,5 +21,10 @@
         <jms:listener destination="${eureka.queue.activity.queuename}" ref="asyncActionProcessorMDB" />
     </jms:listener-container>
     
+    <!-- given the connection factory, start the listener container and wire up the queue beans -->
+    <jms:listener-container connection-factory="connectionFactory-notpooled" concurrency="5">
+        <jms:listener destination="${eureka.queue.nonui.queuename}" ref="asyncActionProcessorMDB" />
+    </jms:listener-container>    
+    
 
 </beans>

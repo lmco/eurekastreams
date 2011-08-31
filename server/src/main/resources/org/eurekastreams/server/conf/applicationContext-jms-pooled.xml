@@ -43,7 +43,7 @@ http://www.springframework.org/schema/jee http://www.springframework.org/schema/
     
     <!-- the creation of the queue object to submit async. tasks to -->
     <bean id="eurekaQueue-nonui" class="org.apache.activemq.command.ActiveMQQueue" lazy-init="false">
-        <constructor-arg value="${build.queue.nonui.name}" />
+        <constructor-arg value="${eureka.queue.nonui.queuename}" />
     </bean>
     
     <!-- Spring Non-ui JMS Template -->

@@ -2078,7 +2078,7 @@
                 <constructor-arg value="initializeCache" />
             </bean>
         </constructor-arg>
-        <constructor-arg ref="taskHandler" />
+        <constructor-arg ref="taskHandler-nonui" />
         <constructor-arg value="true" />
     </bean>
 
