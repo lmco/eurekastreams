@@ -1056,6 +1056,11 @@ public class ActivityContent extends Composite
                         bookmarkList.add(bookmarkFilter);
                         bookmarksWidgetMap.put(bookmarkUrl, bookmarkFilter);
                     }
+                    
+                    if (bookmarkList.getWidgetCount() == 0)
+                    {
+                    	bookmarkList.add(new Label("Bookmarks allow you to quickly jump to any stream in Eureka."));
+                    }
                 }
 
                 bookmarksLoaded = true;
