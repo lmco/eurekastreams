@@ -1057,10 +1057,10 @@ public class ActivityContent extends Composite
                         bookmarksWidgetMap.put(bookmarkUrl, bookmarkFilter);
                     }
                     
-                    if (sortedStreamFilters.size() == 0)
-                    {
-                    	bookmarkList.add(new Label("Bookmarks allow you to quickly jump to any stream in Eureka."));
-                    }
+                }
+                if (sortedStreamFilters.size() == 0)
+                {
+                	bookmarkList.add(new Label("Bookmarks allow you to quickly jump to any stream in Eureka."));
                 }
 
                 bookmarksLoaded = true;
