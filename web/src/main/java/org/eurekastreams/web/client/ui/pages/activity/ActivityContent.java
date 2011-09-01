@@ -211,6 +211,13 @@ public class ActivityContent extends Composite
          */
         String currentUserConfLink();
 
+        /**
+         * Message when no bookmarks exist.
+         *
+         * @return message when no bookmarks exist.
+         */
+        String noBookmarksMessage();
+
         /** @return The stream container panel. */
         @ClassName("stream-container-panel")
         String streamContainerPanel();
@@ -1060,7 +1067,9 @@ public class ActivityContent extends Composite
                 }
                 if (sortedStreamFilters.size() == 0)
                 {
-                	bookmarkList.add(new Label("Bookmarks allow you to quickly jump to any stream in Eureka."));
+                	Label defaultLabel = new Label("Bookmarks allow you to quickly jump to any stream in Eureka.");
+                	defaultLabel.addStyleName(style.noBookmarksMessage());
+                	bookmarkList.add(defaultLabel);
                 }
 
                 bookmarksLoaded = true;

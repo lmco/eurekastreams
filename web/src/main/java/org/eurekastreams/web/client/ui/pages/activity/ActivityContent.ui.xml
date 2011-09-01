@@ -154,6 +154,10 @@
 				display: block;
 			}
 			
+			.noBookmarksMessage {
+				padding-top: 10px;
+			}
+			
 			.activeSearch .search-box-button,.search-container:hover .search-box-button
 				{
 				display: none;
