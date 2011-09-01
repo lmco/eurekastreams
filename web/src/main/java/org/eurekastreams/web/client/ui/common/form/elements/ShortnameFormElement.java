@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.io.Serializable;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -28,18 +30,18 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Creates a short name form element.
- * 
+ *
  */
 public class ShortnameFormElement extends FlowPanel implements FormElement
 {
     /**
      * The text box.
      */
-    private LabeledTextBox textBox = new LabeledTextBox("");
+    private final LabeledTextBox textBox = new LabeledTextBox("");
     /**
      * The label.
      */
-    private Label label = new Label();
+    private final Label label = new Label();
     /**
      * Puts a (required) on the form.
      */
@@ -52,7 +54,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
      * The key that this corresponds to in the model.
      */
     private String key = "";
-    
+
     /**
      * Shortname length.
      */
@@ -60,7 +62,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
 
     /**
      * Creates a basic text area form element.
-     * 
+     *
      * @param labelVal
      *            the label (i.e. "Quote").
      * @param inKey
@@ -77,7 +79,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
     public ShortnameFormElement(final String labelVal, final String inKey, final String value, final String inUrl,
             final String inInstructions, final boolean required)
     {
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shortnameFormElement());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().shortnameFormElement());
 
         key = inKey;
         label.setText(labelVal);
@@ -104,7 +106,14 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
         {
             public void onKeyUp(final KeyUpEvent arg0)
             {
-                textBox.setText(textBox.getText().toLowerCase());
+                cleanText();
+            }
+        });
+        textBox.addBlurHandler(new BlurHandler()
+        {
+            public void onBlur(final BlurEvent inEvent)
+            {
+                cleanText();
             }
         });
 
@@ -121,6 +130,22 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
     }
 
     /**
+     * Forces text to lowercase and preserves the cursor position and selection.
+     */
+    private void cleanText()
+    {
+        String oldText = textBox.getText();
+        String newText = oldText.toLowerCase();
+        if (!oldText.equals(newText))
+        {
+            int pos = textBox.getCursorPos();
+            int selectionLength = textBox.getSelectionLength();
+            textBox.setText(newText);
+            textBox.setSelectionRange(pos, selectionLength);
+        }
+    }
+
+    /**
      * Sets the text box as focused.
      */
     public void setFocus()
@@ -130,7 +155,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets the key.
-     * 
+     *
      * @return the key.
      */
     public String getKey()
@@ -140,7 +165,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets the value of the text box.
-     * 
+     *
      * @return the value.
      */
     public Serializable getValue()
@@ -150,7 +175,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
 
     /**
      * Sets the value of the text box.
-     * 
+     *
      * @param inValue
      *            the inValue.
      */
@@ -162,7 +187,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets called if this element has an error.
-     * 
+     *
      * @param errMessage
      *            the error Message.
      */
