@@ -3363,7 +3363,7 @@ body .shortname-form-element input {
 	background: transparent url('style/images/pagingRightSprite.png') no-repeat scroll 0 -23px;
 }
 
-.pager-forward-disabled {
+.pager-forward-disabled, .pager-forward-disabled:hover {
 	cursor: default;
 	background: transparent url('style/images/pagingRightSprite.png') no-repeat scroll 0 -46px;
 }
@@ -3378,7 +3378,7 @@ body .shortname-form-element input {
 	margin-top: 2px;
 	display: inline-block;
 	cursor: pointer;
-	padding-left: 10px;
+	margin-left: 10px;
 	background: transparent url('style/images/pagingLeftSprite.png') no-repeat scroll 0 0;
 }
 
@@ -3386,7 +3386,7 @@ body .shortname-form-element input {
 	background: transparent url('style/images/pagingLeftSprite.png') no-repeat scroll 0 -23px;
 }
 
-.pager-backward-disabled {
+.pager-backward-disabled, .pager-backward-disabled:hover {
 	cursor: default;
 	background: transparent url('style/images/pagingLeftSprite.png') no-repeat scroll 0 -46px;
 }
@@ -6407,7 +6407,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		display: inline;
 		zoom: 1;
 		position: relative;
-		top: -5px;
 	}
 	
 	.share-message-dialog-body .stream-scope {
