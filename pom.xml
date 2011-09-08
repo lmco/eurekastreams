@@ -591,7 +591,6 @@
          </profile>
      </profiles>	
    <distributionManagement>
-   <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
      <snapshotRepository>
        <id>smpsnapshots</id>
        <name>Snapshots</name>
