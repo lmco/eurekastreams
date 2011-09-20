@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- * 
+ *
  */
 public final class CacheKeys
 {
@@ -219,4 +219,8 @@ public final class CacheKeys
      */
     public static final String DISCOVERY_PAGE_LISTS = "DiscoveryPageLists";
 
+    /**
+     * Key for a person's encryption key.
+     */
+    public static final String CRYPTO_KEY_BY_PERSON_ID = "PerCrK";
 }

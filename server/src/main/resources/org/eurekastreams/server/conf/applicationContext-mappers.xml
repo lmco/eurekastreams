@@ -44,7 +44,8 @@
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
-	<util:constant id="CacheKeys.GROUP_BY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_ID" />	
+	<util:constant id="CacheKeys.GROUP_BY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_ID" />
+	<util:constant id="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />	
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -2567,4 +2568,65 @@
 		</constructor-arg>
 		<constructor-arg ref="flushMapper" />		
     </bean>
+    
+    <bean id="getPersonCryptoKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />
+                        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Chained/decorated/inner mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		        <!-- Database mapper -->
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		                <constructor-arg>
+		                    <bean class="org.eurekastreams.server.persistence.mappers.db.PersonCryptoKeyDbMapper"/>
+		                </constructor-arg>
+		            </bean>
+		        </constructor-arg>
+		        <!-- Creator mapper -->
+		        <constructor-arg>
+		        	<bean class="org.eurekastreams.server.persistence.mappers.CreateCryptoKeyMapper">
+		        		<constructor-arg ref="cryptoKeyGenerator" />
+		        	</bean>
+		        </constructor-arg>
+		        <!-- Results combiner:  return whichever is not null -->
+		        <constructor-arg ref="nonNullResultsCombiner" />
+		        <!-- Database updater -->
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.db.PersonCryptoKeyDbRefreshStrategy" />
+		        </constructor-arg>
+		    </bean>
+        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+        <constructor-arg ref="nonNullResultsCombiner" />
+        <!-- Cache updater -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+	<bean id="cryptoKeyGenerator" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="javax.crypto.KeyGenerator" />
+		<property name="targetMethod" value="getInstance" />
+		<property name="arguments">
+			<list>
+				<value>AES</value>
+			</list>
+		</property>
+	</bean>
+    
 </beans>

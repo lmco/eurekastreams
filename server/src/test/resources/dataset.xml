@@ -777,4 +777,6 @@
     <FeaturedStream id="1"  version="0" created="2009-01-01 12:00:00.000" description="mrburns featured stream" streamscopeid="4" />  
     <FeaturedStream id="2"  version="0" created="2009-02-02 12:00:00.000" description="group 1 featured stream" streamscopeid="874" />       
     
+    <Person_CryptoKey id="1" version="0" personId="4507" cryptoKey="VGhpcyBpcyBteSBkYXRh" />
+    
 </dataset>
