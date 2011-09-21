@@ -222,5 +222,5 @@ public final class CacheKeys
     /**
      * Key for a person's encryption key.
      */
-    public static final String CRYPTO_KEY_BY_PERSON_ID = "PerCrK";
+    public static final String CRYPTO_KEY_BY_PERSON_ID = "PerCrK:";
 }

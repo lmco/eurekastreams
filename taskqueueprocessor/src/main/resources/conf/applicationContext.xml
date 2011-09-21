@@ -16,6 +16,7 @@
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="locations">
             <list>
+                <value>classpath:/org/eurekastreams/server/conf/eurekastreams-server.properties</value>
                 <value>classpath:conf/eurekastreams-server.properties</value>
                 <value>file:/etc/eurekastreams-server.properties</value>
                 <value>${ESCONFIG}</value>
@@ -32,6 +33,7 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-mappers.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms-pooled.xml"/>
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-cache-initialization.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-services.xml" />
 
 	<!-- Extension point for other projects to tie in. -->
 	<import resource="classpath*:/conf/external/common/*.xml" />

@@ -17,6 +17,7 @@
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="locations">
             <list>
+            	<value>classpath:/org/eurekastreams/server/conf/eurekastreams-server.properties</value>
                 <value>classpath:conf/eurekastreams-server.properties</value>
                 <value>file:/etc/eurekastreams-server.properties</value>
                 <value>${ESCONFIG}</value>
@@ -55,6 +56,7 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-common.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-${build.spring.security}.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-restlets.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-services.xml" />
 	
     <!-- Initialize Class and Field Bridges with singleton setters -->
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-bridges-initialization.xml" />

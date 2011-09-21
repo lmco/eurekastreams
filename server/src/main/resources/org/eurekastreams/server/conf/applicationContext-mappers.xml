@@ -2624,9 +2624,9 @@
 		<property name="targetMethod" value="getInstance" />
 		<property name="arguments">
 			<list>
-				<value>AES</value>
+				<value>${eureka.crypto.algorithm}</value>
 			</list>
 		</property>
 	</bean>
-    
+
 </beans>

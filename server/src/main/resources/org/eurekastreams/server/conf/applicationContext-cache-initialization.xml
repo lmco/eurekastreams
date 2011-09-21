@@ -15,7 +15,8 @@
                     <list>
                         <value>queuePersonCacheWarmingTasks</value> 
                         <value>queueThemeCacheWarmingTasks</value>                       
-                        <value>queueGroupCacheWarmingTasks</value>                                                                                           
+                        <value>queueGroupCacheWarmingTasks</value>
+                        <value>queueCryptoKeyCacheWarmingTasks</value>                                                                                           
                     </list>
                 </constructor-arg>
             </bean>
@@ -77,6 +78,29 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="queueCryptoKeyCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cachePersonCryptoKey</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg>
+                	<!-- getPersonIdsWhoHaveCryptoKeys -->
+                    <bean class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
+				        <constructor-arg value="PersonCryptoKey"/>
+				        <constructor-arg value="personId"/>        
+				    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>   
+    
     
     <bean id="cacheGroup" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -170,5 +194,33 @@
         <constructor-arg value="true" />
     </bean>               
       
-</beans>
+   	<bean id="cachePersonCryptoKey" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+            	<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+				        <!-- Cache mapper - always returns null, which forces refresh -->
+				        <constructor-arg ref="nullResultPartialMapper"/>
+				        <!-- Database mapper -->
+				        <constructor-arg>
+				            <bean class="org.eurekastreams.server.persistence.mappers.db.PersonCryptoKeyDbMapper"/>
+				        </constructor-arg>
+				        <!-- Results combiner:  return whichever is not null -->
+				        <constructor-arg ref="nonNullResultsCombiner" />
+				        <!-- Cache updater -->
+				        <constructor-arg>
+				            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+				                <constructor-arg ref="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />
+				                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				                <property name="cache" ref="memcachedCache" />
+				            </bean>
+				        </constructor-arg>
+				    </bean>            	
+            	</constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>               
       
+</beans>
