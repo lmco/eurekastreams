@@ -13,7 +13,7 @@
       http://www.springframework.org/schema/util
       http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+    <bean id="propertyPlaceholderConfigurer" class="org.eurekastreams.server.service.utility.PropertyExposingServletContextPropertyPlaceholderConfigurer">
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
         <property name="searchContextAttributes" value="true"/>
         <property name="contextOverride" value="true"/>
@@ -35,6 +35,7 @@
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-mappers.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-actions.xml" />	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-ldap.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-services.xml" />
 	
 	<!-- Extension point for other projects to tie in. -->
 	<import resource="classpath*:/conf/external/common/*.xml" />

@@ -3,7 +3,7 @@
 ## See the post and first comment on http://www.blueskyonmars.com/2003/10/29/velocity-whitespace-handling-is-not-as-written
 
 #macro( prop $name )
-$properties.getProperty($name)##
+$properties.get($name)##
 #end
 
 #macro( activityType $activity )

@@ -110,6 +110,24 @@
         <constructor-arg ref="wrapInListRequestTransformer" />
     </bean>
 
+	<!-- ========== SUPPORT CLASSES ========== -->
+
+    <!--bean id="applicationProperties"
+        class="org.eurekastreams.server.service.utility.ResourcePropertyFileLoaderFactoryBean">
+        <constructor-arg value="classpath:conf/eurekastreams-server.properties" />
+    </bean-->
+	<bean id="applicationProperties" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="propertyPlaceholderConfigurer" />
+		<property name="targetMethod" value="getRawProperties" />
+	</bean>
+	<bean id="applicationPropertiesAccessor" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="propertyPlaceholderConfigurer" />
+		<property name="targetMethod" value="getPropertyAccessor" />
+	</bean>
+
+
+
+
     <bean id="membershipCriteriaPersonPropertyGenerator" class="org.eurekastreams.server.service.actions.strategies.MembershipCriteriaPersonPropertyGenerator">
         <!-- tab name - must be less than 16 characters long -->
         <constructor-arg value="Welcome" />
@@ -2600,11 +2618,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>
-
-    <bean id="applicationProperties"
-        class="org.eurekastreams.server.service.utility.ResourcePropertyFileLoaderFactoryBean">
-        <constructor-arg value="classpath:conf/eurekastreams-server.properties" />
     </bean>
 
     <bean id="setTabLayout" class="org.eurekastreams.commons.actions.service.ServiceAction">

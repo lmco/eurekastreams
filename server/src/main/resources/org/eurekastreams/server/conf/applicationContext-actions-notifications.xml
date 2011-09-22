@@ -7,28 +7,9 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<!-- ========== CONFIGURATION ========== -->
-	<!--  TODO:  These should probably be in the .properties file, but that's not part of the server project.  
-		Probably should have a properties file that is part of the server project, and put them there. -->
-	<bean id="MAX_NOTIFICATION_MESSAGE_LENGTH" class="java.lang.Integer">
-        <constructor-arg value="250" />
-  	</bean>
-	<bean id="MAX_NOTIFICATION_URL_LENGTH" class="java.lang.Integer">
-        <constructor-arg value="2048" />
-  	</bean>
-  	<!-- Maximum number of in-app notifications to fetch -->
-  		<bean id="MAX_NOTIFICATIONS_TO_FETCH" class="java.lang.Integer">
-        <constructor-arg value="500" />
-  	</bean>
-  	<!-- Age (in days) at which in-app notifications should be deleted. -->
-	<bean id="MAX_NOTIFICATION_AGE" class="java.lang.Integer">
-        <constructor-arg value="14" />
-  	</bean>
-
-
 	<!-- ========== GENERATION ========== -->
 
-	  <bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+	<bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.notification.CreateNotificationsValidation">
                 <constructor-arg ref="translators" />
@@ -67,8 +48,8 @@
         <constructor-arg>
 			<bean class="org.eurekastreams.server.action.validation.notification.SendPrebuiltNotificationValidation">
 				<constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
-				<constructor-arg ref="MAX_NOTIFICATION_MESSAGE_LENGTH" />
-				<constructor-arg ref="MAX_NOTIFICATION_URL_LENGTH" />
+				<constructor-arg value="${eureka.notification.maxMessageLength}" />
+				<constructor-arg value="${eureka.notification.maxUrlLength}" />
 			</bean>
 		</constructor-arg>
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -84,8 +65,8 @@
     <bean id="sendMassPrebuiltNotificationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.action.validation.notification.SendMassPrebuiltNotificationValidation">
-				<constructor-arg ref="MAX_NOTIFICATION_MESSAGE_LENGTH" />
-				<constructor-arg ref="MAX_NOTIFICATION_URL_LENGTH" />
+				<constructor-arg value="${eureka.notification.maxMessageLength}" />
+				<constructor-arg value="${eureka.notification.maxUrlLength}" />
 			</bean>
 		</constructor-arg>
         <constructor-arg ref="isSystemAdminAuthorization" />
@@ -241,7 +222,7 @@
 	<bean id="velocityGlobalContext" class="org.apache.velocity.VelocityContext">
 		<constructor-arg>
 			<map>
-				<entry key="properties" value-ref="applicationProperties" />
+				<entry key="properties" value-ref="applicationPropertiesAccessor" />
 				<entry key="helper">
 					<bean class="org.eurekastreams.server.action.execution.notification.notifier.NotificationMessageBuilderHelper">
 						<constructor-arg value="${eureka.web.baseurl}" />
@@ -346,7 +327,7 @@
 				<constructor-arg>
 					<bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetInAppNotificationsByUserId">
 						<!-- Maximum number of in-app notifications to fetch -->
-						<constructor-arg ref="MAX_NOTIFICATIONS_TO_FETCH" />
+						<constructor-arg value="${eureka.notification.inapp.maxFetch}" />
 					</bean>
 				</constructor-arg>
 				<constructor-arg ref="getPeopleByAccountIdsMapper" />
@@ -397,7 +378,7 @@
 				</constructor-arg>
                 <constructor-arg ref="getCachedUnreadInAppNotificationCountsByUserId_FORCE_REFRESH" />
                 <!-- Age (in days) at which in-app notifications should be deleted. -->
-                <constructor-arg type="int" ref="MAX_NOTIFICATION_AGE" />
+                <constructor-arg type="int" value="${eureka.notification.inapp.maxAge}" />
 		     </bean>
         </constructor-arg>
         <constructor-arg value="false" />
