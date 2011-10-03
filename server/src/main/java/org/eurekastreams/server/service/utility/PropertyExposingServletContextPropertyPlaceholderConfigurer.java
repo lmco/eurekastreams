@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.properties.PropertyValueEncryptionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
@@ -30,14 +32,14 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * want access to the merged set of properties that Spring used so we can use them in the application (e.g. in
  * notification templates), but Spring does not provide access it. Hence this class, which captures Properties object
  * and provides a method to get it.
- * 
+ *
  * This class is inherently tied to the implementation of Spring. It was based on version 2.5.6.
- * 
+ *
  * There are two features which are not supported by the Properties object provided: 1. Access to values in the servlet
  * context. 2. Property references in property definitions (recursion). As such, looking up a property in the returned
  * Properties object may result in a different value than what would have been substituted into the Spring configuration
  * file. The reason is that the Spring classes do not perform a simple lookup on the Properties object.
- * 
+ *
  * This class also provides a Map that allows property lookups without the above limitations. It has higher overhead,
  * and ONLY supports the get() method, but provides full compatibility with Spring (servlet access and recursive
  * definitions).
@@ -45,6 +47,20 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 public class PropertyExposingServletContextPropertyPlaceholderConfigurer extends
         org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer
 {
+    /** Decryptor for handling encrypted configuration. */
+    private final StringEncryptor stringEncryptor;
+
+    /**
+     * Constructor.
+     * 
+     * @param inStringEncryptor
+     *            Decryptor for handling encrypted configuration.
+     */
+    public PropertyExposingServletContextPropertyPlaceholderConfigurer(final StringEncryptor inStringEncryptor)
+    {
+        stringEncryptor = inStringEncryptor;
+    }
+
     // ---------- "APIs" - methods providing properties (accessed in Spring config) ----------
 
     /**
@@ -61,6 +77,30 @@ public class PropertyExposingServletContextPropertyPlaceholderConfigurer extends
     public Map<String, String> getPropertyAccessor()
     {
         return new PropertyAccessor();
+    }
+
+    // ---------- Support for encrypted properties ----------
+    // Uses Jasypt; code here based on Jasypt's EncryptablePropertyPlaceholderConfigurer and
+    // ServletContextPropertyPlaceholderConfigurer. (Cannot use their classes directly since they were declared as
+    // final.)
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String convertPropertyValue(final String inOriginalValue)
+    {
+        return PropertyValueEncryptionUtils.isEncryptedValue(inOriginalValue) ? PropertyValueEncryptionUtils.decrypt(
+                inOriginalValue, stringEncryptor) : inOriginalValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String resolvePlaceholder(final String inPlaceholder, final Properties inProps)
+    {
+        return convertPropertyValue(super.resolvePlaceholder(inPlaceholder, inProps));
     }
 
     // ---------- Supporting methods ----------

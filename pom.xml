@@ -181,6 +181,7 @@
         <build.user-account-tld>example.com</build.user-account-tld>
         <build.app.baseurl>http://application.com</build.app.baseurl>
         <build.app.version>${project.version}</build.app.version>
+		<build.jobs.emailIngestTrigger>dummyTrigger</build.jobs.emailIngestTrigger>
         <checkstyle.enable.rss>false</checkstyle.enable.rss>
     </properties>
     <build>
@@ -251,6 +252,12 @@
     </reporting>
 
     <profiles>
+		<profile>
+			<id>jobs.emailIngest</id>
+			<properties>
+				<build.jobs.emailIngestTrigger>ingestEmailJobTrigger</build.jobs.emailIngestTrigger>				
+			</properties>
+		</profile>
         <profile>
             <!--
                 This profile assists in reducing development build times

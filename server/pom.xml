@@ -494,6 +494,17 @@
 			<artifactId>java-image-scaling</artifactId>
 			<version>0.8.5</version>
 		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt</artifactId>
+			<!-- Suffix added to version number to avoid matching copies in standard repos which would have the pom
+			with dependencies.  The versions in the dependencies (especially Spring) conflict with versions ES uses.
+			Would use dependency exclusions if Maven supported wildcards, but without wildcards there are way too many
+			to list. -->
+			<version>1.8-NoDeps</version>
+	    </dependency>
 
 	</dependencies>
 	<pluginRepositories>

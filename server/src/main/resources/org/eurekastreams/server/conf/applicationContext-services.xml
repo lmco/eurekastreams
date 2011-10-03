@@ -7,11 +7,54 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+
+	<bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config">
+			<bean class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+				<property name="algorithm" value="PBEWithMD5AndDES" />
+				<property name="passwordEnvName" value="APP_ENCRYPTION_PASSWORD" />
+			</bean>
+		</property>
+	</bean>
+
+
 	<!-- ========== EMAIL SERVICE ========== -->
 	
 	<bean id="tokenEncoder" class="org.eurekastreams.server.service.email.TokenEncoder">
 		<constructor-arg value="${eureka.crypto.algorithm}" />
-		<constructor-arg ref="getPersonCryptoKeyMapper" />
+	</bean>
+
+	<bean id="imapStoreFactory" class="org.eurekastreams.server.service.email.ImapStoreFactory">
+		<constructor-arg value="${eureka.mail.imap.host}" />
+		<constructor-arg value="${eureka.mail.imap.port}" />
+		<constructor-arg value="${eureka.mail.imap.username}" />
+		<constructor-arg value="${eureka.mail.imap.password}" />
+		<constructor-arg>
+			<props>
+				<prop key="mail.imap.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+				<prop key="mail.imap.socketFactory.fallback">false</prop>
+				<prop key="mail.imap.socketFactory.port">${eureka.mail.imap.port}</prop>
+			</props>
+		</constructor-arg>	
+	</bean>
+  	
+  	<bean id="messageAuthenticator" class="org.eurekastreams.server.service.email.MessageAuthenticator">
+  		<constructor-arg value="${eureka.mail.ingest.address}" />
+  		<constructor-arg ref="tokenEncoder" />
+  		<constructor-arg ref="getPersonCryptoKeyByEmail" />
+  		<constructor-arg ref="transactionManager" />
+  	</bean>
+  	
+  	<bean id="messageProcessor" class="org.eurekastreams.server.service.email.MessageProcessor">
+		<constructor-arg ref="messageAuthenticator" />
+  	</bean>
+  	
+	<bean id="emailIngester" class="org.eurekastreams.server.service.email.ImapEmailIngester">
+		<constructor-arg ref="imapStoreFactory" />
+		<constructor-arg ref="messageProcessor" />
+		<constructor-arg value="${eureka.mail.ingest.input}" />
+		<constructor-arg value="${eureka.mail.ingest.error}" />
+		<constructor-arg value="${eureka.mail.ingest.done}" />
 	</bean>
   	
 </beans>
