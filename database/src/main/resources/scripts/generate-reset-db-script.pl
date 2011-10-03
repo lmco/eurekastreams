@@ -14,7 +14,7 @@ if(! -d "$ARGV[0]/database")
     exit 1;
 }
 
-$dir = "/Users/caldwelw/Documents/Development/Eureka/src/eurekastreams/database/src/main/resources";
+$dir = "$ARGV[0]/database/src/main/resources";
 my @dirs = ("${dir}/schema", "${dir}/migration/0/7", "${dir}/migration/0/8", "${dir}/migration/0/9", "${dir}/migration/1/0", "${dir}/migration/1/1", "${dir}/migration/1/5");
 
 print "DROP DATABASE eurekastreams;\n";
