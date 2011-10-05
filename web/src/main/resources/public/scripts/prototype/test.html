@@ -1,0 +1,52 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js" type="text/javascript"></script>
+	<script src="jquery.json-2.3.min.js" type="text/javascript"></script>
+	<script src="jstorage.js_4.js" type="text/javascript"></script>
+	<script type="text/javascript">jQuery.noConflict();</script>
+	<script src="eurekaKit-event.js" type="text/javascript"></script>
+	<script src="eurekaKit-requests.js" type="text/javascript"></script>
+	<script src="eurekaKit-services.js" type="text/javascript"></script>
+</head>
+<body>
+	<script type="text/javascript">
+	
+		//create the service.
+		var theService = EurekaKit.ServiceFactory.createService();
+		
+		//observe service's fetch method, passing success/fail callbacks.
+		theService.getSystemSettings.observe(
+			function(data)
+			{
+				alert("Success!: " + jQuery.toJSON(data));
+			},
+			function(data)
+			{
+				alert("Error!!" + data.toString());
+			});
+			
+		theService.getSystemSettings.observeServerCallStatus(
+			function(data)
+			{
+				alert("before server call");
+			},
+			function(data)
+			{
+				alert("after server call complete");
+			});
+			
+		function doStuff()
+		{			
+			theService.getSystemSettings.execute(null, true);
+		}	
+		
+		function clearCache()
+		{			
+			jQuery.jStorage.flush();
+		}	
+	</script>
+	<input type="button" name="button" onclick="doStuff()" value="doStuff" /><br/>
+	<input type="button" name="clear cache" onclick="clearCache()" value="clear cache" />
+</body>
+
+</html>
