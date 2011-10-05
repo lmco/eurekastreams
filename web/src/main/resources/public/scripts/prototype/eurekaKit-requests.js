@@ -17,7 +17,6 @@ EurekaKit.jsonRequest = function(spec)
 	// function that creates populated url from params.
 	var paramsToUrlTransformer = spec.paramsToUrlTransfomer;
 	
-	
 	function getOnSuccess(executeParams)
 	{
 		return function(data, textStatus, jqXHR)

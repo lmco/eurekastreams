@@ -54,11 +54,13 @@
 		//button methods.
 		function getSystemSettings()
 		{			
+			//Example: 2nd param indicates to use cache, don't update asynch if value is cached.
 			theService.getSystemSettings.execute(null, {noUpdate:true});
 		}	
 		
 		function getActivityById()
 		{
+			//Example: 2nd param indicates not to use cache, this will hit server each time. 
 			theService.getActivityById.execute(jQuery("input[name='activityIdTextBox']").val(), null);
 		}
 		
