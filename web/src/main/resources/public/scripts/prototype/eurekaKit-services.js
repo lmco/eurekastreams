@@ -2,40 +2,47 @@ if (typeof(EurekaKit) === "undefined") {
     var EurekaKit = {};
 }
 
-EurekaKit.ServiceFactory = 
-{		
-	//Services are just groups of EurekaKit.jsonRequests injected with correct parameters
-	//to make the service call. Basically just groupings of API calls that are available.
-	//Having this abstraction simplifies life for caller and 
-	//encapsulates the logic for putting together different EurekaKit.jsonRequest objects.
-	//TODO: this could get large quickly and turn into a mess. Investigate how to mitigate this.
-	//maybe just eval a call here based on the serviceKey param?
-	createService : function(inParams)
-	{	
-		var params = inParams || {};
-		var serviceKey = params.serviceKey;
-		
-		//if no eventBus provided, create new one for service.
-		var eventBus = params.eventBus || EurekaKit.EventBusFactory.createEventBus();
-		
-		switch(serviceKey)
-		{
-			default: //just default test stuff here for now.
+EurekaKit.serviceBaseUrl = "http://localhost:8080/";
+
+EurekaKit.Services = EurekaKit.Services || {};
+
+EurekaKit.Services.testService = function(inParams)
+{
+	//create params object if not passed in.
+	var params = inParams || {};
+	
+	//if no eventBus provided, create new one for service.
+	var eventBus = params.eventBus || EurekaKit.EventBusFactory.createEventBus();
+	
+	//create the service object to populate
+	var service = {};
+	
+	/**
+	* getSystemSettings.execute();
+	**/
+	service.getSystemSettings = 
+		EurekaKit.jsonRequest({
+			paramsToUrlTransfomer: function(params)
 			{
-				var resultService = {};
-				
-				//build doSomething
-//				var jsonRequestParams = {};
-//				jsonRequestParams.eventBus = eventBus;
-//				resultService.doSomething = EurekaKit.jsonRequest(jsonRequestParams);
-				
-				jsonRequestParams = {};
-				jsonRequestParams.eventBus = eventBus;
-				resultService.getSystemSettings = 
-					EurekaKit.jsonRequest({url:"http://localhost:8080/api/0/read/getSystemSettings/{}"});
-					
-				return resultService;
-			}
-		}
-	}
+				return EurekaKit.serviceBaseUrl + "api/0/read/getSystemSettings/{}";
+			},
+			eventBus: eventBus
+			});
+			
+			
+	/**
+	* getActivityById.execute(5);
+	**/
+	service.getActivityById = 
+		EurekaKit.jsonRequest({
+			paramsToUrlTransfomer: function(params)
+			{
+				return EurekaKit.serviceBaseUrl + "api/0/read/getActivityById/{request:"+ params +"}";
+			},
+			eventBus: eventBus
+			});
+	
+	//return populated service.
+	return service;
+
 };

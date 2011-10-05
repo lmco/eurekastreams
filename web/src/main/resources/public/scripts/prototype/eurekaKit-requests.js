@@ -6,14 +6,17 @@ if (typeof(EurekaKit) === "undefined") {
 EurekaKit.jsonRequest = function(spec)
 {
 	var result = {};
-	var url = spec.url || null;
 	var eventBus = spec.eventBus || EurekaKit.EventBusFactory.createEventBus();
-	var preCallTransformer = spec.preCallTransformer;
-	var postCallTransformer = spec.postCallTransformer;
+	
+	//event keys
 	var successEventKey = spec.successEventKey || Math.random().toString();
 	var errorEventKey = spec.errorEventKey || Math.random().toString();
 	var beforeSendEventKey = spec.beforeSendEventKey || Math.random().toString();
 	var completeEventKey = spec.completeEventKey || Math.random().toString();
+	
+	// function that creates populated url from params.
+	var paramsToUrlTransformer = spec.paramsToUrlTransfomer;
+	
 	
 	function getOnSuccess(executeParams)
 	{
@@ -21,11 +24,10 @@ EurekaKit.jsonRequest = function(spec)
 		{
 			if(!data.fromCache && executeParams.useCache)
 			{
-				alert("adding value to cache");
 				jQuery.jStorage.set(executeParams.url, data);
 			}
 			
-			eventBus.publish(successEventKey, postCallTransformer ? postCallTransformer.transform(data) : data);
+			eventBus.publish(successEventKey, data);
 		};
 	}
 	
@@ -67,13 +69,21 @@ EurekaKit.jsonRequest = function(spec)
 		};
 	}
 	
+	/**
+	* useCache = null: Trip to server, no caching of results
+	* useCache != null: Check cache, return if possible, then trip to server
+	*	to update cache and return new value. (values from cache will have fromCache=true)
+	* useCache != null && useCache.noUpdate. Return from cache, or trip to server if not
+	* 	in cache. No "update" trip to server will be made to get latest.
+	**/
 	result.execute = function(params, useCache)
 	{
 		var executeParams = {};
 		executeParams.params = params;
 		executeParams.useCache = useCache;		
 		//this is the full url replaced with param data.
-		executeParams.url = url;
+		executeParams.url = paramsToUrlTransformer(params);
+		//executeParams.url = url;
 	
 		//create function closures to use on ajax call
 		var onSuccess = getOnSuccess(executeParams);
@@ -83,18 +93,21 @@ EurekaKit.jsonRequest = function(spec)
 		
 		if(useCache)
 		{
-			alert("use cache, checking: " + executeParams.url);
+			//alert("use cache, checking: " + executeParams.url);
 			result = jQuery.jStorage.get(executeParams.url);
-			alert("result: " + jQuery.toJSON(result));
 			
 			if(result)
 			{
 				result.fromCache = true;
 				onSuccess(result, null, null);
+				if(useCache.noUpdate)
+				{
+					return;
+				}
 			}
 		}
 		
-		jQuery.ajax({url: url,
+		jQuery.ajax({url: executeParams.url,
 			dataType: "json",
 			success: onSuccess,
 			error: onError,
@@ -102,7 +115,7 @@ EurekaKit.jsonRequest = function(spec)
 			complete: onComplete});
 	};
 	
-	result.observe = function(successHandler, errorHandler, beforeSendHandler, completeSendHandler)
+	result.observe = function(successHandler, errorHandler)
 	{
 		if(successHandler)
 		{
