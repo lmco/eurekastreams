@@ -45,7 +45,7 @@
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	<util:constant id="CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
 	<util:constant id="CacheKeys.GROUP_BY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_ID" />
-	<util:constant id="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />	
+	<util:constant id="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />
 	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
@@ -2568,7 +2568,18 @@
 		</constructor-arg>
 		<constructor-arg ref="flushMapper" />		
     </bean>
-    
+
+	<bean id="getPersonCryptoKeyByEmail" class="org.eurekastreams.server.persistence.mappers.GetItemByPointerIdMapper">
+		<constructor-arg ref="getPersonIdByEmail" />
+		<constructor-arg ref="getPersonCryptoKeyMapper" />
+	</bean>
+
+	<bean id="getPersonIdByEmail" class="org.eurekastreams.server.persistence.mappers.db.GetFieldFromTableByUniqueField">
+          	<constructor-arg value="Person" />
+          	<constructor-arg value="email" />
+          	<constructor-arg value="id" />
+	</bean>
+  
     <bean id="getPersonCryptoKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
         <constructor-arg>

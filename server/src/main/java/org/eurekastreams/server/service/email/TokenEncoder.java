@@ -20,12 +20,13 @@ import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.domain.EntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,27 +35,84 @@ import org.slf4j.LoggerFactory;
  */
 public class TokenEncoder
 {
+    /** Metadata key: person performing the action. */
+    public static final String META_KEY_ACTOR = "p";
+
+    /** Metadata key: destination personal stream. */
+    public static final String META_KEY_PERSON_STREAM = "ps";
+
+    /** Metadata key: destination group stream. */
+    public static final String META_KEY_GROUP_STREAM = "gs";
+
+    /** Metadata key: activity ID. */
+    public static final String META_KEY_ACTIVITY = "a";
+
     /** Log. */
     private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
 
     /** Encryption algorithm to use. */
     private final String algorithm;
 
-    /** Mapper to get a person's encryption key. */
-    private final DomainMapper<Long, byte[]> getPersonCryptoKeyDao;
+    /** Regex for checking if a string might be a token. */
+    private static final Pattern TOKEN_PATTERN = Pattern.compile("^[A-Z0-9+/]+={0,2}$", Pattern.CASE_INSENSITIVE);
 
     /**
      * Constructor.
      *
      * @param inAlgorithm
      *            Encryption algorithm to use.
-     * @param inGetPersonCryptoKeyDao
-     *            Mapper to get a person's encryption key.
      */
-    public TokenEncoder(final String inAlgorithm, final DomainMapper<Long, byte[]> inGetPersonCryptoKeyDao)
+    public TokenEncoder(final String inAlgorithm)
     {
         algorithm = inAlgorithm;
-        getPersonCryptoKeyDao = inGetPersonCryptoKeyDao;
+    }
+
+    /**
+     * Encodes a token for a user and stream.
+     *
+     * @param streamEntityType
+     *            Entity type of the stream.
+     * @param streamEntityId
+     *            ID of stream's entity (person/group).
+     * @param personId
+     *            Person ID of actor.
+     * @param keyBytes
+     *            Key to encrypt token with.
+     * @return Token.
+     */
+    public String encodeForStream(final EntityType streamEntityType, final long streamEntityId, final long personId,
+            final byte[] keyBytes)
+    {
+        String metaKey;
+        switch (streamEntityType)
+        {
+        case PERSON:
+            metaKey = META_KEY_PERSON_STREAM;
+            break;
+        case GROUP:
+            metaKey = META_KEY_GROUP_STREAM;
+            break;
+        default:
+            throw new IllegalArgumentException("Only person and group streams are allowed.");
+        }
+
+        return encode(META_KEY_ACTOR + personId + metaKey + streamEntityId, keyBytes);
+    }
+
+    /**
+     * Encodes a token for a user and activity.
+     *
+     * @param activityId
+     *            Activity ID.
+     * @param personId
+     *            Person ID of actor.
+     * @param keyBytes
+     *            Key to encrypt token with.
+     * @return Token.
+     */
+    public String encodeForActivity(final long activityId, final long personId, final byte[] keyBytes)
+    {
+        return encode(META_KEY_ACTOR + personId + META_KEY_ACTIVITY + activityId, keyBytes);
     }
 
     /**
@@ -62,14 +120,13 @@ public class TokenEncoder
      *
      * @param data
      *            Pre-formatted data.
-     * @param personId
-     *            ID of person whose key to encrypt token with.
+     * @param keyBytes
+     *            Key to encrypt token with.
      * @return Token.
      */
-    public String encode(final String data, final long personId)
+    public String encode(final String data, final byte[] keyBytes)
     {
         // get the person's key
-        byte[] keyBytes = getPersonCryptoKeyDao.execute(personId);
         Key key = new SecretKeySpec(keyBytes, algorithm);
 
         // encrypt the data
@@ -82,8 +139,7 @@ public class TokenEncoder
         }
         catch (GeneralSecurityException ex)
         {
-            log.error("Error encrypting data into token (data: '{}', person ID {})",
-                    new Object[] { data, personId, ex });
+            log.error("Error encrypting data into token (data: '{}')", data, ex);
             return null;
         }
 
@@ -97,11 +153,11 @@ public class TokenEncoder
      *
      * @param data
      *            Data.
-     * @param personId
-     *            ID of person whose key to encrypt token with.
+     * @param keyBytes
+     *            Key to encrypt token with.
      * @return Token.
      */
-    public String encode(final Map<String, Long> data, final long personId)
+    public String encode(final Map<String, Long> data, final byte[] keyBytes)
     {
         // serialize the token data
         StringBuilder sb = new StringBuilder();
@@ -111,7 +167,19 @@ public class TokenEncoder
             sb.append(entry.getValue());
         }
 
-        return encode(sb.toString(), personId);
+        return encode(sb.toString(), keyBytes);
+    }
+
+    /**
+     * Determines if a string could represent a token.
+     *
+     * @param potentialToken
+     *            Token string to check.
+     * @return If the string may be a token.
+     */
+    public boolean couldBeToken(final String potentialToken)
+    {
+        return TOKEN_PATTERN.matcher(potentialToken).matches();
     }
 
     /**
@@ -119,11 +187,11 @@ public class TokenEncoder
      *
      * @param token
      *            Token.
-     * @param personId
-     *            ID of person whose key to decrypt token with.
+     * @param keyBytes
+     *            Key to decrypt token with.
      * @return Data.
      */
-    public Map<String, Long> decode(final String token, final long personId)
+    public Map<String, Long> decode(final String token, final byte[] keyBytes)
     {
         // decode the data (base64)
         byte[] encrypted = javax.xml.bind.DatatypeConverter.parseBase64Binary(token);
@@ -133,7 +201,6 @@ public class TokenEncoder
         }
 
         // get the person's key
-        byte[] keyBytes = getPersonCryptoKeyDao.execute(personId);
         Key key = new SecretKeySpec(keyBytes, algorithm);
 
         // decrypt the data
@@ -146,7 +213,7 @@ public class TokenEncoder
         }
         catch (GeneralSecurityException ex)
         {
-            log.error("Error decrypting data from token (person ID {})", personId, ex);
+            log.error("Error decrypting data from token", ex);
             return null;
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Very generic, configurable mapper to select a single field from a table by a single unique field.
@@ -29,22 +30,23 @@ import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
  * @param <ResultFieldType>
  *            the field we're selecting
  */
-public class GetFieldFromTableByUniqueField<UniqueFieldType, ResultFieldType> extends BaseDomainMapper
+public class GetFieldFromTableByUniqueField<UniqueFieldType, ResultFieldType> extends BaseDomainMapper implements
+        DomainMapper<UniqueFieldType, ResultFieldType>
 {
     /**
      * The entity name.
      */
-    private String entityName;
+    private final String entityName;
 
     /**
      * Name of the unique field.
      */
-    private String uniqueFieldName;
+    private final String uniqueFieldName;
 
     /**
      * Name of the result field.
      */
-    private String resultFieldName;
+    private final String resultFieldName;
 
     /**
      * Constructor.
@@ -74,9 +76,10 @@ public class GetFieldFromTableByUniqueField<UniqueFieldType, ResultFieldType> ex
     @SuppressWarnings("unchecked")
     public ResultFieldType execute(final UniqueFieldType param)
     {
-        List<ResultFieldType> results = getEntityManager().createQuery(
-                "SELECT " + resultFieldName + " FROM " + entityName + " WHERE " + uniqueFieldName + "=:uniqueValue")
-                .setParameter("uniqueValue", param).getResultList();
+        final String query = "SELECT " + resultFieldName + " FROM " + entityName + " WHERE " + uniqueFieldName
+                + "=:uniqueValue";
+        List<ResultFieldType> results = getEntityManager().createQuery(query).setParameter("uniqueValue", param)
+                .getResultList();
 
         if (results.size() != 1)
         {

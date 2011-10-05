@@ -38,7 +38,7 @@
     </bean>
     
 	
-	<!-- Job Definitions -->
+	<!-- ========== JOB DEFINITIONS ========== -->
 	
 	<!-- Pull feeds from internet, commit to database and queue the changes in memcached -->
     <bean id="refreshFeedsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
@@ -120,8 +120,17 @@
         <constructor-arg value="regenerateStreamDiscoverListsAction" />
         <constructor-arg ref="taskHandler" />
     </bean>
+
+	<!-- Ingest email job -->
+   	<bean id="ingestEmailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="emailIngester" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+
     
-    <!-- Define Jobs Triggers -->
+   	<!-- ========== JOB TRIGGERS ========== -->
+    
     <!-- this is intended to run every day at 1:00am -->
     <bean id="membershipRefreshJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="membershipRefreshJob" />
@@ -202,6 +211,29 @@
         <property name="repeatInterval" value="${eureka.jobs.regenerateStreamDiscoverListsJobTrigger.repeatInterval}"/>
     </bean> 
 
+    <!-- Ingest email -->
+    <bean id="ingestEmailJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="ingestEmailJob" />
+        <property name="startDelay" value="${eureka.mail.ingest.delay}"/>
+        <property name="repeatInterval" value="${eureka.mail.ingest.interval}"/>
+    </bean> 
+
+	<!-- This bean allows a real job to be disabled by swapping the trigger names in the scheduler's list below.  This
+		allows the list to be modified via simple substitution vs. needing to actually add/delete entries from the list. -->
+	<bean id="dummyTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="repeatCount" value="0"/>
+		<property name="jobDetail">
+			<bean class="org.quartz.JobDetail">
+				<constructor-arg value="dummyJob" />
+				<constructor-arg value="dummyGroup" />
+				<constructor-arg value="org.eurekastreams.commons.scheduling.DummyJob" />
+			</bean>
+		</property>
+	</bean>
+	
+
+	<!-- ========== JOBS TO EXECUTE ========== -->
+
     <!-- Scheduler -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
@@ -217,6 +249,7 @@
 				<ref bean="pluginDefUserIndexJobTrigger" />
 				<ref bean="regenerateStreamDiscoverListsJobTrigger" />
 				<ref bean="generateDailyUsageSummaryJobTrigger" />
+				<ref bean="${build.jobs.emailIngestTrigger}" />
             </list> 
         </property>
     </bean>	
