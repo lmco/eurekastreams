@@ -24,6 +24,8 @@
 		<constructor-arg value="${eureka.crypto.algorithm}" />
 	</bean>
 
+	<bean id="tokenContentFormatter" class="org.eurekastreams.server.service.email.TokenContentFormatter" />
+
 	<bean id="imapStoreFactory" class="org.eurekastreams.server.service.email.ImapStoreFactory">
 		<constructor-arg value="${eureka.mail.imap.host}" />
 		<constructor-arg value="${eureka.mail.imap.port}" />
@@ -38,15 +40,25 @@
 		</constructor-arg>	
 	</bean>
   	
-  	<bean id="messageAuthenticator" class="org.eurekastreams.server.service.email.MessageAuthenticator">
-  		<constructor-arg value="${eureka.mail.ingest.address}" />
-  		<constructor-arg ref="tokenEncoder" />
-  		<constructor-arg ref="getPersonCryptoKeyByEmail" />
-  		<constructor-arg ref="transactionManager" />
-  	</bean>
-  	
-  	<bean id="messageProcessor" class="org.eurekastreams.server.service.email.MessageProcessor">
-		<constructor-arg ref="messageAuthenticator" />
+  	<bean id="messageProcessor" class="org.eurekastreams.server.service.email.MessageProcessor" autowire="constructor">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.service.email.MessageContentExtractor" />
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.service.email.ActionSelector" />
+		</constructor-arg>
+		<constructor-arg ref="serviceActionController" />
+		<!-- beanFactory is autowired -->
+		<constructor-arg ref="tokenEncoder" />
+		<constructor-arg ref="tokenContentFormatter" />
+		<constructor-arg ref="transactionManager"/>
+		<constructor-arg ref="getActivePersonIdByEmail"/>
+		<constructor-arg ref="getPersonCryptoKeyMapper"/>
+		<constructor-arg ref="getPersonByIdMapper"/>
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.service.email.MessageReplier" />
+		</constructor-arg>
+		<constructor-arg value="${eureka.mail.ingest.address}" />
   	</bean>
   	
 	<bean id="emailIngester" class="org.eurekastreams.server.service.email.ImapEmailIngester">

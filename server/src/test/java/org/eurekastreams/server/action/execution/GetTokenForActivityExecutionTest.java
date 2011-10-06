@@ -22,6 +22,7 @@ import java.io.Serializable;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.service.email.TokenContentFormatter;
 import org.eurekastreams.server.service.email.TokenEncoder;
 import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
@@ -45,6 +46,9 @@ public class GetTokenForActivityExecutionTest
     /** Creates the token. */
     private final TokenEncoder tokenEncoder = context.mock(TokenEncoder.class);
 
+    /** Builds the token content. */
+    private final TokenContentFormatter tokenContentFormatter = context.mock(TokenContentFormatter.class);
+
     /** Gets the user's key. */
     private final DomainMapper<Long, byte[]> cryptoKeyDao = context.mock(DomainMapper.class);
 
@@ -58,8 +62,10 @@ public class GetTokenForActivityExecutionTest
         final String token = "thetoken";
         final long userId = 8L;
         final long activityId = 88L;
+        final String tokenContent = "stuffToGoInTheToken";
 
-        ExecutionStrategy<PrincipalActionContext> sut = new GetTokenForActivityExecution(tokenEncoder, cryptoKeyDao);
+        ExecutionStrategy<PrincipalActionContext> sut = new GetTokenForActivityExecution(tokenEncoder,
+                tokenContentFormatter, cryptoKeyDao);
 
         context.checking(new Expectations()
         {
@@ -67,7 +73,10 @@ public class GetTokenForActivityExecutionTest
                 oneOf(cryptoKeyDao).execute(userId);
                 will(returnValue(key));
 
-                oneOf(tokenEncoder).encodeForActivity(activityId, userId, key);
+                oneOf(tokenContentFormatter).buildForActivity(activityId, userId);
+                will(returnValue(tokenContent));
+
+                oneOf(tokenEncoder).encode(tokenContent, key);
                 will(returnValue(token));
             }
         });

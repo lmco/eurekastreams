@@ -4550,6 +4550,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetTokenForStreamExecution">
                 <constructor-arg ref="tokenEncoder" />
+                <constructor-arg ref="tokenContentFormatter" />
                 <constructor-arg ref="getPersonCryptoKeyMapper" />
             </bean>
         </constructor-arg>
@@ -4565,6 +4566,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetTokenForActivityExecution">
                 <constructor-arg ref="tokenEncoder" />
+                <constructor-arg ref="tokenContentFormatter" />
                 <constructor-arg ref="getPersonCryptoKeyMapper" />
             </bean>
         </constructor-arg>

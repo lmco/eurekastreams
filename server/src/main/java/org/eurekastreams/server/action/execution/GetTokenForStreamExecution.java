@@ -22,6 +22,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.service.email.TokenContentFormatter;
 import org.eurekastreams.server.service.email.TokenEncoder;
 
 /**
@@ -32,6 +33,9 @@ public class GetTokenForStreamExecution implements ExecutionStrategy<PrincipalAc
     /** Creates the token. */
     private final TokenEncoder tokenEncoder;
 
+    /** Builds the token content. */
+    private final TokenContentFormatter tokenContentFormatter;
+
     /** Gets the user's key. */
     private final DomainMapper<Long, byte[]> cryptoKeyDao;
 
@@ -40,13 +44,16 @@ public class GetTokenForStreamExecution implements ExecutionStrategy<PrincipalAc
      *
      * @param inTokenEncoder
      *            Creates the token.
+     * @param inTokenContentFormatter
+     *            Builds the token content.
      * @param inCryptoKeyDao
      *            Gets the user's key.
      */
     public GetTokenForStreamExecution(final TokenEncoder inTokenEncoder,
-            final DomainMapper<Long, byte[]> inCryptoKeyDao)
+            final TokenContentFormatter inTokenContentFormatter, final DomainMapper<Long, byte[]> inCryptoKeyDao)
     {
         tokenEncoder = inTokenEncoder;
+        tokenContentFormatter = inTokenContentFormatter;
         cryptoKeyDao = inCryptoKeyDao;
     }
 
@@ -56,12 +63,14 @@ public class GetTokenForStreamExecution implements ExecutionStrategy<PrincipalAc
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        // get current user's crypto key
         Long personId = inActionContext.getPrincipal().getId();
-        byte[] key = cryptoKeyDao.execute(personId);
-
         GetTokenForStreamRequest params = (GetTokenForStreamRequest) inActionContext.getParams();
 
-        return tokenEncoder.encodeForStream(params.getStreamEntityType(), params.getStreamEntityId(), personId, key);
+        String tokenData = tokenContentFormatter.buildForStream(params.getStreamEntityType(),
+                params.getStreamEntityId(), personId);
+
+        // get current user's crypto key
+        byte[] key = cryptoKeyDao.execute(personId);
+        return tokenEncoder.encode(tokenData, key);
     }
 }

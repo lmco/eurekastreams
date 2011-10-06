@@ -17,16 +17,12 @@ package org.eurekastreams.server.service.email;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.EntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,18 +31,6 @@ import org.slf4j.LoggerFactory;
  */
 public class TokenEncoder
 {
-    /** Metadata key: person performing the action. */
-    public static final String META_KEY_ACTOR = "p";
-
-    /** Metadata key: destination personal stream. */
-    public static final String META_KEY_PERSON_STREAM = "ps";
-
-    /** Metadata key: destination group stream. */
-    public static final String META_KEY_GROUP_STREAM = "gs";
-
-    /** Metadata key: activity ID. */
-    public static final String META_KEY_ACTIVITY = "a";
-
     /** Log. */
     private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
 
@@ -68,63 +52,15 @@ public class TokenEncoder
     }
 
     /**
-     * Encodes a token for a user and stream.
-     *
-     * @param streamEntityType
-     *            Entity type of the stream.
-     * @param streamEntityId
-     *            ID of stream's entity (person/group).
-     * @param personId
-     *            Person ID of actor.
-     * @param keyBytes
-     *            Key to encrypt token with.
-     * @return Token.
-     */
-    public String encodeForStream(final EntityType streamEntityType, final long streamEntityId, final long personId,
-            final byte[] keyBytes)
-    {
-        String metaKey;
-        switch (streamEntityType)
-        {
-        case PERSON:
-            metaKey = META_KEY_PERSON_STREAM;
-            break;
-        case GROUP:
-            metaKey = META_KEY_GROUP_STREAM;
-            break;
-        default:
-            throw new IllegalArgumentException("Only person and group streams are allowed.");
-        }
-
-        return encode(META_KEY_ACTOR + personId + metaKey + streamEntityId, keyBytes);
-    }
-
-    /**
-     * Encodes a token for a user and activity.
-     *
-     * @param activityId
-     *            Activity ID.
-     * @param personId
-     *            Person ID of actor.
-     * @param keyBytes
-     *            Key to encrypt token with.
-     * @return Token.
-     */
-    public String encodeForActivity(final long activityId, final long personId, final byte[] keyBytes)
-    {
-        return encode(META_KEY_ACTOR + personId + META_KEY_ACTIVITY + activityId, keyBytes);
-    }
-
-    /**
      * Encode a data string into a token.
-     *
-     * @param data
+     * 
+     * @param content
      *            Pre-formatted data.
      * @param keyBytes
      *            Key to encrypt token with.
      * @return Token.
      */
-    public String encode(final String data, final byte[] keyBytes)
+    public String encode(final String content, final byte[] keyBytes)
     {
         // get the person's key
         Key key = new SecretKeySpec(keyBytes, algorithm);
@@ -135,39 +71,17 @@ public class TokenEncoder
         {
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            encrypted = cipher.doFinal(data.getBytes());
+            encrypted = cipher.doFinal(content.getBytes());
         }
         catch (GeneralSecurityException ex)
         {
-            log.error("Error encrypting data into token (data: '{}')", data, ex);
+            log.error("Error encrypting data into token (data: '{}')", content, ex);
             return null;
         }
 
         // encode the data (base64)
         String token = javax.xml.bind.DatatypeConverter.printBase64Binary(encrypted);
         return token;
-    }
-
-    /**
-     * Encodes key-value data into a token.
-     *
-     * @param data
-     *            Data.
-     * @param keyBytes
-     *            Key to encrypt token with.
-     * @return Token.
-     */
-    public String encode(final Map<String, Long> data, final byte[] keyBytes)
-    {
-        // serialize the token data
-        StringBuilder sb = new StringBuilder();
-        for (Entry<String, Long> entry : data.entrySet())
-        {
-            sb.append(entry.getKey());
-            sb.append(entry.getValue());
-        }
-
-        return encode(sb.toString(), keyBytes);
     }
 
     /**
@@ -183,15 +97,15 @@ public class TokenEncoder
     }
 
     /**
-     * Decodes a token into key-value data.
-     *
+     * Decodes a token.
+     * 
      * @param token
      *            Token.
      * @param keyBytes
      *            Key to decrypt token with.
-     * @return Data.
+     * @return Content string.
      */
-    public Map<String, Long> decode(final String token, final byte[] keyBytes)
+    public String decode(final String token, final byte[] keyBytes)
     {
         // decode the data (base64)
         byte[] encrypted = javax.xml.bind.DatatypeConverter.parseBase64Binary(token);
@@ -217,33 +131,6 @@ public class TokenEncoder
             return null;
         }
 
-        // parse the data from the string
-        Map<String, Long> data = new HashMap<String, Long>();
-        String toParse = new String(decrypted);
-        int len = toParse.length();
-        int pos = 0;
-        while (pos < len)
-        {
-            int startTag = pos;
-            while (pos < len && Character.isLetter(toParse.charAt(pos)))
-            {
-                pos++;
-            }
-            int startValue = pos;
-            while (pos < len && Character.isDigit(toParse.charAt(pos)))
-            {
-                pos++;
-            }
-            if (startTag == startValue || startValue == pos)
-            {
-                log.error("Error parsing data from decrypted token - key or value empty.");
-                return null;
-            }
-            String tag = toParse.substring(startTag, startValue);
-            long value = Long.parseLong(toParse.substring(startValue, pos));
-            data.put(tag, value);
-        }
-
-        return data;
+        return new String(decrypted);
     }
 }

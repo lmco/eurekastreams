@@ -2569,15 +2569,11 @@
 		<constructor-arg ref="flushMapper" />		
     </bean>
 
-	<bean id="getPersonCryptoKeyByEmail" class="org.eurekastreams.server.persistence.mappers.GetItemByPointerIdMapper">
-		<constructor-arg ref="getPersonIdByEmail" />
-		<constructor-arg ref="getPersonCryptoKeyMapper" />
-	</bean>
-
-	<bean id="getPersonIdByEmail" class="org.eurekastreams.server.persistence.mappers.db.GetFieldFromTableByUniqueField">
-          	<constructor-arg value="Person" />
-          	<constructor-arg value="email" />
-          	<constructor-arg value="id" />
+	<bean id="getActivePersonIdByEmail" class="org.eurekastreams.server.persistence.mappers.db.GetFieldFromTableByUniqueField">
+       	<constructor-arg value="Person" />
+       	<constructor-arg value="email" />
+       	<constructor-arg value="id" />
+       	<constructor-arg value="accountLocked = FALSE" />
 	</bean>
   
     <bean id="getPersonCryptoKeyMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">

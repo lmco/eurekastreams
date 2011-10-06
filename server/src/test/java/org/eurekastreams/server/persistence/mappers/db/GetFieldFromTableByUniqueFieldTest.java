@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,5 +80,19 @@ public class GetFieldFromTableByUniqueFieldTest extends MapperTest
                 "followingCount", "displayName");
         sut.setEntityManager(getEntityManager());
         sut.execute(0);
+    }
+
+    /**
+     * Test successful execute.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExecuteWithStringAndCondition()
+    {
+        GetFieldFromTableByUniqueField<String, String> sut = new GetFieldFromTableByUniqueField("Person", "lastName",
+                "accountId", "streamPostable = false");
+        sut.setEntityManager(getEntityManager());
+
+        assertEquals("fordp2", sut.execute("Prefect"));
     }
 }

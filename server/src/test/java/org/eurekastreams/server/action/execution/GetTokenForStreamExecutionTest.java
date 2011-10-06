@@ -24,13 +24,13 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.service.email.TokenContentFormatter;
 import org.eurekastreams.server.service.email.TokenEncoder;
 import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-
 
 /**
  * Tests GetTokenForStreamExecution.
@@ -47,6 +47,9 @@ public class GetTokenForStreamExecutionTest
     /** Creates the token. */
     private final TokenEncoder tokenEncoder = context.mock(TokenEncoder.class);
 
+    /** Builds the token content. */
+    private final TokenContentFormatter tokenContentFormatter = context.mock(TokenContentFormatter.class);
+
     /** Gets the user's key. */
     private final DomainMapper<Long, byte[]> cryptoKeyDao = context.mock(DomainMapper.class);
 
@@ -60,8 +63,10 @@ public class GetTokenForStreamExecutionTest
         final String token = "thetoken";
         final long userId = 8L;
         final long groupId = 6L;
+        final String tokenContent = "stuffToGoInTheToken";
 
-        ExecutionStrategy<PrincipalActionContext> sut = new GetTokenForStreamExecution(tokenEncoder, cryptoKeyDao);
+        ExecutionStrategy<PrincipalActionContext> sut = new GetTokenForStreamExecution(tokenEncoder,
+                tokenContentFormatter, cryptoKeyDao);
 
         context.checking(new Expectations()
         {
@@ -69,7 +74,10 @@ public class GetTokenForStreamExecutionTest
                 oneOf(cryptoKeyDao).execute(userId);
                 will(returnValue(key));
 
-                oneOf(tokenEncoder).encodeForStream(EntityType.GROUP, groupId, userId, key);
+                oneOf(tokenContentFormatter).buildForStream(EntityType.GROUP, groupId, userId);
+                will(returnValue(tokenContent));
+
+                oneOf(tokenEncoder).encode(tokenContent, key);
                 will(returnValue(token));
             }
         });

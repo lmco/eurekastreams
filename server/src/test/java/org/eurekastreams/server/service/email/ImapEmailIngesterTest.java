@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.service.email;
 
+import java.io.IOException;
+
 import javax.mail.FetchProfile;
 import javax.mail.Flags.Flag;
 import javax.mail.Folder;
@@ -130,9 +132,11 @@ public class ImapEmailIngesterTest
      *
      * @throws MessagingException
      *             Won't.
+     * @throws IOException
+     *             Won't.
      */
     @Test
-    public void testExecuteSuccess() throws MessagingException
+    public void testExecuteSuccess() throws MessagingException, IOException
     {
         expectSuccessfulFrame(new Message[] { message });
         context.checking(new Expectations()
@@ -155,9 +159,11 @@ public class ImapEmailIngesterTest
      *
      * @throws MessagingException
      *             Won't.
+     * @throws IOException
+     *             Won't.
      */
     @Test
-    public void testExecuteSuccessNoCopy() throws MessagingException
+    public void testExecuteSuccessNoCopy() throws MessagingException, IOException
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, ERROR_FOLDER_NAME, null);
 
@@ -180,9 +186,11 @@ public class ImapEmailIngesterTest
      *
      * @throws MessagingException
      *             Won't.
+     * @throws IOException
+     *             Won't.
      */
     @Test
-    public void testExecuteFailMsg() throws MessagingException
+    public void testExecuteFailMsg() throws MessagingException, IOException
     {
         expectSuccessfulFrame(new Message[] { message });
 
@@ -204,12 +212,14 @@ public class ImapEmailIngesterTest
 
     /**
      * Test.
-     *
+     * 
      * @throws MessagingException
+     *             Won't.
+     * @throws IOException
      *             Won't.
      */
     @Test
-    public void testExecuteFailMsgNoCopy() throws MessagingException
+    public void testExecuteFailMsgNoCopy() throws MessagingException, IOException
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, "", SUCCESS_FOLDER_NAME);
         expectSuccessfulFrame(new Message[] { message });

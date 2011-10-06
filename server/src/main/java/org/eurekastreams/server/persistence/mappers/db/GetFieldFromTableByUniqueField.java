@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
@@ -33,20 +34,17 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 public class GetFieldFromTableByUniqueField<UniqueFieldType, ResultFieldType> extends BaseDomainMapper implements
         DomainMapper<UniqueFieldType, ResultFieldType>
 {
-    /**
-     * The entity name.
-     */
+    /** The entity name. */
     private final String entityName;
 
-    /**
-     * Name of the unique field.
-     */
+    /** Name of the unique field. */
     private final String uniqueFieldName;
 
-    /**
-     * Name of the result field.
-     */
+    /** Name of the result field. */
     private final String resultFieldName;
+
+    /** The query. */
+    private final String queryString;
 
     /**
      * Constructor.
@@ -61,9 +59,36 @@ public class GetFieldFromTableByUniqueField<UniqueFieldType, ResultFieldType> ex
     public GetFieldFromTableByUniqueField(final String inEntityName, final String inUniqueFieldName,
             final String inResultFieldName)
     {
+        this(inEntityName, inUniqueFieldName, inResultFieldName, null);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inEntityName
+     *            the entity name
+     * @param inUniqueFieldName
+     *            the field to return
+     * @param inResultFieldName
+     *            the field to search by
+     * @param inExtraConditions
+     *            Additional conditions to add to the query (as a clause to add to the where clause)
+     */
+    public GetFieldFromTableByUniqueField(final String inEntityName, final String inUniqueFieldName,
+            final String inResultFieldName, final String inExtraConditions)
+    {
         entityName = inEntityName;
         uniqueFieldName = inUniqueFieldName;
         resultFieldName = inResultFieldName;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT ").append(resultFieldName).append(" FROM ").append(entityName).append(" WHERE ")
+                .append(uniqueFieldName).append("=:uniqueValue");
+        if (StringUtils.isNotBlank(inExtraConditions))
+        {
+            sb.append(" AND ").append(inExtraConditions);
+        }
+        queryString = sb.toString();
     }
 
     /**
@@ -76,9 +101,7 @@ public class GetFieldFromTableByUniqueField<UniqueFieldType, ResultFieldType> ex
     @SuppressWarnings("unchecked")
     public ResultFieldType execute(final UniqueFieldType param)
     {
-        final String query = "SELECT " + resultFieldName + " FROM " + entityName + " WHERE " + uniqueFieldName
-                + "=:uniqueValue";
-        List<ResultFieldType> results = getEntityManager().createQuery(query).setParameter("uniqueValue", param)
+        List<ResultFieldType> results = getEntityManager().createQuery(queryString).setParameter("uniqueValue", param)
                 .getResultList();
 
         if (results.size() != 1)

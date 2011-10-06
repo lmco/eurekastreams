@@ -17,14 +17,12 @@ package org.eurekastreams.server.service.email;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.eurekastreams.server.domain.EntityType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +59,7 @@ public class TokenEncoderTest
         data.put("s", 888L);
         data.put("p", 4507L);
 
-        String token = sut.encode(data, USER_KEY);
+        String token = sut.encode("p4507s888", USER_KEY);
 
         assertEquals("X8xF5hXq+v3HsPnb0F5wXw==", token);
     }
@@ -72,12 +70,7 @@ public class TokenEncoderTest
     @Test
     public void testEncodeBadKey()
     {
-        Map<String, Long> data = new TreeMap<String, Long>();
-        data.put("s", 888L);
-        data.put("p", 4507L);
-
-        String token = sut.encode(data, "2short".getBytes());
-
+        String token = sut.encode("p4507s888", "2short".getBytes());
         assertNull(token);
     }
 
@@ -87,11 +80,8 @@ public class TokenEncoderTest
     @Test
     public void testDecodeValid()
     {
-        Map<String, Long> data = sut.decode("X8xF5hXq+v3HsPnb0F5wXw==", USER_KEY);
-        assertNotNull(data);
-        assertEquals(2, data.size());
-        assertEquals(888L, (long) data.get("s"));
-        assertEquals(4507L, (long) data.get("p"));
+        String data = sut.decode("X8xF5hXq+v3HsPnb0F5wXw==", USER_KEY);
+        assertEquals("p4507s888", data);
     }
 
     /**
@@ -100,7 +90,7 @@ public class TokenEncoderTest
     @Test
     public void testDecodeBadBase64()
     {
-        Map<String, Long> data = sut.decode("&^#(#", USER_KEY);
+        String data = sut.decode("&^#(#", USER_KEY);
         assertNull(data);
     }
 
@@ -110,7 +100,7 @@ public class TokenEncoderTest
     @Test
     public void testDecodeBadKey()
     {
-        Map<String, Long> data = sut.decode("X8xF5hXq+v3HsPnb0F5wXw==", "2short".getBytes());
+        String data = sut.decode("X8xF5hXq+v3HsPnb0F5wXw==", "2short".getBytes());
         assertNull(data);
     }
 
@@ -120,40 +110,7 @@ public class TokenEncoderTest
     @Test
     public void testDecodeWrongKey()
     {
-        Map<String, Long> data = sut.decode("X8xF5hXq+v3HsPnb0F5wXw==", "ThisIsNotTheRightKey".getBytes());
-        assertNull(data);
-    }
-
-    /**
-     * Tests decoding.
-     */
-    @Test
-    public void testDecodeNoTag()
-    {
-        // encoded form of "888"
-        Map<String, Long> data = sut.decode("HITQvyyBOqWbzuMRxQmq+A==", USER_KEY);
-        assertNull(data);
-    }
-
-    /**
-     * Tests decoding.
-     */
-    @Test
-    public void testDecodeNoValue()
-    {
-        // encoded form of "p"
-        Map<String, Long> data = sut.decode("EEcx6kWZsDainEankWK7Pw==", USER_KEY);
-        assertNull(data);
-    }
-
-    /**
-     * Tests decoding.
-     */
-    @Test
-    public void testDecodeNoPair()
-    {
-        // encoded form of "-a1"
-        Map<String, Long> data = sut.decode("C/9+GotQA+vyWRO34pqEcQ==", USER_KEY);
+        String data = sut.decode("X8xF5hXq+v3HsPnb0F5wXw==", "ThisIsNotTheRightKey".getBytes());
         assertNull(data);
     }
 
@@ -175,42 +132,4 @@ public class TokenEncoderTest
         assertFalse(sut.couldBeToken("C/9+GotQ.A+vyWRO34pqEcQ=="));
     }
 
-    /**
-     * Tests encodeForStream.
-     */
-    @Test
-    public void testEncodeForStreamPerson()
-    {
-        String token = sut.encodeForStream(EntityType.PERSON, 98L, 42L, USER_KEY);
-        assertEquals("OnXIBYqExuxqrHyKCdSv6Q==", token);
-    }
-
-    /**
-     * Tests encodeForStream.
-     */
-    @Test
-    public void testEncodeForStreamGroup()
-    {
-        String token = sut.encodeForStream(EntityType.GROUP, 8L, 42L, USER_KEY);
-        assertEquals("U/e4AnHIn3D/Zvx40Y5aGQ==", token);
-    }
-
-    /**
-     * Tests encodeForStream.
-     */
-    @Test(expected = Exception.class)
-    public void testEncodeForStreamOther()
-    {
-        sut.encodeForStream(EntityType.RESOURCE, 1L, 42L, USER_KEY);
-    }
-
-    /**
-     * Tests encodeForActivity.
-     */
-    @Test
-    public void testEncodeForActivity()
-    {
-        String token = sut.encodeForActivity(6789L, 42L, USER_KEY);
-        assertEquals("66Zwtw6PeCVMgpqryeVLyQ==", token);
-    }
 }
