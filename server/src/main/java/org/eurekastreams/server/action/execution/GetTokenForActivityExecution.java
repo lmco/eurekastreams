@@ -65,7 +65,7 @@ public class GetTokenForActivityExecution implements ExecutionStrategy<Principal
         Long personId = inActionContext.getPrincipal().getId();
         Long activityId = (Long) inActionContext.getParams();
 
-        String tokenData = tokenContentFormatter.buildForActivity(activityId, personId);
+        String tokenData = tokenContentFormatter.buildForActivity(activityId);
 
         // get current user's crypto key
         byte[] key = cryptoKeyDao.execute(personId);

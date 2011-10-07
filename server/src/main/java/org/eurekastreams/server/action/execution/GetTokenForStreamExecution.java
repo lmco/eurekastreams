@@ -67,7 +67,7 @@ public class GetTokenForStreamExecution implements ExecutionStrategy<PrincipalAc
         GetTokenForStreamRequest params = (GetTokenForStreamRequest) inActionContext.getParams();
 
         String tokenData = tokenContentFormatter.buildForStream(params.getStreamEntityType(),
-                params.getStreamEntityId(), personId);
+                params.getStreamEntityId());
 
         // get current user's crypto key
         byte[] key = cryptoKeyDao.execute(personId);

@@ -74,7 +74,7 @@ public class GetTokenForStreamExecutionTest
                 oneOf(cryptoKeyDao).execute(userId);
                 will(returnValue(key));
 
-                oneOf(tokenContentFormatter).buildForStream(EntityType.GROUP, groupId, userId);
+                oneOf(tokenContentFormatter).buildForStream(EntityType.GROUP, groupId);
                 will(returnValue(tokenContent));
 
                 oneOf(tokenEncoder).encode(tokenContent, key);

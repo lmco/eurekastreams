@@ -51,11 +51,9 @@ public class TokenContentFormatter
      *            Entity type of the stream.
      * @param streamEntityId
      *            ID of stream's entity (person/group).
-     * @param personId
-     *            Person ID of actor.
      * @return Token content string.
      */
-    public String buildForStream(final EntityType streamEntityType, final long streamEntityId, final long personId)
+    public String buildForStream(final EntityType streamEntityType, final long streamEntityId)
     {
         String metaKey;
         switch (streamEntityType)
@@ -70,7 +68,7 @@ public class TokenContentFormatter
             throw new IllegalArgumentException("Only person and group streams are allowed.");
         }
 
-        return META_KEY_ACTOR + personId + metaKey + streamEntityId;
+        return metaKey + streamEntityId;
     }
 
     /**
@@ -78,13 +76,11 @@ public class TokenContentFormatter
      *
      * @param activityId
      *            Activity ID.
-     * @param personId
-     *            Person ID of actor.
      * @return Token content string.
      */
-    public String buildForActivity(final long activityId, final long personId)
+    public String buildForActivity(final long activityId)
     {
-        return META_KEY_ACTOR + personId + META_KEY_ACTIVITY + activityId;
+        return META_KEY_ACTIVITY + activityId;
     }
 
     /**

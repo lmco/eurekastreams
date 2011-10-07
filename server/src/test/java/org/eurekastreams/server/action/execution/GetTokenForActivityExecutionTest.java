@@ -73,7 +73,7 @@ public class GetTokenForActivityExecutionTest
                 oneOf(cryptoKeyDao).execute(userId);
                 will(returnValue(key));
 
-                oneOf(tokenContentFormatter).buildForActivity(activityId, userId);
+                oneOf(tokenContentFormatter).buildForActivity(activityId);
                 will(returnValue(tokenContent));
 
                 oneOf(tokenEncoder).encode(tokenContent, key);

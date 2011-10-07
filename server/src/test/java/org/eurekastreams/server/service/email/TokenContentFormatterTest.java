@@ -73,13 +73,12 @@ public class TokenContentFormatterTest
     @Test
     public void testWithPersonStream()
     {
-        String token = sut1.buildForStream(EntityType.PERSON, 98L, 42L);
+        String token = sut1.buildForStream(EntityType.PERSON, 98L);
 
         Map<String, Long> result = sut2.parse(token);
 
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         assertEquals((Long) 98L, result.get(TokenContentFormatter.META_KEY_PERSON_STREAM));
-        assertEquals((Long) 42L, result.get(TokenContentFormatter.META_KEY_ACTOR));
     }
 
     /**
@@ -88,13 +87,12 @@ public class TokenContentFormatterTest
     @Test
     public void testWithGroupStream()
     {
-        String token = sut1.buildForStream(EntityType.GROUP, 8L, 42L);
+        String token = sut1.buildForStream(EntityType.GROUP, 8L);
 
         Map<String, Long> result = sut2.parse(token);
 
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         assertEquals((Long) 8L, result.get(TokenContentFormatter.META_KEY_GROUP_STREAM));
-        assertEquals((Long) 42L, result.get(TokenContentFormatter.META_KEY_ACTOR));
     }
 
 
@@ -104,7 +102,7 @@ public class TokenContentFormatterTest
     @Test(expected = Exception.class)
     public void testWithOtherStream()
     {
-        sut1.buildForStream(EntityType.RESOURCE, 8L, 42L);
+        sut1.buildForStream(EntityType.RESOURCE, 8L);
     }
 
 
@@ -114,13 +112,12 @@ public class TokenContentFormatterTest
     @Test
     public void testWithActivity()
     {
-        String token = sut1.buildForActivity(6789L, 42L);
+        String token = sut1.buildForActivity(6789L);
 
         Map<String, Long> result = sut2.parse(token);
 
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         assertEquals((Long) 6789L, result.get(TokenContentFormatter.META_KEY_ACTIVITY));
-        assertEquals((Long) 42L, result.get(TokenContentFormatter.META_KEY_ACTOR));
     }
 
     // ---------- FORMAT-SPECIFIC TESTS ----------
