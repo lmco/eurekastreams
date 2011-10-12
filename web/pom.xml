@@ -4,13 +4,13 @@
     <parent>
         <artifactId>eurekastreams-parent</artifactId>
         <groupId>org.eurekastreams</groupId>
-        <version>1.5-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-web</artifactId>
     <packaging>war</packaging>
-    <version>1.5-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <name>Eureka Streams Web</name>
     <dependencyManagement>
         <dependencies>
@@ -352,6 +352,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.26</version>
                 <configuration>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -382,7 +383,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
-                    <encoding>UTF-8</encoding>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
                     <delimiters>
                        <delimiter>${*}</delimiter>
@@ -452,6 +452,58 @@
                     <skip>true</skip>
                    </configuration>
                </plugin>
+
+		   <!--
+				If you want to use the target/web.xml file mergewebxml produces, tell the war plugin to use
+				it. Also, exclude what you want from the final artifact here.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<webResources>
+						<!-- lib-java allows extensions to be pulled in via shared resources and included in the WAR -->
+						<resource>
+							<directory>${project.build.directory}/unpack/lib-java</directory>
+							<targetPath>WEB-INF/lib</targetPath>
+						</resource>
+						<resource>
+							<directory>${project.build.directory}/classes/public/gadgets</directory>
+							<targetPath>org/eurekastreams/gadgets</targetPath>
+						</resource>
+						<resource>
+							<directory>${project.build.directory}/classes/public</directory>
+							<targetPath></targetPath>
+							<includes>
+								<include>*.*</include>
+								<include>plugins/**</include>
+								<include>scripts/**</include>
+								<include>style/**</include>
+							</includes>
+							<excludes>
+								<exclude>gadgets</exclude>
+							</excludes>
+						</resource>
+					</webResources>
+					<warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
+					<packagingExcludes>WEB-INF/classes/public/**,WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
+					<warName>${project.build.finalName}</warName>
+					<webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+					<overlays>
+						<overlay>
+							<groupId>org.apache.shindig</groupId>
+							<artifactId>shindig-server</artifactId>
+							<type>war</type>
+							<excludes>
+								<!-- Exclude the slf4j JDK 1.4 logging adapter to force slf4j logging to use log4j. -->
+								<exclude>WEB-INF/lib/slf4j-jdk14-*.jar</exclude>
+							</excludes>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+			   
         </plugins>
         <resources>
             <resource>
@@ -599,139 +651,7 @@
                 <build.jms.taskhandler.nonui>queueTaskHandler-nonui</build.jms.taskhandler.nonui>
             </properties>
         </profile>
-        <profile>
-            <id>connect-server-project</id>
-            <activation>
-                <property>
-                    <name>split</name>
-                    <value>connectserver</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <webResources>
-				<!-- lib-java allows extensions to be pulled in via shared resources and included in the WAR -->
-                                <resource>
-                                    <directory>${project.build.directory}/unpack/lib-java</directory>
-                                    <targetPath>WEB-INF/lib</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.directory}/classes/public/gadgets</directory>
-                                    <targetPath>org/eurekastreams/gadgets</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.directory}/classes/public</directory>
-                                    <targetPath></targetPath>
-                                    <includes>
-                                        <include>*.*</include>
-                                        <include>plugins/**</include>
-                                        <include>scripts/**</include>
-                                        <include>style/**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>gadgets</exclude>
-                                    </excludes>
-                                </resource>
-                            </webResources>
-                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
-                            <packagingExcludes>WEB-INF/classes/public/**,WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
-                            <warName>${project.build.finalName}</warName>
-							<webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
-							<!-- Exclude the slf4j JDK 1.4 logging adapter to force slf4j logging to use log4j. -->
-							<overlays>
-                                <overlay>
-                                    <groupId>org.apache.shindig</groupId>
-                                    <artifactId>shindig-server</artifactId>
-                                    <type>war</type>
-                                    <excludes>
-                                        <exclude>WEB-INF/lib/slf4j-jdk14-*.jar</exclude>
-                                    </excludes>
-                                </overlay>
-                            </overlays>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>cdn-project</id>
-            <activation>
-                <property>
-                    <name>split</name>
-                    <value>cdn</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>
-                        <version>2.1.0-1</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.google.gwt</groupId>
-                                <artifactId>gwt-user</artifactId>
-                                <version>${gwtVersion}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.google.gwt</groupId>
-                                <artifactId>gwt-dev</artifactId>
-                                <version>${gwtVersion}</version>
-                            </dependency>
-                           <dependency>
-                                <groupId>com.google.gwt</groupId>
-                                <artifactId>gwt-servlet</artifactId>
-                                <version>${gwtVersion}</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <module>${build.gwt.modulename}</module>
-                            <logLevel>INFO</logLevel>
-                            <extraJvmArgs>-Xmx1024m</extraJvmArgs>
-                            <gwtVersion>${gwtVersion}</gwtVersion>
-                            <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
-                            <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
-                            <runTarget>Application.html</runTarget>
-                            <noServer>true</noServer>
-                            <compileReport>true</compileReport>
-                            <port>8080</port>
-                            <hostedWebapp>ROOT</hostedWebapp>
-                            <style>${build.gwt.compile.style}</style>
-                       </configuration>
-                        <executions>
-                            <execution>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/client.xml</descriptor>
-                                <descriptor>src/main/assembly/server.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>assembly</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+  	
         <profile>
             <id>combined-project</id>
             <activation>
@@ -747,7 +667,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>2.1.0-1</version>
+                        <version>2.2.0</version>
                         <dependencies>
                             <dependency>
                                 <groupId>com.google.gwt</groupId>
@@ -788,203 +708,10 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!--
-                        If you want to use the target/web.xml file
-                        mergewebxml produces, tell the war plugin to use
-                        it. Also, exclude what you want from the final
-                        artifact here.
-                    -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <webResources>
-				<!-- lib-java allows extensions to be pulled in via shared resources and included in the WAR -->
-                                <resource>
-                                    <directory>${project.build.directory}/unpack/lib-java</directory>
-                                    <targetPath>WEB-INF/lib</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.directory}/classes/public/gadgets</directory>
-                                    <targetPath>org/eurekastreams/gadgets</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.directory}/classes/public</directory>
-                                    <targetPath></targetPath>
-                                    <includes>
-                                        <include>*.*</include>
-                                        <include>plugins/**</include>
-                                        <include>scripts/**</include>
-                                        <include>style/**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>gadgets</exclude>
-                                    </excludes>
-                                </resource>
-                            </webResources>
-                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
-                            <packagingExcludes>WEB-INF/classes/public/**,WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
-                            <warName>${project.build.finalName}</warName>
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
-							<!-- Exclude the slf4j JDK 1.4 logging adapter to force slf4j logging to use log4j. -->
-							<overlays>
-                                <overlay>
-                                    <groupId>org.apache.shindig</groupId>
-                                    <artifactId>shindig-server</artifactId>
-                                    <type>war</type>
-                                    <excludes>
-                                        <exclude>WEB-INF/lib/slf4j-jdk14-*.jar</exclude>
-                                    </excludes>
-                                </overlay>
-                            </overlays>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-       <!-- CDN build -->
-       <profile>
-            <id>CDN Server RPM Build</id>
-            <activation>
-                <property>
-                    <name>rpm.servercdnbuild</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>rpm-maven-plugin</artifactId>
-                        <version>2.0.1</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>rpm</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <name>eurekastreams-webcdn-server-${rpm.servercdnbuild}</name>
-                            <copyright>2011, Lockheed Martin Corp.</copyright>
-                            <distribution>Eureka Streams</distribution>
-                            <group>Application/Social Media</group>
-                            <icon></icon>
-                            <packager>Social Media Program, Lockheed Martin Corp.</packager>
-                            <prefix>/opt/tomcat6/current/eurekawebapps</prefix>
-                            <defineStatements>
-                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
-                            </defineStatements>
-                            <mappings>
-                                <mapping>
-                                    <directory>/opt/tomcat6/current/eurekawebapps</directory>
-                                    <filemode>555</filemode>
-                                    <username>root</username>
-                                    <groupname>root</groupname>
-                                    <sources>
-                                        <source>
-                                            <location>${project.build.directory}/ROOT-server.war</location>
-                                        </source>
-                                    </sources>
-                                </mapping>
-                              </mappings>
-                            <requires>
-                            </requires>
-			                    <preinstallScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/preinstall.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>
-			                     </preinstallScriptlet>
-			                    <postinstallScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/postinstall.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>
-			                    </postinstallScriptlet>
-			                    <preremoveScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/preremove.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>                    
-			                    </preremoveScriptlet>
-			                    <postremoveScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/postremove.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>                    
-			                    </postremoveScriptlet>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>CDN Client RPM Build</id>
-            <activation>
-                <property>
-                    <name>rpm.clientcdnbuild</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>rpm-maven-plugin</artifactId>
-                        <version>2.0.1</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>rpm</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <name>eurekastreams-webcdn-client-${rpm.clientcdnbuild}</name>
-                            <copyright>2011, Lockheed Martin Corp.</copyright>
-                            <distribution>Eureka Streams</distribution>
-                            <group>Application/Social Media</group>
-                            <icon></icon>
-                            <packager>Social Media Program, Lockheed Martin Corp.</packager>
-                            <prefix>/opt/tomcat6/current/eurekawebapps</prefix>
-                            <defineStatements>
-                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
-                            </defineStatements>
-                            <mappings>
-                                <mapping>
-                                    <directory>/opt/eurekastatic</directory>
-                                    <filemode>555</filemode>
-                                    <username>root</username>
-                                    <groupname>root</groupname>
-                                    <sources>
-                                        <source>
-                                            <location>${project.build.directory}/ROOT-client</location>
-                                        </source>
-                                    </sources>
-                                </mapping>
-                              </mappings>
-                            <requires>
-                            </requires>
-			                    <preinstallScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/preinstall.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>
-			                     </preinstallScriptlet>
-			                    <postinstallScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/postinstall.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>
-			                    </postinstallScriptlet>
-			                    <preremoveScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/preremove.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>                    
-			                    </preremoveScriptlet>
-			                    <postremoveScriptlet>
-			                        <scriptFile>${project.build.directory}/classes/scripts/postremove.sh</scriptFile>
-			                        <fileEncoding>utf-8</fileEncoding>                    
-			                    </postremoveScriptlet>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
  
- 
-       <!-- Non CDN build -->
        <profile>
             <id>RPM Build</id>
             <activation>
