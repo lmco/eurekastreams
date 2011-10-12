@@ -127,7 +127,6 @@
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
         <build.web.baseurl>http://localhost:8080</build.web.baseurl>
         <build.web.host>localhost:8080</build.web.host>
-        <build.web.fullapiprincipalextractors>principalExtractorsRequest</build.web.fullapiprincipalextractors>
         <build.gwt.modulename>org.eurekastreams.web.Application</build.gwt.modulename>
         <build.gwt.compile.style>PRETTY</build.gwt.compile.style>
         <build.gadget.container.name>eureka</build.gadget.container.name>
@@ -140,7 +139,6 @@
         <build.email.smtpport>25</build.email.smtpport>
         <build.email.address.support>sysadmin@example.com</build.email.address.support>
         <build.spring.security>preauth</build.spring.security>
-        <build.spring.security.apirestletaccess>ROLE_OAUTH_CLIENT</build.spring.security.apirestletaccess>
         <build.security.jaas.forcehttps>false</build.security.jaas.forcehttps>
         <build.security.ldap.connstr>ldaps://ldap.example.com/dc=com?sAMAccountName?sub?(objectClass=*)</build.security.ldap.connstr>
         <build.security.ldap.userdn>CN=sysadmin\\, sysadmin,DC=example,DC=com</build.security.ldap.userdn>

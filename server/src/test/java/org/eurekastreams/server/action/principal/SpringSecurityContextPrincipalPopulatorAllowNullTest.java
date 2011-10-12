@@ -18,6 +18,9 @@ package org.eurekastreams.server.action.principal;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
 import org.jmock.Expectations;
@@ -26,6 +29,10 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.restlet.data.Cookie;
+import org.restlet.data.Form;
+import org.restlet.data.Request;
+import org.restlet.util.Series;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
@@ -62,7 +69,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
     @Before
     public void setup()
     {
-        sut = new SpringSecurityContextPrincipalPopulatorAllowNull();
+        sut = new SpringSecurityContextPrincipalPopulatorAllowNull(false, "JSESSIONID", "sessionid");
     }
 
     /**
@@ -157,6 +164,177 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
         });
 
         assertNotNull(sut.getPrincipal(null, null));
+        context.assertIsSatisfied();
+
+        SecurityContextHolder.setContext(originalSecurityContext);
+    }
+
+    /**
+     * Test and verify session.
+     */
+    @Test
+    public void testVerifySession()
+    {
+        SpringSecurityContextPrincipalPopulatorAllowNull sutVerify =
+        //
+        new SpringSecurityContextPrincipalPopulatorAllowNull(true, "JSESSIONID", "sessionid");
+
+        final SecurityContext securityContext = context.mock(SecurityContext.class);
+        final Authentication authentication = context.mock(Authentication.class);
+        final ExtendedUserDetails extUserDetails = context.mock(ExtendedUserDetails.class);
+
+        // Save off the current security context, so that it can be reset when this test is complete.
+        SecurityContext originalSecurityContext = SecurityContextHolder.getContext();
+        SecurityContextHolder.setContext(securityContext);
+
+        final Request request = context.mock(Request.class);
+        final Series<Cookie> cookies = context.mock(Series.class);
+        final Cookie cookie = context.mock(Cookie.class);
+        final String sessionId = "123";
+
+        final Form headers = context.mock(Form.class);
+        final Map<String, Object> attribs = new HashMap<String, Object>();
+        attribs.put("org.restlet.http.headers", headers);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(request).getCookies();
+                will(returnValue(cookies));
+
+                oneOf(cookies).getFirst("JSESSIONID");
+                will(returnValue(cookie));
+
+                oneOf(cookie).getValue();
+                will(returnValue(sessionId));
+
+                allowing(request).getAttributes();
+                will(returnValue(attribs));
+
+                allowing(headers).getFirstValue("sessionid");
+                will(returnValue(sessionId));
+
+                oneOf(securityContext).getAuthentication();
+                will(returnValue(authentication));
+
+                oneOf(authentication).getPrincipal();
+                will(returnValue(extUserDetails));
+
+                allowing(extUserDetails).getUsername();
+                will(returnValue("username"));
+
+                allowing(extUserDetails).getPerson();
+                will(returnValue(personMock));
+
+                oneOf(personMock).getId();
+
+                oneOf(personMock).getOpenSocialId();
+            }
+        });
+
+        assertNotNull(sutVerify.transform(request));
+        context.assertIsSatisfied();
+
+        SecurityContextHolder.setContext(originalSecurityContext);
+    }
+
+    /**
+     * Test and verify session.
+     */
+    @Test
+    public void testVerifySessionWrongSession()
+    {
+        SpringSecurityContextPrincipalPopulatorAllowNull sutVerify =
+        //
+        new SpringSecurityContextPrincipalPopulatorAllowNull(true, "JSESSIONID", "sessionid");
+
+        final SecurityContext securityContext = context.mock(SecurityContext.class);
+        final Authentication authentication = context.mock(Authentication.class);
+        final ExtendedUserDetails extUserDetails = context.mock(ExtendedUserDetails.class);
+
+        // Save off the current security context, so that it can be reset when this test is complete.
+        SecurityContext originalSecurityContext = SecurityContextHolder.getContext();
+        SecurityContextHolder.setContext(securityContext);
+
+        final Request request = context.mock(Request.class);
+        final Series<Cookie> cookies = context.mock(Series.class);
+        final Cookie cookie = context.mock(Cookie.class);
+        final String sessionId = "123";
+
+        final Form headers = context.mock(Form.class);
+        final Map<String, Object> attribs = new HashMap<String, Object>();
+        attribs.put("org.restlet.http.headers", headers);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(request).getCookies();
+                will(returnValue(cookies));
+
+                oneOf(cookies).getFirst("JSESSIONID");
+                will(returnValue(cookie));
+
+                oneOf(cookie).getValue();
+                will(returnValue(sessionId));
+
+                allowing(request).getAttributes();
+                will(returnValue(attribs));
+
+                allowing(headers).getFirstValue("sessionid");
+                will(returnValue("adsf"));
+            }
+        });
+
+        assertNull(sutVerify.transform(request));
+        context.assertIsSatisfied();
+
+        SecurityContextHolder.setContext(originalSecurityContext);
+    }
+
+    /**
+     * Test and verify session.
+     */
+    @Test
+    public void testVerifySessionNoHeader()
+    {
+        SpringSecurityContextPrincipalPopulatorAllowNull sutVerify =
+        //
+        new SpringSecurityContextPrincipalPopulatorAllowNull(true, "JSESSIONID", "sessionid");
+
+        final SecurityContext securityContext = context.mock(SecurityContext.class);
+        final Authentication authentication = context.mock(Authentication.class);
+        final ExtendedUserDetails extUserDetails = context.mock(ExtendedUserDetails.class);
+
+        // Save off the current security context, so that it can be reset when this test is complete.
+        SecurityContext originalSecurityContext = SecurityContextHolder.getContext();
+        SecurityContextHolder.setContext(securityContext);
+
+        final Request request = context.mock(Request.class);
+        final Series<Cookie> cookies = context.mock(Series.class);
+        final Cookie cookie = context.mock(Cookie.class);
+        final String sessionId = "123";
+
+        final Form headers = context.mock(Form.class);
+        final Map<String, Object> attribs = new HashMap<String, Object>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(request).getCookies();
+                will(returnValue(cookies));
+
+                oneOf(cookies).getFirst("JSESSIONID");
+                will(returnValue(cookie));
+
+                oneOf(cookie).getValue();
+                will(returnValue(sessionId));
+
+                allowing(request).getAttributes();
+                will(returnValue(attribs));
+            }
+        });
+
+        assertNull(sutVerify.transform(request));
         context.assertIsSatisfied();
 
         SecurityContextHolder.setContext(originalSecurityContext);

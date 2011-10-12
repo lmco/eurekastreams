@@ -1,0 +1,39 @@
+<script type="text/javascript" src="./scripts/external-js-min.js?1318438976190"></script>
+<script type="text/javascript">
+    var readUrl = '/api/0/read/getActivitiesByRequest/%7B%22request%22%3A%22%7B%27query%27%3A%7B%27sortBy%27%3A%27date%27%7D%7D%22%7D';
+    var fullUrl = '/api/0/full/getActivitiesByRequest/%7B%22request%22%3A%22%7B%27query%27%3A%7B%27sortBy%27%3A%27date%27%7D%7D%22%7D';
+    var sessionUrl = '/api/0/establishSession/';
+
+    // Basic read only request
+    $.get(readUrl, function(data) {
+        $('#read').html(data);
+    });
+
+    // Get Session ID
+    $.get(sessionUrl, function(sessionId) {
+        $('#sessionId').html(sessionId);
+
+        // Now that we have the session ID we can make a full API request
+        $.ajax({
+            url: fullUrl,
+            headers: {
+                sessionId: sessionId
+            },
+            success: function(data){
+                $('#full').html(data);
+            }
+        });
+
+    });
+
+</script>
+
+<p>
+  Read Example: <span id="read"></span>
+</p>
+<p>
+  Session Id: <span id="sessionId"></span>
+</p>
+<p>
+  Full Example: <span id="full"></span>
+</p>

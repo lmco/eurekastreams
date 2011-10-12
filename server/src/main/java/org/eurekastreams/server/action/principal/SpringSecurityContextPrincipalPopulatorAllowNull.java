@@ -22,6 +22,8 @@ import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
+import org.restlet.data.Form;
+import org.restlet.data.Request;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
@@ -31,13 +33,45 @@ import org.springframework.security.userdetails.UserDetails;
  * Create/return Principal from Spring security context if present, return null if not.
  */
 public class SpringSecurityContextPrincipalPopulatorAllowNull implements PrincipalPopulator,
-        Transformer<Object, Principal>
+        Transformer<Request, Principal>
 {
+    /**
+     * If the session should be verified.
+     */
+    private boolean verifySession = true;
+
+    /**
+     * Session cookie name.
+     */
+    private String sessionCookieName;
+
+    /**
+     * Session Header name.
+     */
+    private String sessionHeaderName;
 
     /**
      * Local logger instance.
      */
     private final Log logger = LogFactory.make();
+
+    /**
+     * Constructor.
+     * 
+     * @param inVerifySession
+     *            if the session should be verified from the header.
+     * @param inSessionCookieName
+     *            the session cookie name.
+     * @param inSessionHeaderName
+     *            the session header name.
+     */
+    public SpringSecurityContextPrincipalPopulatorAllowNull(final boolean inVerifySession,
+            final String inSessionCookieName, final String inSessionHeaderName)
+    {
+        verifySession = inVerifySession;
+        sessionCookieName = inSessionCookieName;
+        sessionHeaderName = inSessionHeaderName;
+    }
 
     /**
      * Retrieve the {@link Principal} object based on the security context loaded by Spring.
@@ -96,8 +130,34 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
      * @return Principal from Spring security context if present, return null if not.
      */
     @Override
-    public Principal transform(final Object inTransformType)
+    public Principal transform(final Request inTransformType)
     {
-        return getPrincipal(null, "");
+
+        String sessionId = inTransformType.getCookies().getFirst(sessionCookieName).getValue();
+
+        boolean sessionMatch = false;
+
+        logger.debug("Session id from cookie: " + sessionId);
+
+        if (inTransformType.getAttributes().containsKey("org.restlet.http.headers"))
+        {
+            Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
+
+            if (httpHeaders.getFirstValue(sessionHeaderName) != null)
+            {
+                String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName);
+                logger.debug("Session id from header: " + headerSessionId);
+                sessionMatch = sessionId.equals(headerSessionId);
+            }
+        }
+
+        if (!verifySession || sessionMatch)
+        {
+            return getPrincipal(null, "");
+        }
+        else
+        {
+            return null;
+        }
     }
 }
