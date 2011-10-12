@@ -46,8 +46,17 @@
     <bean id="principalPopulator"
         class="org.eurekastreams.server.action.principal.SpringSecurityPrincipalPopulator" />
 
-    <bean id="springSecurityContextPrincipalPopulatorAllowNull" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull" />
-
+    <bean id="springSecurityContextPrincipalPopulatorAllowNull" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
+        <constructor-arg value="false" />    
+        <constructor-arg value="JSESSIONID" />    
+        <constructor-arg value="sessionid" />    
+    </bean>
+    <bean id="springSecurityContextPrincipalPopulatorAllowNullRequireSession" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
+        <constructor-arg value="${eureka.fullapi.verifysession}" />
+        <constructor-arg value="JSESSIONID" />    
+        <constructor-arg value="sessionid" />  
+	</bean>
+	
     <bean id="dataStorePrincipalPopulator" class="org.eurekastreams.server.action.principal.DataStorePrincipalPopulator" >
         <constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
         <constructor-arg ref="serviceActionController" />

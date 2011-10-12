@@ -1,241 +1,287 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!-- Restlets -->
 
-	<bean name="groupOverviewResource" class="org.eurekastreams.server.service.restlets.CompositeEntityOverviewResource"
+	<bean name="groupOverviewResource"
+		class="org.eurekastreams.server.service.restlets.CompositeEntityOverviewResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaGroupMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
 
-	<bean id="personOverviewResource" class="org.eurekastreams.server.service.restlets.PersonOverviewResource"
+	<bean id="personOverviewResource"
+		class="org.eurekastreams.server.service.restlets.PersonOverviewResource"
 		scope="prototype">
 		<property name="personMapper" ref="jpaPersonMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
 
-	<bean id="backgroundResource" class="org.eurekastreams.server.service.restlets.BackgroundResource"
+	<bean id="backgroundResource"
+		class="org.eurekastreams.server.service.restlets.BackgroundResource"
 		scope="prototype">
 		<property name="backgroundMapper" ref="jpaBackgroundMapper" />
 	</bean>
 
-	<bean name="personBackgroundResource" class="org.eurekastreams.server.service.restlets.PersonBackgroundResource"
+	<bean name="personBackgroundResource"
+		class="org.eurekastreams.server.service.restlets.PersonBackgroundResource"
 		scope="prototype">
 		<property name="mapper" ref="jpaBackgroundMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
-	
-	<bean name="companiesCollectionResource" class="org.eurekastreams.server.service.restlets.CompaniesCollectionResource"
+
+	<bean name="companiesCollectionResource"
+		class="org.eurekastreams.server.service.restlets.CompaniesCollectionResource"
 		scope="prototype">
 		<property name="jobMapper" ref="jpaJobMapper" />
 	</bean>
 
-	<bean name="titlesCollectionResource" class="org.eurekastreams.server.service.restlets.TitlesCollectionResource"
+	<bean name="titlesCollectionResource"
+		class="org.eurekastreams.server.service.restlets.TitlesCollectionResource"
 		scope="prototype">
 		<property name="jobMapper" ref="jpaJobMapper" />
 	</bean>
 
 	<bean name="recommendationsCollectionResource"
-		class="org.eurekastreams.server.service.restlets.RecommendationsCollectionResource" scope="prototype">
-		<property name="recommendationMapper" ref="jpaRecommendationMapper" />
-        <property name="personMapper" ref="jpaPersonMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean name="recommendationsEntryResource" class="org.eurekastreams.server.service.restlets.RecommendationsEntryResource"
+		class="org.eurekastreams.server.service.restlets.RecommendationsCollectionResource"
 		scope="prototype">
 		<property name="recommendationMapper" ref="jpaRecommendationMapper" />
-        <property name="personMapper" ref="jpaPersonMapper" />
+		<property name="personMapper" ref="jpaPersonMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
 
-	<bean name="groupCapabilityResource" class="org.eurekastreams.server.service.restlets.CompositeEntityCapabilityResource"
+	<bean name="recommendationsEntryResource"
+		class="org.eurekastreams.server.service.restlets.RecommendationsEntryResource"
+		scope="prototype">
+		<property name="recommendationMapper" ref="jpaRecommendationMapper" />
+		<property name="personMapper" ref="jpaPersonMapper" />
+		<property name="modifiable" value="true" />
+	</bean>
+
+	<bean name="groupCapabilityResource"
+		class="org.eurekastreams.server.service.restlets.CompositeEntityCapabilityResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaGroupMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
-  
-	<bean name="userPrefsFormUIResource" class="org.eurekastreams.server.service.restlets.UserPrefsFormUIResource" scope="prototype">
-        <property name="gadgetMapper" ref="jpaGadgetMapper" />
-        <property name="gadgetMetaDataFetcher" ref="gadgetMetaDataHttpFetcher" />
+
+	<bean name="userPrefsFormUIResource"
+		class="org.eurekastreams.server.service.restlets.UserPrefsFormUIResource"
+		scope="prototype">
+		<property name="gadgetMapper" ref="jpaGadgetMapper" />
+		<property name="gadgetMetaDataFetcher" ref="gadgetMetaDataHttpFetcher" />
 	</bean>
 
-    <bean name="userPrefsResource" class="org.eurekastreams.server.service.restlets.GadgetUserPrefsResource" scope="prototype">
-    	<property name="serviceActionController" ref="serviceActionController" />
-    	<property name="getGadgetUserPrefsServiceAction" ref="getGadgetUserPrefById" />
+	<bean name="userPrefsResource"
+		class="org.eurekastreams.server.service.restlets.GadgetUserPrefsResource"
+		scope="prototype">
+		<property name="serviceActionController" ref="serviceActionController" />
+		<property name="getGadgetUserPrefsServiceAction" ref="getGadgetUserPrefById" />
 		<property name="updateGadgetUserPrefsAction" ref="updateGadgetUserPrefById" />
-        <property name="modifiable" value="true" />
-    </bean>
+		<property name="modifiable" value="true" />
+	</bean>
 
-    <bean id="resourceComponent" class="org.restlet.ext.spring.SpringComponent">
-        <property name="defaultTarget" ref="resourceApplication" />
-    </bean>
+	<bean id="resourceComponent" class="org.restlet.ext.spring.SpringComponent">
+		<property name="defaultTarget" ref="resourceApplication" />
+	</bean>
 
 	<bean id="resourceApplication" class="org.restlet.Application">
 		<property name="root" ref="restletRouter" />
 	</bean>
-		
-	<!-- Resource beans - these are stateful (inherit statefulness from org.restlet.Handler) thus need to be defined as "prototype". -->
-	
-	<bean name="oauthRequestTokenResource" class="org.eurekastreams.server.service.restlets.OAuthRequestTokenResource" scope="prototype">
+
+	<!-- Resource beans - these are stateful (inherit statefulness from org.restlet.Handler) 
+		thus need to be defined as "prototype". -->
+
+	<bean name="oauthRequestTokenResource"
+		class="org.eurekastreams.server.service.restlets.OAuthRequestTokenResource"
+		scope="prototype">
 		<property name="dataStore" ref="oauthDataStore" />
 	</bean>
-	
-	<bean name="oauthAccessTokenResource" class="org.eurekastreams.server.service.restlets.OAuthAccessTokenResource" scope="prototype">
-			<property name="dataStore" ref="oauthDataStore" />
+
+	<bean name="oauthAccessTokenResource"
+		class="org.eurekastreams.server.service.restlets.OAuthAccessTokenResource"
+		scope="prototype">
+		<property name="dataStore" ref="oauthDataStore" />
 	</bean>
 
-	<bean name="entitiesByPrefixResource" class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
+	<bean name="entitiesByPrefixResource"
+		class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
 		scope="prototype">
 		<property name="entitiesDAO" ref="searchPeopleAndGroupsByPrefixMapper" />
 	</bean>
-	
-	<bean name="groupsByPrefixResource" class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
+
+	<bean name="groupsByPrefixResource"
+		class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
 		scope="prototype">
 		<property name="entitiesDAO" ref="searchGroupsByPrefixMapper" />
 	</bean>
-	
-    <bean name="entitiesByPrefixAllowReadOnlyStreamsResource" class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
-        scope="prototype">
-        <property name="entitiesDAO" ref="searchPeopleAndGroupsByPrefixAllowReadOnlyStreamsMapper" />
-    </bean>	
-	
-    <bean name="peopleByPrefixAllowReadOnlyStreamsResource" class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
-        scope="prototype">
-        <property name="entitiesDAO" ref="searchPeopleByPrefixAllowReadOnlyStreamsMapper" />
-    </bean>	
 
-	<bean name="feedReaderEntityResource" class="org.eurekastreams.server.service.restlets.FeedReaderEntityResource"
+	<bean name="entitiesByPrefixAllowReadOnlyStreamsResource"
+		class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
+		scope="prototype">
+		<property name="entitiesDAO"
+			ref="searchPeopleAndGroupsByPrefixAllowReadOnlyStreamsMapper" />
+	</bean>
+
+	<bean name="peopleByPrefixAllowReadOnlyStreamsResource"
+		class="org.eurekastreams.server.service.restlets.EntitiesByPrefixResource"
+		scope="prototype">
+		<property name="entitiesDAO"
+			ref="searchPeopleByPrefixAllowReadOnlyStreamsMapper" />
+	</bean>
+
+	<bean name="feedReaderEntityResource"
+		class="org.eurekastreams.server.service.restlets.FeedReaderEntityResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaFeedReaderMapper" />
 		<property name="modifiable" value="true" />
 	</bean>
-	
-	<bean name="feedReaderCollectionResource" class="org.eurekastreams.server.service.restlets.FeedReaderCollectionResource"
+
+	<bean name="feedReaderCollectionResource"
+		class="org.eurekastreams.server.service.restlets.FeedReaderCollectionResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaFeedReaderMapper" />
 		<property name="modifiable" value="true" />
-	</bean>	
-	
-    <bean name="restletQueryRequestParser" class="org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser">
-                <constructor-arg>
-                    <list>
-                        <value>minId</value>
-                        <value>maxId</value>
-                        <value>count</value>
-                    </list>
-                </constructor-arg>
-                <constructor-arg>
-                    <list>
-                        <value>recipient</value>
-                        <value>likedBy</value>
-                        <value>authoredBy</value>
-                        <value>fromApp</value>
-                    </list>
-                </constructor-arg>
-                <constructor-arg>
-                    <list>
-                        <value>joinedGroups</value>
-                        <value>keywords</value>
-                        <value>followedBy</value>
-                        <value>sortBy</value>
-                        <value>savedBy</value>
-                        <value>parentOrg</value>
-                    </list>
-                </constructor-arg>
-    </bean>
+	</bean>
 
-       
-	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
+	<bean name="restletQueryRequestParser"
+		class="org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser">
+		<constructor-arg>
+			<list>
+				<value>minId</value>
+				<value>maxId</value>
+				<value>count</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg>
+			<list>
+				<value>recipient</value>
+				<value>likedBy</value>
+				<value>authoredBy</value>
+				<value>fromApp</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg>
+			<list>
+				<value>joinedGroups</value>
+				<value>keywords</value>
+				<value>followedBy</value>
+				<value>sortBy</value>
+				<value>savedBy</value>
+				<value>parentOrg</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+
+	<bean name="streamResource"
+		class="org.eurekastreams.server.service.restlets.StreamResource"
+		scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
 		<constructor-arg ref="openSocialPrincipalPopulator" />
 		<constructor-arg ref="findByIdMapper" />
 		<constructor-arg ref="restletQueryRequestParser" />
 	</bean>
-	   
-    <bean name="streamXMLResource" class="org.eurekastreams.server.service.restlets.StreamXMLResource" scope="prototype">
-        <constructor-arg ref="getActivitiesByRequest" />
-        <constructor-arg ref="serviceActionController" />
-        <constructor-arg ref="principalPopulator" />
-        <constructor-arg ref="findByIdMapper" />
-        <constructor-arg ref="restletQueryRequestParser" />
-        <constructor-arg value="${eureka.web.baseurl}" />
-    </bean>
-    
-    <bean name="personPropertiesResource" class="org.eurekastreams.server.service.restlets.PersonPropertiesResource" scope="prototype">
-        <constructor-arg ref="serviceActionController" />
-        <constructor-arg ref="getAllPersonAdditionalProperties" />
-    </bean>
-	
-	<!-- Eureka API: The Action Resource implements the programmatic API to Eureka. -->
 
-    <bean id="oAuthRequestToPrincipalTransformer" class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
-        <constructor-arg ref="dataStorePrincipalPopulator"/>            
-        <constructor-arg ref="openSocialPrincipalPopulator"/>            
-    </bean>         
+	<bean name="streamXMLResource"
+		class="org.eurekastreams.server.service.restlets.StreamXMLResource"
+		scope="prototype">
+		<constructor-arg ref="getActivitiesByRequest" />
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="principalPopulator" />
+		<constructor-arg ref="findByIdMapper" />
+		<constructor-arg ref="restletQueryRequestParser" />
+		<constructor-arg value="${eureka.web.baseurl}" />
+	</bean>
+
+	<bean name="personPropertiesResource"
+		class="org.eurekastreams.server.service.restlets.PersonPropertiesResource"
+		scope="prototype">
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="getAllPersonAdditionalProperties" />
+	</bean>
+
+	<!-- Eureka API: The Action Resource implements the programmatic API to 
+		Eureka. -->
+
+	<bean id="oAuthRequestToPrincipalTransformer"
+		class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
+		<constructor-arg ref="dataStorePrincipalPopulator" />
+		<constructor-arg ref="openSocialPrincipalPopulator" />
+	</bean>
 
 	<util:list id="principalExtractorsContextAndRequest">
 		<ref bean="springSecurityContextPrincipalPopulatorAllowNull" />
-		<ref bean="oAuthRequestToPrincipalTransformer" />                
+		<ref bean="oAuthRequestToPrincipalTransformer" />
 	</util:list>
 
 	<util:list id="principalExtractorsRequest">
-		<ref bean="oAuthRequestToPrincipalTransformer" />                
+		<ref bean="springSecurityContextPrincipalPopulatorAllowNullRequireSession" />
+		<ref bean="oAuthRequestToPrincipalTransformer" />
 	</util:list>
-	
+
 	<util:list id="clientExtractors">
-		<bean class="org.eurekastreams.server.action.principal.SpringSecurityContextOAuthClientExtractor" />
+		<bean
+			class="org.eurekastreams.server.action.principal.SpringSecurityContextOAuthClientExtractor" />
 	</util:list>
 
-    <bean name="actionResourceFull" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
-        <constructor-arg ref="serviceActionController" />
-        <constructor-arg ref="${build.web.fullapiprincipalextractors}" />
-        <constructor-arg ref="clientExtractors" />
-        <constructor-arg>
-            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
-        </constructor-arg>
-        <constructor-arg ref="applicationContextHolder" />
-        <constructor-arg value="false" /> 
-    </bean>     
+	<bean name="actionResourceFull"
+		class="org.eurekastreams.server.service.restlets.ActionResource"
+		scope="prototype">
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="principalExtractorsRequest" />
+		<constructor-arg ref="clientExtractors" />
+		<constructor-arg>
+			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+		</constructor-arg>
+		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg value="false" />
+	</bean>
 
-    <bean name="actionResourceReadOnly" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
-        <constructor-arg ref="serviceActionController" />
-        <constructor-arg ref="principalExtractorsContextAndRequest" />
-        <constructor-arg ref="clientExtractors" />
-        <constructor-arg>
-            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
-        </constructor-arg>
-        <constructor-arg ref="applicationContextHolder" />
-        <constructor-arg value="true" /> 
-    </bean>     
-        
-    <bean name="streamIdValidationResource" class="org.eurekastreams.server.service.restlets.StreamIdValidationResource" scope="prototype">
-        <constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
-        <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-        <constructor-arg ref="transactionManager" />
-    </bean>
-    	
-	
+	<bean name="actionResourceReadOnly"
+		class="org.eurekastreams.server.service.restlets.ActionResource"
+		scope="prototype">
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="principalExtractorsContextAndRequest" />
+		<constructor-arg ref="clientExtractors" />
+		<constructor-arg>
+			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+		</constructor-arg>
+		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg value="true" />
+	</bean>
+
+	<bean name="actionEstablishSession"
+		class="org.eurekastreams.server.service.restlets.EstablishSessionResource"
+		scope="prototype">
+		<constructor-arg value="JSESSIONID" />
+	</bean>
+
+	<bean name="streamIdValidationResource"
+		class="org.eurekastreams.server.service.restlets.StreamIdValidationResource"
+		scope="prototype">
+		<constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="transactionManager" />
+	</bean>
+
+
 	<!-- The router maps URLs to resources. -->
-	
+
 	<bean name="restletRouter" class="org.restlet.ext.spring.SpringRouter">
 		<constructor-arg ref="resourceApplication" />
 		<property name="attachments">
 			<map>
-				<entry
-					key="/feedreader/{uuId}/{moduleId}/">
+				<entry key="/feedreader/{uuId}/{moduleId}/">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="feedReaderEntityResource" />
 					</bean>
 				</entry>
-				<entry
-					key="/feedreader/">
+				<entry key="/feedreader/">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="feedReaderCollectionResource" />
 					</bean>
@@ -265,31 +311,33 @@
 						<lookup-method name="createResource" bean="titlesCollectionResource" />
 					</bean>
 				</entry>
-                <entry key="/autocomplete/entities/{query}">
+				<entry key="/autocomplete/entities/{query}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="entitiesByPrefixResource" />
 					</bean>
 				</entry>
-                <entry key="/autocomplete/groups/{query}">
+				<entry key="/autocomplete/groups/{query}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="groupsByPrefixResource" />
 					</bean>
 				</entry>
-                <entry key="/autocomplete/allowreadonly/entities/{query}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="entitiesByPrefixAllowReadOnlyStreamsResource" />
-                    </bean>
-                </entry>				
+				<entry key="/autocomplete/allowreadonly/entities/{query}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource"
+							bean="entitiesByPrefixAllowReadOnlyStreamsResource" />
+					</bean>
+				</entry>
 				<entry key="/autocomplete/allowreadonly/people/{query}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="peopleByPrefixAllowReadOnlyStreamsResource" />
-                    </bean>
-                </entry>
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource"
+							bean="peopleByPrefixAllowReadOnlyStreamsResource" />
+					</bean>
+				</entry>
 				<entry key="/autocomplete/{type}/{query}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="backgroundResource" />
 					</bean>
-				</entry>			
+				</entry>
 				<entry key="/people/{uuid}/overview">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="personOverviewResource" />
@@ -301,7 +349,8 @@
 							bean="recommendationsCollectionResource" />
 					</bean>
 				</entry>
-				<entry key="/people/{openSocialId}/recommendations/maxresults/{maxResults}">
+				<entry
+					key="/people/{openSocialId}/recommendations/maxresults/{maxResults}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource"
 							bean="recommendationsCollectionResource" />
@@ -312,76 +361,81 @@
 						<lookup-method name="createResource" bean="recommendationsEntryResource" />
 					</bean>
 				</entry>
-                <entry key="/gadgets/{moduleid}/{url}/userprefsformui/{saveduserprefs}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="userPrefsFormUIResource" />
-                    </bean>
-                </entry>
-                <entry key="/gadgets/{moduleid}/{url}/userprefsformui">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="userPrefsFormUIResource" />
-                    </bean>
-                </entry>
-               <entry key="/gadgets/{moduleid}/userprefs">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="userPrefsResource" />
-                    </bean>
-                </entry>
-                <entry key="/oauth/requestToken">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="oauthRequestTokenResource" />
-                	</bean>
-                </entry>
-                <entry key="/oauth/accessToken">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="oauthAccessTokenResource" />
-                	</bean>
-                </entry>
-                <entry key="/stream/{openSocialId}/{mode}">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="streamResource" />
-                	</bean>
-                </entry>
-                <entry key="/stream/{openSocialId}/{mode}/{streamId}">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="streamResource" />
-                	</bean>
-                </entry>
-                <entry key="/stream/{openSocialId}/callback/{callback}/{mode}">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="streamResource" />
-                	</bean>
-                </entry>
-                <entry key="/atom/stream/{mode}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="streamXMLResource" />
-                    </bean>
-                </entry>
-                <entry key="/atom/stream/{mode}/{streamId}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="streamXMLResource" />
-                    </bean>
-                </entry>
-                <entry key="/util/personProperties">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="personPropertiesResource" />
-                    </bean>
-                </entry>
-                <entry key="/util/streamIdValidation/type/{type}/id/{uniqueKey}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="streamIdValidationResource" />
-                    </bean>
-                </entry>
-                <entry key="/api/0/full/{action}/{requestType}/{paramsJSON}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="actionResourceFull" />
-                    </bean>
-                </entry>
-                <entry key="/api/0/read/{action}/{requestType}/{paramsJSON}">
-                    <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="actionResourceReadOnly" />
-                    </bean>
-                </entry>
+				<entry key="/gadgets/{moduleid}/{url}/userprefsformui/{saveduserprefs}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="userPrefsFormUIResource" />
+					</bean>
+				</entry>
+				<entry key="/gadgets/{moduleid}/{url}/userprefsformui">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="userPrefsFormUIResource" />
+					</bean>
+				</entry>
+				<entry key="/gadgets/{moduleid}/userprefs">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="userPrefsResource" />
+					</bean>
+				</entry>
+				<entry key="/oauth/requestToken">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="oauthRequestTokenResource" />
+					</bean>
+				</entry>
+				<entry key="/oauth/accessToken">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="oauthAccessTokenResource" />
+					</bean>
+				</entry>
+				<entry key="/stream/{openSocialId}/{mode}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="streamResource" />
+					</bean>
+				</entry>
+				<entry key="/stream/{openSocialId}/{mode}/{streamId}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="streamResource" />
+					</bean>
+				</entry>
+				<entry key="/stream/{openSocialId}/callback/{callback}/{mode}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="streamResource" />
+					</bean>
+				</entry>
+				<entry key="/atom/stream/{mode}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="streamXMLResource" />
+					</bean>
+				</entry>
+				<entry key="/atom/stream/{mode}/{streamId}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="streamXMLResource" />
+					</bean>
+				</entry>
+				<entry key="/util/personProperties">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="personPropertiesResource" />
+					</bean>
+				</entry>
+				<entry key="/util/streamIdValidation/type/{type}/id/{uniqueKey}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="streamIdValidationResource" />
+					</bean>
+				</entry>
+				<entry key="/api/0/full/{action}/{requestType}/{paramsJSON}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="actionResourceFull" />
+					</bean>
+				</entry>
+				<entry key="/api/0/establishSession">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="actionEstablishSession" />
+					</bean>
+				</entry>
+				<entry key="/api/0/read/{action}/{requestType}/{paramsJSON}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="actionResourceReadOnly" />
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>

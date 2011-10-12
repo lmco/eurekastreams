@@ -35,8 +35,7 @@
         <intercept-url pattern="/rpc" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/eurekastreams/photos/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-		<intercept-url pattern="/api/0/full/**" access="${build.spring.security.apirestletaccess}"/>
-	    <intercept-url pattern="/api/0/read/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
+	    <intercept-url pattern="/api/0/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
         <intercept-url pattern="/**" access="ROLE_USER"/>       
         <anonymous />
         <!-- key MUST match key in persistentLoginService -->        
