@@ -1,0 +1,5 @@
+BEGIN:VCARD
+N:Eureka;Post to #streamDescription($stream,$recipient) stream
+FN:Post to #streamDescription($stream,$recipient) stream
+EMAIL;INTERNET:$email
+END:VCARD

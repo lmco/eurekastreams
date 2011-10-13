@@ -104,6 +104,7 @@
 
 	<!-- URL rewriting -->
 	<!-- Note:  This is after Spring Security because rewriting an OAuth-protected URL will make it fail signature verification. -->
+	<!-- There are two instances of the filter: one for the API and one for everything else. -->
 	<filter>
 		<filter-name>UrlRewriteFilter-API</filter-name>
 		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
@@ -127,6 +128,38 @@
 	<filter-mapping>
 		<filter-name>UrlRewriteFilter-API</filter-name>
 		<url-pattern>/api/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>UrlRewriteFilter-Other</filter-name>
+		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+		<init-param>
+			<param-name>confPath</param-name>
+			<param-value>/WEB-INF/urlrewrite-other.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>confReloadCheckInterval</param-name>
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<param-name>logLevel</param-name>
+			<param-value>DEBUG</param-value>
+		</init-param>
+		<init-param>
+			<param-name>statusEnabled</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>UrlRewriteFilter-Other</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<!-- This filter is configured to run on both the REQUEST (normal inbound processing) and FORWARD chains.  
+			URLRewrite issues a forward on requests when rewriting URLs, thus any requests rewritten by the API filter 
+			would not pass through this filter if it were not specifically configured to also run on the FORWARD chain.
+			It's also important that the rules not allow infinite loops, since each time it rewrites a URL, it will
+			forward the request and thus be invoked again on the new forward chain.
+		 -->
 	</filter-mapping>
 
 
@@ -351,8 +384,24 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RestletServlet</servlet-name>
-		<url-pattern>/resources/*</url-pattern>
+		<url-pattern>/oldresources/*</url-pattern>
 	</servlet-mapping>
+
+	<!-- Spring MVC restlet adapter -->
+	<servlet>
+		<servlet-name>SpringRest</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	    <init-param>
+           <param-name>contextConfigLocation</param-name>
+           <param-value>/WEB-INF/classes/conf/applicationContext-springrest.xml</param-value>
+        </init-param>
+	    <load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>SpringRest</servlet-name>
+	    <url-pattern>/newresources/*</url-pattern>
+	</servlet-mapping>
+
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

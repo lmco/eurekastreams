@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-propertyreplacer.xml" />
+
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+        	<map>
+        		<entry key="/emailcontact/**" value-ref="emailContactController" />
+        	</map>
+        </property>
+    </bean>
+    
+    <bean id="emailContactController" class="org.eurekastreams.web.services.EmailContactController" autowire="constructor">
+    	<constructor-arg ref="serviceActionController" />
+   		<constructor-arg ref="principalPopulator" />
+    	<constructor-arg value="${eureka.mail.ingest.address}" />
+    </bean>
+	
+	<bean class="org.eurekastreams.web.services.views.BeanNameViewResolver" autowire="constructor" />
+
+	<bean id="vcardView" class="org.springframework.web.servlet.view.velocity.VelocityView">
+		<property name="url" value="/conf/templates/STREAM_EMAIL_CONTACT.vcf" />
+		<property name="velocityEngine" ref="velocityEngine" />
+		<property name="contentType" value="text/x-vcard" />
+	</bean>
+
+	<bean id="vcardActivityView" class="org.springframework.web.servlet.view.velocity.VelocityView">
+		<property name="url" value="/conf/templates/ACTIVITY_EMAIL_CONTACT.vcf" />
+		<property name="velocityEngine" ref="velocityEngine" />
+		<property name="contentType" value="text/x-vcard" />
+	</bean>
+
+</beans>

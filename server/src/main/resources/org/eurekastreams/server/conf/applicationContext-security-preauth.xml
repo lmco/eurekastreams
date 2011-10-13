@@ -9,12 +9,17 @@
 	<!-- Begin new entry point customization  --> 
        
     <http entry-point-ref="customPreAuthenticatedProcessingFilterEntryPoint">
+    	<!-- block direct access to targets of rewrites -->
+        <intercept-url pattern="/resources/api/**" access="ROLE_DENY_ALL"/>
+        <intercept-url pattern="/newresources/**" access="ROLE_DENY_ALL"/>
+        <intercept-url pattern="/oldresources/**" access="ROLE_DENY_ALL"/>
+
     	<intercept-url pattern="/social/**" filters="none"/>
         <intercept-url pattern="/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/atom/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/util/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/resources/api/**" access="ROLE_DENY_ALL"/>
+        <intercept-url pattern="/resources/emailcontact/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc" access="ROLE_ANONYMOUS, ROLE_USER"/>

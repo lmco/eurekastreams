@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE urlrewrite 
+    PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" 
+    "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite decode-using="null">
+
+	<!-- IMPORTANT NOTE:  Due to the current configuration in web.xml and the behavior of URLRewrite, the rewrites will
+		be evaluated AGAIN if a URL is rewritten.  Therefore make sure:
+			1. No rule blocks or alters a pattern that is the output of a rewrite.
+			2. Beware of infinite loops.
+		Why it runs again:  This filter is configured on the REQUEST and FORWARD filter chains.  URLRewrite performs a 
+		forward if it rewrites a URL.  Thus when a request coming down the filter chain gets its URL rewritten, it gets
+		forwarded and starts down a new FORWARD filter chain where it encounters this same filter (again).	 
+	-->
+
+	<!-- Point email contact endpoint to Spring restlet handler -->
+	<rule>
+		<from>^/resources/emailcontact/(.*)$</from>
+		<to last="true">/newresources/emailcontact/$1</to>
+	</rule>
+	<!-- Point all other resources endpoints to old Noelios restlet handler -->
+	<rule>
+		<from>^/resources/(.*)$</from>
+		<to last="true">/oldresources/$1</to>
+	</rule>
+
+</urlrewrite>
