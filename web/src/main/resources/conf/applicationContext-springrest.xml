@@ -23,6 +23,13 @@
     <bean id="emailContactController" class="org.eurekastreams.web.services.EmailContactController" autowire="constructor">
     	<constructor-arg ref="serviceActionController" />
    		<constructor-arg ref="principalPopulator" />
+   		<constructor-arg>
+   			<map>
+   				<entry key="PERSON" value-ref="getPersonByIdAction" />
+   				<entry key="GROUP" value-ref="getGroupByIdAction" />
+   			</map>
+   		</constructor-arg>
+   		<constructor-arg ref="getStreamTokenForCurrentUserAction" />
     	<constructor-arg value="${eureka.mail.ingest.address}" />
     </bean>
 	

@@ -4582,4 +4582,25 @@
         <constructor-arg value="false" />
     </bean>
         
+    <bean id="getPersonByIdAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonByIdMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    <bean id="getGroupByIdAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getGroupByIdMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+        
 </beans>

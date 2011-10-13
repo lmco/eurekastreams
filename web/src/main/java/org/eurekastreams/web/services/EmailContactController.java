@@ -15,32 +15,25 @@
  */
 package org.eurekastreams.web.services;
 
-import java.util.UUID;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
+import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.domain.Identifiable;
+import org.hibernate.bytecode.buildtime.ExecutionException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-/* Here's a copy of the imports since Eclipse keeps deleting them.
- import org.eurekastreams.server.domain.stream.StreamEntityDTO;
- import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
- import org.eurekastreams.commons.server.service.ActionController;
- import org.eurekastreams.server.domain.EntityType;
- import org.eurekastreams.commons.actions.context.PrincipalPopulator;
- import org.eurekastreams.commons.actions.service.ServiceAction;
- */
 
 /**
  * MVC controller for endpoints returning contacts for emailing to a stream.
@@ -63,6 +56,12 @@ public class EmailContactController
     /** Rear portion of the email address monitored by the system for ingesting email. */
     private final String toEmailEnd;
 
+    /** For validating requests and selecting the right lookup action. */
+    private final Map<EntityType, ServiceAction> typeToFetchActionIndex;
+
+    /** Action to get stream token. */
+    private final ServiceAction getTokenForStreamAction;
+
     /**
      * Constructor.
      *
@@ -72,15 +71,23 @@ public class EmailContactController
      *            Principal populator.
      * @param inBeanFactory
      *            The context from which this service can load action beans.
+     * @param inTypeToFetchActionIndex
+     *            For validating requests and selecting the right lookup action.
+     * @param inGetTokenForStreamAction
+     *            Action to get stream token.
      * @param inToAddress
      *            Email address monitored by the system for ingesting email.
      */
     public EmailContactController(final ActionController inServiceActionController,
-            final PrincipalPopulator inPrincipalPopulator, final BeanFactory inBeanFactory, final String inToAddress)
+            final PrincipalPopulator inPrincipalPopulator, final BeanFactory inBeanFactory,
+            final Map<EntityType, ServiceAction> inTypeToFetchActionIndex,
+            final ServiceAction inGetTokenForStreamAction, final String inToAddress)
     {
         serviceActionController = inServiceActionController;
         principalPopulator = inPrincipalPopulator;
         beanFactory = inBeanFactory;
+        typeToFetchActionIndex = inTypeToFetchActionIndex;
+        getTokenForStreamAction = inGetTokenForStreamAction;
 
         int pos = inToAddress.indexOf('@');
         toEmailStart = inToAddress.substring(0, pos) + "+";
@@ -92,31 +99,37 @@ public class EmailContactController
      *
      * @param streamType
      *            Type of entity stream belongs to.
-     * @param uniqueId
-     *            Unique ID of stream owner (person/group).
+     * @param id
+     *            ID of stream owner (person/group).
      * @param response
      *            HTTP response object.
      * @return View and model data to use to render contact.
      */
     @RequestMapping(value = "stream", method = RequestMethod.GET)
     public ModelAndView getStreamContact(@RequestParam("type") final EntityType streamType,
-            @RequestParam("uniqueId") final String uniqueId, final HttpServletResponse response)
+            @RequestParam("id") final long id, final HttpServletResponse response)
     {
-        // Implementation returns invalid content for now - just here to see the Spring MVC setup work
+        Principal principal = principalPopulator.getPrincipal(null, null);
 
-        UUID n = UUID.randomUUID();
-        String token = Long.toHexString(n.getLeastSignificantBits()) + Long.toHexString(n.getMostSignificantBits());
+        // get info about stream
+        ServiceAction action = typeToFetchActionIndex.get(streamType);
+        if (action == null)
+        {
+            throw new ExecutionException("Stream type not supported.");
+        }
+        Identifiable entity = (Identifiable) serviceActionController.execute(new ServiceActionContext(id, principal),
+                action);
 
-        StreamEntityDTO stream = new StreamEntityDTO();
-        stream.setType(streamType);
-        stream.setDisplayName(StringUtils.capitalize(uniqueId));
+        // Get token
+        String token = (String) serviceActionController.execute(new ServiceActionContext(new GetTokenForStreamRequest(
+                streamType, id), principal), getTokenForStreamAction);
 
         ModelAndView mv = new ModelAndView("vcardView");
-        mv.addObject("stream", stream);
+        mv.addObject("streamEntity", entity);
         mv.addObject("email", toEmailStart + token + toEmailEnd);
 
-        // This really should be part of the view, not the controller, but the Spring view classes don't provide a
-        // way to set content disposition, nor a way to set arbitrary headers.
+        // This really should be part of the view, not the controller, but the Spring view classes (VelocityView and
+        // parents) don't provide a way to set content disposition, nor a way to set arbitrary headers.
         response.setHeader("Content-Disposition", "attachment");
 
         return mv;

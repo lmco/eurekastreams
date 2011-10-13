@@ -116,6 +116,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -354,6 +355,10 @@ public class ActivityContent extends Composite
      */
     @UiField
     StreamSearchStatusWidget streamSearchStatusWidget;
+
+    /** Link to get contact for emailing to stream. */
+    @UiField
+    Anchor getEmailContactLink;
 
     /**
      * Message Renderer.
@@ -843,6 +848,11 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setScopeType(null);
                         }
+                        if (currentStream.getScopeType() != null)
+                        {
+                            getEmailContactLink.setHref("/resources/emailcontact/stream/person/" + person.getId());
+                            getEmailContactLink.setVisible(true);
+                        }
                         if (!singleActivityMode)
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
@@ -931,6 +941,11 @@ public class ActivityContent extends Composite
         if (!group.isStreamPostable() && !isCoordinator)
         {
             currentStream.setScopeType(null);
+        }
+        else
+        {
+            getEmailContactLink.setHref("/resources/emailcontact/stream/group/" + group.getId());
+            getEmailContactLink.setVisible(true);
         }
 
         if (!singleActivityMode)
@@ -1063,13 +1078,13 @@ public class ActivityContent extends Composite
                         bookmarkList.add(bookmarkFilter);
                         bookmarksWidgetMap.put(bookmarkUrl, bookmarkFilter);
                     }
-                    
+
                 }
                 if (sortedStreamFilters.size() == 0)
                 {
-                	Label defaultLabel = new Label("Bookmarks allow you to quickly jump to any stream in Eureka.");
-                	defaultLabel.addStyleName(style.noBookmarksMessage());
-                	bookmarkList.add(defaultLabel);
+                    Label defaultLabel = new Label("Bookmarks allow you to quickly jump to any stream in Eureka.");
+                    defaultLabel.addStyleName(style.noBookmarksMessage());
+                    bookmarkList.add(defaultLabel);
                 }
 
                 bookmarksLoaded = true;
@@ -1406,6 +1421,8 @@ public class ActivityContent extends Composite
         deferLoadAwaitingQueryBuilt = false;
         deferLoadAwaitingEntityReceived = false;
 
+        getEmailContactLink.setVisible(false);
+
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
@@ -1554,7 +1571,7 @@ public class ActivityContent extends Composite
             deferLoadAwaitingQueryBuilt = false;
             if (!deferLoadAwaitingEntityReceived)
             {
-            StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
+                StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
             }
         }
         else

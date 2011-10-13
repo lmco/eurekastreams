@@ -15,11 +15,16 @@
 		forwarded and starts down a new FORWARD filter chain where it encounters this same filter (again).	 
 	-->
 
-	<!-- Point email contact endpoint to Spring restlet handler -->
+	<!-- Point email contact endpoint to Spring restlet handler and adapt parameters -->
 	<rule>
-		<from>^/resources/emailcontact/(.*)$</from>
-		<to last="true">/newresources/emailcontact/$1</to>
+		<from>^/resources/emailcontact/stream/person/(\d*)$</from>
+		<to last="true">/newresources/emailcontact/stream?type=PERSON&amp;id=$1</to>
 	</rule>
+	<rule>
+		<from>^/resources/emailcontact/stream/group/(\d*)$</from>
+		<to last="true">/newresources/emailcontact/stream?type=GROUP&amp;id=$1</to>
+	</rule>
+
 	<!-- Point all other resources endpoints to old Noelios restlet handler -->
 	<rule>
 		<from>^/resources/(.*)$</from>
