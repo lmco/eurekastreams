@@ -105,8 +105,12 @@
 	<!-- URL rewriting -->
 	<!-- Note:  This is after Spring Security because rewriting an OAuth-protected URL will make it fail signature verification. -->
 	<filter>
-		<filter-name>UrlRewriteFilter</filter-name>
+		<filter-name>UrlRewriteFilter-API</filter-name>
 		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+		<init-param>
+			<param-name>confPath</param-name>
+			<param-value>/WEB-INF/urlrewrite-api.xml</param-value>
+		</init-param>
 		<init-param>
 			<param-name>confReloadCheckInterval</param-name>
 			<param-value></param-value>
@@ -121,7 +125,7 @@
 		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>UrlRewriteFilter</filter-name>
+		<filter-name>UrlRewriteFilter-API</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
 

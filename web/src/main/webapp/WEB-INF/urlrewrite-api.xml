@@ -6,6 +6,13 @@
 
 <urlrewrite decode-using="null">
 
+	<!-- SPECIAL/SUPPORT CALLS -->
+
+	<rule>
+		<from>^/api/0/establishSession/(.*)$</from>
+		<to last="true">/resources/api/0/establishSession</to>
+	</rule>
+
 	<!-- FULL API -->
 	
 	<rule>
@@ -294,15 +301,6 @@
 		<from>^/api/0/read/getSystemSettings/(.*)$</from>
 		<to last="true">/resources/api/0/read/getSystemSettings/null/$1</to>
 	</rule>
-	<rule>
-		<from>^/api/0/establishSession/(.*)$</from>
-		<to last="true">/resources/api/0/establishSession</to>
-	</rule>
-	<rule>
-		<from>^/api/0/read/getUnreadApplicationAlertCount/(.*)$</from>
-		<to last="true">/resources/api/0/read/getUnreadApplicationAlertCount/null/$1</to>
-	</rule>
-
 	<rule>
         <from>^/api/0/read/getUnreadInAppNotificationCounts/(.*)$</from>
         <to last="true">/resources/api/0/read/getInAppNotificationCounts/null/$1</to>
