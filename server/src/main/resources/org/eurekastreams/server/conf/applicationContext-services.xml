@@ -8,16 +8,6 @@
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 
-	<bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
-		<property name="config">
-			<bean class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
-				<property name="algorithm" value="PBEWithMD5AndDES" />
-				<property name="passwordEnvName" value="APP_ENCRYPTION_PASSWORD" />
-			</bean>
-		</property>
-	</bean>
-
-
 	<!-- ========== EMAIL SERVICE ========== -->
 	
 	<bean id="tokenEncoder" class="org.eurekastreams.server.service.email.TokenEncoder">
