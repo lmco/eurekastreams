@@ -12,6 +12,12 @@
         <form-login login-page="/no_credentials.html" default-target-url="/login_success.html" always-use-default-target="true"/>     
         <http-basic />
         <anonymous />
+
+    	<!-- block direct access to targets of rewrites -->
+        <intercept-url pattern="/resources/api/**" access="ROLE_DENY_ALL"/>
+        <intercept-url pattern="/newresources/**" access="ROLE_DENY_ALL"/>
+        <intercept-url pattern="/oldresources/**" access="ROLE_DENY_ALL"/>
+
         <intercept-url pattern="/index.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/login_disabled.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/no_credentials.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
@@ -26,7 +32,7 @@
         <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/atom/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/util/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/resources/api/**" access="ROLE_DENY_ALL"/>
+		<intercept-url pattern="/resources/emailcontact/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>  
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>   
