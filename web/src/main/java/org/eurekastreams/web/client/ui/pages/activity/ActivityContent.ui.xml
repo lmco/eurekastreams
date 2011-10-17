@@ -213,11 +213,20 @@
 				display: block;
 			}
 			
-			.subscribe-options>div {
+			.subscribe-options>div,
+			.subscribe-options>a {
 				padding: 5px;
 			}
-			
-			.subscribe-options>div:hover {
+			.subscribe-options>a {
+				display: block;
+				color: black;
+			}
+			.subscribe-options>a:hover {
+				color: black;
+			}
+
+			.subscribe-options>div:hover,
+			.subscribe-options>a:hover {
 				cursor: pointer;
 				background-color: #e4e4e4;
 			}
