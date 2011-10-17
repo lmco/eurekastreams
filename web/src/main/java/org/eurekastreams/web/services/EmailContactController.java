@@ -23,11 +23,11 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
+import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Identifiable;
-import org.hibernate.bytecode.buildtime.ExecutionException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -131,6 +131,8 @@ public class EmailContactController
         // This really should be part of the view, not the controller, but the Spring view classes (VelocityView and
         // parents) don't provide a way to set content disposition, nor a way to set arbitrary headers.
         response.setHeader("Content-Disposition", "attachment");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.addHeader("Pragma", "no-cache");
 
         return mv;
     }
