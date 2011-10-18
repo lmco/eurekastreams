@@ -237,6 +237,8 @@ public class ActionResource extends SmpResource
      */
     private Principal getPrincipal(final Request inRequest)
     {
+        log.debug("Attempting to retrieve principal");
+
         for (Transformer<Request, Principal> extractor : principalExtractors)
         {
             Principal result = extractor.transform(inRequest);
@@ -245,6 +247,8 @@ public class ActionResource extends SmpResource
                 return result;
             }
         }
+        
+        log.debug("No principal found");
         return null;
     }
 

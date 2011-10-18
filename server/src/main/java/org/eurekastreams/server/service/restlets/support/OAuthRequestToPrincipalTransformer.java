@@ -79,6 +79,7 @@ public class OAuthRequestToPrincipalTransformer implements Transformer<Request, 
 
             if (httpHeaders.getFirstValue("accountid") != null)
             {
+                log.debug("Found accountid header: " + accountid);
                 accountid = httpHeaders.getFirstValue("accountid");
             }
         }
