@@ -29,6 +29,9 @@ public class EmailNotificationTemplate
     /** Resource path for the HTML form of the body. */
     private String htmlBodyTemplateResourcePath;
 
+    /** If notification email should set the reply-to with a token for response via email. */
+    private boolean replyTokenRequired;
+
     // ---- short setters for use by Spring p-namespace ----
 
     /**
@@ -56,6 +59,15 @@ public class EmailNotificationTemplate
     public void setHtmlBody(final String inHtmlBodyTemplateResourcePath)
     {
         htmlBodyTemplateResourcePath = inHtmlBodyTemplateResourcePath;
+    }
+
+    /**
+     * @param inRequiresReplyToken
+     *            the requiresReplyToken to set
+     */
+    public void setToken(final boolean inRequiresReplyToken)
+    {
+        replyTokenRequired = inRequiresReplyToken;
     }
 
     // ---- normal getters and setters ----
@@ -111,4 +123,20 @@ public class EmailNotificationTemplate
         htmlBodyTemplateResourcePath = inHtmlBodyTemplateResourcePath;
     }
 
+    /**
+     * @return the requiresReplyToken
+     */
+    public boolean isReplyTokenRequired()
+    {
+        return replyTokenRequired;
+    }
+
+    /**
+     * @param inRequiresReplyToken
+     *            the requiresReplyToken to set
+     */
+    public void setReplyTokenRequired(final boolean inRequiresReplyToken)
+    {
+        replyTokenRequired = inRequiresReplyToken;
+    }
 }

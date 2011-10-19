@@ -204,11 +204,12 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
                                 filteredRecipients });
 
                         // send
-                        UserActionRequest actionRequest = notifiers.get(notifierKey).notify(type, filteredRecipients,
-                                properties, recipientIndex);
-                        if (actionRequest != null)
+                        Collection<UserActionRequest> actionRequests = notifiers.get(notifierKey).notify(type,
+                                filteredRecipients, properties, recipientIndex);
+                        if (actionRequests != null && !actionRequests.isEmpty())
                         {
-                            asyncRequests.add(actionRequest);
+
+                            asyncRequests.addAll(actionRequests);
                         }
                     }
                     catch (Exception ex)

@@ -261,6 +261,8 @@
 		<constructor-arg ref="velocityGlobalContext" />
 		<constructor-arg ref="emailNotifierMessageTemplates" />
 		<constructor-arg value="${eureka.notification.email.subjectprefix}" />
+        <constructor-arg ref="tokenContentFormatter" />
+		<constructor-arg ref="tokenContentEmailAddressBuilder" />		
     </bean>
 	
 	
@@ -482,31 +484,36 @@
 			<bean parent="emailTemplate" 
 				p:subject="$actor.displayName liked your #activityType($activity)"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html" />
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html"
+				p:token="true" />
 		</entry>
 		<entry key="POST_TO_PERSONAL_STREAM">
 			<bean parent="emailTemplate"
 				p:subject="$actor.displayName posted a #activityType($activity) to your stream"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.html" />
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.html"
+				p:token="true" />
 		</entry>
 		<entry key="POST_TO_FOLLOWED_STREAM">
 			<bean parent="emailTemplate"
 				p:subject="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.html" />
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.html"
+				p:token="true" />
 		</entry>
 		<entry key="COMMENT_TO_PERSONAL_POST">
 			<bean parent="emailTemplate"
 				p:subject="$actor.displayName commented on your #activityType($activity)"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html" />
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html"
+				p:token="true" />
 		</entry>
 		<entry key="COMMENT_TO_COMMENTED_POST">
 			<bean parent="emailTemplate"
 				p:subject="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.txt"
-				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html" />
+				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html"
+				p:token="true" />
 		</entry>
 		<entry key="FOLLOW_PERSON">
 			<bean parent="emailTemplate"

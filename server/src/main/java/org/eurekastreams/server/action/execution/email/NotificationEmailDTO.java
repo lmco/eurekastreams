@@ -20,7 +20,7 @@ import java.io.Serializable;
 /**
  * Holds information to build an email.
  */
-public class NotificationEmailDTO implements Serializable
+public class NotificationEmailDTO implements Serializable, Cloneable
 {
     /** Subject line. */
     private String subject;
@@ -45,6 +45,15 @@ public class NotificationEmailDTO implements Serializable
 
     /** Optional description of the notification/message used for logging events about the message. */
     private String description;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NotificationEmailDTO clone() throws CloneNotSupportedException
+    {
+        return (NotificationEmailDTO) super.clone();
+    }
 
     /**
      * @return the subject

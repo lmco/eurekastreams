@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.execution.notification.notifier;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,12 +29,16 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 import org.apache.velocity.context.Context;
+import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
 import org.eurekastreams.server.domain.HasEmail;
+import org.eurekastreams.server.domain.HasId;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.email.TokenContentEmailAddressBuilder;
+import org.eurekastreams.server.service.email.TokenContentFormatter;
 
 /**
  * Notifier for in-app notifications. Builds the messages and stores them in the database.
@@ -52,6 +57,12 @@ public class EmailNotifier implements Notifier
     /** Prefix to use on email subjects. */
     private final String subjectPrefix;
 
+    /** Builds the token content. */
+    private final TokenContentFormatter tokenContentFormatter;
+
+    /** Builds the recipient email address with a token. */
+    private final TokenContentEmailAddressBuilder tokenAddressBuilder;
+
     /**
      * Constructor.
      *
@@ -63,27 +74,36 @@ public class EmailNotifier implements Notifier
      *            Message templates by notification type.
      * @param inSubjectPrefix
      *            Prefix to use on email subjects.
+     * @param inTokenContentFormatter
+     *            Builds the token content.
+     * @param inTokenAddressBuilder
+     *            Builds the recipient email address with a token.
      */
     public EmailNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
-            final Map<NotificationType, EmailNotificationTemplate> inTemplates, final String inSubjectPrefix)
+            final Map<NotificationType, EmailNotificationTemplate> inTemplates, final String inSubjectPrefix,
+            final TokenContentFormatter inTokenContentFormatter,
+            final TokenContentEmailAddressBuilder inTokenAddressBuilder)
     {
         velocityEngine = inVelocityEngine;
         velocityGlobalContext = inVelocityGlobalContext;
         templates = inTemplates;
         subjectPrefix = inSubjectPrefix;
+        tokenContentFormatter = inTokenContentFormatter;
+        tokenAddressBuilder = inTokenAddressBuilder;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
+    public Collection<UserActionRequest> notify(final NotificationType inType, final Collection<Long> inRecipients,
             final Map<String, Object> inProperties, final Map<Long, PersonModelView> inRecipientIndex)
             throws Exception
     {
         EmailNotificationTemplate template = templates.get(inType);
         if (template == null)
         {
+            // Not an error - this is an easy way to disable a given notification.
             return null;
         }
 
@@ -119,43 +139,77 @@ public class EmailNotifier implements Notifier
         vt.merge(velocityContext, writer);
         email.setHtmlBody(writer.toString());
 
-        // set the recipients, filtering empty addresses
-        List<String> addresses = new ArrayList<String>(inRecipients.size());
-        for (long recipientId : inRecipients)
-        {
-            String address = inRecipientIndex.get(recipientId).getEmail();
-            if (StringUtils.isNotBlank(address))
-            {
-                addresses.add(address);
-            }
-        }
-        if (addresses.isEmpty())
-        {
-            return null;
-        }
-        if (addresses.size() == 1)
-        {
-            email.setToRecipient(addresses.get(0));
-        }
-        else
-        {
-            email.setBccRecipients(StringUtils.join(addresses, ','));
-        }
-
-        // set the reply-to to the actor (so replies to emails go to the actor, not the system)
-        Object obj = inProperties.get(NotificationPropertyKeys.ACTOR);
-        if (obj instanceof HasEmail)
-        {
-            HasEmail actor = (HasEmail) obj;
-            email.setReplyTo(actor.getEmail());
-        }
-
         // set the priority
         email.setHighPriority(Boolean.TRUE.equals(inProperties.get(NotificationPropertyKeys.HIGH_PRIORITY)));
 
-        // set the description (for logging / debugging)
-        email.setDescription(inType + " to " + inRecipients.size() + " recipients");
+        if (template.isReplyTokenRequired())
+        {
+            Object obj = inProperties.get("activity");
+            if (!(obj instanceof HasId))
+            {
+                throw new ExecutionException("Notification requires activity property for building token.");
+            }
+            String tokenData = tokenContentFormatter.buildForActivity(((HasId) obj).getId());
 
-        return new UserActionRequest("sendEmailNotificationAction", null, email);
+            // build individual email for each user with reply address containing user-specific token
+            List<UserActionRequest> requests = new ArrayList<UserActionRequest>(inRecipients.size());
+            for (long recipientId : inRecipients)
+            {
+                String address = inRecipientIndex.get(recipientId).getEmail();
+                if (StringUtils.isNotBlank(address))
+                {
+                    String replyAddress = tokenAddressBuilder.build(tokenData, recipientId);
+
+                    NotificationEmailDTO userEmail = email.clone();
+                    userEmail.setReplyTo(replyAddress);
+                    userEmail.setToRecipient(address);
+                    // set the description (for logging / debugging)
+                    userEmail.setDescription(inType + " with token to " + address);
+
+                    requests.add(new UserActionRequest("sendEmailNotificationAction", null, userEmail));
+                }
+            }
+            return requests;
+        }
+        else
+        {
+            // set the recipients, filtering empty addresses
+            List<String> addresses = new ArrayList<String>(inRecipients.size());
+            for (long recipientId : inRecipients)
+            {
+                String address = inRecipientIndex.get(recipientId).getEmail();
+                if (StringUtils.isNotBlank(address))
+                {
+                    addresses.add(address);
+                }
+            }
+            if (addresses.isEmpty())
+            {
+                return null;
+            }
+            if (addresses.size() == 1)
+            {
+                final String address = addresses.get(0);
+                email.setToRecipient(address);
+                // set the description (for logging / debugging)
+                email.setDescription(inType + " to " + address);
+            }
+            else
+            {
+                email.setBccRecipients(StringUtils.join(addresses, ','));
+                // set the description (for logging / debugging)
+                email.setDescription(inType + " to " + inRecipients.size() + " recipients");
+            }
+
+            // set the reply-to to the actor (so replies to emails go to the actor, not the system)
+            Object obj = inProperties.get(NotificationPropertyKeys.ACTOR);
+            if (obj instanceof HasEmail)
+            {
+                HasEmail actor = (HasEmail) obj;
+                email.setReplyTo(actor.getEmail());
+            }
+
+            return Collections.singletonList(new UserActionRequest("sendEmailNotificationAction", null, email));
+        }
     }
 }
