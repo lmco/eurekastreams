@@ -45,13 +45,13 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -70,7 +70,7 @@ public class ActivityServiceImplTest
      * List of activity expected to be returned from the search for users by opensocial id.
      */
     private final List<org.eurekastreams.server.domain.stream.Activity> expectedActivities = // \n
-            new LinkedList<org.eurekastreams.server.domain.stream.Activity>();
+    new LinkedList<org.eurekastreams.server.domain.stream.Activity>();
 
     /**
      * List os ActivityDTO's expected to be returned from the search for users by opensocial id.
@@ -140,7 +140,7 @@ public class ActivityServiceImplTest
     /**
      * Activity implementation for tests.
      */
-    private  Activity testActivity;
+    private Activity testActivity;
 
     /**
      * Context for building mock objects.
@@ -160,26 +160,22 @@ public class ActivityServiceImplTest
     /**
      * The mock action to be used for delete activities.
      */
-    private final TaskHandlerAction deleteUserActivitiesAction =
-            context.mock(TaskHandlerAction.class, "deleteUserActivitiesAction");
+    private final TaskHandlerAction deleteUserActivitiesAction = context.mock(TaskHandlerAction.class,
+            "deleteUserActivitiesAction");
 
     /**
      * The mock instance of the {@link ServiceActionController} to execute actions.
      */
     private final ServiceActionController serviceActionControllerMock = context.mock(ServiceActionController.class);
 
-    /**
-     * The mock instance of the {@link OpenSocialPrincipalPopulator} for retrieving a principal object using the
-     * OpenSocial id.
-     */
-    private final OpenSocialPrincipalPopulator openSocialPrincipalPopulatorMock =
-            context.mock(OpenSocialPrincipalPopulator.class);
+    /** Fixture: principal DAO (for retrieving a principal object using the OpenSocial id). */
+    private final DomainMapper<String, Principal> principalDao = context.mock(DomainMapper.class, "principalDao");
 
     /**
      * The mock instance of the {@link TaskHandlerAction}TaskHandlerServiceActiontivity Action.
      */
-    private final TaskHandlerServiceAction postActivityServiceActionMock =
-            context.mock(TaskHandlerServiceAction.class);
+    private final TaskHandlerServiceAction postActivityServiceActionMock = context
+            .mock(TaskHandlerServiceAction.class);
 
     /** Fixture: gadget definition mapper. */
     private final GadgetDefinitionMapper gadgetDefMapper = context.mock(GadgetDefinitionMapper.class);
@@ -198,10 +194,9 @@ public class ActivityServiceImplTest
     @Before
     public void setUp()
     {
-        sut =
-                new ActivityServiceImpl(getUserActivitiesAction, deleteUserActivitiesAction,
-                        serviceActionControllerMock, openSocialPrincipalPopulatorMock, postActivityServiceActionMock,
-                        gadgetDefMapper, gadgetMetaDataFetcher);
+        sut = new ActivityServiceImpl(getUserActivitiesAction, deleteUserActivitiesAction,
+                serviceActionControllerMock, principalDao, postActivityServiceActionMock, gadgetDefMapper,
+                gadgetMetaDataFetcher);
 
         testActivity = new ActivityImpl(TEST_ACTIVITY_ID, testId.getUserId());
 
@@ -223,7 +218,7 @@ public class ActivityServiceImplTest
         {
             {
 
-                allowing(openSocialPrincipalPopulatorMock).getPrincipal(USERID_ONE);
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -251,7 +246,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                oneOf(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(principalMock).getOpenSocialId();
@@ -288,7 +283,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                oneOf(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(principalMock).getOpenSocialId();
@@ -312,7 +307,7 @@ public class ActivityServiceImplTest
 
     /**
      * Test for creating an activity.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -327,7 +322,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                oneOf(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(principalMock).getOpenSocialId();
@@ -363,7 +358,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                oneOf(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(principalMock).getOpenSocialId();
@@ -403,7 +398,7 @@ public class ActivityServiceImplTest
         {
             {
 
-                allowing(openSocialPrincipalPopulatorMock).getPrincipal(USERID_ONE);
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principalMock));
 
                 allowing(principalMock).getAccountId();
@@ -432,7 +427,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                allowing(openSocialPrincipalPopulatorMock).getPrincipal(USERID_ONE);
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principalMock));
 
                 allowing(principalMock).getAccountId();
@@ -461,7 +456,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                allowing(openSocialPrincipalPopulatorMock).getPrincipal(USERID_ONE);
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principalMock));
 
                 allowing(principalMock).getAccountId();
@@ -509,7 +504,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                allowing(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                allowing(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 allowing(principalMock).getAccountId();
@@ -521,9 +516,8 @@ public class ActivityServiceImplTest
             }
         });
 
-        RestfulCollection<Activity> activities =
-                sut.getActivities(userIdSet, testGroupId, TEST_APP_ID, ACTIVITY_ALL_FIELDS, collOptions, FAKETOKEN)
-                        .get();
+        RestfulCollection<Activity> activities = sut.getActivities(userIdSet, testGroupId, TEST_APP_ID,
+                ACTIVITY_ALL_FIELDS, collOptions, FAKETOKEN).get();
 
         assertNotNull("Collection of activities is null", activities);
 
@@ -548,7 +542,7 @@ public class ActivityServiceImplTest
         context.checking(new Expectations()
         {
             {
-                allowing(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                allowing(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 allowing(principalMock).getAccountId();

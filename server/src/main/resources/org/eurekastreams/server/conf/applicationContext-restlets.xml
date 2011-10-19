@@ -182,7 +182,7 @@
 		scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
+		<constructor-arg ref="openSocialPrincipalDao" />
 		<constructor-arg ref="findByIdMapper" />
 		<constructor-arg ref="restletQueryRequestParser" />
 	</bean>
@@ -210,8 +210,8 @@
 
 	<bean id="oAuthRequestToPrincipalTransformer"
 		class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
-		<constructor-arg ref="dataStorePrincipalPopulator" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
+		<constructor-arg ref="dataStorePrincipalDao" />
+		<constructor-arg ref="openSocialPrincipalDao" />
 	</bean>
 
 	<util:list id="principalExtractorsContextAndRequest">

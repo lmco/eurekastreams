@@ -47,12 +47,12 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 import com.google.inject.Inject;
@@ -76,9 +76,9 @@ public class PersonServiceImpl implements PersonService
     private final ActionController serviceActionController;
 
     /**
-     * Principal populator.
+     * DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      */
-    private final PrincipalPopulatorTransWrapper principalPopulator;
+    private final DomainMapper<String, Principal> principalDao;
 
     /**
      * Instance of the GetPersonAction that is used to process Person requests.
@@ -107,8 +107,8 @@ public class PersonServiceImpl implements PersonService
      * @param inGetFollowingAction
      *            - this is the GetFollowingAction that is injected into this class with Spring. This action is used to
      *            retrieve the friends of the requestor.
-     * @param inOpenSocialPrincipalPopulator
-     *            {@link PrincipalPopulatorTransWrapper}.
+     * @param inOpenSocialPrincipalDao
+     *            DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      * @param inServiceActionController
      *            {@link ActionController}.
      * @param inContainerBaseUrl
@@ -120,7 +120,7 @@ public class PersonServiceImpl implements PersonService
     @Inject
     public PersonServiceImpl(@Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
             @Named("getFollowing") final ServiceAction inGetFollowingAction,
-            final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
+            @Named("openSocialPrincipalDaoTransWrapped") final DomainMapper<String, Principal> inOpenSocialPrincipalDao,
             final ActionController inServiceActionController,
             @Named("eureka.container.baseurl") final String inContainerBaseUrl,
             @Named("eureka.user-account-tld") final String inAccountTopLevelDomain)
@@ -128,7 +128,7 @@ public class PersonServiceImpl implements PersonService
         getPeopleAction = inGetPeopleAction;
         getFollowingAction = inGetFollowingAction;
         containerBaseUrl = inContainerBaseUrl;
-        principalPopulator = inOpenSocialPrincipalPopulator;
+        principalDao = inOpenSocialPrincipalDao;
         serviceActionController = inServiceActionController;
         accountTopLevelDomain = inAccountTopLevelDomain;
     }
@@ -304,7 +304,7 @@ public class PersonServiceImpl implements PersonService
         Principal currentUserPrincipal = null;
         if (inSecurityToken.getViewerId() != null)
         {
-            currentUserPrincipal = principalPopulator.getPrincipal(inSecurityToken.getViewerId(), "");
+            currentUserPrincipal = principalDao.execute(inSecurityToken.getViewerId());
         }
         return currentUserPrincipal;
     }

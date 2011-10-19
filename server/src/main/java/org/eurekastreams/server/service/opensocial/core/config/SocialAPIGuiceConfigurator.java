@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@ import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.MessageService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.eurekastreams.commons.actions.TaskHandlerAction;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.commons.server.service.ServiceActionController;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
-import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 import org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl;
 import org.eurekastreams.server.service.opensocial.oauth.SocialRealm;
@@ -74,7 +74,7 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
      * Configuration value for the Service Expiration.
      */
     private static final Long SERVICE_EXPIRATION_IN_MINS = 60L;
-    
+
     /**
      * Connection timeout for shindig's basic http fetcher.
      */
@@ -86,25 +86,25 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
     @Override
     public void configure(final Binder inBinder, final ApplicationContext inAppContext)
     {
-        inBinder.bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet")).to(
-                DataServiceServletFetcher.class);
+        inBinder.bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet"))
+                .to(DataServiceServletFetcher.class);
 
         inBinder.bind(Boolean.class).annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
                 .toInstance(Boolean.TRUE);
         inBinder.bind(XStreamConfiguration.class).to(XStream081Configuration.class);
-        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
-                BeanXStreamConverter.class);
-        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json")).to(
-                BeanJsonConverter.class);
-        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
-                BeanXStreamAtomConverter.class);
+        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml"))
+                .to(BeanXStreamConverter.class);
+        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json"))
+                .to(BeanJsonConverter.class);
+        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom"))
+                .to(BeanXStreamAtomConverter.class);
 
         inBinder.bind(new TypeLiteral<List<AuthenticationHandler>>()
         {
         }).toProvider(AuthenticationHandlerProvider.class);
 
-        Multibinder<Object> handlerBinder =
-                Multibinder.newSetBinder(inBinder, Object.class, Names.named("org.apache.shindig.handlers"));
+        Multibinder<Object> handlerBinder = Multibinder.newSetBinder(inBinder, Object.class,
+                Names.named("org.apache.shindig.handlers"));
         for (Class handler : getHandlers())
         {
             handlerBinder.addBinding().toInstance(handler);
@@ -121,40 +121,49 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
 
         inBinder.requestStaticInjection(SocialRealm.class);
 
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getPeopleByOpenSocialIds"));
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getFollowing")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getStreamsUserIsFollowing"));
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getAppData")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getAppData"));
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("updateAppData")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "updateAppData"));
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("deleteAppData")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "deleteAppData"));
-        inBinder.bind(TaskHandlerAction.class).annotatedWith(Names.named("deleteUserActivities")).toProvider(
-                SpringIntegration.fromSpring(TaskHandlerAction.class, "deleteUserActivities"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds"))
+                .toProvider(SpringIntegration.fromSpring(ServiceAction.class, "getPeopleByOpenSocialIds"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getFollowing"))
+                .toProvider(SpringIntegration.fromSpring(ServiceAction.class, "getStreamsUserIsFollowing"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getAppData"))
+                .toProvider(SpringIntegration.fromSpring(ServiceAction.class, "getAppData"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("updateAppData"))
+                .toProvider(SpringIntegration.fromSpring(ServiceAction.class, "updateAppData"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("deleteAppData"))
+                .toProvider(SpringIntegration.fromSpring(ServiceAction.class, "deleteAppData"));
+        inBinder.bind(TaskHandlerAction.class).annotatedWith(Names.named("deleteUserActivities"))
+                .toProvider(SpringIntegration.fromSpring(TaskHandlerAction.class, "deleteUserActivities"));
 
         // ActivityServiceImpl wirings
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getUserActivities")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getUserActivities"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getUserActivities"))
+                .toProvider(SpringIntegration.fromSpring(ServiceAction.class, "getUserActivities"));
         inBinder.bind(ActionController.class).toProvider(
                 SpringIntegration.fromSpring(ServiceActionController.class, "serviceActionController"));
-        inBinder.bind(TaskHandlerServiceAction.class).annotatedWith(
-                Names.named("postPersonActivityServiceActionTaskHandler")).toProvider(
-                SpringIntegration.fromSpring(TaskHandlerServiceAction.class,
-                        "postPersonActivityServiceActionTaskHandler"));
-        inBinder.bind(OpenSocialPrincipalPopulator.class).toProvider(
-                SpringIntegration.fromSpring(OpenSocialPrincipalPopulator.class, "openSocialPrincipalPopulator"));
-        inBinder.bind(PrincipalPopulatorTransWrapper.class).toProvider(
-                SpringIntegration.fromSpring(PrincipalPopulatorTransWrapper.class,
-                        "openSocialPrincipalPopulatorTransWrapper"));
+        inBinder.bind(TaskHandlerServiceAction.class)
+                .annotatedWith(Names.named("postPersonActivityServiceActionTaskHandler"))
+                .toProvider(
+                        SpringIntegration.fromSpring(TaskHandlerServiceAction.class,
+                                "postPersonActivityServiceActionTaskHandler"));
+
         inBinder.bind(GadgetDefinitionMapper.class).annotatedWith(Names.named("jpaGadgetDefinitionMapper"))
                 .toProvider(SpringIntegration.fromSpring(GadgetDefinitionMapper.class, "jpaGadgetDefinitionMapper"));
         inBinder.bind(GadgetMetaDataFetcher.class).toProvider(
                 SpringIntegration.fromSpring(GadgetMetaDataFetcher.class, "gadgetMetaDataHttpFetcher"));
-        
-        inBinder.bind(HttpFetcher.class).toInstance(new BasicHttpFetcher(0, 
-                CONNECTION_TIMEOUT, CONNECTION_TIMEOUT, null));
+
+        inBinder.bind(HttpFetcher.class).toInstance(
+                new BasicHttpFetcher(0, CONNECTION_TIMEOUT, CONNECTION_TIMEOUT, null));
+
+        // wiring for principal DAOs
+        inBinder.bind(new TypeLiteral<DomainMapper<String, Principal>>()
+        {
+        })
+                .annotatedWith(Names.named("openSocialPrincipalDaoTransWrapped"))
+                .toInstance(
+                        (DomainMapper<String, Principal>) inAppContext.getBean("openSocialPrincipalDaoTransWrapped"));
+        inBinder.bind(new TypeLiteral<DomainMapper<String, Principal>>()
+        {
+        }).annotatedWith(Names.named("openSocialPrincipalDao"))
+                .toInstance((DomainMapper<String, Principal>) inAppContext.getBean("openSocialPrincipalDao"));
     }
 
     /**
@@ -162,9 +171,9 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
      *
      * @return Set of Handlers.
      */
-    protected Set<Class<?>> getHandlers()
+    protected Set<Class< ? >> getHandlers()
     {
-        return ImmutableSet.<Class<?>> of(ActivityHandler.class, AppDataHandler.class, PersonHandler.class,
+        return ImmutableSet.<Class< ? >> of(ActivityHandler.class, AppDataHandler.class, PersonHandler.class,
                 MessageHandler.class);
     }
 }

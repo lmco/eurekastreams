@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * This class contains the test suite for the {@link SpringSecurityPrincipalPopulator}.
- *
  */
 public class SpringSecurityPrincipalPopulatorTest
 {
@@ -78,7 +77,7 @@ public class SpringSecurityPrincipalPopulatorTest
         final Authentication authentication = context.mock(Authentication.class);
         final ExtendedUserDetails extUserDetails = context.mock(ExtendedUserDetails.class);
 
-        //Save off the current security context, so that it can be reset when this test is complete.
+        // Save off the current security context, so that it can be reset when this test is complete.
         SecurityContext originalSecurityContext = SecurityContextHolder.getContext();
         SecurityContextHolder.setContext(securityContext);
 
@@ -118,7 +117,7 @@ public class SpringSecurityPrincipalPopulatorTest
         final SecurityContext securityContext = context.mock(SecurityContext.class);
         final Authentication authentication = context.mock(Authentication.class);
 
-        //Save off the current security context, so that it can be reset when this test is complete.
+        // Save off the current security context, so that it can be reset when this test is complete.
         SecurityContext originalSecurityContext = SecurityContextHolder.getContext();
         SecurityContextHolder.setContext(securityContext);
 

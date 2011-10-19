@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +45,6 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
@@ -58,6 +57,7 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.DomainEntityMapper;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 
 import com.google.inject.Inject;
@@ -65,7 +65,6 @@ import com.google.inject.name.Named;
 
 /**
  * This class provides the implementation of the ActivityService interface for Shindig.
- *
  */
 public class ActivityServiceImpl implements ActivityService
 {
@@ -90,9 +89,9 @@ public class ActivityServiceImpl implements ActivityService
     private final ActionController serviceActionController;
 
     /**
-     * Instance of the {@link OpenSocialPrincipalPopulator} for this class.
+     * DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      */
-    private final OpenSocialPrincipalPopulator openSocialPrincipalPopulator;
+    private final DomainMapper<String, Principal> openSocialPrincipalDao;
 
     /**
      * Instance of the {@link TaskHandlerServiceAction} for this class.
@@ -114,9 +113,8 @@ public class ActivityServiceImpl implements ActivityService
      *            the action to deleted a specified set of activities for a specified user.
      * @param inServiceActionController
      *            - instance of the {@link ActionController} used to execute the actions.
-     * @param inOpenSocialPrincipalPopulator
-     *            - instance of the {@link OpenSocialPrincipalPopulator} used to retrieve a Principal object based on
-     *            the opensocial id.
+     * @param inOpenSocialPrincipalDao
+     *            DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      * @param inPostActivityAction
      *            the action to create an activity.
      * @param inGadgetDefinitionMapper
@@ -128,7 +126,7 @@ public class ActivityServiceImpl implements ActivityService
     public ActivityServiceImpl(@Named("getUserActivities") final ServiceAction inGetUserActivitiesAction,
             @Named("deleteUserActivities") final TaskHandlerAction inDeleteActivitiesAction,
             final ActionController inServiceActionController,
-            final OpenSocialPrincipalPopulator inOpenSocialPrincipalPopulator,
+            @Named("openSocialPrincipalDao") final DomainMapper<String, Principal> inOpenSocialPrincipalDao,
             @Named("postPersonActivityServiceActionTaskHandler") final TaskHandlerServiceAction inPostActivityAction,
             @Named("jpaGadgetDefinitionMapper") final GadgetDefinitionMapper inGadgetDefinitionMapper,
             final GadgetMetaDataFetcher inGadgetMetaDataFetcher)
@@ -136,7 +134,7 @@ public class ActivityServiceImpl implements ActivityService
         getUserActivitiesAction = inGetUserActivitiesAction;
         deleteUserActivities = inDeleteActivitiesAction;
         serviceActionController = inServiceActionController;
-        openSocialPrincipalPopulator = inOpenSocialPrincipalPopulator;
+        openSocialPrincipalDao = inOpenSocialPrincipalDao;
         postActivityAction = inPostActivityAction;
         gadgetDefinitionMapper = inGadgetDefinitionMapper;
         gadgetMetaDataFetcher = inGadgetMetaDataFetcher;
@@ -167,7 +165,7 @@ public class ActivityServiceImpl implements ActivityService
                 + fields.size() + ", AcivityId " + activity.getId() + ", token appId " + token.getAppId());
         try
         {
-            Principal currentUserPrincipal = openSocialPrincipalPopulator.getPrincipal(userId.getUserId(token));
+            Principal currentUserPrincipal = openSocialPrincipalDao.execute(userId.getUserId(token));
 
             // Create the actor.
             StreamEntityDTO actorEntity = new StreamEntityDTO();
@@ -238,9 +236,8 @@ public class ActivityServiceImpl implements ActivityService
         // we can get the title. Note that we should not use the title from the gadget definition even though it is
         // there - it is deprecated.
         GadgetDefinition gadgetDef = gadgetDefinitionMapper.findById(appId);
-        List<GadgetMetaDataDTO> gadgetsMetadata =
-                gadgetMetaDataFetcher.getGadgetsMetaData(Collections.singletonMap(gadgetDef.getUrl(),
-                        (GeneralGadgetDefinition) gadgetDef));
+        List<GadgetMetaDataDTO> gadgetsMetadata = gadgetMetaDataFetcher.getGadgetsMetaData(Collections.singletonMap(
+                gadgetDef.getUrl(), (GeneralGadgetDefinition) gadgetDef));
         return gadgetsMetadata.get(0).getTitle();
     }
 
@@ -266,7 +263,7 @@ public class ActivityServiceImpl implements ActivityService
         log.debug("Entering deleteActivities data with userId" + userId.getUserId(token) + ", appId " + appId + ", "
                 + activityIds.size() + ", token appId " + token.getAppId());
 
-        Principal currentUserPrincipal = openSocialPrincipalPopulator.getPrincipal(userId.getUserId(token));
+        Principal currentUserPrincipal = openSocialPrincipalDao.execute(userId.getUserId(token));
 
         try
         {
@@ -332,12 +329,11 @@ public class ActivityServiceImpl implements ActivityService
             log.debug("Sending getActivities userIdList to action: " + userIdList.toString());
 
             GetUserActivitiesRequest currentRequest = new GetUserActivitiesRequest(new ArrayList<Long>(), userIdList);
-            ServiceActionContext currentContext =
-                    new ServiceActionContext(currentRequest, openSocialPrincipalPopulator.getPrincipal(token
-                            .getViewerId()));
+            ServiceActionContext currentContext = new ServiceActionContext(currentRequest,
+                    openSocialPrincipalDao.execute(token.getViewerId()));
 
-            LinkedList<ActivityDTO> activities =
-                    (LinkedList<ActivityDTO>) serviceActionController.execute(currentContext, getUserActivitiesAction);
+            LinkedList<ActivityDTO> activities = (LinkedList<ActivityDTO>) serviceActionController.execute(
+                    currentContext, getUserActivitiesAction);
 
             log.debug("Retrieved " + activities.size() + " activities from action");
 
@@ -395,14 +391,13 @@ public class ActivityServiceImpl implements ActivityService
             Set<String> openSocialIdsForRequest = new HashSet<String>();
             openSocialIdsForRequest.add(userId.getUserId(token));
 
-            GetUserActivitiesRequest currentRequest =
-                    new GetUserActivitiesRequest(activityIdsForRequest, openSocialIdsForRequest);
-            ServiceActionContext currentContext =
-                    new ServiceActionContext(currentRequest, openSocialPrincipalPopulator.getPrincipal(userId
-                            .getUserId(token)));
+            GetUserActivitiesRequest currentRequest = new GetUserActivitiesRequest(activityIdsForRequest,
+                    openSocialIdsForRequest);
+            ServiceActionContext currentContext = new ServiceActionContext(currentRequest,
+                    openSocialPrincipalDao.execute(userId.getUserId(token)));
 
-            LinkedList<ActivityDTO> activities =
-                    (LinkedList<ActivityDTO>) serviceActionController.execute(currentContext, getUserActivitiesAction);
+            LinkedList<ActivityDTO> activities = (LinkedList<ActivityDTO>) serviceActionController.execute(
+                    currentContext, getUserActivitiesAction);
 
             log.debug("Retrieved " + activities.size() + " activities from action");
 
@@ -445,8 +440,8 @@ public class ActivityServiceImpl implements ActivityService
         Set<String> activityIds = new HashSet<String>();
         activityIds.add(activityId);
 
-        Future<RestfulCollection<Activity>> activities =
-                getActivities(userId, groupId, appId, fields, null, activityIds, token);
+        Future<RestfulCollection<Activity>> activities = getActivities(userId, groupId, appId, fields, null,
+                activityIds, token);
 
         // pull the returned activitity out of the list and return it to the client
         Future<Activity> outActivity = null;

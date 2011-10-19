@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ServiceActionController;
@@ -39,6 +39,7 @@ import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser;
 import org.jmock.Expectations;
@@ -52,7 +53,7 @@ import org.restlet.resource.Representation;
 
 /**
  * Test for system filter restlet.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class StreamResourceTest
@@ -60,7 +61,7 @@ public class StreamResourceTest
     /**
      * Context for building mock objects.
      */
-    private final Mockery context = new JUnit4Mockery()
+    private final Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -70,22 +71,23 @@ public class StreamResourceTest
     /**
      * Action.
      */
-    private ServiceAction action = context.mock(ServiceAction.class);
+    private final ServiceAction action = mockery.mock(ServiceAction.class);
 
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
-
-    /**
-     * Principal populator.
-     */
-    private PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
+    private final ServiceActionController serviceActionController = mockery.mock(ServiceActionController.class);
 
     /**
      * Stream mapper.
      */
-    private FindByIdMapper<Stream> streamMapper = context.mock(FindByIdMapper.class);
+    private final FindByIdMapper<Stream> streamMapper = mockery.mock(FindByIdMapper.class);
+
+    /** Fixture: principal DAO. */
+    private final DomainMapper principalDao = mockery.mock(DomainMapper.class, "principalDao");
+
+    /** Fixture: principal. */
+    private final Principal principal = mockery.mock(Principal.class, "principal");
 
     /**
      * System under test.
@@ -114,7 +116,7 @@ public class StreamResourceTest
         otherWords.add("keywords");
         otherWords.add("followedBy");
 
-        sut = new StreamResource(action, serviceActionController, principalPopulator, streamMapper,
+        sut = new StreamResource(action, serviceActionController, principalDao, streamMapper,
                 new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords));
 
         ActivityDTO activity = new ActivityDTO();
@@ -150,7 +152,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSONP.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -163,20 +165,21 @@ public class StreamResourceTest
         final String osId = "guid";
         sut.setPathOverride("/resources/stream/guid/callback/test/query/keywords/test");
 
-        final Request request = context.mock(Request.class);
+        final Request request = mockery.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", jsonReq);
         attributes.put("openSocialId", osId);
         attributes.put("callback", callback);
         attributes.put("mode", "query");
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
+                oneOf(principalDao).execute("guid");
+                will(returnValue(principal));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -215,12 +218,12 @@ public class StreamResourceTest
         assertEquals("NOTE", activityArray.getJSONObject(0).getString("baseObjectType"));
         assertEquals("my content", activityArray.getJSONObject(0).getString("content"));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
      * Test representing as JSON.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -232,19 +235,20 @@ public class StreamResourceTest
         final String osId = "guid";
         sut.setPathOverride("/resources/stream/guid/query/keywords/test");
 
-        final Request request = context.mock(Request.class);
+        final Request request = mockery.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
         attributes.put("mode", "query");
         attributes.put("openSocialId", osId);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
+                oneOf(principalDao).execute("guid");
+                will(returnValue(principal));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -274,12 +278,12 @@ public class StreamResourceTest
         assertEquals("NOTE", activityArray.getJSONObject(0).getString("baseObjectType"));
         assertEquals("my content", activityArray.getJSONObject(0).getString("content"));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
      * Test representing as JSON with a bad request.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -291,19 +295,20 @@ public class StreamResourceTest
         final String osId = "guid";
         sut.setPathOverride("/resources/stream/guid/query/keywords/test");
 
-        final Request request = context.mock(Request.class);
+        final Request request = mockery.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
         attributes.put("mode", "query");
         attributes.put("openSocialId", osId);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
+                oneOf(principalDao).execute("guid");
+                will(returnValue(principal));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(throwException(new Exception("Something went wrong")));
@@ -318,12 +323,12 @@ public class StreamResourceTest
 
         assertTrue(json.getString("status").startsWith("Error"));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
      * Test representing as JSON with a service exception.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -335,13 +340,13 @@ public class StreamResourceTest
         final String osId = "guid";
         sut.setPathOverride("/resources/stream/guid/query/unrecognized/test");
 
-        final Request request = context.mock(Request.class);
+        final Request request = mockery.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
         attributes.put("openSocialId", osId);
         attributes.put("mode", "query");
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
@@ -357,6 +362,6 @@ public class StreamResourceTest
 
         assertTrue(json.getString("status").startsWith("Error"));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 }

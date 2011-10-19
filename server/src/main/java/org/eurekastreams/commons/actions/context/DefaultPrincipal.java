@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.commons.actions.context;
 /**
  * This class is a default implementation of the Principal interface. If additional properties are needed, implement
  * Principal in a concrete class along with an associated {@link PrincipalPopulator} class.
- * 
  */
 public class DefaultPrincipal implements Principal
 {
@@ -33,11 +32,6 @@ public class DefaultPrincipal implements Principal
     private final String accountId;
 
     /**
-     * Session ID.
-     */
-    private final String sessionId;
-
-    /**
      * Local instance of the OpenSocial id.
      */
     private final String openSocialId;
@@ -49,28 +43,7 @@ public class DefaultPrincipal implements Principal
 
     /**
      * Base constructor for the Principal object.
-     * 
-     * @param inAccountId
-     *            - string based account id to create the Principal object with.
-     * @param inOpenSocialId
-     *            - string based opensocial id to create the Principal object with.
-     * @param inId
-     *            - Long entity id to create the Principal object with.
-     * @param inSessionId
-     *            - the session ID.
-     */
-    public DefaultPrincipal(final String inAccountId, final String inOpenSocialId, final Long inId,
-            final String inSessionId)
-    {
-        accountId = inAccountId;
-        openSocialId = inOpenSocialId;
-        id = inId;
-        sessionId = inSessionId;
-    }
-
-    /**
-     * Base constructor for the Principal object with empty session.
-     * 
+     *
      * @param inAccountId
      *            - string based account id to create the Principal object with.
      * @param inOpenSocialId
@@ -80,9 +53,10 @@ public class DefaultPrincipal implements Principal
      */
     public DefaultPrincipal(final String inAccountId, final String inOpenSocialId, final Long inId)
     {
-        this(inAccountId, inOpenSocialId, inId, "UNSET");
+        accountId = inAccountId;
+        openSocialId = inOpenSocialId;
+        id = inId;
     }
-
     /**
      * {@inheritDoc}.
      */
@@ -105,13 +79,5 @@ public class DefaultPrincipal implements Principal
     public Long getId()
     {
         return id;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    public String getSessionId()
-    {
-        return sessionId;
     }
 }

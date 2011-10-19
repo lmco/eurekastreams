@@ -208,12 +208,6 @@ public final class TestContextCreator
             {
                 return openSocialId;
             }
-
-            @Override
-            public String getSessionId()
-            {
-                return null;
-            }
         };
     }
 }

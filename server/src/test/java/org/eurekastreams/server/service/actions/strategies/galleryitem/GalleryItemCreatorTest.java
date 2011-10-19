@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import static junit.framework.Assert.assertEquals;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.ThemeMapper;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -53,23 +52,23 @@ public class GalleryItemCreatorTest
     /**
      * The mock theme mapper to be used by the action.
      */
-    private ThemeMapper themeMapper = context.mock(ThemeMapper.class);
+    private final ThemeMapper themeMapper = context.mock(ThemeMapper.class);
 
     /**
      * The mock person mapper to be used by the action.
      */
-    private PersonMapper personMapper = context.mock(PersonMapper.class);
+    private final PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
      * The mock person mapper to be used by the action.
      */
-    private Person user = context.mock(Person.class);
+    private final Person user = context.mock(Person.class);
 
     /**
      * The mock mapper to be used by the action.
      */
     @SuppressWarnings("unchecked")
-    private GalleryItemFactory<Theme> galleryItemFactory = context.mock(GalleryItemFactory.class);
+    private final GalleryItemFactory<Theme> galleryItemFactory = context.mock(GalleryItemFactory.class);
 
     /**
      * Subject under test.
@@ -174,33 +173,6 @@ public class GalleryItemCreatorTest
      */
     private PrincipalActionContext getActionContext(final String userName)
     {
-        return new ServiceActionContext(null, new Principal()
-        {
-            private static final long serialVersionUID = -5821486041207651728L;
-
-            @Override
-            public String getAccountId()
-            {
-                return userName;
-            }
-
-            @Override
-            public Long getId()
-            {
-                return null;
-            }
-
-            @Override
-            public String getOpenSocialId()
-            {
-                return null;
-            }
-            
-            @Override
-            public String getSessionId()
-            {
-                return "";
-            }
-        });
+        return TestContextCreator.createPrincipalActionContext(null, userName, 0);
     }
 }

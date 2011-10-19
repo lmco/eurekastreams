@@ -22,8 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -36,14 +35,13 @@ import org.restlet.data.Request;
 
 /**
  * Test for OAuthRequestToPrincipalTransformer.
- * 
  */
 public class OAuthRequestToPrincipalTransformerTest
 {
     /**
      * Context for building mock objects.
      */
-    private final Mockery context = new JUnit4Mockery()
+    private final Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -53,22 +51,20 @@ public class OAuthRequestToPrincipalTransformerTest
     /**
      * The mocked web request.
      */
-    private Request request = context.mock(Request.class);
+    private final Request request = mockery.mock(Request.class);
 
-    /**
-     * PrincipalPopulator mock.
-     */
-    private PrincipalPopulator pp = context.mock(PrincipalPopulator.class);
+    /** Principal from account ID DAO. */
+    private final DomainMapper<String, Principal> accountIdPrincipalDao = mockery.mock(DomainMapper.class,
+            "accountIdPrincipalDao");
 
-    /**
-     * OpenSocialPrincipalPopulator mock.
-     */
-    private OpenSocialPrincipalPopulator opp = context.mock(OpenSocialPrincipalPopulator.class);
+    /** Principal from OpenSocial ID DAO. */
+    private final DomainMapper<String, Principal> openSocialIdPrincipalDao = mockery.mock(DomainMapper.class,
+            "openSocialIdPrincipalDao");
 
     /**
      * Principal mock.
      */
-    private Principal principal = context.mock(Principal.class);
+    private final Principal principal = mockery.mock(Principal.class);
 
     /**
      * System under test.
@@ -81,7 +77,7 @@ public class OAuthRequestToPrincipalTransformerTest
     @Before
     public void setup()
     {
-        sut = new OAuthRequestToPrincipalTransformer(pp, opp);
+        sut = new OAuthRequestToPrincipalTransformer(accountIdPrincipalDao, openSocialIdPrincipalDao);
     }
 
     /**
@@ -95,13 +91,13 @@ public class OAuthRequestToPrincipalTransformerTest
         headers.add("accountid", "testaccountid");
         requestAttributes.put("org.restlet.http.headers", headers);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(requestAttributes));
 
-                allowing(pp).getPrincipal("testaccountid", "");
+                allowing(accountIdPrincipalDao).execute("testaccountid");
                 will(returnValue(principal));
 
             }
@@ -109,7 +105,7 @@ public class OAuthRequestToPrincipalTransformerTest
 
         assertEquals(principal, sut.transform(request));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -123,13 +119,13 @@ public class OAuthRequestToPrincipalTransformerTest
         headers.add("accountid", "testaccountid");
         requestAttributes.put("org.restlet.http.headers", headers);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(requestAttributes));
 
-                oneOf(pp).getPrincipal("testaccountid", "");
+                oneOf(accountIdPrincipalDao).execute("testaccountid");
                 will(returnValue(null));
 
             }
@@ -137,7 +133,7 @@ public class OAuthRequestToPrincipalTransformerTest
 
         assertNull(sut.transform(request));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -150,12 +146,12 @@ public class OAuthRequestToPrincipalTransformerTest
         final Form headers = new Form();
         requestAttributes.put("org.restlet.http.headers", headers);
 
-        final Reference origRef = context.mock(Reference.class);
-        final Form queryForm = context.mock(Form.class);
-        
+        final Reference origRef = mockery.mock(Reference.class);
+        final Form queryForm = mockery.mock(Form.class);
+
         final String osId = "osid";
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
@@ -169,17 +165,17 @@ public class OAuthRequestToPrincipalTransformerTest
 
                 oneOf(queryForm).getFirstValue("opensocial_viewer_id");
                 will(returnValue(osId));
-                
-                allowing(opp).getPrincipal(osId);
+
+                allowing(openSocialIdPrincipalDao).execute(osId);
                 will(returnValue(principal));
             }
         });
 
         assertEquals(principal, sut.transform(request));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
-    
+
     /**
      * Test.
      */
@@ -190,10 +186,10 @@ public class OAuthRequestToPrincipalTransformerTest
         final Form headers = new Form();
         requestAttributes.put("org.restlet.http.headers", headers);
 
-        final Reference origRef = context.mock(Reference.class);
-        final Form queryForm = context.mock(Form.class);
+        final Reference origRef = mockery.mock(Reference.class);
+        final Form queryForm = mockery.mock(Form.class);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
@@ -213,7 +209,7 @@ public class OAuthRequestToPrincipalTransformerTest
 
         assertNull(sut.transform(request));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -224,18 +220,18 @@ public class OAuthRequestToPrincipalTransformerTest
     {
         final Map<String, Object> requestAttributes = new HashMap<String, Object>();
 
-        final Reference origRef = context.mock(Reference.class);
-        final Form queryForm = context.mock(Form.class);
+        final Reference origRef = mockery.mock(Reference.class);
+        final Form queryForm = mockery.mock(Form.class);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(requestAttributes));
-                
+
                 oneOf(request).getOriginalRef();
                 will(returnValue(origRef));
-                
+
                 oneOf(origRef).getQueryAsForm();
                 will(returnValue(queryForm));
 
@@ -246,7 +242,6 @@ public class OAuthRequestToPrincipalTransformerTest
 
         assertNull(sut.transform(request));
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
-
 }

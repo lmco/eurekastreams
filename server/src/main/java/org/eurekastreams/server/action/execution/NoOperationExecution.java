@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ public class NoOperationExecution implements ExecutionStrategy<PrincipalActionCo
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.make();
-    
+    private final Log log = LogFactory.make();
+
     /**
      * No-op action.
-     * 
+     *
      * @param inActionContext
      *            the action context.
      * @return the user name.
@@ -45,7 +45,6 @@ public class NoOperationExecution implements ExecutionStrategy<PrincipalActionCo
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        return inActionContext.getPrincipal().getSessionId();
+        return inActionContext.getParams();
     }
-
 }

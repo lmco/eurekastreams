@@ -48,15 +48,11 @@
         <logout />
     </http>       
 
-    <beans:bean id="openAccessAuthProvider"
+    <beans:bean
         class="org.eurekastreams.server.service.security.openaccess.OpenAccessAuthenticationProvider">
         <custom-authentication-provider />
-        <beans:property name="userDetailsService">
-            <beans:ref bean="userDetailsService" />
-        </beans:property>
+        <beans:property name="userDetailsService" ref="userDetailsService" />
     </beans:bean>
-    
-    <beans:bean id="authorityProvider" class="org.eurekastreams.server.service.security.userdetails.AuthorityProviderImpl" />
     
     <beans:bean id="userDetailsService" class="org.eurekastreams.server.service.security.userdetails.UserDetailsServiceImpl">
         <beans:constructor-arg ref="jpaPersonMapper" />
@@ -66,11 +62,11 @@
         <beans:constructor-arg ref="createPersonFromLdap" />
     	<beans:property name="authenticationType" value="FORM" />
     </beans:bean> 
+
+    <beans:bean id="authorityProvider" class="org.eurekastreams.server.service.security.userdetails.AuthorityProviderImpl" />
     
     <beans:bean id="persistentLoginRepository" class="org.eurekastreams.server.service.security.persistentlogin.PersistentLoginRepositoryImpl">
-        <beans:constructor-arg>     
-            <beans:ref bean="jpaPersistentLoginMapper"/>
-        </beans:constructor-arg>
+        <beans:constructor-arg ref="jpaPersistentLoginMapper"/>
     </beans:bean>
     
     <beans:bean id="persistentLoginService" class="org.eurekastreams.server.service.security.persistentlogin.PersistentLoginService" >    

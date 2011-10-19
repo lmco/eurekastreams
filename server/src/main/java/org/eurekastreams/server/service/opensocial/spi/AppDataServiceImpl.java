@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,67 +32,67 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.opensocial.DeleteAppDataRequest;
 import org.eurekastreams.server.action.request.opensocial.GetAppDataRequest;
 import org.eurekastreams.server.action.request.opensocial.UpdateAppDataRequest;
 import org.eurekastreams.server.domain.dto.AppDataDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
  * Class that implements the Shindig Application Data Service endpoint.
- * 
+ *
  */
 public class AppDataServiceImpl implements AppDataService
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(AppDataServiceImpl.class);
+    private final Log log = LogFactory.getLog(AppDataServiceImpl.class);
 
     /**
      * Instance of the service action on which requests will be made.
      */
-    private ServiceAction getAppDataAction;
+    private final ServiceAction getAppDataAction;
 
     /**
      * Local instance of the ServiceActionController to submit service actions through.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
-     * Local instance of the {@link OpenSocialPrincipalPopulator} for setting up the {@link ServiceActionContext}.
+     * DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      */
-    private OpenSocialPrincipalPopulator openSocialPrincipalPopulator;
+    private final DomainMapper<String, Principal> openSocialPrincipalDao;
 
     /**
      * Instance of the service action for updating data.
      */
-    private ServiceAction updateDataAction;
+    private final ServiceAction updateDataAction;
 
     /**
      * Instance of the service action for deleting data.
      */
-    private ServiceAction deleteDataAction;
+    private final ServiceAction deleteDataAction;
 
     /**
      * This is the main constructor for the AppDataServiceImpl class which allows Guice to inject a Spring loaded action
      * to provide the connection to the backend database.
-     * 
+     *
      * @param inGetAppDataAction
      *            - Action that will perform the database mapping for AppDataServiceImpl. This approach allows the
      *            implementation to maintain the transactional nature of the actions in non-shindig integrated actions.
      * @param inServiceActionController
      *            - instance of the service action controller responsible for loading and executing
      *            {@link ServiceAction}.
-     * @param inOpenSocialPrincipalPopulator
-     *            - instance of the {@link OpenSocialPrincipalPopulator} for retrieving OpenSocial {@link Principal}
-     *            objects.
+     * @param inOpenSocialPrincipalDao
+     *            DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      * @param inUpdateAction
      *            - Action that will perform the update database mapping.
      * @param inDeleteAction
@@ -101,20 +101,20 @@ public class AppDataServiceImpl implements AppDataService
     @Inject
     public AppDataServiceImpl(@Named("getAppData") final ServiceAction inGetAppDataAction,
             final ActionController inServiceActionController,
-            final OpenSocialPrincipalPopulator inOpenSocialPrincipalPopulator,
+            @Named("openSocialPrincipalDao") final DomainMapper<String, Principal> inOpenSocialPrincipalDao,
             @Named("updateAppData") final ServiceAction inUpdateAction,
             @Named("deleteAppData") final ServiceAction inDeleteAction)
     {
         getAppDataAction = inGetAppDataAction;
         serviceActionController = inServiceActionController;
-        openSocialPrincipalPopulator = inOpenSocialPrincipalPopulator;
+        openSocialPrincipalDao = inOpenSocialPrincipalDao;
         updateDataAction = inUpdateAction;
         deleteDataAction = inDeleteAction;
     }
 
     /**
      * Delete person method.
-     * 
+     *
      * @param userId
      *            - user id of the person's data to delete.
      * @param groupId
@@ -125,7 +125,7 @@ public class AppDataServiceImpl implements AppDataService
      *            - fields to delete.
      * @param token
      *            - security token for the request.
-     * 
+     *
      * @return void
      */
     public Future<Void> deletePersonData(final UserId userId, final GroupId groupId, final String appId,
@@ -142,8 +142,8 @@ public class AppDataServiceImpl implements AppDataService
             DeleteAppDataRequest params = new DeleteAppDataRequest(Long.parseLong(appId), userOpenSocialId, fields);
 
             // create the context
-            ServiceActionContext context = new ServiceActionContext(params, openSocialPrincipalPopulator
-                    .getPrincipal(userOpenSocialId));
+            ServiceActionContext context = new ServiceActionContext(params,
+                    openSocialPrincipalDao.execute(userOpenSocialId));
 
             // Execute action via service action controller to perform the update.
             serviceActionController.execute(context, deleteDataAction);
@@ -159,7 +159,7 @@ public class AppDataServiceImpl implements AppDataService
 
     /**
      * Get the person data.
-     * 
+     *
      * @param userIds
      *            - set of user ids to retrieve person data for.
      * @param groupId
@@ -170,7 +170,7 @@ public class AppDataServiceImpl implements AppDataService
      *            - fields to retrieve.
      * @param token
      *            - security token for the request.
-     * 
+     *
      * @return DataCollection containing the data requested.
      */
     public Future<DataCollection> getPersonData(final Set<UserId> userIds, final GroupId groupId, final String appId,
@@ -213,8 +213,8 @@ public class AppDataServiceImpl implements AppDataService
             for (String currentUserId : currentUserIds)
             {
                 currentRequest.setOpenSocialId(currentUserId);
-                currentContext = new ServiceActionContext(currentRequest, openSocialPrincipalPopulator
-                        .getPrincipal(currentUserId));
+                currentContext = new ServiceActionContext(currentRequest,
+                        openSocialPrincipalDao.execute(currentUserId));
                 currentAppData = (AppDataDTO) serviceActionController.execute(currentContext, getAppDataAction);
                 if (currentAppData != null)
                 {
@@ -235,7 +235,7 @@ public class AppDataServiceImpl implements AppDataService
 
     /**
      * Update the person data.
-     * 
+     *
      * @param userId
      *            - user id of the person to update data for.
      * @param groupId
@@ -248,7 +248,7 @@ public class AppDataServiceImpl implements AppDataService
      *            - values to update the fields with.
      * @param token
      *            - security token for the request.
-     * 
+     *
      * @return void
      */
     public Future<Void> updatePersonData(final UserId userId, final GroupId groupId, final String appId,
@@ -265,8 +265,8 @@ public class AppDataServiceImpl implements AppDataService
                     new HashMap<String, String>(values));
 
             // create the context
-            ServiceActionContext context = new ServiceActionContext(params, openSocialPrincipalPopulator
-                    .getPrincipal(userOpenSocialId));
+            ServiceActionContext context = new ServiceActionContext(params,
+                    openSocialPrincipalDao.execute(userOpenSocialId));
 
             // Execute action via service action controller to perform the update.
             serviceActionController.execute(context, updateDataAction);

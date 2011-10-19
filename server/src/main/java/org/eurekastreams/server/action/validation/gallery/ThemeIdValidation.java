@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.eurekastreams.server.action.validation.gallery;
 
 import org.eurekastreams.commons.actions.ValidationStrategy;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.ThemeMapper;
@@ -24,7 +24,7 @@ import org.eurekastreams.server.persistence.ThemeMapper;
 /**
  * Validation strategy to make sure a theme exists given its id.
  */
-public class ThemeIdValidation implements ValidationStrategy<ServiceActionContext>
+public class ThemeIdValidation implements ValidationStrategy<PrincipalActionContext>
 {
     /**
      * Mapper used to look up the theme.
@@ -35,7 +35,7 @@ public class ThemeIdValidation implements ValidationStrategy<ServiceActionContex
 
     /**
      * Constructor.
-     * 
+     *
      * @param inThemeMapper
      *            the theme mapper
      */
@@ -46,12 +46,12 @@ public class ThemeIdValidation implements ValidationStrategy<ServiceActionContex
 
     /**
      * Make sure a theme exists given its id.
-     * 
+     *
      * @param inActionContext
      *            the context
      */
     @Override
-    public void validate(final ServiceActionContext inActionContext)
+    public void validate(final PrincipalActionContext inActionContext)
     {
         String themeId = (String) inActionContext.getParams();
         Theme theme;
@@ -77,5 +77,4 @@ public class ThemeIdValidation implements ValidationStrategy<ServiceActionContex
 
         inActionContext.getState().put("THEME", theme);
     }
-
 }
