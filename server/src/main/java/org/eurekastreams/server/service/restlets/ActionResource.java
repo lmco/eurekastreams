@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eurekastreams.commons.actions.context.ClientPrincipalActionContextImpl;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -40,6 +39,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder;
+import org.eurekastreams.server.service.restlets.support.JsonFieldObjectExtractor;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Status;
@@ -75,24 +75,19 @@ public class ActionResource extends SmpResource
     /** Only allow read-only actions. */
     private final boolean readOnly;
 
-    /**
-     * User principal.
-     */
+    /** Extracts request from the parameters block. */
+    private final JsonFieldObjectExtractor jsonFieldObjectExtractor;
+
+    /** User principal. */
     private Principal principal;
 
-    /**
-     * The action to execute.
-     */
+    /** The action to execute. */
     private String actionKey;
 
-    /**
-     * The request type.
-     */
+    /** The request type. */
     private String requestType;
 
-    /**
-     * Parameters to the restlet in JSON. Contains the request and any other needed data.
-     */
+    /** Parameters to the restlet in JSON. Contains the request and any other needed data. */
     private String paramsJSON;
 
     /** ID of client submitting the request. */
@@ -111,19 +106,23 @@ public class ActionResource extends SmpResource
      *            the json factory.
      * @param inApplicationContextHolder
      *            app context holder.
+     * @param inJsonFieldObjectExtractor
+     *            Extracts request from the parameters block.
      * @param inReadOnly
      *            Only allow read-only actions.
      */
     public ActionResource(final ActionController inServiceActionController,
             final List<Transformer<Request, Principal>> inPrincipalExtractors,
             final List<Transformer<Request, String>> inClientExtractors, final JsonFactory inJsonFactory,
-            final ApplicationContextHolder inApplicationContextHolder, final boolean inReadOnly)
+            final ApplicationContextHolder inApplicationContextHolder,
+            final JsonFieldObjectExtractor inJsonFieldObjectExtractor, final boolean inReadOnly)
     {
         serviceActionController = inServiceActionController;
         principalExtractors = inPrincipalExtractors;
         clientExtractors = inClientExtractors;
         jsonFactory = inJsonFactory;
         applicationContextHolder = inApplicationContextHolder;
+        jsonFieldObjectExtractor = inJsonFieldObjectExtractor;
         readOnly = inReadOnly;
     }
 
@@ -275,7 +274,6 @@ public class ActionResource extends SmpResource
      * @throws Exception
      *             possible exceptions.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Serializable getRequestObject() throws Exception
     {
         if (requestType.toLowerCase().equals("null"))
@@ -284,38 +282,6 @@ public class ActionResource extends SmpResource
         }
 
         final JSONObject paramsAsObject = JSONObject.fromObject(paramsJSON);
-
-        if (requestType.toLowerCase().equals("long"))
-        {
-            return paramsAsObject.getLong("request");
-        }
-        else if (requestType.toLowerCase().equals("int"))
-        {
-            return paramsAsObject.getInt("request");
-        }
-        else if (requestType.toLowerCase().equals("string"))
-        {
-            return paramsAsObject.getString("request");
-        }
-        else if (requestType.toLowerCase().equals("boolean"))
-        {
-            return paramsAsObject.getBoolean("request");
-        }
-        else
-        {
-            Class returnType = Class.forName(requestType);
-
-            String requestAsString = paramsAsObject.getString("request");
-            ObjectMapper objMapper = new ObjectMapper();
-            Object requestAsObject = objMapper.readValue(requestAsString, returnType);
-
-            /*
-             * This is nicer, but some of our types don't deserialize properly with it. JSONObject requestAsJson =
-             * paramsAsObject.getJSONObject("request"); Object requestAsObject = JSONObject.toBean(requestAsJson,
-             * returnType);
-             */
-
-            return (Serializable) returnType.cast(requestAsObject);
-        }
+        return (Serializable) jsonFieldObjectExtractor.extract(paramsAsObject, "request", requestType);
     }
 }

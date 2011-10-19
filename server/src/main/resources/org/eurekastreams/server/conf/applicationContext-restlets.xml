@@ -229,6 +229,8 @@
 			class="org.eurekastreams.server.action.principal.SpringSecurityContextOAuthClientExtractor" />
 	</util:list>
 
+	<bean id="jsonFieldObjectExtractor" class="org.eurekastreams.server.service.restlets.support.JsonFieldObjectExtractor" />
+
 	<bean name="actionResourceFull"
 		class="org.eurekastreams.server.service.restlets.ActionResource"
 		scope="prototype">
@@ -239,6 +241,7 @@
 			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
 		</constructor-arg>
 		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="false" />
 	</bean>
 
@@ -252,6 +255,7 @@
 			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
 		</constructor-arg>
 		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="true" />
 	</bean>
 
