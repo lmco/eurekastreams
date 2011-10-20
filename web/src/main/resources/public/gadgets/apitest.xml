@@ -109,7 +109,7 @@
 					paramString = request;
 				else
 				{
-					if (request.charAt(0) != '{')
+					if (request.charAt(0) != '{' && request.charAt(0) != '[')
 						request = '"' + request + '"';
 					paramString = encodeURIComponent('{"request":' + request + '}');
 				}

@@ -139,7 +139,15 @@ public class ActionResource extends SmpResource
         clientUniqueId = getClient(request);
         Assert.notNull(principal, "Principal object cannot be null.");
         actionKey = (String) request.getAttributes().get("action");
-        requestType = (String) request.getAttributes().get("requestType");
+        try
+        {
+            requestType = URLDecoder.decode((String) request.getAttributes().get("requestType"), "UTF-8");
+        }
+        catch (UnsupportedEncodingException ex)
+        {
+            log.error("Error initializing parameter type from restlet.", ex);
+            throw new ExecutionException(ex);
+        }
         try
         {
             paramsJSON = URLDecoder.decode((String) request.getAttributes().get("paramsJSON"), "UTF-8");
@@ -246,7 +254,7 @@ public class ActionResource extends SmpResource
                 return result;
             }
         }
-        
+
         log.debug("No principal found");
         return null;
     }
