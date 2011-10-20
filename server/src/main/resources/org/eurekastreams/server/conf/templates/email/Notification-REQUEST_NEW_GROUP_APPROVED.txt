@@ -10,5 +10,5 @@ Before inviting people to the stream, add some posts of the nature you expect to
 Sending an email directly to your target audience inviting them to participate in the stream and to fill out their profiles is an effective way to get a group on board.  Include in the email the specific uses for the stream.
 
 Here's the link to your group. Time to get started!
-#profileUrl($group)
+#profileUrl($group) #nl()
 #parse('Footer.txt')

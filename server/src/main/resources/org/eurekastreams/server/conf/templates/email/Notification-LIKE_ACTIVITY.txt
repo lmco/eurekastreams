@@ -4,6 +4,6 @@ $actor.displayName liked your #activityType($activity).
 #activityContent_txt($activity)
 
 To see the post follow this link:
-#activityUrl($stream,$activity)
+#activityUrl($stream,$activity) #nl()
+#replyNotice_txt()
 #parse('Footer.txt')
-

@@ -1,5 +1,5 @@
 $actor.displayName is following your stream.
 
 To see $actor.displayName's profile follow this link:
-#profileUrl($actor)
+#profileUrl($actor) #nl()
 #parse('Footer.txt')

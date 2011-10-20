@@ -1,5 +1,5 @@
 $actor.displayName joined the $stream.displayName group.
 
 To see $actor.displayName's profile follow this link:
-#profileUrl($actor)
+#profileUrl($actor) #nl()
 #parse('Footer.txt')
