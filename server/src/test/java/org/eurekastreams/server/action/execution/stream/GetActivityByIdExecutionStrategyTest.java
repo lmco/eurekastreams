@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,10 @@ package org.eurekastreams.server.action.execution.stream;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -32,6 +29,7 @@ import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStra
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -67,40 +65,41 @@ public class GetActivityByIdExecutionStrategyTest
     /**
      * Bulk mapper mock.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activityDAO = context.mock(DomainMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activityDAO = context.mock(DomainMapper.class);
 
     /**
      * Mapper to lookup a PersonModelView from an account id.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
             DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
      * DAO for finding comment ids.
      */
-    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = context.mock(DomainMapper.class,
             "commentIdsByActivityIdDAO");
 
     /**
      * DAO for finding comments by id.
      */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO = context.mock(DomainMapper.class,
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO = context.mock(DomainMapper.class,
             "commentsByIdDAO");
 
     /**
      * ActivityDTO.
      */
-    private ActivityDTO activityDTO = context.mock(ActivityDTO.class);
+    private final ActivityDTO activityDTO = context.mock(ActivityDTO.class);
 
     /**
      * Mock strategy for setting Deletable property on CommentDTOs.
      */
-    private CommentDeletePropertyStrategy commentDeletableSetter = context.mock(CommentDeletePropertyStrategy.class);
+    private final CommentDeletePropertyStrategy commentDeletableSetter = context
+            .mock(CommentDeletePropertyStrategy.class);
 
     /**
      * Filter Mock.
      */
-    private ActivityFilter filterMock = context.mock(ActivityFilter.class);
+    private final ActivityFilter filterMock = context.mock(ActivityFilter.class);
 
     /**
      * Setup text fixtures.
@@ -116,7 +115,7 @@ public class GetActivityByIdExecutionStrategyTest
 
     /**
      * Perform execute.
-     * 
+     *
      * @throws Exception
      *             on failure.
      */
@@ -173,7 +172,7 @@ public class GetActivityByIdExecutionStrategyTest
 
     /**
      * Perform execute.
-     * 
+     *
      * @throws Exception
      *             on failure.
      */
@@ -217,71 +216,11 @@ public class GetActivityByIdExecutionStrategyTest
 
     /**
      * Build the principal action context for testing.
-     * 
+     *
      * @return the principal action context for testing
      */
     private PrincipalActionContext buildActionContext()
     {
-        return new PrincipalActionContext()
-        {
-            private static final long serialVersionUID = 2653778274776584672L;
-
-            @Override
-            public Principal getPrincipal()
-            {
-                return new Principal()
-                {
-                    private static final long serialVersionUID = -447861595917953702L;
-
-                    @Override
-                    public String getAccountId()
-                    {
-                        return accountId;
-                    }
-
-                    @Override
-                    public Long getId()
-                    {
-                        return null;
-                    }
-
-                    @Override
-                    public String getOpenSocialId()
-                    {
-                        return null;
-                    }
-
-                    @Override
-                    public String getSessionId()
-                    {
-                        return "";
-                    }
-                };
-            }
-
-            @Override
-            public Serializable getParams()
-            {
-                return null;
-            }
-
-            @Override
-            public Map<String, Object> getState()
-            {
-                return null;
-            }
-
-            @Override
-            public String getActionId()
-            {
-                return null;
-            }
-
-            @Override
-            public void setActionId(final String inActionId)
-            {
-
-            }
-        };
+        return TestContextCreator.createPrincipalActionContext(null, accountId, 0);
     }
 }

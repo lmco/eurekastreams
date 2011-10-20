@@ -90,7 +90,7 @@ public class InAppNotificationNotifier implements Notifier
      * {@inheritDoc}
      */
     @Override
-    public UserActionRequest notify(final NotificationType inType, final Collection<Long> inRecipients,
+    public Collection<UserActionRequest> notify(final NotificationType inType, final Collection<Long> inRecipients,
             final Map<String, Object> inProperties, final Map<Long, PersonModelView> inRecipientIndex) throws Exception
     {
         String template = templates.get(inType);

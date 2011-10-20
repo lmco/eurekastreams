@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ import org.apache.commons.logging.Log;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.CreateOAuthRequestTokenRequest;
 import org.eurekastreams.server.action.response.opensocial.SecurityTokenResponse;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -43,7 +44,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     /**
      * Local instance of logger.
      */
-    private Log logger = LogFactory.make();
+    private final Log logger = LogFactory.make();
 
     /**
      * Instance of the {@link ActionController} for this class.
@@ -52,10 +53,9 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     private ActionController actionController;
 
     /**
-     * Instance of the {@link PrincipalPopulatorTransWrapper} for the OpenSocialPrincipalPopulator.
+     * DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      */
-    @Inject
-    private PrincipalPopulatorTransWrapper principalPopulator;
+    private final DomainMapper<String, Principal> principalDao;
 
     /**
      * Instance of the CreateOauthRequestToken Service Action.
@@ -99,7 +99,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCreateOAuthRequestTokenAction
      *            - instance of {@link ServiceAction} for CreateOAuthRequestToken Service Action.
      * @param inAuthorizeOAuthTokenAction
@@ -116,16 +116,20 @@ public class OAuthDataStoreImpl implements OAuthDataStore
      *            - instance of GetOAuthConsumerByConsumerKey {@link ServiceAction}.
      * @param inGetSecurityTokenForConsumerRequestAction
      *            - instance of GetSecurityTokenForConsumerRequest {@link ServiceAction}.
+     * @param inOpenSocialPrincipalDao
+     *            DAO for retrieving {@link Principal} objects given OpenSocial IDs.
      */
     @Inject
-    public OAuthDataStoreImpl(@Named("createOAuthRequestToken") final ServiceAction inCreateOAuthRequestTokenAction,
+    public OAuthDataStoreImpl(
+            @Named("createOAuthRequestToken") final ServiceAction inCreateOAuthRequestTokenAction,
             @Named("authorizeOAuthToken") final ServiceAction inAuthorizeOAuthTokenAction,
             @Named("updateRequestToAccessToken") final ServiceAction inUpdateRequestToAccessTokenAction,
             @Named("getOAuthEntryByToken") final ServiceAction inGetOAuthEntryByTokenAction,
             @Named("disableOAuthToken") final ServiceAction inDisableOAuthTokenAction,
             @Named("removeOAuthToken") final ServiceAction inRemoveOAuthTokenAction,
             @Named("getOAuthConsumerByConsumerKey") final ServiceAction inGetOAuthConsumerByConsumerKeyAction,
-            @Named("getSecurityTokenForConsumerRequest") final ServiceAction inGetSecurityTokenForConsumerRequestAction)
+            @Named("getSecurityTokenForConsumerRequest") final ServiceAction inGetSecurityTokenForConsumerRequestAction,
+            @Named("openSocialPrincipalDaoTransWrapped") final DomainMapper<String, Principal> inOpenSocialPrincipalDao)
     {
         createOAuthRequestTokenAction = inCreateOAuthRequestTokenAction;
         authorizeOAuthTokenAction = inAuthorizeOAuthTokenAction;
@@ -135,11 +139,12 @@ public class OAuthDataStoreImpl implements OAuthDataStore
         removeOAuthTokenAction = inRemoveOAuthTokenAction;
         getOAuthConsumerByConsumerKeyAction = inGetOAuthConsumerByConsumerKeyAction;
         getSecurityTokenForConsumerRequestAction = inGetSecurityTokenForConsumerRequestAction;
+        principalDao = inOpenSocialPrincipalDao;
     }
 
     /**
      * Setter.
-     * 
+     *
      * @param inServiceActionController
      *            - instance of the {@link ActionController}.
      */
@@ -149,19 +154,8 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     }
 
     /**
-     * Setter.
-     * 
-     * @param inPrincipalPopulatorTransWrapper
-     *            - instance of {@link PrincipalPopulatorTransWrapper}.
-     */
-    public void setPrincipalPopulatorTransWrapper(final PrincipalPopulatorTransWrapper inPrincipalPopulatorTransWrapper)
-    {
-        principalPopulator = inPrincipalPopulatorTransWrapper;
-    }
-
-    /**
      * Creates a request token for a new OAuth request.
-     * 
+     *
      * @param consumerKey
      *            the consumer key for this request.
      * @param oauthVersion
@@ -191,7 +185,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Authorize the access token.
-     * 
+     *
      * @param entry
      *            the entry to authorize.
      * @param userId
@@ -203,8 +197,8 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     {
         try
         {
-            ServiceActionContext currentContext = new ServiceActionContext(entry.getToken(), principalPopulator
-                    .getPrincipal(entry.getUserId(), ""));
+            ServiceActionContext currentContext = new ServiceActionContext(entry.getToken(),
+                    principalDao.execute(entry.getUserId()));
             actionController.execute(currentContext, authorizeOAuthTokenAction);
         }
         catch (ExecutionException ex)
@@ -216,7 +210,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Exchange a request token for an access token.
-     * 
+     *
      * @param entry
      *            the entry to authorize.
      * @return the entry with the access token.
@@ -227,8 +221,8 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     {
         try
         {
-            ServiceActionContext currentContext = new ServiceActionContext(entry, principalPopulator.getPrincipal(entry
-                    .getUserId(), ""));
+            ServiceActionContext currentContext = new ServiceActionContext(entry, principalDao.execute(entry
+                    .getUserId()));
             return (OAuthEntry) actionController.execute(currentContext, updateRequestToAccessTokenAction);
         }
         catch (Exception ex)
@@ -240,7 +234,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Return the consumer for a given key.
-     * 
+     *
      * @param consumerKey
      *            the key.
      * @return the found consumer.
@@ -266,7 +260,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Get an entry for a specific oauth token.
-     * 
+     *
      * @param oauthToken
      *            the token.
      * @return the associated entry.
@@ -289,7 +283,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Marks a token as disabled.
-     * 
+     *
      * @param entry
      *            the OAuthEntry to disable.
      */
@@ -308,7 +302,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Deletes a token.
-     * 
+     *
      * @param entry
      *            the OAuthEntry to remove.
      */
@@ -329,7 +323,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
      * Return the proper security token for a 2 legged oauth request that has been validated for the given consumerKey.
      * App specific checks like making sure the requested user has the app installed are handled by the authorization
      * strategy of the ServiceAction being executed.
-     * 
+     *
      * @param consumerKey
      *            the consumer making the oauth request.
      * @param userId
@@ -347,8 +341,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
             // Currently, this supports two legged oauth with "reverse call home" where the server hosting an
             // application
             // wishes to request information about a user that has their application installed on their start page.
-            ServiceActionContext currentContext = new ServiceActionContext(consumerKey, principalPopulator
-                    .getPrincipal(userId, ""));
+            ServiceActionContext currentContext = new ServiceActionContext(consumerKey, principalDao.execute(userId));
             response = (SecurityTokenResponse) actionController.execute(currentContext,
                     getSecurityTokenForConsumerRequestAction);
         }

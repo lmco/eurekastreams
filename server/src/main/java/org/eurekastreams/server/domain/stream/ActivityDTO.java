@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.HasId;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -31,7 +32,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 /**
  * A view of an Activity containing everything needed for display.
  */
-public class ActivityDTO extends ModelView implements Serializable
+public class ActivityDTO extends ModelView implements Serializable, HasId
 {
     /** Fingerprint. */
     private static final long serialVersionUID = 4875694663319758375L;

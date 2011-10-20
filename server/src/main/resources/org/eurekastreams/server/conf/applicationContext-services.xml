@@ -16,6 +16,12 @@
 
 	<bean id="tokenContentFormatter" class="org.eurekastreams.server.service.email.TokenContentFormatter" />
 
+	<bean id="tokenContentEmailAddressBuilder" class="org.eurekastreams.server.service.email.TokenContentEmailAddressBuilder">
+		<constructor-arg ref="tokenEncoder" />
+		<constructor-arg ref="getPersonCryptoKeyMapper" />
+		<constructor-arg value="${eureka.mail.ingest.address}" />
+	</bean>
+
 	<bean id="imapStoreFactory" class="org.eurekastreams.server.service.email.ImapStoreFactory">
 		<constructor-arg value="${eureka.mail.imap.host}" />
 		<constructor-arg value="${eureka.mail.imap.port}" />

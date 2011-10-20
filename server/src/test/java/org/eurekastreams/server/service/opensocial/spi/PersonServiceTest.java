@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
-import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -46,11 +46,9 @@ import org.junit.Test;
 
 /**
  * This class performs the test for the implementation of the Shindig PersonService interface.
- * 
  */
 public class PersonServiceTest
 {
-
     /**
      * Object that is being tested.
      */
@@ -143,11 +141,8 @@ public class PersonServiceTest
      */
     private final ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
 
-    /**
-     * Principal populator.
-     */
-    private final PrincipalPopulatorTransWrapper principalPopulator = context
-            .mock(PrincipalPopulatorTransWrapper.class);
+    /** Fixture: principal DAO. */
+    private final DomainMapper<String, Principal> principalDao = context.mock(DomainMapper.class, "principalDao");
 
     /**
      * {@link Principal}.
@@ -165,13 +160,13 @@ public class PersonServiceTest
     @Before
     public void setUp()
     {
-        sut = new PersonServiceImpl(getPeopleAction, getFollowingAction, principalPopulator, serviceActionController,
+        sut = new PersonServiceImpl(getPeopleAction, getFollowingAction, principalDao, serviceActionController,
                 BASE_URL, TLD);
     }
 
     /**
      * Test the getPerson method in the PersonService implementation.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -188,7 +183,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
@@ -206,7 +201,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing an Exception.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -219,7 +214,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -238,7 +233,7 @@ public class PersonServiceTest
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -248,11 +243,10 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -271,7 +265,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -283,7 +277,7 @@ public class PersonServiceTest
 
     /**
      * This test covers retrieving multiple people specified by a set of user ids.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -299,11 +293,10 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -324,7 +317,7 @@ public class PersonServiceTest
 
     /**
      * This test covers retrieving multiple people specified by a set of user ids.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -341,7 +334,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -363,7 +356,7 @@ public class PersonServiceTest
     /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     * 
+     *
      * @throws Exception
      *             - on unhandled errors.
      */
@@ -378,11 +371,10 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
+                allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();

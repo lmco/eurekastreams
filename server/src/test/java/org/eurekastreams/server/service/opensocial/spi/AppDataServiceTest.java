@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.execution.opensocial.DeleteAppDataExecution;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.domain.dto.AppDataDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -44,7 +44,7 @@ import org.junit.Test;
 
 /**
  * Test Class for the AppDataService implementation.
- * 
+ *
  */
 public class AppDataServiceTest
 {
@@ -56,12 +56,12 @@ public class AppDataServiceTest
     /**
      * A test UserId object to be used during the tests.
      */
-    private UserId testId = new UserId(Type.userId, "123456");
+    private final UserId testId = new UserId(Type.userId, "123456");
 
     /**
      * A test GroupId object to be used during the tests.
      */
-    private GroupId testGroupId = new GroupId(GroupId.Type.self, "654321");
+    private final GroupId testGroupId = new GroupId(GroupId.Type.self, "654321");
 
     /**
      * Context for building mock objects.
@@ -76,47 +76,45 @@ public class AppDataServiceTest
     /**
      * Mocked instance of the Action for retrieving application data from the database.
      */
-    private ServiceAction getAppDataAction = context.mock(ServiceAction.class, "getAppDataAction");
+    private final ServiceAction getAppDataAction = context.mock(ServiceAction.class, "getAppDataAction");
 
-    /**
-     * Mocked instance of the {@link OpenSocialPrincipalPopulator}.
-     */
-    private OpenSocialPrincipalPopulator principalPopulatorMock = context.mock(OpenSocialPrincipalPopulator.class);
+    /** Fixture: principal DAO. */
+    private final DomainMapper<String, Principal> principalDao = context.mock(DomainMapper.class, "principalDao");
 
     /**
      * Instance of the {@link Principal} interface for tests.
      */
-    private Principal principalMock = context.mock(Principal.class);
+    private final Principal principalMock = context.mock(Principal.class);
 
     /**
      * Instance of ServiceActionContext for tests.
      */
-    private ServiceActionContext actionContext = context.mock(ServiceActionContext.class);
+    private final ServiceActionContext actionContext = context.mock(ServiceActionContext.class);
 
     /**
      * Mocked instance of the {@link ServiceActionController}.
      */
-    private ServiceActionController serviceActionControllerMock = context.mock(ServiceActionController.class);
+    private final ServiceActionController serviceActionControllerMock = context.mock(ServiceActionController.class);
 
     /**
      * Mocked instance of the action for updating application data from the database.
      */
-    private ServiceAction updateDataAction = context.mock(ServiceAction.class, "updateDataAction");
+    private final ServiceAction updateDataAction = context.mock(ServiceAction.class, "updateDataAction");
 
     /**
      * Mocked instance of the action for deleting application data from the database.
      */
-    private ServiceAction deleteDataAction = context.mock(ServiceAction.class, "deleteDataAction");
+    private final ServiceAction deleteDataAction = context.mock(ServiceAction.class, "deleteDataAction");
 
     /**
      * Mocked instance of the action for deleting application data from the database.
      */
-    private DeleteAppDataExecution deleteDataExecution = context.mock(DeleteAppDataExecution.class);
+    private final DeleteAppDataExecution deleteDataExecution = context.mock(DeleteAppDataExecution.class);
 
     /**
      * Mocked instance of AppData to set expectations for the tests.
      */
-    private AppDataDTO appData = context.mock(AppDataDTO.class);
+    private final AppDataDTO appData = context.mock(AppDataDTO.class);
 
     /**
      * String to use for test application ids.
@@ -134,13 +132,13 @@ public class AppDataServiceTest
     @Before
     public void setUp()
     {
-        sut = new AppDataServiceImpl(getAppDataAction, serviceActionControllerMock, principalPopulatorMock,
+        sut = new AppDataServiceImpl(getAppDataAction, serviceActionControllerMock, principalDao,
                 updateDataAction, deleteDataAction);
     }
 
     /**
      * Test the method to Get Person Data.
-     * 
+     *
      * @throws Exception
      *             - covers all errors
      */
@@ -150,7 +148,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                allowing(principalDao).execute("321");
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -174,7 +172,7 @@ public class AppDataServiceTest
 
     /**
      * Test the method to Get Person Data.
-     * 
+     *
      * @throws Exception
      *             - covers all errors
      */
@@ -184,7 +182,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -209,7 +207,7 @@ public class AppDataServiceTest
 
     /**
      * Test Exception handling for the method to Get Person Data.
-     * 
+     *
      * @throws Exception
      *             - covers all errors
      */
@@ -219,7 +217,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -237,7 +235,7 @@ public class AppDataServiceTest
 
     /**
      * Test the method to Delete Person Data.
-     * 
+     *
      * @throws Exception
      *             not expected.
      */
@@ -247,7 +245,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -262,7 +260,7 @@ public class AppDataServiceTest
 
     /**
      * Test the method to Delete Person Data and throw an Exception.
-     * 
+     *
      * @throws Exception
      *             - covers all errors
      */
@@ -272,7 +270,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -288,7 +286,7 @@ public class AppDataServiceTest
 
     /**
      * Test the method to update person data.
-     * 
+     *
      * @throws Exception
      *             - covers all errors
      */
@@ -298,7 +296,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
@@ -317,7 +315,7 @@ public class AppDataServiceTest
 
     /**
      * Test Exception handling in the method.
-     * 
+     *
      * @throws Exception
      *             errors to be caught by caller.
      */
@@ -327,7 +325,7 @@ public class AppDataServiceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
+                oneOf(principalDao).execute(with(any(String.class)));
                 will(returnValue(principalMock));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),

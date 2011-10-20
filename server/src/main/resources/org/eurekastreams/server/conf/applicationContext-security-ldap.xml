@@ -73,14 +73,12 @@
 	<authentication-manager alias="authenticationManager" />
 
     <beans:bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-        <beans:constructor-arg
-            value="${eureka.security.ldap.connstr}" />
-        <beans:property name="userDn"
-            value="${eureka.security.ldap.userdn}" />
+        <beans:constructor-arg value="${eureka.security.ldap.connstr}" />
+        <beans:property name="userDn" value="${eureka.security.ldap.userdn}" />
         <beans:property name="password" value="${eureka.security.ldap.password}" />
     </beans:bean> 
 
-    <beans:bean id="ldapAuthProvider"
+    <beans:bean
         class="org.springframework.security.providers.ldap.LdapAuthenticationProvider">
         <custom-authentication-provider />
         <beans:constructor-arg>
@@ -96,13 +94,9 @@
                 </beans:property>
             </beans:bean>
         </beans:constructor-arg>
-        <beans:constructor-arg>
-        	<!-- <beans:ref bean="dummyAuthoritiesPopulator" /> -->
-            <beans:ref bean="authoritiesPopulator" />
-        </beans:constructor-arg>
-        <beans:property name="userDetailsContextMapper">
-        	<beans:ref bean="userDetailsContextMapper" />
-        </beans:property>
+        <beans:constructor-arg ref="authoritiesPopulator" />
+<!--         <beans:constructor-arg ref="dummyAuthoritiesPopulator" /> -->
+        <beans:property name="userDetailsContextMapper" ref="userDetailsContextMapper" />
    	</beans:bean>
    	 		
 	<!-- ldapAuthenticator requires AuthoritiesPopulator, but we get authorities from the user

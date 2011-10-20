@@ -47,6 +47,29 @@
 	<util:constant id="CacheKeys.GROUP_BY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_ID" />
 	<util:constant id="CacheKeys.CRYPTO_KEY_BY_PERSON_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.CRYPTO_KEY_BY_PERSON_ID" />
 	
+	
+	
+	<!-- ========== PRINCIPAL DAOs ========== -->
+	
+    <bean id="dataStorePrincipalDao" class="org.eurekastreams.server.persistence.mappers.principal.DataStorePrincipalDao" >
+        <constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="createPersonFromLdap" />
+    </bean>
+
+    <bean id="openSocialPrincipalDao" class="org.eurekastreams.server.persistence.mappers.principal.OpenSocialPrincipalDao">
+        <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
+    </bean>
+
+    <bean id="openSocialPrincipalDaoTransWrapped" class="org.eurekastreams.server.persistence.mappers.MapperTransactionDecorator">
+        <constructor-arg ref="openSocialPrincipalDao" />
+        <constructor-arg ref="transactionManager" />
+    </bean>
+
+
+	
+	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database

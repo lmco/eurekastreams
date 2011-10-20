@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import static junit.framework.Assert.assertEquals;
 
 import java.util.Set;
 
-import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.Person;
@@ -27,6 +27,7 @@ import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.ThemeMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -62,22 +63,22 @@ public class SetPersonThemeExecutionTest
     /**
      * The mock mapper to be used by the action.
      */
-    private PersonMapper personMapper = context.mock(PersonMapper.class);
+    private final PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
      * The mock mapper to be used by the action.
      */
-    private ThemeMapper themeMapper = context.mock(ThemeMapper.class);
+    private final ThemeMapper themeMapper = context.mock(ThemeMapper.class);
 
     /**
      * Mocked user whose Theme is being set.
      */
-    private Person person = context.mock(Person.class);
+    private final Person person = context.mock(Person.class);
 
     /**
      * {@link DomainMapper}.
      */
-    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
 
     /**
      * Subject under test.
@@ -95,7 +96,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     * 
+     *
      * @throws Exception
      *             shouldn't happen
      */
@@ -140,7 +141,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method when the theme was passed through the state from the validator.
-     * 
+     *
      * @throws Exception
      *             shouldn't happen
      */
@@ -173,7 +174,7 @@ public class SetPersonThemeExecutionTest
         });
 
         // Make the call
-        ServiceActionContext actionContext = buildServerActionContext(themeId);
+        PrincipalActionContext actionContext = buildServerActionContext(themeId);
         actionContext.getState().put("THEME", testTheme);
         String actual = (String) sut.execute(actionContext);
 
@@ -184,7 +185,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     * 
+     *
      * @throws Exception
      *             can throw an exception on bad UUID.
      */
@@ -229,7 +230,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     * 
+     *
      * @throws Exception
      *             can throw an exception on bad UUID.
      */
@@ -266,41 +267,13 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Build a server action context for testing.
-     * 
+     *
      * @param themeId
      *            the theme id to set as the parameter
      * @return a server action context for testing
      */
-    private ServiceActionContext buildServerActionContext(final String themeId)
+    private PrincipalActionContext buildServerActionContext(final String themeId)
     {
-        return new ServiceActionContext(themeId, new Principal()
-        {
-            private static final long serialVersionUID = -6362239925984016955L;
-
-            @Override
-            public String getAccountId()
-            {
-                return username;
-            }
-
-            @Override
-            public Long getId()
-            {
-                return userId;
-            }
-
-            @Override
-            public String getOpenSocialId()
-            {
-                // TODO Auto-generated method stub
-                return null;
-            }
-            
-            @Override
-            public String getSessionId()
-            {
-                return "";
-            }
-        });
+        return new ServiceActionContext(themeId, TestContextCreator.createPrincipal(username, userId));
     }
 }

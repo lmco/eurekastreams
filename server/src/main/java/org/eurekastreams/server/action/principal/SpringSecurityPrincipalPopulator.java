@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.springframework.security.userdetails.UserDetails;
 
 /**
  * This class is a Spring based implementation of the {@link PrincipalPopulator} interface for Eureka Streams.
- * 
+ *
  */
 public class SpringSecurityPrincipalPopulator implements PrincipalPopulator
 {
@@ -39,7 +39,7 @@ public class SpringSecurityPrincipalPopulator implements PrincipalPopulator
 
     /**
      * Get Sessionless Principal.
-     * 
+     *
      * @param inAccountId
      *            the account id.
      * @return the principal.
@@ -51,10 +51,10 @@ public class SpringSecurityPrincipalPopulator implements PrincipalPopulator
 
     /**
      * Retrieve the {@link Principal} object based on the security context loaded by Spring.
-     * 
+     *
      * TODO: Refactor this when all references to {@link ExtendedUserDetails} are removed to just pull a Principal
      * object directly out of the Spring Context.
-     * 
+     *
      * {@inheritDoc}.
      */
     @Override
@@ -76,7 +76,7 @@ public class SpringSecurityPrincipalPopulator implements PrincipalPopulator
             }
             ExtendedUserDetails extUser = (ExtendedUserDetails) user;
             currentPrincipal = new DefaultPrincipal(extUser.getUsername(), extUser.getPerson().getOpenSocialId(),
-                    extUser.getPerson().getId(), inSessionId);
+                    extUser.getPerson().getId());
         }
         catch (Exception ex)
         {

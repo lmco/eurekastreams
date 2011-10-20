@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.ThemeMapper;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -54,12 +55,12 @@ public class ThemeIdValidationTest
     /**
      * The mock mapper to be used by the action.
      */
-    private ThemeMapper themeMapper = context.mock(ThemeMapper.class);
+    private final ThemeMapper themeMapper = context.mock(ThemeMapper.class);
 
     /**
      * System under test.
      */
-    private ThemeIdValidation sut = new ThemeIdValidation(themeMapper);
+    private final ThemeIdValidation sut = new ThemeIdValidation(themeMapper);
 
     /**
      * Make sure that valid uuid argument get approved.
@@ -68,7 +69,7 @@ public class ThemeIdValidationTest
     public final void testValidateParamsWithGoodUuidParams()
     {
         final String uuid = "FAKE-UUID-0000-0000-0000";
-        final ServiceActionContext serviceContext = buildServerActionContext("{" + uuid + "}");
+        final PrincipalActionContext serviceContext = buildServerActionContext("{" + uuid + "}");
         context.checking(new Expectations()
         {
             {
@@ -88,7 +89,7 @@ public class ThemeIdValidationTest
     @Test
     public final void testValidateParamsWithGoodUrlParams()
     {
-        final ServiceActionContext serviceContext = buildServerActionContext(testTheme.getUrl());
+        final PrincipalActionContext serviceContext = buildServerActionContext(testTheme.getUrl());
         context.checking(new Expectations()
         {
             {
@@ -104,7 +105,7 @@ public class ThemeIdValidationTest
 
     /**
      * Make sure that sending bad arguments results in the expected exception.
-     * 
+     *
      */
     @Test(expected = Exception.class)
     public final void testValidateParamsWithBadParams()
@@ -114,40 +115,13 @@ public class ThemeIdValidationTest
 
     /**
      * Build a server action context for testing.
-     * 
+     *
      * @param themeId
      *            the theme id to set as the parameter
      * @return a server action context for testing
      */
-    private ServiceActionContext buildServerActionContext(final Serializable themeId)
+    private PrincipalActionContext buildServerActionContext(final Serializable themeId)
     {
-        return new ServiceActionContext(themeId, new Principal()
-        {
-            private static final long serialVersionUID = -6362239925984016955L;
-
-            @Override
-            public String getAccountId()
-            {
-                return null;
-            }
-
-            @Override
-            public Long getId()
-            {
-                return null;
-            }
-
-            @Override
-            public String getOpenSocialId()
-            {
-                return null;
-            }
-            
-            @Override
-            public String getSessionId()
-            {
-                return "";
-            }
-        });
+        return new ServiceActionContext(themeId, TestContextCreator.createPrincipal(null, 0));
     }
 }

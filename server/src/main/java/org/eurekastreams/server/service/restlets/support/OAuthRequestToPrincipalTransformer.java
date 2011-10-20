@@ -17,68 +17,61 @@ package org.eurekastreams.server.service.restlets.support;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.restlet.data.Form;
 import org.restlet.data.Request;
 
 /**
  * Use input request to get user principal.
- * 
  */
 public class OAuthRequestToPrincipalTransformer implements Transformer<Request, Principal>
 {
-    /**
-     * Logger.
-     * */
+    /** Logger. */
     private static Log log = LogFactory.make();
 
-    /**
-     * Principal populator.
-     */
-    PrincipalPopulator principalPopulator;
+    /** Principal from account ID DAO. */
+    private final DomainMapper<String, Principal> accountIdPrincipalDao;
 
-    /**
-     * Opensocial principal population.
-     */
-    OpenSocialPrincipalPopulator osPopulator;
+    /** Principal from OpenSocial ID DAO. */
+    private final DomainMapper<String, Principal> openSocialIdPrincipalDao;
 
     /**
      * Constructor.
-     * 
-     * @param inPrincipalPopulator
-     *            PrincipalPopulator to create principal.
-     * @param inOsPrincipalPopulator
-     *            the opensocial principal populator.
+     *
+     * @param inAccountIdPrincipalDao
+     *            Principal from account ID DAO.
+     * @param inOpenSocialIdPrincipalDao
+     *            Principal from OpenSocial ID DAO.
      */
-    public OAuthRequestToPrincipalTransformer(final PrincipalPopulator inPrincipalPopulator,
-            final OpenSocialPrincipalPopulator inOsPrincipalPopulator)
+    public OAuthRequestToPrincipalTransformer(final DomainMapper<String, Principal> inAccountIdPrincipalDao,
+            final DomainMapper<String, Principal> inOpenSocialIdPrincipalDao)
     {
-        principalPopulator = inPrincipalPopulator;
-        osPopulator = inOsPrincipalPopulator;
+        accountIdPrincipalDao = inAccountIdPrincipalDao;
+        openSocialIdPrincipalDao = inOpenSocialIdPrincipalDao;
     }
 
     /**
      * Use input request to get user principal.
-     * 
-     * @param inTransformType
+     *
+     * @param inRequest
      *            Request.
      * @return User principal.
      */
     @Override
-    public Principal transform(final Request inTransformType)
+    public Principal transform(final Request inRequest)
     {
         String accountid = null;
         Principal result = null;
 
-        if (inTransformType.getAttributes().containsKey("org.restlet.http.headers"))
+        if (inRequest.getAttributes().containsKey("org.restlet.http.headers"))
         {
-            Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
+            Form httpHeaders = (Form) inRequest.getAttributes().get("org.restlet.http.headers");
 
             if (httpHeaders.getFirstValue("accountid") != null)
             {
+                log.debug("Found accountid header: " + accountid);
                 accountid = httpHeaders.getFirstValue("accountid");
             }
         }
@@ -86,14 +79,14 @@ public class OAuthRequestToPrincipalTransformer implements Transformer<Request, 
         // If header doesn't exist fall back on opensocial param populated by shindig.
         if (accountid != null)
         {
-            result = principalPopulator.getPrincipal(accountid, "");
+            result = accountIdPrincipalDao.execute(accountid);
         }
         else
         {
-            String osId = inTransformType.getOriginalRef().getQueryAsForm().getFirstValue("opensocial_viewer_id");
+            String osId = inRequest.getOriginalRef().getQueryAsForm().getFirstValue("opensocial_viewer_id");
             if (osId != null)
             {
-                result = osPopulator.getPrincipal(osId);
+                result = openSocialIdPrincipalDao.execute(osId);
             }
         }
 

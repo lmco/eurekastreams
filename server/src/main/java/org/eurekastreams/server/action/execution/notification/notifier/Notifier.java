@@ -29,7 +29,7 @@ public interface Notifier
 {
     /**
      * Sends the notification.
-     *
+     * 
      * @param type
      *            Type of notification to send.
      * @param recipients
@@ -40,9 +40,11 @@ public interface Notifier
      *            Convenience index for looking up recipients. Generally will be a superset of the recipients.
      * @throws Exception
      *             If unable to notify user(s).
-     * @return - If notifying requires queuing an action, then this returns an instance of {@link UserActionRequest}
-     *         which is the AsyncRequest to perform. If no further action is required, then this returns null.
+     * @return - If notifying requires queuing an action, then this returns a collection of {@link UserActionRequest}s
+     *         which is/are the AsyncRequest(s) to perform. If no further action is required, then this returns null or
+     *         an empty collection.
      */
-    UserActionRequest notify(NotificationType type, Collection<Long> recipients, Map<String, Object> properties,
+    Collection<UserActionRequest> notify(NotificationType type, Collection<Long> recipients,
+            Map<String, Object> properties,
             Map<Long, PersonModelView> recipientIndex) throws Exception;
 }

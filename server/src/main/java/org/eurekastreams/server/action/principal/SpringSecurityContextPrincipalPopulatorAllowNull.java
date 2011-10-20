@@ -43,12 +43,12 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
     /**
      * Session cookie name.
      */
-    private String sessionCookieName;
+    private final String sessionCookieName;
 
     /**
      * Session Header name.
      */
-    private String sessionHeaderName;
+    private final String sessionHeaderName;
 
     /**
      * Local logger instance.
@@ -57,7 +57,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
 
     /**
      * Constructor.
-     * 
+     *
      * @param inVerifySession
      *            if the session should be verified from the header.
      * @param inSessionCookieName
@@ -75,8 +75,8 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
 
     /**
      * Retrieve the {@link Principal} object based on the security context loaded by Spring.
-     * 
-     * 
+     *
+     *
      * {@inheritDoc}.
      */
     @Override
@@ -111,7 +111,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
 
             ExtendedUserDetails extUser = (ExtendedUserDetails) user;
             currentPrincipal = new DefaultPrincipal(extUser.getUsername(), extUser.getPerson().getOpenSocialId(),
-                    extUser.getPerson().getId(), inSessionId);
+                    extUser.getPerson().getId());
         }
         catch (Exception ex)
         {
@@ -123,41 +123,41 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
     /**
      * Return principal. This implementation ingnores params and returns principal based on Spring SecurityContext, or
      * null if SecurityContext is not populated.
-     * 
+     *
      * @param inTransformType
      *            Ignored.
-     * 
+     *
      * @return Principal from Spring security context if present, return null if not.
      */
     @Override
     public Principal transform(final Request inTransformType)
     {
-
-        String sessionId = inTransformType.getCookies().getFirst(sessionCookieName).getValue();
-
-        boolean sessionMatch = false;
-
-        logger.debug("Session id from cookie: " + sessionId);
-
-        if (inTransformType.getAttributes().containsKey("org.restlet.http.headers"))
+        final Principal principal = getPrincipal(null, "");
+        if (principal != null && verifySession)
         {
-            Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
+            String sessionId = inTransformType.getCookies().getFirst(sessionCookieName).getValue();
 
-            if (httpHeaders.getFirstValue(sessionHeaderName) != null)
+            boolean sessionMatch = false;
+
+            logger.debug("Session id from cookie: " + sessionId);
+
+            if (inTransformType.getAttributes().containsKey("org.restlet.http.headers"))
             {
-                String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName);
-                logger.debug("Session id from header: " + headerSessionId);
-                sessionMatch = sessionId.equals(headerSessionId);
+                Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
+
+                if (httpHeaders.getFirstValue(sessionHeaderName) != null)
+                {
+                    String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName);
+                    logger.debug("Session id from header: " + headerSessionId);
+                    sessionMatch = sessionId.equals(headerSessionId);
+                }
+            }
+
+            if (!sessionMatch)
+            {
+                return null;
             }
         }
-
-        if (!verifySession || sessionMatch)
-        {
-            return getPrincipal(null, "");
-        }
-        else
-        {
-            return null;
-        }
+        return principal;
     }
 }

@@ -182,7 +182,7 @@
 		scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
+		<constructor-arg ref="openSocialPrincipalDao" />
 		<constructor-arg ref="findByIdMapper" />
 		<constructor-arg ref="restletQueryRequestParser" />
 	</bean>
@@ -210,8 +210,8 @@
 
 	<bean id="oAuthRequestToPrincipalTransformer"
 		class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
-		<constructor-arg ref="dataStorePrincipalPopulator" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
+		<constructor-arg ref="dataStorePrincipalDao" />
+		<constructor-arg ref="openSocialPrincipalDao" />
 	</bean>
 
 	<util:list id="principalExtractorsContextAndRequest">
@@ -229,6 +229,8 @@
 			class="org.eurekastreams.server.action.principal.SpringSecurityContextOAuthClientExtractor" />
 	</util:list>
 
+	<bean id="jsonFieldObjectExtractor" class="org.eurekastreams.server.service.restlets.support.JsonFieldObjectExtractor" />
+
 	<bean name="actionResourceFull"
 		class="org.eurekastreams.server.service.restlets.ActionResource"
 		scope="prototype">
@@ -239,6 +241,7 @@
 			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
 		</constructor-arg>
 		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="false" />
 	</bean>
 
@@ -252,6 +255,7 @@
 			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
 		</constructor-arg>
 		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="true" />
 	</bean>
 

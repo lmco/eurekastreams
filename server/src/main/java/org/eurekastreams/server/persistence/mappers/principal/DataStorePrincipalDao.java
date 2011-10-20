@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.principal;
+package org.eurekastreams.server.persistence.mappers.principal;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.logging.LogFactory;
@@ -29,9 +28,8 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Create principal from datastore (cache, db, etc.).
- * 
  */
-public class DataStorePrincipalPopulator implements PrincipalPopulator
+public class DataStorePrincipalDao implements DomainMapper<String, Principal>
 {
     /**
      * Local logger instance.
@@ -41,21 +39,21 @@ public class DataStorePrincipalPopulator implements PrincipalPopulator
     /**
      * Person mapper.
      */
-    private DomainMapper<String, PersonModelView> getPersonMVByAccountId;
+    private final DomainMapper<String, PersonModelView> getPersonMVByAccountId;
 
     /**
      * {@link ActionController}.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Action to create user from LDAP.
      */
-    private TaskHandlerServiceAction createUserfromLdapAction;
+    private final TaskHandlerServiceAction createUserfromLdapAction;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGetPersonMVByAccountId
      *            Person mapper.
      * @param inServiceActionController
@@ -63,7 +61,7 @@ public class DataStorePrincipalPopulator implements PrincipalPopulator
      * @param inCreateUserfromLdapAction
      *            Action to create user from LDAP.
      */
-    public DataStorePrincipalPopulator(final DomainMapper<String, PersonModelView> inGetPersonMVByAccountId,
+    public DataStorePrincipalDao(final DomainMapper<String, PersonModelView> inGetPersonMVByAccountId,
             final ActionController inServiceActionController, final TaskHandlerServiceAction inCreateUserfromLdapAction)
     {
         getPersonMVByAccountId = inGetPersonMVByAccountId;
@@ -73,11 +71,11 @@ public class DataStorePrincipalPopulator implements PrincipalPopulator
 
     /**
      * Retrieve the {@link Principal} object for accountid found in data store.
-     * 
+     *
      * {@inheritDoc}.
      */
     @Override
-    public Principal getPrincipal(final String inAccountId, final String inSessionId)
+    public Principal execute(final String inAccountId)
     {
         DefaultPrincipal result = null;
         try
@@ -88,7 +86,7 @@ public class DataStorePrincipalPopulator implements PrincipalPopulator
             // if found, create principal, else attempt to create from LDAP (creates locked user in DB).
             if (pmv != null)
             {
-                result = new DefaultPrincipal(pmv.getAccountId(), pmv.getOpenSocialId(), pmv.getId(), inSessionId);
+                result = new DefaultPrincipal(pmv.getAccountId(), pmv.getOpenSocialId(), pmv.getId());
             }
             // not found in cache or DB, go to ldap to create person entry and principal if possible.
             else
@@ -96,8 +94,7 @@ public class DataStorePrincipalPopulator implements PrincipalPopulator
                 logger.info("Unable to populate principal from cache/db, looking up user in LDAP for: " + inAccountId);
                 Person person = (Person) serviceActionController.execute(new ServiceActionContext(inAccountId, null),
                         createUserfromLdapAction);
-                result = new DefaultPrincipal(person.getAccountId(), person.getOpenSocialId(), person.getId(),
-                        inSessionId);
+                result = new DefaultPrincipal(person.getAccountId(), person.getOpenSocialId(), person.getId());
             }
         }
         catch (Exception ex)
@@ -106,5 +103,4 @@ public class DataStorePrincipalPopulator implements PrincipalPopulator
         }
         return result;
     }
-
 }

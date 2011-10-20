@@ -238,7 +238,7 @@
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-				<ref bean="cacheInitializationTrigger" />
+				<ref bean="${eureka.jobs.cacheInitializationTrigger}" />
                 <ref bean="addBufferedActivitiesToCacheJobTrigger" />
                 <ref bean="refreshFeedsJobTrigger" />				
 				<ref bean="applicationAlertCleanupJobTrigger" />

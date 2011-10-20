@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.principal;
+package org.eurekastreams.server.persistence.mappers.principal;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,10 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for OpenSocialPrincipalPopulator class.
- * 
+ * Tests OpenSocialPrincipalDao.
  */
-public class OpenSocialPrincipalPopulatorTest
+public class OpenSocialPrincipalDaoTest
 {
     /**
      * Context for building mock objects.
@@ -48,38 +47,38 @@ public class OpenSocialPrincipalPopulatorTest
     /**
      * System under test.
      */
-    private OpenSocialPrincipalPopulator sut;
+    private OpenSocialPrincipalDao sut;
 
     /**
      * Person Mapper.
      */
-    private GetPeopleByOpenSocialIds personMapper = context.mock(GetPeopleByOpenSocialIds.class);
+    private final GetPeopleByOpenSocialIds personMapper = context.mock(GetPeopleByOpenSocialIds.class);
 
     /**
      * Mapper to get a PersonModelView by accountId.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
             DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
      * Person model view.
      */
-    private PersonModelView person = context.mock(PersonModelView.class);
+    private final PersonModelView person = context.mock(PersonModelView.class);
 
     /**
      * Account id.
      */
-    private String accountId = "accountId";
+    private final String accountId = "accountId";
 
     /**
      * Open social id.
      */
-    private String openSocialId = "openSocialId";
+    private final String openSocialId = "openSocialId";
 
     /**
      * Entity id.
      */
-    private long entityId = 5L;
+    private final long entityId = 5L;
 
     /**
      * Set up.
@@ -87,14 +86,14 @@ public class OpenSocialPrincipalPopulatorTest
     @Before
     public void setup()
     {
-        sut = new OpenSocialPrincipalPopulator(personMapper, getPersonModelViewByAccountIdMapper);
+        sut = new OpenSocialPrincipalDao(personMapper, getPersonModelViewByAccountIdMapper);
     }
 
     /**
-     * Test getPrincipal.
+     * Test execute.
      */
     @Test
-    public void testGetPrincipalSuccess()
+    public void testExecuteSuccess()
     {
         context.checking(new Expectations()
         {
@@ -113,7 +112,7 @@ public class OpenSocialPrincipalPopulatorTest
             }
         });
 
-        Principal result = sut.getPrincipal(openSocialId);
+        Principal result = sut.execute(openSocialId);
         assertEquals(accountId, result.getAccountId());
         assertEquals(openSocialId, result.getOpenSocialId());
         assertEquals(entityId, result.getId().longValue());
@@ -122,10 +121,10 @@ public class OpenSocialPrincipalPopulatorTest
     }
 
     /**
-     * Test getPrincipal.
+     * Test execute.
      */
     @Test
-    public void testGetPrincipalSuccessOnNtIDResult()
+    public void testExecuteSuccessOnNtIDResult()
     {
         context.checking(new Expectations()
         {
@@ -147,7 +146,7 @@ public class OpenSocialPrincipalPopulatorTest
             }
         });
 
-        Principal result = sut.getPrincipal(openSocialId);
+        Principal result = sut.execute(openSocialId);
         assertEquals(accountId, result.getAccountId());
         assertEquals(openSocialId, result.getOpenSocialId());
         assertEquals(entityId, result.getId().longValue());
@@ -156,10 +155,10 @@ public class OpenSocialPrincipalPopulatorTest
     }
 
     /**
-     * Test getPrincipal.
+     * Test execute.
      */
     @Test(expected = PrincipalPopulationException.class)
-    public void testGetPrincipalFailNullResult()
+    public void testExecuteFailNullResult()
     {
         context.checking(new Expectations()
         {
@@ -172,16 +171,16 @@ public class OpenSocialPrincipalPopulatorTest
             }
         });
 
-        Principal result = sut.getPrincipal(openSocialId);
+        Principal result = sut.execute(openSocialId);
 
         context.assertIsSatisfied();
     }
 
     /**
-     * Test getPrincipal.
+     * Test execute.
      */
     @Test(expected = PrincipalPopulationException.class)
-    public void testGetPrincipalFailMapperException()
+    public void testExecuteFailMapperException()
     {
         context.checking(new Expectations()
         {
@@ -191,7 +190,7 @@ public class OpenSocialPrincipalPopulatorTest
             }
         });
 
-        Principal result = sut.getPrincipal(openSocialId);
+        Principal result = sut.execute(openSocialId);
 
         context.assertIsSatisfied();
     }

@@ -22,8 +22,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.formatting.DateFormatter;
@@ -33,6 +33,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser;
@@ -70,9 +71,9 @@ public class StreamResource extends SmpResource
     private final ActionController serviceActionController;
 
     /**
-     * Principal populator.
+     * Principal DAO.
      */
-    private final PrincipalPopulator principalPopulator;
+    private final DomainMapper<String, Principal> principalDao;
 
     /**
      * JSONP Callback.
@@ -115,20 +116,20 @@ public class StreamResource extends SmpResource
      *            the action.
      * @param inServiceActionController
      *            {@link ActionController} used to execute action.
-     * @param inPrincipalPopulator
-     *            {@link PrincipalPopulator} used to create principal via open social id.
+     * @param inPrincipalDao
+     *            DAO used to create principal via open social id.
      * @param inStreamMapper
      *            the stream mapper.
      * @param inRequestParser
      *            Extracts the query out of the request path.
      */
     public StreamResource(final ServiceAction inAction, final ActionController inServiceActionController,
-            final PrincipalPopulator inPrincipalPopulator, final FindByIdMapper<Stream> inStreamMapper,
+            final DomainMapper<String, Principal> inPrincipalDao, final FindByIdMapper<Stream> inStreamMapper,
             final RestletQueryRequestParser inRequestParser)
     {
         action = inAction;
         serviceActionController = inServiceActionController;
-        principalPopulator = inPrincipalPopulator;
+        principalDao = inPrincipalDao;
         streamMapper = inStreamMapper;
         requestParser = inRequestParser;
     }
@@ -203,7 +204,7 @@ public class StreamResource extends SmpResource
             }
 
             PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(),
-                    principalPopulator.getPrincipal(openSocialId, ""));
+                    principalDao.execute(openSocialId));
             PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
                     ac, action);
 

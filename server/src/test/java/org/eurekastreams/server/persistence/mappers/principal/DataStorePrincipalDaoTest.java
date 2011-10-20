@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.principal;
+package org.eurekastreams.server.persistence.mappers.principal;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,10 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for DataStorePrincipalPopulator.
- * 
+ * Tests DataStorePrincipalDao.
  */
-public class DataStorePrincipalPopulatorTest
+public class DataStorePrincipalDaoTest
 {
 
     /**
@@ -51,17 +50,17 @@ public class DataStorePrincipalPopulatorTest
     /**
      * Person mapper.
      */
-    private DomainMapper<String, PersonModelView> getPersonMVByAccountId = context.mock(DomainMapper.class);
+    private final DomainMapper<String, PersonModelView> getPersonMVByAccountId = context.mock(DomainMapper.class);
 
     /**
      * {@link ActionController}.
      */
-    private ActionController serviceActionController = context.mock(ActionController.class);
+    private final ActionController serviceActionController = context.mock(ActionController.class);
 
     /**
      * Action to create user from LDAP.
      */
-    private TaskHandlerServiceAction createUserfromLdapAction = context.mock(TaskHandlerServiceAction.class);
+    private final TaskHandlerServiceAction createUserfromLdapAction = context.mock(TaskHandlerServiceAction.class);
 
     /**
      * Test person mock.
@@ -76,7 +75,7 @@ public class DataStorePrincipalPopulatorTest
     /**
      * System under test.
      */
-    private DataStorePrincipalPopulator sut;
+    private DataStorePrincipalDao sut;
 
     /**
      * Setup.
@@ -84,7 +83,7 @@ public class DataStorePrincipalPopulatorTest
     @Before
     public void setup()
     {
-        sut = new DataStorePrincipalPopulator(getPersonMVByAccountId, serviceActionController, //
+        sut = new DataStorePrincipalDao(getPersonMVByAccountId, serviceActionController, //
                 createUserfromLdapAction);
     }
 
@@ -94,7 +93,6 @@ public class DataStorePrincipalPopulatorTest
     @Test
     public void test()
     {
-
         context.checking(new Expectations()
         {
             {
@@ -112,7 +110,7 @@ public class DataStorePrincipalPopulatorTest
             }
         });
 
-        assertNotNull(sut.getPrincipal("accountId", null));
+        assertNotNull(sut.execute("accountId"));
         context.assertIsSatisfied();
     }
 
@@ -122,7 +120,6 @@ public class DataStorePrincipalPopulatorTest
     @Test
     public void testNullPmv()
     {
-
         context.checking(new Expectations()
         {
             {
@@ -144,7 +141,7 @@ public class DataStorePrincipalPopulatorTest
             }
         });
 
-        assertNotNull(sut.getPrincipal("accountId", null));
+        assertNotNull(sut.execute("accountId"));
         context.assertIsSatisfied();
     }
 
@@ -154,7 +151,6 @@ public class DataStorePrincipalPopulatorTest
     @Test
     public void testExceptionCatch()
     {
-
         context.checking(new Expectations()
         {
             {
@@ -163,7 +159,7 @@ public class DataStorePrincipalPopulatorTest
             }
         });
 
-        assertNull(sut.getPrincipal("accountId", null));
+        assertNull(sut.execute("accountId"));
         context.assertIsSatisfied();
     }
 }

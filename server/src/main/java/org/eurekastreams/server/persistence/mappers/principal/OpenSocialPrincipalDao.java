@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.principal;
+package org.eurekastreams.server.persistence.mappers.principal;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.exceptions.PrincipalPopulationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -27,9 +26,8 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Populates a principal object based off OpenSocialId.
- * 
  */
-public class OpenSocialPrincipalPopulator implements PrincipalPopulator
+public class OpenSocialPrincipalDao implements DomainMapper<String, Principal>
 {
     /**
      * Logger instance.
@@ -39,22 +37,22 @@ public class OpenSocialPrincipalPopulator implements PrincipalPopulator
     /**
      * Person Mapper.
      */
-    private GetPeopleByOpenSocialIds personMapper;
+    private final GetPeopleByOpenSocialIds personMapper;
 
     /**
      * Mapper to get a PersonModelView by accountId.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            The person mapper.
      * @param inGetPersonModelViewByAccountIdMapper
      *            Mapper to get a PersonModelView by account id
      */
-    public OpenSocialPrincipalPopulator(final GetPeopleByOpenSocialIds inPersonMapper,
+    public OpenSocialPrincipalDao(final GetPeopleByOpenSocialIds inPersonMapper,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
     {
         personMapper = inPersonMapper;
@@ -62,28 +60,14 @@ public class OpenSocialPrincipalPopulator implements PrincipalPopulator
     }
 
     /**
-     * Get Sessionless Principal.
-     * 
-     * @param inAccountId
-     *            the account id.
-     * @return the principal.
-     */
-    public Principal getPrincipal(final String inAccountId)
-    {
-        return getPrincipal(inAccountId, "");
-    }
-
-    /**
      * Retrieve the principal object associated with the OpenSocial id passed in.
-     * 
+     *
      * @param inOpenSocialId
      *            - string opensocial id to retrieve a principal object for.
-     * @param inSessionId
-     *            the session ID.
      * @return {@link Principal} object based on the OpenSocial id passed in.
      */
     @Override
-    public Principal getPrincipal(final String inOpenSocialId, final String inSessionId)
+    public Principal execute(final String inOpenSocialId)
     {
         PersonModelView user = null;
         try

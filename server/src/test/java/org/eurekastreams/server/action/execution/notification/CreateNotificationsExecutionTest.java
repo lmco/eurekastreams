@@ -294,7 +294,7 @@ public class CreateNotificationsExecutionTest
 
                 oneOf(notifier).notify(with(equal(NotificationType.LIKE_ACTIVITY)), with(equal(recips)),
                         with(any(Map.class)), with(any(Map.class)));
-                will(returnValue(null));
+                will(returnValue(Collections.EMPTY_LIST));
             }
         });
         expectPrefsMapper(recips, "LIKE");
@@ -337,7 +337,7 @@ public class CreateNotificationsExecutionTest
 
                 oneOf(notifier).notify(with(equal(NotificationType.LIKE_ACTIVITY)),
                         with(equal(Collections.singletonList(3L))), with(any(Map.class)), with(any(Map.class)));
-                will(returnValue(new UserActionRequest("async", null, asyncRequest)));
+                will(returnValue(Collections.singletonList(new UserActionRequest("async", null, asyncRequest))));
             }
         });
         expectPrefsMapper(recips, "LIKE", new NotificationFilterPreferenceDTO(1L, "EMAIL", "LIKE"));
@@ -385,7 +385,7 @@ public class CreateNotificationsExecutionTest
 
     /**
      * Tests execute.
-     * 
+     *
      * @throws Exception
      *             Won't.
      */

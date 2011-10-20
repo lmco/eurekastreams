@@ -45,7 +45,7 @@
          
     <!-- End new entry point customization -->  
 
-	<beans:bean id="kerbFilter"
+	<beans:bean
 		class="org.eurekastreams.server.service.security.preauth.RequestAttributePreAuthenticatedProcessingFilter">
 		<custom-filter position="PRE_AUTH_FILTER" />
 		<beans:property name="principalRequestAttribute" value="REMOTE_USER" />
@@ -53,14 +53,12 @@
 		<beans:property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" />
 	</beans:bean>
 
-	<beans:bean id="persistentLoginRepository"
+	<beans:bean id="persistentLoginRepository" 
 		class="org.eurekastreams.server.service.security.persistentlogin.PersistentLoginRepositoryImpl">
-		<beans:constructor-arg>
-			<beans:ref bean="jpaPersistentLoginMapper" />
-		</beans:constructor-arg>
+		<beans:constructor-arg ref="jpaPersistentLoginMapper" />
 	</beans:bean>
 
-	<beans:bean id="preauthAuthProvider"
+	<beans:bean
 		class="org.springframework.security.providers.preauth.PreAuthenticatedAuthenticationProvider">
 		<custom-authentication-provider />
 		<beans:property name="preAuthenticatedUserDetailsService">

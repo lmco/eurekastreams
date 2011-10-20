@@ -37,10 +37,13 @@ import org.springframework.beans.factory.BeanFactory;
  */
 public class ExecutingTaskHandlerTest
 {
+    /** Test data. */
+    private static final String ACTION_KEY = "actionKey";
+
     /**
      * Context for building mock objects.
      */
-    private final Mockery context = new JUnit4Mockery()
+    private final Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -48,27 +51,27 @@ public class ExecutingTaskHandlerTest
     };
 
     /** Fixture: mock of Spring bean factory. */
-    private final BeanFactory beanFactory = context.mock(BeanFactory.class);
+    private final BeanFactory beanFactory = mockery.mock(BeanFactory.class);
 
     /**
      * The asnyc action to mock.
      */
-    private final AsyncAction asyncActionMock = context.mock(AsyncAction.class);
+    private final AsyncAction asyncActionMock = mockery.mock(AsyncAction.class);
 
     /**
      * The AsyncSubmitterAsyncAction to mock.
      */
-    private final TaskHandlerAsyncAction asyncSubmitterAsyncActionMock = context.mock(TaskHandlerAsyncAction.class);
+    private final TaskHandlerAsyncAction asyncSubmitterAsyncActionMock = mockery.mock(TaskHandlerAsyncAction.class);
 
     /**
      * The user action request mock object.
      */
-    private final UserActionRequest userActionRequestMock = context.mock(UserActionRequest.class);
+    private final UserActionRequest userActionRequestMock = mockery.mock(UserActionRequest.class);
 
     /**
      * Mocked instance of the AsyncActionController for this test suite.
      */
-    private final AsyncActionController asyncActionControllerMock = context.mock(AsyncActionController.class);
+    private final AsyncActionController asyncActionControllerMock = mockery.mock(AsyncActionController.class);
 
     /**
      * SUT.
@@ -83,6 +86,14 @@ public class ExecutingTaskHandlerTest
     {
         sut = new ExecutingTaskHandler(asyncActionControllerMock);
         ((ExecutingTaskHandler) sut).setBeanFactory(beanFactory);
+
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(userActionRequestMock).getActionKey();
+                will(returnValue(ACTION_KEY));
+            }
+        });
     }
 
     /**
@@ -96,15 +107,10 @@ public class ExecutingTaskHandlerTest
     {
         final Serializable param1 = null;
 
-        final String actionKey = "TestAsyncAction";
-
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(userActionRequestMock).getActionKey();
-                will(returnValue(actionKey));
-
-                oneOf(beanFactory).getBean(actionKey);
+                oneOf(beanFactory).getBean(ACTION_KEY);
                 will(returnValue(asyncActionMock));
 
                 oneOf(userActionRequestMock).getParams();
@@ -112,15 +118,12 @@ public class ExecutingTaskHandlerTest
 
                 oneOf(asyncActionControllerMock).execute(with(any(AsyncActionContext.class)),
                         with(any(AsyncAction.class)));
-
-                oneOf(userActionRequestMock).getActionKey();
-                will(returnValue(actionKey));
             }
         });
 
         sut.handleTask(userActionRequestMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -134,15 +137,10 @@ public class ExecutingTaskHandlerTest
     {
         final Serializable param1 = null;
 
-        final String actionKey = "TestAsyncAction";
-
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(userActionRequestMock).getActionKey();
-                will(returnValue(actionKey));
-
-                oneOf(beanFactory).getBean(actionKey);
+                oneOf(beanFactory).getBean(ACTION_KEY);
                 will(returnValue(asyncSubmitterAsyncActionMock));
 
                 oneOf(userActionRequestMock).getParams();
@@ -150,14 +148,11 @@ public class ExecutingTaskHandlerTest
 
                 oneOf(asyncActionControllerMock).execute(with(any(AsyncActionContext.class)),
                         with(any(TaskHandlerAsyncAction.class)));
-
-                oneOf(userActionRequestMock).getActionKey();
-                will(returnValue(actionKey));
             }
         });
 
         sut.handleTask(userActionRequestMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 }

@@ -70,9 +70,10 @@ public class ExecutingTaskHandler implements TaskHandler, BeanFactoryAware
     @Override
     public void handleTask(final UserActionRequest inUserActionRequest) throws Exception
     {
-        Object springBean = beanFactory.getBean(inUserActionRequest.getActionKey());
+        final String actionKey = inUserActionRequest.getActionKey();
+        Object springBean = beanFactory.getBean(actionKey);
 
-        logger.debug("RealTimeExecuter about to performAction...");
+        logger.debug("ExecutingTaskHandler about to perform action '" + actionKey + "'");
 
         try
         {
@@ -80,14 +81,14 @@ public class ExecutingTaskHandler implements TaskHandler, BeanFactoryAware
             {
                 AsyncAction action = (AsyncAction) springBean;
                 AsyncActionContext actionContext = new AsyncActionContext(inUserActionRequest.getParams());
-                actionContext.setActionId(inUserActionRequest.getActionKey());
+                actionContext.setActionId(actionKey);
                 actionController.execute(actionContext, action);
             }
             else if (springBean instanceof TaskHandlerAsyncAction)
             {
                 TaskHandlerAsyncAction action = (TaskHandlerAsyncAction) springBean;
                 AsyncActionContext actionContext = new AsyncActionContext(inUserActionRequest.getParams());
-                actionContext.setActionId(inUserActionRequest.getActionKey());
+                actionContext.setActionId(actionKey);
                 actionController.execute(actionContext, action);
             }
             else
@@ -97,7 +98,7 @@ public class ExecutingTaskHandler implements TaskHandler, BeanFactoryAware
         }
         catch (Exception ex)
         {
-            logger.error("Exception invoking action " + inUserActionRequest.getActionKey(), ex);
+            logger.error("Exception invoking action " + actionKey, ex);
         }
     }
 }

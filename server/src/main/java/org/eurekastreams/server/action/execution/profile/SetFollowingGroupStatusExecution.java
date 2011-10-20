@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -29,9 +30,9 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.notification.GroupMembershipResponseNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.TargetEntityNotificationsRequest;
-import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
@@ -55,7 +56,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -104,7 +105,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     * 
+     *
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inGetPersonByIdMapper
@@ -123,7 +124,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *            post executor.
      * @param inDeleteCacheKeyMapper
      *            Delete cache key mapper.
-     * 
+     *
      */
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
             final DomainMapper<Long, PersonModelView> inGetPersonByIdMapper,
@@ -147,7 +148,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -239,7 +240,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                             (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
                     targetStream = currentRequest.getTargetUniqueId();
                 }
-                else if (inActionContext.getActionContext().getParams() 
+                else if (inActionContext.getActionContext().getParams()
                         instanceof SetFollowingStatusByGroupCreatorRequest)
                 {
                     SetFollowingStatusByGroupCreatorRequest currentRequest =
@@ -312,7 +313,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Creates a principal for the given user's id and account id.
-     * 
+     *
      * @param followerId
      *            Person id.
      * @param followerAccountId
@@ -321,31 +322,6 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      */
     private Principal createPrincipal(final Long followerId, final String followerAccountId)
     {
-        return new Principal()
-        {
-            @Override
-            public String getOpenSocialId()
-            {
-                return null;
-            }
-
-            @Override
-            public Long getId()
-            {
-                return followerId;
-            }
-
-            @Override
-            public String getAccountId()
-            {
-                return followerAccountId;
-            }
-
-            @Override
-            public String getSessionId()
-            {
-                return "";
-            }
-        };
+        return new DefaultPrincipal(followerAccountId, null, followerId);
     }
 }
