@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTrans
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -116,13 +117,13 @@ public class BookmarkRenderer implements ObjectRenderer
         {
             return null;
         }
-
+        activityContent = SafeHtmlUtils.htmlEscape(activityContent);
+        
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
-
+        
         // then transform hashtags to hyperlinks
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
-
         HTML widget = new HTML(html);
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
