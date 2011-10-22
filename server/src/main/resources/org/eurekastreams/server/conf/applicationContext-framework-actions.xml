@@ -546,24 +546,26 @@
         <constructor-arg value="true" />
     </bean>
 
+	<bean id="postActivityCommentAuthorizer" class="org.eurekastreams.server.service.utility.authorization.ActivityInteractionAuthorizationStrategy">
+		<constructor-arg ref="getPersonByIdMapper" />
+		<constructor-arg ref="getGroupByIdMapper" />
+		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
+		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+		<constructor-arg ref="getSystemAdministratorIds" />
+	</bean>
+
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidationStrategy"/>
         </constructor-arg>
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
-                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-                <constructor-arg ref="personActorStrategy" />
-                <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.service.actions.strategies.activity.ActivityDTOFromParamsStrategyByCommentDTO">
-                        <constructor-arg ref="bulkActivitiesMapper"/>
-                    </bean>
-                </constructor-arg>
-                <constructor-arg value="COMMENT" />
-                <constructor-arg ref="getPersonByAccountIdMapper" />
+            <bean class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
+            	<constructor-arg ref="postActivityCommentAuthorizer" />
+            	<constructor-arg value="COMMENT" />
+            	<constructor-arg>
+            		<bean class="org.eurekastreams.server.action.request.transformer.ActivityIdFromCommentDTOTransformer" />
+            	</constructor-arg>
+            	<constructor-arg ref="activityDTOMapperThrowException" />
             </bean>
         </constructor-arg>
         <constructor-arg>

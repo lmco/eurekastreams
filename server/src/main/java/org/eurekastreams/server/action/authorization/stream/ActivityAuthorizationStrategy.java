@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,126 +15,78 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
-import java.util.Collections;
-import java.util.List;
+import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.AuthorizationStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.service.actions.strategies.ActivityInteractionType;
-import org.eurekastreams.server.service.actions.strategies.activity.ActivityDTOFromParamsStrategy;
-import org.eurekastreams.server.service.actions.strategies.activity.ActorRetrievalStrategy;
+import org.eurekastreams.server.service.utility.authorization.ActivityInteractionAuthorizationStrategy;
 
 /**
  * Authorization Strategy for an Activity - Determines if user has permission to modify (Post|Comment|View on) an
  * activity.
  */
-public class ActivityAuthorizationStrategy implements AuthorizationStrategy<ServiceActionContext>
+public class ActivityAuthorizationStrategy implements AuthorizationStrategy<PrincipalActionContext>
 {
-    // TODO refactoring commenting to be able to tell the activityAuthorization strat that it is a comment. This will
-    // get rid of the two entity mapper and can be replaced with the generic version.
+    /** Log. */
+    private final Log logger = LogFactory.make();
 
-    /**
-     * Local logger instance.
-     */
-    private Log logger = LogFactory.make();
+    /** Does the actual work of determining authorization. */
+    private final ActivityInteractionAuthorizationStrategy activityAuthorizer;
 
-    /**
-     * Groups by shortName DAO.
-     */
-    private final GetDomainGroupsByShortNames groupByShortNameDAO;
-
-    /**
-     * People by accountId DAO.
-     */
-    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
-
-    /**
-     * Group follower ids DAO.
-     */
-    private final DomainMapper<Long, List<Long>> groupFollowersDAO;
-
-    /**
-     * Local instance of actor retrieval strategy for determining who made the request to interact with the activity.
-     */
-    private final ActorRetrievalStrategy actorRetrievalStrategy;
-
-    /**
-     * Strategy for getting ActivityDTO from incoming params array.
-     */
-    @SuppressWarnings("unchecked")
-    private final ActivityDTOFromParamsStrategy activityDTOStrategy;
-
-    /**
-     * The mapper to get all coordinators of a group.
-     */
-    private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordMapper;
-
-    /**
-     * The type of Action you are taking on an activity.
-     */
+    /** The type of action being performed on the activity. */
     private final ActivityInteractionType type;
+
+    /** Strategy for getting activity ID from incoming params. */
+    private final Transformer<Serializable, Long> activityIdFromParamsTransformer;
+
+    /** Gets activity. */
+    private final DomainMapper<Long, ActivityDTO> getActivityDAO;
 
     /**
      * Constructor.
-     * 
-     * @param inGroupByShortNameDAO
-     *            Groups by shortName DAO.
-     * @param inGroupFollowersDAO
-     *            Group follower ids DAO.
-     * @param inActorRetrievalStrategy
-     *            Actor retrieval strategy.
-     * @param inGroupCoordMapper
-     *            GetAllPersonIdsWhoHaveGroupCoordinatorAccess mapper instance.
-     * @param inActivityDTOStrategy
-     *            ActivityDTOFromParamsStrategy instance.
+     *
+     * @param inActivityAuthorizer
+     *            Does the actual work of determining authorization.
      * @param inType
-     *            The type of interaction on an activity.
-     * @param inGetPersonModelViewByAccountIdMapper
-     *            mapper to get a person modelview by account id
+     *            The type of action being performed on the activity.
+     * @param inActivityIdFromParamsTransformer
+     *            Strategy for getting activity ID from incoming params.
+     * @param inGetActivityDAO
+     *            Gets activity.
      */
-    @SuppressWarnings("unchecked")
-    public ActivityAuthorizationStrategy(final GetDomainGroupsByShortNames inGroupByShortNameDAO,
-            final DomainMapper<Long, List<Long>> inGroupFollowersDAO,
-            final ActorRetrievalStrategy inActorRetrievalStrategy,
-            final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordMapper,
-            final ActivityDTOFromParamsStrategy inActivityDTOStrategy, final ActivityInteractionType inType,
-            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
+    public ActivityAuthorizationStrategy(final ActivityInteractionAuthorizationStrategy inActivityAuthorizer,
+            final ActivityInteractionType inType,
+            final Transformer<Serializable, Long> inActivityIdFromParamsTransformer,
+            final DomainMapper<Long, ActivityDTO> inGetActivityDAO)
     {
-        groupByShortNameDAO = inGroupByShortNameDAO;
-        groupFollowersDAO = inGroupFollowersDAO;
-        actorRetrievalStrategy = inActorRetrievalStrategy;
-        groupCoordMapper = inGroupCoordMapper;
-        activityDTOStrategy = inActivityDTOStrategy;
-        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
+        activityAuthorizer = inActivityAuthorizer;
         type = inType;
+        activityIdFromParamsTransformer = inActivityIdFromParamsTransformer;
+        getActivityDAO = inGetActivityDAO;
     }
 
     /**
      * Determines if user has permission to modify (Post|Comment|View on) an activity.
-     * 
+     *
      * @param inActionContext
      *            the action context
      */
-    @SuppressWarnings("unchecked")
-    @Override
-    public void authorize(final ServiceActionContext inActionContext)
+    public void authorize(final PrincipalActionContext inActionContext)
     {
         ActivityDTO activity = null;
+        final Principal principal = inActionContext.getPrincipal();
         try
         {
-            activity = activityDTOStrategy.execute(inActionContext.getPrincipal(), inActionContext.getParams());
+            long activityId = activityIdFromParamsTransformer.transform(inActionContext.getParams());
+            activity = getActivityDAO.execute(activityId);
         }
         catch (Exception ex)
         {
@@ -143,143 +95,10 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
                     "This action could not authorize the request due to failure retrieving parameters.", ex);
         }
 
-        if (activity != null)
+        if (!activityAuthorizer.authorize(principal.getId(), activity, type))
         {
-            switch (activity.getDestinationStream().getType())
-            {
-            case PERSON:
-                performPersonAuthorization(inActionContext.getPrincipal(), activity);
-                break;
-            case GROUP:
-                performGroupAuthorization(inActionContext.getPrincipal(), activity);
-                break;
-            case RESOURCE:
-                // anyone can post comment to resource stream activity.
-                break;
-            default:
-                throw new AuthorizationException("This Action only accepts activities for accepted destination types.");
-            }
+            throw new AuthorizationException("Current user does not have permissions to "
+                    + type.toString().toLowerCase() + " activity.");
         }
-
-    }
-
-    /**
-     * Helper method to perform group authorization.
-     * 
-     * @param inUser
-     *            - UserDetails of the user making the request.
-     * @param inActivity
-     *            - instance of ActivityDTO.
-     */
-    private void performGroupAuthorization(final Principal inUser, final ActivityDTO inActivity)
-    {
-        try
-        {
-            // get the group info from cache:
-            StreamEntityDTO theStreamScope = inActivity.getDestinationStream();
-
-            DomainGroupModelView cachedGroup = groupByShortNameDAO.execute(
-                    Collections.singletonList(theStreamScope.getUniqueIdentifier())).get(0);
-
-            long senderId = actorRetrievalStrategy.getActorId(inUser, inActivity);
-            boolean isUserCoordinator = groupCoordMapper.execute(cachedGroup.getId()).contains(senderId);
-
-            // if group is public check to see if the current stream interaction is allowed based on configuration,
-            // if so then short-circuit.
-            if (cachedGroup.isPublic())
-            {
-                if (isStreamInteractionAuthorized(cachedGroup, type) || isUserCoordinator)
-                {
-                    return;
-                }
-                else
-                {
-                    throw new AuthorizationException("Group is public but the poster is not a "
-                            + "coordinator and the group is configured to not allow stream interaction: " + type);
-                }
-            }
-
-            // The group is private, continue forward testing private group authorization.
-            if (isUserCoordinator)
-            {
-                // user is a coordinator
-                return;
-            }
-
-            if (groupFollowersDAO.execute(cachedGroup.getId()).contains(senderId)
-                    && isStreamInteractionAuthorized(cachedGroup, type))
-            {
-                // user is a follower
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.error("Error occurred authorizing the activity post.", ex);
-        }
-        throw new AuthorizationException("Current user does not have access right to modify activity.");
-    }
-
-    /**
-     * Returns the Entity's configuration for stream posting or commenting based on the passed in entity context.
-     * 
-     * @param inEntity
-     *            The entity to check.
-     * @param inInteractionType
-     *            The type of interaction to check if the Entity allows.
-     * @return if the entity is restricted.
-     */
-    private boolean isStreamInteractionAuthorized(final ActivityRestrictionEntity inEntity,
-            final ActivityInteractionType inInteractionType)
-    {
-        switch (inInteractionType)
-        {
-        case POST:
-            return inEntity.isStreamPostable();
-        case COMMENT:
-            return inEntity.isCommentable();
-        case VIEW:
-            return true;
-        default:
-            throw new RuntimeException("Type of Activity not set.");
-        }
-    }
-
-    /**
-     * Helper method to perform Person authorization.
-     * 
-     * @param inUser
-     *            - UserDetails of the user making the request.
-     * @param inActivity
-     *            - instance of ActivityDTO.
-     */
-    private void performPersonAuthorization(final Principal inUser, final ActivityDTO inActivity)
-    {
-        try
-        {
-            // Check to see if the stream is locked down and if they have permission to post to it.
-            String targetStreamOwnerAccountId = inActivity.getDestinationStream().getUniqueIdentifier();
-
-            boolean isActorTheStreamOwner = actorRetrievalStrategy.getActorAccountId(inUser, inActivity).equals(
-                    targetStreamOwnerAccountId);
-
-            // Test if the user is the owner of the stream being posted to
-            if (isActorTheStreamOwner)
-            {
-                return;
-            }
-
-            PersonModelView targetStreamOwner = getPersonModelViewByAccountIdMapper.execute(targetStreamOwnerAccountId);
-            // or the stream has been authorized for this type of interaction.
-            if (isStreamInteractionAuthorized(targetStreamOwner, type))
-            {
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.error("Error occurred authorizing the activity post.", ex);
-        }
-        throw new AuthorizationException("Current user does not have access rights to modify activity.");
     }
 }

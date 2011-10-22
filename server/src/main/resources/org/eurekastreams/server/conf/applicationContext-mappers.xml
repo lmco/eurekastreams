@@ -2381,6 +2381,12 @@
         <constructor-arg value="false" />
     </bean>
 
+    <!-- gets single activityDTO by id, throws exception if exactly one result not found. -->
+    <bean id="activityDTOMapperThrowException" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+        <constructor-arg ref="bulkActivitiesMapper" />
+        <constructor-arg value="true" />
+    </bean>
+
     <bean id="getSystemAdministratorIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSystemAdministratorIdsDbMapper" />
 
     <bean id="getSystemAdministratorIds" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
