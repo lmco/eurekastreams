@@ -3054,7 +3054,6 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.validation.profile.SetFollowingGroupStatusValidation">
                         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                        <constructor-arg ref="getPersonIdByAccountIdMapper" />
                     </bean>
                 </constructor-arg>
             </bean>

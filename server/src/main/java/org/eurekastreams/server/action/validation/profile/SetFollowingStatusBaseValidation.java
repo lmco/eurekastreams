@@ -55,7 +55,7 @@ public class SetFollowingStatusBaseValidation implements ValidationStrategy<Prin
 
     /**
      * Validation method.  Ensures the two base validation rules:
-     * - The follower unique id exists and the target unique id exists.
+     * - the target unique id exists.
      * - the follower status is valid. (i.e. not NOTSPECIFIED)
      * {@inheritDoc}.
      */
@@ -66,9 +66,9 @@ public class SetFollowingStatusBaseValidation implements ValidationStrategy<Prin
 
         ValidationException vex = new ValidationException();
 
-        if (inRequest.getFollowerUniqueId().length() <= 0 || inRequest.getTargetUniqueId().length() <= 0)
+        if (inRequest.getTargetUniqueId().length() <= 0)
         {
-            vex.addError("FollowerAndTarget", "This action requires a follower and target unique id");
+            vex.addError("FollowerAndTarget", "This action requires a target unique id");
             logger.error("Validation error - " + vex.getErrors().get("FollowerAndTarget"));
             // if this occurs, throw the error now, no point continuing since the following calls will fail.
             throw vex;

@@ -110,8 +110,18 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
         List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
         int followingCount;
 
-        Long followerPersonId = getPersonIdByAccountIdMapper.execute(request.getFollowerUniqueId());
+        Long followerPersonId;
         Long followedPersonId = getPersonIdByAccountIdMapper.execute(request.getTargetUniqueId());
+
+        // gets the current user if no follower id was passed in.
+        if (request.getFollowerUniqueId() == null || request.getFollowerUniqueId() == "")
+        {
+            followerPersonId = inActionContext.getActionContext().getPrincipal().getId();
+        }
+        else
+        {
+            followerPersonId = getPersonIdByAccountIdMapper.execute(request.getFollowerUniqueId());
+        }
 
         switch (request.getFollowerStatus())
         {

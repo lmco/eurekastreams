@@ -99,7 +99,8 @@ public class SetFollowingGroupStatusAuthorization implements AuthorizationStrate
                 }
             }
             // If the group is public only the own can sever the relationship.
-            else if (!request.getFollowerUniqueId().equals(inActionContext.getPrincipal().getAccountId()))
+            else if (request.getFollowerUniqueId() != null && request.getFollowerUniqueId() != ""
+                    && !request.getFollowerUniqueId().equals(inActionContext.getPrincipal().getAccountId()))
             {
                 throw new AuthorizationException("Only the owner of a relationship can remove it.");
             }

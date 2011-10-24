@@ -136,10 +136,6 @@
 		<to last="true">/resources/api/0/full/getSystemSettings/null/$1</to>
 	</rule>
 	<rule>
-		<from>^/api/0/full/getUnreadApplicationAlertCount/(.*)$</from>
-		<to last="true">/resources/api/0/full/getUnreadApplicationAlertCount/null/$1</to>
-	</rule>
-	<rule>
 		<from>^/api/0/full/modifyStreamForCurrentUser/(.*)$</from>
 		<to last="true">/resources/api/0/full/modifyStreamForCurrentUser/org.eurekastreams.server.domain.stream.Stream/$1</to>
 	</rule>
@@ -188,9 +184,21 @@
         <from>^/api/0/full/sendNotification/(.*)$</from>
         <to last="true">/resources/api/0/full/sendPrebuiltNotificationAction/org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest/$1</to>
     </rule>
-	<rule>
-        <from>^/api/0/full/getUnreadInAppNotificationCounts/(.*)$</from>
-        <to last="true">/resources/api/0/full/getInAppNotificationCounts/null/$1</to>
+    <rule>
+        <from>^/api/0/full/getUserInAppNotificationCounts/(.*)$</from>
+        <to last="true">/resources/api/0/full/getUserInAppNotificationCounts/null/$1</to>
+    </rule>
+    <rule>
+        <from>^/api/0/full/getInAppNotifications/(.*)$</from>
+        <to last="true">/resources/api/0/full/getInAppNotifications/null/$1</to>
+    </rule>
+        <rule>
+            <from>^/api/0/read/getCurrentUsersBookmarks/(.*)$</from>
+            <to last="true">/resources/api/0/full/getCurrentUsersBookmarks/null/$1</to>
+        </rule>
+    <rule>
+        <from>^/api/0/full/markInAppNotificationsRead/(.*)$</from>
+        <to last="true">/resources/api/0/full/markInAppNotificationsRead/java.util.ArrayList%5Blong%5D/$1</to>
     </rule>
 
 	<!-- READ-ONLY API -->
@@ -302,8 +310,15 @@
 		<to last="true">/resources/api/0/read/getSystemSettings/null/$1</to>
 	</rule>
 	<rule>
-        <from>^/api/0/read/getUnreadInAppNotificationCounts/(.*)$</from>
-        <to last="true">/resources/api/0/read/getInAppNotificationCounts/null/$1</to>
-    </rule>
-	
+        	<from>^/api/0/read/getUserInAppNotificationCounts/(.*)$</from>
+        	<to last="true">/resources/api/0/read/getUserInAppNotificationCounts/null/$1</to>
+	</rule>
+        <rule>
+            <from>^/api/0/read/getInAppNotifications/(.*)$</from>
+            <to last="true">/resources/api/0/read/getInAppNotifications/null/$1</to>
+        </rule>
+        <rule>
+            <from>^/api/0/read/getCurrentUsersBookmarks/(.*)$</from>
+            <to last="true">/resources/api/0/read/getCurrentUsersBookmarks/null/$1</to>
+        </rule>
 </urlrewrite>
