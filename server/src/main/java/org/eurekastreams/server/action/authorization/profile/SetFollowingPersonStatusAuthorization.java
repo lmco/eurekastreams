@@ -64,7 +64,8 @@ public class SetFollowingPersonStatusAuthorization implements AuthorizationStrat
         }
 
         // The user calling the action is the only one who can request to follow another user.
-        if (request.getFollowerUniqueId() != null && !request.getFollowerUniqueId().equals(inActionContext.getPrincipal().getAccountId()))
+        if (request.getFollowerUniqueId() != null && !request.getFollowerUniqueId()
+            .equals(inActionContext.getPrincipal().getAccountId()))
         {
             logger.error("Error occurred authorizing Following a person: " + AUTH_ERROR_NONOWNER_FOLLOWING);
             throw new AuthorizationException(AUTH_ERROR_NONOWNER_FOLLOWING);
