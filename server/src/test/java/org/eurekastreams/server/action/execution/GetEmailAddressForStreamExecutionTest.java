@@ -21,37 +21,36 @@ import java.io.Serializable;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
+import org.eurekastreams.server.domain.EntityIdentifier;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.service.email.TokenContentEmailAddressBuilder;
 import org.eurekastreams.server.service.email.TokenContentFormatter;
-import org.eurekastreams.server.service.email.TokenEncoder;
 import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Tests GetTokenForStreamExecution.
+ * Tests GetEmailContactForStreamExecution.
  */
-public class GetTokenForStreamExecutionTest
+public class GetEmailAddressForStreamExecutionTest
 {
     /** Used for mocking objects. */
-    private final JUnit4Mockery context = new JUnit4Mockery()
+    private final Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    /** Creates the token. */
-    private final TokenEncoder tokenEncoder = context.mock(TokenEncoder.class);
 
     /** Builds the token content. */
-    private final TokenContentFormatter tokenContentFormatter = context.mock(TokenContentFormatter.class);
+    private final TokenContentFormatter tokenContentFormatter = mockery.mock(TokenContentFormatter.class);
 
-    /** Gets the user's key. */
-    private final DomainMapper<Long, byte[]> cryptoKeyDao = context.mock(DomainMapper.class);
+    /** Builds the recipient email address with a token. */
+    private final TokenContentEmailAddressBuilder tokenAddressBuilder = mockery
+            .mock(TokenContentEmailAddressBuilder.class);
 
     /**
      * Test.
@@ -59,32 +58,28 @@ public class GetTokenForStreamExecutionTest
     @Test
     public void test()
     {
-        final byte[] key = "key".getBytes();
-        final String token = "thetoken";
+        final String address = "system+token@eurekastreams.org";
         final long userId = 8L;
         final long groupId = 6L;
         final String tokenContent = "stuffToGoInTheToken";
 
-        ExecutionStrategy<PrincipalActionContext> sut = new GetTokenForStreamExecution(tokenEncoder,
-                tokenContentFormatter, cryptoKeyDao);
+        ExecutionStrategy<PrincipalActionContext> sut = new GetEmailAddressForStreamExecution(tokenContentFormatter,
+                tokenAddressBuilder);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(cryptoKeyDao).execute(userId);
-                will(returnValue(key));
-
                 oneOf(tokenContentFormatter).buildForStream(EntityType.GROUP, groupId);
                 will(returnValue(tokenContent));
 
-                oneOf(tokenEncoder).encode(tokenContent, key);
-                will(returnValue(token));
+                oneOf(tokenAddressBuilder).build(tokenContent, userId);
+                will(returnValue(address));
             }
         });
 
-        Serializable result = sut.execute(TestContextCreator.createPrincipalActionContext(
-                new GetTokenForStreamRequest(EntityType.GROUP, groupId), null, userId));
-        context.assertIsSatisfied();
-        assertEquals(token, result);
+        Serializable result = sut.execute(TestContextCreator.createPrincipalActionContext(new EntityIdentifier(
+                EntityType.GROUP, groupId), null, userId));
+        mockery.assertIsSatisfied();
+        assertEquals(address, result);
     }
 }

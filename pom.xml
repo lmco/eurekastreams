@@ -524,7 +524,9 @@
                                   <exclude>**/*MockSupport.class</exclude>
                                   <exclude>**/*MessageConsumer.class</exclude>
                                   <exclude>**/*MessageProducer.class</exclude>
+                                  <!-- exclude classes that have no logic -->
                                   <exclude>**/*Request.class</exclude>
+                                  <exclude>**/EntityIdentifier.class</exclude>
                                   <!-- this exclusion is included because all this class does is
                                   wrap the spring job bean with some default values and is problematic
                                   to test given the parent class implementation from Spring. -->

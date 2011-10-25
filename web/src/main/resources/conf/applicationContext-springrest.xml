@@ -20,7 +20,7 @@
         </property>
     </bean>
     
-    <bean id="emailContactController" class="org.eurekastreams.web.services.EmailContactController" autowire="constructor">
+    <bean id="emailContactController" class="org.eurekastreams.web.services.EmailContactController">
     	<constructor-arg ref="serviceActionController" />
    		<constructor-arg ref="principalPopulator" />
    		<constructor-arg>
@@ -29,8 +29,7 @@
    				<entry key="GROUP" value-ref="getGroupByIdAction" />
    			</map>
    		</constructor-arg>
-   		<constructor-arg ref="getStreamTokenForCurrentUserAction" />
-    	<constructor-arg value="${eureka.mail.ingest.address}" />
+   		<constructor-arg ref="getStreamEmailAddressForCurrentUserAction" />
     </bean>
 	
 	<bean class="org.eurekastreams.web.services.views.BeanNameViewResolver" autowire="constructor" />

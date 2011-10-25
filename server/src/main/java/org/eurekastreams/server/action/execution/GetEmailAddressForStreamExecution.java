@@ -20,41 +20,34 @@ import java.io.Serializable;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.domain.EntityIdentifier;
+import org.eurekastreams.server.service.email.TokenContentEmailAddressBuilder;
 import org.eurekastreams.server.service.email.TokenContentFormatter;
-import org.eurekastreams.server.service.email.TokenEncoder;
 
 /**
  * Gets a token for the current user for posting to a stream.
  */
-public class GetTokenForStreamExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetEmailAddressForStreamExecution implements ExecutionStrategy<PrincipalActionContext>
 {
-    /** Creates the token. */
-    private final TokenEncoder tokenEncoder;
-
     /** Builds the token content. */
     private final TokenContentFormatter tokenContentFormatter;
 
-    /** Gets the user's key. */
-    private final DomainMapper<Long, byte[]> cryptoKeyDao;
+    /** Builds the recipient email address with a token. */
+    private final TokenContentEmailAddressBuilder tokenAddressBuilder;
 
     /**
      * Constructor.
      *
-     * @param inTokenEncoder
-     *            Creates the token.
      * @param inTokenContentFormatter
      *            Builds the token content.
-     * @param inCryptoKeyDao
-     *            Gets the user's key.
+     * @param inTokenAddressBuilder
+     *            Builds the recipient email address with a token.
      */
-    public GetTokenForStreamExecution(final TokenEncoder inTokenEncoder,
-            final TokenContentFormatter inTokenContentFormatter, final DomainMapper<Long, byte[]> inCryptoKeyDao)
+    public GetEmailAddressForStreamExecution(final TokenContentFormatter inTokenContentFormatter,
+            final TokenContentEmailAddressBuilder inTokenAddressBuilder)
     {
-        tokenEncoder = inTokenEncoder;
         tokenContentFormatter = inTokenContentFormatter;
-        cryptoKeyDao = inCryptoKeyDao;
+        tokenAddressBuilder = inTokenAddressBuilder;
     }
 
     /**
@@ -63,14 +56,13 @@ public class GetTokenForStreamExecution implements ExecutionStrategy<PrincipalAc
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
+
+        EntityIdentifier params = (EntityIdentifier) inActionContext.getParams();
+
+        String tokenData = tokenContentFormatter.buildForStream(params.getType(), params.getId());
+
         Long personId = inActionContext.getPrincipal().getId();
-        GetTokenForStreamRequest params = (GetTokenForStreamRequest) inActionContext.getParams();
-
-        String tokenData = tokenContentFormatter.buildForStream(params.getStreamEntityType(),
-                params.getStreamEntityId());
-
-        // get current user's crypto key
-        byte[] key = cryptoKeyDao.execute(personId);
-        return tokenEncoder.encode(tokenData, key);
+        String address = tokenAddressBuilder.build(tokenData, personId);
+        return address;
     }
 }

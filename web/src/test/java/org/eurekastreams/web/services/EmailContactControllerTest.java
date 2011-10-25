@@ -30,7 +30,7 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.commons.test.EasyMatcher;
-import org.eurekastreams.server.action.request.GetTokenForStreamRequest;
+import org.eurekastreams.server.domain.EntityIdentifier;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -38,7 +38,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -55,13 +54,7 @@ public class EmailContactControllerTest
     };
 
     /** Test data. */
-    private static final String TO_ADDR_START = "system";
-
-    /** Test data. */
-    private static final String TO_ADDR_END = "@eurekastreams.org";
-
-    /** Test data. */
-    private static final String TOKEN = "AAABBBAAACCC";
+    private static final String ADDRESS = "system+AAABBBAAACCC@eurekastreams.org";
 
     /** Test data. */
     private static final long PERSON_ID = 800L;
@@ -72,9 +65,6 @@ public class EmailContactControllerTest
 
     /** Principal populator. */
     private final PrincipalPopulator principalPopulator = mockery.mock(PrincipalPopulator.class, "principalPopulator");
-
-    /** The mockery.from which this service can load action beans. */
-    private final BeanFactory beanFactory = mockery.mock(BeanFactory.class, "beanFactory");
 
     /** Fixture: action. */
     private final ServiceAction getPersonAction = mockery.mock(ServiceAction.class, "action");
@@ -104,8 +94,8 @@ public class EmailContactControllerTest
     @Before
     public void setUp()
     {
-        sut = new EmailContactController(serviceActionController, principalPopulator, beanFactory,
-                typeToFetchActionIndex, getTokenForStreamAction, TO_ADDR_START + TO_ADDR_END);
+        sut = new EmailContactController(serviceActionController, principalPopulator, typeToFetchActionIndex,
+                getTokenForStreamAction);
     }
 
     /**
@@ -136,18 +126,17 @@ public class EmailContactControllerTest
                     @Override
                     protected boolean isMatch(final PrincipalActionContext inTestObject)
                     {
-                        if (inTestObject.getParams() instanceof GetTokenForStreamRequest)
+                        if (inTestObject.getParams() instanceof EntityIdentifier)
                         {
-                            GetTokenForStreamRequest rqst = (GetTokenForStreamRequest) inTestObject.getParams();
-                            return rqst.getStreamEntityType() == EntityType.PERSON
-                                    && rqst.getStreamEntityId() == PERSON_ID
+                            EntityIdentifier rqst = (EntityIdentifier) inTestObject.getParams();
+                            return rqst.getType() == EntityType.PERSON && rqst.getId() == PERSON_ID
                                     && inTestObject.getPrincipal() == principal;
                         }
 
                         return false;
                     }
                 }), with(same(getTokenForStreamAction)));
-                will(returnValue(TOKEN));
+                will(returnValue(ADDRESS));
 
                 oneOf(response).setHeader("Content-Disposition", "attachment");
                 oneOf(response).setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
@@ -161,7 +150,7 @@ public class EmailContactControllerTest
 
         assertEquals("vcardView", result.getViewName());
         assertSame(person, result.getModel().get("streamEntity"));
-        assertEquals(TO_ADDR_START + "+" + TOKEN + TO_ADDR_END, result.getModel().get("email"));
+        assertEquals(ADDRESS, result.getModel().get("email"));
     }
 
     /**
@@ -178,7 +167,7 @@ public class EmailContactControllerTest
             }
         });
 
-        ModelAndView result = sut.getStreamContact(EntityType.APPLICATION, 1L, response);
+        sut.getStreamContact(EntityType.APPLICATION, 1L, response);
         mockery.assertIsSatisfied();
     }
 }
