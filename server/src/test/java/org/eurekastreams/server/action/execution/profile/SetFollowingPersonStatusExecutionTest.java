@@ -196,7 +196,7 @@ public class SetFollowingPersonStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getPersonIdByAccountIdMapper).execute(followerAccountId);
+                oneOf(getPersonIdByAccountIdMapper).execute(followedAccountId);
                 will(throwException(new RuntimeException("NO.")));
             }
         });

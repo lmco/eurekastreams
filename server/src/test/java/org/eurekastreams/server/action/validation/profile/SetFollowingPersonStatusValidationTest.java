@@ -86,9 +86,6 @@ public class SetFollowingPersonStatusValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
-                will(returnValue(1L));
-
                 oneOf(getPersonIdByAccountIdMapper).execute("followingntaccount");
                 will(returnValue(2L));
             }
@@ -112,9 +109,6 @@ public class SetFollowingPersonStatusValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
-                will(returnValue(1L));
-
                 oneOf(getPersonIdByAccountIdMapper).execute("followingntaccount");
                 will(returnValue(2L));
             }
@@ -136,10 +130,10 @@ public class SetFollowingPersonStatusValidationTest
     }
 
     /**
-     * Test the validate method when the wrong Follower/Target is invalid.
+     * Test the validate method when the Target is invalid.
      */
     @Test
-    public void testFailedValidationFollowerTargetInvalid()
+    public void testFailedValidationTargetInvalid()
     {
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
@@ -147,11 +141,8 @@ public class SetFollowingPersonStatusValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
-                will(returnValue(null));
-
                 oneOf(getPersonIdByAccountIdMapper).execute("followingntaccount");
-                will(returnValue(2L));
+                will(returnValue(null));
             }
         });
 
@@ -170,10 +161,10 @@ public class SetFollowingPersonStatusValidationTest
     }
 
     /**
-     * Test the validate method when the wrong Follower/Target is missing.
+     * Test the validate method when the Target is missing.
      */
     @Test
-    public void testFailedValidationFollowerTargetMissing()
+    public void testFailedValidationTargetMissing()
     {
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "", EntityType.PERSON, false,
                 Follower.FollowerStatus.FOLLOWING);
@@ -181,9 +172,6 @@ public class SetFollowingPersonStatusValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
-                will(returnValue(1L));
-
                 oneOf(getPersonIdByAccountIdMapper).execute("");
                 will(returnValue(null));
             }

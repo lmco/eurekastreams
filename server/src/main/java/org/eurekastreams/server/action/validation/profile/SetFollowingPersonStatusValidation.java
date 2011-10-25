@@ -45,7 +45,7 @@ public class SetFollowingPersonStatusValidation implements ValidationStrategy<Pr
 
     /**
      * Enforces validation for the SetFollowingStatusAction when following a user. - Action will only allow following of
-     * a person. - Both follower and target must be valid unique ids.
+     * a person. - Target must be valid unique id.
      * 
      * {@inheritDoc}
      */
@@ -61,12 +61,11 @@ public class SetFollowingPersonStatusValidation implements ValidationStrategy<Pr
             vex.addError("EntityType", "This action only supports following a person.");
         }
 
-        Long followerId = getPersonIdByAccountIdMapper.execute(inRequest.getFollowerUniqueId());
         Long followingId = getPersonIdByAccountIdMapper.execute(inRequest.getTargetUniqueId());
 
-        if (followerId == null || followingId == null)
+        if (followingId == null)
         {
-            vex.addError("FollowerAndTarget", "Follower and Target unique ids for valid users must be supplied.");
+            vex.addError("FollowerAndTarget", "Target unique id for valid users must be supplied.");
         }
 
         if (vex.getErrors().size() > 0)

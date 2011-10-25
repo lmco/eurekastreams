@@ -92,19 +92,6 @@ public class SetFollowingStatusBaseValidationTest
     }
 
     /**
-     * Method to test failed validation because of missing ids.
-     */
-    @Test(expected = ValidationException.class)
-    public void testValidateFailureMissingUniqueIds()
-    {
-        SetFollowingStatusRequest request = new SetFollowingStatusRequest("", "followingntaccount", EntityType.PERSON,
-                false, Follower.FollowerStatus.FOLLOWING);
-
-        ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
-        sut.validate(currentContext);
-    }
-
-    /**
      * Method to test failed validation because of invalid following status.
      */
     @Test(expected = ValidationException.class)

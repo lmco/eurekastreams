@@ -175,6 +175,13 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                     (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
             followerStatus = currentRequest.getFollowerStatus();
             followerAccountId = currentRequest.getFollowerUniqueId();
+
+            // gets the current user if no follower id was passed in.
+            if (followerAccountId == null || followerAccountId == "")
+            {
+                followerAccountId = inActionContext.getActionContext().getPrincipal().getAccountId();
+            }
+
             followerId = getPersonIdFromAccountIdMapper.execute(followerAccountId);
             DomainGroupModelView targetResult = groupMapper.fetchUniqueResult(currentRequest.getTargetUniqueId());
             targetName = targetResult.getName();
