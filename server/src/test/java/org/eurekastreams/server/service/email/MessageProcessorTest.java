@@ -16,7 +16,10 @@
 package org.eurekastreams.server.service.email;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -298,6 +301,30 @@ public class MessageProcessorTest
      * @throws MessagingException
      *             Won't.
      */
+    @Test
+    public void testGetTokenNoReply() throws MessagingException
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(message).getRecipients(RecipientType.TO);
+                will(returnValue(new Address[] { new InternetAddress(OTHER_ADDRESS),
+                        new InternetAddress(SYSTEM_ADDRESS), new InternetAddress("system+ABC" + AT_DOMAIN) }));
+                allowing(tokenEncoder).couldBeToken("ABC");
+                will(returnValue(false));
+            }
+        });
+        String result = sut.getToken(message);
+        context.assertIsSatisfied();
+        assertNull(result);
+    }
+
+    /**
+     * Test.
+     *
+     * @throws MessagingException
+     *             Won't.
+     */
     @Test(expected = Exception.class)
     public void testGetTokenNotFound() throws MessagingException
     {
@@ -306,7 +333,7 @@ public class MessageProcessorTest
             {
                 allowing(message).getRecipients(RecipientType.TO);
                 will(returnValue(new Address[] { new InternetAddress(OTHER_ADDRESS),
-                        new InternetAddress(SYSTEM_ADDRESS), new InternetAddress("system+ABC" + AT_DOMAIN) }));
+                        new InternetAddress("system+ABC" + AT_DOMAIN) }));
                 allowing(tokenEncoder).couldBeToken("ABC");
                 will(returnValue(false));
             }
@@ -394,7 +421,6 @@ public class MessageProcessorTest
         sut.executeAction(message, sel, person);
         context.assertIsSatisfied();
     }
-
 
     /**
      * Test.
@@ -604,7 +630,35 @@ public class MessageProcessorTest
             }
         });
 
-        sut.execute(message);
+        boolean result = sut.execute(message);
+        context.assertIsSatisfied();
+        assertTrue(result);
+    }
+
+    /**
+     * Test.
+     * 
+     * @throws MessagingException
+     *             Won't.
+     * @throws IOException
+     *             Won't.
+     */
+    @Test
+    public void testExecuteDiscard() throws MessagingException, IOException
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(message).getFrom();
+                will(returnValue(new Address[] { new InternetAddress(SENDER_ADDRESS) }));
+
+                allowing(message).getRecipients(RecipientType.TO);
+                will(returnValue(new Address[] { new InternetAddress(SYSTEM_ADDRESS) }));
+            }
+        });
+
+        assertFalse(sut.execute(message));
         context.assertIsSatisfied();
     }
+
 }

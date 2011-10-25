@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,41 @@ public class ActivityInteractionAuthorizationStrategy
             return authorizeForPersonStream(userId, activity, interactionType);
         case GROUP:
             return authorizeForGroupStream(userId, activity, interactionType);
+        case RESOURCE:
+            // anyone can post comment to resource stream activity.
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Determines if users in general have permission to interact with (post/comment/view) an activity.
+     *
+     * @param activity
+     *            Activity being interacted with.
+     * @param interactionType
+     *            Type of interaction.
+     * @param relaxed
+     *            Strict (false) = "are ALL users allowed to do this"; Relaxed (true) = are users who have access to the
+     *            activity allowed to do this. For private groups, relaxed assumes the users are members of the group.
+     * @return true if allowed, false if not.
+     */
+    public boolean authorize(final ActivityDTO activity, final ActivityInteractionType interactionType,
+            final boolean relaxed)
+    {
+        long entityId = activity.getDestinationStream().getEntityId();
+        // this is bad style to declare case-specific variables here (variables should be declared in the most limited
+        // scope possible), but checkstyle won't allow blocks in switch cases
+        DomainGroupModelView group;
+
+        switch (activity.getDestinationStream().getType())
+        {
+        case PERSON:
+            return isStreamInteractionAuthorized(getPersonByIdDAO.execute(entityId), interactionType);
+        case GROUP:
+            group = getGroupByIdDAO.execute(entityId);
+            return (relaxed || group.isPublic()) ? isStreamInteractionAuthorized(group, interactionType) : false;
         case RESOURCE:
             // anyone can post comment to resource stream activity.
             return true;

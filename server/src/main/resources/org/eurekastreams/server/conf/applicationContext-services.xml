@@ -63,6 +63,7 @@
 		<constructor-arg value="${eureka.mail.ingest.input}" />
 		<constructor-arg value="${eureka.mail.ingest.error}" />
 		<constructor-arg value="${eureka.mail.ingest.done}" />
+		<constructor-arg value="${eureka.mail.ingest.discard}" />
 	</bean>
   	
 </beans>

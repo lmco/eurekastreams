@@ -3547,6 +3547,19 @@
         <constructor-arg value="${eureka.mail.support.emailaddress}" />
     </bean>
 
+    <bean id="notificationEmailerFactory"
+        class="org.eurekastreams.server.service.actions.strategies.EmailerFactory">
+        <constructor-arg value="smtp" />
+        <constructor-arg>
+            <map>
+                <entry key="mail.smtp.host" value="${eureka.mail.smtp.host}" />
+                <entry key="mail.smtp.port" value="${eureka.mail.smtp.port}" />
+                <entry key="mail.smtp.sendpartial" value="true" />
+            </map>
+        </constructor-arg>
+        <constructor-arg value="${eureka.mail.smtp.emailaddress}" />
+    </bean>
+
     <bean id="canCommentFilter"
         class="org.eurekastreams.server.service.actions.strategies.activity.CanCommentFilter">
         <constructor-arg ref="getPeopleByAccountIdsMapper" />
@@ -3735,9 +3748,6 @@
 		<entry key="BOOKMARK" value-ref="bookmarkObjectValidator" />
 		<entry key="FILE" value-ref="fileObjectValidator" />
     </util:map>
-
-    <bean id="personActorStrategy"
-        class="org.eurekastreams.server.service.actions.strategies.activity.PersonActorRetrievalStrategy" />
 
     <bean id="themeUuidSeparator" class="java.lang.String">
         <constructor-arg value="_uuid_" />

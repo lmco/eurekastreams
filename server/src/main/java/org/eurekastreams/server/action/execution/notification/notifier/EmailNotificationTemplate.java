@@ -20,6 +20,19 @@ package org.eurekastreams.server.action.execution.notification.notifier;
  */
 public class EmailNotificationTemplate
 {
+    /** What kind of address to use for the reply-to. */
+    public static enum ReplyAction
+    {
+        /** Don't use a reply address. */
+        NONE,
+
+        /** Reply to the actor. */
+        ACTOR,
+
+        /** System addres with token to allow commenting. */
+        COMMENT
+    }
+
     /** Actual template for the subject. */
     private String subjectTemplate;
 
@@ -29,8 +42,8 @@ public class EmailNotificationTemplate
     /** Resource path for the HTML form of the body. */
     private String htmlBodyTemplateResourcePath;
 
-    /** If notification email should set the reply-to with a token for response via email. */
-    private boolean replyTokenRequired;
+    /** What kind of address to use for the reply-to. */
+    private ReplyAction replyAddressType = ReplyAction.NONE;
 
     // ---- short setters for use by Spring p-namespace ----
 
@@ -62,12 +75,12 @@ public class EmailNotificationTemplate
     }
 
     /**
-     * @param inRequiresReplyToken
-     *            the requiresReplyToken to set
+     * @param inReplyAddressType
+     *            the replyAddressType to set
      */
-    public void setToken(final boolean inRequiresReplyToken)
+    public void setReply(final ReplyAction inReplyAddressType)
     {
-        replyTokenRequired = inRequiresReplyToken;
+        replyAddressType = inReplyAddressType;
     }
 
     // ---- normal getters and setters ----
@@ -124,19 +137,19 @@ public class EmailNotificationTemplate
     }
 
     /**
-     * @return the requiresReplyToken
+     * @return the replyAddressType
      */
-    public boolean isReplyTokenRequired()
+    public ReplyAction getReplyAddressType()
     {
-        return replyTokenRequired;
+        return replyAddressType;
     }
 
     /**
-     * @param inRequiresReplyToken
-     *            the requiresReplyToken to set
+     * @param inReplyAddressType
+     *            the replyAddressType to set
      */
-    public void setReplyTokenRequired(final boolean inRequiresReplyToken)
+    public void setReplyAddressType(final ReplyAction inReplyAddressType)
     {
-        replyTokenRequired = inRequiresReplyToken;
+        replyAddressType = inReplyAddressType;
     }
 }

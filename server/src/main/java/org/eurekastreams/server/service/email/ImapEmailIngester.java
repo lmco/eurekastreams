@@ -53,9 +53,12 @@ public class ImapEmailIngester
     /** Name of folder to receive messages that were successfully processed. */
     private final String successFolderName;
 
+    /** Name of folder to receive messages that are discarded (no-reply). */
+    private final String discardFolderName;
+
     /**
      * Constructor.
-     * 
+     *
      * @param inStoreFactory
      *            For getting a connection to the mail server.
      * @param inMessageProcessor
@@ -66,15 +69,19 @@ public class ImapEmailIngester
      *            Name of folder to receive messages that failed processing.
      * @param inSuccessFolderName
      *            Name of folder to receive messages that were successfully processed.
+     * @param inDiscardFolderName
+     *            Name of folder to receive messages that are discarded (no-reply).
      */
     public ImapEmailIngester(final ImapStoreFactory inStoreFactory, final MessageProcessor inMessageProcessor,
-            final String inInputFolderName, final String inErrorFolderName, final String inSuccessFolderName)
+            final String inInputFolderName, final String inErrorFolderName, final String inSuccessFolderName,
+            final String inDiscardFolderName)
     {
         storeFactory = inStoreFactory;
         messageProcessor = inMessageProcessor;
         inputFolderName = inInputFolderName;
         errorFolderName = inErrorFolderName;
         successFolderName = inSuccessFolderName;
+        discardFolderName = inDiscardFolderName;
     }
 
     /**
@@ -114,6 +121,16 @@ public class ImapEmailIngester
                     return;
                 }
             }
+            Folder discardFolder = null;
+            if (StringUtils.isNotBlank(discardFolderName))
+            {
+                discardFolder = store.getFolder(discardFolderName);
+                if (!discardFolder.exists())
+                {
+                    log.error("Discard folder {} does not exist.", discardFolderName);
+                    return;
+                }
+            }
             Folder errorFolder = null;
             if (StringUtils.isNotBlank(errorFolderName))
             {
@@ -138,14 +155,15 @@ public class ImapEmailIngester
             log.debug("About to process {} messages", msgs.length);
             List<Message> successMessages = new ArrayList<Message>();
             List<Message> errorMessages = new ArrayList<Message>();
+            List<Message> discardMessages = new ArrayList<Message>();
             for (int i = 0; i < msgs.length; i++)
             {
                 Message msg = msgs[i];
 
                 try
                 {
-                    messageProcessor.execute(msg);
-                    successMessages.add(msg);
+                    boolean processed = messageProcessor.execute(msg);
+                    (processed ? successMessages : discardMessages).add(msg);
                 }
                 catch (Exception ex)
                 {
@@ -158,6 +176,10 @@ public class ImapEmailIngester
             if (successFolder != null && !successMessages.isEmpty())
             {
                 inputFolder.copyMessages(successMessages.toArray(new Message[successMessages.size()]), successFolder);
+            }
+            if (discardFolder != null && !discardMessages.isEmpty())
+            {
+                inputFolder.copyMessages(discardMessages.toArray(new Message[discardMessages.size()]), discardFolder);
             }
             if (errorFolder != null && !errorMessages.isEmpty())
             {

@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.notification.notifier;
 
+import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.velocity.Template;
@@ -36,12 +38,15 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
+import org.eurekastreams.server.action.execution.notification.notifier.EmailNotificationTemplate.ReplyAction;
 import org.eurekastreams.server.domain.HasEmail;
-import org.eurekastreams.server.domain.HasId;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.actions.strategies.ActivityInteractionType;
 import org.eurekastreams.server.service.email.TokenContentEmailAddressBuilder;
 import org.eurekastreams.server.service.email.TokenContentFormatter;
+import org.eurekastreams.server.service.utility.authorization.ActivityInteractionAuthorizationStrategy;
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -59,10 +64,13 @@ public class EmailNotifierTest
     private static final String PREFIX = "Subject Prefix: ";
 
     /** Test data. */
-    private static final Long RECIPIENT1 = 50L;
+    private static final Long RECIPIENT1 = 51L;
 
     /** Test data. */
     private static final Long RECIPIENT2 = 52L;
+
+    /** Test data. */
+    private static final Long RECIPIENT3 = 53L;
 
     /** Test data. */
     private static final String SUBJECT_TEMPLATE = "This is the subject template";
@@ -83,16 +91,25 @@ public class EmailNotifierTest
     private static final String HTML_BODY_RENDERED = "This is the rendered HTML body template";
 
     /** Test data. */
-    private static final NotificationType ALLOWED_TYPE = NotificationType.COMMENT_TO_COMMENTED_POST;
+    private static final NotificationType NOTIFICATION_TYPE_NO_REPLY = NotificationType.COMMENT_TO_COMMENTED_POST;
 
     /** Test data. */
-    private static final NotificationType ALLOWED_TOKEN_TYPE = NotificationType.COMMENT_TO_PERSONAL_POST;
+    private static final NotificationType NOTIFICATION_TYPE_TOKEN = NotificationType.COMMENT_TO_PERSONAL_POST;
+
+    /** Test data. */
+    private static final NotificationType NOTIFICATION_TYPE_ACTOR_REPLY = NotificationType.FOLLOW_PERSON;
 
     /** Test data. */
     private static final String EMAIL1 = "person1@eurekastreams.org";
 
     /** Test data. */
     private static final String EMAIL2 = "person2@eurekastreams.org";
+
+    /** Test data. */
+    private static final long ACTIVITY_ID = 80L;
+
+    /** Test data. */
+    private static final String TOKEN_CONTENT = "Stuff in the token";
 
     /** Used for mocking objects. */
     private final JUnit4Mockery mockery = new JUnit4Mockery()
@@ -126,6 +143,12 @@ public class EmailNotifierTest
     /** Dummy person. */
     private final PersonModelView person2a = mockery.mock(PersonModelView.class, "person2a");
 
+    /** Dummy person. */
+    private final PersonModelView person3a = mockery.mock(PersonModelView.class, "person3a");
+
+    /** Fixture: activity. */
+    private final ActivityDTO activity = mockery.mock(ActivityDTO.class, "activity");
+
     /** SUT. */
     private EmailNotifier sut;
 
@@ -133,7 +156,8 @@ public class EmailNotifierTest
     private final Map<NotificationType, EmailNotificationTemplate> templates;
 
     /** Recipients. */
-    private final Collection<Long> recipients = Collections.unmodifiableList(Arrays.asList(RECIPIENT1, RECIPIENT2));
+    private final Collection<Long> recipients = Collections.unmodifiableList(Arrays.asList(RECIPIENT1, RECIPIENT2,
+            RECIPIENT3));
 
     /** Recipient index. */
     private final Map<Long, PersonModelView> recipientIndex = new HashMap<Long, PersonModelView>();
@@ -144,6 +168,10 @@ public class EmailNotifierTest
     /** Builds the recipient email address with a token. */
     private final TokenContentEmailAddressBuilder tokenAddressBuilder = mockery.mock(
             TokenContentEmailAddressBuilder.class, "tokenAddressBuilder");
+
+    /** For determining if users can comment on an activity. */
+    private final ActivityInteractionAuthorizationStrategy activityAuthorizer = mockery
+            .mock(ActivityInteractionAuthorizationStrategy.class);
 
     /**
      * One-time setup.
@@ -156,13 +184,19 @@ public class EmailNotifierTest
         template.setHtmlBody(HTML_BODY_RESOURCE);
         template.setSubject(SUBJECT_TEMPLATE);
         template.setTextBody(TEXT_BODY_RESOURCE);
-        map.put(ALLOWED_TYPE, template);
+        map.put(NOTIFICATION_TYPE_NO_REPLY, template);
         template = new EmailNotificationTemplate();
         template.setHtmlBody(HTML_BODY_RESOURCE);
         template.setSubject(SUBJECT_TEMPLATE);
         template.setTextBody(TEXT_BODY_RESOURCE);
-        template.setReplyTokenRequired(true);
-        map.put(ALLOWED_TOKEN_TYPE, template);
+        template.setReplyAddressType(ReplyAction.ACTOR);
+        map.put(NOTIFICATION_TYPE_ACTOR_REPLY, template);
+        template = new EmailNotificationTemplate();
+        template.setHtmlBody(HTML_BODY_RESOURCE);
+        template.setSubject(SUBJECT_TEMPLATE);
+        template.setTextBody(TEXT_BODY_RESOURCE);
+        template.setReplyAddressType(ReplyAction.COMMENT);
+        map.put(NOTIFICATION_TYPE_TOKEN, template);
 
         templates = Collections.unmodifiableMap(map);
     }
@@ -174,11 +208,12 @@ public class EmailNotifierTest
     public void setUp()
     {
         sut = new EmailNotifier(velocityEngine, velocityGlobalContext, templates, PREFIX, tokenContentFormatter,
-                tokenAddressBuilder);
+                tokenAddressBuilder, activityAuthorizer);
 
         recipientIndex.clear();
         recipientIndex.put(RECIPIENT1, person1);
         recipientIndex.put(RECIPIENT2, person2);
+        recipientIndex.put(RECIPIENT3, person3a);
     }
 
     /**
@@ -206,26 +241,22 @@ public class EmailNotifierTest
         mockery.checking(new Expectations()
         {
             {
-                oneOf(velocityEngine).getTemplate(HTML_BODY_RESOURCE);
+                allowing(velocityEngine).getTemplate(HTML_BODY_RESOURCE);
                 will(returnValue(htmlBodyTemplate));
 
-                oneOf(velocityEngine).getTemplate(TEXT_BODY_RESOURCE);
+                allowing(velocityEngine).getTemplate(TEXT_BODY_RESOURCE);
                 will(returnValue(textBodyTemplate));
 
-                final CustomAction subjectAction = new CustomAction("Render subject")
+                allowing(velocityEngine).evaluate(with(any(VelocityContext.class)), with(any(StringWriter.class)),
+                        with(any(String.class)), with(equal(SUBJECT_TEMPLATE)));
+                will(new CustomAction("Render subject")
                 {
                     public Object invoke(final Invocation inv) throws Throwable
                     {
                         ((StringWriter) inv.getParameter(1)).append(SUBJECT_RENDERED);
                         return true;
                     }
-                };
-                allowing(velocityEngine).evaluate(with(any(VelocityContext.class)), with(any(StringWriter.class)),
-                        with(equal("EmailSubject-COMMENT_TO_COMMENTED_POST")), with(equal(SUBJECT_TEMPLATE)));
-                will(subjectAction);
-                allowing(velocityEngine).evaluate(with(any(VelocityContext.class)), with(any(StringWriter.class)),
-                        with(equal("EmailSubject-COMMENT_TO_PERSONAL_POST")), with(equal(SUBJECT_TEMPLATE)));
-                will(subjectAction);
+                });
 
                 allowing(textBodyTemplate).merge(with(any(VelocityContext.class)), with(any(StringWriter.class)));
                 will(new CustomAction("Render text body")
@@ -254,10 +285,13 @@ public class EmailNotifierTest
                 will(returnValue(EMAIL2));
 
                 allowing(person1a).getEmail();
-                will(returnValue(""));
+                will(returnValue(null));
 
                 allowing(person2a).getEmail();
                 will(returnValue(""));
+
+                allowing(person3a).getEmail();
+                will(returnValue(" "));
             }
         });
 
@@ -287,6 +321,41 @@ public class EmailNotifierTest
      *             Won't.
      */
     @Test
+    public void testNotifyTokenNone() throws Exception
+    {
+        commonSetup();
+
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(activity).getId();
+                will(returnValue(ACTIVITY_ID));
+
+                allowing(tokenContentFormatter).buildForActivity(ACTIVITY_ID);
+                will(returnValue(TOKEN_CONTENT));
+
+                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, true);
+                will(returnValue(true));
+            }
+        });
+
+        recipientIndex.put(RECIPIENT1, person1a);
+        recipientIndex.put(RECIPIENT2, person2a);
+
+        Collection<UserActionRequest> result = sut.notify(NOTIFICATION_TYPE_TOKEN, recipients,
+                Collections.singletonMap("activity", (Object) activity), recipientIndex);
+        mockery.assertIsSatisfied();
+
+        assertNull(result);
+    }
+
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
     public void testNotifyNone() throws Exception
     {
         commonSetup();
@@ -294,8 +363,8 @@ public class EmailNotifierTest
         recipientIndex.put(RECIPIENT1, person1a);
         recipientIndex.put(RECIPIENT2, person2a);
 
-        Collection<UserActionRequest> result = sut.notify(ALLOWED_TYPE, recipients, Collections.EMPTY_MAP,
-                recipientIndex);
+        Collection<UserActionRequest> result = sut.notify(NOTIFICATION_TYPE_NO_REPLY, recipients,
+                Collections.EMPTY_MAP, recipientIndex);
         mockery.assertIsSatisfied();
 
         assertNull(result);
@@ -314,8 +383,8 @@ public class EmailNotifierTest
 
         recipientIndex.put(RECIPIENT2, person2a);
 
-        Collection<UserActionRequest> results = sut.notify(ALLOWED_TYPE, recipients, Collections.EMPTY_MAP,
-                recipientIndex);
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_NO_REPLY, recipients,
+                Collections.EMPTY_MAP, recipientIndex);
         mockery.assertIsSatisfied();
 
         NotificationEmailDTO request = assertGetSingleResult(results);
@@ -326,6 +395,7 @@ public class EmailNotifierTest
         assertTrue(request.getBccRecipients() == null || request.getBccRecipients().isEmpty());
         assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
         assertFalse(request.isHighPriority());
+        assertNull(request.getReplyTo());
     }
 
     /**
@@ -349,7 +419,7 @@ public class EmailNotifierTest
             }
         });
 
-        Collection<UserActionRequest> results = sut.notify(ALLOWED_TYPE, recipients,
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_ACTOR_REPLY, recipients,
                 Collections.singletonMap(NotificationPropertyKeys.ACTOR, (Object) actor), recipientIndex);
         mockery.assertIsSatisfied();
 
@@ -375,36 +445,35 @@ public class EmailNotifierTest
     {
         commonSetup();
 
-        String[] addresses = { EMAIL1, EMAIL2 };
         final String person1Reply = "system+ABC@eurekastreams.org";
         final String person2Reply = "system+DEF@eurekastreams.org";
-        String[] replyAddresses = { person1Reply, person2Reply };
-        final long activityId = 80L;
-        final String tokenContent = "Stuff in the token";
-        final HasId activity = mockery.mock(HasId.class, "activity");
         mockery.checking(new Expectations()
         {
             {
                 allowing(activity).getId();
-                will(returnValue(activityId));
+                will(returnValue(ACTIVITY_ID));
 
-                allowing(tokenContentFormatter).buildForActivity(activityId);
-                will(returnValue(tokenContent));
+                allowing(tokenContentFormatter).buildForActivity(ACTIVITY_ID);
+                will(returnValue(TOKEN_CONTENT));
 
-                allowing(tokenAddressBuilder).build(tokenContent, RECIPIENT1);
+                allowing(tokenAddressBuilder).build(TOKEN_CONTENT, RECIPIENT1);
                 will(returnValue(person1Reply));
-                allowing(tokenAddressBuilder).build(tokenContent, RECIPIENT2);
+                allowing(tokenAddressBuilder).build(TOKEN_CONTENT, RECIPIENT2);
                 will(returnValue(person2Reply));
+
+                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, true);
+                will(returnValue(true));
             }
         });
 
-        Collection<UserActionRequest> results = sut.notify(ALLOWED_TOKEN_TYPE, recipients,
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_TOKEN, recipients,
                 Collections.singletonMap("activity", (Object) activity), recipientIndex);
         mockery.assertIsSatisfied();
 
         assertNotNull(results);
         assertEquals(2, results.size());
-        int i = 0;
+        List<String> addresses = Arrays.asList(EMAIL1, EMAIL2);
+        List<String> replyAddresses = Arrays.asList(person1Reply, person2Reply);
         for (UserActionRequest result : results)
         {
             assertNotNull(result);
@@ -413,30 +482,85 @@ public class EmailNotifierTest
             assertEquals(HTML_BODY_RENDERED, request.getHtmlBody());
             assertEquals(TEXT_BODY_RENDERED, request.getTextBody());
             assertEquals(PREFIX + SUBJECT_RENDERED, request.getSubject());
-            assertEquals(addresses[i], request.getToRecipient());
+            assertTrue(addresses.contains(request.getToRecipient()));
             assertTrue(request.getBccRecipients() == null || request.getBccRecipients().isEmpty());
-            assertEquals(replyAddresses[i], request.getReplyTo());
+            assertTrue(replyAddresses.contains(request.getReplyTo()));
             assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
             assertFalse(request.isHighPriority());
-
-            i++;
         }
     }
 
     /**
      * Tests notify.
-     *
+     * 
      * @throws Exception
      *             Won't.
      */
-    @Test(expected = ExecutionException.class)
-    public void testNotifyMultipleTokenMissingActivity() throws Exception
+    @Test
+    public void testNotifyMultipleTokenSplitPermissions() throws Exception
     {
         commonSetup();
 
-        sut.notify(ALLOWED_TOKEN_TYPE, recipients, Collections.EMPTY_MAP, recipientIndex);
+        final String person1Reply = "system+ABC@eurekastreams.org";
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(activity).getId();
+                will(returnValue(ACTIVITY_ID));
+
+                allowing(tokenContentFormatter).buildForActivity(ACTIVITY_ID);
+                will(returnValue(TOKEN_CONTENT));
+
+                allowing(tokenAddressBuilder).build(TOKEN_CONTENT, RECIPIENT1);
+                will(returnValue(person1Reply));
+
+                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, true);
+                will(returnValue(false));
+
+                allowing(activityAuthorizer).authorize(RECIPIENT1, activity, ActivityInteractionType.COMMENT);
+                will(returnValue(true));
+
+                allowing(activityAuthorizer).authorize(RECIPIENT2, activity, ActivityInteractionType.COMMENT);
+                will(returnValue(false));
+            }
+        });
+
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_TOKEN, recipients,
+                Collections.singletonMap("activity", (Object) activity), recipientIndex);
         mockery.assertIsSatisfied();
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        for (UserActionRequest result : results)
+        {
+            assertNotNull(result);
+            assertEquals("sendEmailNotificationAction", result.getActionKey());
+            NotificationEmailDTO request = (NotificationEmailDTO) result.getParams();
+            assertEquals(HTML_BODY_RENDERED, request.getHtmlBody());
+            assertEquals(TEXT_BODY_RENDERED, request.getTextBody());
+            assertEquals(PREFIX + SUBJECT_RENDERED, request.getSubject());
+            assertTrue(request.getBccRecipients() == null || request.getBccRecipients().isEmpty());
+            assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
+            assertFalse(request.isHighPriority());
+
+            // can't be sure of the order, so make sure to and reply-to match up
+            final String toRecipient = request.getToRecipient();
+            if (EMAIL1.equals(toRecipient))
+            {
+                assertEquals(person1Reply, request.getReplyTo());
+            }
+            else if (EMAIL2.equals(toRecipient))
+            {
+                assertNull(request.getReplyTo());
+            }
+            else
+            {
+                fail("Unexpected recipient " + toRecipient);
+            }
+        }
     }
+
+    // ---- MISCELLANY TESTS -----
 
     /**
      * Tests notify.
@@ -449,11 +573,92 @@ public class EmailNotifierTest
     {
         commonSetup();
 
-        Collection<UserActionRequest> results = sut.notify(ALLOWED_TYPE, Collections.singletonList(RECIPIENT1),
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_NO_REPLY,
+                Collections.singletonList(RECIPIENT1),
                 Collections.singletonMap(NotificationPropertyKeys.HIGH_PRIORITY, (Object) true), recipientIndex);
         mockery.assertIsSatisfied();
 
         NotificationEmailDTO request = assertGetSingleResult(results);
         assertTrue(request.isHighPriority());
+    }
+
+    // ----- ANOMALY TESTS -----
+
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test(expected = ExecutionException.class)
+    public void testNotifyMultipleTokenMissingActivity() throws Exception
+    {
+        commonSetup();
+
+        sut.notify(NOTIFICATION_TYPE_TOKEN, recipients, Collections.EMPTY_MAP, recipientIndex);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test(expected = ExecutionException.class)
+    public void testNotifyTokenActivityWrongType() throws Exception
+    {
+        commonSetup();
+
+        sut.notify(NOTIFICATION_TYPE_TOKEN, recipients, Collections.singletonMap("activity", new Object()),
+                recipientIndex);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testNotifyActorWrongType() throws Exception
+    {
+        commonSetup();
+
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_ACTOR_REPLY, recipients,
+                Collections.singletonMap(NotificationPropertyKeys.ACTOR, (Object) "WRONG!"), recipientIndex);
+        mockery.assertIsSatisfied();
+
+        NotificationEmailDTO request = assertGetSingleResult(results);
+        assertNull(request.getReplyTo());
+    }
+
+    /**
+     * Tests notify.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testNotifyActorBadEmail() throws Exception
+    {
+        commonSetup();
+
+        final HasEmail actor = mockery.mock(HasEmail.class, "actor");
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(actor).getEmail();
+                will(returnValue(" "));
+            }
+        });
+
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_ACTOR_REPLY, recipients,
+                Collections.singletonMap(NotificationPropertyKeys.ACTOR, (Object) "WRONG!"), recipientIndex);
+        mockery.assertIsSatisfied();
+
+        NotificationEmailDTO request = assertGetSingleResult(results);
+        assertNull(request.getReplyTo());
     }
 }

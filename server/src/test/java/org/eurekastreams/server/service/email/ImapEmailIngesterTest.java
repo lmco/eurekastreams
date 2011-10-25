@@ -46,6 +46,9 @@ public class ImapEmailIngesterTest
     /** Test data. */
     private static final String SUCCESS_FOLDER_NAME = "SuccessFolder";
 
+    /** Test data. */
+    private static final String DISCARD_FOLDER_NAME = "DiscardFolder";
+
     /** Used for mocking objects. */
     private final JUnit4Mockery context = new JUnit4Mockery()
     {
@@ -71,6 +74,9 @@ public class ImapEmailIngesterTest
     /** Fixture: success folder. */
     private final Folder successFolder = context.mock(Folder.class, "successFolder");
 
+    /** Fixture: success folder. */
+    private final Folder discardFolder = context.mock(Folder.class, "discardFolder");
+
     /** Fixture: message. */
     private final Message message = context.mock(Message.class);
 
@@ -84,7 +90,7 @@ public class ImapEmailIngesterTest
     public void setUp()
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, ERROR_FOLDER_NAME,
-                SUCCESS_FOLDER_NAME);
+                SUCCESS_FOLDER_NAME, DISCARD_FOLDER_NAME);
     }
 
     /**
@@ -115,6 +121,10 @@ public class ImapEmailIngesterTest
                 will(returnValue(errorFolder));
                 allowing(errorFolder).exists();
                 will(returnValue(true));
+                allowing(store).getFolder(DISCARD_FOLDER_NAME);
+                will(returnValue(discardFolder));
+                allowing(discardFolder).exists();
+                will(returnValue(true));
 
                 oneOf(inputFolder).open(Folder.READ_WRITE);
                 oneOf(inputFolder).getMessages();
@@ -143,6 +153,7 @@ public class ImapEmailIngesterTest
         {
             {
                 oneOf(messageProcessor).execute(message);
+                will(returnValue(true));
 
                 oneOf(inputFolder).copyMessages(with(IsArrayContaining.hasItemInArray(message)),
                         with(same(successFolder)));
@@ -165,13 +176,14 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteSuccessNoCopy() throws MessagingException, IOException
     {
-        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, ERROR_FOLDER_NAME, null);
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, ERROR_FOLDER_NAME, null, null);
 
         expectSuccessfulFrame(new Message[] { message });
         context.checking(new Expectations()
         {
             {
                 oneOf(messageProcessor).execute(message);
+                will(returnValue(true));
 
                 oneOf(message).setFlag(Flag.DELETED, true);
             }
@@ -212,7 +224,7 @@ public class ImapEmailIngesterTest
 
     /**
      * Test.
-     * 
+     *
      * @throws MessagingException
      *             Won't.
      * @throws IOException
@@ -221,7 +233,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteFailMsgNoCopy() throws MessagingException, IOException
     {
-        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, "", SUCCESS_FOLDER_NAME);
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, "", SUCCESS_FOLDER_NAME, " ");
         expectSuccessfulFrame(new Message[] { message });
 
         context.checking(new Expectations()
@@ -229,6 +241,62 @@ public class ImapEmailIngesterTest
             {
                 oneOf(messageProcessor).execute(message);
                 will(throwException(new MessagingException()));
+
+                oneOf(message).setFlag(Flag.DELETED, true);
+            }
+        });
+
+        sut.execute();
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     *
+     * @throws MessagingException
+     *             Won't.
+     * @throws IOException
+     *             Won't.
+     */
+    @Test
+    public void testExecuteDiscard() throws MessagingException, IOException
+    {
+        expectSuccessfulFrame(new Message[] { message });
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(messageProcessor).execute(message);
+                will(returnValue(false));
+
+                oneOf(inputFolder).copyMessages(with(IsArrayContaining.hasItemInArray(message)),
+                        with(same(discardFolder)));
+                oneOf(message).setFlag(Flag.DELETED, true);
+            }
+        });
+
+        sut.execute();
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     *
+     * @throws MessagingException
+     *             Won't.
+     * @throws IOException
+     *             Won't.
+     */
+    @Test
+    public void testExecuteDiscardNoCopy() throws MessagingException, IOException
+    {
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, null, null, null);
+
+        expectSuccessfulFrame(new Message[] { message });
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(messageProcessor).execute(message);
+                will(returnValue(false));
 
                 oneOf(message).setFlag(Flag.DELETED, true);
             }
@@ -308,6 +376,42 @@ public class ImapEmailIngesterTest
      *             Won't.
      */
     @Test
+    public void testExecuteBadDiscardFolder() throws MessagingException
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(storeFactory).getStore();
+                will(returnValue(store));
+
+                oneOf(store).getFolder(INPUT_FOLDER_NAME);
+                will(returnValue(inputFolder));
+                allowing(inputFolder).exists();
+                will(returnValue(true));
+                oneOf(store).getFolder(SUCCESS_FOLDER_NAME);
+                will(returnValue(successFolder));
+                allowing(successFolder).exists();
+                will(returnValue(true));
+                allowing(store).getFolder(DISCARD_FOLDER_NAME);
+                will(returnValue(discardFolder));
+                allowing(discardFolder).exists();
+                will(returnValue(false));
+
+                oneOf(store).close();
+            }
+        });
+
+        sut.execute();
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests error condition.
+     *
+     * @throws MessagingException
+     *             Won't.
+     */
+    @Test
     public void testExecuteBadErrorFolder() throws MessagingException
     {
         context.checking(new Expectations()
@@ -328,6 +432,10 @@ public class ImapEmailIngesterTest
                 will(returnValue(errorFolder));
                 allowing(errorFolder).exists();
                 will(returnValue(false));
+                allowing(store).getFolder(DISCARD_FOLDER_NAME);
+                will(returnValue(discardFolder));
+                allowing(discardFolder).exists();
+                will(returnValue(true));
 
                 oneOf(store).close();
             }

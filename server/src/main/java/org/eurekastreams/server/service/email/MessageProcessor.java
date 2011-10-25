@@ -78,6 +78,9 @@ public class MessageProcessor
     /** Responds to messages that failed execution with result status. */
     private final MessageReplier messageReplier;
 
+    /** Address messages must be sent to. */
+    private final String requiredToAddress;
+
     /** Text address must begin with to be the desired To address. */
     private final String toEmailRequiredStart;
 
@@ -132,6 +135,7 @@ public class MessageProcessor
         personDao = inPersonDao;
         messageReplier = inMessageReplier;
 
+        requiredToAddress = inRequiredToAddress;
         int pos = inRequiredToAddress.indexOf('@');
         toEmailRequiredStart = inRequiredToAddress.substring(0, pos) + "+";
         toEmailRequiredEnd = inRequiredToAddress.substring(pos);
@@ -142,14 +146,19 @@ public class MessageProcessor
      *
      * @param message
      *            Message to process.
+     * @return If message was processed.
      * @throws MessagingException
      *             On error.
      * @throws IOException
      *             On error.
      */
-    public void execute(final Message message) throws MessagingException, IOException
+    public boolean execute(final Message message) throws MessagingException, IOException
     {
         String token = getToken(message);
+        if (token == null)
+        {
+            return false;
+        }
         String fromAddress = getFromAddress(message);
 
         // get the sender and sender's key
@@ -182,6 +191,7 @@ public class MessageProcessor
 
         // execute action
         executeAction(message, actionSelection, person);
+        return true;
     }
 
     /**
@@ -294,10 +304,18 @@ public class MessageProcessor
         Address[] addresses = message.getRecipients(RecipientType.TO);
         if (addresses != null)
         {
+            boolean noReplyFound = false;
             for (int i = 0; i < addresses.length; i++)
             {
                 String addr = ((InternetAddress) addresses[i]).getAddress();
-                if (addr.startsWith(toEmailRequiredStart) && addr.endsWith(toEmailRequiredEnd))
+
+                // check for token-less system address: no-reply
+                if (requiredToAddress.equals(addr))
+                {
+                    noReplyFound = true;
+                }
+                // check for token
+                else if (addr.startsWith(toEmailRequiredStart) && addr.endsWith(toEmailRequiredEnd))
                 {
                     String middle = addr.substring(toEmailRequiredStart.length(),
                             addr.length() - toEmailRequiredEnd.length());
@@ -306,6 +324,10 @@ public class MessageProcessor
                         return middle;
                     }
                 }
+            }
+            if (noReplyFound)
+            {
+                return null;
             }
         }
         throw new ValidationException("Cannot find To address for the system with an address tag.");
