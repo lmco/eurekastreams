@@ -321,4 +321,8 @@
             <from>^/api/0/read/getCurrentUsersBookmarks/(.*)$</from>
             <to last="true">/resources/api/0/read/getCurrentUsersBookmarks/null/$1</to>
         </rule>
+        <rule>
+            <from>^/api/0/read/getStreamDiscoverLists/(.*)$</from>
+            <to last="true">/resources/api/0/read/getStreamDiscoverListsDTOAction/null/$1</to>
+        </rule>
 </urlrewrite>
