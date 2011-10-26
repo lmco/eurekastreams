@@ -145,10 +145,107 @@ public class ActivityInteractionAuthorizationStrategyTest
         return person;
     }
 
+    // ---------- PERSON GENERAL VIEW TESTS ----------
+
+    /**
+     * Core of all users-in-general person stream tests.
+     *
+     * @param strict
+     *            Use SUT's strict checking (must be true for ALL users).
+     * @return SUT result.
+     */
+    private boolean corePersonStreamInGeneralTest(final boolean strict)
+    {
+        expectPersonStream();
+        boolean result = sut.authorize(activity, ActivityInteractionType.VIEW, strict);
+        mockery.assertIsSatisfied();
+        return result;
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPersonStreamViewStrict()
+    {
+        assertTrue(corePersonStreamInGeneralTest(true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPersonStreamViewRelaxed()
+    {
+        assertTrue(corePersonStreamInGeneralTest(false));
+    }
+
+    // ---------- PERSON GENERAL POST TESTS ----------
+
+    /**
+     * Core of all users-in-general user person stream action tests.
+     *
+     * @param streamAllowsAction
+     *            If the stream should allow posting.
+     * @param strict
+     *            Use SUT's strict checking (must be true for ALL users).
+     * @return Result of SUT.
+     */
+    private boolean corePersonStreamInGeneralPostTest(final boolean streamAllowsAction, final boolean strict)
+    {
+        final PersonModelView person = expectPersonStream();
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(person).isStreamPostable();
+                will(returnValue(streamAllowsAction));
+            }
+        });
+        boolean result = sut.authorize(activity, ActivityInteractionType.POST, strict);
+        mockery.assertIsSatisfied();
+        return result;
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPersonStreamPostAllowStrict()
+    {
+        assertTrue(corePersonStreamInGeneralPostTest(true, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPersonStreamPostAllowRelaxed()
+    {
+        assertTrue(corePersonStreamInGeneralPostTest(true, false));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPersonStreamPostForbidStrict()
+    {
+        assertFalse(corePersonStreamInGeneralPostTest(false, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPersonStreamPostForbidRelaxed()
+    {
+        assertFalse(corePersonStreamInGeneralPostTest(false, false));
+    }
+
     // ---------- PERSON VIEW TESTS ----------
 
     /**
-     * Core of all person stream view tests.
+     * Core of all individual user person stream view tests.
      *
      * @param testUser
      *            User ID to run test with.
@@ -192,7 +289,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     // ---------- PERSON POST TESTS ----------
 
     /**
-     * Core of all person stream action tests.
+     * Core of all individual user person stream action tests.
      *
      * @param testUser
      *            User ID to run test with.
@@ -200,7 +297,7 @@ public class ActivityInteractionAuthorizationStrategyTest
      *            If the stream should allow posting.
      * @return Result of SUT.
      */
-    private boolean corePersonStreamActionTest(final long testUser, final boolean streamAllowsAction)
+    private boolean corePersonStreamPostTest(final long testUser, final boolean streamAllowsAction)
     {
         final PersonModelView person = expectPersonStream();
         mockery.checking(new Expectations()
@@ -221,7 +318,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamAnyoneAllow()
     {
-        assertTrue(corePersonStreamActionTest(PERSON_ANYONE, true));
+        assertTrue(corePersonStreamPostTest(PERSON_ANYONE, true));
     }
 
     /**
@@ -230,7 +327,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamAnyoneForbid()
     {
-        assertFalse(corePersonStreamActionTest(PERSON_ANYONE, false));
+        assertFalse(corePersonStreamPostTest(PERSON_ANYONE, false));
     }
 
     /**
@@ -239,7 +336,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamSelfAllow()
     {
-        assertTrue(corePersonStreamActionTest(PERSON_STREAM_OWNER, true));
+        assertTrue(corePersonStreamPostTest(PERSON_STREAM_OWNER, true));
     }
 
     /**
@@ -248,7 +345,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamSelfForbid()
     {
-        assertTrue(corePersonStreamActionTest(PERSON_STREAM_OWNER, false));
+        assertTrue(corePersonStreamPostTest(PERSON_STREAM_OWNER, false));
     }
 
     /**
@@ -257,7 +354,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamAdminAllow()
     {
-        assertTrue(corePersonStreamActionTest(PERSON_COORD_ADMIN, true));
+        assertTrue(corePersonStreamPostTest(PERSON_COORD_ADMIN, true));
     }
 
     /**
@@ -266,7 +363,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamAdminForbid()
     {
-        assertTrue(corePersonStreamActionTest(PERSON_COORD_ADMIN, false));
+        assertTrue(corePersonStreamPostTest(PERSON_COORD_ADMIN, false));
     }
 
     // ---------- GROUP TESTS ----------
@@ -306,10 +403,65 @@ public class ActivityInteractionAuthorizationStrategyTest
         return group;
     }
 
+    // ---------- GROUP GENERAL VIEW TESTS ----------
+
+    /**
+     * Core of all users-in-general user group stream view tests.
+     *
+     * @param isStreamPublic
+     *            If stream is public.
+     * @param strict
+     *            Use SUT's strict checking (must be true for ALL users).
+     * @return Result of SUT.
+     */
+    private boolean coreGroupStreamInGeneralViewTest(final boolean isStreamPublic, final boolean strict)
+    {
+        expectGroupStream(isStreamPublic);
+        boolean result = sut.authorize(activity, ActivityInteractionType.VIEW, strict);
+        mockery.assertIsSatisfied();
+        return result;
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicGroupStreamViewStrict()
+    {
+        assertTrue(coreGroupStreamInGeneralViewTest(true, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicGroupStreamViewRelaxed()
+    {
+        assertTrue(coreGroupStreamInGeneralViewTest(true, false));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPrivateGroupStreamViewStrict()
+    {
+        assertFalse(coreGroupStreamInGeneralViewTest(false, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPrivateGroupStreamViewRelaxed()
+    {
+        assertTrue(coreGroupStreamInGeneralViewTest(false, false));
+    }
+
     // ---------- GROUP VIEW TESTS ----------
 
     /**
-     * Core of all group stream view tests.
+     * Core of all individual user group stream view tests.
      *
      * @param testUser
      *            User ID to run test with.
@@ -379,10 +531,111 @@ public class ActivityInteractionAuthorizationStrategyTest
         assertTrue(coreGroupStreamViewTest(PERSON_COORD_ADMIN, false));
     }
 
+    // ---------- GROUP GENERAL COMMENT TESTS ----------
+
+    /**
+     * Core of all users-in-general user group stream view tests.
+     *
+     * @param isStreamPublic
+     *            If stream is public.
+     * @param streamAllowsAction
+     *            If the stream should allow posting.
+     * @param strict
+     *            Use SUT's strict checking (must be true for ALL users).
+     * @return Result of SUT.
+     */
+    private boolean coreGroupStreamInGeneralCommentTest(final boolean isStreamPublic,
+            final boolean streamAllowsAction, final boolean strict)
+    {
+        final DomainGroupModelView group = expectGroupStream(isStreamPublic);
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(group).isCommentable();
+                will(returnValue(streamAllowsAction));
+            }
+        });
+        boolean result = sut.authorize(activity, ActivityInteractionType.COMMENT, strict);
+        mockery.assertIsSatisfied();
+        return result;
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicGroupStreamCommentAllowStrict()
+    {
+        assertTrue(coreGroupStreamInGeneralCommentTest(true, true, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicGroupStreamCommentAllowRelaxed()
+    {
+        assertTrue(coreGroupStreamInGeneralCommentTest(true, true, false));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPrivateGroupStreamCommentAllowStrict()
+    {
+        assertFalse(coreGroupStreamInGeneralCommentTest(false, true, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPrivateGroupStreamCommentAllowRelaxed()
+    {
+        assertTrue(coreGroupStreamInGeneralCommentTest(false, true, false));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicGroupStreamCommentForbidStrict()
+    {
+        assertFalse(coreGroupStreamInGeneralCommentTest(true, false, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPublicGroupStreamCommentForbidRelaxed()
+    {
+        assertFalse(coreGroupStreamInGeneralCommentTest(true, false, false));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPrivateGroupStreamCommentForbidStrict()
+    {
+        assertFalse(coreGroupStreamInGeneralCommentTest(false, false, true));
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testPrivateGroupStreamCommentForbidRelaxed()
+    {
+        assertFalse(coreGroupStreamInGeneralCommentTest(false, false, false));
+    }
+
     // ---------- GROUP COMMENT TESTS ----------
 
     /**
-     * Core of all group stream action tests.
+     * Core of all individual user group stream action tests.
      *
      * @param testUser
      *            User ID to run test with.
@@ -536,7 +789,26 @@ public class ActivityInteractionAuthorizationStrategyTest
         assertTrue(result);
     }
 
-    // ---------- ERROR CASE TESTS ----------
+    /**
+     * Test.
+     */
+    @Test
+    public void testResourceGeneral()
+    {
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(stream).getEntityId();
+                allowing(stream).getType();
+                will(returnValue(EntityType.RESOURCE));
+            }
+        });
+        boolean result = sut.authorize(activity, ActivityInteractionType.COMMENT, true);
+        mockery.assertIsSatisfied();
+        assertTrue(result);
+    }
+
+    // ---------- ANOMALY TESTS ----------
 
     /**
      * Test.
@@ -552,6 +824,25 @@ public class ActivityInteractionAuthorizationStrategyTest
             }
         });
         boolean result = sut.authorize(PERSON_ANYONE, activity, ActivityInteractionType.COMMENT);
+        mockery.assertIsSatisfied();
+        assertFalse(result);
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testUnhandledStreamTypeGeneral()
+    {
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(stream).getEntityId();
+                allowing(stream).getType();
+                will(returnValue(EntityType.APPLICATION));
+            }
+        });
+        boolean result = sut.authorize(activity, ActivityInteractionType.COMMENT, false);
         mockery.assertIsSatisfied();
         assertFalse(result);
     }

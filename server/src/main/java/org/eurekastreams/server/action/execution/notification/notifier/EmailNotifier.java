@@ -136,7 +136,7 @@ public class EmailNotifier implements Notifier
             String tokenData = tokenContentFormatter.buildForActivity(activity.getId());
             // ok to use relaxed mode here: the translators wouldn't include recipients who do not have access to the
             // activity
-            boolean generallyAllowed = activityAuthorizer.authorize(activity, ActivityInteractionType.COMMENT, true);
+            boolean generallyAllowed = activityAuthorizer.authorize(activity, ActivityInteractionType.COMMENT, false);
 
             for (long recipientId : inRecipients)
             {

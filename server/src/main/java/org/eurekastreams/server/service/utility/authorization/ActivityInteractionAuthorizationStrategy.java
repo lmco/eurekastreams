@@ -112,18 +112,18 @@ public class ActivityInteractionAuthorizationStrategy
 
     /**
      * Determines if users in general have permission to interact with (post/comment/view) an activity.
-     *
+     * 
      * @param activity
      *            Activity being interacted with.
      * @param interactionType
      *            Type of interaction.
-     * @param relaxed
-     *            Strict (false) = "are ALL users allowed to do this"; Relaxed (true) = are users who have access to the
+     * @param strict
+     *            Strict (true) = "are ALL users allowed to do this"; Relaxed (false) = are users who have access to the
      *            activity allowed to do this. For private groups, relaxed assumes the users are members of the group.
      * @return true if allowed, false if not.
      */
     public boolean authorize(final ActivityDTO activity, final ActivityInteractionType interactionType,
-            final boolean relaxed)
+            final boolean strict)
     {
         long entityId = activity.getDestinationStream().getEntityId();
         // this is bad style to declare case-specific variables here (variables should be declared in the most limited
@@ -136,7 +136,7 @@ public class ActivityInteractionAuthorizationStrategy
             return isStreamInteractionAuthorized(getPersonByIdDAO.execute(entityId), interactionType);
         case GROUP:
             group = getGroupByIdDAO.execute(entityId);
-            return (relaxed || group.isPublic()) ? isStreamInteractionAuthorized(group, interactionType) : false;
+            return (!strict || group.isPublic()) ? isStreamInteractionAuthorized(group, interactionType) : false;
         case RESOURCE:
             // anyone can post comment to resource stream activity.
             return true;
