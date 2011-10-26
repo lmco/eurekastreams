@@ -143,6 +143,12 @@ public class EmailNotifier implements Notifier
                 String address = inRecipientIndex.get(recipientId).getEmail();
                 if (StringUtils.isNotBlank(address))
                 {
+                    // Note: checking on a per-user basis is very inefficient. That's why the generallyAllowed
+                    // optimization was put in to omit the per-user check for streams that allow commenting. Both the
+                    // generallyAllowed and the per-user call could be replaced with an authorizer that takes a list of
+                    // users to check and returns a list of only those which are allowed (i.e. an authorization filter).
+                    // If the scenario arises where there are streams which do not allow commenting with many email
+                    // subscribers, then a bulk authorizer could be used to significantly improve performance.
                     if (generallyAllowed
                             || activityAuthorizer.authorize(recipientId, activity, ActivityInteractionType.COMMENT))
                     {

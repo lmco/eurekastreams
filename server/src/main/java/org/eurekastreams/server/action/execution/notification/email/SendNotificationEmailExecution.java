@@ -59,11 +59,6 @@ public class SendNotificationEmailExecution implements ExecutionStrategy<ActionC
     public Serializable execute(final ActionContext inActionContext) throws ExecutionException
     {
         NotificationEmailDTO request = (NotificationEmailDTO) inActionContext.getParams();
-
-        NotificationEmailDTO r = request;
-        System.out.printf("EMAIL:  To=%s BCC=%s Reply=%s Desc=%s Subject=%s%n", r.getToRecipient(),
-                r.getBccRecipients(), r.getReplyTo(), r.getDescription(), r.getSubject());
-
         try
         {
             MimeMessage message = emailer.createMessage();
