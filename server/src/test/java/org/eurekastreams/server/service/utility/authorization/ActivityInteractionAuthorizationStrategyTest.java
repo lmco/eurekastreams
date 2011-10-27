@@ -18,7 +18,6 @@ package org.eurekastreams.server.service.utility.authorization;
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,12 +83,6 @@ public class ActivityInteractionAuthorizationStrategyTest
     private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordDAO = mockery.mock(
             GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class, "groupCoordDAO");
 
-    // getPersonByIdMapper
-
-    /** DAO to get all system administrators. */
-    private final DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsDAO = mockery.mock(
-            DomainMapper.class, "getSystemAdministratorIdsDAO");
-
     /** Fixture: stream. */
     private final StreamEntityDTO stream = mockery.mock(StreamEntityDTO.class, "stream");
 
@@ -106,7 +99,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     public void setUp()
     {
         sut = new ActivityInteractionAuthorizationStrategy(getPersonByIdDAO, getGroupByIdDAO, groupFollowersDAO,
-                groupCoordDAO, getSystemAdministratorIdsDAO);
+                groupCoordDAO);
         mockery.checking(new Expectations()
         {
             {
@@ -137,9 +130,6 @@ public class ActivityInteractionAuthorizationStrategyTest
 
                 allowing(getPersonByIdDAO).execute(PERSON_STREAM_OWNER);
                 will(returnValue(person));
-
-                allowing(getSystemAdministratorIdsDAO).execute(with(any(Serializable.class)));
-                will(returnValue(Collections.singletonList(PERSON_COORD_ADMIN)));
             }
         });
         return person;
@@ -363,7 +353,7 @@ public class ActivityInteractionAuthorizationStrategyTest
     @Test
     public void testPersonStreamAdminForbid()
     {
-        assertTrue(corePersonStreamPostTest(PERSON_COORD_ADMIN, false));
+        assertFalse(corePersonStreamPostTest(PERSON_COORD_ADMIN, false));
     }
 
     // ---------- GROUP TESTS ----------

@@ -551,7 +551,6 @@
 		<constructor-arg ref="getGroupByIdMapper" />
 		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
-		<constructor-arg ref="getSystemAdministratorIds" />
 	</bean>
 
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">

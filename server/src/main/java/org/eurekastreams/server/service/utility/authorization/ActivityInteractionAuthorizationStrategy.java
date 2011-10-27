@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.service.utility.authorization;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -52,9 +51,6 @@ public class ActivityInteractionAuthorizationStrategy
     /** DAO to get all coordinators of a group. */
     private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordDAO;
 
-    /** DAO to get all system administrators. */
-    private final DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsDAO;
-
     /**
      * Constructor.
      *
@@ -66,20 +62,16 @@ public class ActivityInteractionAuthorizationStrategy
      *            DAO to get group follower IDs.
      * @param inGroupCoordDAO
      *            DAO to get all coordinators of a group.
-     * @param inGetSystemAdministratorIdsDAO
-     *            DAO to get all system administrators.
      */
     public ActivityInteractionAuthorizationStrategy(final DomainMapper<Long, PersonModelView> inGetPersonByIdDAO,
             final DomainMapper<Long, DomainGroupModelView> inGetGroupByIdDAO,
             final DomainMapper<Long, List<Long>> inGroupFollowersDAO,
-            final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordDAO,
-            final DomainMapper<Serializable, List<Long>> inGetSystemAdministratorIdsDAO)
+            final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordDAO)
     {
         getPersonByIdDAO = inGetPersonByIdDAO;
         getGroupByIdDAO = inGetGroupByIdDAO;
         groupFollowersDAO = inGroupFollowersDAO;
         groupCoordDAO = inGroupCoordDAO;
-        getSystemAdministratorIdsDAO = inGetSystemAdministratorIdsDAO;
     }
 
     /**
@@ -112,7 +104,7 @@ public class ActivityInteractionAuthorizationStrategy
 
     /**
      * Determines if users in general have permission to interact with (post/comment/view) an activity.
-     * 
+     *
      * @param activity
      *            Activity being interacted with.
      * @param interactionType
@@ -195,13 +187,7 @@ public class ActivityInteractionAuthorizationStrategy
 
             // check if the stream has been authorized for this type of interaction
             PersonModelView targetStreamOwner = getPersonByIdDAO.execute(streamOwnerId);
-            if (isStreamInteractionAuthorized(targetStreamOwner, interactionType))
-            {
-                return true;
-            }
-
-            // system admins are allowed to do anything
-            return getSystemAdministratorIdsDAO.execute(null).contains(userId);
+            return isStreamInteractionAuthorized(targetStreamOwner, interactionType);
         }
         catch (Exception ex)
         {
