@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerAction;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContextImpl;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -165,7 +166,7 @@ public class ServiceActionController implements ActionController
         transDef.setReadOnly(inTaskHandlerAction.isReadOnly());
         TransactionStatus transStatus = transMgr.getTransaction(transDef);
         TaskHandlerActionContext<PrincipalActionContext> taskHandlerContext = // \n
-        new TaskHandlerActionContext<PrincipalActionContext>(inServiceActionContext,
+        new TaskHandlerActionContextImpl<PrincipalActionContext>(inServiceActionContext,
                 new ArrayList<UserActionRequest>());
         try
         {

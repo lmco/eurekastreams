@@ -27,6 +27,7 @@ import java.util.Map;
 import org.eurekastreams.commons.actions.context.ClientPrincipalActionContext;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContextImpl;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
@@ -187,6 +188,6 @@ public class SendPrebuiltNotificationExecutionTest
                 return CLIENT_ID;
             }
         };
-        return new TaskHandlerActionContext<ClientPrincipalActionContext>(ctx, new ArrayList<UserActionRequest>());
+        return new TaskHandlerActionContextImpl<ClientPrincipalActionContext>(ctx, new ArrayList<UserActionRequest>());
     }
 }

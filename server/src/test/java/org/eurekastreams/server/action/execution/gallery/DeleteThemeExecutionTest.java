@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test for DeleteThemeExecution.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class DeleteThemeExecutionTest
@@ -76,7 +76,7 @@ public class DeleteThemeExecutionTest
     /**
      * Theme id.
      */
-    private Long themeId = 9L;
+    private final Long themeId = 9L;
 
     /** Name of action to initiate. */
     private final String deleteCacheKeysActionName = "deleteCacheKeysActionName";
@@ -84,7 +84,7 @@ public class DeleteThemeExecutionTest
     /**
      * Action name.
      */
-    private DeleteThemeExecution sut = new DeleteThemeExecution(findByIdMapper, deleteThemeMapper,
+    private final DeleteThemeExecution sut = new DeleteThemeExecution(findByIdMapper, deleteThemeMapper,
             getPeopleIdsUsingTheme, deleteCacheKeysActionName);
 
     /**
@@ -93,8 +93,6 @@ public class DeleteThemeExecutionTest
     @Test
     public void test()
     {
-        ArrayList<UserActionRequest> queuedActions = new ArrayList<UserActionRequest>();
-
         final List<Long> personIdsUsingTheme = new ArrayList<Long>(Arrays.asList(4L));
 
         context.checking(new Expectations()
@@ -113,9 +111,9 @@ public class DeleteThemeExecutionTest
             }
         });
 
-        AsyncActionContext innerContext = new AsyncActionContext(themeId);
-        TaskHandlerActionContext<ActionContext> actionContext = new TaskHandlerActionContext<ActionContext>(
-                innerContext, queuedActions);
+        TaskHandlerActionContext<ActionContext> actionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(themeId);
+        List<UserActionRequest> queuedActions = actionContext.getUserActionRequests();
 
         sut.execute(actionContext);
         context.assertIsSatisfied();

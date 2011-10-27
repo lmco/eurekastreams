@@ -611,7 +611,7 @@
                 <constructor-arg ref="getPersonIdsWithStarredActivity" />
                 <constructor-arg ref="getGroupByIdMapperAllowNullResult" />
                 <constructor-arg>
-                	<bean class="org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor">
+                	<bean class="org.eurekastreams.commons.actions.InlineExecutionStrategyWrappingExecutor">
                 		<constructor-arg value="true" />
                 		<constructor-arg ref="updateGroupStickyActivityExecution" />
                 	</bean>

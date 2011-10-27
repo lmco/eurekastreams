@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@ package org.eurekastreams.server.action.execution.gallery;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.GalleryItem;
 import org.eurekastreams.server.persistence.GalleryItemMapper;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -70,9 +68,7 @@ public class HideGalleryItemThenQueueTaskExecutionTest
             }
         });
 
-        AsyncActionContext innerContext = new AsyncActionContext(9L);
-        TaskHandlerActionContext<ActionContext> wrapperContext = new TaskHandlerActionContext<ActionContext>(
-                innerContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<ActionContext> wrapperContext = TestContextCreator.createTaskHandlerAsyncContext(9L);
 
         sut.execute(wrapperContext);
 

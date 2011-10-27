@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,11 @@
 package org.eurekastreams.server.action.execution.settings;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -37,14 +34,14 @@ import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
 
 /**
  * Strategy for creating person record in the system.
- * 
+ *
  */
 public class CreatePersonExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Send welcome email action key.
@@ -59,16 +56,16 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
     /**
      * Factory to create person.
      */
-    private CreatePersonActionFactory createPersonActionFactory;
+    private final CreatePersonActionFactory createPersonActionFactory;
 
     /**
      * Person mapper.
      */
-    private PersonMapper personMapper;
+    private final PersonMapper personMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCreatePersonActionFactory
      *            action factory persist user updates.
      * @param inPersonMapper
@@ -86,10 +83,10 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
 
     /**
      * Add person to the system.
-     * 
+     *
      * @param inActionContext
      *            The action context
-     * 
+     *
      * @return true on success.
      */
     @Override
@@ -102,51 +99,18 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
                 new ReflectiveUpdater());
 
         log.debug("Adding to database: " + inPerson.getAccountId());
-        final HashMap<String, Serializable> personData = inPerson.getProperties();
 
-        Person person = (Person) persistResourceExecution.execute(new TaskHandlerActionContext<PrincipalActionContext>(
-                new PrincipalActionContext()
-                {
-                    private static final long serialVersionUID = 9196683601970713330L;
+        Person person = (Person) new InlineExecutionStrategyExecutor().execute(persistResourceExecution,
+                inPerson.getProperties(), inActionContext);
 
-                    @Override
-                    public Principal getPrincipal()
-                    {
-                        throw new RuntimeException("No principal available for this execution.");
-                    }
-
-                    @Override
-                    public Serializable getParams()
-                    {
-                        return personData;
-                    }
-
-                    @Override
-                    public Map<String, Object> getState()
-                    {
-                        return null;
-                    }
-
-                    @Override
-                    public String getActionId()
-                    {
-                        return null;
-                    }
-
-                    @Override
-                    public void setActionId(final String inActionId)
-                    {
-
-                    }
-                }, null));
         log.info("Added to database: " + inPerson.getAccountId());
 
         // Send email notification if necessary
         if (createRequest.getSendEmail() && sendWelcomeEmailAction != null && !sendWelcomeEmailAction.isEmpty())
         {
             inActionContext.getUserActionRequests().add(
-                    new UserActionRequest(sendWelcomeEmailAction, null, new SendWelcomeEmailRequest(
-                            inPerson.getEmail(), inPerson.getAccountId())));
+                    new UserActionRequest(sendWelcomeEmailAction, null, new SendWelcomeEmailRequest(inPerson
+                            .getEmail(), inPerson.getAccountId())));
         }
 
         return person;

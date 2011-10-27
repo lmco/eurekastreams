@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ package org.eurekastreams.server.action.execution.settings;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -59,12 +59,6 @@ public class SetPersonLockedStatusExecutionTest
     /** For mapping accountid to id. */
     private final DomainMapper<String, Long> personIdMapper = context.mock(DomainMapper.class, "personIdMapper");
 
-    /** {@link AsyncActionContext}. */
-    private final AsyncActionContext actionContext = context.mock(AsyncActionContext.class);
-
-    /** {@link TaskHandlerActionContext}. */
-    private TaskHandlerActionContext outerActionContext;
-
     /** System under test. */
     private SetPersonLockedStatusExecution sut;
 
@@ -74,7 +68,6 @@ public class SetPersonLockedStatusExecutionTest
     @Before
     public void setUp()
     {
-        outerActionContext = new TaskHandlerActionContext(actionContext, new ArrayList<UserActionRequest>());
         sut = new SetPersonLockedStatusExecution(setLockedStatusDAO, personIdMapper);
     }
 
@@ -88,9 +81,6 @@ public class SetPersonLockedStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(actionContext).getParams();
-                will(returnValue(request));
-
                 oneOf(setLockedStatusDAO).execute(request);
 
                 allowing(personIdMapper).execute(ACCOUNT_ID);
@@ -98,11 +88,13 @@ public class SetPersonLockedStatusExecutionTest
             }
         });
 
+        TaskHandlerActionContext<ActionContext> outerActionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(request);
         sut.execute(outerActionContext);
 
         context.assertIsSatisfied();
         assertEquals(1, outerActionContext.getUserActionRequests().size());
-        UserActionRequest outRequest = (UserActionRequest) outerActionContext.getUserActionRequests().get(0);
+        UserActionRequest outRequest = outerActionContext.getUserActionRequests().get(0);
         assertEquals("deleteCacheKeysAction", outRequest.getActionKey());
         Collection<String> keys = (Collection<String>) outRequest.getParams();
         assertEquals(1, keys.size());
@@ -119,9 +111,6 @@ public class SetPersonLockedStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(actionContext).getParams();
-                will(returnValue(request));
-
                 oneOf(setLockedStatusDAO).execute(request);
 
                 allowing(personIdMapper).execute(ACCOUNT_ID);
@@ -129,11 +118,13 @@ public class SetPersonLockedStatusExecutionTest
             }
         });
 
+        TaskHandlerActionContext<ActionContext> outerActionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(request);
         sut.execute(outerActionContext);
 
         context.assertIsSatisfied();
         assertEquals(1, outerActionContext.getUserActionRequests().size());
-        UserActionRequest outRequest = (UserActionRequest) outerActionContext.getUserActionRequests().get(0);
+        UserActionRequest outRequest = outerActionContext.getUserActionRequests().get(0);
         assertEquals("cachePerson", outRequest.getActionKey());
         assertEquals(PERSON_ID, outRequest.getParams());
     }

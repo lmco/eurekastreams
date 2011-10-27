@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -89,7 +89,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            The Group Mapper
      * @param inPersonMapper
@@ -116,7 +116,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Returns DomainGroup based on id passed in inFields.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -141,7 +141,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Persists new group object.
-     * 
+     *
      * @param inGroup
      *            The group.
      * @param inFields
@@ -201,14 +201,11 @@ public class GroupCreator extends GroupPersister
         for (Person coordinator : inGroup.getCoordinators())
         {
             SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
-                    coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(), inGroup
-                            .getShortName(), isPending);
-            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
-                    creatorUserName, principal.getOpenSocialId(), creatorPersonId));
-            TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = // \n
-            new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
+                    coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(),
+                    inGroup.getShortName(), isPending);
+            new InlineExecutionStrategyExecutor().execute(followStrategy, currentRequest, new DefaultPrincipal(
+                    creatorUserName, principal.getOpenSocialId(), creatorPersonId), inActionContext
                     .getUserActionRequests());
-            followStrategy.execute(currentTaskHandlerActionContext);
         }
 
         // trigger notification if group will be pending approval

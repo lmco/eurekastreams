@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
@@ -45,6 +44,7 @@ import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.RecipientRetriever;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -54,11 +54,11 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link PostActivityExecutionStrategy}.
- * 
+ *
  * Note: There are not tests for failure scenarios since this execution strategy
  * does not have a need to handle any exceptions. They are passed up to the
  * action controller which then wraps them and returns them to the client.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class PostActivityExecutionStrategyTest
@@ -108,7 +108,7 @@ public class PostActivityExecutionStrategyTest
     /**
      * Mapper to get or insert shared resources.
      */
-    private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper = context.mock(
+    private final DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper = context.mock(
 	    DomainMapper.class, "findOrInsertSharedResourceMapper");
 
     /**
@@ -139,27 +139,27 @@ public class PostActivityExecutionStrategyTest
     /**
      * Cache.
      */
-    private Cache cache = context.mock(Cache.class);
-    
+    private final Cache cache = context.mock(Cache.class);
+
     /**
      * Person.
      */
-    private PersonModelView person = context.mock(PersonModelView.class);
+    private final PersonModelView person = context.mock(PersonModelView.class);
 
     /**
      * List of filters to apply to action.
      */
-    private List<ActivityFilter> filters = new ArrayList<ActivityFilter>();
+    private final List<ActivityFilter> filters = new ArrayList<ActivityFilter>();
 
     /**
      * Filter.
      */
-    private ActivityFilter filter = context.mock(ActivityFilter.class);
-    
+    private final ActivityFilter filter = context.mock(ActivityFilter.class);
+
     /**
      * Mapper to get a person model view by account id.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
 	    DomainMapper.class, "personMapper");
 
     /**
@@ -174,7 +174,7 @@ public class PostActivityExecutionStrategyTest
 	// picking person as
 	// the default.
 	filters.add(filter);
-	
+
 	sut = new PostActivityExecutionStrategy(activityInsertMapperMock, commentInsertMapperMock,
 		activitiesMapperMock, recipientRetrieverMock, updateStreamsByActorMapperMock,
 		findOrInsertSharedResourceMapper, cache, getPersonModelViewByAccountIdMapper, filters);
@@ -197,8 +197,6 @@ public class PostActivityExecutionStrategyTest
 
 	final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
 
-	final ServiceActionContext actionContext = new ServiceActionContext(request, currentPrincipal);
-
 	context.checking(new Expectations()
 	{
 	    {
@@ -212,19 +210,17 @@ public class PostActivityExecutionStrategyTest
 
 		oneOf(activitiesMapperMock).execute(with(any(List.class)));
 		will(returnValue(activityResults));
-		
+
 		oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
 		will(returnValue(person));
 
 		oneOf(filter).filter(with(any(List.class)), with(person));
-		
+
 		oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
 	    }
 	});
 
-	TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-	= new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
-	sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(request, currentPrincipal));
 
 	context.assertIsSatisfied();
     }
@@ -245,8 +241,6 @@ public class PostActivityExecutionStrategyTest
 	final PostActivityRequest request = new PostActivityRequest(currentActivity);
 
 	final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
-
-	final ServiceActionContext actionContext = new ServiceActionContext(request, currentPrincipal);
 
 	final SharedResource sr = new SharedResource();
 
@@ -275,13 +269,13 @@ public class PostActivityExecutionStrategyTest
 		will(returnValue(person));
 
 		oneOf(filter).filter(with(any(List.class)), with(person));
-		
+
 		oneOf(cache).delete(expectedCacheKey);
 	    }
 	});
 
-	TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-	= new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(request, currentPrincipal);
 	sut.execute(currentTaskHandlerActionContext);
 
 	Assert.assertEquals(3, currentTaskHandlerActionContext.getUserActionRequests().size());
@@ -296,11 +290,11 @@ public class PostActivityExecutionStrategyTest
 	    if (req.getActionKey().equals("postActivityAsyncAction"))
 	    {
 		postActivityAsyncActionFound = true;
-	    } 
+	    }
 	    else if (req.getActionKey().equals("createNotificationsAction"))
 	    {
 		createNotificationsActionFound = true;
-	    } 
+	    }
 	    else if (req.getActionKey().equals("deleteCacheKeysAction"))
 	    {
 		deleteCacheKeysActionFound = true;
@@ -337,8 +331,6 @@ public class PostActivityExecutionStrategyTest
 
 	final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
 
-	final ServiceActionContext actionContext = new ServiceActionContext(request, currentPrincipal);
-
 	context.checking(new Expectations()
 	{
 	    {
@@ -356,10 +348,10 @@ public class PostActivityExecutionStrategyTest
 		oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
 
 		oneOf(testComment).getBody();
-		
+
 		oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
 		will(returnValue(person));
-		
+
 		oneOf(filter).filter(with(any(List.class)), with(person));
 
 		oneOf(commentInsertMapperMock).execute(with(any(InsertActivityCommentRequest.class)));
@@ -367,9 +359,7 @@ public class PostActivityExecutionStrategyTest
 	    }
 	});
 
-	TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-	= new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
-	sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(request, currentPrincipal));
 
 	context.assertIsSatisfied();
     }

@@ -16,127 +16,105 @@
 package org.eurekastreams.commons.actions;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContextImpl;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
-import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.server.UserActionRequest;
 
 /**
- * Class which allows execution strategies to easily be invoked inline by other execution strategies.
+ * Class which allows execution strategies to easily be invoked inline by other execution strategies. Same fundamental
+ * purpose as InlineExecutionStrategyWrappingExecutor but takes the action as a call parameter instead of a constructor
+ * argument.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class InlineExecutionStrategyExecutor
 {
-    /** If the execution strategy needs a principal. */
-    private final boolean needsPrincipal;
-
-    /** Execution strategy to execute, if it needs to queue async tasks. */
-    private TaskHandlerExecutionStrategy taskHandlerExecution;
-
-    /** Execution strategy to execute, if it does not need to queue async tasks. */
-    private ExecutionStrategy plainExecution;
-
     /**
-     * Constructor.
+     * Executes the given execution strategy.
      *
-     * @param inNeedsPrincipal
-     *            If the execution strategy needs a principal.
-     * @param inPlainExecution
-     *            Execution strategy to execute which does not need to queue async tasks.
-     */
-    public InlineExecutionStrategyExecutor(final boolean inNeedsPrincipal, final ExecutionStrategy inPlainExecution)
-    {
-        needsPrincipal = inNeedsPrincipal;
-        plainExecution = inPlainExecution;
-
-        assert plainExecution != null;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param inNeedsPrincipal
-     *            If the execution strategy needs a principal.
-     * @param inTaskHandlerExecution
-     *            Execution strategy to execute which does need to queue async tasks.
-     */
-    public InlineExecutionStrategyExecutor(final boolean inNeedsPrincipal,
-            final TaskHandlerExecutionStrategy inTaskHandlerExecution)
-    {
-        needsPrincipal = inNeedsPrincipal;
-        taskHandlerExecution = inTaskHandlerExecution;
-
-        assert taskHandlerExecution != null;
-    }
-
-    /**
-     * Invokes the execution strategy getting needed data from a provided TaskHandlerActionContext.
-     *
-     * @param inActionContext
-     *            Caller's TaskHandlerActionContext.
+     * @param execution
+     *            The execution strategy.
      * @param params
      *            Parameters for the execution strategy to be invoked.
-     * @return Results from the invoked execution strategy.
-     * @throws ExecutionException
-     *             If execution strategy threw an exception or call did not provide all data needed for the execution
-     *             strategy.
+     * @param principal
+     *            Principal to provide to the execution strategy.
+     * @return Return value from the execution strategy.
      */
-    public Serializable execute(final TaskHandlerActionContext< ? extends ActionContext> inActionContext,
-            final Serializable params) throws ExecutionException
+    public Serializable execute(final ExecutionStrategy execution, final Serializable params, final Principal principal)
     {
-        ActionContext inInnerContext = inActionContext.getActionContext();
-        boolean hasPrincipalContext = inInnerContext instanceof PrincipalActionContext;
-        if (needsPrincipal && !hasPrincipalContext)
-        {
-            throw new ExecutionException("Incorrect action execution invocation.  "
-                    + "Execution requires principal but none was provided on call.");
-        }
-        ActionContext innerContext = hasPrincipalContext ? new ServiceActionContext(params,
-                ((PrincipalActionContext) inInnerContext).getPrincipal()) : new AsyncActionContext(params);
-
-        if (taskHandlerExecution != null)
-        {
-            TaskHandlerActionContext outerContext = new TaskHandlerActionContext<ActionContext>(innerContext,
-                    inActionContext.getUserActionRequests());
-            return taskHandlerExecution.execute(outerContext);
-        }
-        return plainExecution.execute(innerContext);
+        PrincipalActionContext context = new ServiceActionContext(params, principal);
+        return execution.execute(context);
     }
 
     /**
-     * Invokes the execution strategy getting needed data from a provided ActionContext.
+     * Executes the given execution strategy.
      *
-     * @param inActionContext
-     *            Caller's ActionContext.
+     * @param execution
+     *            The execution strategy.
      * @param params
      *            Parameters for the execution strategy to be invoked.
-     * @return Results from the invoked execution strategy.
-     * @throws ExecutionException
-     *             If execution strategy threw an exception or call did not provide all data needed for the execution
-     *             strategy.
+     * @param parentContext
+     *            Caller's action context.
+     * @return Return value from the execution strategy.
      */
-    public Serializable execute(final ActionContext inActionContext, final Serializable params)
-            throws ExecutionException
+    public Serializable execute(final ExecutionStrategy execution, final Serializable params,
+            final ActionContext parentContext)
     {
-        boolean hasPrincipalContext = inActionContext instanceof PrincipalActionContext;
-        if (needsPrincipal && !hasPrincipalContext)
+        Principal principal = null;
+        if (parentContext instanceof PrincipalActionContext)
         {
-            throw new ExecutionException("Incorrect action execution invocation.  "
-                    + "Execution requires principal but none was provided on call.");
+            principal = ((PrincipalActionContext) parentContext).getPrincipal();
         }
+        return execute(execution, params, principal);
+    }
 
-        if (taskHandlerExecution != null)
+    /**
+     * Executes the given execution strategy.
+     *
+     * @param execution
+     *            The execution strategy.
+     * @param params
+     *            Parameters for the execution strategy to be invoked.
+     * @param principal
+     *            Principal to provide to the execution strategy.
+     * @param requests
+     *            List to receive any queued action requests from the execution strategy.
+     * @return Return value from the execution strategy.
+     */
+    public Serializable execute(final TaskHandlerExecutionStrategy execution, final Serializable params,
+            final Principal principal, final List<UserActionRequest> requests)
+    {
+        PrincipalActionContext innerContext = new ServiceActionContext(params, principal);
+        TaskHandlerActionContext<PrincipalActionContext> context = new TaskHandlerActionContextImpl(innerContext,
+                requests);
+        return execution.execute(context);
+    }
+
+    /**
+     * Executes the given execution strategy.
+     *
+     * @param execution
+     *            The execution strategy.
+     * @param params
+     *            Parameters for the execution strategy to be invoked.
+     * @param parentContext
+     *            Caller's action context.
+     * @return Return value from the execution strategy.
+     */
+    public Serializable execute(final TaskHandlerExecutionStrategy execution, final Serializable params,
+            final TaskHandlerActionContext< ? extends ActionContext> parentContext)
+    {
+        Principal principal = null;
+        ActionContext parentInnerContext = parentContext.getActionContext();
+        if (parentInnerContext instanceof PrincipalActionContext)
         {
-            throw new ExecutionException("Incorrect action execution invocation.  Execution requires user action "
-                    + "request list (TaskHandlerActionContext) but none was provided on call.");
+            principal = ((PrincipalActionContext) parentInnerContext).getPrincipal();
         }
-
-        ActionContext context = hasPrincipalContext ? new ServiceActionContext(params,
-                ((PrincipalActionContext) inActionContext).getPrincipal()) : new AsyncActionContext(params);
-
-        return plainExecution.execute(context);
+        return execute(execution, params, principal, parentContext.getUserActionRequests());
     }
 }

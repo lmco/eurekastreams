@@ -23,11 +23,11 @@ import java.util.Set;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -161,14 +161,10 @@ public class GroupUpdater extends GroupPersister
                 SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
                         coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(),
                         inGroup.getShortName(), false);
-                ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
+                new InlineExecutionStrategyExecutor().execute(followStrategy, currentRequest, new DefaultPrincipal(
                         creatorUserName, inActionContext.getActionContext().getPrincipal().getOpenSocialId(),
-                        inActionContext.getActionContext().getPrincipal().getId()));
-                TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-                // line break
-                new TaskHandlerActionContext<PrincipalActionContext>(currentContext,
-                        inActionContext.getUserActionRequests());
-                followStrategy.execute(currentTaskHandlerActionContext);
+                        inActionContext.getActionContext().getPrincipal().getId()), inActionContext
+                        .getUserActionRequests());
             }
 
             getGroupMapper().flush();

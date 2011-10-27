@@ -25,6 +25,7 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContextImpl;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.test.EasyMatcher;
@@ -33,12 +34,11 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
-
 /**
- * Tests InlineExecutionStrategyExecutor. All 16 combinations of context needed vs. context provided are tested.
+ * Tests InlineExecutionStrategyWrappingExecutor. All 16 combinations of context needed vs. context provided are tested.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class InlineExecutionStrategyExecutorTest
+public class InlineExecutionStrategyWrappingExecutorTest
 {
     /** Used for mocking objects. */
     private final JUnit4Mockery context = new JUnit4Mockery()
@@ -67,7 +67,7 @@ public class InlineExecutionStrategyExecutorTest
     private final Principal principal = context.mock(Principal.class);
 
     /** SUT. */
-    private InlineExecutionStrategyExecutor sut;
+    private InlineExecutionStrategyWrappingExecutor sut;
 
     /**
      * Test.
@@ -236,7 +236,7 @@ public class InlineExecutionStrategyExecutorTest
      */
     private void expectPlain()
     {
-        sut = new InlineExecutionStrategyExecutor(false, plainExecution);
+        sut = new InlineExecutionStrategyWrappingExecutor(false, plainExecution);
         context.checking(new Expectations()
         {
             {
@@ -259,7 +259,7 @@ public class InlineExecutionStrategyExecutorTest
      */
     private void expectPlainAndPrincipal()
     {
-        sut = new InlineExecutionStrategyExecutor(true, plainExecution);
+        sut = new InlineExecutionStrategyWrappingExecutor(true, plainExecution);
         context.checking(new Expectations()
         {
             {
@@ -284,7 +284,7 @@ public class InlineExecutionStrategyExecutorTest
      */
     private void expectTaskHandler()
     {
-        sut = new InlineExecutionStrategyExecutor(false, taskHandlerExecution);
+        sut = new InlineExecutionStrategyWrappingExecutor(false, taskHandlerExecution);
         context.checking(new Expectations()
         {
             {
@@ -309,7 +309,7 @@ public class InlineExecutionStrategyExecutorTest
      */
     private void expectTaskHandlerAndPrincipal()
     {
-        sut = new InlineExecutionStrategyExecutor(true, taskHandlerExecution);
+        sut = new InlineExecutionStrategyWrappingExecutor(true, taskHandlerExecution);
         context.checking(new Expectations()
         {
             {
@@ -370,7 +370,7 @@ public class InlineExecutionStrategyExecutorTest
     {
         final PrincipalActionContext originalInnerContext = context.mock(PrincipalActionContext.class,
                 "originalInnerContext");
-        TaskHandlerActionContext originalOuterContext = new TaskHandlerActionContext(originalInnerContext,
+        TaskHandlerActionContext originalOuterContext = new TaskHandlerActionContextImpl(originalInnerContext,
                 userActionRequests);
 
         context.checking(new Expectations()
@@ -391,7 +391,7 @@ public class InlineExecutionStrategyExecutorTest
     private void invokeWithTaskHandler()
     {
         final ActionContext originalInnerContext = context.mock(ActionContext.class, "originalInnerContext");
-        TaskHandlerActionContext originalOuterContext = new TaskHandlerActionContext(originalInnerContext,
+        TaskHandlerActionContext originalOuterContext = new TaskHandlerActionContextImpl(originalInnerContext,
                 userActionRequests);
 
         Serializable result = sut.execute(originalOuterContext, parameters);
