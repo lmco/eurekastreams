@@ -1,5 +1,0 @@
-BEGIN:VCARD
-N:Eureka;Comment to activity $activityId
-FN:Comment to activity $activityId
-EMAIL;INTERNET:$email
-END:VCARD

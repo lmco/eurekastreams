@@ -40,10 +40,4 @@
 		<property name="contentType" value="text/x-vcard" />
 	</bean>
 
-	<bean id="vcardActivityView" class="org.springframework.web.servlet.view.velocity.VelocityView">
-		<property name="url" value="/conf/templates/ACTIVITY_EMAIL_CONTACT.vcf" />
-		<property name="velocityEngine" ref="velocityEngine" />
-		<property name="contentType" value="text/x-vcard" />
-	</bean>
-
 </beans>
