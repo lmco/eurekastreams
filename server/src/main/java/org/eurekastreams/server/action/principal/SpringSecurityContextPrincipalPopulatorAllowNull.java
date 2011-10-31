@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.server.action.principal;
 
-import java.util.Map.Entry;
-
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
@@ -148,19 +146,11 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
                 logger.debug("Checking headers");
                 Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
 
-                if (httpHeaders.getFirstValue(sessionHeaderName) != null)
+                if (httpHeaders.getFirstValue(sessionHeaderName, true) != null)
                 {
-                    String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName);
+                    String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName, true);
                     logger.debug("Session id from header: " + headerSessionId);
                     sessionMatch = sessionId.equals(headerSessionId);
-                }
-                else
-                {
-                    logger.debug("Session header '" + sessionHeaderName + "' not found. Dumping headers.");
-                    for (Entry<String, String> theHeader : httpHeaders.getValuesMap().entrySet())
-                    {
-                        logger.debug(theHeader.getKey() + " : " + theHeader.getValue());
-                    }
                 }
             }
             else

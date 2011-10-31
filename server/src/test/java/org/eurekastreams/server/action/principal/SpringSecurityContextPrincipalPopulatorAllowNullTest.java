@@ -246,7 +246,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
                 allowing(request).getAttributes();
                 will(returnValue(attribs));
 
-                allowing(headers).getFirstValue("sessionid");
+                allowing(headers).getFirstValue("sessionid", true);
                 will(returnValue(sessionId));
             }
         });
@@ -280,7 +280,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
                 allowing(request).getAttributes();
                 will(returnValue(attribs));
 
-                allowing(headers).getFirstValue("sessionid");
+                allowing(headers).getFirstValue("sessionid", true);
                 will(returnValue("adsf"));
             }
         });
