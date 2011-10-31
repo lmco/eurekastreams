@@ -49,12 +49,12 @@
     <bean id="springSecurityContextPrincipalPopulatorAllowNull" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
         <constructor-arg value="false" />    
         <constructor-arg value="JSESSIONID" />    
-        <constructor-arg value="sessionid" />    
+        <constructor-arg value="X-sessionid" />    
     </bean>
     <bean id="springSecurityContextPrincipalPopulatorAllowNullRequireSession" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
         <constructor-arg value="${eureka.fullapi.verifysession}" />
         <constructor-arg value="JSESSIONID" />    
-        <constructor-arg value="sessionid" />  
+        <constructor-arg value="X-sessionid" />  
 	</bean>
 	
     <bean id="serviceActionController" class="org.eurekastreams.commons.server.service.ServiceActionController">

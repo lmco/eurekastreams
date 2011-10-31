@@ -17,7 +17,7 @@
         $.ajax({
             url: fullUrl,
             headers: {
-                sessionId: sessionId
+                "X-sessionid": sessionId
             },
             success: function(data){
                 $('#full').html(data);
