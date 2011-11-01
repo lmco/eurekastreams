@@ -245,14 +245,21 @@
 		<constructor-arg ref="velocityEngine" />
 		<constructor-arg ref="velocityGlobalContext" />
 		<constructor-arg ref="inAppNotifierMessageTemplates" />
+		<constructor-arg ref="inAppNotifierAggregateMessageTemplates" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
         </constructor-arg>
         <constructor-arg ref="getCachedUnreadInAppNotificationCountsByUserId_FORCE_REFRESH" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
 				<constructor-arg value="org.eurekastreams.server.domain.Person" />
 			</bean>
+        </constructor-arg>       
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetInAppNotificationByUserIdAndUrl" />
         </constructor-arg>
     </bean>
 
@@ -474,6 +481,11 @@
 		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="Your request to join the $group.displayName group has been approved." />
 		<entry key="REQUEST_GROUP_ACCESS_DENIED" value="Your request to join the $group.displayName group has been denied." />
 		<entry key="PASS_THROUGH" value="$message" />
+	</util:map>
+	
+	<util:map id="inAppNotifierAggregateMessageTemplates">
+		<entry key="COMMENT_TO_PERSONAL_POST" value="There have been $aggregationCount new comments on your #activityType($activity)." />
+		<entry key="COMMENT_TO_COMMENTED_POST" value="There have been $aggregationCount new comments on $activity.actor.displayName's #activityType($activity)." />
 	</util:map>
 
 	<!-- ==== EMAIL ==== -->
