@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.db.notification;
 import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.server.domain.InAppNotificationEntity;
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -71,6 +72,7 @@ public class GetExistingInAppNotificationForAggregationTest extends MapperTest
             }
         });
         searchCriteria.setRecipient(recipient);
+        searchCriteria.setNotificationType(NotificationType.LIKE_ACTIVITY);
         searchCriteria.setUrl("#activity/6789");
         InAppNotificationEntity result = sut.execute(searchCriteria);
 

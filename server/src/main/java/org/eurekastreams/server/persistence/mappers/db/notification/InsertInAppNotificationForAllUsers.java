@@ -47,9 +47,9 @@ public class InsertInAppNotificationForAllUsers extends
 
         // use a bulk insert to duplicate it for all non-locked users
         String q = "insert into InAppNotification (recipient, notificationType, notificationDate, message, url, "
-                + "highPriority, isRead, sourceType, avatarOwnerType) "
+                + "highPriority, isRead, sourceType, avatarOwnerType, aggregationCount) "
                 + "select p, n.notificationType, n.notificationDate, n.message, n.url, n.highPriority, n.isRead, "
-                + "n.sourceType, n.avatarOwnerType from Person p, InAppNotification n "
+                + "n.sourceType, n.avatarOwnerType, n.aggregationCount from Person p, InAppNotification n "
                 + "where n.id = :id and p.accountLocked = false";
         Query query = getEntityManager().createQuery(q).setParameter("id", dbNotif.getId());
         int count = query.executeUpdate();
