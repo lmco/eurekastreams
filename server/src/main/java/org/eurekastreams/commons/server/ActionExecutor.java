@@ -29,9 +29,11 @@ import org.eurekastreams.commons.client.ActionRequest;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
+import org.eurekastreams.commons.exceptions.InvalidActionException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
@@ -186,6 +188,14 @@ public class ActionExecutor
             {
                 // Remove any nested exceptions
                 response = (ex.getCause() == null) ? ex : new ExecutionException(ex.getMessage());
+            }
+            else if (ex instanceof InvalidActionException)
+            {
+                response = new GeneralException("Invalid action.");
+            }
+            else if (ex instanceof NoSuchBeanDefinitionException)
+            {
+                response = new GeneralException("Invalid action.");
             }
             else
             {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,35 +17,25 @@ package org.eurekastreams.commons.server;
 
 import java.io.Serializable;
 
-import org.springframework.security.userdetails.UserDetails;
+import org.eurekastreams.commons.actions.context.Principal;
 
 /**
- * This class encapsulates in one object everything an action needs to process a request,
- * including passing this object as is to a producer that puts it on the queue to be
- * picked up by the consumer and passed to an async action.
- *
+ * This class encapsulates in one object everything an action needs to process a request, including passing this object
+ * as is to a producer that puts it on the queue to be picked up by the consumer and passed to an async action.
  */
 public class UserActionRequest implements Serializable
 {
 
-    /**
-	 * Generated serial version Id.
-	 */
-	private static final long serialVersionUID = -5787537910924233440L;
+    /** Generated serial version Id. */
+    private static final long serialVersionUID = -5787537910924233440L;
 
-	/**
-     * Uniquely represents one ServerAction.
-     */
-    private String actionKey;
+    /** Uniquely represents one ServerAction. */
+    private final String actionKey;
 
-    /**
-     * User details.
-     */
-    private UserDetails user;
+    /** User under whose authority or on whose behalf the action should be executed. */
+    private Principal user;
 
-    /**
-     * Parameters to be passed to the ServerAction.
-     */
+    /** Parameters to be passed to the action. */
     private Serializable params = null;
 
     /**
@@ -54,11 +44,11 @@ public class UserActionRequest implements Serializable
      * @param inActionKey
      *            the action to be called to respond to the request; this action is to implement {@link RequestAction}
      * @param inUser
-     *            identify the request
+     *            User under whose authority or on whose behalf the action should be executed.
      * @param inParams
      *            parameters to send to the request.
      */
-    public UserActionRequest(final String inActionKey, final UserDetails inUser, final Serializable inParams)
+    public UserActionRequest(final String inActionKey, final Principal inUser, final Serializable inParams)
     {
         actionKey = inActionKey;
         user = inUser;
@@ -90,7 +80,7 @@ public class UserActionRequest implements Serializable
      *
      * @return the user
      */
-    public UserDetails getUser()
+    public Principal getUser()
     {
         return user;
     }
@@ -101,20 +91,21 @@ public class UserActionRequest implements Serializable
      * @param inUser
      *            the user
      */
-    public void setUser(final UserDetails inUser)
+    public void setUser(final Principal inUser)
     {
-        this.user = inUser;
+        user = inUser;
     }
-    
+
     /**
      * Retrieve information about the user request overriding the toString method.
+     *
      * @return String description of the contents of this User Request.
      */
     @Override
     public String toString()
     {
-        String stringOutput = "UserActionRequest actionKey: " + actionKey 
-            + " requesting user: " + (user != null ? user.getUsername() : "null");
+        String stringOutput = "UserActionRequest actionKey: " + actionKey + " requesting user: "
+                + (user != null ? user.getAccountId() : "null");
         return stringOutput;
     }
 }

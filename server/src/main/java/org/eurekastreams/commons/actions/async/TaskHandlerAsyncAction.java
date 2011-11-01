@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.commons.actions.async;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.eurekastreams.commons.actions.AuthorizationStrategy;
 import org.eurekastreams.commons.actions.TaskHandlerAction;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -84,15 +83,14 @@ public class TaskHandlerAsyncAction implements TaskHandlerAction
     }
 
     /**
-     * This method throws a {@link NotImplementedException} because it is not intended to be
-     * called within the Async side of the Action Framework.
+     * This method is not intended to be called within the Async side of the Action Framework.
      *
      * {@inheritDoc}.
      */
     @Override
     public AuthorizationStrategy<PrincipalActionContext> getAuthorizationStrategy()
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     /**
