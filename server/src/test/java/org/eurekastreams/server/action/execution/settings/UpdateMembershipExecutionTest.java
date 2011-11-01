@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,12 @@ package org.eurekastreams.server.action.execution.settings;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,16 +36,6 @@ public class UpdateMembershipExecutionTest
      * System under test.
      */
     private UpdateMembershipExecution sut;
-
-    /**
-     * Context for building mock objects.
-     */
-    private final Mockery context = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
 
     /**
      * Prepare the system under test.
@@ -66,14 +52,11 @@ public class UpdateMembershipExecutionTest
     @Test
     public void testRetrieveRequests()
     {
-        ServiceActionContext currentContext = new ServiceActionContext(null, null);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(null, null);
         sut.execute(currentTaskHandlerContext);
         List<UserActionRequest> requests = currentTaskHandlerContext.getUserActionRequests();
         assertEquals(1, requests.size());
         assertEquals("refreshMembershipAction", requests.get(0).getActionKey());
-
     }
 }

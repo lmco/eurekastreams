@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.Person;
@@ -34,6 +33,7 @@ import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -43,12 +43,12 @@ import org.junit.Test;
 
 /**
  * Test class for UpdateSystemSettingsExecution.
- * 
+ *
  */
 public class UpdateSystemSettingsExecutionTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -57,30 +57,25 @@ public class UpdateSystemSettingsExecutionTest
 
     /**
      * {@link UpdateMapper}.
-     * 
+     *
      */
-    private UpdateMapper<SystemSettings> updateMapper = context.mock(UpdateMapper.class);
+    private final UpdateMapper<SystemSettings> updateMapper = context.mock(UpdateMapper.class);
 
     /**
      * Updater strategy.
      */
-    private UpdaterStrategy updaterStrategy = context.mock(UpdaterStrategy.class);
+    private final UpdaterStrategy updaterStrategy = context.mock(UpdaterStrategy.class);
 
     /**
      * {@link FindSystemSettings}.
-     * 
+     *
      */
-    private DomainMapper<MapperRequest, SystemSettings> finder = context.mock(DomainMapper.class);
-
-    /**
-     * action context.
-     */
-    private ServiceActionContext actionContext = context.mock(ServiceActionContext.class);
+    private final DomainMapper<MapperRequest, SystemSettings> finder = context.mock(DomainMapper.class);
 
     /**
      * {@link SystemSettings}.
      */
-    private SystemSettings systemSettings = context.mock(SystemSettings.class);
+    private final SystemSettings systemSettings = context.mock(SystemSettings.class);
 
     /**
      * System under test.
@@ -95,25 +90,25 @@ public class UpdateSystemSettingsExecutionTest
     /**
      * Mapper to set the system administrators by account ids.
      */
-    private DomainMapper<List<String>, Boolean> setSystemAdministratorsMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<List<String>, Boolean> setSystemAdministratorsMapper = context.mock(DomainMapper.class,
             "setSystemAdministratorsMapper");
 
     /**
      * Mapper to get the system administrator ids.
      */
-    private DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsMapper = context.mock(DomainMapper.class,
-            "getSystemAdministratorIdsMapper");
+    private final DomainMapper<Serializable, List<Long>> getSystemAdministratorIdsMapper = context.mock(
+            DomainMapper.class, "getSystemAdministratorIdsMapper");
 
     /**
      * Mapper to get person ids by account ids.
      */
-    private DomainMapper<List<String>, List<Long>> peopleIdsByAccountIdsMapper = context.mock(DomainMapper.class,
-            "peopleIdsByAccountIdsMapper");
+    private final DomainMapper<List<String>, List<Long>> peopleIdsByAccountIdsMapper = context.mock(
+            DomainMapper.class, "peopleIdsByAccountIdsMapper");
 
     /**
      * The cache.
      */
-    private Cache cache = context.mock(Cache.class);
+    private final Cache cache = context.mock(Cache.class);
 
     /**
      * Set up before each test.
@@ -155,9 +150,6 @@ public class UpdateSystemSettingsExecutionTest
                 oneOf(peopleIdsByAccountIdsMapper).execute(with(IsEqualInternally.equalInternally(adminAccountIds)));
                 will(returnValue(newAdminIds));
 
-                allowing(actionContext).getParams();
-                will(returnValue(formData));
-
                 allowing(finder).execute(null);
                 will(returnValue(systemSettings));
 
@@ -176,22 +168,18 @@ public class UpdateSystemSettingsExecutionTest
             }
         });
 
-        ArrayList<UserActionRequest> userActionRequests = new ArrayList<UserActionRequest>();
-
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext // 
-        = new TaskHandlerActionContext<PrincipalActionContext>(actionContext, userActionRequests);
-
-        Assert.assertEquals(systemSettings, sut.execute(currentTaskHandlerActionContext));
+        final TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(formData, null);
+        List<UserActionRequest> userActionRequests = actionContext.getUserActionRequests();
+        Assert.assertEquals(systemSettings, sut.execute(actionContext));
         context.assertIsSatisfied();
 
         Assert.assertEquals(1, userActionRequests.size());
         Assert.assertEquals("deleteCacheKeysAction", userActionRequests.get(0).getActionKey());
-        Assert.assertSame(3, ((HashSet<String>) userActionRequests.get(0).getParams()).size());
-        Assert.assertTrue(((HashSet<String>) userActionRequests.get(0).getParams())
-                .contains(CacheKeys.PERSON_BY_ID + 5));
-        Assert.assertTrue(((HashSet<String>) userActionRequests.get(0).getParams())
-                .contains(CacheKeys.PERSON_BY_ID + 7));
-        Assert.assertTrue(((HashSet<String>) userActionRequests.get(0).getParams())
-                .contains(CacheKeys.SYSTEM_ADMINISTRATOR_IDS));
+        final Serializable asyncParams = userActionRequests.get(0).getParams();
+        Assert.assertSame(3, ((HashSet<String>) asyncParams).size());
+        Assert.assertTrue(((HashSet<String>) asyncParams).contains(CacheKeys.PERSON_BY_ID + 5));
+        Assert.assertTrue(((HashSet<String>) asyncParams).contains(CacheKeys.PERSON_BY_ID + 7));
+        Assert.assertTrue(((HashSet<String>) asyncParams).contains(CacheKeys.SYSTEM_ADMINISTRATOR_IDS));
     }
 }

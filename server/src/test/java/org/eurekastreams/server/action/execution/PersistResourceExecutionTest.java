@@ -16,21 +16,18 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.service.actions.strategies.ResourcePersistenceStrategy;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -56,12 +53,12 @@ public class PersistResourceExecutionTest
     /**
      * The mock person mapper to be used by the action.
      */
-    private PersonMapper personMapperMock = context.mock(PersonMapper.class);
+    private final PersonMapper personMapperMock = context.mock(PersonMapper.class);
 
     /**
      * The mock updater to be used by the action.
      */
-    private UpdaterStrategy updaterMock = context.mock(UpdaterStrategy.class);
+    private final UpdaterStrategy updaterMock = context.mock(UpdaterStrategy.class);
 
     /**
      * The subject under test.
@@ -71,29 +68,18 @@ public class PersistResourceExecutionTest
     /**
      * Mocked user information in the session.
      */
-    private CreatePersonActionFactory factoryMock = context.mock(CreatePersonActionFactory.class);
-
-    /**
-     * task handler action context.
-     */
-    private TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = context
-            .mock(TaskHandlerActionContext.class);
-
-    /**
-     * principal action context.
-     */
-    private PrincipalActionContext pActionContext = context.mock(PrincipalActionContext.class);
+    private final CreatePersonActionFactory factoryMock = context.mock(CreatePersonActionFactory.class);
 
     /**
      * Mocked user information in the session.
      */
-    private ResourcePersistenceStrategy<DomainGroup> persistStrategyMock = context
+    private final ResourcePersistenceStrategy<DomainGroup> persistStrategyMock = context
             .mock(ResourcePersistenceStrategy.class);
 
     /**
      * Mocked person lookup by group.
      */
-    private PersistResourceExecution<Person> personCreatorMock = context.mock(PersistResourceExecution.class);
+    private final PersistResourceExecution<Person> personCreatorMock = context.mock(PersistResourceExecution.class);
 
     /**
      * Set up the SUT.
@@ -101,21 +87,13 @@ public class PersistResourceExecutionTest
     @Before
     public void setup()
     {
-        sut = new PersistResourceExecution<DomainGroup>(personMapperMock, // 
+        sut = new PersistResourceExecution<DomainGroup>(personMapperMock, //
                 factoryMock, updaterMock, persistStrategyMock);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(pActionContext));
-            }
-        });
     }
 
     /**
      * Build DomainGroup based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -141,16 +119,14 @@ public class PersistResourceExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(pActionContext).getParams();
-                will(returnValue(formData));
-
                 oneOf(personMapperMock).findByAccountId(with(requestedCoordinator.getAccountId()));
                 will(returnValue(coordinatorMock));
 
-                oneOf(persistStrategyMock).get(with(taskHandlerActionContext), with(any(HashMap.class)));
+                oneOf(persistStrategyMock).get(with(any(TaskHandlerActionContext.class)), with(any(HashMap.class)));
                 will(returnValue(newGroup));
 
-                oneOf(persistStrategyMock).persist(with(taskHandlerActionContext), with(any(HashMap.class)),
+                oneOf(persistStrategyMock).persist(with(any(TaskHandlerActionContext.class)),
+                        with(any(HashMap.class)),
                         with(any(DomainGroup.class)));
                 oneOf(updaterMock).setProperties(with(newGroup), with(any(HashMap.class)));
 
@@ -158,21 +134,15 @@ public class PersistResourceExecutionTest
 
         });
 
-        try
-        {
+        TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(formData, null);
             sut.execute(taskHandlerActionContext);
             context.assertIsSatisfied();
-        }
-        catch (Exception e)
-        {
-            Assert.fail(e + ": something bad happened while setting properties");
-        }
-
     }
 
     /**
      * Build a group based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -197,39 +167,28 @@ public class PersistResourceExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getUserActionRequests();
-                will(returnValue(new ArrayList<UserActionRequest>()));
-
-                allowing(pActionContext).getParams();
-                will(returnValue(formData));
-
                 oneOf(personMapperMock).findByAccountId(with(requestedCoordinator.getAccountId()));
                 will(returnValue(null));
 
                 oneOf(factoryMock).getCreatePersonAction(personMapperMock, updaterMock);
                 will(returnValue(personCreatorMock));
 
-                oneOf(persistStrategyMock).get(with(taskHandlerActionContext), with(any(HashMap.class)));
+                oneOf(persistStrategyMock).get(with(any(TaskHandlerActionContext.class)), with(any(HashMap.class)));
                 will(returnValue(newGroup));
 
                 oneOf(personCreatorMock).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(coordinatorMock));
 
-                oneOf(persistStrategyMock).persist(with(taskHandlerActionContext), with(any(HashMap.class)),
+                oneOf(persistStrategyMock).persist(with(any(TaskHandlerActionContext.class)),
+                        with(any(HashMap.class)),
                         with(any(DomainGroup.class)));
                 oneOf(updaterMock).setProperties(with(any(Object.class)), with(any(HashMap.class)));
             }
         });
 
-        try
-        {
+        TaskHandlerActionContext<PrincipalActionContext> taskHandlerActionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(formData, null);
             sut.execute(taskHandlerActionContext);
             context.assertIsSatisfied();
-        }
-        catch (Exception e)
-        {
-            Assert.fail(e + ": something bad happened while setting properties");
-        }
-
     }
 }

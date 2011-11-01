@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,14 @@ package org.eurekastreams.server.action.execution.profile;
 
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.profile.ResizeAvatarRequest;
 import org.eurekastreams.server.action.request.profile.SaveImageRequest;
 import org.eurekastreams.server.domain.AvatarEntity;
@@ -41,7 +39,7 @@ import com.mortennobel.imagescaling.ResampleOp;
 /**
  * Saves the avatar to the disk. If it's too big, it resizes it to the correct size. Also, it generates two thumbnails
  * for it by calling the resizing action.
- * 
+ *
  * @param <T>
  *            the avatar entity type.
  */
@@ -51,7 +49,7 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * PersonMapper used to retrieve person from the db.
@@ -62,12 +60,12 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
      * The avatar resizer action.
      */
     @SuppressWarnings("unchecked")
-    private TaskHandlerExecutionStrategy<PrincipalActionContext> avatarResizer;
+    private final TaskHandlerExecutionStrategy<PrincipalActionContext> avatarResizer;
 
     /**
      * The image writer.
      */
-    private ImageWriter imageWriter;
+    private final ImageWriter imageWriter;
 
     /**
      * Strategy for updating the cache after saving the avatar (optional).
@@ -87,11 +85,11 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
     /**
      * The finder.
      */
-    private EntityFinder<T> finder;
+    private final EntityFinder<T> finder;
 
     /**
      * Set the optional strategy to update the cache after saving the avatar.
-     * 
+     *
      * @param inCacheUpdaterStrategy
      *            the strategy to update the cache after saving the avatar
      */
@@ -102,7 +100,7 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inMapper
      *            the person mapper.
      * @param inAction
@@ -127,7 +125,7 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
     /**
      * Saves the avatar to the disk. If it's too big, it resizes it to the correct size. Also, it generates two
      * thumbnails for it by calling the resizing action.
-     * 
+     *
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return the entity.
@@ -189,11 +187,9 @@ public class SaveAvatarExecution<T extends AvatarEntity> implements
             }
 
             ResizeAvatarRequest resizeRequest = new ResizeAvatarRequest(x, y, cropSize, Boolean.FALSE, entityId);
-            ServiceActionContext actionContext = // \n
-            new ServiceActionContext(resizeRequest, inActionContext.getActionContext().getPrincipal());
-            TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerContext = //
-            new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
-            T newEntity = (T) avatarResizer.execute(currentTaskHandlerContext);
+
+            T newEntity = (T) new InlineExecutionStrategyExecutor().execute(avatarResizer, resizeRequest,
+                    inActionContext);
 
             // If all is well, delete the old avatar:
             if (oldAvatarId != null)

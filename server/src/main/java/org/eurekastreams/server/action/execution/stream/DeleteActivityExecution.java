@@ -17,7 +17,7 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.util.List;
 
-import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyWrappingExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -59,7 +59,7 @@ public class DeleteActivityExecution implements TaskHandlerExecutionStrategy<Pri
     private final DomainMapper<Long, DomainGroupModelView> groupMapper;
 
     /** For clearing a group's sticky activity. */
-    private final InlineExecutionStrategyExecutor clearGroupStickyActivityExecutor;
+    private final InlineExecutionStrategyWrappingExecutor clearGroupStickyActivityExecutor;
 
 
     /**
@@ -80,7 +80,7 @@ public class DeleteActivityExecution implements TaskHandlerExecutionStrategy<Pri
             final DomainMapper<Long, List<Long>> inCommentIdsByActivityIdDAO,
             final GetPersonIdsWithStarredActivity inGetPersonIdsWithStarredActivityDAO,
             final DomainMapper<Long, DomainGroupModelView> inGroupMapper,
-            final InlineExecutionStrategyExecutor inClearGroupStickyActivityExecutor)
+            final InlineExecutionStrategyWrappingExecutor inClearGroupStickyActivityExecutor)
     {
         deleteActivityDAO = inDeleteActivityDAO;
         commentIdsByActivityIdDAO = inCommentIdsByActivityIdDAO;

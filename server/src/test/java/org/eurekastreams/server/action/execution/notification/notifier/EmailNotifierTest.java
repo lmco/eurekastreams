@@ -334,7 +334,7 @@ public class EmailNotifierTest
                 allowing(tokenContentFormatter).buildForActivity(ACTIVITY_ID);
                 will(returnValue(TOKEN_CONTENT));
 
-                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, true);
+                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, false);
                 will(returnValue(true));
             }
         });
@@ -461,7 +461,7 @@ public class EmailNotifierTest
                 allowing(tokenAddressBuilder).build(TOKEN_CONTENT, RECIPIENT2);
                 will(returnValue(person2Reply));
 
-                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, true);
+                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, false);
                 will(returnValue(true));
             }
         });
@@ -492,7 +492,7 @@ public class EmailNotifierTest
 
     /**
      * Tests notify.
-     * 
+     *
      * @throws Exception
      *             Won't.
      */
@@ -514,7 +514,7 @@ public class EmailNotifierTest
                 allowing(tokenAddressBuilder).build(TOKEN_CONTENT, RECIPIENT1);
                 will(returnValue(person1Reply));
 
-                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, true);
+                allowing(activityAuthorizer).authorize(activity, ActivityInteractionType.COMMENT, false);
                 will(returnValue(false));
 
                 allowing(activityAuthorizer).authorize(RECIPIENT1, activity, ActivityInteractionType.COMMENT);

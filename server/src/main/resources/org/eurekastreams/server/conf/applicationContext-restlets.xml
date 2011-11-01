@@ -220,8 +220,11 @@
 	</util:list>
 
 	<util:list id="principalExtractorsRequest">
-		<ref bean="springSecurityContextPrincipalPopulatorAllowNullRequireSession" />
 		<ref bean="oAuthRequestToPrincipalTransformer" />
+	</util:list>
+
+	<util:list id="principalExtractorsRequestPreAuth">
+		<ref bean="springSecurityContextPrincipalPopulatorAllowNullRequireSession" />
 	</util:list>
 
 	<util:list id="clientExtractors">
@@ -244,6 +247,21 @@
 		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="false" />
 	</bean>
+	
+	<bean name="actionResourceFullPreAuth"
+		class="org.eurekastreams.server.service.restlets.ActionResource"
+		scope="prototype">
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="principalExtractorsRequestPreAuth" />
+		<constructor-arg ref="clientExtractors" />
+		<constructor-arg>
+			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+		</constructor-arg>
+		<constructor-arg ref="applicationContextHolder" />
+		<constructor-arg ref="jsonFieldObjectExtractor" />
+		<constructor-arg value="false" />
+	</bean>
+
 
 	<bean name="actionResourceReadOnly"
 		class="org.eurekastreams.server.service.restlets.ActionResource"
@@ -428,6 +446,11 @@
 				<entry key="/api/0/full/{action}/{requestType}/{paramsJSON}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="actionResourceFull" />
+					</bean>
+				</entry>
+				<entry key="/api/0/preauthfull/{action}/{requestType}/{paramsJSON}">
+					<bean class="org.restlet.ext.spring.SpringFinder">
+						<lookup-method name="createResource" bean="actionResourceFullPreAuth" />
 					</bean>
 				</entry>
 				<entry key="/api/0/establishSession">

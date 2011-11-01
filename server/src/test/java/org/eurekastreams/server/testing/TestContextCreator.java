@@ -23,6 +23,7 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContextImpl;
 import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.junit.Ignore;
@@ -51,7 +52,7 @@ public final class TestContextCreator
      */
     public static TaskHandlerActionContext<ActionContext> createTaskHandlerAsyncContext(final Serializable params)
     {
-        return new TaskHandlerActionContext<ActionContext>(new AsyncActionContext(params),
+        return new TaskHandlerActionContextImpl<ActionContext>(new AsyncActionContext(params),
                 new ArrayList<UserActionRequest>());
     }
 
@@ -87,7 +88,8 @@ public final class TestContextCreator
     public static TaskHandlerActionContext<PrincipalActionContext> createTaskHandlerContextWithPrincipal(
             final Serializable params, final Principal principal)
     {
-        return new TaskHandlerActionContext<PrincipalActionContext>(createPrincipalActionContext(params, principal),
+        return new TaskHandlerActionContextImpl<PrincipalActionContext>(
+                createPrincipalActionContext(params, principal),
                 new ArrayList<UserActionRequest>());
     }
 
@@ -131,7 +133,7 @@ public final class TestContextCreator
             @Override
             public Map<String, Object> getState()
             {
-                return null;
+                throw new UnsupportedOperationException("Test context currently does not support state.");
             }
 
             @Override
@@ -175,7 +177,7 @@ public final class TestContextCreator
 
     /**
      * Creates a principal.
-     * 
+     *
      * @param userAccountId
      *            User's account ID.
      * @param userId

@@ -49,12 +49,12 @@
     <bean id="springSecurityContextPrincipalPopulatorAllowNull" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
         <constructor-arg value="false" />    
         <constructor-arg value="JSESSIONID" />    
-        <constructor-arg value="sessionid" />    
+        <constructor-arg value="X-Sessionid" />    
     </bean>
     <bean id="springSecurityContextPrincipalPopulatorAllowNullRequireSession" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
         <constructor-arg value="${eureka.fullapi.verifysession}" />
         <constructor-arg value="JSESSIONID" />    
-        <constructor-arg value="sessionid" />  
+        <constructor-arg value="X-Sessionid" />  
 	</bean>
 	
     <bean id="serviceActionController" class="org.eurekastreams.commons.server.service.ServiceActionController">
@@ -551,7 +551,6 @@
 		<constructor-arg ref="getGroupByIdMapper" />
 		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
-		<constructor-arg ref="getSystemAdministratorIds" />
 	</bean>
 
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
@@ -611,7 +610,7 @@
                 <constructor-arg ref="getPersonIdsWithStarredActivity" />
                 <constructor-arg ref="getGroupByIdMapperAllowNullResult" />
                 <constructor-arg>
-                	<bean class="org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor">
+                	<bean class="org.eurekastreams.commons.actions.InlineExecutionStrategyWrappingExecutor">
                 		<constructor-arg value="true" />
                 		<constructor-arg ref="updateGroupStickyActivityExecution" />
                 	</bean>

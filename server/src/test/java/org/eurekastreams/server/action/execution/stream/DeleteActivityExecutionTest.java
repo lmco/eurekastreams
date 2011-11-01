@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyWrappingExecutor;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.test.EasyMatcher;
@@ -112,8 +112,8 @@ public class DeleteActivityExecutionTest
     private final DomainGroupModelView group = context.mock(DomainGroupModelView.class, "group");
 
     /** For clearing a group's sticky activity. */
-    private final InlineExecutionStrategyExecutor clearGroupStickyActivityExecutor = context.mock(
-            InlineExecutionStrategyExecutor.class, "clearGroupStickyActivityExecutor");
+    private final InlineExecutionStrategyWrappingExecutor clearGroupStickyActivityExecutor = context.mock(
+            InlineExecutionStrategyWrappingExecutor.class, "clearGroupStickyActivityExecutor");
 
     /**
      * System under test.

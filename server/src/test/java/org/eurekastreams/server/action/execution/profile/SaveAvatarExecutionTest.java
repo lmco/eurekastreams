@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,18 @@ package org.eurekastreams.server.action.execution.profile;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.profile.SaveImageRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.service.actions.strategies.CacheUpdater;
 import org.eurekastreams.server.service.actions.strategies.EntityFinder;
 import org.eurekastreams.server.service.actions.strategies.ImageWriter;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -58,24 +57,24 @@ public class SaveAvatarExecutionTest
     /**
      * The mock mapper to be used by the action.
      */
-    private PersonMapper personMapper = context.mock(PersonMapper.class);
+    private final PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
      * Mocked person who will get the new tab.
      */
-    private Person person = context.mock(Person.class);
+    private final Person person = context.mock(Person.class);
 
     /**
      * Mocked person resulting from calling another action. (Note to author of this class: please explain this one a
      * little.
      */
-    private Person personResult = context.mock(Person.class, "result");
+    private final Person personResult = context.mock(Person.class, "result");
 
 
     /**
      * Mocked image writer.
      */
-    private ImageWriter imageWriter = context.mock(ImageWriter.class);
+    private final ImageWriter imageWriter = context.mock(ImageWriter.class);
 
 
     /**
@@ -86,7 +85,7 @@ public class SaveAvatarExecutionTest
     /**
      * The mock user information from the session.
      */
-    private UserDetails user = context.mock(UserDetails.class);
+    private final UserDetails user = context.mock(UserDetails.class);
 
     /**
      * Mocked image.
@@ -96,7 +95,7 @@ public class SaveAvatarExecutionTest
     /**
      * Mocked action called by the SUT action.
      */
-    private TaskHandlerExecutionStrategy action = context.mock(TaskHandlerExecutionStrategy.class);
+    private final TaskHandlerExecutionStrategy action = context.mock(TaskHandlerExecutionStrategy.class);
 
     /**
      * Parameters to pass to the action.
@@ -106,32 +105,32 @@ public class SaveAvatarExecutionTest
     /**
      * Strategy for updating the cache.
      */
-    private CacheUpdater cacheUpdaterStrategy = context.mock(CacheUpdater.class);
+    private final CacheUpdater cacheUpdaterStrategy = context.mock(CacheUpdater.class);
 
     /**
      * Mock.
      */
-    private EntityFinder<Person> finder = context.mock(EntityFinder.class);
+    private final EntityFinder<Person> finder = context.mock(EntityFinder.class);
 
     /**
      * {@link PrincipalActionContext}.
      */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * Mocked instance of {@link TaskHandlerActionContext}.
      */
-    private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
+    private final TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
 
     /**
      * {@link Principal}.
      */
-    private Principal principal = context.mock(Principal.class);
+    private final Principal principal = context.mock(Principal.class);
 
     /**
      * {@link SaveAvatarRequest}.
      */
-    private SaveImageRequest request = context.mock(SaveImageRequest.class);
+    private final SaveImageRequest request = context.mock(SaveImageRequest.class);
 
 
 
@@ -253,21 +252,11 @@ public class SaveAvatarExecutionTest
         context.checking(new Expectations()
         {
             {
-
                 oneOf(request).getFileItem();
                 will(returnValue(null));
 
                 allowing(person).getId();
                 ignoring(user);
-
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(actionContext).getParams();
-                will(returnValue(request));
 
                 allowing(request).getImageId();
                 will(returnValue("avatarId"));
@@ -310,15 +299,10 @@ public class SaveAvatarExecutionTest
 
                 oneOf(action).execute(with(any(TaskHandlerActionContext.class)));
                 will(returnValue(personResult));
-
             }
         });
 
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
-                actionContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(request, principal));
         context.assertIsSatisfied();
     }
-
 }

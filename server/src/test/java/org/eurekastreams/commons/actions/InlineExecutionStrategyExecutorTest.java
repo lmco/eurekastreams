@@ -16,7 +16,6 @@
 package org.eurekastreams.commons.actions;
 
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,376 +24,235 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContextImpl;
+import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.test.EasyMatcher;
 import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
 
-
 /**
- * Tests InlineExecutionStrategyExecutor. All 16 combinations of context needed vs. context provided are tested.
+ * Tests InlineExecutionStrategyExecutor.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class InlineExecutionStrategyExecutorTest
 {
     /** Used for mocking objects. */
-    private final JUnit4Mockery context = new JUnit4Mockery()
+    private final Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
-    /** Fixture: Execution strategy to execute which needs to queue async tasks. */
-    private final TaskHandlerExecutionStrategy taskHandlerExecution = context.mock(TaskHandlerExecutionStrategy.class);
+    /** Fixture: execution. */
+    private final ExecutionStrategy execution = mockery.mock(ExecutionStrategy.class, "execution");
 
-    /** Fixture: Execution strategy to execute which does not need to queue async tasks. */
-    private final ExecutionStrategy plainExecution = context.mock(ExecutionStrategy.class);
+    /** Fixture: execution. */
+    private final TaskHandlerExecutionStrategy executionTH = mockery.mock(TaskHandlerExecutionStrategy.class,
+            "executionTH");
 
-    /** Fixture: parameters. */
-    private final Serializable parameters = context.mock(Serializable.class, "parameters");
+    /** Fixture: params. */
+    private final Serializable params = mockery.mock(Serializable.class, "params");
 
-    /** Fixture: results. */
-    private final Serializable results = context.mock(Serializable.class, "results");
+    /** Fixture: other params. */
+    private final Serializable otherParams = mockery.mock(Serializable.class, "otherParams");
 
-    /** Fixture: User action request list. */
-    private final List<UserActionRequest> userActionRequests = context.mock(List.class, "userActionRequests");
+    /** Fixture: result. */
+    private final Serializable result = mockery.mock(Serializable.class, "result");
 
     /** Fixture: principal. */
-    private final Principal principal = context.mock(Principal.class);
+    private final Principal principal = mockery.mock(Principal.class, "principal");
+
+    /** Fixture: user action requests. */
+    private final List<UserActionRequest> userActionRequests = mockery.mock(List.class, "userActionRequests");
 
     /** SUT. */
     private InlineExecutionStrategyExecutor sut;
 
     /**
-     * Test.
+     * Setup before each test.
      */
-    @Test
-    public void testNeedPHasTHP()
+    @Before
+    public void setUp()
     {
-        expectPlain();
-        invokeWithTaskHandlerAndPrincipal();
+        sut = new InlineExecutionStrategyExecutor();
     }
 
     /**
      * Test.
      */
     @Test
-    public void testNeedPHasTH()
+    public void testExecuteBasicParms()
     {
-        expectPlain();
-        invokeWithTaskHandler();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedPPHasTHP()
-    {
-        expectPlainAndPrincipal();
-        invokeWithTaskHandlerAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedPPHasTH()
-    {
-        expectPlainAndPrincipal();
-        invokeWithTaskHandler();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedTHPHasTHP()
-    {
-        expectTaskHandlerAndPrincipal();
-        invokeWithTaskHandlerAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedTHPHasTH()
-    {
-        expectTaskHandlerAndPrincipal();
-        invokeWithTaskHandler();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedTHHasTHP()
-    {
-        expectTaskHandler();
-        invokeWithTaskHandlerAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedTHHasTH()
-    {
-        expectTaskHandler();
-        invokeWithTaskHandler();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedPHasPP()
-    {
-        expectPlain();
-        invokeWithPlainAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedPHasP()
-    {
-        expectPlain();
-        invokeWithPlain();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testNeedPPHasPP()
-    {
-        expectPlainAndPrincipal();
-        invokeWithPlainAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedPPHasP()
-    {
-        expectPlainAndPrincipal();
-        invokeWithPlain();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedTHPHasPP()
-    {
-        expectTaskHandlerAndPrincipal();
-        invokeWithPlainAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedTHPHasP()
-    {
-        expectTaskHandlerAndPrincipal();
-        invokeWithPlain();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedTHHasPP()
-    {
-        expectTaskHandler();
-        invokeWithPlainAndPrincipal();
-    }
-
-    /**
-     * Test.
-     */
-    @Test(expected = ExecutionException.class)
-    public void testNeedTHHasP()
-    {
-        expectTaskHandler();
-        invokeWithPlain();
-    }
-
-    // ----- Methods to set up the SUT with different execution strategies and expect to be invoked properly -----
-
-    /**
-     * Sets up SUT with an execution strategy needing only an ActionContext.
-     */
-    private void expectPlain()
-    {
-        sut = new InlineExecutionStrategyExecutor(false, plainExecution);
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(plainExecution).execute(with(new EasyMatcher<ActionContext>()
+                oneOf(execution).execute(with(new EasyMatcher<PrincipalActionContext>()
                 {
                     @Override
-                    protected boolean isMatch(final ActionContext innerContext)
+                    protected boolean isMatch(final PrincipalActionContext inTestObject)
                     {
-                        assertSame(parameters, innerContext.getParams());
-                        return true;
+                        return inTestObject.getParams() == params && inTestObject.getPrincipal() == principal
+                                && inTestObject.getState() != null;
                     }
                 }));
-                will(returnValue(results));
+                will(returnValue(result));
             }
         });
+
+        assertSame(result, sut.execute(execution, params, principal));
+        mockery.assertIsSatisfied();
     }
 
     /**
-     * Sets up SUT with an execution strategy needing a PrincipalActionContext.
+     * Test.
      */
-    private void expectPlainAndPrincipal()
+    @Test
+    public void testExecuteBasicContextPrincipal()
     {
-        sut = new InlineExecutionStrategyExecutor(true, plainExecution);
-        context.checking(new Expectations()
+        final ActionContext parentContext = new ServiceActionContext(otherParams, principal);
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(plainExecution).execute(with(new EasyMatcher<ActionContext>()
+                oneOf(execution).execute(with(new EasyMatcher<PrincipalActionContext>()
                 {
                     @Override
-                    protected boolean isMatch(final ActionContext innerContext)
+                    protected boolean isMatch(final PrincipalActionContext inTestObject)
                     {
-                        assertTrue(innerContext instanceof PrincipalActionContext);
-                        assertSame(principal, ((PrincipalActionContext) innerContext).getPrincipal());
-                        assertSame(parameters, innerContext.getParams());
-                        return true;
+                        return inTestObject.getParams() == params && inTestObject.getPrincipal() == principal
+                                && inTestObject.getState() != null
+                                && inTestObject.getState() != parentContext.getState();
                     }
                 }));
-                will(returnValue(results));
+                will(returnValue(result));
             }
         });
+
+        assertSame(result, sut.execute(execution, params, parentContext));
+        mockery.assertIsSatisfied();
     }
 
     /**
-     * Sets up SUT with an execution strategy needing a TaskHandlerActionContext.
+     * Test.
      */
-    private void expectTaskHandler()
+    @Test
+    public void testExecuteBasicContextNonPrincipal()
     {
-        sut = new InlineExecutionStrategyExecutor(false, taskHandlerExecution);
-        context.checking(new Expectations()
+        final ActionContext parentContext = new AsyncActionContext(otherParams);
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(taskHandlerExecution).execute(with(new EasyMatcher<TaskHandlerActionContext>()
+                oneOf(execution).execute(with(new EasyMatcher<PrincipalActionContext>()
                 {
                     @Override
-                    protected boolean isMatch(final TaskHandlerActionContext inTestObject)
+                    protected boolean isMatch(final PrincipalActionContext inTestObject)
                     {
-                        assertSame(userActionRequests, inTestObject.getUserActionRequests());
-                        ActionContext innerContext = inTestObject.getActionContext();
-                        assertSame(parameters, innerContext.getParams());
-                        return true;
+                        return inTestObject.getParams() == params && inTestObject.getPrincipal() == null
+                                && inTestObject.getState() != null
+                                && inTestObject.getState() != parentContext.getState();
                     }
                 }));
-                will(returnValue(results));
+                will(returnValue(result));
             }
         });
+
+        assertSame(result, sut.execute(execution, params, parentContext));
+        mockery.assertIsSatisfied();
     }
 
     /**
-     * Sets up SUT with an execution strategy needing a TaskHandlerActionContext containing a principal.
+     * Test.
      */
-    private void expectTaskHandlerAndPrincipal()
+    @Test
+    public void testExecuteTaskParms()
     {
-        sut = new InlineExecutionStrategyExecutor(true, taskHandlerExecution);
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(taskHandlerExecution).execute(with(new EasyMatcher<TaskHandlerActionContext>()
+                oneOf(executionTH).execute(with(new EasyMatcher<TaskHandlerActionContext<PrincipalActionContext>>()
                 {
                     @Override
-                    protected boolean isMatch(final TaskHandlerActionContext inTestObject)
+                    protected boolean isMatch(final TaskHandlerActionContext<PrincipalActionContext> inTestObject)
                     {
-                        assertSame(userActionRequests, inTestObject.getUserActionRequests());
-                        ActionContext innerContext = inTestObject.getActionContext();
-                        assertTrue(innerContext instanceof PrincipalActionContext);
-                        assertSame(principal, ((PrincipalActionContext) innerContext).getPrincipal());
-                        assertSame(parameters, innerContext.getParams());
-                        return true;
+                        PrincipalActionContext inner = inTestObject.getActionContext();
+                        return inTestObject.getUserActionRequests() == userActionRequests
+                                && inner.getParams() == params && inner.getPrincipal() == principal
+                                && inner.getState() != null;
                     }
                 }));
-                will(returnValue(results));
-            }
-        });
-    }
-
-    // ----- Methods to invoke the SUT with different action contexts -----
-
-    /**
-     * Invokes the SUT with a PrincipalActionContext.
-     */
-    private void invokeWithPlainAndPrincipal()
-    {
-        final PrincipalActionContext originalInnerContext = context.mock(PrincipalActionContext.class,
-                "originalInnerContext");
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(originalInnerContext).getPrincipal();
-                will(returnValue(principal));
+                will(returnValue(result));
             }
         });
 
-        Serializable result = sut.execute(originalInnerContext, parameters);
-        assertSame(results, result);
+        assertSame(result, sut.execute(executionTH, params, principal, userActionRequests));
+        mockery.assertIsSatisfied();
     }
 
     /**
-     * Invokes the SUT with a plain ActionContext.
+     * Test.
      */
-    private void invokeWithPlain()
+    @Test
+    public void testExecuteTaskContextPrincipal()
     {
-        final ActionContext originalInnerContext = context.mock(ActionContext.class, "originalInnerContext");
-        Serializable result = sut.execute(originalInnerContext, parameters);
-        assertSame(results, result);
-    }
-
-    /**
-     * Invokes the SUT with a TaskHandlerActionContext containing a principal.
-     */
-    private void invokeWithTaskHandlerAndPrincipal()
-    {
-        final PrincipalActionContext originalInnerContext = context.mock(PrincipalActionContext.class,
-                "originalInnerContext");
-        TaskHandlerActionContext originalOuterContext = new TaskHandlerActionContext(originalInnerContext,
+        final ActionContext parentInnerContext = new ServiceActionContext(otherParams, principal);
+        final TaskHandlerActionContext parentContext = new TaskHandlerActionContextImpl(parentInnerContext,
                 userActionRequests);
-
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                allowing(originalInnerContext).getPrincipal();
-                will(returnValue(principal));
+                oneOf(executionTH).execute(with(new EasyMatcher<TaskHandlerActionContext<PrincipalActionContext>>()
+                {
+                    @Override
+                    protected boolean isMatch(final TaskHandlerActionContext<PrincipalActionContext> inTestObject)
+                    {
+                        PrincipalActionContext inner = inTestObject.getActionContext();
+                        return inTestObject.getUserActionRequests() == userActionRequests
+                                && inner.getParams() == params && inner.getPrincipal() == principal
+                                && inner.getState() != null && inner.getState() != parentInnerContext.getState();
+                    }
+                }));
+                will(returnValue(result));
             }
         });
 
-        Serializable result = sut.execute(originalOuterContext, parameters);
-        assertSame(results, result);
+        assertSame(result, sut.execute(executionTH, params, parentContext));
+        mockery.assertIsSatisfied();
     }
 
     /**
-     * Invokes the SUT with a TaskHandlerActionContext.
+     * Test.
      */
-    private void invokeWithTaskHandler()
+    @Test
+    public void testExecuteTaskContextNonPrincipal()
     {
-        final ActionContext originalInnerContext = context.mock(ActionContext.class, "originalInnerContext");
-        TaskHandlerActionContext originalOuterContext = new TaskHandlerActionContext(originalInnerContext,
+        final ActionContext parentInnerContext = new AsyncActionContext(otherParams);
+        final TaskHandlerActionContext parentContext = new TaskHandlerActionContextImpl(parentInnerContext,
                 userActionRequests);
+        mockery.checking(new Expectations()
+        {
+            {
+                oneOf(executionTH).execute(with(new EasyMatcher<TaskHandlerActionContext<PrincipalActionContext>>()
+                {
+                    @Override
+                    protected boolean isMatch(final TaskHandlerActionContext<PrincipalActionContext> inTestObject)
+                    {
+                        PrincipalActionContext inner = inTestObject.getActionContext();
+                        return inTestObject.getUserActionRequests() == userActionRequests
+                                && inner.getParams() == params && inner.getPrincipal() == null
+                                && inner.getState() != null && inner.getState() != parentInnerContext.getState();
+                    }
+                }));
+                will(returnValue(result));
+            }
+        });
 
-        Serializable result = sut.execute(originalOuterContext, parameters);
-        assertSame(results, result);
+        assertSame(result, sut.execute(executionTH, params, parentContext));
+        mockery.assertIsSatisfied();
     }
 }

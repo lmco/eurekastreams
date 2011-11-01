@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteActivities;
 import org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities;
 import org.eurekastreams.server.persistence.mappers.requests.BulkActivityDeleteResponse;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -61,17 +61,12 @@ public class DeleteActivitiesByIdsExecutionTest
     /**
      * Mock Mapper to get a list of cache keys that contain references to expired activities.
      */
-    private GetListsContainingActivities listsMapper = context.mock(GetListsContainingActivities.class);
+    private final GetListsContainingActivities listsMapper = context.mock(GetListsContainingActivities.class);
 
     /**
      * Mock Mapper to remove expired activities from the database.
      */
-    private DeleteActivities deleteMapper = context.mock(DeleteActivities.class);
-
-    /**
-     * Mock Action Context.
-     */
-    private TaskHandlerActionContext<ActionContext> actionContext;
+    private final DeleteActivities deleteMapper = context.mock(DeleteActivities.class);
 
     /**
      * Prepare the sut.
@@ -91,8 +86,6 @@ public class DeleteActivitiesByIdsExecutionTest
         final ArrayList<Long> activityIds = new ArrayList<Long>();
         activityIds.add(1L);
         activityIds.add(2L);
-        actionContext = new TaskHandlerActionContext<ActionContext>(new ServiceActionContext(activityIds, null),
-                new ArrayList<UserActionRequest>());
         final List<String> listsToUpdate = new ArrayList<String>();
         listsToUpdate.add(CacheKeys.ACTIVITIES_BY_FOLLOWING + 1L);
         final List<Long> commentIds = new ArrayList<Long>();
@@ -113,16 +106,21 @@ public class DeleteActivitiesByIdsExecutionTest
             }
         });
 
+        TaskHandlerActionContext<ActionContext> actionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(activityIds);
         sut.execute(actionContext);
+        context.assertIsSatisfied();
+
         // assert that the UserActionRequest list that came out is valid.
-        assertEquals(8, actionContext.getUserActionRequests().size());
-        assertEquals("deleteFromSearchIndexAction", actionContext.getUserActionRequests().get(0).getActionKey());
-        assertEquals("deleteIdsFromLists", actionContext.getUserActionRequests().get(1).getActionKey());
+        final List<UserActionRequest> userActionRequests = actionContext.getUserActionRequests();
+        assertEquals(8, userActionRequests.size());
+        assertEquals("deleteFromSearchIndexAction", userActionRequests.get(0).getActionKey());
+        assertEquals("deleteIdsFromLists", userActionRequests.get(1).getActionKey());
         // There should be four individual deleteCacheKeysAction UserActionRequests, 2 for the two activities,
         // and 2 for the 2 comments to be deleted.
-        assertEquals("deleteCacheKeysAction", actionContext.getUserActionRequests().get(2).getActionKey());
-        assertEquals("deleteCacheKeysAction", actionContext.getUserActionRequests().get(3).getActionKey());
-        assertEquals("deleteCacheKeysAction", actionContext.getUserActionRequests().get(4).getActionKey());
-        assertEquals("deleteCacheKeysAction", actionContext.getUserActionRequests().get(5).getActionKey());
+        assertEquals("deleteCacheKeysAction", userActionRequests.get(2).getActionKey());
+        assertEquals("deleteCacheKeysAction", userActionRequests.get(3).getActionKey());
+        assertEquals("deleteCacheKeysAction", userActionRequests.get(4).getActionKey());
+        assertEquals("deleteCacheKeysAction", userActionRequests.get(5).getActionKey());
     }
 }

@@ -17,10 +17,10 @@ package org.eurekastreams.server.action.execution;
 
 import java.util.List;
 
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.CreatePersonRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
@@ -28,23 +28,23 @@ import org.springframework.util.Assert;
 
 /**
  * Creates person in DB from LDAP lookup info.
- * 
+ *
  */
 public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /**
      * {@link PersonLookupStrategy}.
      */
-    private PersonLookupStrategy ldapPersonMapper;
+    private final PersonLookupStrategy ldapPersonMapper;
 
     /**
      * Create person strategy.
      */
-    private TaskHandlerExecutionStrategy<ActionContext> createPersonStrategy;
+    private final TaskHandlerExecutionStrategy<ActionContext> createPersonStrategy;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inLdapPersonMapper
      *            {@link PersonLookupStrategy}.
      * @param inCreatePersonStrategy
@@ -61,7 +61,7 @@ public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrate
 
     /**
      * Creates person in DB from LDAP lookup info.
-     * 
+     *
      * @param inActionContext
      *            context.
      * @return Person created.
@@ -69,7 +69,6 @@ public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrate
     @Override
     public Person execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
-        Person person = null;
         String userId = (String) inActionContext.getActionContext().getParams();
         Assert.notNull(userId);
 
@@ -78,16 +77,16 @@ public class CreatePersonFromLdapExecution implements TaskHandlerExecutionStrate
         // short circut if no results from ldap.
         if (results == null || results.size() == 0)
         {
-            return person;
+            return null;
         }
 
         // get Person and set locked before creation.
-        person = results.get(0);
+        Person person = results.get(0);
         person.setAccountLocked(true);
 
-        return (Person) createPersonStrategy.execute(new TaskHandlerActionContext<ActionContext>(
-                new ServiceActionContext(new CreatePersonRequest(person, false), null), inActionContext
-                        .getUserActionRequests()));
+        Person newPerson = (Person) new InlineExecutionStrategyExecutor().execute(createPersonStrategy,
+                new CreatePersonRequest(person, false), inActionContext);
+        return newPerson;
     }
 
 }

@@ -18,11 +18,10 @@ package org.eurekastreams.server.action.execution.profile;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
-import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -116,34 +115,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
             }
             else
             {
-                TaskHandlerActionContext<ActionContext> childContext = new TaskHandlerActionContext<ActionContext>(
-                        new ActionContext()
-                        {
-                            @Override
-                            public Serializable getParams()
-                            {
-                                return groupId;
-                            }
-
-                            @Override
-                            public Map<String, Object> getState()
-                            {
-                                return null;
-                            }
-
-                            @Override
-                            public String getActionId()
-                            {
-                                return null;
-                            }
-
-                            @Override
-                            public void setActionId(final String inActionId)
-                            {
-
-                            }
-                        }, inActionContext.getUserActionRequests());
-                deleteGroupExecution.execute(childContext);
+                new InlineExecutionStrategyExecutor().execute(deleteGroupExecution, groupId, inActionContext);
             }
         }
         catch (Exception e)

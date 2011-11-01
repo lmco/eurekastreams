@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
@@ -166,13 +166,13 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         String targetName;
         boolean isPending = false;
         List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
+        final Serializable params = inActionContext.getActionContext().getParams();
 
         // this switching here is a hold over until the GroupCreator can be refactored to call this strategy
         // and not fail because of additional mapper calls on the DomainGroupModelView and PersonModelView objects.
-        if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusRequest)
+        if (params instanceof SetFollowingStatusRequest)
         {
-            SetFollowingStatusRequest currentRequest =
-                    (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
+            SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) params;
             followerStatus = currentRequest.getFollowerStatus();
             followerAccountId = currentRequest.getFollowerUniqueId();
 
@@ -187,10 +187,10 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             targetName = targetResult.getName();
             targetId = targetResult.getEntityId();
         }
-        else if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusByGroupCreatorRequest)
+        else if (params instanceof SetFollowingStatusByGroupCreatorRequest)
         {
             SetFollowingStatusByGroupCreatorRequest currentRequest = // \n
-                    (SetFollowingStatusByGroupCreatorRequest) inActionContext.getActionContext().getParams();
+            (SetFollowingStatusByGroupCreatorRequest) params;
             followerId = currentRequest.getFollowerId();
             targetId = currentRequest.getTargetId();
             targetName = currentRequest.getTargetName();
@@ -220,8 +220,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
 
             // remove any requests from the user for group membership
-            if (deleteRequestForGroupMembershipMapper
-                    .execute(new RequestForGroupMembershipRequest(targetId, followerId)))
+            if (deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId,
+                    followerId)))
             {
                 // if any requests were present, then user was just approved for access
                 asyncRequests.add(new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null,
@@ -241,17 +241,15 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             {
                 String targetStream = "";
 
-                if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusRequest)
+                if (params instanceof SetFollowingStatusRequest)
                 {
-                    SetFollowingStatusRequest currentRequest =
-                            (SetFollowingStatusRequest) inActionContext.getActionContext().getParams();
+                    SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) params;
                     targetStream = currentRequest.getTargetUniqueId();
                 }
-                else if (inActionContext.getActionContext().getParams()
-                        instanceof SetFollowingStatusByGroupCreatorRequest)
+                else if (params instanceof SetFollowingStatusByGroupCreatorRequest)
                 {
-                    SetFollowingStatusByGroupCreatorRequest currentRequest =
-                            (SetFollowingStatusByGroupCreatorRequest) inActionContext.getActionContext().getParams();
+                    SetFollowingStatusByGroupCreatorRequest currentRequest = // \n
+                    (SetFollowingStatusByGroupCreatorRequest) params;
                     targetStream = currentRequest.getTargetUniqueId();
                 }
 
@@ -267,9 +265,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
                 if (targetStream.length() > 0)
                 {
-                    content =
-                            "%EUREKA:ACTORNAME% is now following the [" + targetName + "](#activity/group/"
-                                    + targetStream + ") group";
+                    content = "%EUREKA:ACTORNAME% is now following the [" + targetName + "](#activity/group/"
+                            + targetStream + ") group";
                 }
                 else
                 {
@@ -285,9 +282,9 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                 // follower.
                 // The current principal will be different from the follower in some cases, namely when following a
                 // private group (the current principal / actor is the coordinator who approved access).
-                postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(
-                        new ServiceActionContext(new PostActivityRequest(activity), createPrincipal(followerId,
-                                followerAccountId)), inActionContext.getUserActionRequests()));
+                new InlineExecutionStrategyExecutor().execute(postActivityExecutor, new PostActivityRequest(activity),
+                        new DefaultPrincipal(followerAccountId, null, followerId),
+                        inActionContext.getUserActionRequests());
             }
             break;
         case NOTFOLLOWING:

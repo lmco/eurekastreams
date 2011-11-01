@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.Action;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -53,41 +54,41 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
     /**
      * Update mapper.
      */
-    private UpdateMapper<Feed> updateMapper;
+    private final UpdateMapper<Feed> updateMapper;
     /**
      * Get feed mapper.
      */
-    private GetFeedByUrlOrCreateMapper getMapper;
+    private final GetFeedByUrlOrCreateMapper getMapper;
 
     /**
      * Person mapper.
      */
-    private GetEntityIdForFeedSubscription getEntityId;
+    private final GetEntityIdForFeedSubscription getEntityId;
 
     /**
      * Get feed subscriber mapper.
      */
-    private GetFeedSubscriberOrCreateMapper getFeedSubscriberMapper;
+    private final GetFeedSubscriberOrCreateMapper getFeedSubscriberMapper;
 
     /**
      * Get the title for a feed.
      */
-    private ExecutionStrategy getTitleFromFeed;
+    private final ExecutionStrategy getTitleFromFeed;
 
     /**
      * Delete the existing feed sub is this is an edit.
      */
-    private Action deleteFeedSub;
+    private final Action deleteFeedSub;
 
     /**
      * The entity type.
      */
-    private EntityType type;
+    private final EntityType type;
 
     /**
      * The get activity executor.
      */
-    private TaskHandlerExecutionStrategy postActivityExecutor;
+    private final TaskHandlerExecutionStrategy postActivityExecutor;
 
     /**
      * Default constructor.
@@ -230,8 +231,8 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         activity.setBaseObjectType(BaseObjectType.NOTE);
         activity.setVerb(ActivityVerb.POST);
 
-        postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(new ServiceActionContext(
-                new PostActivityRequest(activity), principal), context.getUserActionRequests()));
+        new InlineExecutionStrategyExecutor()
+                .execute(postActivityExecutor, new PostActivityRequest(activity), context);
 
         updateMapper.execute(new PersistenceRequest<Feed>(feed));
         return Boolean.TRUE;

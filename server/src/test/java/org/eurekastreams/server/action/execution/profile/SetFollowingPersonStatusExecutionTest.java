@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -38,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetFollowingPersonStatusExecution} class.
- * 
+ *
  */
 public class SetFollowingPersonStatusExecutionTest
 {
@@ -97,7 +94,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test to ensure that following a person works.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -131,17 +128,14 @@ public class SetFollowingPersonStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, principalMock));
 
         context.assertIsSatisfied();
     }
 
     /**
      * Test to ensure that the RemoveFollowing works.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -173,17 +167,14 @@ public class SetFollowingPersonStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTFOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, principalMock));
 
         context.assertIsSatisfied();
     }
 
     /**
      * Test an exception.
-     * 
+     *
      * @throws Exception
      *             expected.
      */
@@ -203,17 +194,14 @@ public class SetFollowingPersonStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, principalMock));
 
         context.assertIsSatisfied();
     }
 
     /**
      * Test an unexpected following status.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -243,10 +231,7 @@ public class SetFollowingPersonStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTSPECIFIED);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
-        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(currentRequest, principalMock));
 
         context.assertIsSatisfied();
     }

@@ -16,8 +16,8 @@
 package org.eurekastreams.server.action.execution.settings;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
@@ -29,6 +29,7 @@ import org.eurekastreams.server.action.request.CreatePersonRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -36,12 +37,12 @@ import org.junit.Test;
 
 /**
  * Test for CreatePersonExecution.
- * 
+ *
  */
 public class CreatePersonExecutionTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -51,47 +52,39 @@ public class CreatePersonExecutionTest
     /**
      * Persist resource action.
      */
-    private PersistResourceExecution<Person> persistResourceExecution = context.mock(PersistResourceExecution.class);
+    private final PersistResourceExecution<Person> persistResourceExecution = context
+            .mock(PersistResourceExecution.class);
 
     /**
      * Factory to create person.
      */
-    private CreatePersonActionFactory createPersonActionFactory = context.mock(CreatePersonActionFactory.class);
+    private final CreatePersonActionFactory createPersonActionFactory = context.mock(CreatePersonActionFactory.class);
 
     /**
      * Person mapper.
      */
-    private PersonMapper personMapper = context.mock(PersonMapper.class);
-
-    /**
-     * {@link TaskHandlerActionContext}.
-     */
-    private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
-
-    /**
-     * {@link ActionContext}.
-     */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private final PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
      * {@link CreatePersonRequest}.
      */
-    private CreatePersonRequest createRequest = context.mock(CreatePersonRequest.class);
+    private final CreatePersonRequest createRequest = context.mock(CreatePersonRequest.class);
 
     /**
      * {@link Person}.
      */
-    private Person person = context.mock(Person.class);
+    private final Person person = context.mock(Person.class);
 
     /**
      * Org id used in test.
      */
-    private Long orgId = 1L;
+    private final Long orgId = 1L;
 
     /**
      * System under test.
      */
-    private CreatePersonExecution sut = new CreatePersonExecution(createPersonActionFactory, personMapper, "emailKey");
+    private final CreatePersonExecution sut = new CreatePersonExecution(createPersonActionFactory, personMapper,
+            "emailKey");
 
     /**
      * Test.
@@ -99,16 +92,9 @@ public class CreatePersonExecutionTest
     @Test
     public void test()
     {
-        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getParams();
-                will(returnValue(createRequest));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -128,12 +114,12 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getEmail();
                 will(returnValue("eamil@email.com"));
-
-                allowing(taskHandlerActionContext).getUserActionRequests();
-                will(returnValue(list));
             }
         });
 
+        TaskHandlerActionContext<ActionContext> taskHandlerActionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(createRequest);
+        List<UserActionRequest> list = taskHandlerActionContext.getUserActionRequests();
         sut.execute(taskHandlerActionContext);
 
         assertEquals(1, list.size());
@@ -147,16 +133,9 @@ public class CreatePersonExecutionTest
     @Test
     public void testNoEmail()
     {
-        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getParams();
-                will(returnValue(createRequest));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -176,9 +155,12 @@ public class CreatePersonExecutionTest
             }
         });
 
+        TaskHandlerActionContext<ActionContext> taskHandlerActionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(createRequest);
+        List<UserActionRequest> list = taskHandlerActionContext.getUserActionRequests();
         sut.execute(taskHandlerActionContext);
 
-        assertEquals(0, list.size());
+        assertTrue(list.isEmpty());
 
         context.assertIsSatisfied();
     }
@@ -191,16 +173,9 @@ public class CreatePersonExecutionTest
     {
         CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, null);
 
-        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getParams();
-                will(returnValue(createRequest));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -220,9 +195,12 @@ public class CreatePersonExecutionTest
             }
         });
 
+        TaskHandlerActionContext<ActionContext> taskHandlerActionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(createRequest);
+        List<UserActionRequest> list = taskHandlerActionContext.getUserActionRequests();
         tempSut.execute(taskHandlerActionContext);
 
-        assertEquals(0, list.size());
+        assertTrue(list.isEmpty());
 
         context.assertIsSatisfied();
     }
@@ -235,16 +213,9 @@ public class CreatePersonExecutionTest
     {
         CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, "");
 
-        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
         {
             {
-                allowing(taskHandlerActionContext).getActionContext();
-                will(returnValue(actionContext));
-
-                allowing(actionContext).getParams();
-                will(returnValue(createRequest));
-
                 allowing(createRequest).getPerson();
                 will(returnValue(person));
 
@@ -264,9 +235,12 @@ public class CreatePersonExecutionTest
             }
         });
 
+        TaskHandlerActionContext<ActionContext> taskHandlerActionContext = TestContextCreator
+                .createTaskHandlerAsyncContext(createRequest);
+        List<UserActionRequest> list = taskHandlerActionContext.getUserActionRequests();
         tempSut.execute(taskHandlerActionContext);
 
-        assertEquals(0, list.size());
+        assertTrue(list.isEmpty());
 
         context.assertIsSatisfied();
     }

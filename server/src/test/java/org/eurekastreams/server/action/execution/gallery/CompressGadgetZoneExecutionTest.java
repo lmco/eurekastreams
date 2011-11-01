@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,14 @@ package org.eurekastreams.server.action.execution.gallery;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.gallery.CompressGadgetZoneRequest;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -94,11 +90,7 @@ public class CompressGadgetZoneExecutionTest
             }
         });
 
-        AsyncActionContext innerContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> wrapperContext = new TaskHandlerActionContext<ActionContext>(
-                innerContext, new ArrayList<UserActionRequest>());
-
-        sut.execute(wrapperContext);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
 
         context.assertIsSatisfied();
         assertEquals(0, gadget1.getZoneIndex());
@@ -123,11 +115,7 @@ public class CompressGadgetZoneExecutionTest
             }
         });
 
-        AsyncActionContext innerContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> wrapperContext = new TaskHandlerActionContext<ActionContext>(
-                innerContext, new ArrayList<UserActionRequest>());
-
-        sut.execute(wrapperContext);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
 
         context.assertIsSatisfied();
         assertEquals(0, gadget1.getZoneIndex());

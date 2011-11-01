@@ -19,12 +19,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
-import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -37,7 +37,7 @@ import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
 /**
  * Persist a resource.
- * 
+ *
  * @param <T>
  *            the type of resource to persist
  */
@@ -46,35 +46,35 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * the person creator factory. the PersistResourceAction class depends on an object of the same type, but spring
      * wouldn't allow me to instantiate an object of the same type that it is currently instantiating, so i get around
      * that by using the factory.
-     * 
+     *
      */
-    private CreatePersonActionFactory factory;
+    private final CreatePersonActionFactory factory;
 
     /**
      * the person mapper.
-     * 
+     *
      */
-    private PersonMapper personMapper;
+    private final PersonMapper personMapper;
 
     /**
      * the persistence strategy.
      */
-    private ResourcePersistenceStrategy<T> persistenceStrategy;
+    private final ResourcePersistenceStrategy<T> persistenceStrategy;
 
     /**
      * the strategy used to set the resource's properties.
      */
-    private UpdaterStrategy updater;
+    private final UpdaterStrategy updater;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            The PersonMapper.
      * @param inFactory
@@ -150,7 +150,7 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
 
     /**
      * Returns a set of people that are created in DB is needed.
-     * 
+     *
      * @param inActionContext
      *            the action context
      * @param requestedPersons
@@ -179,41 +179,8 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
                 // have it injected by spring
                 PersistResourceExecution<Person> personCreator = factory.getCreatePersonAction(personMapper, updater);
 
-                verfiedCoordinator = (Person) personCreator
-                        .execute(new TaskHandlerActionContext<PrincipalActionContext>(new PrincipalActionContext()
-                        {
-                            private static final long serialVersionUID = -4244956205984596485L;
-
-                            @Override
-                            public Principal getPrincipal()
-                            {
-                                return inActionContext.getActionContext().getPrincipal();
-                            }
-
-                            @Override
-                            public Serializable getParams()
-                            {
-                                return personData;
-                            }
-
-                            @Override
-                            public Map<String, Object> getState()
-                            {
-                                return null;
-                            }
-
-                            @Override
-                            public String getActionId()
-                            {
-                                return null;
-                            }
-
-                            @Override
-                            public void setActionId(final String inActionId)
-                            {
-
-                            }
-                        }, inActionContext.getUserActionRequests()));
+                verfiedCoordinator = (Person) new InlineExecutionStrategyExecutor().execute(personCreator, personData,
+                        inActionContext);
             }
             verifiedPersons.add(verfiedCoordinator);
         }
