@@ -28,6 +28,7 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
+import org.eurekastreams.commons.exceptions.InvalidActionException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -100,6 +101,14 @@ public class ServiceActionController implements ActionController
     public Serializable execute(final PrincipalActionContext inServiceActionContext,
             final ServiceAction inServiceAction)
     {
+        // insure action is complete and valid for this controller
+        if (inServiceAction.getValidationStrategy() == null || inServiceAction.getAuthorizationStrategy() == null
+                || inServiceAction.getExecutionStrategy() == null)
+        {
+            logger.error("Action missing strategies.");
+            throw new InvalidActionException("Action missing strategies.");
+        }
+
         Serializable results = null;
         DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
         transDef.setName(inServiceAction.toString());
@@ -160,6 +169,15 @@ public class ServiceActionController implements ActionController
     public Serializable execute(final PrincipalActionContext inServiceActionContext,
             final TaskHandlerAction inTaskHandlerAction)
     {
+        // insure action is complete and valid for this controller
+        if (inTaskHandlerAction.getValidationStrategy() == null
+                || inTaskHandlerAction.getAuthorizationStrategy() == null
+                || inTaskHandlerAction.getExecutionStrategy() == null || inTaskHandlerAction.getTaskHandler() == null)
+        {
+            logger.error("Action missing strategies.");
+            throw new InvalidActionException("Action missing strategies.");
+        }
+
         Serializable results = null;
         DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
         transDef.setName(inTaskHandlerAction.toString());
