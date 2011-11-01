@@ -23,35 +23,35 @@ import org.eurekastreams.server.domain.InAppNotificationEntity;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
- * This mapper returns the details of an existing in-app notification for a
- * recipient, notification type, and URL if one exists.
+ * This mapper returns the details of an existing in-app notification for a recipient, notification type, and URL if one
+ * exists.
  */
 public class GetExistingInAppNotificationForAggregation extends
-		BaseArgDomainMapper<InAppNotificationEntity, InAppNotificationEntity> {
+        BaseArgDomainMapper<InAppNotificationEntity, InAppNotificationEntity>
+{
 
-	/**
-	 * Queries the database for an existing notification for a user and URL.
-	 * 
-	 * @param inRequest
-	 *            Container for search criteria. Callers should populate the
-	 *            recipient, notification type, and url properties
-	 * @return An existing unread notification that matches the search criteria.
-	 */
-	@Override
-	public InAppNotificationEntity execute(
-			final InAppNotificationEntity inRequest) {
-		String q = "from InAppNotification where recipient.id = :userId "
-				+ "and url = :url and isRead = false "
-				+ "and notificationType = :notificationType";
-		Query query = getEntityManager().createQuery(q)
-				.setParameter("userId", inRequest.getRecipient().getId())
-				.setParameter("url", inRequest.getUrl())
-				.setParameter("notificationType", inRequest.getNotificationType());
-		List results = query.getResultList();
-		if (results.size() < 1) {
-			return null;
-		}
-		return (InAppNotificationEntity) results.get(0);
-	}
+    /**
+     * Queries the database for an existing notification for a user and URL.
+     * 
+     * @param inRequest
+     *            Container for search criteria. Callers should populate the recipient, notification type, and url
+     *            properties
+     * @return An existing unread notification that matches the search criteria.
+     */
+    @Override
+    public InAppNotificationEntity execute(final InAppNotificationEntity inRequest)
+    {
+        String q = "from InAppNotification where recipient.id = :userId " + "and url = :url and isRead = false "
+                + "and notificationType = :notificationType";
+        Query query = getEntityManager().createQuery(q).setParameter("userId", inRequest.getRecipient().getId())
+                .setParameter("url", inRequest.getUrl())
+                .setParameter("notificationType", inRequest.getNotificationType());
+        List results = query.getResultList();
+        if (results.size() < 1)
+        {
+            return null;
+        }
+        return (InAppNotificationEntity) results.get(0);
+    }
 
 }

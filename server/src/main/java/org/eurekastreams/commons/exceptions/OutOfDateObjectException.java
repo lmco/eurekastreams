@@ -16,53 +16,57 @@
 package org.eurekastreams.commons.exceptions;
 
 /**
- * Exception to be thrown on attempt to modify a persistent object that was
- * modified by another thread.
+ * Exception to be thrown on attempt to modify a persistent object that was modified by another thread.
  */
-public class OutOfDateObjectException extends RuntimeException {
+public class OutOfDateObjectException extends RuntimeException
+{
 
-	/**
-	 * Serial version id.
-	 */
-	private static final long serialVersionUID = -386727221898326562L;
+    /**
+     * Serial version id.
+     */
+    private static final long serialVersionUID = -386727221898326562L;
 
-	/**
-	 * Default constructor.
-	 */
-	public OutOfDateObjectException() {
+    /**
+     * Default constructor.
+     */
+    public OutOfDateObjectException()
+    {
 
-	}
+    }
 
-	/**
-	 * Constructs a new instance with the specified message.
-	 * 
-	 * @param message
-	 *            the detailed message
-	 */
-	public OutOfDateObjectException(final String message) {
-		super(message);
-	}
+    /**
+     * Constructs a new instance with the specified message.
+     * 
+     * @param message
+     *            the detailed message
+     */
+    public OutOfDateObjectException(final String message)
+    {
+        super(message);
+    }
 
-	/**
-	 * Constructs a new instance with the specified cause.
-	 * 
-	 * @param cause
-	 *            the cause
-	 */
-	public OutOfDateObjectException(final Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructs a new instance with the specified cause.
+     * 
+     * @param cause
+     *            the cause
+     */
+    public OutOfDateObjectException(final Throwable cause)
+    {
+        super(cause);
+    }
 
-	/**
-	 * Constructs a new instance with the specified cause and detailed message.
-	 * 
-	 * @param message
-	 *            the detailed message
-	 * @param cause
-	 *            the cause
-	 */
-	public OutOfDateObjectException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Constructs a new instance with the specified cause and detailed message.
+     * 
+     * @param message
+     *            the detailed message
+     * @param cause
+     *            the cause
+     */
+    public OutOfDateObjectException(final String message, final Throwable cause)
+    {
+        super(message, cause);
+    }
 
 }
