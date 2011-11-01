@@ -37,320 +37,307 @@ import org.hibernate.annotations.Table;
 @Entity(name = "InAppNotification")
 @Table(appliesTo = "InAppNotification", indexes = { // \n
 
-// index for use by GetUnreadInAppNotificationCountsByUserId and GetInAppNotificationsByUserId. The latter only uses
+// index for use by GetUnreadInAppNotificationCountsByUserId and
+// GetInAppNotificationsByUserId. The latter only uses
 // recipientId within a WHERE clause, so that needs to be first.
 @org.hibernate.annotations.Index(name = "InAppNotification_recipientId_highPriority_isRead", // \n
 columnNames = { "recipientId", "highPriority", "isRead" })
 
 })
-public class InAppNotificationEntity extends DomainEntity implements Serializable
-{
-    /** Fingerprint. */
-    private static final long serialVersionUID = 6548226026108187196L;
+public class InAppNotificationEntity extends DomainEntity implements
+		Serializable {
+	/** Fingerprint. */
+	private static final long serialVersionUID = 6548226026108187196L;
 
-    /**
-     * Person to receive the notification. (optional in DB to allow a template notification to be created and cloned for
-     * mass notifying - see InsertInAppNotificationForAllUsers.)
-     */
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "recipientId")
-    private Person recipient;
+	/**
+	 * Person to receive the notification. (optional in DB to allow a template
+	 * notification to be created and cloned for mass notifying - see
+	 * InsertInAppNotificationForAllUsers.)
+	 */
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@JoinColumn(name = "recipientId")
+	private Person recipient;
 
-    /** Type of notification being sent. */
-    @Enumerated(EnumType.STRING)
-    @Basic(optional = false)
-    private NotificationType notificationType;
+	/** Type of notification being sent. */
+	@Enumerated(EnumType.STRING)
+	@Basic(optional = false)
+	private NotificationType notificationType;
 
-    /** The date the notification was added. */
-    @Basic(optional = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date notificationDate = new Date();
+	/** The date the notification was added. */
+	@Basic(optional = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date notificationDate = new Date();
 
-    /** The text of the notification. */
-    private String message;
+	/** The text of the notification. */
+	private String message;
 
-    /** A URL the notification will link to. May be absolute or relative (just an anchor for URLs in app). */
-    private String url;
-    
-    /** A count of how many notifications have been aggregated into this notification. */
-    private int aggregationCount = 1;
+	/**
+	 * A URL the notification will link to. May be absolute or relative (just an
+	 * anchor for URLs in app).
+	 */
+	private String url;
 
-    /** If high priority. */
-    @Basic(optional = false)
-    private boolean highPriority;
+	/**
+	 * A count of how many notifications have been aggregated into this
+	 * notification.
+	 */
+	private int aggregationCount = 1;
 
-    /** If read. */
-    @Basic(optional = false)
-    private boolean isRead;
+	/** If high priority. */
+	@Basic(optional = false)
+	private boolean highPriority;
 
-    /** Type of entity from which the notification came (person, group, app, or NOTSET=system). */
-    @Enumerated(EnumType.STRING)
-    @Basic(optional = false)
-    private EntityType sourceType = EntityType.NOTSET;
+	/** If read. */
+	@Basic(optional = false)
+	private boolean isRead;
 
-    /** Unique ID of source. */
-    @Basic(optional = true)
-    private String sourceUniqueId;
+	/**
+	 * Type of entity from which the notification came (person, group, app, or
+	 * NOTSET=system).
+	 */
+	@Enumerated(EnumType.STRING)
+	@Basic(optional = false)
+	private EntityType sourceType = EntityType.NOTSET;
 
-    /** Display name of source (to show in filters). */
-    @Basic(optional = true)
-    private String sourceName;
+	/** Unique ID of source. */
+	@Basic(optional = true)
+	private String sourceUniqueId;
 
-    /** Type of entity whose avatar will be displayed with the notification (person, group, app, or NOTSET=system). */
-    @Enumerated(EnumType.STRING)
-    @Basic(optional = false)
-    private EntityType avatarOwnerType = EntityType.NOTSET;
+	/** Display name of source (to show in filters). */
+	@Basic(optional = true)
+	private String sourceName;
 
-    /** Unique ID of entity whose avatar will be displayed. */
-    @Basic(optional = true)
-    private String avatarOwnerUniqueId;
+	/**
+	 * Type of entity whose avatar will be displayed with the notification
+	 * (person, group, app, or NOTSET=system).
+	 */
+	@Enumerated(EnumType.STRING)
+	@Basic(optional = false)
+	private EntityType avatarOwnerType = EntityType.NOTSET;
 
-    /**
-     * Constructor.
-     */
-    public InAppNotificationEntity()
-    {
-    }
+	/** Unique ID of entity whose avatar will be displayed. */
+	@Basic(optional = true)
+	private String avatarOwnerUniqueId;
 
-    /**
-     * Copy constructor.
-     *
-     * @param other
-     *            Object to copy.
-     */
-    public InAppNotificationEntity(final InAppNotificationEntity other)
-    {
-        recipient = other.recipient;
-        notificationType = other.notificationType;
-        notificationDate = other.notificationDate;
-        message = other.message;
-        url = other.url;
-        highPriority = other.highPriority;
-        isRead = other.isRead;
-        sourceType = other.sourceType;
-        sourceUniqueId = other.sourceUniqueId;
-        sourceName = other.sourceName;
-        avatarOwnerType = other.avatarOwnerType;
-        avatarOwnerUniqueId = other.avatarOwnerUniqueId;
-    }
+	/**
+	 * Constructor.
+	 */
+	public InAppNotificationEntity() {
+	}
 
-    /**
-     * @return the notificationType
-     */
-    public NotificationType getNotificationType()
-    {
-        return notificationType;
-    }
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param other
+	 *            Object to copy.
+	 */
+	public InAppNotificationEntity(final InAppNotificationEntity other) {
+		recipient = other.recipient;
+		notificationType = other.notificationType;
+		notificationDate = other.notificationDate;
+		message = other.message;
+		url = other.url;
+		highPriority = other.highPriority;
+		isRead = other.isRead;
+		sourceType = other.sourceType;
+		sourceUniqueId = other.sourceUniqueId;
+		sourceName = other.sourceName;
+		avatarOwnerType = other.avatarOwnerType;
+		avatarOwnerUniqueId = other.avatarOwnerUniqueId;
+	}
 
-    /**
-     * @param inNotificationType
-     *            the notificationType to set
-     */
-    public void setNotificationType(final NotificationType inNotificationType)
-    {
-        notificationType = inNotificationType;
-    }
+	/**
+	 * @return the notificationType
+	 */
+	public NotificationType getNotificationType() {
+		return notificationType;
+	}
 
-    /**
-     * @return the notificationDate
-     */
-    public Date getNotificationDate()
-    {
-        return notificationDate;
-    }
+	/**
+	 * @param inNotificationType
+	 *            the notificationType to set
+	 */
+	public void setNotificationType(final NotificationType inNotificationType) {
+		notificationType = inNotificationType;
+	}
 
-    /**
-     * @param inNotificationDate
-     *            the notificationDate to set
-     */
-    public void setNotificationDate(final Date inNotificationDate)
-    {
-        notificationDate = inNotificationDate;
-    }
+	/**
+	 * @return the notificationDate
+	 */
+	public Date getNotificationDate() {
+		return notificationDate;
+	}
 
-    /**
-     * @return the message
-     */
-    public String getMessage()
-    {
-        return message;
-    }
+	/**
+	 * @param inNotificationDate
+	 *            the notificationDate to set
+	 */
+	public void setNotificationDate(final Date inNotificationDate) {
+		notificationDate = inNotificationDate;
+	}
 
-    /**
-     * @param inMessage
-     *            the message to set
-     */
-    public void setMessage(final String inMessage)
-    {
-        message = inMessage;
-    }
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
+	}
 
-    /**
-     * @return the url
-     */
-    public String getUrl()
-    {
-        return url;
-    }
+	/**
+	 * @param inMessage
+	 *            the message to set
+	 */
+	public void setMessage(final String inMessage) {
+		message = inMessage;
+	}
 
-    /**
-     * @param inUrl
-     *            the url to set
-     */
-    public void setUrl(final String inUrl)
-    {
-        url = inUrl;
-    }
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
 
-    /**
-     * @return the priority
-     */
-    public boolean isHighPriority()
-    {
-        return highPriority;
-    }
+	/**
+	 * @param inUrl
+	 *            the url to set
+	 */
+	public void setUrl(final String inUrl) {
+		url = inUrl;
+	}
 
-    /**
-     * @param inPriority
-     *            the priority to set
-     */
-    public void setHighPriority(final boolean inPriority)
-    {
-        highPriority = inPriority;
-    }
+	/**
+	 * @return the priority
+	 */
+	public boolean isHighPriority() {
+		return highPriority;
+	}
 
-    /**
-     * @return the isRead
-     */
-    public boolean isRead()
-    {
-        return isRead;
-    }
+	/**
+	 * @param inPriority
+	 *            the priority to set
+	 */
+	public void setHighPriority(final boolean inPriority) {
+		highPriority = inPriority;
+	}
 
-    /**
-     * @param inIsRead
-     *            the isRead to set
-     */
-    public void setRead(final boolean inIsRead)
-    {
-        isRead = inIsRead;
-    }
+	/**
+	 * @return the isRead
+	 */
+	public boolean isRead() {
+		return isRead;
+	}
 
-    /**
-     * @return the sourceType
-     */
-    public EntityType getSourceType()
-    {
-        return sourceType;
-    }
+	/**
+	 * @param inIsRead
+	 *            the isRead to set
+	 */
+	public void setRead(final boolean inIsRead) {
+		isRead = inIsRead;
+	}
 
-    /**
-     * @param inSourceType
-     *            the sourceType to set
-     */
-    public void setSourceType(final EntityType inSourceType)
-    {
-        sourceType = inSourceType;
-    }
+	/**
+	 * @return the sourceType
+	 */
+	public EntityType getSourceType() {
+		return sourceType;
+	}
 
-    /**
-     * @return the sourceUniqueId
-     */
-    public String getSourceUniqueId()
-    {
-        return sourceUniqueId;
-    }
+	/**
+	 * @param inSourceType
+	 *            the sourceType to set
+	 */
+	public void setSourceType(final EntityType inSourceType) {
+		sourceType = inSourceType;
+	}
 
-    /**
-     * @param inSourceUniqueId
-     *            the sourceUniqueId to set
-     */
-    public void setSourceUniqueId(final String inSourceUniqueId)
-    {
-        sourceUniqueId = inSourceUniqueId;
-    }
+	/**
+	 * @return the sourceUniqueId
+	 */
+	public String getSourceUniqueId() {
+		return sourceUniqueId;
+	}
 
-    /**
-     * @return the sourceName
-     */
-    public String getSourceName()
-    {
-        return sourceName;
-    }
+	/**
+	 * @param inSourceUniqueId
+	 *            the sourceUniqueId to set
+	 */
+	public void setSourceUniqueId(final String inSourceUniqueId) {
+		sourceUniqueId = inSourceUniqueId;
+	}
 
-    /**
-     * @param inSourceName
-     *            the sourceName to set
-     */
-    public void setSourceName(final String inSourceName)
-    {
-        sourceName = inSourceName;
-    }
+	/**
+	 * @return the sourceName
+	 */
+	public String getSourceName() {
+		return sourceName;
+	}
 
-    /**
-     * @return the avatarOwnerType
-     */
-    public EntityType getAvatarOwnerType()
-    {
-        return avatarOwnerType;
-    }
+	/**
+	 * @param inSourceName
+	 *            the sourceName to set
+	 */
+	public void setSourceName(final String inSourceName) {
+		sourceName = inSourceName;
+	}
 
-    /**
-     * @param inAvatarOwnerType
-     *            the avatarOwnerType to set
-     */
-    public void setAvatarOwnerType(final EntityType inAvatarOwnerType)
-    {
-        avatarOwnerType = inAvatarOwnerType;
-    }
+	/**
+	 * @return the avatarOwnerType
+	 */
+	public EntityType getAvatarOwnerType() {
+		return avatarOwnerType;
+	}
 
-    /**
-     * @return the avatarOwnerUniqueId
-     */
-    public String getAvatarOwnerUniqueId()
-    {
-        return avatarOwnerUniqueId;
-    }
+	/**
+	 * @param inAvatarOwnerType
+	 *            the avatarOwnerType to set
+	 */
+	public void setAvatarOwnerType(final EntityType inAvatarOwnerType) {
+		avatarOwnerType = inAvatarOwnerType;
+	}
 
-    /**
-     * @param inAvatarOwnerUniqueId
-     *            the avatarOwnerUniqueId to set
-     */
-    public void setAvatarOwnerUniqueId(final String inAvatarOwnerUniqueId)
-    {
-        avatarOwnerUniqueId = inAvatarOwnerUniqueId;
-    }
+	/**
+	 * @return the avatarOwnerUniqueId
+	 */
+	public String getAvatarOwnerUniqueId() {
+		return avatarOwnerUniqueId;
+	}
 
-    /**
-     * @return the recipient
-     */
-    public Person getRecipient()
-    {
-        return recipient;
-    }
+	/**
+	 * @param inAvatarOwnerUniqueId
+	 *            the avatarOwnerUniqueId to set
+	 */
+	public void setAvatarOwnerUniqueId(final String inAvatarOwnerUniqueId) {
+		avatarOwnerUniqueId = inAvatarOwnerUniqueId;
+	}
 
-    /**
-     * @param inRecipient
-     *            the recipient to set
-     */
-    public void setRecipient(final Person inRecipient)
-    {
-        recipient = inRecipient;
-    }
+	/**
+	 * @return the recipient
+	 */
+	public Person getRecipient() {
+		return recipient;
+	}
+
+	/**
+	 * @param inRecipient
+	 *            the recipient to set
+	 */
+	public void setRecipient(final Person inRecipient) {
+		recipient = inRecipient;
+	}
 
 	/**
 	 * @return the aggregationCount
 	 */
-	public int getAggregationCount() 
-	{
+	public int getAggregationCount() {
 		return aggregationCount;
 	}
 
 	/**
-	 * @param inAggregationCount the aggregationCount to set
+	 * @param inAggregationCount
+	 *            the aggregationCount to set
 	 */
-	public void setAggregationCount(final int inAggregationCount) 
-	{
+	public void setAggregationCount(final int inAggregationCount) {
 		aggregationCount = inAggregationCount;
 	}
 }

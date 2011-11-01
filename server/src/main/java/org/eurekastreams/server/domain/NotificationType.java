@@ -21,74 +21,64 @@ import java.util.List;
 /**
  * Type of notification to be sent to a user.
  */
-public enum NotificationType
-{
-    /** Someone liked an activity. */
-    LIKE_ACTIVITY,
+public enum NotificationType {
+	/** Someone liked an activity. */
+	LIKE_ACTIVITY,
 
-    /** Someone posted to the user's stream. */
-    POST_TO_PERSONAL_STREAM,
+	/** Someone posted to the user's stream. */
+	POST_TO_PERSONAL_STREAM,
 
-    /** Someone commented on a post in the user's stream. */
-    COMMENT_TO_PERSONAL_STREAM,
+	/** Someone commented on a post in the user's stream. */
+	COMMENT_TO_PERSONAL_STREAM,
 
-    /** Someone commented on one of the user's posts. */
-    COMMENT_TO_PERSONAL_POST,
+	/** Someone commented on one of the user's posts. */
+	COMMENT_TO_PERSONAL_POST,
 
-    /** Someone commented on a post on which the user also commented. */
-    COMMENT_TO_COMMENTED_POST,
+	/** Someone commented on a post on which the user also commented. */
+	COMMENT_TO_COMMENTED_POST,
 
-    /** Someone commented on a post on which the user saved. */
-    COMMENT_TO_SAVED_POST,
+	/** Someone commented on a post on which the user saved. */
+	COMMENT_TO_SAVED_POST,
 
-    /** Someone started following the user. */
-    FOLLOW_PERSON,
+	/** Someone started following the user. */
+	FOLLOW_PERSON,
 
-    /** Someone posted to a stream (personal or group) that the user is following. */
-    POST_TO_FOLLOWED_STREAM,
+	/**
+	 * Someone posted to a stream (personal or group) that the user is
+	 * following.
+	 */
+	POST_TO_FOLLOWED_STREAM,
 
-    /** Someone commented on a post in the group's stream. */
-    COMMENT_TO_GROUP_STREAM,
+	/** Someone commented on a post in the group's stream. */
+	COMMENT_TO_GROUP_STREAM,
 
-    /** Someone started following the group. */
-    FOLLOW_GROUP,
+	/** Someone started following the group. */
+	FOLLOW_GROUP,
 
-    /** Someone flagged an activity. */
-    FLAG_ACTIVITY,
+	/** Someone flagged an activity. */
+	FLAG_ACTIVITY,
 
-    /** Pending group creation request. */
-    REQUEST_NEW_GROUP,
+	/** Pending group creation request. */
+	REQUEST_NEW_GROUP,
 
-    /** Pending group creation response: approved. */
-    REQUEST_NEW_GROUP_APPROVED,
+	/** Pending group creation response: approved. */
+	REQUEST_NEW_GROUP_APPROVED,
 
-    /** Pending group creation response: denied. */
-    REQUEST_NEW_GROUP_DENIED,
+	/** Pending group creation response: denied. */
+	REQUEST_NEW_GROUP_DENIED,
 
-    /** Someone requested access to a private group. */
-    REQUEST_GROUP_ACCESS,
+	/** Someone requested access to a private group. */
+	REQUEST_GROUP_ACCESS,
 
-    /** A coordinator approved access to a private group. */
-    REQUEST_GROUP_ACCESS_APPROVED,
+	/** A coordinator approved access to a private group. */
+	REQUEST_GROUP_ACCESS_APPROVED,
 
-    /** A coordinator denied access to a private group. */
-    REQUEST_GROUP_ACCESS_DENIED,
+	/** A coordinator denied access to a private group. */
+	REQUEST_GROUP_ACCESS_DENIED,
 
-    /** Relaying a message that was already built outside the notification engine. */
-    PASS_THROUGH;
-    
-    /** Global list of notification types that are eligible for aggregation. */
-    private static List<NotificationType> aggregatedTypes = Arrays.asList(new NotificationType[] { 
-		COMMENT_TO_PERSONAL_POST, COMMENT_TO_COMMENTED_POST 
-	});
-    
-    /**
-     * Checks if the current notification type is eligible for aggregation.
-     * 
-     * @return Returns true if the current type is eligible for aggregation. Otherwise, returns false.
-     */
-    public boolean isAggregrated() 
-    {
-    	return aggregatedTypes.contains(this);
-    }
+	/**
+	 * Relaying a message that was already built outside the notification
+	 * engine.
+	 */
+	PASS_THROUGH;
 }

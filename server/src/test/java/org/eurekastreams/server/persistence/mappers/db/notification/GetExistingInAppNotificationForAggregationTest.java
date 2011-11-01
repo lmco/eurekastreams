@@ -31,50 +31,46 @@ import org.junit.Test;
 /**
  * Tests GetInAppNotificationsByUserId.
  */
-public class GetInAppNotificationsByUserIdAndUrlTest extends MapperTest
-{
-    /** SUT. */
-    private DomainMapper<InAppNotificationEntity, InAppNotificationEntity> sut;
-    
-    /** Used for mocking objects. */
-    private final JUnit4Mockery context = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
+public class GetExistingInAppNotificationForAggregationTest extends MapperTest {
+	/** SUT. */
+	private DomainMapper<InAppNotificationEntity, InAppNotificationEntity> sut;
 
-    /**
-     * Setup before each test.
-     */
-    @Before
-    public void setUp()
-    {
-        sut = new GetInAppNotificationByUserIdAndUrl();
-        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-    }
+	/** Used for mocking objects. */
+	private final JUnit4Mockery context = new JUnit4Mockery() {
+		{
+			setImposteriser(ClassImposteriser.INSTANCE);
+		}
+	};
 
-    /**
-     * Tests execute.
-     */
-    @Test
-    public void testExecute()
-    {
-        // test
-    	InAppNotificationEntity searchCriteria = new InAppNotificationEntity();
-        final Person recipient = context.mock(Person.class);
-        context.checking(new Expectations() {
-        	{
-        		oneOf(recipient).getId();
-        		will(returnValue(42L));
-        	}
-        });
+	/**
+	 * Setup before each test.
+	 */
+	@Before
+	public void setUp() {
+		sut = new GetExistingInAppNotificationForAggregation();
+		((BaseDomainMapper) sut).setEntityManager(getEntityManager());
+	}
+
+	/**
+	 * Tests execute.
+	 */
+	@Test
+	public void testExecute() {
+		// test
+		InAppNotificationEntity searchCriteria = new InAppNotificationEntity();
+		final Person recipient = context.mock(Person.class);
+		context.checking(new Expectations() {
+			{
+				oneOf(recipient).getId();
+				will(returnValue(42L));
+			}
+		});
 		searchCriteria.setRecipient(recipient);
 		searchCriteria.setUrl("#activity/6789");
-        InAppNotificationEntity result = sut.execute(searchCriteria);
+		InAppNotificationEntity result = sut.execute(searchCriteria);
 
-        // verify
-        assertEquals(6L, result.getId());
-    }
+		// verify
+		assertEquals(6L, result.getId());
+	}
 
 }

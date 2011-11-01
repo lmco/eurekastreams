@@ -259,7 +259,7 @@
 			</bean>
         </constructor-arg>       
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetInAppNotificationByUserIdAndUrl" />
+            <bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetExistingInAppNotificationForAggregation" />
         </constructor-arg>
     </bean>
 

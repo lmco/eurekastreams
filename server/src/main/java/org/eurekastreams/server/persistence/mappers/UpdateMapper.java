@@ -23,60 +23,54 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
  * Mapper used for updating DomainEntities.
- *
+ * 
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
 @SuppressWarnings("unchecked")
 public class UpdateMapper<TDomainEntityType extends DomainEntity> extends
-        BaseArgDomainMapper<PersistenceRequest, Boolean>
-{
-    /**
-     * Additional updater to use, or ignore if null.
-     */
-    private DomainMapper<PersistenceRequest, Boolean> wrappedUpdater;
+		BaseArgDomainMapper<PersistenceRequest, Boolean> {
+	/**
+	 * Additional updater to use, or ignore if null.
+	 */
+	private DomainMapper<PersistenceRequest, Boolean> wrappedUpdater;
 
-    /**
-     * Empty constructor when no wrapped updater.
-     */
-    public UpdateMapper()
-    {
-    }
+	/**
+	 * Empty constructor when no wrapped updater.
+	 */
+	public UpdateMapper() {
+	}
 
-    /**
-     * Constructor with a wrapped updater to call after calling self.
-     *
-     * @param inWrappedUpdater
-     *            the updater to call after self
-     */
-    public UpdateMapper(final DomainMapper<PersistenceRequest, Boolean> inWrappedUpdater)
-    {
-        wrappedUpdater = inWrappedUpdater;
-    }
+	/**
+	 * Constructor with a wrapped updater to call after calling self.
+	 * 
+	 * @param inWrappedUpdater
+	 *            the updater to call after self
+	 */
+	public UpdateMapper(
+			final DomainMapper<PersistenceRequest, Boolean> inWrappedUpdater) {
+		wrappedUpdater = inWrappedUpdater;
+	}
 
-    /**
-     * Updates the DomainEntity.
-     *
-     * @param inRequest
-     *            The MapperRequest.
-     * @return true.
-     */
-    public Boolean execute(final PersistenceRequest inRequest)
-    {
-        try 
-        {
+	/**
+	 * Updates the DomainEntity.
+	 * 
+	 * @param inRequest
+	 *            The MapperRequest.
+	 * @return true.
+	 */
+	public Boolean execute(final PersistenceRequest inRequest) {
+		try {
 			flush();
-		} 
-        catch (OptimisticLockException e) 
-        {
-			throw new OutOfDateObjectException("The object could not be modified because another thread has modified " 
-					+ "it since it was retrieved", e);
+		} catch (OptimisticLockException e) {
+			throw new OutOfDateObjectException(
+					"The object could not be modified because another thread has modified "
+							+ "it since it was retrieved", e);
 		}
-        
-        if (wrappedUpdater != null)
-        {
-            wrappedUpdater.execute(inRequest);
-        }
-        return true;
-    }
+
+		if (wrappedUpdater != null) {
+			wrappedUpdater.execute(inRequest);
+		}
+		return true;
+	}
 }
