@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Type of notification to be sent to a user.
  */
@@ -72,5 +75,20 @@ public enum NotificationType
     REQUEST_GROUP_ACCESS_DENIED,
 
     /** Relaying a message that was already built outside the notification engine. */
-    PASS_THROUGH
+    PASS_THROUGH;
+    
+    /** Global list of notification types that are eligible for aggregation. */
+    private static List<NotificationType> aggregatedTypes = Arrays.asList(new NotificationType[] { 
+		COMMENT_TO_PERSONAL_POST, COMMENT_TO_COMMENTED_POST 
+	});
+    
+    /**
+     * Checks if the current notification type is eligible for aggregation.
+     * 
+     * @return Returns true if the current type is eligible for aggregation. Otherwise, returns false.
+     */
+    public boolean isAggregrated() 
+    {
+    	return aggregatedTypes.contains(this);
+    }
 }

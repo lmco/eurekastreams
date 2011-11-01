@@ -57,7 +57,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
 
     /**
      * Constructor.
-     *
+     * 
      * @param inVerifySession
      *            if the session should be verified from the header.
      * @param inSessionCookieName
@@ -75,8 +75,8 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
 
     /**
      * Retrieve the {@link Principal} object based on the security context loaded by Spring.
-     *
-     *
+     * 
+     * 
      * {@inheritDoc}.
      */
     @Override
@@ -123,10 +123,10 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
     /**
      * Return principal. This implementation ingnores params and returns principal based on Spring SecurityContext, or
      * null if SecurityContext is not populated.
-     *
+     * 
      * @param inTransformType
      *            Ignored.
-     *
+     * 
      * @return Principal from Spring security context if present, return null if not.
      */
     @Override
@@ -143,14 +143,19 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
 
             if (inTransformType.getAttributes().containsKey("org.restlet.http.headers"))
             {
+                logger.debug("Checking headers");
                 Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
 
-                if (httpHeaders.getFirstValue(sessionHeaderName) != null)
+                if (httpHeaders.getFirstValue(sessionHeaderName, true) != null)
                 {
-                    String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName);
+                    String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName, true);
                     logger.debug("Session id from header: " + headerSessionId);
                     sessionMatch = sessionId.equals(headerSessionId);
                 }
+            }
+            else
+            {
+                logger.debug("No headers found.");
             }
 
             if (!sessionMatch)

@@ -701,15 +701,15 @@
 		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
 		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
 	<InAppNotification id="5" recipientId="42" highPriority="false" isRead="true" notificationDate="2010-02-02 00:00:00.000"
-		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		notificationType="LIKE_ACTIVITY" message="" url="#activity/6789" version="0"
 		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
 		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
 	<InAppNotification id="6" recipientId="42" highPriority="true" isRead="false" notificationDate="2010-02-03 00:00:00.000"
-		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		notificationType="LIKE_ACTIVITY" message="" url="#activity/6789" version="0"
 		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
 		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
 	<InAppNotification id="7" recipientId="42" highPriority="true" isRead="false" notificationDate="2010-03-01 00:00:00.000"
-		notificationType="LIKE_ACTIVITY" message="" url="" version="0"
+		notificationType="LIKE_ACTIVITY" message="" url="#activity/6790" version="0"
 		sourceType="GROUP" sourceUniqueId="group1" sourceName=""
 		avatarOwnerType="GROUP" avatarOwnerUniqueId="group1" />	 
 	<InAppNotification id="8" recipientId="42" highPriority="false" isRead="true" notificationDate="2010-03-01 00:00:00.000"

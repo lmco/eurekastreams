@@ -71,6 +71,9 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
 
     /** A URL the notification will link to. May be absolute or relative (just an anchor for URLs in app). */
     private String url;
+    
+    /** A count of how many notifications have been aggregated into this notification. */
+    private int aggregationCount = 1;
 
     /** If high priority. */
     @Basic(optional = false)
@@ -334,4 +337,20 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     {
         recipient = inRecipient;
     }
+
+	/**
+	 * @return the aggregationCount
+	 */
+	public int getAggregationCount() 
+	{
+		return aggregationCount;
+	}
+
+	/**
+	 * @param inAggregationCount the aggregationCount to set
+	 */
+	public void setAggregationCount(final int inAggregationCount) 
+	{
+		aggregationCount = inAggregationCount;
+	}
 }

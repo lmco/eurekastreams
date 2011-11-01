@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
+import javax.persistence.OptimisticLockException;
+
+import org.eurekastreams.commons.exceptions.OutOfDateObjectException;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
@@ -60,7 +63,16 @@ public class UpdateMapper<TDomainEntityType extends DomainEntity> extends
      */
     public Boolean execute(final PersistenceRequest inRequest)
     {
-        flush();
+        try 
+        {
+			flush();
+		} 
+        catch (OptimisticLockException e) 
+        {
+			throw new OutOfDateObjectException("The object could not be modified because another thread has modified " 
+					+ "it since it was retrieved", e);
+		}
+        
         if (wrappedUpdater != null)
         {
             wrappedUpdater.execute(inRequest);
