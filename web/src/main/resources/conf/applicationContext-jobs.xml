@@ -88,16 +88,16 @@
        <property name="concurrent" value="false" />
     </bean>
     
-    <!-- Daily Usage Metrics -->
-    <bean id="generateDailyUsageSummaryJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
-        <constructor-arg value="generateDailyUsageSummaryAction" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
-    
     <bean id="pluginDefMetaUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
        <property name="targetObject" ref="pluginDefUpdateTransactionalTask" />
        <property name="targetMethod" value="runTransactionalTask" />
        <property name="concurrent" value="false" />
+    </bean>
+    
+    <!-- Daily Usage Metrics -->
+    <bean id="generateDailyUsageSummaryJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="generateDailyUsageSummaryAction" />
+        <constructor-arg ref="taskHandler" />
     </bean>
     
 	<!-- Cache warming job -->
@@ -205,7 +205,7 @@
         <property name="repeatInterval" value="1500000"/>
     </bean> 
     
-    <!-- Update the cache that powers the Streams Discovery page -->
+    <!-- Update the cache that powers the Streams Discovery page (runs every 30 minutes) -->
     <bean id="regenerateStreamDiscoverListsJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="regenerateStreamDiscoverListsJob" />
         <property name="repeatInterval" value="${eureka.jobs.regenerateStreamDiscoverListsJobTrigger.repeatInterval}"/>
