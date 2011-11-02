@@ -103,7 +103,7 @@ public class MessageProcessorTest
             "messageContentExtractor");
 
     /** Determines which action to execute. */
-    private final ActionSelector actionSelector = context.mock(ActionSelector.class, "actionSelector");
+    private final ActionSelectorFactory actionSelector = context.mock(ActionSelectorFactory.class, "actionSelector");
 
     /** Instance of {@link ActionController} used to run actions. */
     private final ActionController serviceActionController = context.mock(ActionController.class,

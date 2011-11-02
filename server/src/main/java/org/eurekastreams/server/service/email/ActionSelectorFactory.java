@@ -19,13 +19,15 @@ import java.util.Map;
 
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.stream.PostSplitActivityAndCommentsRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Determines which action to execute based on the token data and email content.
  */
-public class ActionSelector
+public class ActionSelectorFactory
 {
     /**
      * Selects the actions and builds the parameters.
@@ -48,19 +50,21 @@ public class ActionSelector
             comment.setBody(content);
             comment.setActivityId(tokenData.get(TokenContentFormatter.META_KEY_ACTIVITY));
 
-            return new UserActionRequest("postActivityCommentAction", null, comment);
+            return new UserActionRequest("postSplitActivityCommentsAction", null, comment);
         }
         // ID of person -> Post to personal stream
         else if (tokenData.containsKey(TokenContentFormatter.META_KEY_PERSON_STREAM))
         {
-            // TODO
-            throw new UnsupportedOperationException("Not yet implemented.");
+            return new UserActionRequest("postSplitActivityAndCommentsAction", null,
+                    new PostSplitActivityAndCommentsRequest(EntityType.PERSON,
+                            tokenData.get(TokenContentFormatter.META_KEY_PERSON_STREAM), content));
         }
         // ID of group -> Post to group stream
         else if (tokenData.containsKey(TokenContentFormatter.META_KEY_GROUP_STREAM))
         {
-            // TODO
-            throw new UnsupportedOperationException("Not yet implemented.");
+            return new UserActionRequest("postSplitActivityAndCommentsAction", null,
+                    new PostSplitActivityAndCommentsRequest(EntityType.GROUP,
+                            tokenData.get(TokenContentFormatter.META_KEY_GROUP_STREAM), content));
         }
         else
         {
