@@ -8,6 +8,9 @@
 #           in this container
 ## END INIT INFO
 
+# Set the encryption key.
+. /etc/setenckey.sh
+
 prog=taskqueueprocessor
 
 PIDFILE=/var/run/$prog/$prog.pid
