@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,43 +17,69 @@ package org.eurekastreams.commons.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetailsImpl;
+import java.io.Serializable;
+
+import org.eurekastreams.commons.actions.context.DefaultPrincipal;
+import org.eurekastreams.commons.actions.context.Principal;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-import org.springframework.security.userdetails.UserDetails;
 
 /**
  * Test fixture for UserActionRequest.
  */
 public class UserActionRequestTest
 {
+    /** Test data. */
+    private static final String ACTION_KEY = "actionKey";
+
+    /** Used for mocking objects. */
+    private final Mockery mockery = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /** Fixture: params. */
+    private final Serializable params = mockery.mock(Serializable.class, "params");
+
+    /** Fixture: user. */
+    private final Principal user = mockery.mock(Principal.class, "user");
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testToStringNoUser()
+    {
+        UserActionRequest sut = new UserActionRequest(ACTION_KEY, null, params);
+        assertNotNull(sut.toString());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testToStringUser()
+    {
+        UserActionRequest sut = new UserActionRequest(ACTION_KEY,
+                new DefaultPrincipal("accountid", "opensocialid", 1L), params);
+        assertNotNull(sut.toString());
+    }
+
     /**
      * Test the constructor and getters.
      */
     @Test
     public void testConstructorAndGetters()
     {
-        UserDetails userDetails = null;
-        String actionKey = "actionKey";
-        UserActionRequest sut = new UserActionRequest(actionKey, userDetails, null);
-        assertEquals(actionKey, sut.getActionKey());
-        assertEquals(userDetails, sut.getUser());
-        assertEquals(null, sut.getParams());
+        UserActionRequest sut = new UserActionRequest(ACTION_KEY, user, params);
+        assertEquals(ACTION_KEY, sut.getActionKey());
+        assertSame(user, sut.getUser());
+        assertSame(params, sut.getParams());
     }
-    
-    /**
-     * Test the toString implementation.
-     */
-    @Test
-    public void testToString()
-    {
-        Person testPerson = new Person("testAccountId", "firstname", "middlename", "lastname", "preferredname");
-        UserDetails userDetails = new ExtendedUserDetailsImpl(testPerson, null, null, null);
-        
-        String actionKey = "actionKey";
-        UserActionRequest sut = new UserActionRequest(actionKey, userDetails, null);
-        assertNotNull(sut.toString());
-    }
-
 }

@@ -15,12 +15,15 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
+import javax.persistence.OptimisticLockException;
+
+import org.eurekastreams.commons.exceptions.OutOfDateObjectException;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
  * Mapper used for updating DomainEntities.
- *
+ * 
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
@@ -42,7 +45,7 @@ public class UpdateMapper<TDomainEntityType extends DomainEntity> extends
 
     /**
      * Constructor with a wrapped updater to call after calling self.
-     *
+     * 
      * @param inWrappedUpdater
      *            the updater to call after self
      */
@@ -53,14 +56,23 @@ public class UpdateMapper<TDomainEntityType extends DomainEntity> extends
 
     /**
      * Updates the DomainEntity.
-     *
+     * 
      * @param inRequest
      *            The MapperRequest.
      * @return true.
      */
     public Boolean execute(final PersistenceRequest inRequest)
     {
-        flush();
+        try
+        {
+            flush();
+        }
+        catch (OptimisticLockException e)
+        {
+            throw new OutOfDateObjectException("The object could not be modified because another thread has modified "
+                    + "it since it was retrieved", e);
+        }
+
         if (wrappedUpdater != null)
         {
             wrappedUpdater.execute(inRequest);

@@ -88,7 +88,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
 
     /**
      * Constructor.
-     *
+     * 
      * @param inTranslators
      *            map of translators to set.
      * @param inNotifiers
@@ -230,7 +230,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      * in bulk than one at a time, so get them all up front. The truly massive case is someone posting to a stream that
      * many people have subscribed to; this involves sending email, and the email notifier references the
      * PersonModelView, so the lookup will not go to waste.
-     *
+     * 
      * @param batch
      *            Notification batch.
      * @return Map of person ID to PersonModelView of all recipients.
@@ -254,7 +254,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
 
     /**
      * Filters out notification recipients based on per-recipient settings.
-     *
+     * 
      * @param unfilteredRecipients
      *            the list of all recipient ids for the notification, unfiltered.
      * @param type
@@ -267,7 +267,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      *            the list of all notification preferences for users in the the allRecipient list.
      * @param recipientIndex
      *            Index of all recipients for looking up PersonModelViews.
-     *
+     * 
      * @return the filtered list of recipient ids.
      */
     private Collection<Long> filterRecipients(final Collection<Long> unfilteredRecipients,

@@ -25,40 +25,47 @@ import org.eurekastreams.server.domain.Identifiable;
  */
 public class StreamEntityDTO implements Serializable, Identifiable
 {
-    /**
-     * Serial version id.
-     */
+    /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The type (person, group, org, etc.).
-     */
+    /** The type (person, group, etc.). */
     private EntityType type;
 
-    /**
-     * The entity id.
-     */
+    /** The entity id. */
     private long id = 0;
 
-    /**
-     * The avatar id.
-     */
+    /** The avatar id. */
     private String avatarId;
 
-    /**
-     * The unique string identifier, such as accountId.
-     */
+    /** The unique string identifier, such as accountId. */
     private String uniqueIdentifier;
 
-    /**
-     * The destination/recipient (group/person) entity's id.
-     */
+    /** The destination/recipient (group/person) entity's id. */
     private Long destinationEntityId;
 
-    /**
-     * The UI-friendly display name.
-     */
+    /** The UI-friendly display name. */
     private String displayName;
+
+    /**
+     * Constructor.
+     */
+    public StreamEntityDTO()
+    {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param inType
+     *            The type (person, group, etc.).
+     * @param inUniqueIdentifier
+     *            The unique string identifier, such as accountId.
+     */
+    public StreamEntityDTO(final EntityType inType, final String inUniqueIdentifier)
+    {
+        type = inType;
+        uniqueIdentifier = inUniqueIdentifier;
+    }
 
     /**
      * @return the type
@@ -87,6 +94,7 @@ public class StreamEntityDTO implements Serializable, Identifiable
 
     /**
      * Set the StreamScope ID.
+     *
      * @param inId
      *            the id to set
      */
@@ -97,6 +105,7 @@ public class StreamEntityDTO implements Serializable, Identifiable
 
     /**
      * Get the StreamScope ID.
+     *
      * @return the avatarId
      */
     public String getAvatarId()
@@ -160,7 +169,9 @@ public class StreamEntityDTO implements Serializable, Identifiable
 
     /**
      * Set the destination/recipient entity's id.
-     * @param inDestinationEntityId the destination/recipient entity's id.
+     *
+     * @param inDestinationEntityId
+     *            the destination/recipient entity's id.
      */
     public void setDestinationEntityId(final Long inDestinationEntityId)
     {

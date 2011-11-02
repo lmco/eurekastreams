@@ -33,6 +33,7 @@ import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
+import org.eurekastreams.commons.exceptions.InvalidActionException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.jmock.Expectations;
@@ -43,6 +44,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
@@ -515,6 +517,32 @@ public class ActionExecutorTest
         Throwable exIn = new ValidationException();
         Throwable exOut = coreForbidNestingExceptionTest(exIn);
         assertSame(exIn, exOut);
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testBadBeanException()
+    {
+        Throwable exIn = new NoSuchBeanDefinitionException("Spring's message");
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof GeneralException);
+        assertTrue(exOut.getCause() == null || exOut.getCause() == exOut);
+        assertTrue(!exOut.getMessage().equals(exIn.getMessage()));
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testBadActionException()
+    {
+        Throwable exIn = new InvalidActionException("Inner message");
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof GeneralException);
+        assertTrue(exOut.getCause() == null || exOut.getCause() == exOut);
+        assertTrue(!exOut.getMessage().equals(exIn.getMessage()));
     }
 
     /**

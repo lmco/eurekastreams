@@ -37,7 +37,8 @@ import org.hibernate.annotations.Table;
 @Entity(name = "InAppNotification")
 @Table(appliesTo = "InAppNotification", indexes = { // \n
 
-// index for use by GetUnreadInAppNotificationCountsByUserId and GetInAppNotificationsByUserId. The latter only uses
+// index for use by GetUnreadInAppNotificationCountsByUserId and
+// GetInAppNotificationsByUserId. The latter only uses
 // recipientId within a WHERE clause, so that needs to be first.
 @org.hibernate.annotations.Index(name = "InAppNotification_recipientId_highPriority_isRead", // \n
 columnNames = { "recipientId", "highPriority", "isRead" })
@@ -69,8 +70,15 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     /** The text of the notification. */
     private String message;
 
-    /** A URL the notification will link to. May be absolute or relative (just an anchor for URLs in app). */
+    /**
+     * A URL the notification will link to. May be absolute or relative (just an anchor for URLs in app).
+     */
     private String url;
+
+    /**
+     * A count of how many notifications have been aggregated into this notification.
+     */
+    private int aggregationCount = 1;
 
     /** If high priority. */
     @Basic(optional = false)
@@ -80,7 +88,9 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     @Basic(optional = false)
     private boolean isRead;
 
-    /** Type of entity from which the notification came (person, group, app, or NOTSET=system). */
+    /**
+     * Type of entity from which the notification came (person, group, app, or NOTSET=system).
+     */
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
     private EntityType sourceType = EntityType.NOTSET;
@@ -93,7 +103,9 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     @Basic(optional = true)
     private String sourceName;
 
-    /** Type of entity whose avatar will be displayed with the notification (person, group, app, or NOTSET=system). */
+    /**
+     * Type of entity whose avatar will be displayed with the notification (person, group, app, or NOTSET=system).
+     */
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
     private EntityType avatarOwnerType = EntityType.NOTSET;
@@ -111,7 +123,7 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
 
     /**
      * Copy constructor.
-     *
+     * 
      * @param other
      *            Object to copy.
      */
@@ -333,5 +345,22 @@ public class InAppNotificationEntity extends DomainEntity implements Serializabl
     public void setRecipient(final Person inRecipient)
     {
         recipient = inRecipient;
+    }
+
+    /**
+     * @return the aggregationCount
+     */
+    public int getAggregationCount()
+    {
+        return aggregationCount;
+    }
+
+    /**
+     * @param inAggregationCount
+     *            the aggregationCount to set
+     */
+    public void setAggregationCount(final int inAggregationCount)
+    {
+        aggregationCount = inAggregationCount;
     }
 }

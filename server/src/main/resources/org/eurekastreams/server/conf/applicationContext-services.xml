@@ -41,7 +41,7 @@
 			<bean class="org.eurekastreams.server.service.email.MessageContentExtractor" />
 		</constructor-arg>
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.service.email.ActionSelector" />
+			<bean class="org.eurekastreams.server.service.email.ActionSelectorFactory" />
 		</constructor-arg>
 		<constructor-arg ref="serviceActionController" />
 		<!-- beanFactory is autowired -->

@@ -546,6 +546,42 @@
         <constructor-arg value="true" />
     </bean>
 
+    <bean id="postSplitActivityAndCommentsAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.PostSplitActivityAndCommentsExecution">
+            	<constructor-arg>
+            		<bean class="org.eurekastreams.server.service.utility.TextSplitter">
+            			<constructor-arg value="${eureka.constants.maxActivityBodyLength}" />
+            			<constructor-arg value="${eureka.constants.maxCommentBodyLength}" />
+            		</bean>
+            	</constructor-arg>
+                <constructor-arg>
+                	<bean class="org.eurekastreams.commons.actions.InlineActionExecutor">
+                		<constructor-arg value="false" />
+                	</bean>
+                </constructor-arg>
+                <constructor-arg>
+                	<map>
+                		<entry key="PERSON" value-ref="postPersonActivityServiceActionTaskHandler" />
+                		<entry key="GROUP" value-ref="postGroupActivityServiceActionTaskHandler" />
+                	</map>
+                </constructor-arg>
+                <constructor-arg ref="postActivityCommentAction" />
+                <constructor-arg>
+                	<map>
+                		<entry key="PERSON" value-ref="getPersonAccountIdByIdMapper" />
+                		<entry key="GROUP" value-ref="getGroupUniqueIdByIdMapper" />
+                	</map>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+
+
 	<bean id="postActivityCommentAuthorizer" class="org.eurekastreams.server.service.utility.authorization.ActivityInteractionAuthorizationStrategy">
 		<constructor-arg ref="getPersonByIdMapper" />
 		<constructor-arg ref="getGroupByIdMapper" />
@@ -553,24 +589,49 @@
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 	</bean>
 
+	<bean id="postActivityCommentAuthorizationStrategy" class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
+       	<constructor-arg ref="postActivityCommentAuthorizer" />
+       	<constructor-arg value="COMMENT" />
+       	<constructor-arg>
+       		<bean class="org.eurekastreams.server.action.request.transformer.ActivityIdFromCommentDTOTransformer" />
+       	</constructor-arg>
+       	<constructor-arg ref="activityDTOMapperThrowException" />
+	</bean>
+
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidationStrategy"/>
         </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
-            	<constructor-arg ref="postActivityCommentAuthorizer" />
-            	<constructor-arg value="COMMENT" />
-            	<constructor-arg>
-            		<bean class="org.eurekastreams.server.action.request.transformer.ActivityIdFromCommentDTOTransformer" />
-            	</constructor-arg>
-            	<constructor-arg ref="activityDTOMapperThrowException" />
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="postActivityCommentAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.PostActivityCommentExecution">
                     <constructor-arg ref="insertActivityComment" />
                     <constructor-arg ref="activityDTOMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+
+    <bean id="postSplitActivityCommentsAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidationStrategy"/>
+        </constructor-arg>
+        <constructor-arg ref="postActivityCommentAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.PostSplitActivityCommentsExecution">
+            	<constructor-arg>
+            		<bean class="org.eurekastreams.server.service.utility.TextSplitter">
+            			<constructor-arg value="${eureka.constants.maxCommentBodyLength}" />
+            			<constructor-arg value="${eureka.constants.maxCommentBodyLength}" />
+            		</bean>
+            	</constructor-arg>
+                <constructor-arg>
+                	<bean class="org.eurekastreams.commons.actions.InlineActionExecutor">
+                		<constructor-arg value="false" />
+                	</bean>
+                </constructor-arg>
+                <constructor-arg ref="postActivityCommentAction" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -716,8 +777,7 @@
                 class="org.eurekastreams.server.action.execution.stream.DeleteExpiredActivitiesExecution">
                 <constructor-arg ref="findSystemSettings" />
                 <constructor-arg ref="getExpiredActivities" />
-                <!-- Chunk size for breaking expired activities into smaller pieces for processing
--->
+                <!-- Chunk size for breaking expired activities into smaller pieces for processing -->
                 <constructor-arg type="int" value="1000" />
             </bean>
         </constructor-arg>
@@ -733,8 +793,7 @@
                 class="org.eurekastreams.server.action.execution.stream.DeleteExpiredActivitiesExecution">
                 <constructor-arg ref="findSystemSettings" />
                 <constructor-arg ref="getExpiredActivities" />
-                <!-- Chunk size for breaking expired activities into smaller pieces for processing
--->
+                <!-- Chunk size for breaking expired activities into smaller pieces for processing -->
                 <constructor-arg type="int" value="1000" />
             </bean>
         </constructor-arg>

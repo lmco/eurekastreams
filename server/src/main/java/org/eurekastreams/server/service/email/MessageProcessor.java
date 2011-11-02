@@ -49,7 +49,7 @@ public class MessageProcessor
     private final MessageContentExtractor messageContentExtractor;
 
     /** Determines which action to execute. */
-    private final ActionSelector actionSelector;
+    private final ActionSelectorFactory actionSelector;
 
     /** Instance of {@link ActionController} used to run actions. */
     private final ActionController serviceActionController;
@@ -116,7 +116,7 @@ public class MessageProcessor
      *            Address messages must be sent to.
      */
     public MessageProcessor(final MessageContentExtractor inMessageContentExtractor,
-            final ActionSelector inActionSelector, final ActionController inServiceActionController,
+            final ActionSelectorFactory inActionSelector, final ActionController inServiceActionController,
             final BeanFactory inBeanFactory, final TokenEncoder inTokenEncoder,
             final TokenContentFormatter inTokenContentFormatter, final PlatformTransactionManager inTransactionMgr,
             final DomainMapper<String, Long> inPersonIdByEmailDao, final DomainMapper<Long, byte[]> inUserKeyByIdDao,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,11 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
+import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
+import org.eurekastreams.commons.exceptions.InvalidActionException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.TransactionManagerFake;
 import org.eurekastreams.commons.server.UserActionRequest;
@@ -48,7 +50,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * Test class for the ServiceActionController.
- *
  */
 @SuppressWarnings("unchecked")
 public class ServiceActionControllerTest
@@ -61,7 +62,7 @@ public class ServiceActionControllerTest
     /**
      * Context for building mock objects.
      */
-    private final Mockery context = new JUnit4Mockery()
+    private final Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -71,7 +72,7 @@ public class ServiceActionControllerTest
     /**
      * Mock of the TransactionManagerFake for testing.
      */
-    private final TransactionManagerFake transMgrMock = context.mock(TransactionManagerFake.class);
+    private final TransactionManagerFake transMgrMock = mockery.mock(TransactionManagerFake.class);
 
     /**
      * instance of a TransactionDefinition.
@@ -81,54 +82,54 @@ public class ServiceActionControllerTest
     /**
      * Mocked instance of a TransactionStatus.
      */
-    private TransactionStatus transStatus = context.mock(TransactionStatus.class);
+    private final TransactionStatus transStatus = mockery.mock(TransactionStatus.class);
 
     /**
      * Mocked instance of the ValidationStrategy for testing.
      */
-    private ValidationStrategy<ServiceActionContext> validationStrategy = context.mock(ValidationStrategy.class);
+    private final ValidationStrategy<ServiceActionContext> validationStrategy = mockery.mock(ValidationStrategy.class);
 
     /**
      * Mocked instance of the {@link AuthorizationStrategy for testing.
      */
-    private AuthorizationStrategy<PrincipalActionContext> authorizationStrategy = context
+    private final AuthorizationStrategy<PrincipalActionContext> authorizationStrategy = mockery
             .mock(AuthorizationStrategy.class);
 
     /**
      * Mocked instance of the {@link ExecutionStrategy} for testing.
      */
-    private ExecutionStrategy<ServiceActionContext> executionStrategy = context.mock(ExecutionStrategy.class);
+    private final ExecutionStrategy<ServiceActionContext> executionStrategy = mockery.mock(ExecutionStrategy.class);
 
     /**
      * Mocked instance of the {@link TaskHandlerExecutionStrategy} for testing.
      */
-    private TaskHandlerExecutionStrategy<ActionContext> taskHandlerExecutionStrategy = context
+    private final TaskHandlerExecutionStrategy<ActionContext> taskHandlerExecutionStrategy = mockery
             .mock(TaskHandlerExecutionStrategy.class);
 
     /**
      * Mocked instance of the {@link ServiceAction} class for testing.
      */
-    private ServiceAction serviceActionMock = context.mock(ServiceAction.class);
+    private final ServiceAction serviceActionMock = mockery.mock(ServiceAction.class);
 
     /**
      * Mocked instance of the {@link TaskHandlerAction} class for testing.
      */
-    private TaskHandlerAction queueSubmitterActionMock = context.mock(TaskHandlerAction.class);
+    private final TaskHandlerAction queueSubmitterActionMock = mockery.mock(TaskHandlerAction.class);
 
     /**
      * Mocked instance of the {@link TaskHandler} class.
      */
-    private TaskHandler taskHandlerMock = context.mock(TaskHandler.class);
+    private final TaskHandler taskHandlerMock = mockery.mock(TaskHandler.class);
 
     /**
      * Mocked instance of the {@link Principal} class for testing.
      */
-    private Principal principalMock = context.mock(Principal.class);
+    private final Principal principalMock = mockery.mock(Principal.class);
 
     /**
      * Mocked instance of the {@link UserActionRequest} class for testing.
      */
-    private UserActionRequest userActionRequest = context.mock(UserActionRequest.class);
+    private final UserActionRequest userActionRequest = mockery.mock(UserActionRequest.class);
 
     /**
      * Setup the test fixture.
@@ -138,6 +139,51 @@ public class ServiceActionControllerTest
     {
         sut = new ServiceActionController(transMgrMock);
         transDef = new DefaultTransactionDefinition();
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(principalMock).getAccountId();
+                will(returnValue("someuser"));
+            }
+        });
+    }
+
+    /**
+     * Sets up expectations for service actions.
+     */
+    private void expectServiceAction()
+    {
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(serviceActionMock).getValidationStrategy();
+                will(returnValue(validationStrategy));
+                allowing(serviceActionMock).getAuthorizationStrategy();
+                will(returnValue(authorizationStrategy));
+                allowing(serviceActionMock).getExecutionStrategy();
+                will(returnValue(executionStrategy));
+            }
+        });
+    }
+
+    /**
+     * Sets up expectations for task handler service actions.
+     */
+    private void expectTaskHandlerServiceAction()
+    {
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(queueSubmitterActionMock).getValidationStrategy();
+                will(returnValue(validationStrategy));
+                allowing(queueSubmitterActionMock).getAuthorizationStrategy();
+                will(returnValue(authorizationStrategy));
+                allowing(queueSubmitterActionMock).getExecutionStrategy();
+                will(returnValue(taskHandlerExecutionStrategy));
+                allowing(queueSubmitterActionMock).getTaskHandler();
+                will(returnValue(taskHandlerMock));
+            }
+        });
     }
 
     /**
@@ -155,7 +201,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, serviceActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -171,7 +217,7 @@ public class ServiceActionControllerTest
 
         setupTransactionContext(true, serviceActionContext, true);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(transStatus).isCompleted();
@@ -183,7 +229,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, serviceActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -197,17 +243,15 @@ public class ServiceActionControllerTest
         final ServiceActionContext serviceActionContext = new ServiceActionContext(params, principalMock);
         transDef.setReadOnly(true);
 
-        context.checking(new Expectations()
+        expectServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(serviceActionMock).isReadOnly();
+                allowing(serviceActionMock).isReadOnly();
                 will(returnValue(true));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
-
-                oneOf(serviceActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
 
                 oneOf(validationStrategy).validate(serviceActionContext);
                 will(throwException(new ValidationException()));
@@ -221,7 +265,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, serviceActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -235,22 +279,17 @@ public class ServiceActionControllerTest
         final ServiceActionContext serviceActionContext = new ServiceActionContext(params, principalMock);
         transDef.setReadOnly(true);
 
-        context.checking(new Expectations()
+        expectServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(serviceActionMock).isReadOnly();
+                allowing(serviceActionMock).isReadOnly();
                 will(returnValue(true));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(serviceActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
-
                 oneOf(validationStrategy).validate(serviceActionContext);
-
-                oneOf(serviceActionMock).getAuthorizationStrategy();
-                will(returnValue(authorizationStrategy));
 
                 oneOf(authorizationStrategy).authorize(serviceActionContext);
                 will(throwException(new AuthorizationException()));
@@ -264,7 +303,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, serviceActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -278,27 +317,19 @@ public class ServiceActionControllerTest
         final ServiceActionContext serviceActionContext = new ServiceActionContext(params, principalMock);
         transDef.setReadOnly(true);
 
-        context.checking(new Expectations()
+        expectServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(serviceActionMock).isReadOnly();
+                allowing(serviceActionMock).isReadOnly();
                 will(returnValue(true));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(serviceActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
-
                 oneOf(validationStrategy).validate(serviceActionContext);
 
-                oneOf(serviceActionMock).getAuthorizationStrategy();
-                will(returnValue(authorizationStrategy));
-
                 oneOf(authorizationStrategy).authorize(serviceActionContext);
-
-                oneOf(serviceActionMock).getExecutionStrategy();
-                will(returnValue(executionStrategy));
 
                 oneOf(executionStrategy).execute(serviceActionContext);
                 will(throwException(new ExecutionException()));
@@ -312,7 +343,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, serviceActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -324,18 +355,18 @@ public class ServiceActionControllerTest
     @Test(expected = GeneralException.class)
     public void testExecuteWithQueueServiceActionFailure() throws Exception
     {
-        final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+        final ServiceActionContext serviceActionContext = mockery.mock(ServiceActionContext.class);
         transDef.setReadOnly(false);
 
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         requests.add(userActionRequest);
 
-        final TaskHandlerActionContext<ServiceActionContext> taskHandlerActionContextMock = context
+        final TaskHandlerActionContext<ServiceActionContext> taskHandlerActionContextMock = mockery
                 .mock(TaskHandlerActionContext.class);
 
         setupTaskHandlerTransactionContext(false, taskHandlerActionContextMock, true);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(transStatus).isCompleted();
@@ -347,7 +378,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, queueSubmitterActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -359,23 +390,21 @@ public class ServiceActionControllerTest
     @Test(expected = ValidationException.class)
     public void testExecuteWithQueueServiceActionValidationFailure() throws Exception
     {
-        final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+        final ServiceActionContext serviceActionContext = mockery.mock(ServiceActionContext.class);
         transDef.setReadOnly(false);
 
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         requests.add(userActionRequest);
 
-        context.checking(new Expectations()
+        expectTaskHandlerServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(queueSubmitterActionMock).isReadOnly();
+                allowing(queueSubmitterActionMock).isReadOnly();
                 will(returnValue(false));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
-
-                oneOf(queueSubmitterActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
 
                 oneOf(validationStrategy).validate(with(any(ServiceActionContext.class)));
                 will(throwException(new ValidationException()));
@@ -389,7 +418,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, queueSubmitterActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -401,28 +430,23 @@ public class ServiceActionControllerTest
     @Test(expected = AuthorizationException.class)
     public void testExecuteWithQueueServiceActionAuthorizationFailure() throws Exception
     {
-        final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+        final ServiceActionContext serviceActionContext = mockery.mock(ServiceActionContext.class);
         transDef.setReadOnly(false);
 
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         requests.add(userActionRequest);
 
-        context.checking(new Expectations()
+        expectTaskHandlerServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(queueSubmitterActionMock).isReadOnly();
+                allowing(queueSubmitterActionMock).isReadOnly();
                 will(returnValue(false));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(queueSubmitterActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
-
                 oneOf(validationStrategy).validate(with(any(ServiceActionContext.class)));
-
-                oneOf(queueSubmitterActionMock).getAuthorizationStrategy();
-                will(returnValue(authorizationStrategy));
 
                 oneOf(authorizationStrategy).authorize(with(any(ServiceActionContext.class)));
                 will(throwException(new AuthorizationException()));
@@ -436,7 +460,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, queueSubmitterActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -448,33 +472,25 @@ public class ServiceActionControllerTest
     @Test(expected = ExecutionException.class)
     public void testExecuteWithQueueServiceActionExecutionFailure() throws Exception
     {
-        final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+        final ServiceActionContext serviceActionContext = mockery.mock(ServiceActionContext.class);
         transDef.setReadOnly(false);
 
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         requests.add(userActionRequest);
 
-        context.checking(new Expectations()
+        expectTaskHandlerServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(queueSubmitterActionMock).isReadOnly();
+                allowing(queueSubmitterActionMock).isReadOnly();
                 will(returnValue(false));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(queueSubmitterActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
-
                 oneOf(validationStrategy).validate(with(any(ServiceActionContext.class)));
 
-                oneOf(queueSubmitterActionMock).getAuthorizationStrategy();
-                will(returnValue(authorizationStrategy));
-
                 oneOf(authorizationStrategy).authorize(with(any(ServiceActionContext.class)));
-
-                oneOf(queueSubmitterActionMock).getExecutionStrategy();
-                will(returnValue(taskHandlerExecutionStrategy));
 
                 oneOf(taskHandlerExecutionStrategy).execute(with(any(TaskHandlerActionContext.class)));
                 will(throwException(new ExecutionException()));
@@ -488,7 +504,7 @@ public class ServiceActionControllerTest
 
         sut.execute(serviceActionContext, queueSubmitterActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -500,20 +516,20 @@ public class ServiceActionControllerTest
     @Test
     public void testExecuteWithQueueServiceAction() throws Exception
     {
-        final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+        final ServiceActionContext serviceActionContext = mockery.mock(ServiceActionContext.class);
         transDef.setReadOnly(false);
 
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         requests.add(userActionRequest);
 
-        final TaskHandlerActionContext<ServiceActionContext> taskHandlerActionContextMock = context
+        final TaskHandlerActionContext<ServiceActionContext> taskHandlerActionContextMock = mockery
                 .mock(TaskHandlerActionContext.class);
 
         setupTaskHandlerTransactionContext(false, taskHandlerActionContextMock, false);
 
         sut.execute(serviceActionContext, queueSubmitterActionMock);
 
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -529,27 +545,19 @@ public class ServiceActionControllerTest
     private void setupTransactionContext(final boolean isReadOnlyTransaction, final ServiceActionContext inContext,
             final boolean throwsException)
     {
-        context.checking(new Expectations()
+        expectServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(serviceActionMock).isReadOnly();
+                allowing(serviceActionMock).isReadOnly();
                 will(returnValue(isReadOnlyTransaction));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(serviceActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
-
                 oneOf(validationStrategy).validate(inContext);
 
-                oneOf(serviceActionMock).getAuthorizationStrategy();
-                will(returnValue(authorizationStrategy));
-
                 oneOf(authorizationStrategy).authorize(inContext);
-
-                oneOf(serviceActionMock).getExecutionStrategy();
-                will(returnValue(executionStrategy));
 
                 oneOf(executionStrategy).execute(inContext);
 
@@ -580,27 +588,19 @@ public class ServiceActionControllerTest
     private void setupTaskHandlerTransactionContext(final boolean isReadOnlyTransaction,
             final TaskHandlerActionContext inContext, final boolean throwsException)
     {
-        context.checking(new Expectations()
+        expectTaskHandlerServiceAction();
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(queueSubmitterActionMock).isReadOnly();
+                allowing(queueSubmitterActionMock).isReadOnly();
                 will(returnValue(isReadOnlyTransaction));
 
                 oneOf(transMgrMock).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(queueSubmitterActionMock).getValidationStrategy();
-                will(returnValue(validationStrategy));
-
                 oneOf(validationStrategy).validate(with(any(ServiceActionContext.class)));
 
-                oneOf(queueSubmitterActionMock).getAuthorizationStrategy();
-                will(returnValue(authorizationStrategy));
-
                 oneOf(authorizationStrategy).authorize(with(any(ServiceActionContext.class)));
-
-                oneOf(queueSubmitterActionMock).getExecutionStrategy();
-                will(returnValue(taskHandlerExecutionStrategy));
 
                 oneOf(taskHandlerExecutionStrategy).execute(with(any(TaskHandlerActionContext.class)));
 
@@ -612,13 +612,94 @@ public class ServiceActionControllerTest
                 else
                 {
                     oneOf(transMgrMock).commit(transStatus);
-
-                    oneOf(queueSubmitterActionMock).getTaskHandler();
-                    will(returnValue(taskHandlerMock));
                 }
             }
         });
-
     }
 
+    // ===== Missing strategy tests =====
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteMissingValidation()
+    {
+        ServiceAction action = new ServiceAction(null, authorizationStrategy, executionStrategy, false);
+        final ServiceActionContext context = new ServiceActionContext(null, principalMock);
+        sut.execute(context, action);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteMissingAuthorization()
+    {
+        ServiceAction action = new ServiceAction(validationStrategy, null, executionStrategy, false);
+        final ServiceActionContext context = new ServiceActionContext(null, principalMock);
+        sut.execute(context, action);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteMissingExecution()
+    {
+        ServiceAction action = new ServiceAction(validationStrategy, authorizationStrategy, null, false);
+        final ServiceActionContext context = new ServiceActionContext(null, principalMock);
+        sut.execute(context, action);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteTHMissingValidation()
+    {
+        TaskHandlerAction action = new TaskHandlerServiceAction(null, authorizationStrategy,
+                taskHandlerExecutionStrategy, taskHandlerMock, false);
+        sut.execute(new ServiceActionContext(null, principalMock), action);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteTHMissingAuthorization()
+    {
+        TaskHandlerAction action = new TaskHandlerServiceAction(validationStrategy, null,
+                taskHandlerExecutionStrategy, taskHandlerMock, false);
+        sut.execute(new ServiceActionContext(null, principalMock), action);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteTHMissingExecution()
+    {
+        TaskHandlerAction action = new TaskHandlerServiceAction(validationStrategy, authorizationStrategy, null,
+                taskHandlerMock, false);
+        sut.execute(new ServiceActionContext(null, principalMock), action);
+        mockery.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = InvalidActionException.class)
+    public void testExecuteTHMissingTaskHandler()
+    {
+        TaskHandlerAction action = new TaskHandlerServiceAction(validationStrategy, authorizationStrategy,
+                taskHandlerExecutionStrategy, null, false);
+        sut.execute(new ServiceActionContext(null, principalMock), action);
+        mockery.assertIsSatisfied();
+    }
 }

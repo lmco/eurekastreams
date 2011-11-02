@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.domain;
 
+
 /**
  * Type of notification to be sent to a user.
  */
@@ -41,7 +42,9 @@ public enum NotificationType
     /** Someone started following the user. */
     FOLLOW_PERSON,
 
-    /** Someone posted to a stream (personal or group) that the user is following. */
+    /**
+     * Someone posted to a stream (personal or group) that the user is following.
+     */
     POST_TO_FOLLOWED_STREAM,
 
     /** Someone commented on a post in the group's stream. */
@@ -71,6 +74,8 @@ public enum NotificationType
     /** A coordinator denied access to a private group. */
     REQUEST_GROUP_ACCESS_DENIED,
 
-    /** Relaying a message that was already built outside the notification engine. */
-    PASS_THROUGH
+    /**
+     * Relaying a message that was already built outside the notification engine.
+     */
+    PASS_THROUGH;
 }
