@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.resource.spi.IllegalStateException;
 
@@ -94,8 +95,18 @@ public class ActionResource extends SmpResource
     private String clientUniqueId;
 
     /**
+     * Action types map.
+     */
+    private Map<String, String> actionTypes;
+
+    /**
+     * Action rewrite name map.
+     */
+    private Map<String, String> actionRewrites;
+
+    /**
      * Default constructor.
-     *
+     * 
      * @param inServiceActionController
      *            the action controller.
      * @param inPrincipalExtractors
@@ -110,12 +121,17 @@ public class ActionResource extends SmpResource
      *            Extracts request from the parameters block.
      * @param inReadOnly
      *            Only allow read-only actions.
+     * @param inActionTypes
+     *            action types map.
+     * @param inActionRewrites
+     *            action rewrite map.
      */
     public ActionResource(final ActionController inServiceActionController,
             final List<Transformer<Request, Principal>> inPrincipalExtractors,
             final List<Transformer<Request, String>> inClientExtractors, final JsonFactory inJsonFactory,
             final ApplicationContextHolder inApplicationContextHolder,
-            final JsonFieldObjectExtractor inJsonFieldObjectExtractor, final boolean inReadOnly)
+            final JsonFieldObjectExtractor inJsonFieldObjectExtractor, final boolean inReadOnly,
+            final Map<String, String> inActionTypes, final Map<String, String> inActionRewrites)
     {
         serviceActionController = inServiceActionController;
         principalExtractors = inPrincipalExtractors;
@@ -124,11 +140,13 @@ public class ActionResource extends SmpResource
         applicationContextHolder = inApplicationContextHolder;
         jsonFieldObjectExtractor = inJsonFieldObjectExtractor;
         readOnly = inReadOnly;
+        actionTypes = inActionTypes;
+        actionRewrites = inActionRewrites;
     }
 
     /**
      * init the params.
-     *
+     * 
      * @param request
      *            the request object.
      */
@@ -139,15 +157,16 @@ public class ActionResource extends SmpResource
         clientUniqueId = getClient(request);
         Assert.notNull(principal, "Principal object cannot be null.");
         actionKey = (String) request.getAttributes().get("action");
-        try
+
+        Assert.isTrue(actionTypes.containsKey(actionKey), "Unknown Action, not defined in Action Type Map");
+
+        if (actionRewrites.containsKey(actionKey))
         {
-            requestType = URLDecoder.decode((String) request.getAttributes().get("requestType"), "UTF-8");
+            actionKey = actionRewrites.get(actionKey);
         }
-        catch (UnsupportedEncodingException ex)
-        {
-            log.error("Error initializing parameter type from restlet.", ex);
-            throw new ExecutionException(ex);
-        }
+
+        requestType = actionTypes.get(actionKey);
+
         try
         {
             paramsJSON = URLDecoder.decode((String) request.getAttributes().get("paramsJSON"), "UTF-8");
@@ -161,7 +180,7 @@ public class ActionResource extends SmpResource
 
     /**
      * GET the activites.
-     *
+     * 
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -193,6 +212,7 @@ public class ActionResource extends SmpResource
             if (springBean instanceof ServiceAction)
             {
                 ServiceAction action = (ServiceAction) springBean;
+
                 if (readOnly && !action.isReadOnly())
                 {
                     throw new IllegalStateException("Action requested is not read-only.");
@@ -237,7 +257,7 @@ public class ActionResource extends SmpResource
 
     /**
      * Returns Principal for given account id.
-     *
+     * 
      * @param inRequest
      *            Request to get principal from.
      * @return Principal for given account id.
@@ -261,7 +281,7 @@ public class ActionResource extends SmpResource
 
     /**
      * Returns the client used for the request (if available).
-     *
+     * 
      * @param inRequest
      *            Request to get client from.
      * @return Client for the current request.
@@ -281,7 +301,7 @@ public class ActionResource extends SmpResource
 
     /**
      * Go from JSON to Request object.
-     *
+     * 
      * @return the request object.
      * @throws Exception
      *             possible exceptions.
