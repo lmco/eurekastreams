@@ -111,7 +111,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -498,6 +498,8 @@
 							<excludes>
 								<!-- Exclude the slf4j JDK 1.4 logging adapter to force slf4j logging to use log4j. -->
 								<exclude>WEB-INF/lib/slf4j-jdk14-*.jar</exclude>
+								<!-- Exclude the slf4j API because we're using a newer version. -->
+								<exclude>WEB-INF/lib/slf4j-api-*.jar</exclude>
 							</excludes>
 						</overlay>
 					</overlays>
