@@ -62,7 +62,7 @@ public class MessageReplier
 
     /**
      * Constructor.
-     * 
+     *
      * @param inEmailerFactory
      *            For creating response emails.
      * @param inVelocityEngine
@@ -136,7 +136,7 @@ public class MessageReplier
                 StringWriter writer = new StringWriter();
                 velocityEngine.evaluate(velocityContext, writer, "EmailSubject-" + actionName,
                         template.getSubjectTemplate());
-                response.setSubject(writer.toString());
+                emailerFactory.setSubject(response, writer.toString());
 
                 // build the text body
                 Template vt = velocityEngine.getTemplate(template.getTextBodyTemplateResourcePath());
