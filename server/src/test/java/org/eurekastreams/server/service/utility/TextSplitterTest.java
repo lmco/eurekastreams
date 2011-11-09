@@ -31,6 +31,16 @@ public class TextSplitterTest
      * Test.
      */
     @Test
+    public void testNull()
+    {
+        TextSplitter sut = new TextSplitter(5, 5);
+        assertTrue(sut.split(null).isEmpty());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
     public void testEmptyString()
     {
         TextSplitter sut = new TextSplitter(5, 5);

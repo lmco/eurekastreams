@@ -1,0 +1,7 @@
+#siteLabel_txt()
+There was an error posting an activity from your email:
+
+	$exception.Message
+
+Your original email is attached for reference.
+#parse('Footer.txt')

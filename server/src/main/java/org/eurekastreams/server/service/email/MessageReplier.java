@@ -15,16 +15,76 @@
  */
 package org.eurekastreams.server.service.email;
 
-import javax.mail.Message;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Map;
 
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.app.event.EventCartridge;
+import org.apache.velocity.app.event.implement.EscapeHtmlReference;
+import org.apache.velocity.context.Context;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
+import org.eurekastreams.server.support.email.EmailTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Responds to a message with result status.
  */
 public class MessageReplier
 {
+    /** Log. */
+    private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
+
+    /** For creating response emails. */
+    private final EmailerFactory emailerFactory;
+
+    /** Apache Velocity templating engine. */
+    private final VelocityEngine velocityEngine;
+
+    /** Global context for Apache Velocity templating engine. (Holds system-wide properties.) */
+    private final Context velocityGlobalContext;
+
+    /** Templates for error response messages. */
+    private final Map<String, EmailTemplate> errorMessageTemplates;
+
+    /** Prepares exceptions for returning to the client. */
+    private final Transformer<Exception, Exception> exceptionSanitizer;
+
+    /**
+     * Constructor.
+     * 
+     * @param inEmailerFactory
+     *            For creating response emails.
+     * @param inVelocityEngine
+     *            Apache Velocity templating engine.
+     * @param inVelocityGlobalContext
+     *            Global context for Apache Velocity templating engine. (Holds system-wide properties.)
+     * @param inExceptionSanitizer
+     *            Prepares exceptions for returning to the client.
+     * @param inErrorMessageTemplates
+     *            Templates for error response messages.
+     */
+    public MessageReplier(final EmailerFactory inEmailerFactory, final VelocityEngine inVelocityEngine,
+            final Context inVelocityGlobalContext, final Transformer<Exception, Exception> inExceptionSanitizer,
+            final Map<String, EmailTemplate> inErrorMessageTemplates)
+    {
+        emailerFactory = inEmailerFactory;
+        velocityEngine = inVelocityEngine;
+        velocityGlobalContext = inVelocityGlobalContext;
+        exceptionSanitizer = inExceptionSanitizer;
+        errorMessageTemplates = inErrorMessageTemplates;
+    }
+
     /**
      * Responds to the given message.
      *
@@ -34,9 +94,75 @@ public class MessageReplier
      *            User that sent the message.
      * @param actionSelection
      *            Action executed.
+     * @param inException
+     *            The processing error which necessitated this reply.
+     * @param inResponseMessages
+     *            List to add response messages to.
      */
-    public void reply(final Message message, final PersonModelView user, final UserActionRequest actionSelection)
+    public void reply(final Message message, final PersonModelView user, final UserActionRequest actionSelection,
+            final Exception inException, final List<Message> inResponseMessages)
     {
-        // TODO
+        final String actionName = actionSelection.getActionKey();
+        try
+        {
+            Exception cleanException = exceptionSanitizer.transform(inException);
+
+            // create reponse message
+            MimeMessage response = emailerFactory.createMessage();
+            emailerFactory.setTo(response, user.getEmail());
+
+            EmailTemplate template = errorMessageTemplates.get(actionName);
+            if (template == null)
+            {
+                log.warn("Missing template for error response message for action {}.  Sending generic response.",
+                        actionName);
+
+                emailerFactory.setSubject(response, "Error processing received email");
+                emailerFactory.setTextBody(response,
+                        "There was an error processing your email.  " + cleanException.getMessage()
+                                + "  Original message is attached.");
+            }
+            else
+            {
+                // prepare for template rendering
+                Context velocityContext = new VelocityContext(velocityGlobalContext);
+                velocityContext.put("action", actionName);
+                velocityContext.put("params", actionSelection.getParams());
+                velocityContext.put("user", user);
+                velocityContext.put("exception", cleanException);
+                velocityContext.put("originalException", inException);
+
+                // build the subject
+                StringWriter writer = new StringWriter();
+                velocityEngine.evaluate(velocityContext, writer, "EmailSubject-" + actionName,
+                        template.getSubjectTemplate());
+                response.setSubject(writer.toString());
+
+                // build the text body
+                Template vt = velocityEngine.getTemplate(template.getTextBodyTemplateResourcePath());
+                writer.getBuffer().setLength(0);
+                vt.merge(velocityContext, writer);
+                emailerFactory.setTextBody(response, writer.toString());
+
+                // build the HTML body
+                vt = velocityEngine.getTemplate(template.getHtmlBodyTemplateResourcePath());
+                // HTML-escape all content inserted
+                EventCartridge ec = new EventCartridge();
+                ec.addEventHandler(new EscapeHtmlReference());
+                ec.attachToContext(velocityContext);
+                writer.getBuffer().setLength(0);
+                vt.merge(velocityContext, writer);
+                emailerFactory.setHtmlBody(response, writer.toString());
+            }
+
+            // attach original message
+            emailerFactory.addAttachmentMessage(response, message);
+
+            inResponseMessages.add(response);
+        }
+        catch (Exception ex)
+        {
+            log.error("Error building error response message for failed action '{}'.", actionName, ex);
+        }
     }
 }

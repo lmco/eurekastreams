@@ -40,7 +40,7 @@ public class TextSplitter
 
     /**
      * Constructor.
-     *
+     * 
      * @param inFirstBlockSize
      *            Maximum size of first piece.
      * @param inBlockSize
@@ -53,7 +53,7 @@ public class TextSplitter
 
     /**
      * Constructor.
-     *
+     * 
      * @param inFirstBlockSize
      *            Maximum size of first piece.
      * @param inBlockSize
@@ -75,7 +75,7 @@ public class TextSplitter
 
     /**
      * Splits a string into multiple pieces on size and places continuation marks on them.
-     *
+     * 
      * @param originalInputText
      *            Single string to split.
      * @return List of pieces.
@@ -83,6 +83,10 @@ public class TextSplitter
     public List<String> split(final String originalInputText)
     {
         List<String> piecesList = new ArrayList<String>();
+        if (originalInputText == null)
+        {
+            return piecesList;
+        }
 
         int startIdx = 0;
         String inputText = originalInputText.trim();

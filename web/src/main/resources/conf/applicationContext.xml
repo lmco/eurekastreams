@@ -79,6 +79,7 @@
     	<constructor-arg ref="serviceActionController" />
    		<constructor-arg ref="principalPopulator" />
  		<constructor-arg ref="persistentBeanManager" />
+ 		<constructor-arg ref="exceptionSanitizer" />
     </bean>
     
 </beans>

@@ -490,105 +490,105 @@
 
 	<!-- ==== EMAIL ==== -->
 
-	<bean id="emailTemplate" class="org.eurekastreams.server.action.execution.notification.notifier.EmailNotificationTemplate" abstract="true" />
+	<bean id="notifEmailTemplate" class="org.eurekastreams.server.action.execution.notification.notifier.EmailNotificationTemplate" abstract="true" />
 	
 	<util:map id="emailNotifierMessageTemplates">
 		<entry key="LIKE_ACTIVITY">
-			<bean parent="emailTemplate" 
+			<bean parent="notifEmailTemplate" 
 				p:subject="$actor.displayName liked your #activityType($activity)"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="POST_TO_PERSONAL_STREAM">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName posted a #activityType($activity) to your stream"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="POST_TO_FOLLOWED_STREAM">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="COMMENT_TO_PERSONAL_POST">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName commented on your #activityType($activity)"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="COMMENT_TO_COMMENTED_POST">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="FOLLOW_PERSON">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName is following your stream"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_PERSON.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_PERSON.html"
 				p:reply="ACTOR" />
 		</entry>
 		<entry key="FOLLOW_GROUP">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName joined the $stream.displayName group"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.html"
 				p:reply="ACTOR" />
 		</entry>
 		<entry key="FLAG_ACTIVITY">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream."
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.html"
 				p:reply="ACTOR" />
 		</entry>
 		<entry key="REQUEST_NEW_GROUP">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="The $group.displayName group is pending approval"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP.html"
 				p:reply="ACTOR" />
 		</entry>
 		<entry key="REQUEST_NEW_GROUP_APPROVED">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="Pending group request for the $group.displayName group has been approved"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_APPROVED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_APPROVED.html" />
 		</entry>
 		<entry key="REQUEST_NEW_GROUP_DENIED">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="Pending group request for the $groupName group has been denied"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_DENIED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_DENIED.html" />
 		</entry>
 		<entry key="REQUEST_GROUP_ACCESS">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$actor.displayName requested to join the $group.displayName private group"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.html"
 				p:reply="ACTOR" />
 		</entry>
 		<entry key="REQUEST_GROUP_ACCESS_APPROVED">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="Request to join the $group.displayName private group has been approved"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_APPROVED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_APPROVED.html" />
 		</entry>
 		<entry key="REQUEST_GROUP_ACCESS_DENIED">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="Request to join the $group.displayName private group has been denied"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.html" />
 		</entry>
 		<entry key="PASS_THROUGH">
-			<bean parent="emailTemplate"
+			<bean parent="notifEmailTemplate"
 				p:subject="$message"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.html" />

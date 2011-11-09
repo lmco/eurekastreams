@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.Address;
@@ -54,7 +55,7 @@ import org.springframework.transaction.TransactionStatus;
 /**
  * Tests MessageProcessor.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class MessageProcessorTest
 {
     /** Test data. */
@@ -91,7 +92,7 @@ public class MessageProcessorTest
     private static final byte[] KEY = "ThisIsAKey".getBytes();
 
     /** Used for mocking objects. */
-    private final JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -99,55 +100,58 @@ public class MessageProcessorTest
     };
 
     /** For getting the user's content from the message. */
-    private final MessageContentExtractor messageContentExtractor = context.mock(MessageContentExtractor.class,
+    private final MessageContentExtractor messageContentExtractor = mockery.mock(MessageContentExtractor.class,
             "messageContentExtractor");
 
     /** Determines which action to execute. */
-    private final ActionSelectorFactory actionSelector = context.mock(ActionSelectorFactory.class, "actionSelector");
+    private final ActionSelectorFactory actionSelector = mockery.mock(ActionSelectorFactory.class, "actionSelector");
 
     /** Instance of {@link ActionController} used to run actions. */
-    private final ActionController serviceActionController = context.mock(ActionController.class,
+    private final ActionController serviceActionController = mockery.mock(ActionController.class,
             "serviceActionController");
 
     /** The context from which this service can load action beans. */
-    private final BeanFactory beanFactory = context.mock(BeanFactory.class, "beanFactory");
+    private final BeanFactory beanFactory = mockery.mock(BeanFactory.class, "beanFactory");
 
     /** For decoding the token. */
-    private final TokenEncoder tokenEncoder = context.mock(TokenEncoder.class, "tokenEncoder");
+    private final TokenEncoder tokenEncoder = mockery.mock(TokenEncoder.class, "tokenEncoder");
 
     /** Parses the token content. */
-    private final TokenContentFormatter tokenContentFormatter = context.mock(TokenContentFormatter.class,
+    private final TokenContentFormatter tokenContentFormatter = mockery.mock(TokenContentFormatter.class,
             "tokenContentFormatter");
 
     /** Transaction manager (to allow calling mappers). */
-    private final PlatformTransactionManager transactionMgr = context.mock(PlatformTransactionManager.class,
+    private final PlatformTransactionManager transactionMgr = mockery.mock(PlatformTransactionManager.class,
             "transactionMgr");
 
     /** DAO to get a user's person ID given their email address. */
-    private final DomainMapper<String, Long> personIdByEmailDao = context.mock(DomainMapper.class,
+    private final DomainMapper<String, Long> personIdByEmailDao = mockery.mock(DomainMapper.class,
             "personIdByEmailDao");
 
     /** DAO to get a user's crypto key given their person ID. */
-    private final DomainMapper<Long, byte[]> userKeyByIdDao = context.mock(DomainMapper.class, "userKeyByIdDao");
+    private final DomainMapper<Long, byte[]> userKeyByIdDao = mockery.mock(DomainMapper.class, "userKeyByIdDao");
 
     /** DAO to get a person by ID. */
-    private final DomainMapper<Long, PersonModelView> personDao = context.mock(DomainMapper.class, "personDao");
+    private final DomainMapper<Long, PersonModelView> personDao = mockery.mock(DomainMapper.class, "personDao");
 
     /** Responds to messages that failed execution with result status. */
-    private final MessageReplier messageReplier = context.mock(MessageReplier.class, "messageReplier");
+    private final MessageReplier messageReplier = mockery.mock(MessageReplier.class, "messageReplier");
 
     /** Fixture: message. */
-    private final Message message = context.mock(Message.class);
+    private final Message message = mockery.mock(Message.class);
 
     /** Fixture: taskHandlerServiceAction. */
-    private final TaskHandlerServiceAction taskHandlerServiceAction = context.mock(TaskHandlerServiceAction.class,
+    private final TaskHandlerServiceAction taskHandlerServiceAction = mockery.mock(TaskHandlerServiceAction.class,
             "taskHandlerServiceAction");
 
     /** Fixture: serviceAction. */
-    private final ServiceAction serviceAction = context.mock(ServiceAction.class, "serviceAction");
+    private final ServiceAction serviceAction = mockery.mock(ServiceAction.class, "serviceAction");
 
     /** Fixture. */
-    PersonModelView person = context.mock(PersonModelView.class, "person");
+    private final PersonModelView person = mockery.mock(PersonModelView.class, "person");
+
+    /** Fixture: responseMessages. */
+    private final List<Message> responseMessages = mockery.mock(List.class, "responseMessages");
 
     /** SUT. */
     private MessageProcessor sut;
@@ -161,7 +165,7 @@ public class MessageProcessorTest
         sut = new MessageProcessor(messageContentExtractor, actionSelector, serviceActionController, beanFactory,
                 tokenEncoder, tokenContentFormatter, transactionMgr, personIdByEmailDao, userKeyByIdDao, personDao,
                 messageReplier, SYSTEM_ADDRESS);
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(person).getId();
@@ -183,7 +187,7 @@ public class MessageProcessorTest
     @Test
     public void testGetFromOk() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -191,7 +195,7 @@ public class MessageProcessorTest
             }
         });
         assertEquals(SENDER_ADDRESS, sut.getFromAddress(message));
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -203,7 +207,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetFromNone1() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -211,7 +215,7 @@ public class MessageProcessorTest
             }
         });
         sut.getFromAddress(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -223,7 +227,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetFromNone2() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -231,7 +235,7 @@ public class MessageProcessorTest
             }
         });
         sut.getFromAddress(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -243,7 +247,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetFromNone3() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -251,7 +255,7 @@ public class MessageProcessorTest
             }
         });
         sut.getFromAddress(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -263,7 +267,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetFromTooMany() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -272,7 +276,7 @@ public class MessageProcessorTest
             }
         });
         sut.getFromAddress(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -284,7 +288,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetTokenNone() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getRecipients(RecipientType.TO);
@@ -292,7 +296,7 @@ public class MessageProcessorTest
             }
         });
         sut.getToken(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -304,7 +308,7 @@ public class MessageProcessorTest
     @Test
     public void testGetTokenNoReply() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getRecipients(RecipientType.TO);
@@ -315,7 +319,7 @@ public class MessageProcessorTest
             }
         });
         String result = sut.getToken(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
         assertNull(result);
     }
 
@@ -328,7 +332,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetTokenNotFound() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getRecipients(RecipientType.TO);
@@ -339,7 +343,7 @@ public class MessageProcessorTest
             }
         });
         sut.getToken(message);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -351,7 +355,7 @@ public class MessageProcessorTest
     @Test
     public void testGetTokenOk() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getRecipients(RecipientType.TO);
@@ -365,7 +369,7 @@ public class MessageProcessorTest
             }
         });
         assertEquals("XYZ", sut.getToken(message));
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -375,7 +379,7 @@ public class MessageProcessorTest
     public void testExecuteActionSuccessBasic()
     {
         final UserActionRequest sel = new UserActionRequest(ACTION_NAME, null, "");
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(beanFactory).getBean(ACTION_NAME);
@@ -390,8 +394,8 @@ public class MessageProcessorTest
                 }), with(same(serviceAction)));
             }
         });
-        sut.executeAction(message, sel, person);
-        context.assertIsSatisfied();
+        sut.executeAction(message, sel, person, responseMessages);
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -401,7 +405,8 @@ public class MessageProcessorTest
     public void testExecuteActionErrorBasic()
     {
         final UserActionRequest sel = new UserActionRequest(ACTION_NAME, null, "");
-        context.checking(new Expectations()
+        final ExecutionException exception = new ExecutionException();
+        mockery.checking(new Expectations()
         {
             {
                 allowing(beanFactory).getBean(ACTION_NAME);
@@ -414,12 +419,12 @@ public class MessageProcessorTest
                         return ACTION_NAME.equals(inTestObject.getActionId()) && "".equals(inTestObject.getParams());
                     }
                 }), with(same(serviceAction)));
-                will(throwException(new ExecutionException()));
-                oneOf(messageReplier).reply(message, person, sel);
+                will(throwException(exception));
+                oneOf(messageReplier).reply(message, person, sel, exception, responseMessages);
             }
         });
-        sut.executeAction(message, sel, person);
-        context.assertIsSatisfied();
+        sut.executeAction(message, sel, person, responseMessages);
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -429,7 +434,7 @@ public class MessageProcessorTest
     public void testExecuteActionSuccessTaskHandler()
     {
         final UserActionRequest sel = new UserActionRequest(ACTION_NAME, null, "");
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(beanFactory).getBean(ACTION_NAME);
@@ -444,8 +449,8 @@ public class MessageProcessorTest
                 }), with(same(taskHandlerServiceAction)));
             }
         });
-        sut.executeAction(message, sel, person);
-        context.assertIsSatisfied();
+        sut.executeAction(message, sel, person, responseMessages);
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -455,7 +460,8 @@ public class MessageProcessorTest
     public void testExecuteActionErrorTaskHandler()
     {
         final UserActionRequest sel = new UserActionRequest(ACTION_NAME, null, "");
-        context.checking(new Expectations()
+        final ExecutionException exception = new ExecutionException();
+        mockery.checking(new Expectations()
         {
             {
                 allowing(beanFactory).getBean(ACTION_NAME);
@@ -468,12 +474,12 @@ public class MessageProcessorTest
                         return ACTION_NAME.equals(inTestObject.getActionId()) && "".equals(inTestObject.getParams());
                     }
                 }), with(same(taskHandlerServiceAction)));
-                will(throwException(new ExecutionException()));
-                oneOf(messageReplier).reply(message, person, sel);
+                will(throwException(exception));
+                oneOf(messageReplier).reply(message, person, sel, exception, responseMessages);
             }
         });
-        sut.executeAction(message, sel, person);
-        context.assertIsSatisfied();
+        sut.executeAction(message, sel, person, responseMessages);
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -483,16 +489,17 @@ public class MessageProcessorTest
     public void testExecuteActionBadBean()
     {
         final UserActionRequest sel = new UserActionRequest(ACTION_NAME, null, "");
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(beanFactory).getBean(ACTION_NAME);
                 will(returnValue(""));
-                oneOf(messageReplier).reply(message, person, sel);
+                oneOf(messageReplier).reply(with(equal(message)), with(equal(person)), with(equal(sel)),
+                        with(any(ExecutionException.class)), with(same(responseMessages)));
             }
         });
-        sut.executeAction(message, sel, person);
-        context.assertIsSatisfied();
+        sut.executeAction(message, sel, person, responseMessages);
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -501,8 +508,8 @@ public class MessageProcessorTest
     @Test
     public void testGetTokenData()
     {
-        final Map data = context.mock(Map.class);
-        context.checking(new Expectations()
+        final Map data = mockery.mock(Map.class);
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(tokenEncoder).decode(TOKEN, KEY);
@@ -513,7 +520,7 @@ public class MessageProcessorTest
         });
 
         assertSame(data, sut.getTokenData(TOKEN, KEY));
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -522,8 +529,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetTokenDataErrorDecrypt()
     {
-        final Map data = context.mock(Map.class);
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(tokenEncoder).decode(TOKEN, KEY);
@@ -532,7 +538,7 @@ public class MessageProcessorTest
         });
 
         sut.getTokenData(TOKEN, KEY);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -541,8 +547,7 @@ public class MessageProcessorTest
     @Test(expected = Exception.class)
     public void testGetTokenDataErrorParse()
     {
-        final Map data = context.mock(Map.class);
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(tokenEncoder).decode(TOKEN, KEY);
@@ -553,7 +558,7 @@ public class MessageProcessorTest
         });
 
         sut.getTokenData(TOKEN, KEY);
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -567,14 +572,14 @@ public class MessageProcessorTest
     @Test
     public void testExecute() throws MessagingException, IOException
     {
-        final Map data = context.mock(Map.class);
-        final TransactionStatus transaction = context.mock(TransactionStatus.class);
-        final States state = context.states("trans").startsAs("none");
+        final Map data = mockery.mock(Map.class);
+        final TransactionStatus transaction = mockery.mock(TransactionStatus.class);
+        final States state = mockery.states("trans").startsAs("none");
         final String content = "This is the content";
-        final Serializable params = context.mock(Serializable.class, "params");
+        final Serializable params = mockery.mock(Serializable.class, "params");
         final UserActionRequest selection = new UserActionRequest(ACTION_NAME, null, params);
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -630,14 +635,14 @@ public class MessageProcessorTest
             }
         });
 
-        boolean result = sut.execute(message);
-        context.assertIsSatisfied();
+        boolean result = sut.execute(message, responseMessages);
+        mockery.assertIsSatisfied();
         assertTrue(result);
     }
 
     /**
      * Test.
-     * 
+     *
      * @throws MessagingException
      *             Won't.
      * @throws IOException
@@ -646,7 +651,7 @@ public class MessageProcessorTest
     @Test
     public void testExecuteDiscard() throws MessagingException, IOException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 allowing(message).getFrom();
@@ -657,8 +662,8 @@ public class MessageProcessorTest
             }
         });
 
-        assertFalse(sut.execute(message));
-        context.assertIsSatisfied();
+        assertFalse(sut.execute(message, responseMessages));
+        mockery.assertIsSatisfied();
     }
 
 }

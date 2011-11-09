@@ -24,6 +24,10 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.ContentType;
 
+import org.eurekastreams.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Extracts the user-provided content from an email. This implementation is somewhat simplistic. It uses the first
  * non-empty non-attachment plain text part found. It returns the text as a simple string (no support for attaching
@@ -32,6 +36,9 @@ import javax.mail.internet.ContentType;
  */
 public class MessageContentExtractor
 {
+    /** Log. */
+    private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
+
     /**
      * Extracts the user-provided content from an email.
      *
@@ -69,8 +76,10 @@ public class MessageContentExtractor
             String text = extractUserText(part);
             if (text != null)
             {
+                log.debug("Extracted plain text content (length {}).", text.length());
                 return text;
             }
+            log.debug("Found plain text part with no suitable content (null/empty/blank or entirely a forward).");
         }
 
         // recurse if multipart content
@@ -111,6 +120,11 @@ public class MessageContentExtractor
     private String extractUserText(final Part part) throws IOException, MessagingException
     {
         String content = (String) part.getContent();
+        if (content == null)
+        {
+            log.warn("Text part of message had unexpected null content.");
+            return null;
+        }
 
         // look for the beginning of a forwarded or replied message
         int end = content.indexOf("\r\nFrom: ");

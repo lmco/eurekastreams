@@ -52,7 +52,28 @@
 		<constructor-arg ref="getPersonCryptoKeyMapper"/>
 		<constructor-arg ref="getPersonByIdMapper"/>
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.service.email.MessageReplier" />
+			<bean class="org.eurekastreams.server.service.email.MessageReplier">
+				<constructor-arg ref="notificationEmailerFactory" />
+				<constructor-arg ref="velocityEngine" />
+				<constructor-arg ref="velocityGlobalContext" />
+				<constructor-arg ref="exceptionSanitizer" />
+				<constructor-arg>
+					<map>
+						<entry key="postSplitActivityCommentsAction">
+							<bean parent="emailTemplate"
+								p:subject="Error commenting on activity from email submission."
+								p:text-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityCommentsAction.txt"
+								p:html-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityCommentsAction.html" />
+						</entry>
+						<entry key="postSplitActivityAndCommentsAction">
+							<bean parent="emailTemplate"
+								p:subject="Error posting to stream from email submission."
+								p:text-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityAndCommentsAction.txt"
+								p:html-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityAndCommentsAction.html" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
 		</constructor-arg>
 		<constructor-arg value="${eureka.mail.ingest.address}" />
   	</bean>
@@ -60,10 +81,13 @@
 	<bean id="emailIngester" class="org.eurekastreams.server.service.email.ImapEmailIngester">
 		<constructor-arg ref="imapStoreFactory" />
 		<constructor-arg ref="messageProcessor" />
+		<constructor-arg ref="notificationEmailerFactory" />
 		<constructor-arg value="${eureka.mail.ingest.input}" />
 		<constructor-arg value="${eureka.mail.ingest.error}" />
 		<constructor-arg value="${eureka.mail.ingest.done}" />
 		<constructor-arg value="${eureka.mail.ingest.discard}" />
 	</bean>
+  	
+	<bean id="emailTemplate" class="org.eurekastreams.server.support.email.EmailTemplate" abstract="true" />  	
   	
 </beans>

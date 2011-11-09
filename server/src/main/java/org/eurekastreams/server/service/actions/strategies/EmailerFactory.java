@@ -21,12 +21,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -78,11 +82,11 @@ public class EmailerFactory
      *            List of objects which have an email property.
      * @return String of concatenated email addresses ready to pass to setTo/setCc/setBcc.
      */
-    public static String buildEmailList(final Iterable<? extends HasEmail> list)
+    public static String buildEmailList(final Iterable< ? extends HasEmail> list)
     {
         Iterator<String> iter = new Iterator<String>()
         {
-            Iterator<? extends HasEmail> innerIterator = list.iterator();
+            Iterator< ? extends HasEmail> innerIterator = list.iterator();
 
             @Override
             public boolean hasNext()
@@ -111,7 +115,7 @@ public class EmailerFactory
      * @throws MessagingException
      *             Thrown if there are problems sending the message.
      */
-    public void sendMail(final MimeMessage message) throws MessagingException
+    public void sendMail(final Message message) throws MessagingException
     {
         Transport.send(message);
     }
@@ -134,9 +138,9 @@ public class EmailerFactory
         Session mailSession = Session.getInstance(mailProps, null);
 
         MimeMessage msg = new MimeMessage(mailSession);
-        msg.setContent(new MimeMultipart("alternative"));
         msg.setSentDate(new Date());
         msg.setFrom(new InternetAddress(defaultFromAddress));
+        msg.setContent(new MimeMultipart("alternative"));
 
         return msg;
     }
@@ -202,7 +206,7 @@ public class EmailerFactory
 
     /**
      * Sets the reply-to address.
-     * 
+     *
      * @param message
      *            Email message being built.
      * @param addressString
@@ -240,7 +244,7 @@ public class EmailerFactory
     {
         BodyPart textBp = new MimeBodyPart();
         textBp.setText(textBody);
-        getMultipart(message).addBodyPart(textBp);
+        getMultipartAlternative(message).addBodyPart(textBp);
     }
 
     /**
@@ -257,11 +261,66 @@ public class EmailerFactory
         htmlBp.setContent(htmlBody, "text/html");
         htmlBp.setHeader("MIME-VERSION", "1.0");
         htmlBp.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
-        getMultipart(message).addBodyPart(htmlBp);
+        getMultipartAlternative(message).addBodyPart(htmlBp);
     }
 
     /**
-     * Retrieves the multipart object from the message.
+     * Adds an attachment part to the message. Caller must put content into the returned part.
+     *
+     * @param message
+     *            Email message being built.
+     * @return Newly-created part.
+     * @throws MessagingException
+     *             Thrown if there are problems creating the message.
+     */
+    public Part addAttachmentPart(final Message message) throws MessagingException
+    {
+        Multipart container = getMultipart(message);
+        String contentSubtype = new ContentType(container.getContentType()).getSubType();
+        if ("alternative".equals(contentSubtype))
+        {
+            Multipart alternative = container;
+
+            // create new multipart/mixed as top-level part
+            container = new MimeMultipart("mixed");
+            message.setContent(container);
+
+            // add existing multipart/alternative as first item in it
+            BodyPart bodyPart = new MimeBodyPart();
+            bodyPart.setContent(alternative);
+            container.addBodyPart(bodyPart);
+        }
+
+        // create attachment part
+        BodyPart attachmentBodyPart = new MimeBodyPart();
+        attachmentBodyPart.setDisposition(Part.ATTACHMENT);
+        container.addBodyPart(attachmentBodyPart);
+
+        return attachmentBodyPart;
+    }
+
+    /**
+     * Adds an existing message as an attachment to the message.
+     *
+     * @param message
+     *            Email message being built.
+     * @param attachedMessage
+     *            Another email message to be added as an attachment.
+     * @return Newly-created part.
+     * @throws MessagingException
+     *             Thrown if there are problems creating the message.
+     */
+    public Part addAttachmentMessage(final Message message, final Message attachedMessage) throws MessagingException
+    {
+        Part part = addAttachmentPart(message);
+        DataHandler dh = new DataHandler(attachedMessage, "message/rfc822");
+        part.setDataHandler(dh);
+
+        return part;
+    }
+
+    /**
+     * Retrieves the top-level multipart object from the message.
      *
      * @param message
      *            Email message being built.
@@ -269,7 +328,7 @@ public class EmailerFactory
      * @throws MessagingException
      *             If there is a problem retrieving the content.
      */
-    protected Multipart getMultipart(final MimeMessage message) throws MessagingException
+    protected Multipart getMultipart(final Message message) throws MessagingException
     {
         try
         {
@@ -278,6 +337,34 @@ public class EmailerFactory
         catch (IOException ex)
         {
             throw new MessagingException("Failed to retrieve multipart from message being built.", ex);
+        }
+    }
+
+    /**
+     * Retrieves the multipart/alternative object from the message. This method makes some significant assumptions about
+     * the layout of the message, but ones that would be true if the message has been built solely using this class.
+     *
+     * @param message
+     *            Email message being built.
+     * @return multipart object.
+     * @throws MessagingException
+     *             If there is a problem retrieving the content.
+     */
+    protected Multipart getMultipartAlternative(final Message message) throws MessagingException
+    {
+        try
+        {
+            Multipart container = (Multipart) message.getContent();
+            String contentSubtype = new ContentType(container.getContentType()).getSubType();
+            if ("mixed".equals(contentSubtype))
+            {
+                container = (Multipart) container.getBodyPart(0).getContent();
+            }
+            return container;
+        }
+        catch (IOException ex)
+        {
+            throw new MessagingException("Failed to retrieve content from message being built.", ex);
         }
     }
 }

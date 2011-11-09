@@ -185,6 +185,10 @@ public class EmailNotifier implements Notifier
 
         NotificationEmailDTO email = new NotificationEmailDTO();
 
+        // Note: The doubly-nested context is to prevent the code here and Velocity templates from updating
+        // inProperties. The inner context uses inProperties as its backing store, so anything added to the context --
+        // such as the values added here and any SET calls in templates -- would be added to inProperties, which we
+        // don't want.
         Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
         velocityContext.put("context", velocityContext);
         velocityContext.put("type", inType);

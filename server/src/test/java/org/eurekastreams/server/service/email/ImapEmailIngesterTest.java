@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.email;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.mail.FetchProfile;
 import javax.mail.Flags.Flag;
@@ -25,9 +26,12 @@ import javax.mail.MessagingException;
 import javax.mail.Store;
 
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 import org.hamcrest.collection.IsArrayContaining;
 import org.jmock.Expectations;
+import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.action.CustomAction;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +39,7 @@ import org.junit.Test;
 /**
  * Tests ImapEmailIngester.
  */
+@SuppressWarnings("unchecked")
 public class ImapEmailIngesterTest
 {
     /** Test data. */
@@ -50,35 +55,41 @@ public class ImapEmailIngesterTest
     private static final String DISCARD_FOLDER_NAME = "DiscardFolder";
 
     /** Used for mocking objects. */
-    private final JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery mockery = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
     /** For getting a connection to the mail server. */
-    private final ImapStoreFactory storeFactory = context.mock(ImapStoreFactory.class);
+    private final ImapStoreFactory storeFactory = mockery.mock(ImapStoreFactory.class);
 
     /** For validating/authenticating messages. */
-    private final MessageProcessor messageProcessor = context.mock(MessageProcessor.class);
+    private final MessageProcessor messageProcessor = mockery.mock(MessageProcessor.class);
 
     /** Fixture: store. */
-    private final Store store = context.mock(Store.class);
+    private final Store store = mockery.mock(Store.class);
 
     /** Fixture: input folder. */
-    private final Folder inputFolder = context.mock(Folder.class, "inputFolder");
+    private final Folder inputFolder = mockery.mock(Folder.class, "inputFolder");
 
     /** Fixture: error folder. */
-    private final Folder errorFolder = context.mock(Folder.class, "errorFolder");
+    private final Folder errorFolder = mockery.mock(Folder.class, "errorFolder");
 
     /** Fixture: success folder. */
-    private final Folder successFolder = context.mock(Folder.class, "successFolder");
+    private final Folder successFolder = mockery.mock(Folder.class, "successFolder");
 
     /** Fixture: success folder. */
-    private final Folder discardFolder = context.mock(Folder.class, "discardFolder");
+    private final Folder discardFolder = mockery.mock(Folder.class, "discardFolder");
 
     /** Fixture: message. */
-    private final Message message = context.mock(Message.class);
+    private final Message message = mockery.mock(Message.class, "message");
+
+    /** Fixture: response message. */
+    private final Message responseMessage = mockery.mock(Message.class, "responseMessage");
+
+    /** For sending response emails. */
+    private final EmailerFactory emailerFactory = mockery.mock(EmailerFactory.class, "emailerFactory");
 
     /** SUT. */
     private ImapEmailIngester sut;
@@ -89,8 +100,15 @@ public class ImapEmailIngesterTest
     @Before
     public void setUp()
     {
-        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, ERROR_FOLDER_NAME,
-                SUCCESS_FOLDER_NAME, DISCARD_FOLDER_NAME);
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME,
+                ERROR_FOLDER_NAME, SUCCESS_FOLDER_NAME, DISCARD_FOLDER_NAME)
+        {
+            // do this until we're done with the debug code
+            @Override
+            protected void dumpMessage(final Message inMessage, final int inIndex)
+            {
+            }
+        };
     }
 
     /**
@@ -103,7 +121,7 @@ public class ImapEmailIngesterTest
      */
     private void expectSuccessfulFrame(final Message[] msgs) throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -149,10 +167,10 @@ public class ImapEmailIngesterTest
     public void testExecuteSuccess() throws MessagingException, IOException
     {
         expectSuccessfulFrame(new Message[] { message });
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(messageProcessor).execute(message);
+                oneOf(messageProcessor).execute(with(same(message)), with(any(List.class)));
                 will(returnValue(true));
 
                 oneOf(inputFolder).copyMessages(with(IsArrayContaining.hasItemInArray(message)),
@@ -162,7 +180,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -176,13 +194,20 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteSuccessNoCopy() throws MessagingException, IOException
     {
-        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, ERROR_FOLDER_NAME, null, null);
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME,
+                ERROR_FOLDER_NAME, null, null)
+        {
+            @Override
+            protected void dumpMessage(final Message inMessage, final int inIndex)
+            {
+            }
+        };
 
         expectSuccessfulFrame(new Message[] { message });
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(messageProcessor).execute(message);
+                oneOf(messageProcessor).execute(with(same(message)), with(any(List.class)));
                 will(returnValue(true));
 
                 oneOf(message).setFlag(Flag.DELETED, true);
@@ -190,7 +215,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -206,20 +231,29 @@ public class ImapEmailIngesterTest
     {
         expectSuccessfulFrame(new Message[] { message });
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(messageProcessor).execute(message);
-                will(throwException(new ValidationException()));
+                oneOf(messageProcessor).execute(with(same(message)), with(any(List.class)));
+                will(new CustomAction("simulate error")
+                {
+                    @Override
+                    public Object invoke(final Invocation inInvocation) throws Throwable
+                    {
+                        ((List<Message>) inInvocation.getParameter(1)).add(responseMessage);
+                        throw new ValidationException();
+                    }
+                });
 
                 oneOf(inputFolder).copyMessages(with(IsArrayContaining.hasItemInArray(message)),
                         with(same(errorFolder)));
                 oneOf(message).setFlag(Flag.DELETED, true);
+                oneOf(emailerFactory).sendMail(with(same(responseMessage)));
             }
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -233,13 +267,20 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteFailMsgNoCopy() throws MessagingException, IOException
     {
-        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, "", SUCCESS_FOLDER_NAME, " ");
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME, "",
+                SUCCESS_FOLDER_NAME, " ")
+        {
+            @Override
+            protected void dumpMessage(final Message inMessage, final int inIndex)
+            {
+            }
+        };
         expectSuccessfulFrame(new Message[] { message });
 
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(messageProcessor).execute(message);
+                oneOf(messageProcessor).execute(with(same(message)), with(any(List.class)));
                 will(throwException(new MessagingException()));
 
                 oneOf(message).setFlag(Flag.DELETED, true);
@@ -247,7 +288,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -262,10 +303,10 @@ public class ImapEmailIngesterTest
     public void testExecuteDiscard() throws MessagingException, IOException
     {
         expectSuccessfulFrame(new Message[] { message });
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(messageProcessor).execute(message);
+                oneOf(messageProcessor).execute(with(same(message)), with(any(List.class)));
                 will(returnValue(false));
 
                 oneOf(inputFolder).copyMessages(with(IsArrayContaining.hasItemInArray(message)),
@@ -275,7 +316,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -286,16 +327,24 @@ public class ImapEmailIngesterTest
      * @throws IOException
      *             Won't.
      */
+
     @Test
     public void testExecuteDiscardNoCopy() throws MessagingException, IOException
     {
-        sut = new ImapEmailIngester(storeFactory, messageProcessor, INPUT_FOLDER_NAME, null, null, null);
+        sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME, null, null,
+                null)
+        {
+            @Override
+            protected void dumpMessage(final Message inMessage, final int inIndex)
+            {
+            }
+        };
 
         expectSuccessfulFrame(new Message[] { message });
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
-                oneOf(messageProcessor).execute(message);
+                oneOf(messageProcessor).execute(with(same(message)), with(any(List.class)));
                 will(returnValue(false));
 
                 oneOf(message).setFlag(Flag.DELETED, true);
@@ -303,7 +352,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -317,7 +366,7 @@ public class ImapEmailIngesterTest
     {
         expectSuccessfulFrame(new Message[] {});
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -329,7 +378,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteCannotOpenStore() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -338,7 +387,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -350,7 +399,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteBadInputFolder() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -366,7 +415,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -378,7 +427,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteBadDiscardFolder() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -402,7 +451,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -414,7 +463,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteBadErrorFolder() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -442,7 +491,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -454,7 +503,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteBadSuccessFolder() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -474,7 +523,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -486,7 +535,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteException1() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -500,7 +549,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -512,7 +561,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteException2() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -526,7 +575,7 @@ public class ImapEmailIngesterTest
         });
 
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 
     /**
@@ -538,7 +587,7 @@ public class ImapEmailIngesterTest
     @Test
     public void testExecuteCloseException() throws MessagingException
     {
-        context.checking(new Expectations()
+        mockery.checking(new Expectations()
         {
             {
                 oneOf(storeFactory).getStore();
@@ -552,6 +601,6 @@ public class ImapEmailIngesterTest
             }
         });
         sut.execute();
-        context.assertIsSatisfied();
+        mockery.assertIsSatisfied();
     }
 }

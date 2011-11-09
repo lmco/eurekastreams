@@ -16,70 +16,37 @@
 package org.eurekastreams.server.action.execution.notification.notifier;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import org.junit.Before;
+import org.eurekastreams.server.action.execution.notification.notifier.EmailNotificationTemplate.ReplyAction;
 import org.junit.Test;
 
 /**
- * Tests EmailNotificationTemplate. This is really just a DTO, but the tests confirm the multiple setters behave
- * properly.
+ * Tests EmailNotificationTemplate.
  */
 public class EmailNotificationTemplateTest
 {
-    /** Test data. */
-    private static final String SUBJECT_TEMPLATE = "Actual template for the subject";
-
-    /** Test data. */
-    private static final String TEXT_BODY_TEMPLATE_RESOURCE_PATH = "Resource path for the text form of the body";
-
-    /** Test data. */
-    private static final String HTML_BODY_TEMPLATE_RESOURCE_PATH = "Resource path for the HTML form of the body";
-
-    /** SUT. */
-    private EmailNotificationTemplate sut;
-
     /**
-     * Setup before each test.
-     */
-    @Before
-    public void setUp()
-    {
-        sut = new EmailNotificationTemplate();
-    }
-
-    /**
-     * Verifies using the getters.
-     */
-    private void verifyGetters()
-    {
-        assertEquals(SUBJECT_TEMPLATE, sut.getSubjectTemplate());
-        assertEquals(TEXT_BODY_TEMPLATE_RESOURCE_PATH, sut.getTextBodyTemplateResourcePath());
-        assertEquals(HTML_BODY_TEMPLATE_RESOURCE_PATH, sut.getHtmlBodyTemplateResourcePath());
-    }
-
-    /**
-     * Tests setters and getters.
+     * Test.
      */
     @Test
-    public void testPrimarySetters()
+    public void testShortSetter()
     {
-        sut.setSubjectTemplate(SUBJECT_TEMPLATE);
-        sut.setTextBodyTemplateResourcePath(TEXT_BODY_TEMPLATE_RESOURCE_PATH);
-        sut.setHtmlBodyTemplateResourcePath(HTML_BODY_TEMPLATE_RESOURCE_PATH);
-
-        verifyGetters();
+        EmailNotificationTemplate sut = new EmailNotificationTemplate();
+        assertFalse(ReplyAction.ACTOR == sut.getReplyAddressType());
+        sut.setReply(ReplyAction.ACTOR);
+        assertEquals(ReplyAction.ACTOR, sut.getReplyAddressType());
     }
 
     /**
-     * Tests setters and getters.
+     * Test.
      */
     @Test
-    public void testConvenienceSetters()
+    public void testLongSetter()
     {
-        sut.setSubject(SUBJECT_TEMPLATE);
-        sut.setTextBody(TEXT_BODY_TEMPLATE_RESOURCE_PATH);
-        sut.setHtmlBody(HTML_BODY_TEMPLATE_RESOURCE_PATH);
-
-        verifyGetters();
+        EmailNotificationTemplate sut = new EmailNotificationTemplate();
+        assertFalse(ReplyAction.COMMENT == sut.getReplyAddressType());
+        sut.setReplyAddressType(ReplyAction.COMMENT);
+        assertEquals(ReplyAction.COMMENT, sut.getReplyAddressType());
     }
 }

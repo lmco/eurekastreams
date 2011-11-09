@@ -26,14 +26,9 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.client.ActionRequest;
-import org.eurekastreams.commons.exceptions.AuthorizationException;
-import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.commons.exceptions.GeneralException;
-import org.eurekastreams.commons.exceptions.InvalidActionException;
-import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.service.ActionController;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
@@ -58,9 +53,12 @@ public class ActionExecutor
     /** Persistent bean manager for serialization. */
     private final PersistentBeanManager persistentBeanManager;
 
+    /** Prepares exceptions for returning to the client. */
+    private final Transformer<Exception, Exception> exceptionSanitizer;
+
     /**
      * Constructor.
-     *
+     * 
      * @param inBeanFactory
      *            The context from which this service can load action beans.
      * @param inServiceActionController
@@ -69,14 +67,18 @@ public class ActionExecutor
      *            Principal populator.
      * @param inPersistentBeanManager
      *            Persistent bean manager for serialization.
+     * @param inExceptionSanitizer
+     *            Prepares exceptions for returning to the client.
      */
     public ActionExecutor(final BeanFactory inBeanFactory, final ActionController inServiceActionController,
-            final PrincipalPopulator inPrincipalPopulator, final PersistentBeanManager inPersistentBeanManager)
+            final PrincipalPopulator inPrincipalPopulator, final PersistentBeanManager inPersistentBeanManager,
+            final Transformer<Exception, Exception> inExceptionSanitizer)
     {
         beanFactory = inBeanFactory;
         serviceActionController = inServiceActionController;
         principalPopulator = inPrincipalPopulator;
         persistentBeanManager = inPersistentBeanManager;
+        exceptionSanitizer = inExceptionSanitizer;
     }
 
     /**
@@ -166,42 +168,9 @@ public class ActionExecutor
                     + ". Parameters: " + paramString + ". ", ex);
 
             // By setting an exception as the response, we are effectively throwing the exception to the client.
-            // But insure only exceptions which are serializable are returned (otherwise no response will be returned to
-            // the client)
-            Throwable response;
-            if (ex instanceof ValidationException)
-            {
-                response = ex;
-            }
-            else if (ex instanceof AuthorizationException)
-            {
-                // Remove any nested exceptions
-                response = (ex.getCause() == null) ? ex : new AuthorizationException(ex.getMessage());
-            }
-            else if (ex instanceof GeneralException)
-            {
-                // Remove any nested exceptions (particularly want to insure no PersistenceExceptions get sent - they
-                // are not serializable plus contain details that should not be exposed to users)
-                response = (ex.getCause() == null) ? ex : new GeneralException(ex.getMessage());
-            }
-            else if (ex instanceof ExecutionException)
-            {
-                // Remove any nested exceptions
-                response = (ex.getCause() == null) ? ex : new ExecutionException(ex.getMessage());
-            }
-            else if (ex instanceof InvalidActionException)
-            {
-                response = new GeneralException("Invalid action.");
-            }
-            else if (ex instanceof NoSuchBeanDefinitionException)
-            {
-                response = new GeneralException("Invalid action.");
-            }
-            else
-            {
-                response = new GeneralException(ex.getMessage());
-            }
-            actionRequest.setResponse(response);
+            // But insure only exceptions which are GWT-serializable are returned (otherwise no response will be
+            // returned to the client)
+            actionRequest.setResponse(exceptionSanitizer.transform(ex));
         }
 
         // discard the params, since the client already has them

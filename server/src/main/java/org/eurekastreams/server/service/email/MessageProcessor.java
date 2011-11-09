@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.email;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.Address;
@@ -146,13 +147,16 @@ public class MessageProcessor
      *
      * @param message
      *            Message to process.
+     * @param inResponseMessages
+     *            List to add response messages to.
      * @return If message was processed.
      * @throws MessagingException
      *             On error.
      * @throws IOException
      *             On error.
      */
-    public boolean execute(final Message message) throws MessagingException, IOException
+    public boolean execute(final Message message, final List<Message> inResponseMessages) throws MessagingException,
+            IOException
     {
         String token = getToken(message);
         if (token == null)
@@ -190,7 +194,7 @@ public class MessageProcessor
         UserActionRequest actionSelection = actionSelector.select(tokenData, content, person);
 
         // execute action
-        executeAction(message, actionSelection, person);
+        executeAction(message, actionSelection, person, inResponseMessages);
         return true;
     }
 
@@ -227,10 +231,12 @@ public class MessageProcessor
      *            The selected action.
      * @param person
      *            The user.
+     * @param inResponseMessages
+     *            List to add response messages to.
      */
-    void executeAction(final Message message, final UserActionRequest actionSelection, final PersonModelView person)
+    void executeAction(final Message message, final UserActionRequest actionSelection, final PersonModelView person,
+            final List<Message> inResponseMessages)
     {
-        boolean success = false;
         try
         {
             Object springBean = beanFactory.getBean(actionSelection.getActionKey());
@@ -252,20 +258,16 @@ public class MessageProcessor
                 throw new ExecutionException("Bean '" + actionSelection.getActionKey()
                         + "' is not an executable action");
             }
-
-            success = true;
         }
-        finally
+        catch (RuntimeException ex)
         {
             // notify user on failure
             // Note: A response is only sent for errors processing the action (which could be due to missing content
             // from the message). This is because any errors encountered prior represent a bad sender or ill-formed
-            // message or token and thus represent a suspicious message. In that case we don't want to send a reply for
+            // message or token and thus represent a suspicious message. In that case we don't want to send a reply, for
             // security.
-            if (!success)
-            {
-                messageReplier.reply(message, person, actionSelection);
-            }
+            messageReplier.reply(message, person, actionSelection, ex, inResponseMessages);
+            throw ex;
         }
     }
 

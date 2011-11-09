@@ -15,10 +15,12 @@
  */
 package org.eurekastreams.server.action.execution.notification.notifier;
 
+import org.eurekastreams.server.support.email.EmailTemplate;
+
 /**
  * Specifies information about a email notification to be built.
  */
-public class EmailNotificationTemplate
+public class EmailNotificationTemplate extends EmailTemplate
 {
     /** What kind of address to use for the reply-to. */
     public static enum ReplyAction
@@ -33,46 +35,10 @@ public class EmailNotificationTemplate
         COMMENT
     }
 
-    /** Actual template for the subject. */
-    private String subjectTemplate;
-
-    /** Resource path for the text form of the body. */
-    private String textBodyTemplateResourcePath;
-
-    /** Resource path for the HTML form of the body. */
-    private String htmlBodyTemplateResourcePath;
-
     /** What kind of address to use for the reply-to. */
     private ReplyAction replyAddressType = ReplyAction.NONE;
 
     // ---- short setters for use by Spring p-namespace ----
-
-    /**
-     * @param inSubjectTemplate
-     *            the subjectTemplate to set
-     */
-    public void setSubject(final String inSubjectTemplate)
-    {
-        subjectTemplate = inSubjectTemplate;
-    }
-
-    /**
-     * @param inTextBodyTemplateResourcePath
-     *            the textBodyTemplateResourcePath to set
-     */
-    public void setTextBody(final String inTextBodyTemplateResourcePath)
-    {
-        textBodyTemplateResourcePath = inTextBodyTemplateResourcePath;
-    }
-
-    /**
-     * @param inHtmlBodyTemplateResourcePath
-     *            the htmlBodyTemplateResourcePath to set
-     */
-    public void setHtmlBody(final String inHtmlBodyTemplateResourcePath)
-    {
-        htmlBodyTemplateResourcePath = inHtmlBodyTemplateResourcePath;
-    }
 
     /**
      * @param inReplyAddressType
@@ -84,57 +50,6 @@ public class EmailNotificationTemplate
     }
 
     // ---- normal getters and setters ----
-
-    /**
-     * @return the subjectTemplate
-     */
-    public String getSubjectTemplate()
-    {
-        return subjectTemplate;
-    }
-
-    /**
-     * @param inSubjectTemplate
-     *            the subjectTemplate to set
-     */
-    public void setSubjectTemplate(final String inSubjectTemplate)
-    {
-        subjectTemplate = inSubjectTemplate;
-    }
-
-    /**
-     * @return the textBodyTemplateResourcePath
-     */
-    public String getTextBodyTemplateResourcePath()
-    {
-        return textBodyTemplateResourcePath;
-    }
-
-    /**
-     * @param inTextBodyTemplateResourcePath
-     *            the textBodyTemplateResourcePath to set
-     */
-    public void setTextBodyTemplateResourcePath(final String inTextBodyTemplateResourcePath)
-    {
-        textBodyTemplateResourcePath = inTextBodyTemplateResourcePath;
-    }
-
-    /**
-     * @return the htmlBodyTemplateResourcePath
-     */
-    public String getHtmlBodyTemplateResourcePath()
-    {
-        return htmlBodyTemplateResourcePath;
-    }
-
-    /**
-     * @param inHtmlBodyTemplateResourcePath
-     *            the htmlBodyTemplateResourcePath to set
-     */
-    public void setHtmlBodyTemplateResourcePath(final String inHtmlBodyTemplateResourcePath)
-    {
-        htmlBodyTemplateResourcePath = inHtmlBodyTemplateResourcePath;
-    }
 
     /**
      * @return the replyAddressType

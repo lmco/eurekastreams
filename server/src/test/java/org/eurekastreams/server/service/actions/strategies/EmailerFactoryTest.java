@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
@@ -38,12 +40,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-
 /**
  * Test fixture for EmailerFactory.
  */
 public class EmailerFactoryTest
 {
+    /** Test data. */
+    private static final String HTML_BODY = "HTML body";
+
+    /** Test data. */
+    private static final String TEXT_BODY = "Text body";
+
     /** Test data. */
     private static final String DEFAULT_FROM = "default.sender@email.com";
 
@@ -118,8 +125,6 @@ public class EmailerFactoryTest
         assertEquals(toString, list[0].toString());
     }
 
-
-
     /**
      * Test setting recipients.
      *
@@ -139,7 +144,6 @@ public class EmailerFactoryTest
         assertEquals(1, list.length);
         assertEquals(toString, list[0].toString());
     }
-
 
     /**
      * Test setting recipients.
@@ -183,7 +187,7 @@ public class EmailerFactoryTest
 
     /**
      * Test setting reply-to.
-     * 
+     *
      * @throws MessagingException
      *             Only on test failure.
      */
@@ -203,7 +207,7 @@ public class EmailerFactoryTest
 
     /**
      * Test setting subject.
-     * 
+     *
      * @throws MessagingException
      *             Only on test failure.
      */
@@ -322,5 +326,90 @@ public class EmailerFactoryTest
 
         String result = EmailerFactory.buildEmailList(Arrays.asList(person1, person2));
         assertEquals(to1 + "," + to2, result);
+    }
+
+    /**
+     * Verifies a message with plain text, HTML, and an attached message was built correctly.
+     *
+     * @param msg
+     *            The message.
+     * @throws MessagingException
+     *             Shouldn't.
+     * @throws IOException
+     *             Shouldn't.
+     */
+    private void assertMultipartWithAttachmentFormedProperly(final MimeMessage msg) throws MessagingException,
+            IOException
+    {
+        // Despite what appears in raw emails, the content type is not set on the Message and Part objects at this time.
+        ContentType type;
+        // type = new ContentType(msg.getContentType());
+        // assertEquals("multipart/mixed", type.getBaseType());
+        Multipart mp = (Multipart) msg.getContent();
+        assertEquals(2, mp.getCount());
+
+        BodyPart part = mp.getBodyPart(1);
+        // type = new ContentType(part.getContentType());
+        // assertEquals("message/rfc822", type.getBaseType());
+        assertNotNull(part.getContent());
+
+        part = mp.getBodyPart(0);
+        // type = new ContentType(part.getContentType());
+        // assertEquals("multipart/alternative", type.getBaseType());
+
+        mp = (Multipart) part.getContent();
+        assertEquals(2, mp.getCount());
+
+        part = mp.getBodyPart(0);
+        type = new ContentType(part.getContentType());
+        assertEquals("text/plain", type.getBaseType());
+        assertEquals(TEXT_BODY, part.getContent());
+
+        part = mp.getBodyPart(1);
+        type = new ContentType(part.getContentType());
+        assertEquals("text/html", type.getBaseType());
+        assertEquals(HTML_BODY, part.getContent());
+    }
+
+    /**
+     * Test.
+     *
+     * @throws MessagingException
+     *             Shouldn't.
+     * @throws IOException
+     *             Shouldn't.
+     */
+    @Test
+    public void testWithAttachment() throws MessagingException, IOException
+    {
+        MimeMessage otherMsg = sut.createMessage();
+        MimeMessage msg = sut.createMessage();
+
+        sut.setTextBody(msg, TEXT_BODY);
+        sut.setHtmlBody(msg, HTML_BODY);
+        sut.addAttachmentMessage(msg, otherMsg);
+
+        assertMultipartWithAttachmentFormedProperly(msg);
+    }
+
+    /**
+     * Test.
+     *
+     * @throws MessagingException
+     *             Shouldn't.
+     * @throws IOException
+     *             Shouldn't.
+     */
+    @Test
+    public void testWithAttachmentReverse() throws MessagingException, IOException
+    {
+        MimeMessage otherMsg = sut.createMessage();
+        MimeMessage msg = sut.createMessage();
+
+        sut.addAttachmentMessage(msg, otherMsg);
+        sut.setTextBody(msg, TEXT_BODY);
+        sut.setHtmlBody(msg, HTML_BODY);
+
+        assertMultipartWithAttachmentFormedProperly(msg);
     }
 }

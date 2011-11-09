@@ -118,7 +118,9 @@
 		<property name="targetMethod" value="getPropertyAccessor" />
 	</bean>
 
-
+	<!-- ========== API SUPPORT CLASSES ========== -->
+	
+	<bean id="exceptionSanitizer" class="org.eurekastreams.commons.server.ExceptionSanitizer" />
 
 
     <bean id="membershipCriteriaPersonPropertyGenerator" class="org.eurekastreams.server.service.actions.strategies.MembershipCriteriaPersonPropertyGenerator">
