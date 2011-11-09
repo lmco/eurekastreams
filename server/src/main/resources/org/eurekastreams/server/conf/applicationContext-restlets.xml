@@ -289,6 +289,7 @@
 		<entry key="getSharedResourceByKeyAction"
 			value="org.eurekastreams.server.action.request.SharedResourceRequest" />
 		<entry key="getSystemSettings" value="null" />
+		<entry key="getStreamDiscoverListsDTOAction" value="null" />
 		<entry key="modifyStreamForCurrentUser" value="org.eurekastreams.server.domain.stream.Stream" />
 		<entry key="postActivityCommentAction"
 			value="org.eurekastreams.server.search.modelview.CommentDTO" />
