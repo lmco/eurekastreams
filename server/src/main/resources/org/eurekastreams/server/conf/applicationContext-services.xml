@@ -58,16 +58,22 @@
 				<constructor-arg ref="velocityGlobalContext" />
 				<constructor-arg ref="exceptionSanitizer" />
 				<constructor-arg>
+				    <bean class="org.eurekastreams.server.persistence.mappers.MapperTransactionDecorator">
+        				<constructor-arg ref="findSystemSettings" />
+        				<constructor-arg ref="transactionManager" />
+    				</bean>
+				</constructor-arg>
+				<constructor-arg>
 					<map>
 						<entry key="postSplitActivityCommentsAction">
 							<bean parent="emailTemplate"
-								p:subject="Error commenting on activity from email submission."
+								p:subject="Error commenting on activity from email submission"
 								p:text-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityCommentsAction.txt"
 								p:html-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityCommentsAction.html" />
 						</entry>
 						<entry key="postSplitActivityAndCommentsAction">
 							<bean parent="emailTemplate"
-								p:subject="Error posting to stream from email submission."
+								p:subject="Error posting to stream from email submission"
 								p:text-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityAndCommentsAction.txt"
 								p:html-body="/org/eurekastreams/server/conf/templates/email/Error-postSplitActivityAndCommentsAction.html" />
 						</entry>

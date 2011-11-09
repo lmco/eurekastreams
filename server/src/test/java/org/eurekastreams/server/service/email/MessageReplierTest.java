@@ -38,6 +38,8 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
@@ -133,6 +135,12 @@ public class MessageReplierTest
     /** Clean exception. */
     private final Exception cleanException = new GeneralException("Clean message");
 
+    /** For getting system settings. */
+    private final DomainMapper systemSettingsDao = mockery.mock(DomainMapper.class, "systemSettingsDao");
+
+    /** Fixture: settings. */
+    private final SystemSettings settings = mockery.mock(SystemSettings.class, "settings");
+
     /**
      * One-time setup.
      */
@@ -162,7 +170,7 @@ public class MessageReplierTest
     {
         responseMessages.clear();
         sut = new MessageReplier(emailerFactory, velocityEngine, velocityGlobalContext, exceptionSanitizer,
-                errorMessageTemplates);
+                systemSettingsDao, errorMessageTemplates);
 
         mockery.checking(new Expectations()
         {
@@ -197,6 +205,9 @@ public class MessageReplierTest
                 oneOf(emailerFactory).setTextBody(response, TEXT_BODY_RENDERED);
                 oneOf(emailerFactory).setHtmlBody(response, HTML_BODY_RENDERED);
                 oneOf(emailerFactory).addAttachmentMessage(response, message);
+
+                allowing(systemSettingsDao).execute(with(anything()));
+                will(returnValue(settings));
 
                 allowing(velocityEngine).getTemplate(HTML_BODY_RESOURCE);
                 will(returnValue(htmlBodyTemplate));
@@ -262,6 +273,7 @@ public class MessageReplierTest
         assertSame(user, vc.get("user"));
         assertSame(cleanException, vc.get("exception"));
         assertEquals(actionException, vc.get("originalException"));
+        assertSame(settings, vc.get("settings"));
     }
 
     /**

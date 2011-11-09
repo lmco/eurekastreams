@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.service.email;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,8 @@ import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 import org.apache.velocity.context.Context;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
@@ -61,6 +64,12 @@ public class MessageReplier
     private final Transformer<Exception, Exception> exceptionSanitizer;
 
     /**
+     * For getting system settings. IMPORTANT: Supplied mapper must handle transactions, since this class is invoked
+     * outside of one.
+     */
+    private final DomainMapper< ? extends Serializable, SystemSettings> systemSettingsDao;
+
+    /**
      * Constructor.
      *
      * @param inEmailerFactory
@@ -71,17 +80,21 @@ public class MessageReplier
      *            Global context for Apache Velocity templating engine. (Holds system-wide properties.)
      * @param inExceptionSanitizer
      *            Prepares exceptions for returning to the client.
+     * @param inSystemSettingsDao
+     *            For getting system settings.
      * @param inErrorMessageTemplates
      *            Templates for error response messages.
      */
     public MessageReplier(final EmailerFactory inEmailerFactory, final VelocityEngine inVelocityEngine,
             final Context inVelocityGlobalContext, final Transformer<Exception, Exception> inExceptionSanitizer,
+            final DomainMapper< ? extends Serializable, SystemSettings> inSystemSettingsDao,
             final Map<String, EmailTemplate> inErrorMessageTemplates)
     {
         emailerFactory = inEmailerFactory;
         velocityEngine = inVelocityEngine;
         velocityGlobalContext = inVelocityGlobalContext;
         exceptionSanitizer = inExceptionSanitizer;
+        systemSettingsDao = inSystemSettingsDao;
         errorMessageTemplates = inErrorMessageTemplates;
     }
 
@@ -131,6 +144,7 @@ public class MessageReplier
                 velocityContext.put("user", user);
                 velocityContext.put("exception", cleanException);
                 velocityContext.put("originalException", inException);
+                velocityContext.put("settings", systemSettingsDao.execute(null));
 
                 // build the subject
                 StringWriter writer = new StringWriter();
