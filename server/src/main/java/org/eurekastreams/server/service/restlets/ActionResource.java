@@ -158,13 +158,12 @@ public class ActionResource extends SmpResource
         Assert.notNull(principal, "Principal object cannot be null.");
         actionKey = (String) request.getAttributes().get("action");
 
-        Assert.isTrue(actionTypes.containsKey(actionKey), "Unknown Action, not defined in Action Type Map");
-
         if (actionRewrites.containsKey(actionKey))
         {
             actionKey = actionRewrites.get(actionKey);
         }
-
+        
+        Assert.isTrue(actionTypes.containsKey(actionKey), "Unknown Action, not defined in Action Type Map");
         requestType = actionTypes.get(actionKey);
 
         try
