@@ -232,7 +232,96 @@
 			class="org.eurekastreams.server.action.principal.SpringSecurityContextOAuthClientExtractor" />
 	</util:list>
 
-	<bean id="jsonFieldObjectExtractor" class="org.eurekastreams.server.service.restlets.support.JsonFieldObjectExtractor" />
+	<util:map id="actionRewriteMap">
+		<entry key="deleteActivity" value="deleteActivityAction" />
+		<entry key="getCurrentUserJoinedGroupsPopularHashTags" value="getAllPopularHashTags" />
+		<entry key="getRequestsForGroupMembershipByGroup" value="getRequestsForGroupMembershipByGroupAction" />
+		<entry key="getSharedResourceByKey" value="getSharedResourceByKeyAction" />
+		<entry key="postActivityCommentDTO" value="postActivityCommentAction" />
+		<entry key="postGroupActivityDTO" value="postGroupActivityServiceActionTaskHandler" />
+		<entry key="postPersonActivityDTO" value="postPersonActivityServiceActionTaskHandler" />
+		<entry key="setFollowingStatusGroup" value="setFollowingStatusGroupTaskHandler" />
+		<entry key="setFollowingStatusPerson" value="setFollowingStatusPersonTaskHandler" />
+		<entry key="sendNotification" value="sendPrebuiltNotificationAction" />
+		<entry key="getStreamDiscoverLists" value="getStreamDiscoverListsDTOAction" />
+	</util:map>
+
+	<util:map id="actionTypeMap">
+		<entry key="authorizeUpdateGroup" value="String" />
+		<entry key="deleteActivityAction" value="Long" />
+		<entry key="deleteComment" value="Long" />
+		<entry key="deleteStreamForCurrentUser" value="Long" />
+		<entry key="flagActivity" value="Long" />
+		<entry key="getActivitiesByRequest" value="String" />
+		<entry key="getActivityById" value="Long" />
+		<entry key="getActivityCount" value="String" />
+		<entry key="getActivityLikers" value="Long" />
+		<entry key="getBreadcrumbsList"
+			value="org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest" />
+		<entry key="getCurrentUserFollowedGroups" value="null" />
+		<entry key="getCurrentUserFollowingStatus"
+			value="org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest" />
+		<entry key="getAllPopularHashTags" value="null" />
+		<entry key="getCurrentUsersStreams" value="null" />
+		<entry key="getDirectorySearchResults"
+			value="org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest" />
+		<entry key="getDirectorySearchResultsGroups"
+			value="org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest" />
+		<entry key="getDirectorySearchResultsPeople"
+			value="org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest" />
+		<entry key="getEducation" value="Long" />
+		<entry key="getEmployment" value="Long" />
+		<entry key="getFollowing"
+			value="org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest" />
+		<entry key="getFollowingGroups"
+			value="org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest" />
+		<entry key="getGroupFollowers"
+			value="org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest" />
+		<entry key="getGroupModelView" value="String" />
+		<entry key="getParsedLinkInformation" value="String" />
+		<entry key="getPersonFollowers"
+			value="org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest" />
+		<entry key="getPersonModelView" value="String" />
+		<entry key="getPopularHashTagsForStream"
+			value="org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest" />
+		<entry key="getRequestsForGroupMembershipByGroupAction"
+			value="org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest" />
+		<entry key="getSharedResourceByKeyAction"
+			value="org.eurekastreams.server.action.request.SharedResourceRequest" />
+		<entry key="getSystemSettings" value="null" />
+		<entry key="getStreamDiscoverListsDTOAction" value="null" />
+		<entry key="modifyStreamForCurrentUser" value="org.eurekastreams.server.domain.stream.Stream" />
+		<entry key="postActivityCommentAction"
+			value="org.eurekastreams.server.search.modelview.CommentDTO" />
+		<entry key="postGroupActivityServiceActionTaskHandler"
+			value="org.eurekastreams.server.action.request.stream.PostActivityRequest" />
+		<entry key="postPersonActivityServiceActionTaskHandler"
+			value="org.eurekastreams.server.action.request.stream.PostActivityRequest" />
+		<entry key="setActivityLiked"
+			value="org.eurekastreams.server.action.request.stream.SetActivityLikeRequest" />
+		<entry key="setActivityStar"
+			value="org.eurekastreams.server.action.request.stream.SetActivityStarRequest" />
+		<entry key="setFollowingStatusGroupTaskHandler"
+			value="org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest" />
+		<entry key="setFollowingStatusPersonTaskHandler"
+			value="org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest" />
+		<entry key="setSharedResourceLiked"
+			value="org.eurekastreams.server.action.request.stream.SetSharedResourceLikeRequest" />
+		<entry key="setStreamOrder"
+			value="org.eurekastreams.server.action.request.stream.SetStreamOrderRequest" />
+		<entry key="registerUsageMetric"
+			value="org.eurekastreams.server.search.modelview.UsageMetricDTO" />
+		<entry key="sendPrebuiltNotificationAction"
+			value="org.eurekastreams.server.action.request.notification.SendPrebuiltNotificationRequest" />
+		<entry key="getUserInAppNotificationCounts" value="null" />
+		<entry key="getInAppNotifications" value="null" />
+		<entry key="markInAppNotificationsRead" value="java.util.ArrayList%5Blong%5D" />
+		<entry key="getPersonModelViewForStartup" value="null" />
+		<entry key="getCurrentUsersBookmarks" value="null" />
+	</util:map>
+
+	<bean id="jsonFieldObjectExtractor"
+		class="org.eurekastreams.server.service.restlets.support.JsonFieldObjectExtractor" />
 
 	<bean name="actionResourceFull"
 		class="org.eurekastreams.server.service.restlets.ActionResource"
@@ -246,8 +335,10 @@
 		<constructor-arg ref="applicationContextHolder" />
 		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="false" />
+		<constructor-arg ref="actionTypeMap" />
+		<constructor-arg ref="actionRewriteMap" />
 	</bean>
-	
+
 	<bean name="actionResourceFullPreAuth"
 		class="org.eurekastreams.server.service.restlets.ActionResource"
 		scope="prototype">
@@ -260,8 +351,9 @@
 		<constructor-arg ref="applicationContextHolder" />
 		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="false" />
+		<constructor-arg ref="actionTypeMap" />
+		<constructor-arg ref="actionRewriteMap" />
 	</bean>
-
 
 	<bean name="actionResourceReadOnly"
 		class="org.eurekastreams.server.service.restlets.ActionResource"
@@ -275,6 +367,8 @@
 		<constructor-arg ref="applicationContextHolder" />
 		<constructor-arg ref="jsonFieldObjectExtractor" />
 		<constructor-arg value="true" />
+		<constructor-arg ref="actionTypeMap" />
+		<constructor-arg ref="actionRewriteMap" />
 	</bean>
 
 	<bean name="actionEstablishSession"
@@ -443,12 +537,12 @@
 						<lookup-method name="createResource" bean="streamIdValidationResource" />
 					</bean>
 				</entry>
-				<entry key="/api/0/full/{action}/{requestType}/{paramsJSON}">
+				<entry key="/api/0/full/{action}/{paramsJSON}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="actionResourceFull" />
 					</bean>
 				</entry>
-				<entry key="/api/0/preauthfull/{action}/{requestType}/{paramsJSON}">
+				<entry key="/api/0/preauthfull/{action}/{paramsJSON}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="actionResourceFullPreAuth" />
 					</bean>
@@ -458,7 +552,7 @@
 						<lookup-method name="createResource" bean="actionEstablishSession" />
 					</bean>
 				</entry>
-				<entry key="/api/0/read/{action}/{requestType}/{paramsJSON}">
+				<entry key="/api/0/read/{action}/{paramsJSON}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="actionResourceReadOnly" />
 					</bean>
