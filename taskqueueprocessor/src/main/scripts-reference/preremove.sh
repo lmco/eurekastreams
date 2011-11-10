@@ -13,6 +13,13 @@ if [ "$PACKAGES_LEFT" == "0" ]; then
     service taskqueueprocessor stop
     echo "The process has been stopped."
 
+    echo "Removing the startup script configuration."
+    chkconfig taskqueueprocessor off
+    chkconfig --del taskqueueprocessor
+    
+    echo "Deleting the symbolic link."
+    rm -f /etc/rc.d/init.d/taskqueueprocessor
+    
     echo "Removing the logs directory."
     rm -rf /opt/taskqueueprocessor/logs
 

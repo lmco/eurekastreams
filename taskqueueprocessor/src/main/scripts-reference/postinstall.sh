@@ -5,6 +5,17 @@
 echo ""
 echo "Starting post-install script..."
 
+    echo "Creating the symbolic link to the system start-up script"
+	if [ -e /etc/rc.d/init.d/taskqueueprocessor ];
+	then
+	    rm /etc/rc.d/init.d/taskqueueprocessor
+	fi
+    ln -s /opt/taskqueueprocessor/bin/taskqueueprocessor /etc/rc.d/init.d/taskqueueprocessor
+    
+    echo "Adding the system startup script to the run-level scripts and turning it on"
+    chkconfig --add taskqueueprocessor
+    chkconfig taskqueueprocessor on
+    
     echo "Creating the logs directory."
     if [ ! -d /opt/taskqueueprocessor/logs ]; 
     then
