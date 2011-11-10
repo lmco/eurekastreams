@@ -118,7 +118,7 @@ public class RepopulateTempWeekdaysSinceDateStrategy
             int weekdaysCount = weekdaysInDateRangeStrategy.getWeekdayCountBetweenDates(date, today);
             TempWeekdaysSinceDate record = new TempWeekdaysSinceDate(date.getTime(), weekdaysCount);
 
-            log.info("Calculated " + weekdaysCount + " weekdays between now and " + date);
+            log.debug("Calculated " + weekdaysCount + " weekdays between now and " + date);
             insertMapper.execute(new PersistenceRequest<TempWeekdaysSinceDate>(record));
         }
         flushMapper.execute(null);
