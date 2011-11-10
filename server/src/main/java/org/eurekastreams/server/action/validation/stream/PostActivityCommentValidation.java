@@ -18,33 +18,35 @@ package org.eurekastreams.server.action.validation.stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.commons.actions.ValidationStrategy;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
  * Simple validator for posting a comment. Expand as needed.
  */
-public class PostActivityCommentValidationStrategy implements ValidationStrategy<ServiceActionContext>
+public class PostActivityCommentValidation implements ValidationStrategy<ActionContext>
 {
     /**
      * Validate comment.
-     * 
+     *
      * @param inActionContext
      *            ActionContext.
      * @throws ValidationException
      *             on validation error.
      */
-    @Override
-    public void validate(final ServiceActionContext inActionContext) throws ValidationException
+    public void validate(final ActionContext inActionContext) throws ValidationException
     {
-        CommentDTO inRequest = (CommentDTO) inActionContext.getParams();
+        CommentDTO request = (CommentDTO) inActionContext.getParams();
 
-        // validate that comment body is not empty.
-        if (inRequest == null || StringUtils.isEmpty(inRequest.getBody().trim()))
+        if (request == null)
         {
-            throw new ValidationException(
-                    "Invalid comment. Comment cannont be null and must contain comment body content");
+            throw new ValidationException("A comment must be provided.");
+        }
+
+        if (StringUtils.isBlank(request.getBody()))
+        {
+            throw new ValidationException("Comment must contain body content.");
         }
     }
 }

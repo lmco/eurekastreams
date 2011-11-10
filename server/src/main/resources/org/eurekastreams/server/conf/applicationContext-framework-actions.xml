@@ -591,7 +591,9 @@
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 	</bean>
 
-	<bean id="postActivityCommentAuthorizationStrategy" class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
+	<bean id="postActivityCommentValidation" class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidation"/>
+
+	<bean id="postActivityCommentAuthorization" class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
        	<constructor-arg ref="postActivityCommentAuthorizer" />
        	<constructor-arg value="COMMENT" />
        	<constructor-arg>
@@ -601,10 +603,8 @@
 	</bean>
 
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidationStrategy"/>
-        </constructor-arg>
-        <constructor-arg ref="postActivityCommentAuthorizationStrategy" />
+        <constructor-arg ref="postActivityCommentValidation" />
+        <constructor-arg ref="postActivityCommentAuthorization" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.PostActivityCommentExecution">
                     <constructor-arg ref="insertActivityComment" />
@@ -616,10 +616,8 @@
     </bean>
 
     <bean id="postSplitActivityCommentsAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.validation.stream.PostActivityCommentValidationStrategy"/>
-        </constructor-arg>
-        <constructor-arg ref="postActivityCommentAuthorizationStrategy" />
+        <constructor-arg ref="postActivityCommentValidation" />
+        <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.PostSplitActivityCommentsExecution">
             	<constructor-arg>
