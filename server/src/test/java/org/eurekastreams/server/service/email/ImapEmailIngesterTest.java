@@ -101,14 +101,7 @@ public class ImapEmailIngesterTest
     public void setUp()
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME,
-                ERROR_FOLDER_NAME, SUCCESS_FOLDER_NAME, DISCARD_FOLDER_NAME)
-        {
-            // do this until we're done with the debug code
-            @Override
-            protected void dumpMessage(final Message inMessage, final int inIndex)
-            {
-            }
-        };
+                ERROR_FOLDER_NAME, SUCCESS_FOLDER_NAME, DISCARD_FOLDER_NAME);
     }
 
     /**
@@ -195,13 +188,7 @@ public class ImapEmailIngesterTest
     public void testExecuteSuccessNoCopy() throws MessagingException, IOException
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME,
-                ERROR_FOLDER_NAME, null, null)
-        {
-            @Override
-            protected void dumpMessage(final Message inMessage, final int inIndex)
-            {
-            }
-        };
+                ERROR_FOLDER_NAME, null, null);
 
         expectSuccessfulFrame(new Message[] { message });
         mockery.checking(new Expectations()
@@ -268,13 +255,8 @@ public class ImapEmailIngesterTest
     public void testExecuteFailMsgNoCopy() throws MessagingException, IOException
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME, "",
-                SUCCESS_FOLDER_NAME, " ")
-        {
-            @Override
-            protected void dumpMessage(final Message inMessage, final int inIndex)
-            {
-            }
-        };
+                SUCCESS_FOLDER_NAME, " ");
+
         expectSuccessfulFrame(new Message[] { message });
 
         mockery.checking(new Expectations()
@@ -332,13 +314,7 @@ public class ImapEmailIngesterTest
     public void testExecuteDiscardNoCopy() throws MessagingException, IOException
     {
         sut = new ImapEmailIngester(storeFactory, messageProcessor, emailerFactory, INPUT_FOLDER_NAME, null, null,
-                null)
-        {
-            @Override
-            protected void dumpMessage(final Message inMessage, final int inIndex)
-            {
-            }
-        };
+                null);
 
         expectSuccessfulFrame(new Message[] { message });
         mockery.checking(new Expectations()
