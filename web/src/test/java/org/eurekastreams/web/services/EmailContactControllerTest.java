@@ -96,6 +96,13 @@ public class EmailContactControllerTest
     {
         sut = new EmailContactController(serviceActionController, principalPopulator, typeToFetchActionIndex,
                 getTokenForStreamAction);
+        mockery.checking(new Expectations()
+        {
+            {
+                allowing(principal).getAccountId();
+                will(returnValue("principalAccountId"));
+            }
+        });
     }
 
     /**
@@ -138,10 +145,12 @@ public class EmailContactControllerTest
                 }), with(same(getTokenForStreamAction)));
                 will(returnValue(ADDRESS));
 
-                oneOf(response).setHeader("Content-Disposition", "attachment");
+                allowing(person).getUniqueId();
+                will(returnValue("personid"));
+
+                oneOf(response).setHeader("Content-Disposition", "attachment; filename=person-personid.vcf");
                 oneOf(response).setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
                 oneOf(response).addHeader("Pragma", "no-cache");
-
             }
         });
 

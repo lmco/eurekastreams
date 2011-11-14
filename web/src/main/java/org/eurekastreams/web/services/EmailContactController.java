@@ -111,7 +111,8 @@ public class EmailContactController
 
         // This really should be part of the view, not the controller, but the Spring view classes (VelocityView and
         // parents) don't provide a way to set content disposition, nor a way to set arbitrary headers.
-        response.setHeader("Content-Disposition", "attachment");
+        response.setHeader("Content-Disposition", "attachment; filename=" + streamType.name().toLowerCase() + "-"
+                + entity.getUniqueId() + ".vcf");
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         response.addHeader("Pragma", "no-cache");
 
