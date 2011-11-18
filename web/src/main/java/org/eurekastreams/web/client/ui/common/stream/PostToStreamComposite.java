@@ -49,7 +49,9 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -76,7 +78,7 @@ public class PostToStreamComposite extends FlowPanel
     private Label charsRemaining;
 
     /** The post button. */
-    private Label postButton;
+    private Hyperlink postButton;
 
     /** The message. */
     private PostToStreamTextboxPanel message;
@@ -155,7 +157,8 @@ public class PostToStreamComposite extends FlowPanel
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
 
         charsRemaining = new Label();
-        postButton = new Label("Post");
+        postButton = new Hyperlink("", History.getToken());
+        postButton.getElement().setAttribute("tabindex", "2");
         message = new PostToStreamTextboxPanel();
         message.setText(postBoxDefaultText);
         message.setVisible(false); // Hide until post ready event.
