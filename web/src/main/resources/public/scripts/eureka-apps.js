@@ -1292,7 +1292,7 @@ Eureka.RequestBatch = function()
                }
                else
                {
-                   alert('error occurred retrieving data: ' + result.getErrorMessage());
+								 // do nothing
                }
            });
         }
