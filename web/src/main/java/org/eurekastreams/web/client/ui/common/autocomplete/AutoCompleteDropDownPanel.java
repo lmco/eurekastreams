@@ -121,6 +121,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
             textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().textareaInputWrapper());
         }
         textWidget.getElement().setAttribute("id", "actb-" + rand);
+        textWidget.setTabIndex(1);
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().acInputWrapper());

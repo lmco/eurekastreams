@@ -127,6 +127,7 @@ public class ConnectEntryPoint implements EntryPoint
                     {
                         switch (ev.getPage())
                         {
+                        case ACTIVITY:
                         case PEOPLE:
                         case PEOPLE_LEGACY:
                         case GROUPS:
