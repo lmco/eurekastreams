@@ -66,6 +66,25 @@ function SedInPlace {
 	esac
 }
 
+# make sure Postgres tools are available
+missing=
+if [ -z `which psql 2>/dev/null` ]; then
+	echo "Postgres tool psql not found in path." >&2
+	missing=1
+fi
+if [ -z `which createuser 2>/dev/null` ]; then
+	echo "Postgres tool createuser not found in path." >&2
+	missing=1
+fi
+if [ -z `which dropdb 2>/dev/null` ]; then
+	echo "Postgres tool dropdb not found in path." >&2
+	missing=1
+fi
+if [ -n "$missing" ]; then
+	exit 1
+fi
+
+
 # TEMPORARY HACK way of determining temp dirs
 # This should use switches and wrapper scripts, not a self-aware script that must 
 # have a certain name to get the desired behavior.
