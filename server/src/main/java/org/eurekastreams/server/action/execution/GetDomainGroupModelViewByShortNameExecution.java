@@ -35,7 +35,6 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Return DomainGroupModelView for provided group shortName.
- *
  */
 public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -62,7 +61,7 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupByShortNameMapper
      *            injecting the mapper.
      * @param inGroupCoordinatorIdsDAO
@@ -116,6 +115,7 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
                 restricted.setBannerId(result.getBannerId());
                 restricted.setName(result.getName());
                 restricted.setShortName(result.getShortName());
+                restricted.setAvatarId(result.getAvatarId());
                 return restricted;
             }
             else
@@ -134,8 +134,8 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
                 }
             }
 
-            result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper
-                    .execute(result.getId())));
+            result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper.execute(result
+                    .getId())));
 
             result.setCapabilities(getCapabilities(result.getId()));
         }
@@ -145,7 +145,7 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
 
     /**
      * Get group capabilities.
-     *
+     * 
      * @param groupId
      *            id
      * @return list of capabilities (strings).
@@ -167,7 +167,7 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
 
     /**
      * Check whether this group has restricted access and whether the current user is allowed access.
-     *
+     * 
      * @param inPrincipal
      *            user principal.
      * @param inGroup
@@ -178,13 +178,13 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
     {
         // if group is public or user is coordinator recursively or follower, return true, otherwise false.
         return (inGroup.isPublic() || groupCoordinatorIdsDAO.execute(inGroup.getId()).contains(inPrincipal.getId()) //
-        || isUserFollowingGroup(inPrincipal.getId(), inGroup.getId()));
+                || isUserFollowingGroup(inPrincipal.getId(), inGroup.getId()));
 
     }
 
     /**
      * Checks to see if user is following a group.
-     *
+     * 
      * @param userId
      *            the user id being checked.
      * @param groupId
@@ -200,5 +200,4 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
         }
         return false;
     }
-
 }
