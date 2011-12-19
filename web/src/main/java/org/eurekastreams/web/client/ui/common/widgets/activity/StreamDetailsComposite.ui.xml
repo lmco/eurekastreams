@@ -333,6 +333,8 @@
 				<g:Label addStyleNames="{style.stream-details-option}"
 					ui:field="followingLink">Following</g:Label>
 				<g:Label addStyleNames="{style.stream-details-option}"
+					ui:field="coordinatorsLink">Coordinators</g:Label>
+				<g:Label addStyleNames="{style.stream-details-option}"
 					ui:field="adminLink">Admin</g:Label>
 			</div>
 			<div class="{style.stream-details-content}">
@@ -398,6 +400,9 @@
 				</pager:PagerComposite>
 				<pager:PagerComposite addStyleNames="pagerControl"
 					ui:field="streamFollowing">
+				</pager:PagerComposite>
+				<pager:PagerComposite addStyleNames="pagerControl"
+					ui:field="streamCoordinators">
 				</pager:PagerComposite>
 				<pager:PagerComposite addStyleNames="pagerControl"
 					ui:field="adminContent">
