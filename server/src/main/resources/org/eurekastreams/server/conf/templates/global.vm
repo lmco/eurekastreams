@@ -37,6 +37,11 @@ the ${stream.displayName}##
 #end
 #end
 
+#macro( siteLabel_subject )
+#if ($settings.siteLabel && $settings.siteLabel != '')
+ - ${settings.siteLabel}##
+#end
+#end
 
 #macro( siteLabel_txt )
 #if ($settings.siteLabel != '')

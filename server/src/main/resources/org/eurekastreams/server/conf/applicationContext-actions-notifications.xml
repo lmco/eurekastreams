@@ -495,35 +495,35 @@
 	<util:map id="emailNotifierMessageTemplates">
 		<entry key="LIKE_ACTIVITY">
 			<bean parent="notifEmailTemplate" 
-				p:subject="$actor.displayName liked your #activityType($activity)"
+				p:subject="$actor.displayName liked your #activityType($activity)#siteLabel_subject()"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="POST_TO_PERSONAL_STREAM">
 			<bean parent="notifEmailTemplate"
-				p:subject="$actor.displayName posted a #activityType($activity) to your stream"
+				p:subject="$actor.displayName posted a #activityType($activity) to your stream#siteLabel_subject()"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="POST_TO_FOLLOWED_STREAM">
 			<bean parent="notifEmailTemplate"
-				p:subject="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream"
+				p:subject="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream#siteLabel_subject()"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_FOLLOWED_STREAM.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="COMMENT_TO_PERSONAL_POST">
 			<bean parent="notifEmailTemplate"
-				p:subject="$actor.displayName commented on your #activityType($activity)"
+				p:subject="$actor.displayName commented on your #activityType($activity)#siteLabel_subject()"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html"
 				p:reply="COMMENT" />
 		</entry>
 		<entry key="COMMENT_TO_COMMENTED_POST">
 			<bean parent="notifEmailTemplate"
-				p:subject="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)"
+				p:subject="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)#siteLabel_subject()"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html"
 				p:reply="COMMENT" />
@@ -589,7 +589,7 @@
 		</entry>
 		<entry key="PASS_THROUGH">
 			<bean parent="notifEmailTemplate"
-				p:subject="$message"
+				p:subject="$message#siteLabel_subject()"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-PASS_THROUGH.html" />
 		</entry>
