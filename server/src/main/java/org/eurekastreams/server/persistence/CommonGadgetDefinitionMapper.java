@@ -21,24 +21,18 @@ import java.util.HashMap;
 import javax.persistence.FlushModeType;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.PagedSet;
 
 /**
  * This class provides the mapper functionality for GadgetDefinition entities.
- *
- * @param <GeneralGadgetDefinition> The Mapper for a GeneralGadgetDefinition.
+ * 
+ * @param <GeneralGadgetDefinition>
+ *            The Mapper for a GeneralGadgetDefinition.
  */
 public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> extends
         DomainEntityMapper<GeneralGadgetDefinition> implements GalleryItemMapper<GeneralGadgetDefinition>
 {
-    /**
-     * Local logger instance.
-     */
-    private final Log logger = LogFactory.getLog(CommonGadgetDefinitionMapper.class);
-
     /**
      * Paramter for retrieving paged sets based on category.
      */
@@ -65,8 +59,8 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
     @SuppressWarnings("unchecked")
     public GeneralGadgetDefinition findByUUID(final String uuid)
     {
-        Query q = getEntityManager().createQuery("from " + getDomainEntityName() + " where uuid = :uuid").setParameter(
-                "uuid", uuid);
+        Query q = getEntityManager().createQuery("from " + getDomainEntityName() + " where uuid = :uuid")
+                .setParameter("uuid", uuid);
 
         return (GeneralGadgetDefinition) q.getSingleResult();
     }
@@ -82,6 +76,7 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
      *            paging inEnd.
      * @return a list of gadget def
      */
+    @Override
     public PagedSet<GeneralGadgetDefinition> findForCategorySortedByPopularity(final String inCategory,
             final int inStart, final int inEnd)
     {
@@ -126,6 +121,7 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
      *            paging inEnd.
      * @return a list of gadget def
      */
+    @Override
     public PagedSet<GeneralGadgetDefinition> findSortedByPopularity(final int inStart, final int inEnd)
     {
         String query = "FROM " + getDomainEntityName() + " gd where showInGallery = true "
@@ -148,6 +144,7 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
      *            paging inEnd.
      * @return a list of gadget def
      */
+    @Override
     public PagedSet<GeneralGadgetDefinition> findForCategorySortedByRecent(final String inCategory, final int inStart,
             final int inEnd)
     {
@@ -171,6 +168,7 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
      *            paging inEnd.
      * @return a list of gadget def
      */
+    @Override
     public PagedSet<GeneralGadgetDefinition> findSortedByRecent(final int inStart, final int inEnd)
     {
         String query = "FROM " + getDomainEntityName() + " where showInGallery = true order by created desc";
@@ -187,11 +185,12 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
      * @param inGadgetDefinition
      *            The gadget definition to delete.
      */
+    @Override
     public void delete(final GeneralGadgetDefinition inGadgetDefinition)
     {
         getEntityManager().remove(inGadgetDefinition);
     }
-    
+
     /**
      * Look up the GeneralGadgetDefinition identified by this URL.
      * 
@@ -199,6 +198,7 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
      *            URL of the XML file that defines the GadgetDefinition
      * @return the GeneralGadgetDefinition specified by the URL
      */
+    @Override
     @SuppressWarnings("unchecked")
     public GeneralGadgetDefinition findByUrl(final String gadgetDefinitionLocation)
     {
@@ -213,7 +213,7 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
             // in the persistenceContext back as a result.
             q.setFlushMode(FlushModeType.COMMIT);
 
-            //TODO this shouldn't use an exception for logic.
+            // TODO this shouldn't use an exception for logic.
             return (GeneralGadgetDefinition) q.getSingleResult();
         }
         catch (Exception ex)
@@ -233,16 +233,17 @@ public abstract class CommonGadgetDefinitionMapper<GeneralGadgetDefinition> exte
         getFullTextSession().index(def);
     }
 
-    /** 
+    /**
      * The Domain Entity name. Must be over written.
      * 
      * @return the table name for this entity.
      */
+    @Override
     protected abstract String getDomainEntityName();
-    
+
     /**
      * Updates user counts for classes.
      */
     public abstract void refreshGadgetDefinitionUserCounts();
-    
+
 }

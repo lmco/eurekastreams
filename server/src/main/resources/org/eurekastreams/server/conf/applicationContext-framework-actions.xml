@@ -1530,7 +1530,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.feed.DeleteFeedSubscriberExecution">
-                <constructor-arg ref="deleteByIdMapper" />
+                <constructor-arg ref="deleteFeedSubscriberByIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -1562,7 +1562,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.feed.DeleteFeedSubscriberExecution">
-                <constructor-arg ref="deleteByIdMapper" />
+                <constructor-arg ref="deleteFeedSubscriberByIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

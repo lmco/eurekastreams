@@ -141,6 +141,8 @@
 	<bean id="deleteByIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.DeleteByIdMapper" />
 
+	<bean id="deleteFeedSubscriberByIdMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteFeedSubscriberMapper" />
+
 	<bean id="addBufferedActivitiesToCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddBufferedActivitiesToCache">
 		<constructor-arg ref="bulkActivitiesMapper" />
