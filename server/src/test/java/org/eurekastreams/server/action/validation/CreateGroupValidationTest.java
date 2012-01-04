@@ -26,7 +26,7 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -54,7 +54,7 @@ public class CreateGroupValidationTest
     private final ActionContext actionContext = context.mock(ActionContext.class);
 
     /** Group mapper. */
-    private final GetDomainGroupsByShortNames groupMapperMock = context.mock(GetDomainGroupsByShortNames.class);
+    private final DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
 
     /**
      * {@link CreateGroupValidation} system under test.
@@ -89,7 +89,7 @@ public class CreateGroupValidationTest
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
 
-                oneOf(groupMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(groupMapperMock).findByShortName(with(any(String.class)));
                 will(returnValue(null));
             }
         });
@@ -167,7 +167,7 @@ public class CreateGroupValidationTest
             {
                 allowing(actionContext).getParams();
                 will(returnValue(formData));
-                oneOf(groupMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(groupMapperMock).findByShortName(with(any(String.class)));
             }
         });
 

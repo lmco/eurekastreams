@@ -3169,7 +3169,7 @@
         <!-- Validation -->
           <constructor-arg>
               <bean class="org.eurekastreams.server.action.validation.CreateGroupValidation">
-                  <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
+                  <constructor-arg ref="jpaGroupMapper"/>
               </bean>
           </constructor-arg>
         <!-- Authorization - done inside execution (for now) -->

@@ -193,7 +193,7 @@ function __eurekaConnect__onLoad() {
         var oAttribute;
         for(var i=0; i<arrElements.length; i++) {
             oCurrent = arrElements[i];
-            oAttribute = oCurrent.getAttribute && oCurrent.getAttribute(strAttributeName);
+            oAttribute = (oCurrent.nodeName != "TABLE") && oCurrent.getAttribute && oCurrent.getAttribute(strAttributeName);
             if(typeof oAttribute == "string" && oAttribute.length > 0){
                 arrReturnElements.push(oCurrent);
             }
