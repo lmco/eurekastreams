@@ -19,36 +19,38 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.feed.DeleteFeedSubscriptionRequest;
-import org.eurekastreams.server.persistence.mappers.DeleteByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Delete a feed subscriber action.
- *
+ * 
  */
 public class DeleteFeedSubscriberExecution implements ExecutionStrategy<ActionContext>
 {
-	/**
-	 * Delete Mapper.
-	 */
-	private DeleteByIdMapper deleteMapper;
-	
-	/**
-	 * Default constructor.
-	 * @param inDeleteMapper the delete mapper.
-	 */
-	public DeleteFeedSubscriberExecution(final DeleteByIdMapper inDeleteMapper) 
-	{
-		deleteMapper = inDeleteMapper;
-	}
+    /**
+     * Delete Mapper.
+     */
+    private DomainMapper<Long, Boolean> deleteMapper;
+
+    /**
+     * Default constructor.
+     * 
+     * @param inDeleteMapper
+     *            the delete mapper.
+     */
+    public DeleteFeedSubscriberExecution(final DomainMapper<Long, Boolean> inDeleteMapper)
+    {
+        deleteMapper = inDeleteMapper;
+    }
 
     /**
      * {@inheritDoc}
      */
-	public Boolean execute(final ActionContext inActionContext) throws ExecutionException 
-	{
-		DeleteFeedSubscriptionRequest request = (DeleteFeedSubscriptionRequest) inActionContext.getParams();
-		return deleteMapper.execute(new FindByIdRequest("FeedSubscriber", request.getFeedSubscriberId()));
-	}
+    @Override
+    public Boolean execute(final ActionContext inActionContext) throws ExecutionException
+    {
+        DeleteFeedSubscriptionRequest request = (DeleteFeedSubscriptionRequest) inActionContext.getParams();
+        return deleteMapper.execute(request.getFeedSubscriberId());
+    }
 
 }

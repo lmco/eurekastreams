@@ -17,7 +17,7 @@ package org.eurekastreams.server.action.execution.feed;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.feed.DeleteFeedSubscriptionRequest;
-import org.eurekastreams.server.persistence.mappers.DeleteByIdMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -29,11 +29,11 @@ import org.springframework.security.userdetails.UserDetails;
 
 /**
  * Delete feed subscriber test.
- *
+ * 
  */
-public class DeleteFeedSubscriberExecutionTest 
+public class DeleteFeedSubscriberExecutionTest
 {
-	/**
+    /**
      * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
@@ -42,27 +42,27 @@ public class DeleteFeedSubscriberExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
      * Delete mapper.
      */
-    private DeleteByIdMapper deleteMapper = context.mock(DeleteByIdMapper.class);
-    
+    private DomainMapper deleteMapper = context.mock(DomainMapper.class);
+
     /**
      * User mock.
      */
     private UserDetails user = context.mock(UserDetails.class);
-    
+
     /**
      * System under test.
      */
     private DeleteFeedSubscriberExecution sut;
-    
+
     /**
      * Empty params.
      */
     final DeleteFeedSubscriptionRequest testParam = context.mock(DeleteFeedSubscriptionRequest.class);
-    
+
     /**
      * action context.
      */
@@ -76,25 +76,27 @@ public class DeleteFeedSubscriberExecutionTest
     {
         sut = new DeleteFeedSubscriberExecution(deleteMapper);
     }
-    
+
     /**
      * Perform action.
-     * @throws Exception exception.
+     * 
+     * @throws Exception
+     *             exception.
      */
     @Test
     public void performAction() throws Exception
     {
-    	context.checking(new Expectations()
+        context.checking(new Expectations()
         {
             {
                 oneOf(deleteMapper).execute(with(any(FindByIdRequest.class)));
-                
+
                 allowing(ac).getParams();
                 will(returnValue(testParam));
-                
+
                 allowing(testParam).getFeedSubscriberId();
                 will(returnValue(1L));
-                
+
                 allowing(testParam).getEntityId();
                 will(returnValue("something"));
             }
@@ -103,5 +105,5 @@ public class DeleteFeedSubscriberExecutionTest
         sut.execute(ac);
         context.assertIsSatisfied();
     }
-    
+
 }

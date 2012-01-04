@@ -42,6 +42,7 @@
         <intercept-url pattern="/rpc/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/eurekastreams/photos/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
 	    <intercept-url pattern="/api/0/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
+	    <intercept-url pattern="/plugins/**" access="ROLE_ANONYMOUS, ROLE_USER" />
         <intercept-url pattern="/**" access="ROLE_USER"/>
         <!-- key MUST match key in persistentLoginService -->
         <remember-me services-ref="persistentLoginService" key="595"/>

@@ -23,27 +23,30 @@ import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- *
+ * 
  * Validates values entered for a Group.
- *
+ * 
  */
 public class CreateGroupValidation implements ValidationStrategy<ActionContext>
 {
 
     /**
-     * {@link GetDomainGroupsByShortNames}.
+     * {@link DomainGroupMapper}.
      */
-    private final GetDomainGroupsByShortNames groupMapper;
+    // GetDomainGroupsByShortNames doesn't pick up pending groups, using old school mapper for now.
+    // consider creating version of GetFieldFromTableByUniqueField mapper that doesn't throw exception
+    // for no result (since that's the usual case) and using here.
+    private final DomainGroupMapper groupMapper;
 
     /**
      * @param inGroupMapper
      *            the mapper to use to get groups.
      */
-    public CreateGroupValidation(final GetDomainGroupsByShortNames inGroupMapper)
+    public CreateGroupValidation(final DomainGroupMapper inGroupMapper)
     {
         groupMapper = inGroupMapper;
     }
@@ -56,7 +59,7 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
     /**
      * Message to display if name is taken.
      */
-    static final String SHORTNAME_TAKEN_MESSAGE = "A group with this web address already exist.";
+    static final String SHORTNAME_TAKEN_MESSAGE = "A group (or pending group) with this web address already exist.";
 
     /**
      *
@@ -75,8 +78,8 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
         ValidationException ve = new ValidationException();
         ValidationHelper vHelper = new ValidationHelper();
 
-        String groupName = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true,
-                ve);
+        String groupName = (String) vHelper
+                .getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true, ve);
         if (groupName == null || groupName.isEmpty())
         {
             ve.addError(DomainGroupModelView.NAME_KEY, DomainGroup.NAME_REQUIRED);
@@ -103,7 +106,7 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
             // Recommend removing try/catch and evaluating why group creation is broken
             try
             {
-                if (groupMapper.fetchUniqueResult(groupShortName.toLowerCase()) != null)
+                if (groupMapper.findByShortName(groupShortName.toLowerCase()) != null)
                 {
                     ve.addError(DomainGroupModelView.SHORT_NAME_KEY, SHORTNAME_TAKEN_MESSAGE);
                 }
