@@ -46,11 +46,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Comment panel.
- *
+ * 
  */
 public class CommentPanel extends Composite
 {
-    /** Length to truncate comments. */
+    /** Length above which comments qualify to be truncated. */
+    private static final int COMMENT_LIMIT = 300;
+
+    /** Length at which long comments are truncated. */
     private static final int TRUNCATE_LENGTH = 250;
 
     /** JSNI Facade. */
@@ -61,7 +64,7 @@ public class CommentPanel extends Composite
 
     /**
      * Default constructor.
-     *
+     * 
      * @param comment
      *            the comment.
      */
@@ -78,14 +81,14 @@ public class CommentPanel extends Composite
         commentContainer.add(body);
 
         Widget author = new MetadataLinkRenderer("", comment.getAuthorAccountId(), comment.getAuthorDisplayName())
-                .render();
+        .render();
         author.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
         body.add(author);
 
         // build/display the comment content, truncating if too long
         String commentBody = comment.getBody();
 
-        boolean oversize = commentBody.length() > TRUNCATE_LENGTH;
+        boolean oversize = commentBody.length() > COMMENT_LIMIT;
         if (oversize)
         {
             commentBody = commentBody.substring(0, TRUNCATE_LENGTH);
@@ -150,22 +153,22 @@ public class CommentPanel extends Composite
                     if (jSNIFacade.confirm("Are you sure you want to delete this comment?"))
                     {
                         Session.getInstance().getActionProcessor()
-                                .makeRequest("deleteComment", comment.getId(), new AsyncCallback<Boolean>()
+                        .makeRequest("deleteComment", comment.getId(), new AsyncCallback<Boolean>()
                                 {
-                                    /*
-                                     * implement the async call back methods
-                                     */
-                                    public void onFailure(final Throwable caught)
-                                    {
-                                        // No failure state.
-                                    }
+                            /*
+                             * implement the async call back methods
+                             */
+                            public void onFailure(final Throwable caught)
+                            {
+                                // No failure state.
+                            }
 
-                                    public void onSuccess(final Boolean result)
-                                    {
-                                        effects.fadeOut(commentContainer.getElement(), true);
-                                        Session.getInstance().getEventBus()
-                                                .notifyObservers(new CommentDeletedEvent(comment.getActivityId()));
-                                    }
+                            public void onSuccess(final Boolean result)
+                            {
+                                effects.fadeOut(commentContainer.getElement(), true);
+                                Session.getInstance().getEventBus()
+                                .notifyObservers(new CommentDeletedEvent(comment.getActivityId()));
+                            }
                                 });
                     }
                 }
@@ -177,7 +180,7 @@ public class CommentPanel extends Composite
 
     /**
      * Takes the comment text and converts it to HTML for display.
-     *
+     * 
      * @param inCommentBody
      *            The raw comment text.
      * @return Comment HTML.
