@@ -203,6 +203,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
      * 
      * Grab all the feeds, set them as pending, and fire off an async job. to refresh each one.
      */
+    @Override
     public Serializable execute(final ActionContext inActionContext) throws ExecutionException
     {
         Boolean brokenFeed = true;
@@ -344,9 +345,20 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                 {
                                     Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
                                             .getEntityId()));
-                                    activityForIndividual.setActorId(person.getAccountId());
-                                    activityForIndividual.setRecipientStreamScope(person.getStreamScope());
-                                    activityForIndividual.setIsDestinationStreamPublic(true);
+
+                                    if (person.isAccountLocked())
+                                    {
+                                        log.info("Ignoring locked account: " + person.getAccountId());
+                                    }
+                                    else
+                                    {
+                                        activityForIndividual.setActorId(person.getAccountId());
+                                        activityForIndividual.setRecipientStreamScope(person.getStreamScope());
+                                        activityForIndividual.setIsDestinationStreamPublic(true);
+
+                                        activityForIndividual.setActorType(feedSubscriber.getEntityType());
+                                        insertedActivities.add(activityForIndividual);
+                                    }
                                 }
                                 else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
                                 {
@@ -356,9 +368,10 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                     activityForIndividual.setActorId(group.getShortName());
                                     activityForIndividual.setRecipientStreamScope(group.getStreamScope());
                                     activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
+
+                                    activityForIndividual.setActorType(feedSubscriber.getEntityType());
+                                    insertedActivities.add(activityForIndividual);
                                 }
-                                activityForIndividual.setActorType(feedSubscriber.getEntityType());
-                                insertedActivities.add(activityForIndividual);
                             }
 
                         }
