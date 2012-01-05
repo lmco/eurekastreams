@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.common.stream.transformers.CommentBodyTransformer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,7 +44,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Comment panel.
- * 
  */
 public class CommentPanel extends Composite
 {
@@ -57,10 +54,13 @@ public class CommentPanel extends Composite
     private static final int TRUNCATE_LENGTH = 250;
 
     /** JSNI Facade. */
-    private final WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacadeImpl jsniFacade = new WidgetJSNIFacadeImpl();
 
     /** Effects facade. */
     private final EffectsFacade effects = new EffectsFacade();
+
+    /** For converting to HTML. */
+    private final CommentBodyTransformer commentBodyTransformer = new CommentBodyTransformer(jsniFacade);
 
     /**
      * Default constructor.
@@ -86,22 +86,19 @@ public class CommentPanel extends Composite
         body.add(author);
 
         // build/display the comment content, truncating if too long
-        String commentBody = comment.getBody();
+        String rawCommentBody = comment.getBody().trim();
+        final String fullCommentBody = commentBodyTransformer.transform(rawCommentBody);
+        String initialCommentBody = fullCommentBody;
 
-        boolean oversize = commentBody.length() > COMMENT_LIMIT;
+        boolean oversize = rawCommentBody.length() > COMMENT_LIMIT;
         if (oversize)
         {
-            commentBody = commentBody.substring(0, TRUNCATE_LENGTH);
+            initialCommentBody = fullCommentBody.substring(0,
+                    commentBodyTransformer.determineTruncationPoint(fullCommentBody, TRUNCATE_LENGTH))
+                    + "...";
         }
 
-        commentBody = prepareCommentBody(commentBody);
-
-        if (oversize)
-        {
-            commentBody = commentBody + "...";
-        }
-
-        final HTML text = new InlineHTML(commentBody);
+        final HTML text = new InlineHTML(initialCommentBody);
         text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
         body.add(text);
 
@@ -115,7 +112,7 @@ public class CommentPanel extends Composite
                 public void onClick(final ClickEvent inEvent)
                 {
                     more.removeFromParent();
-                    text.setHTML(prepareCommentBody(comment.getBody()));
+                    text.setHTML(fullCommentBody);
                 }
             });
             body.add(more);
@@ -150,7 +147,7 @@ public class CommentPanel extends Composite
             {
                 public void onClick(final ClickEvent event)
                 {
-                    if (jSNIFacade.confirm("Are you sure you want to delete this comment?"))
+                    if (jsniFacade.confirm("Are you sure you want to delete this comment?"))
                     {
                         Session.getInstance().getActionProcessor()
                         .makeRequest("deleteComment", comment.getId(), new AsyncCallback<Boolean>()
@@ -176,27 +173,5 @@ public class CommentPanel extends Composite
         }
 
         initWidget(commentContainer);
-    }
-
-    /**
-     * Takes the comment text and converts it to HTML for display.
-     * 
-     * @param inCommentBody
-     *            The raw comment text.
-     * @return Comment HTML.
-     */
-    private String prepareCommentBody(final String inCommentBody)
-    {
-        // Strip out any existing HTML.
-        String commentBody = jSNIFacade.escapeHtml(inCommentBody);
-        commentBody = commentBody.replaceAll("(\r\n|\n|\r)", "<br />");
-
-        // first transform links to hyperlinks
-        commentBody = new HyperlinkTransformer(jSNIFacade).transform(commentBody);
-
-        // then transform hashtags to hyperlinks
-        commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);
-
-        return commentBody;
     }
 }
