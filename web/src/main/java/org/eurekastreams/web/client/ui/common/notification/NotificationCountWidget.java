@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class NotificationCountWidget extends Label
 {
+    /** Polling time in minutes. */
+    private static final int POLL_TIME_MINUTES = 1;
+
     /**
      * Constructor.
      */
@@ -49,31 +52,31 @@ public class NotificationCountWidget extends Label
         });
 
         Session.getInstance().getEventBus()
-                .addObserver(NotificationCountsAvailableEvent.class, new Observer<NotificationCountsAvailableEvent>()
+        .addObserver(NotificationCountsAvailableEvent.class, new Observer<NotificationCountsAvailableEvent>()
                 {
-                    public void update(final NotificationCountsAvailableEvent ev)
+            public void update(final NotificationCountsAvailableEvent ev)
+            {
+                int total = ev.getNormalCount() + ev.getHighPriorityCount();
+                setText(Integer.toString(total));
+                if (total > 0)
+                {
+                    if (ev.getHighPriorityCount() > 0)
                     {
-                        int total = ev.getNormalCount() + ev.getHighPriorityCount();
-                        setText(Integer.toString(total));
-                        if (total > 0)
-                        {
-                            if (ev.getHighPriorityCount() > 0)
-                            {
-                                addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
-                                removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
-                            }
-                            else
-                            {
-                                addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
-                                removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
-                            }
-                        }
-                        else
-                        {
-                            removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
-                            removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
-                        }
+                        addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
+                        removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
                     }
+                    else
+                    {
+                        addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
+                        removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
+                    }
+                }
+                else
+                {
+                    removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountNormalPriority());
+                    removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCountHighPriority());
+                }
+            }
                 });
     }
 
@@ -83,7 +86,8 @@ public class NotificationCountWidget extends Label
     public void init()
     {
         Session.getInstance().getTimer()
-                .addTimerJob("getNotificationCountTimerJob", 1, NotificationCountModel.getInstance(), null, true);
+        .addTimerJob("getNotificationCountTimerJob", POLL_TIME_MINUTES, NotificationCountModel.getInstance(),
+                null, true);
 
         NotificationCountModel.getInstance().fetch(null, true);
     }

@@ -19,11 +19,8 @@ import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
-import org.eurekastreams.web.client.events.UserActiveEvent;
-import org.eurekastreams.web.client.events.UserInactiveEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
-import org.eurekastreams.web.client.model.MouseActivityModel;
 import org.eurekastreams.web.client.model.UnseenActivityCountForViewModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -44,12 +41,15 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     /**
      * The unseen activity count label.
      */
-    private HTML unseenActivityCount = new HTML();
+    private final HTML unseenActivityCount = new HTML();
 
     /**
      * Max number of unseen activities to look for.
      */
     private static final int MAX_UNSEEN = 100;
+
+    /** Polling time in minutes. */
+    private static final int POLL_TIME_MINUTES = 3;
 
     /**
      * Default constructor.
@@ -57,7 +57,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     public UnseenActivityNotificationPanel()
     {
         final FlowPanel thisBuffered = this;
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenActivity());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenActivity());
         this.setVisible(false);
 
         unseenActivityCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenLabel());
@@ -74,98 +74,71 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         this.add(unseenActivityCount);
         this.add(refreshStream);
 
-        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
-                new Observer<GotStreamResponseEvent>()
+        Session.getInstance().getEventBus()
+        .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
                 {
-                    public void update(final GotStreamResponseEvent event)
-                    {
-                        thisBuffered.setVisible(false);
+            public void update(final GotStreamResponseEvent event)
+            {
+                thisBuffered.setVisible(false);
 
-                        // remove job if present and clear job from paused list.
-                        Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
-                        Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
+                // remove job if present
+                Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
 
-                        // Only show unseen activity if sorted by date.
-                        if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
-                        {
-                            JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
-                            request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
-                                    request);
-                            request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
+                // Only show unseen activity if sorted by date.
+                if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
+                {
+                    JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
+                    request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
+                            request);
+                    request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
-                            // add and configure
-                            Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 3,
-                                    UnseenActivityCountForViewModel.getInstance(), request.toString(), false);
-
-                            // unpause just to be sure it's cleared.
-                            Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
-                        }
-                    }
+                    // add and configure
+                    Session.getInstance()
+                    .getTimer()
+                    .addTimerJob("getUnseenActivityJob", POLL_TIME_MINUTES,
+                            UnseenActivityCountForViewModel.getInstance(), request.toString(), false);
+                }
+            }
                 });
 
-        Session.getInstance().getEventBus().addObserver(GotUnseenActivitiesCountResponseEvent.class,
+        Session.getInstance()
+        .getEventBus()
+        .addObserver(GotUnseenActivitiesCountResponseEvent.class,
                 new Observer<GotUnseenActivitiesCountResponseEvent>()
                 {
-                    public void update(final GotUnseenActivitiesCountResponseEvent ev)
+            public void update(final GotUnseenActivitiesCountResponseEvent ev)
+            {
+                if (ev.getResponse() > 0)
+                {
+                    thisBuffered.setVisible(true);
+                    if (ev.getResponse() == 1)
                     {
-                        if (ev.getResponse() > 0)
-                        {
-                            thisBuffered.setVisible(true);
-                            if (ev.getResponse() == 1)
-                            {
-                                unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
-                                        + "</strong> new update</div>");
-                            }
-                            else
-                            {
-                                unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
-                                        + "</strong> new updates</div>");
-                            }
-
-                        }
-                        else
-                        {
-                            thisBuffered.setVisible(false);
-                        }
+                        unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
+                                + "</strong> new update</div>");
                     }
+                    else
+                    {
+                        unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
+                                + "</strong> new updates</div>");
+                    }
+
+                }
+                else
+                {
+                    thisBuffered.setVisible(false);
+                }
+            }
                 });
 
-        // runs a job to detect mouse movement changes once a minute, triggering a timeout after 5 mins of inactivity
-        Session.getInstance().getTimer().addTimerJob("getMouseActivityJob", 1, MouseActivityModel.getInstance(), 5,
-                false);
-
-        // Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
-        // UnseenActivityCountForViewModel.getInstance(), StreamJsonRequestFactory.getEmptyRequest().toString(),
-        // false);
-
-        // user is inactive - pauses the job that gets new activity counts
-        Session.getInstance().getEventBus().addObserver(UserInactiveEvent.class, new Observer<UserInactiveEvent>()
-        {
-            public void update(final UserInactiveEvent ev)
-            {
-                Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
-            }
-        });
-
-        // user is active - unpauses the job that gets new activity counts
-        Session.getInstance().getEventBus().addObserver(UserActiveEvent.class, new Observer<UserActiveEvent>()
-        {
-            public void update(final UserActiveEvent ev)
-            {
-                Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
-            }
-        });
-
         EventBus.getInstance().addObserver(ChangeActivityModeEvent.class, new Observer<ChangeActivityModeEvent>()
-        {
+                {
             public void update(final ChangeActivityModeEvent event)
             {
                 if (event.isSingleMode())
                 {
                     Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
-                    Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
                 }
             }
-        });
+                });
     }
 }

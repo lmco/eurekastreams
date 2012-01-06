@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,6 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.log.Log;
 import org.eurekastreams.web.client.timer.Timer;
 
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -86,21 +83,6 @@ public class Session
     private static Session instance;
 
     /**
-     * Mouse X position.
-     */
-    private int mouseX = -1;
-
-    /**
-     * Mouse Y position.
-     */
-    private int mouseY = -1;
-
-    /**
-     * Handles invoking events periodically.
-     */
-    private PeriodicEventManager periodicEventManager;
-
-    /**
      * The main thing to do in this constructor is set up any session observers.
      */
     public Session()
@@ -108,49 +90,13 @@ public class Session
         EventBus.getInstance().addObserver(InsertOptOutVideoResponseEvent.class,
                 new Observer<InsertOptOutVideoResponseEvent>()
                 {
-                    public void update(final InsertOptOutVideoResponseEvent insertVideoResponse)
-                    {
-                        HashSet<Long> videoList = currentPerson.getOptOutVideos();
-                        videoList.add(insertVideoResponse.getResponse());
-                        currentPerson.setOptOutVideos(videoList);
-                    }
-                });
-
-        /*
-         * This event will be called A LOT. Do not add anything to it. This is used to track mouse position to determine
-         * inactivity.
-         */
-        Event.addNativePreviewHandler(new NativePreviewHandler()
-        {
-            public void onPreviewNativeEvent(final NativePreviewEvent event)
+            public void update(final InsertOptOutVideoResponseEvent insertVideoResponse)
             {
-                if (event.getTypeInt() == Event.ONMOUSEMOVE)
-                {
-                    mouseX = event.getNativeEvent().getClientX();
-                    mouseY = event.getNativeEvent().getClientY();
-                }
+                HashSet<Long> videoList = currentPerson.getOptOutVideos();
+                videoList.add(insertVideoResponse.getResponse());
+                currentPerson.setOptOutVideos(videoList);
             }
-        });
-    }
-
-    /**
-     * Get mouse X position.
-     *
-     * @return mouse X position.
-     */
-    public int getMouseX()
-    {
-        return mouseX;
-    }
-
-    /**
-     * Get mouse Y position.
-     *
-     * @return mouse Y position.
-     */
-    public int getMouseY()
-    {
-        return mouseY;
+                });
     }
 
     /**
@@ -355,23 +301,6 @@ public class Session
     public void setPageTitle(final String title)
     {
         Window.setTitle(title + " - Eureka Streams");
-    }
-
-    /**
-     * @return the periodicEventManager
-     */
-    public PeriodicEventManager getPeriodicEventManager()
-    {
-        return periodicEventManager;
-    }
-
-    /**
-     * @param inPeriodicEventManager
-     *            the periodicEventManager to set
-     */
-    public void setPeriodicEventManager(final PeriodicEventManager inPeriodicEventManager)
-    {
-        periodicEventManager = inPeriodicEventManager;
     }
 
     /**

@@ -47,9 +47,7 @@ import org.eurekastreams.web.client.model.BulkEntityModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.UsageMetricModel;
-import org.eurekastreams.web.client.ui.PeriodicEventManager;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.login.LoginDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
@@ -188,7 +186,6 @@ public class ApplicationEntryPoint implements EntryPoint
 
         session.setActionProcessor(processor);
         session.setEventBus(EventBus.getInstance());
-        session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));
 
         master = new MasterComposite();
 
@@ -264,7 +261,6 @@ public class ApplicationEntryPoint implements EntryPoint
                 processor.fireQueuedRequests();
                 processor.setQueueRequests(false);
 
-                session.getPeriodicEventManager().start();
                 rootPanel.add(master);
             }
         });

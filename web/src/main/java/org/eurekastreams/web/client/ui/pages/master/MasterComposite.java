@@ -34,7 +34,6 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.TutorialVideoModel;
-import org.eurekastreams.web.client.ui.PeriodicEventManager;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FooterComposite;
 import org.eurekastreams.web.client.ui.common.HeaderComposite;
@@ -42,7 +41,6 @@ import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.optoutvideo.OptOutableVideoDialogContent;
 import org.eurekastreams.web.client.ui.common.notifier.UINotifier;
 
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -125,9 +123,6 @@ public class MasterComposite extends Composite
      */
     private List<String> currentViews;
 
-    /** To tell event manager when system is active. */
-    private final PeriodicEventManager evtMgr;
-
     /**
      * Have any pages been loaded (prevents an infinite loop for IE only start page refreshing.).
      */
@@ -141,18 +136,7 @@ public class MasterComposite extends Composite
     {
         actionProcessor = Session.getInstance().getActionProcessor();
 
-        evtMgr = Session.getInstance().getPeriodicEventManager();
-
-        panel = new FlowPanel()
-        {
-            @Override
-            public void onBrowserEvent(final Event ev)
-            {
-                super.onBrowserEvent(ev);
-                evtMgr.userActivityDetected();
-            }
-        };
-        panel.sinkEvents(Event.KEYEVENTS | Event.FOCUSEVENTS | Event.MOUSEEVENTS & ~Event.ONMOUSEMOVE);
+        panel = new FlowPanel();
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().main());
 
         headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerContainer());
@@ -175,78 +159,78 @@ public class MasterComposite extends Composite
         Session.getInstance().getEventBus().addObserver(GetTutorialVideoResponseEvent.class,
                 new Observer<GetTutorialVideoResponseEvent>()
                 {
-                    public void update(final GetTutorialVideoResponseEvent event)
+            public void update(final GetTutorialVideoResponseEvent event)
+            {
+                HashSet<TutorialVideoDTO> tutVids = event.getResponse();
+                PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
+
+                for (TutorialVideoDTO vid : tutVids)
+                {
+                    if (vid.getPage() == currentPage)
                     {
-                        HashSet<TutorialVideoDTO> tutVids = event.getResponse();
-                        PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
-
-                        for (TutorialVideoDTO vid : tutVids)
+                        if (currentPage == Page.PEOPLE
+                                && !(currentViews.contains(currentPerson.getAccountId())))
                         {
-                            if (vid.getPage() == currentPage)
-                            {
-                                if (currentPage == Page.PEOPLE
-                                        && !(currentViews.contains(currentPerson.getAccountId())))
-                                {
-                                    // if you are on the person profile tab but it's not you then don't show this
-                                    // dialog.
-                                    break;
-                                }
-                                if (!(currentPerson.getOptOutVideos().contains(vid.getEntityId())))
-                                {
-                                    final Integer videoWidth = vid.getVideoWidth() != null ? vid.getVideoWidth()
-                                            : OptOutableVideoDialogContent.DEFAULT_VIDEO_WIDTH;
-
-                                    OptOutableVideoDialogContent dialogContent = new OptOutableVideoDialogContent(vid);
-                                    Dialog dialog = new Dialog(dialogContent)
-                                    {
-                                        {
-                                            getPopupPanel().setModal(true);
-                                        }
-
-                                        @Override
-                                        public void center()
-                                        {
-                                            getPopupPanel().setWidth(
-                                                    videoWidth + OptOutableVideoDialogContent.CONTENT_WIDTH
-                                                            + OptOutableVideoDialogContent.MARGIN_OFFSET + "px");
-                                            super.center();
-                                            getPopupPanel().setPopupPosition(getPopupPanel().getAbsoluteLeft(),
-                                                    OptOutableVideoDialogContent.DIALOG_HEIGHT_OFFSET);
-                                        }
-                                    };
-                                    dialog.showUncentered();
-                                }
-                                break;
-                            }
+                            // if you are on the person profile tab but it's not you then don't show this
+                            // dialog.
+                            break;
                         }
+                        if (!(currentPerson.getOptOutVideos().contains(vid.getEntityId())))
+                        {
+                            final Integer videoWidth = vid.getVideoWidth() != null ? vid.getVideoWidth()
+                                    : OptOutableVideoDialogContent.DEFAULT_VIDEO_WIDTH;
+
+                            OptOutableVideoDialogContent dialogContent = new OptOutableVideoDialogContent(vid);
+                            Dialog dialog = new Dialog(dialogContent)
+                            {
+                                {
+                                    getPopupPanel().setModal(true);
+                                }
+
+                                @Override
+                                public void center()
+                                {
+                                    getPopupPanel().setWidth(
+                                            videoWidth + OptOutableVideoDialogContent.CONTENT_WIDTH
+                                            + OptOutableVideoDialogContent.MARGIN_OFFSET + "px");
+                                    super.center();
+                                    getPopupPanel().setPopupPosition(getPopupPanel().getAbsoluteLeft(),
+                                            OptOutableVideoDialogContent.DIALOG_HEIGHT_OFFSET);
+                                }
+                            };
+                            dialog.showUncentered();
+                        }
+                        break;
                     }
+                }
+            }
                 });
 
         Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
                 new Observer<SwitchedHistoryViewEvent>()
                 {
-                    public void update(final SwitchedHistoryViewEvent event)
-                    {
-                        mainContents.remove(banner);
-                        notifier.setVisible(false);
-                        contentPanel.clear();
-                        String redirect = factory.createPage(event.getPage(), event.getViews(), contentPanel);
-                        currentPage = event.getPage();
-                        currentViews = event.getViews();
-                        pageHasBeenLoaded = true;
-                        if (redirect == null)
-                        {
-                            TutorialVideoModel.getInstance().fetch(null, true);
-                        }
-                        else
-                        {
-                            EventBus.getInstance().notifyObservers(new UpdateRawHistoryEvent(redirect));
-                        }
-                    }
+            public void update(final SwitchedHistoryViewEvent event)
+            {
+                mainContents.remove(banner);
+                notifier.setVisible(false);
+                contentPanel.clear();
+                String redirect = factory.createPage(event.getPage(), event.getViews(), contentPanel);
+                currentPage = event.getPage();
+                currentViews = event.getViews();
+                pageHasBeenLoaded = true;
+                if (redirect == null)
+                {
+                    TutorialVideoModel.getInstance().fetch(null, true);
+                }
+                else
+                {
+                    EventBus.getInstance().notifyObservers(new UpdateRawHistoryEvent(redirect));
+                }
+            }
                 });
 
         Session.getInstance().getEventBus().addObserver(SetBannerEvent.class, new Observer<SetBannerEvent>()
-        {
+                {
             public void update(final SetBannerEvent event)
             {
                 mainContents.insert(banner, 1);
@@ -256,7 +240,7 @@ public class MasterComposite extends Composite
                 {
                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(null);
                     new WidgetJSNIFacadeImpl()
-                            .setBanner(urlGen.getBannerUrl(event.getBannerableEntity().getBannerId()));
+                    .setBanner(urlGen.getBannerUrl(event.getBannerableEntity().getBannerId()));
                 }
                 // Start page, the bannerable entity is null, just clear out the banner value
                 // to let the theme take over again.
@@ -266,7 +250,7 @@ public class MasterComposite extends Composite
                 }
             }
 
-        });
+                });
     }
 
     /**
@@ -306,14 +290,14 @@ public class MasterComposite extends Composite
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
                 {
-                    public void update(final GotSystemSettingsResponseEvent event)
-                    {
-                        final SystemSettings settings = event.getResponse();
+            public void update(final GotSystemSettingsResponseEvent event)
+            {
+                final SystemSettings settings = event.getResponse();
 
-                        setSiteLabelTemplate(settings.getHeaderTemplate(), settings.getSiteLabel());
-                        footerPanel.setSiteLabelTemplate(settings.getFooterTemplate(), settings.getSiteLabel());
-                        banner.getElement().setInnerHTML(settings.getBannerTemplate());
-                    }
+                setSiteLabelTemplate(settings.getHeaderTemplate(), settings.getSiteLabel());
+                footerPanel.setSiteLabelTemplate(settings.getFooterTemplate(), settings.getSiteLabel());
+                banner.getElement().setInnerHTML(settings.getBannerTemplate());
+            }
                 });
 
         SystemSettingsModel.getInstance().fetch(null, true);
