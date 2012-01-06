@@ -22,7 +22,14 @@ import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.FollowerStatusable;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.data.BaseDataRequestResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedPersonFollowerResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
+import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
@@ -271,6 +278,34 @@ public class FollowPanel extends FlowPanel
         default:
             break;
         }
+
+        // listen to stream follow/unfollow events and adjust accordingly. If stream is listed multiple times
+        // on a page (e.g. Discovery page) this will keep the follow/unfollow links in sync for all instances.
+        EventBus.getInstance().addObservers(
+                new Observer<BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer>>()
+                {
+                    public void update(final BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer> inArg1)
+                    {
+                        if (inFollowable.getEntityType() == inArg1.getRequest().getTargetEntityType()
+                                && inFollowable.getUniqueId() == inArg1.getRequest().getTargetUniqueId())
+                        {
+                            switch (inArg1.getRequest().getFollowerStatus())
+                            {
+                            case FOLLOWING:
+                                followLink.setVisible(false);
+                                unfollowLink.setVisible(true);
+                                break;
+                            case NOTFOLLOWING:
+                                unfollowLink.setVisible(false);
+                                followLink.setVisible(true);
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                    }
+                }, InsertedPersonFollowerResponseEvent.class, InsertedGroupMemberResponseEvent.class,
+                DeletedPersonFollowerResponseEvent.class, DeletedGroupMemberResponseEvent.class);
     }
 
 }

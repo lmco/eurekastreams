@@ -15,27 +15,28 @@
  */
 package org.eurekastreams.web.client.model;
 
+import java.util.ArrayList;
+
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Get the unseen activity for a view.
- *
+ * 
  */
-public class UnseenActivityCountForViewModel extends BaseModel implements
-        Fetchable<String>
+public class UnseenActivityIDsForViewModel extends BaseModel implements Fetchable<String>
 {
     /**
      * Singleton.
      */
-    private static UnseenActivityCountForViewModel model = new UnseenActivityCountForViewModel();
+    private static UnseenActivityIDsForViewModel model = new UnseenActivityIDsForViewModel();
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
-    public static UnseenActivityCountForViewModel getInstance()
+    public static UnseenActivityIDsForViewModel getInstance()
     {
         return model;
     }
@@ -45,9 +46,9 @@ public class UnseenActivityCountForViewModel extends BaseModel implements
      */
     public void fetch(final String request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getActivityCount", request, new OnSuccessCommand<Integer>()
+        super.callReadAction("getActivityIDs", request, new OnSuccessCommand<ArrayList<Long>>()
         {
-            public void onSuccess(final Integer response)
+            public void onSuccess(final ArrayList<Long> response)
             {
                 Session.getInstance().getEventBus()
                         .notifyObservers(new GotUnseenActivitiesCountResponseEvent(response));

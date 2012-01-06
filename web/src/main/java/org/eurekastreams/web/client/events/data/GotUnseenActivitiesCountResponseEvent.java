@@ -15,17 +15,21 @@
  */
 package org.eurekastreams.web.client.events.data;
 
+import java.util.ArrayList;
+
 /**
  * Got the unseen activity count response.
- *
+ * 
  */
-public class GotUnseenActivitiesCountResponseEvent extends BaseDataResponseEvent<Integer>
+public class GotUnseenActivitiesCountResponseEvent extends BaseDataResponseEvent<ArrayList<Long>>
 {
     /**
      * The response.
-     * @param inResponse the response.
+     * 
+     * @param inResponse
+     *            the response.
      */
-    public GotUnseenActivitiesCountResponseEvent(final Integer inResponse)
+    public GotUnseenActivitiesCountResponseEvent(final ArrayList<Long> inResponse)
     {
         super(inResponse);
     }

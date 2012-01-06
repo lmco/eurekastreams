@@ -15,13 +15,17 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
-import org.eurekastreams.web.client.model.UnseenActivityCountForViewModel;
+import org.eurekastreams.web.client.model.UnseenActivityIDsForViewModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -49,7 +53,12 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     private static final int MAX_UNSEEN = 100;
 
     /** Polling time in minutes. */
-    private static final int POLL_TIME_MINUTES = 3;
+    private static final int POLL_TIME_MINUTES = 1;
+
+    /**
+     * List of IDs of the activities authored by current employee during this session.
+     */
+    private final List<Long> authoredActivityIds;
 
     /**
      * Default constructor.
@@ -57,6 +66,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     public UnseenActivityNotificationPanel()
     {
         final FlowPanel thisBuffered = this;
+        authoredActivityIds = new ArrayList<Long>();
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenActivity());
         this.setVisible(false);
 
@@ -74,6 +84,17 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         this.add(unseenActivityCount);
         this.add(refreshStream);
 
+        // listen to new activities getting posted by this user - ignore those activity ids when they come back from
+        // "getActivityIDs" requests
+        Session.getInstance().getEventBus()
+        .addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+                {
+            public void update(final MessageStreamAppendEvent response)
+            {
+                authoredActivityIds.add(response.getMessage().getId());
+            }
+                });
+
         Session.getInstance().getEventBus()
         .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
                 {
@@ -81,7 +102,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
             {
                 thisBuffered.setVisible(false);
 
-                // remove job if present
+                // remove job if present and clear job from paused list.
                 Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
 
                 // Only show unseen activity if sorted by date.
@@ -89,14 +110,14 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                 {
                     JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
                     request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
-                            request);
+                                    request);
                     request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
                     // add and configure
                     Session.getInstance()
                     .getTimer()
                     .addTimerJob("getUnseenActivityJob", POLL_TIME_MINUTES,
-                            UnseenActivityCountForViewModel.getInstance(), request.toString(), false);
+                            UnseenActivityIDsForViewModel.getInstance(), request.toString(), false);
                 }
             }
                 });
@@ -108,20 +129,25 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                 {
             public void update(final GotUnseenActivitiesCountResponseEvent ev)
             {
-                if (ev.getResponse() > 0)
+                ArrayList<Long> activityIds = new ArrayList<Long>();
+                activityIds.addAll(ev.getResponse());
+
+                // Remove any from this list that we've posted ourself
+                activityIds.removeAll(authoredActivityIds);
+
+                if (activityIds.size() > 0)
                 {
                     thisBuffered.setVisible(true);
-                    if (ev.getResponse() == 1)
+                    if (activityIds.size() == 1)
                     {
-                        unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
+                        unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
                                 + "</strong> new update</div>");
                     }
                     else
                     {
-                        unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
+                        unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
                                 + "</strong> new updates</div>");
                     }
-
                 }
                 else
                 {

@@ -1891,12 +1891,12 @@
             <constructor-arg ref="getActivityIdsByJsonRequest" />
     </bean>
 
-    <bean id="getActivityCount" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="getActivityIDs" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
-                class="org.eurekastreams.server.action.execution.stream.GetActivityCount">
+                class="org.eurekastreams.server.action.execution.stream.GetActivityIDs">
                     <constructor-arg ref="getActivityIdsByJsonRequest" />
             </bean>
         </constructor-arg>
