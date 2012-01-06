@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -25,7 +26,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
  * Gets the unseen activity given an exector.
  * 
  */
-public class GetActivityCount implements ExecutionStrategy<PrincipalActionContext>
+public class GetActivityIDs implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * The get activity executor.
@@ -38,7 +39,7 @@ public class GetActivityCount implements ExecutionStrategy<PrincipalActionContex
      * @param inGetActivityIdsByJsonRequest
      *            activity getter..
      */
-    public GetActivityCount(final GetActivityIdsByJson inGetActivityIdsByJsonRequest)
+    public GetActivityIDs(final GetActivityIdsByJson inGetActivityIdsByJsonRequest)
     {
         getActivityIdsByJsonRequest = inGetActivityIdsByJsonRequest;
     }
@@ -52,10 +53,12 @@ public class GetActivityCount implements ExecutionStrategy<PrincipalActionContex
      *             the exception.
      * @return the size.
      */
+    @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        return Integer.valueOf(getActivityIdsByJsonRequest.execute((String) inActionContext.getParams(),
-                inActionContext.getPrincipal().getId()).size());
+        ArrayList<Long> results = new ArrayList<Long>(getActivityIdsByJsonRequest.execute(
+                (String) inActionContext.getParams(), inActionContext.getPrincipal().getId()));
+        return results;
     }
 
 }

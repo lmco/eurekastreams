@@ -15,8 +15,12 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.UserActiveEvent;
@@ -24,7 +28,7 @@ import org.eurekastreams.web.client.events.UserInactiveEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
 import org.eurekastreams.web.client.model.MouseActivityModel;
-import org.eurekastreams.web.client.model.UnseenActivityCountForViewModel;
+import org.eurekastreams.web.client.model.UnseenActivityIDsForViewModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -52,11 +56,17 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     private static final int MAX_UNSEEN = 100;
 
     /**
+     * List of IDs of the activities authored by current employee during this session.
+     */
+    private List<Long> authoredActivityIds;
+
+    /**
      * Default constructor.
      */
     public UnseenActivityNotificationPanel()
     {
         final FlowPanel thisBuffered = this;
+        this.authoredActivityIds = new ArrayList<Long>();
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenActivity());
         this.setVisible(false);
 
@@ -74,8 +84,19 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         this.add(unseenActivityCount);
         this.add(refreshStream);
 
-        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
-                new Observer<GotStreamResponseEvent>()
+        // listen to new activities getting posted by this user - ignore those activity ids when they come back from
+        // "getActivityIDs" requests
+        Session.getInstance().getEventBus()
+                .addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+                {
+                    public void update(final MessageStreamAppendEvent response)
+                    {
+                        authoredActivityIds.add(response.getMessage().getId());
+                    }
+                });
+
+        Session.getInstance().getEventBus()
+                .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
                 {
                     public void update(final GotStreamResponseEvent event)
                     {
@@ -89,13 +110,15 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                         if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
                         {
                             JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
-                            request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
-                                    request);
+                            request = StreamJsonRequestFactory.setMinId(
+                                    event.getStream().getPagedSet().get(0).getId(), request);
                             request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
                             // add and configure
-                            Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 3,
-                                    UnseenActivityCountForViewModel.getInstance(), request.toString(), false);
+                            Session.getInstance()
+                                    .getTimer()
+                                    .addTimerJob("getUnseenActivityJob", 1,
+                                            UnseenActivityIDsForViewModel.getInstance(), request.toString(), false);
 
                             // unpause just to be sure it's cleared.
                             Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
@@ -103,36 +126,43 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(GotUnseenActivitiesCountResponseEvent.class,
-                new Observer<GotUnseenActivitiesCountResponseEvent>()
-                {
-                    public void update(final GotUnseenActivitiesCountResponseEvent ev)
-                    {
-                        if (ev.getResponse() > 0)
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotUnseenActivitiesCountResponseEvent.class,
+                        new Observer<GotUnseenActivitiesCountResponseEvent>()
                         {
-                            thisBuffered.setVisible(true);
-                            if (ev.getResponse() == 1)
+                            public void update(final GotUnseenActivitiesCountResponseEvent ev)
                             {
-                                unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
-                                        + "</strong> new update</div>");
-                            }
-                            else
-                            {
-                                unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
-                                        + "</strong> new updates</div>");
-                            }
+                                ArrayList<Long> activityIds = new ArrayList<Long>();
+                                activityIds.addAll(ev.getResponse());
 
-                        }
-                        else
-                        {
-                            thisBuffered.setVisible(false);
-                        }
-                    }
-                });
+                                // Remove any from this list that we've posted ourself
+                                activityIds.removeAll(authoredActivityIds);
+
+                                if (activityIds.size() > 0)
+                                {
+                                    thisBuffered.setVisible(true);
+                                    if (activityIds.size() == 1)
+                                    {
+                                        unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
+                                                + "</strong> new update</div>");
+                                    }
+                                    else
+                                    {
+                                        unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
+                                                + "</strong> new updates</div>");
+                                    }
+                                }
+                                else
+                                {
+                                    thisBuffered.setVisible(false);
+                                }
+                            }
+                        });
 
         // runs a job to detect mouse movement changes once a minute, triggering a timeout after 5 mins of inactivity
-        Session.getInstance().getTimer().addTimerJob("getMouseActivityJob", 1, MouseActivityModel.getInstance(), 5,
-                false);
+        Session.getInstance().getTimer()
+                .addTimerJob("getMouseActivityJob", 1, MouseActivityModel.getInstance(), 5, false);
 
         // Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
         // UnseenActivityCountForViewModel.getInstance(), StreamJsonRequestFactory.getEmptyRequest().toString(),

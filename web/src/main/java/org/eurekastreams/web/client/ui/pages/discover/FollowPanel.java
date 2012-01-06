@@ -278,25 +278,25 @@ public class FollowPanel extends FlowPanel
         default:
             break;
         }
-        
-        //listen to stream follow/unfollow events and adjust accordingly. If stream is listed multiple times
-        //on a page (e.g. Discovery page) this will keep the follow/unfollow links in sync for all instances.
+
+        // listen to stream follow/unfollow events and adjust accordingly. If stream is listed multiple times
+        // on a page (e.g. Discovery page) this will keep the follow/unfollow links in sync for all instances.
         EventBus.getInstance().addObservers(
                 new Observer<BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer>>()
                 {
                     public void update(final BaseDataRequestResponseEvent<SetFollowingStatusRequest, Integer> inArg1)
                     {
-                        if(inFollowable.getEntityType() == inArg1.getRequest().getTargetEntityType() && 
-                        		inFollowable.getUniqueId() == inArg1.getRequest().getTargetUniqueId())
+                        if (inFollowable.getEntityType() == inArg1.getRequest().getTargetEntityType()
+                                && inFollowable.getUniqueId() == inArg1.getRequest().getTargetUniqueId())
                         {
-                        	switch (inArg1.getRequest().getFollowerStatus())
+                            switch (inArg1.getRequest().getFollowerStatus())
                             {
                             case FOLLOWING:
-                            	followLink.setVisible(false);
+                                followLink.setVisible(false);
                                 unfollowLink.setVisible(true);
                                 break;
                             case NOTFOLLOWING:
-                            	unfollowLink.setVisible(false);
+                                unfollowLink.setVisible(false);
                                 followLink.setVisible(true);
                                 break;
                             default:

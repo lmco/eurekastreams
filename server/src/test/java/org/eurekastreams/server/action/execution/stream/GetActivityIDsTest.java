@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,12 +33,12 @@ import org.junit.Test;
  * Tests the counting action.
  * 
  */
-public class GetActivityCountTest
+public class GetActivityIDsTest
 {
     /**
      * System under test.
      */
-    private GetActivityCount sut;
+    private GetActivityIDs sut;
 
     /**
      * Context for building mock objects.
@@ -62,34 +63,34 @@ public class GetActivityCountTest
     {
         final List<Long> activities = Arrays.asList(1L, 2L, 3L);
 
-        sut = new GetActivityCount(getIdsMock);
+        sut = new GetActivityIDs(getIdsMock);
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
         final String request = "{}";
         final Long userId = 1L;
-        
-        final Principal principle = context.mock(Principal.class); 
-        
+
+        final Principal principle = context.mock(Principal.class);
+
         context.checking(new Expectations()
         {
             {
                 oneOf(actionContext).getParams();
                 will(returnValue(request));
-                
+
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principle));
-                
+
                 oneOf(principle).getId();
                 will(returnValue(userId));
-                
+
                 oneOf(getIdsMock).execute(request, userId);
                 will(returnValue(activities));
             }
         });
 
-        Integer result = (Integer) sut.execute(actionContext);
-        Assert.assertEquals(new Integer(3), result);
-        
+        ArrayList<Long> result = (ArrayList<Long>) sut.execute(actionContext);
+        Assert.assertEquals(activities, result);
+
         context.assertIsSatisfied();
     }
 }
