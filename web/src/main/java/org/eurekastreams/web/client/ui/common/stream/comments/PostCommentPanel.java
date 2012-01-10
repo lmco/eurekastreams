@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -36,8 +37,8 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Post comment panel.
- *
+ * 
  */
 public class PostCommentPanel extends FlowPanel
 {
@@ -97,7 +98,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inMessageId
      *            the message id.
      * @param inFullCollapse
@@ -145,8 +146,8 @@ public class PostCommentPanel extends FlowPanel
     {
         this.clear();
         this.setVisible(true);
-        Widget avatar = new AvatarWidget(Session.getInstance()
-                .getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.VerySmall);
+        Widget avatar = new AvatarWidget(Session.getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON,
+                Size.VerySmall);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         this.add(avatar);
 
@@ -242,13 +243,20 @@ public class PostCommentPanel extends FlowPanel
             }
         });
 
-        commentBox.addKeyPressHandler(new KeyPressHandler()
+        commentBox.addKeyDownHandler(new KeyDownHandler()
         {
-            public void onKeyPress(final KeyPressEvent event)
+            public void onKeyDown(final KeyDownEvent event)
             {
-                if (event.getCharCode() == KeyCodes.KEY_ESCAPE)
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE)
                 {
                     unActivate();
+                }
+                else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isControlKeyDown())
+                {
+                    post.getElement().dispatchEvent(
+                            Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
             }
         });
@@ -280,7 +288,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Set the focus.
-     *
+     * 
      * @param el
      *            the element
      */
