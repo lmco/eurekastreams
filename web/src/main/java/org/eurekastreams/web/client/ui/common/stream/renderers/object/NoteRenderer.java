@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
@@ -56,8 +57,10 @@ public class NoteRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String activityContent = activity.getBaseObjectProperties().get("content").replace("%EUREKA:ACTORNAME%",
-                activity.getActor().getDisplayName());
+        StreamEntityDTO actor = activity.getOriginalActor() != null 
+                ? activity.getOriginalActor() : activity.getActor();
+        String activityContent = activity.getBaseObjectProperties().get("content")
+                .replace("%EUREKA:ACTORNAME%", actor.getDisplayName());
 
         if (activityContent == null)
         {
