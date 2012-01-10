@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,6 +80,21 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PostBoxComposite extends Composite
 {
+    /** Max auto-complete hashtags to show. */
+    private static final int MAX_HASH_TAG_AUTOCOMPLETE_ENTRIES = 10;
+
+    /** Hide delay after blur on post box. */
+    private static final Integer BLUR_DELAY = 500;
+
+    /** Max chars for post. */
+    private static final Integer POST_MAX = 250;
+
+    /** Post box default height. */
+    private static final int POST_BOX_DEFAULT_HEIGHT = 250;
+
+    /** Padding for hashtag dropdown. */
+    private static final int HASH_TAG_DROP_DOWN_PADDING = 14;
+
     /**
      * Binder for building UI.
      */
@@ -174,7 +189,7 @@ public class PostBoxComposite extends Composite
      */
     @UiField
     AddLinkComposite addLinkComposite;
-    
+
     /**
      * Hash Tags.
      */
@@ -193,25 +208,6 @@ public class PostBoxComposite extends Composite
     @UiField
     DivElement contentWarningContainer;
 
-    /**
-     * Hide delay after blur on post box.
-     */
-    private static final Integer BLUR_DELAY = 500;
-
-    /**
-     * Max chars for post.
-     */
-    private static final Integer POST_MAX = 250;
-
-    /**
-     * Post box default height.
-     */
-    private static final int POST_BOX_DEFAULT_HEIGHT = 250;
-
-    /**
-     * Padding for hashtag dropdown.
-     */
-    private static final int HASH_TAG_DROP_DOWN_PADDING = 14;
 
     /**
      * Currently active item.
@@ -221,7 +217,7 @@ public class PostBoxComposite extends Composite
     /**
      * Timer factory.
      */
-    private TimerFactory timerFactory = new TimerFactory();
+    private final TimerFactory timerFactory = new TimerFactory();
 
     /**
      * Current stream to post to.
@@ -232,7 +228,7 @@ public class PostBoxComposite extends Composite
     /**
      * Avatar Renderer.
      */
-    private AvatarRenderer avatarRenderer = new AvatarRenderer();
+    private final AvatarRenderer avatarRenderer = new AvatarRenderer();
 
     /**
      * Activity Populator.
@@ -327,7 +323,7 @@ public class PostBoxComposite extends Composite
                 }
             }
         });
-        
+
         postButton.setTargetHistoryToken(History.getToken());
 
         postBox.addKeyDownHandler(new KeyDownHandler()
@@ -339,7 +335,7 @@ public class PostBoxComposite extends Composite
                         && !event.isAnyModifierKeyDown() && activeItemIndex != null)
                 {
                     hashTags.getWidget(activeItemIndex).getElement()
-                            .dispatchEvent(Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                    .dispatchEvent(Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
                     event.preventDefault();
                     event.stopPropagation();
                     // clearSearch();
@@ -378,53 +374,57 @@ public class PostBoxComposite extends Composite
         {
             public void onKeyUp(final KeyUpEvent event)
             {
-                String boxHeight = postBox.getElement().getStyle().getHeight();
-                boxHeight = boxHeight.replace("px", "");
-                if (boxHeight.length() == 0)
-                {
-                    boxHeight = "44";
-                }
-                hashTags.getElement().getStyle()
-                        .setTop(Integer.parseInt(boxHeight) + HASH_TAG_DROP_DOWN_PADDING, Unit.PX);
-                hashTags.clear();
-                hashTags.setVisible(false);
-                String[] words = postBox.getText().split("\\s");
+                int tagsAdded = 0;
 
-                if (words.length >= 1 && !postBox.getText().endsWith(" "))
+                String postText = postBox.getText();
+                if (!postText.endsWith(" "))
                 {
-                    final String lastWord = words[words.length - 1];
-                    if (lastWord.startsWith("#"))
+                    String[] words = postText.split("\\s");
+                    if (words.length >= 1)
                     {
-                        boolean activeItemSet = false;
-                        Label firstItem = null;
-
-                        for (int i = 0; i < allHashTags.size(); i++)
+                        final String lastWord = words[words.length - 1];
+                        if (lastWord.startsWith("#"))
                         {
-                            final int index = i;
-                            if (hashTags.getWidgetCount() > 9)
+                            boolean activeItemSet = false;
+                            Label firstItem = null;
+
+                            for (String hashTag : allHashTags)
                             {
-                                break;
-                            }
-                            else
-                            {
-                                if (allHashTags.get(index).startsWith(lastWord))
+                                if (hashTag.startsWith(lastWord))
                                 {
-                                    hashTags.setVisible(true);
-                                    final Label tagLbl = new Label(allHashTags.get(i));
-                                    hashTags.add(tagLbl);
+                                    // get list ready on first tag added
+                                    if (tagsAdded == 0)
+                                    {
+                                        hashTags.clear();
+
+                                        String boxHeight = postBox.getElement().getStyle().getHeight()
+                                                .replace("px", "");
+                                        if (boxHeight.isEmpty())
+                                        {
+                                            boxHeight = "44";
+                                        }
+                                        hashTags.getElement()
+                                        .getStyle()
+                                        .setTop(Integer.parseInt(boxHeight) + HASH_TAG_DROP_DOWN_PADDING,
+                                                Unit.PX);
+                                        hashTags.setVisible(true);
+                                    }
+
+                                    final String hashTagFinal = hashTag;
+                                    final Label tagLbl = new Label(hashTagFinal);
                                     tagLbl.addClickHandler(new ClickHandler()
                                     {
                                         public void onClick(final ClickEvent event)
                                         {
                                             String postText = postBox.getText();
                                             postText = postText.substring(0, postText.length() - lastWord.length())
-                                                    + allHashTags.get(index) + " ";
+                                                    + hashTagFinal + " ";
                                             postBox.setText(postText);
-                                            hashTags.clear();
                                             hashTags.setVisible(false);
+                                            hashTags.clear();
+                                            activeItemIndex = null;
                                         }
                                     });
-
                                     tagLbl.addMouseOverHandler(new MouseOverHandler()
                                     {
                                         public void onMouseOver(final MouseOverEvent arg0)
@@ -432,6 +432,7 @@ public class PostBoxComposite extends Composite
                                             selectItem(tagLbl);
                                         }
                                     });
+                                    hashTags.add(tagLbl);
 
                                     if (firstItem == null)
                                     {
@@ -446,16 +447,27 @@ public class PostBoxComposite extends Composite
                                         selectItem(tagLbl);
                                     }
 
+                                    tagsAdded++;
+                                    if (tagsAdded >= MAX_HASH_TAG_AUTOCOMPLETE_ENTRIES)
+                                    {
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        if (!activeItemSet && firstItem != null)
-                        {
-                            activeItemIndex = null;
-                            selectItem(firstItem);
+                            if (!activeItemSet && firstItem != null)
+                            {
+                                activeItemIndex = null;
+                                selectItem(firstItem);
+                            }
                         }
                     }
+                }
+
+                if (tagsAdded == 0)
+                {
+                    hashTags.setVisible(false);
+                    activeItemIndex = null;
                 }
             }
         });
@@ -472,7 +484,7 @@ public class PostBoxComposite extends Composite
     private void addEvents()
     {
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
-        {
+                {
             public void update(final MessageStreamAppendEvent event)
             {
                 attachment = null;
@@ -483,78 +495,78 @@ public class PostBoxComposite extends Composite
                 postOptions.removeClassName(style.visiblePostBox());
                 checkPostBox();
             }
-        });
+                });
 
         EventBus.getInstance().addObserver(PostableStreamScopeChangeEvent.class,
                 new Observer<PostableStreamScopeChangeEvent>()
                 {
-                    public void update(final PostableStreamScopeChangeEvent stream)
+            public void update(final PostableStreamScopeChangeEvent stream)
+            {
+                currentStream = stream.getResponse();
+                if (currentStream != null && !"".equals(currentStream.getDisplayName()))
+                {
+                    if (currentStream.getScopeType().equals(ScopeType.PERSON))
                     {
-                        currentStream = stream.getResponse();
-                        if (currentStream != null && !"".equals(currentStream.getDisplayName()))
+                        if (currentStream.getDisplayName().endsWith("s"))
                         {
-                            if (currentStream.getScopeType().equals(ScopeType.PERSON))
-                            {
-                                if (currentStream.getDisplayName().endsWith("s"))
-                                {
-                                    postBox.setLabel("Post to " + currentStream.getDisplayName() + "' stream...");
-                                }
-                                else
-                                {
-                                    postBox.setLabel("Post to " + currentStream.getDisplayName() + "'s stream...");
-                                }
-                            }
-                            else
-                            {
-                                postBox.setLabel("Post to the " + currentStream.getDisplayName() + " stream...");
-                            }
+                            postBox.setLabel("Post to " + currentStream.getDisplayName() + "' stream...");
                         }
                         else
                         {
-                            postBox.setLabel("Post to your stream...");
+                            postBox.setLabel("Post to " + currentStream.getDisplayName() + "'s stream...");
                         }
-
-                        postPanel.setVisible(stream.getResponse().getScopeType() != null);
                     }
+                    else
+                    {
+                        postBox.setLabel("Post to the " + currentStream.getDisplayName() + " stream...");
+                    }
+                }
+                else
+                {
+                    postBox.setLabel("Post to your stream...");
+                }
+
+                postPanel.setVisible(stream.getResponse().getScopeType() != null);
+            }
                 });
 
         EventBus.getInstance().addObserver(MessageAttachmentChangedEvent.class,
                 new Observer<MessageAttachmentChangedEvent>()
                 {
-                    public void update(final MessageAttachmentChangedEvent evt)
-                    {
-                        attachment = evt.getAttachment();
-                    }
+            public void update(final MessageAttachmentChangedEvent evt)
+            {
+                attachment = evt.getAttachment();
+            }
                 });
 
         EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
                 {
-                    public void update(final GotSystemSettingsResponseEvent event)
-                    {
-                        String warning = event.getResponse().getContentWarningText();
-                        if (warning != null && !warning.isEmpty())
-                        {
-                            contentWarning.setText(warning);
-                        }
-                        else
-                        {
-                            contentWarning.setVisible(false);
-                            contentWarningContainer.getStyle().setDisplay(Display.NONE);
-                        }
-                    }
+            public void update(final GotSystemSettingsResponseEvent event)
+            {
+                String warning = event.getResponse().getContentWarningText();
+                if (warning != null && !warning.isEmpty())
+                {
+                    contentWarning.setText(warning);
+                }
+                else
+                {
+                    contentWarning.setVisible(false);
+                    contentWarningContainer.getStyle().setDisplay(Display.NONE);
+                }
+            }
                 });
 
         Session.getInstance()
-                .getEventBus()
-                .addObserver(GotAllPopularHashTagsResponseEvent.class,
-                        new Observer<GotAllPopularHashTagsResponseEvent>()
-                        {
-                            public void update(final GotAllPopularHashTagsResponseEvent event)
-                            {
-                                allHashTags = new ArrayList<String>(event.getResponse());
-                            }
-                        });
+        .getEventBus()
+        .addObserver(GotAllPopularHashTagsResponseEvent.class,
+                new Observer<GotAllPopularHashTagsResponseEvent>()
+                {
+            public void update(final GotAllPopularHashTagsResponseEvent event)
+            {
+                allHashTags = new ArrayList<String>(event.getResponse());
+            }
+                });
 
     }
 
