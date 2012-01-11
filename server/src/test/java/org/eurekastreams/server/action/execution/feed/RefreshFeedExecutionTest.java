@@ -524,7 +524,10 @@ public class RefreshFeedExecutionTest
                 will(returnValue("uri"));
 
                 oneOf(flickrObjectMapper).build(with(equal(feed)), with(equal(entry1)), with(any(Activity.class)));
-
+                
+                allowing(personOwner).isAccountLocked();
+                will(returnValue(false));
+                
                 allowing(personOwner).getAccountId();
                 allowing(personOwner).getId();
                 allowing(personOwner).getStreamScope();
@@ -574,6 +577,9 @@ public class RefreshFeedExecutionTest
         context.checking(new Expectations()
         {
             {
+            	allowing(personOwner).isAccountLocked();
+                will(returnValue(false));
+                
                 allowing(personOwner).getAccountId();
                 allowing(personOwner).getId();
                 allowing(personOwner).getStreamScope();

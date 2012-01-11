@@ -90,15 +90,13 @@ public class DeleteFeedSubscriberExecutionTest
         {
             {
                 oneOf(deleteMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(true));
 
                 allowing(ac).getParams();
                 will(returnValue(testParam));
 
                 allowing(testParam).getFeedSubscriberId();
                 will(returnValue(1L));
-
-                allowing(testParam).getEntityId();
-                will(returnValue("something"));
             }
         });
 
