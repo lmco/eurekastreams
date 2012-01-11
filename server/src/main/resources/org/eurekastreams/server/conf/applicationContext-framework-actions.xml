@@ -2719,7 +2719,14 @@
     </bean>
 
     <bean id="deleteTab" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.validation.start.DeleteTabValidation">
+                <constructor-arg>
+                    <ref bean="getPersonPagePropertiesById" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.authorization.start.DeleteTabAuthorization">
