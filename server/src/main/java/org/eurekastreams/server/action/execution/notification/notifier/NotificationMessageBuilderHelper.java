@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,6 +68,7 @@ public class NotificationMessageBuilderHelper
      */
     public String resolveActivityBody(final ActivityDTO activity, final Context context)
     {
+        // substitute variables
         StrSubstitutor transform = new StrSubstitutor(new StrLookup()
         {
             @Override
@@ -84,6 +85,32 @@ public class NotificationMessageBuilderHelper
             }
         }, VARIABLE_START_MARKER, VARIABLE_END_MARKER, StrSubstitutor.DEFAULT_ESCAPE);
         String result = transform.replace(activity.getBaseObjectProperties().get("content"));
+
+        // strip leading newlines and trailing whitespace and newlines
+        if (!result.isEmpty())
+        {
+            int startIndex = 0, lastSeenLinebreakInLeadingWhitespace = -1, endIndex = result.length();
+            while (startIndex < endIndex)
+            {
+                char c = result.charAt(startIndex);
+                if (!Character.isWhitespace(c))
+                {
+                    break;
+                }
+                if (c != '\t' && Character.getType(c) == Character.CONTROL)
+                {
+                    lastSeenLinebreakInLeadingWhitespace = startIndex;
+                }
+                startIndex++;
+            }
+            startIndex = lastSeenLinebreakInLeadingWhitespace + 1;
+            while (startIndex < endIndex && Character.isWhitespace(result.charAt(endIndex - 1)))
+            {
+                endIndex--;
+            }
+            result = result.substring(startIndex, endIndex);
+        }
+
         return result;
     }
 

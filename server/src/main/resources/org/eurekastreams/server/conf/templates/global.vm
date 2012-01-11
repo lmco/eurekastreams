@@ -61,7 +61,7 @@ ${helper.resolveMarkdownForText($helper.resolveActivityBody($activity,$context))
 #end
 
 #macro( activityBody_html $activity )
-${helper.resolveMarkdownForHtml($helper.resolveActivityBody($activity,$context))}##
+${helper.resolveMarkdownForHtml($helper.resolveActivityBody($activity,$context)).replaceAll('(\r\n|\r|\n)','<br/>')}##
 #end
 
 #macro( activityContent_txt $activity )
@@ -70,7 +70,7 @@ ${helper.resolveMarkdownForHtml($helper.resolveActivityBody($activity,$context))
 
 $activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targetUrl"
 #else
-"#activityBody_txt($activity)"
+" #activityBody_txt($activity) "
 #end
 #end
 
@@ -79,7 +79,7 @@ $activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targ
 <p>"#activityBody_html($activity)<br/><br/>
 <a href="$activity.baseObjectProperties.targetUrl">$activity.baseObjectProperties.targetTitle</a>"</p>
 #else
-<p>"#activityBody_html($activity)"</p>
+<p>" #activityBody_html($activity) "</p>
 #end
 #end
 

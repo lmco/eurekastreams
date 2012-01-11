@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,10 +60,16 @@ public class NotificationMessageBuilderHelperTest
     }
 
     /**
-     * Tests resolveActivityBody.
+     * Logic for testing resolveActivityBody.
+     *
+     * @param content
+     *            Activity content.
+     * @param actorName
+     *            Actor display name.
+     * @param expected
+     *            Expected result.
      */
-    @Test
-    public void testResolveActivityBody()
+    private void coreTestResolveActivityBody(final String content, final String actorName, final String expected)
     {
         final ActivityDTO activity = context.mock(ActivityDTO.class, "activity");
         final StreamEntityDTO actor = context.mock(StreamEntityDTO.class, "actor");
@@ -76,16 +82,44 @@ public class NotificationMessageBuilderHelperTest
                 allowing(activity).getActor();
                 will(returnValue(actor));
                 allowing(actor).getDisplayName();
-                will(returnValue("John Doe"));
+                will(returnValue(actorName));
             }
         });
-        activity.getBaseObjectProperties().put("content", "Blah %EUREKA:ACTORNAME% blah %EUREKA:NOSUCH% blah.");
+        activity.getBaseObjectProperties().put("content", content);
 
         String result = sut.resolveActivityBody(activity, velocityContext);
 
         context.assertIsSatisfied();
 
-        assertEquals("Blah John Doe blah %EUREKA:NOSUCH% blah.", result);
+        assertEquals(expected, result);
+    }
+
+    /**
+     * Tests resolveActivityBody.
+     */
+    @Test
+    public void testResolveActivityBody()
+    {
+        coreTestResolveActivityBody(" \t \r\n \t Blah %EUREKA:ACTORNAME% \n blah \n %EUREKA:NOSUCH% blah. \n \n ",
+                "John Doe", " \t Blah John Doe \n blah \n %EUREKA:NOSUCH% blah.");
+    }
+
+    /**
+     * Tests resolveActivityBody.
+     */
+    @Test
+    public void testResolveActivityBodyAllBlank()
+    {
+        coreTestResolveActivityBody("  \t  \r\n \r \n  ", "", "");
+    }
+
+    /**
+     * Tests resolveActivityBody.
+     */
+    @Test
+    public void testResolveActivityBodyEmpty()
+    {
+        coreTestResolveActivityBody("%EUREKA:ACTORNAME%", "", "");
     }
 
     /**
