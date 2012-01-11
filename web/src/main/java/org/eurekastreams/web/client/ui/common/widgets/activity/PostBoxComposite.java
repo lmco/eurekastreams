@@ -320,6 +320,8 @@ public class PostBoxComposite extends Composite
                     PostActivityRequest postRequest = new PostActivityRequest(activity);
 
                     ActivityModel.getInstance().insert(postRequest);
+                    
+                    postButton.addStyleName(style.postButtonInactive());
                 }
             }
         });
