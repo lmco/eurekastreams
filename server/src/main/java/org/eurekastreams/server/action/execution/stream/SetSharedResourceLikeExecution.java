@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.persistence.mappers.requests.SetSharedResourceLikeMapperRequest;
 
 /**
@@ -40,23 +41,26 @@ public class SetSharedResourceLikeExecution implements TaskHandlerExecutionStrat
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Mapper to update the like/unlike status of a shared resource.
      */
-    private DomainMapper<SetSharedResourceLikeMapperRequest, Boolean> setLikedResourceStatusMapper;
+    private final DomainMapper<SetSharedResourceLikeMapperRequest, Boolean> setLikedResourceStatusMapper;
 
     /**
      * Mapper to get or insert shared resources.
      */
-    private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
+    private final DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
 
     /**
      * Cache - used to immediately delete the shared resource cache key - it'll then be queued up to prevent the race
      * condition.
      */
-    private Cache cache;
+    private final Cache cache;
+
+    /** Transforms a shared resource's unique key to a cache key suffix. */
+    private final Transformer<String, String> sharedResourceCacheKeySuffixTransformer;
 
     /**
      * @param inSetLikedResourceStatusMapper
@@ -65,20 +69,23 @@ public class SetSharedResourceLikeExecution implements TaskHandlerExecutionStrat
      *            mapper to get or insert shared resources
      * @param inCache
      *            the cache to use to remove the shared resource
+     * @param inSharedResourceCacheKeySuffixTransformer
+     *            Transforms a shared resource's unique key to a cache key suffix.
      */
     public SetSharedResourceLikeExecution(
             final DomainMapper<SetSharedResourceLikeMapperRequest, Boolean> inSetLikedResourceStatusMapper,
             final DomainMapper<SharedResourceRequest, SharedResource> inFindOrInsertSharedResourceMapper,
-            final Cache inCache)
+            final Cache inCache, final Transformer<String, String> inSharedResourceCacheKeySuffixTransformer)
     {
         setLikedResourceStatusMapper = inSetLikedResourceStatusMapper;
         findOrInsertSharedResourceMapper = inFindOrInsertSharedResourceMapper;
         cache = inCache;
+        sharedResourceCacheKeySuffixTransformer = inSharedResourceCacheKeySuffixTransformer;
     }
 
     /**
      * Set the liked/unlked status of a shared resource for a person.
-     * 
+     *
      * @param inActionContext
      *            the action context.
      * @return true
@@ -97,16 +104,17 @@ public class SetSharedResourceLikeExecution implements TaskHandlerExecutionStrat
         final Long personId = inActionContext.getActionContext().getPrincipal().getId();
 
         // find the shared resource
-        SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(sharedResourceUniqueKey,
-                null));
+        SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(
+                sharedResourceUniqueKey, null));
 
-        SetSharedResourceLikeMapperRequest mapperRequest = new SetSharedResourceLikeMapperRequest(personId, sr, request
-                .getLikes());
+        SetSharedResourceLikeMapperRequest mapperRequest = new SetSharedResourceLikeMapperRequest(personId, sr,
+                request.getLikes());
 
         setLikedResourceStatusMapper.execute(mapperRequest);
 
         // clean up the cache
-        String cacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + sharedResourceUniqueKey;
+        String cacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY
+                + sharedResourceCacheKeySuffixTransformer.transform(sharedResourceUniqueKey);
 
         // delete the cache immediately
         log.debug("Immediately deleting cache key while in transaction '" + cacheKey

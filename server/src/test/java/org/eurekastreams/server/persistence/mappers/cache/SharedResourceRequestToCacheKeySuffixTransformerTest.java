@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,47 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import static org.junit.Assert.assertEquals;
 import junit.framework.Assert;
 
 import org.eurekastreams.server.action.request.SharedResourceRequest;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Test fixture for SharedResourceRequestToUniqueKeyTransformer.
  */
-public class SharedResourceRequestToUniqueKeyTransformerTest
+public class SharedResourceRequestToCacheKeySuffixTransformerTest
 {
+    /** Used for mocking objects. */
+    private final Mockery mockery = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /** Fixture: nested transformer. */
+    private final Transformer<String, String> nested = mockery.mock(Transformer.class);
+
     /**
      * System under test.
      */
-    private SharedResourceRequestToUniqueKeyTransformer sut = new SharedResourceRequestToUniqueKeyTransformer();
+    private Transformer<SharedResourceRequest, String> sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new SharedResourceRequestToCacheKeySuffixTransformer(nested);
+    }
 
     /**
      * Test transforming a null request.
@@ -60,7 +87,14 @@ public class SharedResourceRequestToUniqueKeyTransformerTest
         SharedResourceRequest request = new SharedResourceRequest();
         request.setUniqueKey("HI");
 
-        Assert.assertEquals("hi", sut.transform(request));
-    }
+        mockery.checking(new Expectations()
+        {
+            {
+                oneOf(nested).transform("HI");
+                will(returnValue("BYE"));
+            }
+        });
 
+        assertEquals("BYE", sut.transform(request));
+    }
 }

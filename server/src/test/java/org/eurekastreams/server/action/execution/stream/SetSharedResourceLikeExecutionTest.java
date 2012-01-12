@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -33,6 +34,7 @@ import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.persistence.mappers.requests.SetSharedResourceLikeMapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -49,7 +51,7 @@ public class SetSharedResourceLikeExecutionTest
     /**
      * System under test.
      */
-    private SetSharedResourceLikeExecution sut;
+    private TaskHandlerExecutionStrategy<PrincipalActionContext> sut;
 
     /**
      * Context for building mock objects.
@@ -78,13 +80,18 @@ public class SetSharedResourceLikeExecutionTest
      */
     private final Cache cache = context.mock(Cache.class);
 
+    /** Transforms a shared resource's unique key to a cache key suffix. */
+    private final Transformer<String, String> sharedResourceCacheKeySuffixTransformer = context
+            .mock(Transformer.class);
+
     /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new SetSharedResourceLikeExecution(setLikedResourceStatusMapper, findOrInsertSharedResourceMapper, cache);
+        sut = new SetSharedResourceLikeExecution(setLikedResourceStatusMapper, findOrInsertSharedResourceMapper,
+                cache, sharedResourceCacheKeySuffixTransformer);
     }
 
     /**
@@ -98,12 +105,14 @@ public class SetSharedResourceLikeExecutionTest
                 .mock(TaskHandlerActionContext.class);
         final PrincipalActionContext principalActionContext = context.mock(PrincipalActionContext.class);
         final Principal principal = context.mock(Principal.class);
-        final SetSharedResourceLikeRequest actionRequest = new SetSharedResourceLikeRequest("http://foo.com", true);
+        final String url = "http://foo.com";
+        final SetSharedResourceLikeRequest actionRequest = new SetSharedResourceLikeRequest(url, true);
         final SharedResource sharedResourceFoundOrInserted = new SharedResource("http://fOO.com");
         findOrInsertSharedResourceMapper.setReturnedResource(sharedResourceFoundOrInserted);
 
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
-        final String expectedCacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + "http://foo.com";
+        final String cacheSuffix = "SOMETHING";
+        final String expectedCacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + cacheSuffix;
         context.checking(new Expectations()
         {
             {
@@ -119,6 +128,9 @@ public class SetSharedResourceLikeExecutionTest
                 allowing(principal).getId();
                 will(returnValue(personId));
 
+                oneOf(sharedResourceCacheKeySuffixTransformer).transform(url);
+                will(returnValue(cacheSuffix));
+
                 // make sure the cache key is deleted now
                 oneOf(cache).delete(expectedCacheKey);
 
@@ -130,7 +142,7 @@ public class SetSharedResourceLikeExecutionTest
         setLikedResourceStatusMapper.setRequest(null);
         sut.execute(taskContext);
 
-        assertEquals("http://foo.com", findOrInsertSharedResourceMapper.getRequest().getUniqueKey());
+        assertEquals(url, findOrInsertSharedResourceMapper.getRequest().getUniqueKey());
         assertEquals(personId, setLikedResourceStatusMapper.getRequest().getPersonId());
         assertTrue(setLikedResourceStatusMapper.getRequest().getLikedStatus());
         assertSame(sharedResourceFoundOrInserted, setLikedResourceStatusMapper.getRequest().getSharedResource());
@@ -151,7 +163,8 @@ public class SetSharedResourceLikeExecutionTest
     /**
      * Fake mapper to store the request so the tests can verify it was made properly.
      */
-    private class SetLikedResourceStatusMapperFake implements DomainMapper<SetSharedResourceLikeMapperRequest, Boolean>
+    private class SetLikedResourceStatusMapperFake implements
+            DomainMapper<SetSharedResourceLikeMapperRequest, Boolean>
     {
         /**
          * The request last passed into excecute.
@@ -160,7 +173,7 @@ public class SetSharedResourceLikeExecutionTest
 
         /**
          * execute.
-         * 
+         *
          * @param inRequest
          *            the request made - store it
          * @return true
@@ -207,7 +220,7 @@ public class SetSharedResourceLikeExecutionTest
 
         /**
          * execute.
-         * 
+         *
          * @param inRequest
          *            the request made - store it
          * @return true

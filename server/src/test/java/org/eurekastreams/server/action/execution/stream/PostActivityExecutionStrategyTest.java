@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -37,6 +38,7 @@ import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment;
@@ -55,9 +57,8 @@ import org.junit.Test;
 /**
  * Test suite for the {@link PostActivityExecutionStrategy}.
  *
- * Note: There are not tests for failure scenarios since this execution strategy
- * does not have a need to handle any exceptions. They are passed up to the
- * action controller which then wraps them and returns them to the client.
+ * Note: There are not tests for failure scenarios since this execution strategy does not have a need to handle any
+ * exceptions. They are passed up to the action controller which then wraps them and returns them to the client.
  *
  */
 @SuppressWarnings("unchecked")
@@ -66,16 +67,16 @@ public class PostActivityExecutionStrategyTest
     /**
      * System under test.
      */
-    private PostActivityExecutionStrategy sut;
+    private TaskHandlerExecutionStrategy<PrincipalActionContext> sut;
 
     /**
      * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
     {
-	{
-	    setImposteriser(ClassImposteriser.INSTANCE);
-	}
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
     };
 
     /**
@@ -99,17 +100,16 @@ public class PostActivityExecutionStrategyTest
     private final RecipientRetriever recipientRetrieverMock = context.mock(RecipientRetriever.class);
 
     /**
-     * Mocked test instance of the
-     * {@link PostActivityUpdateStreamsByActorMapper}.
+     * Mocked test instance of the {@link PostActivityUpdateStreamsByActorMapper}.
      */
     private final PostActivityUpdateStreamsByActorMapper updateStreamsByActorMapperMock = context
-	    .mock(PostActivityUpdateStreamsByActorMapper.class);
+            .mock(PostActivityUpdateStreamsByActorMapper.class);
 
     /**
      * Mapper to get or insert shared resources.
      */
     private final DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper = context.mock(
-	    DomainMapper.class, "findOrInsertSharedResourceMapper");
+            DomainMapper.class, "findOrInsertSharedResourceMapper");
 
     /**
      * Mocked test instance of a {@link CommentDTO}.
@@ -160,7 +160,11 @@ public class PostActivityExecutionStrategyTest
      * Mapper to get a person model view by account id.
      */
     private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
-	    DomainMapper.class, "personMapper");
+            DomainMapper.class, "personMapper");
+
+    /** Transforms a shared resource's unique key to a cache key suffix. */
+    private final Transformer<String, String> sharedResourceCacheKeySuffixTransformer = context
+            .mock(Transformer.class);
 
     /**
      * Prepare the test suite.
@@ -168,61 +172,61 @@ public class PostActivityExecutionStrategyTest
     @Before
     public void setup()
     {
-	// Notice that the EntityType is Person, since group and person entity
-	// types only determine
-	// the type of notifications that are sent and that is not tested here,
-	// picking person as
-	// the default.
-	filters.add(filter);
+        // Notice that the EntityType is Person, since group and person entity
+        // types only determine
+        // the type of notifications that are sent and that is not tested here,
+        // picking person as
+        // the default.
+        filters.add(filter);
 
-	sut = new PostActivityExecutionStrategy(activityInsertMapperMock, commentInsertMapperMock,
-		activitiesMapperMock, recipientRetrieverMock, updateStreamsByActorMapperMock,
-		findOrInsertSharedResourceMapper, cache, getPersonModelViewByAccountIdMapper, filters);
+        sut = new PostActivityExecutionStrategy(activityInsertMapperMock, commentInsertMapperMock,
+                activitiesMapperMock, recipientRetrieverMock, updateStreamsByActorMapperMock,
+                findOrInsertSharedResourceMapper, cache, getPersonModelViewByAccountIdMapper, filters,
+                sharedResourceCacheKeySuffixTransformer);
     }
 
     /**
-     * This test ensures a successful execution of the business logic for a
-     * Person.
+     * This test ensures a successful execution of the business logic for a Person.
      */
     @Test
     public void testSuccessfulExecute()
     {
-	final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
-		PostActivityTestHelpers.DestinationStreamTestState.VALID, false, testComment, DESTINATION_ID);
+        final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
+                PostActivityTestHelpers.DestinationStreamTestState.VALID, false, testComment, DESTINATION_ID);
 
-	final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
-	activityResults.add(currentActivity);
+        final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
+        activityResults.add(currentActivity);
 
-	final PostActivityRequest request = new PostActivityRequest(currentActivity);
+        final PostActivityRequest request = new PostActivityRequest(currentActivity);
 
-	final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
+        final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
 
-	context.checking(new Expectations()
-	{
-	    {
-		oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
 
-		oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
+                oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
 
-		oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
+                oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
 
-		oneOf(activityInsertMapperMock).flush();
+                oneOf(activityInsertMapperMock).flush();
 
-		oneOf(activitiesMapperMock).execute(with(any(List.class)));
-		will(returnValue(activityResults));
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
+                will(returnValue(activityResults));
 
-		oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
-		will(returnValue(person));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
+                will(returnValue(person));
 
-		oneOf(filter).filter(with(any(List.class)), with(person));
+                oneOf(filter).filter(with(any(List.class)), with(person));
 
-		oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
-	    }
-	});
+                oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
+            }
+        });
 
         sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(request, currentPrincipal));
 
-	context.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
 
     /**
@@ -231,136 +235,141 @@ public class PostActivityExecutionStrategyTest
     @Test
     public void testSuccessfulShareWithLink()
     {
-	final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
-		PostActivityTestHelpers.DestinationStreamTestState.VALID, false, testComment, DESTINATION_ID);
-	currentActivity.getBaseObjectProperties().put("targetUrl", "http://foo.com");
+        final String url = "http://foo.com";
 
-	final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
-	activityResults.add(currentActivity);
+        final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
+                PostActivityTestHelpers.DestinationStreamTestState.VALID, false, testComment, DESTINATION_ID);
+        currentActivity.getBaseObjectProperties().put("targetUrl", url);
 
-	final PostActivityRequest request = new PostActivityRequest(currentActivity);
+        final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
+        activityResults.add(currentActivity);
 
-	final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
+        final PostActivityRequest request = new PostActivityRequest(currentActivity);
 
-	final SharedResource sr = new SharedResource();
+        final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
 
-	final String expectedCacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + "http://foo.com";
+        final SharedResource sr = new SharedResource();
 
-	context.checking(new Expectations()
-	{
-	    {
-		oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
+        final String cacheSuffix = "SOMETHING";
+        final String expectedCacheKey = CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY + cacheSuffix;
 
-		oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
 
-		oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
+                oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
 
-		oneOf(activityInsertMapperMock).flush();
+                oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
 
-		oneOf(activitiesMapperMock).execute(with(any(List.class)));
-		will(returnValue(activityResults));
+                oneOf(activityInsertMapperMock).flush();
 
-		oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
+                will(returnValue(activityResults));
 
-		oneOf(findOrInsertSharedResourceMapper).execute(with(any(SharedResourceRequest.class)));
-		will(returnValue(sr));
+                oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
 
-		oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
-		will(returnValue(person));
+                oneOf(findOrInsertSharedResourceMapper).execute(with(any(SharedResourceRequest.class)));
+                will(returnValue(sr));
 
-		oneOf(filter).filter(with(any(List.class)), with(person));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
+                will(returnValue(person));
 
-		oneOf(cache).delete(expectedCacheKey);
-	    }
-	});
+                oneOf(filter).filter(with(any(List.class)), with(person));
+
+                oneOf(sharedResourceCacheKeySuffixTransformer).transform(url);
+                will(returnValue(cacheSuffix));
+
+                oneOf(cache).delete(expectedCacheKey);
+            }
+        });
 
         TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = TestContextCreator
                 .createTaskHandlerContextWithPrincipal(request, currentPrincipal);
-	sut.execute(currentTaskHandlerActionContext);
+        sut.execute(currentTaskHandlerActionContext);
 
-	Assert.assertEquals(3, currentTaskHandlerActionContext.getUserActionRequests().size());
+        Assert.assertEquals(3, currentTaskHandlerActionContext.getUserActionRequests().size());
 
-	// make sure all of the actions are kicked off
-	boolean postActivityAsyncActionFound = false;
-	boolean createNotificationsActionFound = false;
-	boolean deleteCacheKeysActionFound = false;
+        // make sure all of the actions are kicked off
+        boolean postActivityAsyncActionFound = false;
+        boolean createNotificationsActionFound = false;
+        boolean deleteCacheKeysActionFound = false;
 
-	for (UserActionRequest req : currentTaskHandlerActionContext.getUserActionRequests())
-	{
-	    if (req.getActionKey().equals("postActivityAsyncAction"))
-	    {
-		postActivityAsyncActionFound = true;
-	    }
-	    else if (req.getActionKey().equals("createNotificationsAction"))
-	    {
-		createNotificationsActionFound = true;
-	    }
-	    else if (req.getActionKey().equals("deleteCacheKeysAction"))
-	    {
-		deleteCacheKeysActionFound = true;
-		Set<String> params = (Set<String>) req.getParams();
-		Assert.assertEquals(1, params.size());
-		for (String s : params)
-		{
-		    Assert.assertEquals(expectedCacheKey, s);
-		}
-	    }
-	}
+        for (UserActionRequest req : currentTaskHandlerActionContext.getUserActionRequests())
+        {
+            if (req.getActionKey().equals("postActivityAsyncAction"))
+            {
+                postActivityAsyncActionFound = true;
+            }
+            else if (req.getActionKey().equals("createNotificationsAction"))
+            {
+                createNotificationsActionFound = true;
+            }
+            else if (req.getActionKey().equals("deleteCacheKeysAction"))
+            {
+                deleteCacheKeysActionFound = true;
+                Set<String> params = (Set<String>) req.getParams();
+                Assert.assertEquals(1, params.size());
+                for (String s : params)
+                {
+                    Assert.assertEquals(expectedCacheKey, s);
+                }
+            }
+        }
 
-	Assert.assertTrue(postActivityAsyncActionFound);
-	Assert.assertTrue(createNotificationsActionFound);
-	Assert.assertTrue(deleteCacheKeysActionFound);
+        Assert.assertTrue(postActivityAsyncActionFound);
+        Assert.assertTrue(createNotificationsActionFound);
+        Assert.assertTrue(deleteCacheKeysActionFound);
 
-	context.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
 
     /**
-     * This test ensures a successful execution of an activity share that
-     * includes a comment.
+     * This test ensures a successful execution of an activity share that includes a comment.
      */
     @Test
     public void testSuccessfulShareWithComment()
     {
-	final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
-		PostActivityTestHelpers.DestinationStreamTestState.VALID, true, testComment, DESTINATION_ID);
+        final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
+                PostActivityTestHelpers.DestinationStreamTestState.VALID, true, testComment, DESTINATION_ID);
 
-	final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
-	activityResults.add(currentActivity);
+        final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
+        activityResults.add(currentActivity);
 
-	final PostActivityRequest request = new PostActivityRequest(currentActivity);
+        final PostActivityRequest request = new PostActivityRequest(currentActivity);
 
-	final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
+        final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
 
-	context.checking(new Expectations()
-	{
-	    {
-		oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
 
-		oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
+                oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
 
-		oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
+                oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
 
-		oneOf(activityInsertMapperMock).flush();
+                oneOf(activityInsertMapperMock).flush();
 
-		oneOf(activitiesMapperMock).execute(with(any(List.class)));
-		will(returnValue(activityResults));
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
+                will(returnValue(activityResults));
 
-		oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
+                oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
 
-		oneOf(testComment).getBody();
+                oneOf(testComment).getBody();
 
-		oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
-		will(returnValue(person));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(ACCOUNT_ID);
+                will(returnValue(person));
 
-		oneOf(filter).filter(with(any(List.class)), with(person));
+                oneOf(filter).filter(with(any(List.class)), with(person));
 
-		oneOf(commentInsertMapperMock).execute(with(any(InsertActivityCommentRequest.class)));
+                oneOf(commentInsertMapperMock).execute(with(any(InsertActivityCommentRequest.class)));
 
-	    }
-	});
+            }
+        });
 
         sut.execute(TestContextCreator.createTaskHandlerContextWithPrincipal(request, currentPrincipal));
 
-	context.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
 }
