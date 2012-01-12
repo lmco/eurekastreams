@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.actions.strategies.links;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.LinkInformation;
@@ -58,6 +59,7 @@ public class MetaDescriptionParser implements HtmlLinkInformationParserStrategy
      * @param inAccountId
      *            account id of the user making the request.
      */
+    @Override
     public void parseInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
         Pattern descriptionPattern = Pattern.compile("<meta name=\"description\" content=\"(.*?)\"",
@@ -71,9 +73,9 @@ public class MetaDescriptionParser implements HtmlLinkInformationParserStrategy
                 log.info("Found description: " + i + "=" + matcher.group(i));
             }
 
-            String desc = matcher.group(1);
+            String desc = StringEscapeUtils.unescapeHtml(matcher.group(1));
             log.info("Found description: " + desc);
-            
+
             if (desc.length() > maxLength)
             {
                 String endWith = "...";
