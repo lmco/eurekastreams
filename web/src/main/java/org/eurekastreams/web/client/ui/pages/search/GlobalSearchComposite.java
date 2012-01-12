@@ -152,7 +152,8 @@ public class GlobalSearchComposite extends FlowPanel
                 }
                 else if (termLength != searchTerm.getText().length())
                 {
-                    termLength = searchTerm.getText().length();
+                    String searchTermText = searchTerm.getText().trim();
+                    termLength = searchTermText.length();
                     if (termLength == 0)
                     {
                         resultsPanelContainer.setVisible(false);
@@ -161,8 +162,8 @@ public class GlobalSearchComposite extends FlowPanel
                     }
                     else
                     {
-                        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(searchTerm
-                                .getText(), "", 0, 4, "global");
+                        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(searchTermText,
+                                "", 0, 4, "global");
                         SearchResultsModel.getInstance().fetch(request, true);
                         thisClass.addStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
                     }
