@@ -60,16 +60,10 @@ public class NotificationMessageBuilderHelperTest
     }
 
     /**
-     * Logic for testing resolveActivityBody.
-     *
-     * @param content
-     *            Activity content.
-     * @param actorName
-     *            Actor display name.
-     * @param expected
-     *            Expected result.
+     * Tests resolveActivityBody.
      */
-    private void coreTestResolveActivityBody(final String content, final String actorName, final String expected)
+    @Test
+    public void testResolveActivityBody()
     {
         final ActivityDTO activity = context.mock(ActivityDTO.class, "activity");
         final StreamEntityDTO actor = context.mock(StreamEntityDTO.class, "actor");
@@ -82,44 +76,44 @@ public class NotificationMessageBuilderHelperTest
                 allowing(activity).getActor();
                 will(returnValue(actor));
                 allowing(actor).getDisplayName();
-                will(returnValue(actorName));
+                will(returnValue("John Doe"));
             }
         });
-        activity.getBaseObjectProperties().put("content", content);
+        activity.getBaseObjectProperties().put("content", "Blah %EUREKA:ACTORNAME% blah %EUREKA:NOSUCH% blah.");
 
         String result = sut.resolveActivityBody(activity, velocityContext);
 
         context.assertIsSatisfied();
 
-        assertEquals(expected, result);
+        assertEquals("Blah John Doe blah %EUREKA:NOSUCH% blah.", result);
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testCleanWhitespace()
+    {
+        assertEquals(" \t Blah blah \n blah \n blah blah.",
+                sut.cleanWhitespace(" \t \r\n \t Blah blah \n blah \n blah blah. \n \n "));
     }
 
     /**
      * Tests resolveActivityBody.
      */
     @Test
-    public void testResolveActivityBody()
+    public void testCleanWhitespaceAllBlank()
     {
-        coreTestResolveActivityBody(" \t \r\n \t Blah %EUREKA:ACTORNAME% \n blah \n %EUREKA:NOSUCH% blah. \n \n ",
-                "John Doe", " \t Blah John Doe \n blah \n %EUREKA:NOSUCH% blah.");
+        assertEquals("", sut.cleanWhitespace("  \t  \r\n \r \n  "));
     }
 
     /**
      * Tests resolveActivityBody.
      */
     @Test
-    public void testResolveActivityBodyAllBlank()
+    public void testCleanWhitespaceEmpty()
     {
-        coreTestResolveActivityBody("  \t  \r\n \r \n  ", "", "");
-    }
-
-    /**
-     * Tests resolveActivityBody.
-     */
-    @Test
-    public void testResolveActivityBodyEmpty()
-    {
-        coreTestResolveActivityBody("%EUREKA:ACTORNAME%", "", "");
+        assertEquals("", sut.cleanWhitespace(""));
     }
 
     /**

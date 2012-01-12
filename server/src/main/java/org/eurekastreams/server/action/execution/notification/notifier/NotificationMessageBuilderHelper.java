@@ -86,7 +86,7 @@ public class NotificationMessageBuilderHelper
         }, VARIABLE_START_MARKER, VARIABLE_END_MARKER, StrSubstitutor.DEFAULT_ESCAPE);
         String result = transform.replace(activity.getBaseObjectProperties().get("content"));
 
-        // strip leading newlines and trailing whitespace and newlines
+        //
         if (!result.isEmpty())
         {
             int startIndex = 0, lastSeenLinebreakInLeadingWhitespace = -1, endIndex = result.length();
@@ -112,6 +112,42 @@ public class NotificationMessageBuilderHelper
         }
 
         return result;
+    }
+
+    /**
+     * Strip leading newlines and trailing whitespace and newlines.
+     *
+     * @param input
+     *            String to clean.
+     * @return Cleaned string.
+     */
+    public String cleanWhitespace(final String input)
+    {
+        if (input.isEmpty())
+        {
+            return input;
+        }
+
+        int startIndex = 0, lastSeenLinebreakInLeadingWhitespace = -1, endIndex = input.length();
+        while (startIndex < endIndex)
+        {
+            char c = input.charAt(startIndex);
+            if (!Character.isWhitespace(c))
+            {
+                break;
+            }
+            if (c != '\t' && Character.getType(c) == Character.CONTROL)
+            {
+                lastSeenLinebreakInLeadingWhitespace = startIndex;
+            }
+            startIndex++;
+        }
+        startIndex = lastSeenLinebreakInLeadingWhitespace + 1;
+        while (startIndex < endIndex && Character.isWhitespace(input.charAt(endIndex - 1)))
+        {
+            endIndex--;
+        }
+        return input.substring(startIndex, endIndex);
     }
 
     /**
