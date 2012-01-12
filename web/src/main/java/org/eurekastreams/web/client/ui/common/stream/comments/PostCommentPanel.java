@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.web.client.events.CommentAddedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
+import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Post comment panel.
- * 
+ *
  */
 public class PostCommentPanel extends FlowPanel
 {
@@ -98,7 +99,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inMessageId
      *            the message id.
      * @param inFullCollapse
@@ -107,7 +108,7 @@ public class PostCommentPanel extends FlowPanel
     public PostCommentPanel(final Long inMessageId, final boolean inFullCollapse)
     {
         messageId = inMessageId;
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
         unActivate();
         fullCollapse = inFullCollapse;
     }
@@ -119,7 +120,7 @@ public class PostCommentPanel extends FlowPanel
     {
         if (!fullCollapse)
         {
-            this.clear();
+            clear();
             Label postAComment = new Label("post a comment");
             postAComment.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unactive());
             postAComment.addStyleName(StaticResourceBundle.INSTANCE.coreCss().simulatedTextBox());
@@ -144,7 +145,7 @@ public class PostCommentPanel extends FlowPanel
      */
     public void activate()
     {
-        this.clear();
+        clear();
         this.setVisible(true);
         Widget avatar = new AvatarWidget(Session.getInstance().getCurrentPerson().getAvatarId(), EntityType.PERSON,
                 Size.VerySmall);
@@ -213,6 +214,7 @@ public class PostCommentPanel extends FlowPanel
 
                                 public void onSuccess(final CommentDTO result)
                                 {
+                                    ActivityModel.getInstance().clearCache();
                                     Session.getInstance().getEventBus()
                                             .notifyObservers(new CommentAddedEvent(result, messageId));
                                 }
@@ -288,7 +290,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Set the focus.
-     * 
+     *
      * @param el
      *            the element
      */
