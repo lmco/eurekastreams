@@ -20,6 +20,8 @@ import java.util.HashMap;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
+import com.google.gwt.http.client.URL;
+
 /**
  * Builds a link to a stream search.
  */
@@ -27,7 +29,7 @@ public class StreamSearchLinkBuilder
 {
     /**
      * Build a hashtag search link.
-     *
+     * 
      * @param searchText
      *            the hashtag to create a link for
      * @param streamViewId
@@ -45,6 +47,6 @@ public class StreamSearchLinkBuilder
         {
             params.put("viewId", Long.toString(streamViewId));
         }
-        return "#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false));
+        return URL.encode("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false)));
     }
 }
