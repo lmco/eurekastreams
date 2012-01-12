@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.actions.strategies.links;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.LinkInformation;
@@ -53,19 +54,21 @@ public class HtmlLinkTitleParser implements HtmlLinkInformationParserStrategy
      * 
      * @param htmlString
      *            the HTML of the page as a String.
-     * @param link the link information.
+     * @param link
+     *            the link information.
      * @param inAccountId
-     *          account id of the user making the request.
+     *            account id of the user making the request.
      */
+    @Override
     public void parseInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
         Pattern titlePattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE);
         Matcher matcher = titlePattern.matcher(htmlString);
         String title = "";
-        
+
         if (matcher.find())
         {
-            title = matcher.group(1);
+            title = StringEscapeUtils.unescapeHtml(matcher.group(1));
             log.info("Found title: " + title);
         }
         else
@@ -78,8 +81,8 @@ public class HtmlLinkTitleParser implements HtmlLinkInformationParserStrategy
             String endWith = "...";
             title = title.substring(0, maxLength - (1 + endWith.length()));
             title += endWith;
-        }            
-        
+        }
+
         link.setTitle(title);
     }
 
