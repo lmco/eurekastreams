@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,34 @@ public class NotificationMessageBuilderHelperTest
         context.assertIsSatisfied();
 
         assertEquals("Blah John Doe blah %EUREKA:NOSUCH% blah.", result);
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testCleanWhitespace()
+    {
+        assertEquals(" \t Blah blah \n blah \n blah blah.",
+                sut.cleanWhitespace(" \t \r\n \t Blah blah \n blah \n blah blah. \n \n "));
+    }
+
+    /**
+     * Tests resolveActivityBody.
+     */
+    @Test
+    public void testCleanWhitespaceAllBlank()
+    {
+        assertEquals("", sut.cleanWhitespace("  \t  \r\n \r \n  "));
+    }
+
+    /**
+     * Tests resolveActivityBody.
+     */
+    @Test
+    public void testCleanWhitespaceEmpty()
+    {
+        assertEquals("", sut.cleanWhitespace(""));
     }
 
     /**

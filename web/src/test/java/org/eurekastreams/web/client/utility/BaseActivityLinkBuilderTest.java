@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gwt.junit.GWTMockUtilities;
+
 /**
  * Tests BaseActivityLinkBuilder implemented methods.
  */
@@ -50,21 +52,22 @@ public class BaseActivityLinkBuilderTest
     private static final String URL = "myurl";
 
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
+            GWTMockUtilities.disarm();
         }
     };
 
     /** Fixture: request. */
-    private CreateUrlRequest request = context.mock(CreateUrlRequest.class, "request");
+    private final CreateUrlRequest request = context.mock(CreateUrlRequest.class, "request");
 
     /** Fixture: session. */
-    private Session session = context.mock(Session.class);
+    private final Session session = context.mock(Session.class);
 
     /** Fixture: parameter map (as a mock, it can't be altered w/o us knowing). */
-    private Map<String, String> parameterMap = context.mock(Map.class);
+    private final Map<String, String> parameterMap = context.mock(Map.class);
 
     /** SUT. */
     private BaseActivityLinkBuilder sut;

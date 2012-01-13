@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,38 @@ package org.eurekastreams.server.persistence.mappers.cache;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 
 /**
- * Transformer to extract the shared resource's unique key (lower-cased) from a SharedResourceRequest.
+ * Transformer to extract the shared resource's unique key from a SharedResourceRequest and transform it into a cache
+ * key suffix.
  */
-public class SharedResourceRequestToUniqueKeyTransformer implements Transformer<SharedResourceRequest, String>
+public class SharedResourceRequestToCacheKeySuffixTransformer implements Transformer<SharedResourceRequest, String>
 {
+    /** Transforms the unique key to a cache key suffix. */
+    private final Transformer<String, String> transformer;
+
+    /**
+     * Constructor.
+     *
+     * @param inTransformer
+     *            Transforms the unique key to a cache key suffix.
+     */
+    public SharedResourceRequestToCacheKeySuffixTransformer(final Transformer<String, String> inTransformer)
+    {
+        transformer = inTransformer;
+    }
+
     /**
      * Return the unique key from a SharedResourceRequest.
-     * 
+     *
      * @param inSharedResourceRequest
      *            the shared request to transform
      * @return the unique key from the request, lowercased
      */
-    @Override
     public String transform(final SharedResourceRequest inSharedResourceRequest)
     {
         if (inSharedResourceRequest == null || inSharedResourceRequest.getUniqueKey() == null)
         {
             return null;
         }
-        return inSharedResourceRequest.getUniqueKey().toLowerCase();
+        return transformer.transform(inSharedResourceRequest.getUniqueKey());
     }
-
 }

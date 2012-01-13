@@ -1,7 +1,7 @@
 #siteLabel_txt()
 $actor.displayName also commented on $activity.actor.displayName's #activityType($activity).
 
-"$comment.body"
+#commentContent_txt($comment)
 
 To see the post and comments follow this link:
 #activityUrl($stream,$activity) #nl()

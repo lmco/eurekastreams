@@ -1,6 +1,13 @@
 ## Macros must be written with no whitespace, since contrary to their documentation Velocity does NOT gobble it up.
 ## The comment marker after the content prevents the newline from being included in the content
 ## See the post and first comment on http://www.blueskyonmars.com/2003/10/29/velocity-whitespace-handling-is-not-as-written
+##
+## See velocity.properties for related settings.
+##
+## The use of EscapeHtmlReference (in EmailNotifier) causes inserted references to be HTML-escaped, except for those
+## excluded by the eventhandler.escape.html.match setting (in velocity.properties).  (Currently calls to esc and
+## resolveMarkdownForHtml are excluded).
+
 
 #macro( prop $name )
 $properties.get($name)##
@@ -57,31 +64,40 @@ $settings.siteLabel
 #end
 
 #macro( activityBody_txt $activity )
-${helper.resolveMarkdownForText($helper.resolveActivityBody($activity,$context))}##
+${helper.resolveMarkdownForText($helper.cleanWhitespace($helper.resolveActivityBody($activity,$context)))}##
 #end
 
 #macro( activityBody_html $activity )
-${helper.resolveMarkdownForHtml($helper.resolveActivityBody($activity,$context))}##
+${helper.resolveMarkdownForHtml($helper.cleanWhitespace($helper.resolveActivityBody($activity,$context))).replaceAll('(\r\n|\r|\n)','<br/>')}##
 #end
 
 #macro( activityContent_txt $activity )
 #if ($activity.BaseObjectType == 'BOOKMARK')
-"#activityBody_txt($activity)
+" #activityBody_txt($activity)
 
-$activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targetUrl"
+$activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targetUrl "
 #else
-"#activityBody_txt($activity)"
+" #activityBody_txt($activity) "
 #end
 #end
 
 #macro( activityContent_html $activity )
 #if ($activity.BaseObjectType == 'BOOKMARK')
-<p>"#activityBody_html($activity)<br/><br/>
-<a href="$activity.baseObjectProperties.targetUrl">$activity.baseObjectProperties.targetTitle</a>"</p>
+<p>" #activityBody_html($activity)<br/><br/>
+<a href="$activity.baseObjectProperties.targetUrl">$activity.baseObjectProperties.targetTitle</a> "</p>
 #else
-<p>"#activityBody_html($activity)"</p>
+<p>" #activityBody_html($activity) "</p>
 #end
 #end
+
+#macro( commentContent_html $comment )
+<p>" ${esc.html($helper.cleanWhitespace($comment.body)).replaceAll('(\r\n|\r|\n)','<br/>')} "</p>
+#end
+
+#macro( commentContent_txt $comment )
+" $helper.cleanWhitespace($comment.body) "
+#end
+
 
 #macro( replyNotice_txt )
 ##

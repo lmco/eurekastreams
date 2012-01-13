@@ -1945,6 +1945,7 @@
                 <ref bean="serverTimeFilter" />
             </list>
         </constructor-arg>
+        <constructor-arg ref="sharedResourceUniqueKeyToCacheKeySuffixTransformer" />
     </bean>
 
     <bean id="postPersonActivityExecutionStrategy"
@@ -1975,6 +1976,7 @@
                 <ref bean="serverTimeFilter" />
             </list>
         </constructor-arg>
+        <constructor-arg ref="sharedResourceUniqueKeyToCacheKeySuffixTransformer" />
     </bean>
 
     <bean id="postResourceActivityExecutionStrategy"
@@ -2004,6 +2006,7 @@
                 <ref bean="serverTimeFilter" />
             </list>
         </constructor-arg>
+        <constructor-arg ref="sharedResourceUniqueKeyToCacheKeySuffixTransformer" />
     </bean>
 
     <bean id="sendGroupAccessRequestAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
@@ -2901,6 +2904,7 @@
                 <constructor-arg ref="setLikedSharedResourceStatusDbMapper" />
                 <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
                 <constructor-arg ref="memcachedCache" />
+                <constructor-arg ref="sharedResourceUniqueKeyToCacheKeySuffixTransformer" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />

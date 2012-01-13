@@ -2300,7 +2300,14 @@
         <constructor-arg ref="personModelViewAvatarDisplayTransformer" />
     </bean>
 
-    <bean id="sharedResourceRequestToUniqueKeyTransformer" class="org.eurekastreams.server.persistence.mappers.cache.SharedResourceRequestToUniqueKeyTransformer" />
+    <bean id="sharedResourceUniqueKeyToCacheKeySuffixTransformer"
+    	class="org.eurekastreams.server.persistence.mappers.cache.SharedResourceUniqueKeyToCacheKeySuffixTransformer" />
+
+    <bean id="sharedResourceRequestToCacheKeySuffixTransformer" 
+    	class="org.eurekastreams.server.persistence.mappers.cache.SharedResourceRequestToCacheKeySuffixTransformer">
+    	<constructor-arg ref="sharedResourceUniqueKeyToCacheKeySuffixTransformer" />
+    </bean>
+    
     <bean id="getSharedResourceByKeyDBMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
         <constructor-arg ref="getStreamScopeForResourceScopeTypeByUniqueKey" />
         <constructor-arg>
@@ -2323,7 +2330,7 @@
                         <constructor-arg>
                             <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY" />
                         </constructor-arg>
-                        <constructor-arg ref="sharedResourceRequestToUniqueKeyTransformer" />
+                        <constructor-arg ref="sharedResourceRequestToCacheKeySuffixTransformer" />
                         <property name="cache" ref="memcachedCache" />
                     </bean>
                 </constructor-arg>
@@ -2339,7 +2346,7 @@
                 <constructor-arg>
                     <util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.SHARED_RESOURCE_BY_UNIQUE_KEY" />
                 </constructor-arg>
-                <constructor-arg ref="sharedResourceRequestToUniqueKeyTransformer" />
+                <constructor-arg ref="sharedResourceRequestToCacheKeySuffixTransformer" />
                 <property name="cache" ref="memcachedCache" />
             </bean>
         </constructor-arg>
