@@ -738,6 +738,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("mission-statement")
     String missionStatement();
+    
+    @ClassName("one-line-description")
+    String oneLineDescription();
 
     String modal();
 
