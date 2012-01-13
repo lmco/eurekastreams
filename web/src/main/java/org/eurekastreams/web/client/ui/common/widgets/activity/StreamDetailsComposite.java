@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,56 +112,56 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         * 
+         *
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         * 
+         *
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         * 
+         *
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         * 
+         *
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         * 
+         *
          * @return Private avatar.
          */
         String privateAvatar();
 
         /**
          * Hide details button.
-         * 
+         *
          * @return hide details button.
          */
         String hideDetails();
 
         /**
          * Featured item header link style.
-         * 
+         *
          * @return Featured item header link style.
          */
         String headerFeatured();
 
         /**
          * Empty detail style.
-         * 
+         *
          * @return Empty detail style.
          */
         String emptyDetailStyle();
@@ -178,7 +178,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -462,7 +462,7 @@ public class StreamDetailsComposite extends Composite
     /**
      * The helper to build hyperlinks to stream search.
      */
-    private StreamSearchLinkBuilder streamSearchLinkBuilder = new StreamSearchLinkBuilder();
+    private final StreamSearchLinkBuilder streamSearchLinkBuilder = new StreamSearchLinkBuilder();
 
     /**
      * Expand/Collapse animation.
@@ -584,7 +584,7 @@ public class StreamDetailsComposite extends Composite
                 openCoordinators();
             }
         });
-        
+
         adminLink.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -809,7 +809,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set the stream title and avatar.
-     * 
+     *
      * @param inStreamTitle
      *            the title.
      * @param avatar
@@ -818,10 +818,7 @@ public class StreamDetailsComposite extends Composite
     public void setStreamTitle(final String inStreamTitle, final CustomAvatar avatar)
     {
         Session.getInstance().setPageTitle(inStreamTitle);
-        streamName.removeFromParent();
-        streamName.setInnerText(inStreamTitle);
-        streamName.setTitle(inStreamTitle);
-        streamInfoContainer.insertFirst(streamName);
+        setStreamName(inStreamTitle);
 
         switch (avatar)
         {
@@ -858,7 +855,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set Condensed mode.
-     * 
+     *
      * @param isCondensed
      *            condensed mode.
      */
@@ -876,8 +873,22 @@ public class StreamDetailsComposite extends Composite
     }
 
     /**
+     * Sets the displayed stream name (in a way that the elided style will update properly).
+     *
+     * @param name
+     *            New name.
+     */
+    private void setStreamName(final String name)
+    {
+        streamName.removeFromParent();
+        streamName.setInnerText(name);
+        streamName.setTitle(name);
+        streamInfoContainer.insertFirst(streamName);
+    }
+
+    /**
      * Go the group.
-     * 
+     *
      * @param group
      *            the group.
      */
@@ -889,6 +900,7 @@ public class StreamDetailsComposite extends Composite
         coordinatorsLink.setVisible(true);
 
         Session.getInstance().setPageTitle(group.getName());
+        setStreamName(group.getName());
 
         if (group.isRestricted())
         {
@@ -955,11 +967,6 @@ public class StreamDetailsComposite extends Composite
                 FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
             }
 
-            streamName.removeFromParent();
-            streamName.setInnerText(group.getName());
-            streamName.setTitle(group.getName());
-            streamInfoContainer.insertFirst(streamName);
-
             streamMeta.setInnerText("");
             streamAvatar.clear();
             streamAvatar.add(avatarRenderer.render(group.getEntityId(), group.getAvatarId(), EntityType.GROUP,
@@ -1005,7 +1012,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     * 
+     *
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -1055,7 +1062,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     * 
+     *
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -1233,7 +1240,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * When the following status changes.
-     * 
+     *
      * @param inStatus
      *            status.
      */
@@ -1257,7 +1264,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Got the person.
-     * 
+     *
      * @param person
      *            the person.
      */
@@ -1296,10 +1303,8 @@ public class StreamDetailsComposite extends Composite
             FeaturedStreamModel.getInstance().fetch(new GetFeaturedStreamsPageRequest(0, Integer.MAX_VALUE), true);
         }
 
-        streamName.removeFromParent();
-        streamName.setInnerText(person.getDisplayName());
-        streamName.setTitle(person.getDisplayName());
-        streamInfoContainer.insertFirst(streamName);
+        setStreamName(person.getDisplayName());
+
         streamMeta.setInnerText(person.getTitle());
         streamAvatar.clear();
         streamAvatar.add(avatarRenderer.render(person.getEntityId(), person.getAvatarId(), EntityType.PERSON,
