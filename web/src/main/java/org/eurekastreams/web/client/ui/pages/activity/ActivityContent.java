@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -881,10 +881,13 @@ public class ActivityContent extends Composite
         currentDisplayName = group.getDisplayName();
         currentScopeId = group.getStreamId();
 
+        currentStream.setDisplayName(group.getName());
+
         if (group.isRestricted())
         {
             streamOptionsPanel.getStyle().setDisplay(Display.NONE);
             currentStream.setScopeType(null);
+            postBox.setVisible(false);
 
             errorPanel.clear();
             errorPanel.setVisible(true);
@@ -915,11 +918,10 @@ public class ActivityContent extends Composite
             button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
             errorPanel.add(button);
 
-            streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+            streamPanel.clear();
         }
         else
         {
-            currentStream.setDisplayName(group.getName());
             currentStreamEntity = group;
 
             if (group.getStickyActivity() != null && !singleActivityMode)
