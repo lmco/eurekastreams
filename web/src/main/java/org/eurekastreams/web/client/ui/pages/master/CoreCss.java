@@ -971,6 +971,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("search-list")
     String searchList();
+    
+    @ClassName("search-list-ie")
+    String searchListIE();
 
     @ClassName("search-list-button")
     String searchListButton();

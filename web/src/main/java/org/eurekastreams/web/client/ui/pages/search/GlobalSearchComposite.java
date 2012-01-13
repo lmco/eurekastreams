@@ -49,6 +49,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -97,7 +98,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param label
      *            the label for the uninitialized textbox.
      */
@@ -105,8 +106,14 @@ public class GlobalSearchComposite extends FlowPanel
     {
         searchTerm = new LabeledTextBox(label);
         resultsPanelContainer.setVisible(false);
-
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
+
+        // IE 7 specific hack to deal with the fact that IE awkwardly scrolls background images in text boxes
+        if (Navigator.getUserAgent().contains("MSIE 7.0"))
+        {
+            addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListIE());
+        }
+
         add(searchTerm);
 
         resultsPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsAutocompleteResults());
@@ -162,8 +169,8 @@ public class GlobalSearchComposite extends FlowPanel
                     }
                     else
                     {
-                        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(searchTermText,
-                                "", 0, 4, "global");
+                        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(
+                                searchTermText, "", 0, 4, "global");
                         SearchResultsModel.getInstance().fetch(request, true);
                         thisClass.addStyleName(StaticResourceBundle.INSTANCE.coreCss().globalSearchBoxActive());
                     }
@@ -328,7 +335,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Select an item.
-     *
+     * 
      * @param item
      *            the item.
      */
@@ -344,7 +351,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     *
+     * 
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

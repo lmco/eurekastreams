@@ -1479,6 +1479,11 @@ body .post-expanded-panel .content-warning {
     background-color: transparent;
 }
 
+.search-list-ie input {
+	background-attachment: fixed;
+	background-position: 84px 11px;
+}
+
 .search-list input {
 	border: 1px solid #BBB;
 	border-right: none;
