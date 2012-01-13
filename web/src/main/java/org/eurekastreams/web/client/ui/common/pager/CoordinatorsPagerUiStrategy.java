@@ -168,7 +168,7 @@ public class CoordinatorsPagerUiStrategy implements PagerStrategy
      */
     public String getKey()
     {
-        return "following";
+        return "coordinators";
     }
 
     /**
