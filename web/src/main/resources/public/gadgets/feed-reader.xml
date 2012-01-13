@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Feed Reader" thumbnail="${build.web.baseurl}/style/images/FeedReaderThumbnail.png" title_url="http://communications.isgs.lmco.com" author="Eureka Streams"
+    <ModulePrefs title="Feed Reader" thumbnail="${build.web.baseurl}/style/images/FeedReaderThumbnail.png" title_url="http://news.isgs.lmco.com" author="Eureka Streams"
         description="Feed Reader allows you to subscribe to feeds." author_email="support@eurekastreams.org">
         <Require feature="opensocial-0.9" />
         <Require feature="osapi" />
