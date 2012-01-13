@@ -152,6 +152,7 @@
         <build.system.proxyport>8080</build.system.proxyport>
         <build.system.proxyset>false</build.system.proxyset>
         <build.system.nonproxyhosts>*.example.com</build.system.nonproxyhosts>
+        <build.shindig.proxy></build.shindig.proxy> <!-- e.g. proxy.example.com:8080 - leave blank for no proxy -->
         <build.db.dbname>eurekastreams</build.db.dbname>
         <build.db.dbuser>eurekastreams</build.db.dbuser>
         <build.db.dbpassword></build.db.dbpassword>
