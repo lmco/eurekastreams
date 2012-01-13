@@ -101,7 +101,7 @@ public class PostBoxComposite extends Composite
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
     /**
-     * 
+     *
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, PostBoxComposite>
@@ -115,28 +115,28 @@ public class PostBoxComposite extends Composite
     {
         /**
          * Visible post box style.
-         * 
+         *
          * @return Visible post box style.
          */
         String visiblePostBox();
 
         /**
          * Post char count over limit.
-         * 
+         *
          * @return Post char count over limit.
          */
         String postCharCountOverLimit();
 
         /**
          * Post button inactive.
-         * 
+         *
          * @return post button inactive.
          */
         String postButtonInactive();
 
         /**
          * Active hashtag style.
-         * 
+         *
          * @return Active hashtag style.
          */
         String activeHashTag();
@@ -311,6 +311,11 @@ public class PostBoxComposite extends Composite
             {
                 if (!postButton.getStyleName().contains(style.postButtonInactive()))
                 {
+                    // GWT Hyperlinks are hardwired to update the history - preventDefault and stopPropagation will not
+                    // prevent this (since they operate on the browser event). So set the target to the current page so
+                    // GWT will see it as no change and not update the history token.
+                    postButton.setTargetHistoryToken(History.getToken());
+
                     ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
                             : new NotePopulator();
 
@@ -320,7 +325,7 @@ public class PostBoxComposite extends Composite
                     PostActivityRequest postRequest = new PostActivityRequest(activity);
 
                     ActivityModel.getInstance().insert(postRequest);
-                    
+
                     postButton.addStyleName(style.postButtonInactive());
                 }
             }
@@ -600,7 +605,7 @@ public class PostBoxComposite extends Composite
 
     /**
      * Select an item.
-     * 
+     *
      * @param item
      *            the item.
      */
