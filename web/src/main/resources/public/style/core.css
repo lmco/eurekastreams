@@ -3538,6 +3538,11 @@ body .shortname-form-element input {
 	line-height: 13px;
 }
 
+.one-line-description
+{
+	height: 15px;
+}
+
 .connection-item-title {
 	font-size: 11px;
 	line-height: 13px;
