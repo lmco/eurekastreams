@@ -103,6 +103,6 @@ public final class UiUrlBuilder
      */
     public static String relativeUrlForGroupAccessRequest(final String uniqueId)
     {
-        return "#activity/group/" + uniqueId;
+        return "#activity/group/" + uniqueId + "?detailtab=admin";
     }
 }

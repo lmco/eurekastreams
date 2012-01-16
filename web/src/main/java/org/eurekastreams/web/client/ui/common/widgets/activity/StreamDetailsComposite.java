@@ -112,56 +112,56 @@ public class StreamDetailsComposite extends Composite
     {
         /**
          * Condensed Stream view.
-         *
+         * 
          * @return Condensed Stream view.
          */
         String condensedStream();
 
         /**
          * Active option.
-         *
+         * 
          * @return active option style.
          */
         String activeOption();
 
         /**
          * Everyone avatar.
-         *
+         * 
          * @return everyone avatar.
          */
         String everyoneAvatar();
 
         /**
          * Following avatar.
-         *
+         * 
          * @return following avatar.
          */
         String followingAvatar();
 
         /**
          * Private avatar.
-         *
+         * 
          * @return Private avatar.
          */
         String privateAvatar();
 
         /**
          * Hide details button.
-         *
+         * 
          * @return hide details button.
          */
         String hideDetails();
 
         /**
          * Featured item header link style.
-         *
+         * 
          * @return Featured item header link style.
          */
         String headerFeatured();
 
         /**
          * Empty detail style.
-         *
+         * 
          * @return Empty detail style.
          */
         String emptyDetailStyle();
@@ -178,7 +178,7 @@ public class StreamDetailsComposite extends Composite
     StreamDetailsStyle style;
 
     /**
-     *
+     * 
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, StreamDetailsComposite>
@@ -678,52 +678,48 @@ public class StreamDetailsComposite extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class,
-                new Observer<GotUsageMetricSummaryEvent>()
+        EventBus.getInstance().addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
+        {
+            public void update(final GotUsageMetricSummaryEvent event)
+            {
+                UsageMetricSummaryDTO data = event.getResponse();
+
+                List<DailyUsageSummary> stats = data.getDailyStatistics();
+
+                chart.setVisible(stats != null && stats.size() > 0);
+                chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
+
+                if (stats != null)
                 {
-                    public void update(final GotUsageMetricSummaryEvent event)
+                    for (int i = 0; i < stats.size(); i++)
                     {
-                        UsageMetricSummaryDTO data = event.getResponse();
-
-                        List<DailyUsageSummary> stats = data.getDailyStatistics();
-
-                        chart.setVisible(stats != null && stats.size() > 0);
-                        chartEmpty.getStyle().setDisplay(chart.isVisible() ? Display.NONE : Display.BLOCK);
-
-                        if (stats != null)
+                        if (null == stats.get(i))
                         {
-                            for (int i = 0; i < stats.size(); i++)
-                            {
-                                if (null == stats.get(i))
-                                {
-                                    chart.addPoint(i, 0.0);
-                                }
-                                else
-                                {
-                                    chart.addPoint(i, stats.get(i).getStreamViewCount());
-                                }
-                            }
+                            chart.addPoint(i, 0.0);
                         }
-
-                        avgComments.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyCommentPerActivityCount()));
-                        avgContributors.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyStreamContributorCount()));
-                        avgMessages.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyMessageCount()));
-                        avgViewers.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyStreamViewerCount()));
-                        avgViews.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getAverageDailyStreamViewCount()));
-
-                        totalContributors.setInnerText(""
-                                + NumberFormat.getDecimalFormat().format(data.getTotalContributorCount()));
-                        totalActivities.setInnerText(NumberFormat.getDecimalFormat().format(
-                                data.getTotalActivityCount()));
-                        totalComments.setInnerText(NumberFormat.getDecimalFormat().format(data.getTotalCommentCount()));
-                        chart.update();
+                        else
+                        {
+                            chart.addPoint(i, stats.get(i).getStreamViewCount());
+                        }
                     }
-                });
+                }
+
+                avgComments.setInnerText(NumberFormat.getDecimalFormat().format(
+                        data.getAverageDailyCommentPerActivityCount()));
+                avgContributors.setInnerText(NumberFormat.getDecimalFormat().format(
+                        data.getAverageDailyStreamContributorCount()));
+                avgMessages.setInnerText(NumberFormat.getDecimalFormat().format(data.getAverageDailyMessageCount()));
+                avgViewers.setInnerText(//
+                        NumberFormat.getDecimalFormat().format(data.getAverageDailyStreamViewerCount()));
+                avgViews.setInnerText(NumberFormat.getDecimalFormat().format(data.getAverageDailyStreamViewCount()));
+
+                totalContributors.setInnerText(""
+                        + NumberFormat.getDecimalFormat().format(data.getTotalContributorCount()));
+                totalActivities.setInnerText(NumberFormat.getDecimalFormat().format(data.getTotalActivityCount()));
+                totalComments.setInnerText(NumberFormat.getDecimalFormat().format(data.getTotalCommentCount()));
+                chart.update();
+            }
+        });
 
         EventBus.getInstance().addObserver(GotFeaturedStreamsPageResponseEvent.class,
                 new Observer<GotFeaturedStreamsPageResponseEvent>()
@@ -809,7 +805,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set the stream title and avatar.
-     *
+     * 
      * @param inStreamTitle
      *            the title.
      * @param avatar
@@ -855,7 +851,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Set Condensed mode.
-     *
+     * 
      * @param isCondensed
      *            condensed mode.
      */
@@ -874,7 +870,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Sets the displayed stream name (in a way that the elided style will update properly).
-     *
+     * 
      * @param name
      *            New name.
      */
@@ -888,7 +884,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Go the group.
-     *
+     * 
      * @param group
      *            the group.
      */
@@ -927,6 +923,11 @@ public class StreamDetailsComposite extends Composite
                 if (!group.isPublic())
                 {
                     adminLink.setVisible(true);
+                    String detailTabValue = Session.getInstance().getParameterValue("detailtab");
+                    if ((detailTabValue != null) && detailTabValue.compareToIgnoreCase("admin") == 0)
+                    {
+                        openAdmin();
+                    }
                 }
                 configureLink.setVisible(true);
                 configureLink.setHref("#groupsettings/" + group.getShortName());
@@ -1012,7 +1013,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the feature link.
-     *
+     * 
      * @param featuredStreamDTO
      *            the stream.
      */
@@ -1062,7 +1063,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Update the following element.
-     *
+     * 
      * @param entityId
      *            the id of the entity.
      * @param type
@@ -1096,14 +1097,16 @@ public class StreamDetailsComposite extends Composite
                     switch (status)
                     {
                     case FOLLOWING:
-                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
-                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.NOTFOLLOWING);
+                        request = new SetFollowingStatusRequest(
+                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
+                                Follower.FollowerStatus.NOTFOLLOWING);
                         ((Deletable<SetFollowingStatusRequest>) followModel).delete(request);
                         onFollowerStatusChanged(Follower.FollowerStatus.NOTFOLLOWING);
                         break;
                     case NOTFOLLOWING:
-                        request = new SetFollowingStatusRequest(Session.getInstance().getCurrentPerson()
-                                .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
+                        request = new SetFollowingStatusRequest(
+                                Session.getInstance().getCurrentPerson().getAccountId(), entityId, type, false,
+                                Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId,
                                 subscribeModel, entityId));
@@ -1229,18 +1232,20 @@ public class StreamDetailsComposite extends Composite
         aboutLink.removeStyleName(style.activeOption());
         followingLink.removeStyleName(style.activeOption());
         followersLink.removeStyleName(style.activeOption());
+        coordinatorsLink.removeStyleName(style.activeOption());
         adminLink.addStyleName(style.activeOption());
 
         streamFollowing.setVisible(false);
         streamAbout.setVisible(false);
         streamFollowers.setVisible(false);
+        streamCoordinators.setVisible(false);
         adminContent.setVisible(true);
         adminContent.load();
     }
 
     /**
      * When the following status changes.
-     *
+     * 
      * @param inStatus
      *            status.
      */
@@ -1264,7 +1269,7 @@ public class StreamDetailsComposite extends Composite
 
     /**
      * Got the person.
-     *
+     * 
      * @param person
      *            the person.
      */
