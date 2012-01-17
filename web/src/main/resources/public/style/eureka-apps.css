@@ -551,6 +551,8 @@ table.eureka-table tr.header-row-top-headers th
 	font-weight:bold;
 	color:#444;
 	position: relative;
+	white-space: nowrap;
+	overflow: hidden;
 }
 .title-bar.collapsed
 {
