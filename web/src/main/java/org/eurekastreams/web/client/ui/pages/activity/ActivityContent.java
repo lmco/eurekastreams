@@ -104,6 +104,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -115,6 +117,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -134,6 +137,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActivityContent extends Composite
 {
+    /** Amount of time to wait after a key is pressed before performing a search. */
+    private static final int SEARCH_UPDATE_DELAY = 500;
+
+    /** Amount of time to wait after a key is pressed to update the URL with the search term. */
+    private static final int SEARCH_URL_UPDATE_DELAY = 2000;
+
     /** Binder for building UI. */
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
@@ -518,6 +527,34 @@ public class ActivityContent extends Composite
     @UiField
     DivElement stickyActivityArea;
 
+    /** Views used to load the current stream. */
+    List<String> loadedViews = Collections.singletonList("[do not match]");
+
+    /** Search term used to load the current stream. */
+    String loadedSearchTerm = "";
+
+    /** Timer to delay progressive search until the user pauses. */
+    private final Timer searchTimer = new Timer()
+    {
+        @Override
+        public void run()
+        {
+            String searchText = searchBox.getText();
+            loadStream(Session.getInstance().getUrlViews(), searchText);
+            searchUrlTimer.schedule(SEARCH_URL_UPDATE_DELAY);
+        }
+    };
+
+    /** Timer to update the URL with the search term. */
+    private final Timer searchUrlTimer = new Timer()
+    {
+        @Override
+        public void run()
+        {
+            updateUrlWithSearchTerm();
+        }
+    };
+
     /**
      * Default constructor.
      */
@@ -706,6 +743,8 @@ public class ActivityContent extends Composite
         {
             public void update(final HistoryViewsChangedEvent event)
             {
+                searchTimer.cancel();
+                searchUrlTimer.cancel();
                 handleViewsChanged(event.getViews());
                 final String searchText = Session.getInstance().getParameterValue("search");
                 if (!searchBox.getText().equals(searchText))
@@ -771,6 +810,8 @@ public class ActivityContent extends Composite
         {
             public void update(final UpdatedHistoryParametersEvent event)
             {
+                searchTimer.cancel();
+                searchUrlTimer.cancel();
                 if (!event.getViewChanged())
                 {
                     handleViewsChanged(Session.getInstance().getUrlViews());
@@ -984,7 +1025,12 @@ public class ActivityContent extends Composite
     protected void handleViewsChanged(final List<String> inViews)
     {
         String search = Session.getInstance().getParameterValue("search");
-        loadStream(inViews, search);
+
+        // prevent reloading the same content
+        if (!loadedViews.equals(inViews) || !loadedSearchTerm.equals(search))
+        {
+            loadStream(inViews, search);
+        }
         List<String> views = new ArrayList<String>(inViews);
 
         if (views.size() < 2 || !"sort".equals(views.get(views.size() - 2)))
@@ -1186,7 +1232,6 @@ public class ActivityContent extends Composite
      */
     private void addEventHandlers()
     {
-
         moreLink.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -1206,17 +1251,35 @@ public class ActivityContent extends Composite
 
             public void onKeyUp(final KeyUpEvent event)
             {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER
-                        || (searchBox.getText().length() > 2 && searchBox.getText().length() != lastSearchLength)
-                        || searchBox.getText().length() < lastSearchLength)
+                final String searchText = searchBox.getText();
+                final int searchTextLength = searchText.length();
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
                 {
-                    lastSearchLength = searchBox.getText().length();
+                    lastSearchLength = searchTextLength;
+
+                    searchTimer.cancel();
+                    searchUrlTimer.cancel();
 
                     // don't load stream here - the URL change will cause it to be reloaded
 
                     EventBus.getInstance().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest("search", searchBox.getText(), false)));
+                            new UpdateHistoryEvent(new CreateUrlRequest("search", searchText, false)));
                 }
+                else if ((searchTextLength > 2 && searchTextLength != lastSearchLength)
+                        || searchTextLength < lastSearchLength)
+                {
+                    lastSearchLength = searchTextLength;
+
+                    searchTimer.schedule(SEARCH_UPDATE_DELAY);
+                }
+            }
+        });
+
+        searchBox.addBlurHandler(new BlurHandler()
+        {
+            public void onBlur(final BlurEvent inEvent)
+            {
+                updateUrlWithSearchTerm();
             }
         });
 
@@ -1344,6 +1407,20 @@ public class ActivityContent extends Composite
     }
 
     /**
+     * Updates the URL to include the search term.
+     */
+    private void updateUrlWithSearchTerm()
+    {
+        String searchText = searchBox.getText();
+        String searchParam = Session.getInstance().getParameterValue("search");
+        if (!searchText.equals(searchParam))
+        {
+            EventBus.getInstance().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest("search", searchText, false)));
+        }
+    }
+
+    /**
      * Update subscription status consistently.
      *
      * @param inIsSubscribed
@@ -1392,6 +1469,10 @@ public class ActivityContent extends Composite
      */
     private void loadStream(final List<String> views, final String searchTerm)
     {
+        // save for change detection
+        loadedViews = new ArrayList<String>(views);
+        loadedSearchTerm = searchTerm;
+
         Window.scrollTo(0, 0);
         noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         Session.getInstance().getActionProcessor().setQueueRequests(true);
