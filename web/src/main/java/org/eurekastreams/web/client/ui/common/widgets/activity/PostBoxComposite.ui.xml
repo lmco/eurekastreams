@@ -124,7 +124,7 @@
 				<g:FlowPanel addStyleNames="{style.hashtags}" ui:field="hashTags"></g:FlowPanel>
 				<div ui:field="postOptions" class="{style.post-options}">
 					<eb:AddLinkComposite ui:field="addLinkComposite"></eb:AddLinkComposite>
-					<g:Hyperlink ui:field="postButton" addStyleNames="{style.post-button}"></g:Hyperlink>
+					<g:Label ui:field="postButton" addStyleNames="{style.post-button}"></g:Label>
 					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
 					<div class="{resources.coreCss.contentWarning}" ui:field="contentWarningContainer">
 						<g:Label addStyleNames="{resources.coreCss.warningText}"

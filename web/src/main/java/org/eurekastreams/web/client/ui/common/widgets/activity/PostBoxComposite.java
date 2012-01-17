@@ -67,11 +67,9 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -101,7 +99,7 @@ public class PostBoxComposite extends Composite
     private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
 
     /**
-     *
+     * 
      * Binder for building UI.
      */
     interface LocalUiBinder extends UiBinder<Widget, PostBoxComposite>
@@ -115,28 +113,28 @@ public class PostBoxComposite extends Composite
     {
         /**
          * Visible post box style.
-         *
+         * 
          * @return Visible post box style.
          */
         String visiblePostBox();
 
         /**
          * Post char count over limit.
-         *
+         * 
          * @return Post char count over limit.
          */
         String postCharCountOverLimit();
 
         /**
          * Post button inactive.
-         *
+         * 
          * @return post button inactive.
          */
         String postButtonInactive();
 
         /**
          * Active hashtag style.
-         *
+         * 
          * @return Active hashtag style.
          */
         String activeHashTag();
@@ -176,7 +174,7 @@ public class PostBoxComposite extends Composite
      * UI element for post button.
      */
     @UiField
-    Hyperlink postButton;
+    Label postButton;
 
     /**
      * UI element for post char count.
@@ -207,7 +205,6 @@ public class PostBoxComposite extends Composite
      */
     @UiField
     DivElement contentWarningContainer;
-
 
     /**
      * Currently active item.
@@ -305,44 +302,17 @@ public class PostBoxComposite extends Composite
             }
         });
 
-        postButton.addClickHandler(new ClickHandler()
-        {
-            public void onClick(final ClickEvent event)
-            {
-                if (!postButton.getStyleName().contains(style.postButtonInactive()))
-                {
-                    // GWT Hyperlinks are hardwired to update the history - preventDefault and stopPropagation will not
-                    // prevent this (since they operate on the browser event). So set the target to the current page so
-                    // GWT will see it as no change and not update the history token.
-                    postButton.setTargetHistoryToken(History.getToken());
-
-                    ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                            : new NotePopulator();
-
-                    ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
-                            DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
-                            currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
-                    PostActivityRequest postRequest = new PostActivityRequest(activity);
-
-                    ActivityModel.getInstance().insert(postRequest);
-
-                    postButton.addStyleName(style.postButtonInactive());
-                }
-            }
-        });
-
-        postButton.setTargetHistoryToken(History.getToken());
+        setupPostButtonClickHandler();
 
         postBox.addKeyDownHandler(new KeyDownHandler()
         {
             public void onKeyDown(final KeyDownEvent event)
             {
-
                 if ((event.getNativeKeyCode() == KeyCodes.KEY_TAB || event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
                         && !event.isAnyModifierKeyDown() && activeItemIndex != null)
                 {
                     hashTags.getWidget(activeItemIndex).getElement()
-                    .dispatchEvent(Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
+                            .dispatchEvent(Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false));
                     event.preventDefault();
                     event.stopPropagation();
                     // clearSearch();
@@ -411,9 +381,9 @@ public class PostBoxComposite extends Composite
                                             boxHeight = "44";
                                         }
                                         hashTags.getElement()
-                                        .getStyle()
-                                        .setTop(Integer.parseInt(boxHeight) + HASH_TAG_DROP_DOWN_PADDING,
-                                                Unit.PX);
+                                                .getStyle()
+                                                .setTop(Integer.parseInt(boxHeight) + HASH_TAG_DROP_DOWN_PADDING,
+                                                        Unit.PX);
                                         hashTags.setVisible(true);
                                     }
 
@@ -491,7 +461,7 @@ public class PostBoxComposite extends Composite
     private void addEvents()
     {
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
-                {
+        {
             public void update(final MessageStreamAppendEvent event)
             {
                 attachment = null;
@@ -502,78 +472,78 @@ public class PostBoxComposite extends Composite
                 postOptions.removeClassName(style.visiblePostBox());
                 checkPostBox();
             }
-                });
+        });
 
         EventBus.getInstance().addObserver(PostableStreamScopeChangeEvent.class,
                 new Observer<PostableStreamScopeChangeEvent>()
                 {
-            public void update(final PostableStreamScopeChangeEvent stream)
-            {
-                currentStream = stream.getResponse();
-                if (currentStream != null && !"".equals(currentStream.getDisplayName()))
-                {
-                    if (currentStream.getScopeType().equals(ScopeType.PERSON))
+                    public void update(final PostableStreamScopeChangeEvent stream)
                     {
-                        if (currentStream.getDisplayName().endsWith("s"))
+                        currentStream = stream.getResponse();
+                        if (currentStream != null && !"".equals(currentStream.getDisplayName()))
                         {
-                            postBox.setLabel("Post to " + currentStream.getDisplayName() + "' stream...");
+                            if (currentStream.getScopeType().equals(ScopeType.PERSON))
+                            {
+                                if (currentStream.getDisplayName().endsWith("s"))
+                                {
+                                    postBox.setLabel("Post to " + currentStream.getDisplayName() + "' stream...");
+                                }
+                                else
+                                {
+                                    postBox.setLabel("Post to " + currentStream.getDisplayName() + "'s stream...");
+                                }
+                            }
+                            else
+                            {
+                                postBox.setLabel("Post to the " + currentStream.getDisplayName() + " stream...");
+                            }
                         }
                         else
                         {
-                            postBox.setLabel("Post to " + currentStream.getDisplayName() + "'s stream...");
+                            postBox.setLabel("Post to your stream...");
                         }
-                    }
-                    else
-                    {
-                        postBox.setLabel("Post to the " + currentStream.getDisplayName() + " stream...");
-                    }
-                }
-                else
-                {
-                    postBox.setLabel("Post to your stream...");
-                }
 
-                postPanel.setVisible(stream.getResponse().getScopeType() != null);
-            }
+                        postPanel.setVisible(stream.getResponse().getScopeType() != null);
+                    }
                 });
 
         EventBus.getInstance().addObserver(MessageAttachmentChangedEvent.class,
                 new Observer<MessageAttachmentChangedEvent>()
                 {
-            public void update(final MessageAttachmentChangedEvent evt)
-            {
-                attachment = evt.getAttachment();
-            }
+                    public void update(final MessageAttachmentChangedEvent evt)
+                    {
+                        attachment = evt.getAttachment();
+                    }
                 });
 
         EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
                 {
-            public void update(final GotSystemSettingsResponseEvent event)
-            {
-                String warning = event.getResponse().getContentWarningText();
-                if (warning != null && !warning.isEmpty())
-                {
-                    contentWarning.setText(warning);
-                }
-                else
-                {
-                    contentWarning.setVisible(false);
-                    contentWarningContainer.getStyle().setDisplay(Display.NONE);
-                }
-            }
+                    public void update(final GotSystemSettingsResponseEvent event)
+                    {
+                        String warning = event.getResponse().getContentWarningText();
+                        if (warning != null && !warning.isEmpty())
+                        {
+                            contentWarning.setText(warning);
+                        }
+                        else
+                        {
+                            contentWarning.setVisible(false);
+                            contentWarningContainer.getStyle().setDisplay(Display.NONE);
+                        }
+                    }
                 });
 
         Session.getInstance()
-        .getEventBus()
-        .addObserver(GotAllPopularHashTagsResponseEvent.class,
-                new Observer<GotAllPopularHashTagsResponseEvent>()
-                {
-            public void update(final GotAllPopularHashTagsResponseEvent event)
-            {
-                allHashTags = new ArrayList<String>(event.getResponse());
-            }
-                });
+                .getEventBus()
+                .addObserver(GotAllPopularHashTagsResponseEvent.class,
+                        new Observer<GotAllPopularHashTagsResponseEvent>()
+                        {
+                            public void update(final GotAllPopularHashTagsResponseEvent event)
+                            {
+                                allHashTags = new ArrayList<String>(event.getResponse());
+                            }
+                        });
 
     }
 
@@ -605,7 +575,7 @@ public class PostBoxComposite extends Composite
 
     /**
      * Select an item.
-     *
+     * 
      * @param item
      *            the item.
      */
@@ -617,6 +587,46 @@ public class PostBoxComposite extends Composite
         }
         item.addStyleName(style.activeHashTag());
         activeItemIndex = hashTags.getWidgetIndex(item);
+    }
+
+    /**
+     * Setup the post button click handler - to prevent the checkstyle error of too-long method name.
+     */
+    private void setupPostButtonClickHandler()
+    {
+        postButton.addClickHandler(new ClickHandler()
+        {
+            /**
+             * Handle the button click.
+             * 
+             * @param inEvent
+             *            the click event
+             */
+            public void onClick(final ClickEvent inEvent)
+            {
+                // check the bounds of the position at the time this event fires, which is on the mouse up. Make sure
+                // the mouse is inside the bounds of the post button, which allows the user to change their mind and
+                // move the mouse out of the button
+                if (inEvent.getX() >= 0 && inEvent.getY() >= 0 && inEvent.getX() < postButton.getOffsetWidth()
+                        && inEvent.getY() < postButton.getOffsetHeight())
+                {
+                    if (!postButton.getStyleName().contains(style.postButtonInactive()))
+                    {
+                        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                                : new NotePopulator();
+
+                        ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
+                                DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
+                                currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
+                        PostActivityRequest postRequest = new PostActivityRequest(activity);
+
+                        ActivityModel.getInstance().insert(postRequest);
+
+                        postButton.addStyleName(style.postButtonInactive());
+                    }
+                }
+            }
+        });
     }
 
 }
