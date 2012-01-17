@@ -15,9 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -57,8 +61,8 @@ public class NoteRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        StreamEntityDTO actor = activity.getOriginalActor() != null 
-                ? activity.getOriginalActor() : activity.getActor();
+        StreamEntityDTO actor = activity.getOriginalActor() != null ? activity.getOriginalActor() : activity
+                .getActor();
         String activityContent = activity.getBaseObjectProperties().get("content")
                 .replace("%EUREKA:ACTORNAME%", actor.getDisplayName());
 
@@ -74,7 +78,22 @@ public class NoteRenderer implements ObjectRenderer
         // first transform links to hyperlinks
         String html = jSNIFacade.addMarkDownLinks(activityContent);
         // then transform hashtags to hyperlinks
-        html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
+        HistoryHandler history = Session.getInstance().getHistoryHandler();
+        // if a user clicks on a hashtag on the single activity view then search for the hashtag in the stream the
+        // activity was posted to
+        if (history.getPage() == Page.ACTIVITY && history.getViews().size() == 1
+                && history.getViews().get(0).matches("\\d+"))
+        {
+            StreamEntityDTO destinationStream = activity.getDestinationStream();
+            Page destinationPage = destinationStream.getEntityType() == EntityType.PERSON ? Page.PEOPLE : Page.GROUPS;
+            html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html, destinationPage,
+                    destinationStream.getUniqueId());
+        }
+        // otherwise, search for hashtags in whatever stream the user is currently viewing
+        else
+        {
+            html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
+        }
 
         HTML widget = new HTML(html);
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());

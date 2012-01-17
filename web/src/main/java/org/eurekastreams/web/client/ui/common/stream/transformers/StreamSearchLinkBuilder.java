@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.stream.transformers;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -48,5 +49,22 @@ public class StreamSearchLinkBuilder
             params.put("viewId", Long.toString(streamViewId));
         }
         return URL.encode("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false)));
+    }
+    
+    /**
+     * Build a hashtag search link to an arbitrary page and view.
+     * 
+     * @param page the page that the hashtag should link to
+     * @param view the view within the page that the hashtag should link to
+     * @param searchText
+     *            the hashtag to create a link for
+     * @return a relative hyperlink to search the stream with the input search text
+     */
+    public String buildHashtagSearchLink(final String searchText, final Page page, final String view)
+    {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("search", searchText);
+
+        return URL.encode("#" + Session.getInstance().generateUrl(new CreateUrlRequest(page, view, params)));
     }
 }

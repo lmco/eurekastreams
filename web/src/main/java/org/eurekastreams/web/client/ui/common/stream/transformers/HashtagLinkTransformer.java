@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.transformers;
 
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.strategies.HashTagExtractor;
 import org.eurekastreams.server.domain.strategies.Substring;
 
@@ -30,7 +31,7 @@ public class HashtagLinkTransformer
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamSearchLinkBuilder
      *            the helper to build hyperlinks to stream search
      */
@@ -42,7 +43,7 @@ public class HashtagLinkTransformer
     /**
      * Transform all valid hashtags that aren't already inside a hyperlink tag to hyperlink tags with links to search
      * the stream with the current stream view id.
-     *
+     * 
      * @param content
      *            the content to transform
      * @return a transformation of the input content with all valid hashtags that aren't already inside a hyperlink tag
@@ -50,21 +51,23 @@ public class HashtagLinkTransformer
      */
     public String transform(final String content)
     {
-        return transform(content, null);
+        return transform(content, null, null);
     }
 
     /**
      * Transform all valid hashtags that aren't already inside a hyperlink tag to hyperlink tags with links to search
      * the stream with the input view id.
-     *
+     * 
      * @param content
      *            the content to transform
-     * @param streamViewId
-     *            the stream view id to scope the hashtag search
+     * @param page
+     *            the page that the hashtag links should point to
+     * @param view
+     *            the view within the page that the hashtag links should point to
      * @return a transformation of the input content with all valid hashtags that aren't already inside a hyperlink tag
      *         to hyperlink tags with links to search the stream with the input view id
      */
-    public String transform(final String content, final Long streamViewId)
+    public String transform(final String content, final Page page, final String view)
     {
         HashTagExtractor hashTagExtractor = new HashTagExtractor();
 
@@ -84,8 +87,10 @@ public class HashtagLinkTransformer
             sb.append(content.substring(pos, hashTag.getStartIndex()));
 
             // add the linked hashtag
-            sb.append("<a href=\"" + streamSearchLinkBuilder.buildHashtagSearchLink(hashTag.getContent(), streamViewId)
-                    + "\">" + hashTag.getContent() + "</a>");
+            String url = page != null && view != null ? streamSearchLinkBuilder.buildHashtagSearchLink(
+                    hashTag.getContent(), page, view) : streamSearchLinkBuilder.buildHashtagSearchLink(
+                    hashTag.getContent(), null);
+            sb.append("<a href=\"" + url + "\">" + hashTag.getContent() + "</a>");
 
             pos = hashTag.getStartIndex() + hashTag.getLength();
         }
