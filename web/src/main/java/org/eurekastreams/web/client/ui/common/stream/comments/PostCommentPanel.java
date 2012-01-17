@@ -45,10 +45,8 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -56,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Post comment panel.
- *
+ * 
  */
 public class PostCommentPanel extends FlowPanel
 {
@@ -86,7 +84,7 @@ public class PostCommentPanel extends FlowPanel
     /**
      * The post button.
      */
-    private Hyperlink post;
+    private Label post;
     /**
      * The message id.
      */
@@ -99,7 +97,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inMessageId
      *            the message id.
      * @param inFullCollapse
@@ -166,7 +164,7 @@ public class PostCommentPanel extends FlowPanel
         countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
         body.add(countDown);
 
-        post = new Hyperlink("post", History.getToken());
+        post = new Label("post");
         post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postButton());
         post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
         body.add(post);
@@ -197,28 +195,35 @@ public class PostCommentPanel extends FlowPanel
         {
             public void onClick(final ClickEvent event)
             {
-                fullCollapse = false;
-                if (!inactive)
+                // check the bounds of the position at the time this event fires, which is on the mouse up. Make sure
+                // the mouse is inside the bounds of the post button, which allows the user to change their mind and
+                // move the mouse out of the button
+                if (event.getX() >= 0 && event.getY() >= 0 && event.getX() < post.getOffsetWidth()
+                        && event.getY() < post.getOffsetHeight())
                 {
-                    unActivate();
-                    CommentDTO comment = new CommentDTO();
-                    comment.setBody(commentBox.getText());
-                    comment.setActivityId(messageId);
-                    Session.getInstance().getActionProcessor()
-                            .makeRequest("postActivityCommentAction", comment, new AsyncCallback<CommentDTO>()
-                            {
-                                /* implement the async call back methods */
-                                public void onFailure(final Throwable caught)
+                    fullCollapse = false;
+                    if (!inactive)
+                    {
+                        unActivate();
+                        CommentDTO comment = new CommentDTO();
+                        comment.setBody(commentBox.getText());
+                        comment.setActivityId(messageId);
+                        Session.getInstance().getActionProcessor()
+                                .makeRequest("postActivityCommentAction", comment, new AsyncCallback<CommentDTO>()
                                 {
-                                }
+                                    /* implement the async call back methods */
+                                    public void onFailure(final Throwable caught)
+                                    {
+                                    }
 
-                                public void onSuccess(final CommentDTO result)
-                                {
-                                    ActivityModel.getInstance().clearCache();
-                                    Session.getInstance().getEventBus()
-                                            .notifyObservers(new CommentAddedEvent(result, messageId));
-                                }
-                            });
+                                    public void onSuccess(final CommentDTO result)
+                                    {
+                                        ActivityModel.getInstance().clearCache();
+                                        Session.getInstance().getEventBus()
+                                                .notifyObservers(new CommentAddedEvent(result, messageId));
+                                    }
+                                });
+                    }
                 }
             }
         });
@@ -290,7 +295,7 @@ public class PostCommentPanel extends FlowPanel
 
     /**
      * Set the focus.
-     *
+     * 
      * @param el
      *            the element
      */

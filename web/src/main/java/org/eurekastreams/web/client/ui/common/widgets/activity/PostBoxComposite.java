@@ -604,7 +604,9 @@ public class PostBoxComposite extends Composite
              */
             public void onClick(final ClickEvent inEvent)
             {
-                // check the position of the event, making sure it's within the button
+                // check the bounds of the position at the time this event fires, which is on the mouse up. Make sure
+                // the mouse is inside the bounds of the post button, which allows the user to change their mind and
+                // move the mouse out of the button
                 if (inEvent.getX() >= 0 && inEvent.getY() >= 0 && inEvent.getX() < postButton.getOffsetWidth()
                         && inEvent.getY() < postButton.getOffsetHeight())
                 {
