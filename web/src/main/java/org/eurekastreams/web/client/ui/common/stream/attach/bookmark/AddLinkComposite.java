@@ -255,47 +255,53 @@ public class AddLinkComposite extends FlowPanel
      */
     public void onLinkAdded(final LinkInformation link)
     {
-        linkUrl.setText("");
-        linkUrl.checkBox();
-        LinkInformation addedLink = link;
-
-        if (null == addedLink)
+        // make sure the link hasn't changed - this prevents a slow site returning after user changed the link to a
+        // faster one
+        if (((fetchedLink == null || fetchedLink == "") && link == null) || fetchedLink == link.getUrl())
         {
-            addedLink = new LinkInformation();
-        }
+            linkUrl.setText("");
+            linkUrl.checkBox();
+            LinkInformation addedLink = link;
 
-        addPanel.setVisible(false);
-        fetchLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
-        displayPanel.setVisible(null != link);
-        addLink.setVisible(null == link);
-
-        selector.setLink(addedLink);
-
-        if (!addedLink.getImageUrls().isEmpty())
-        {
-            displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
-        }
-
-        linkUrlDisplay.setText("source: " + addedLink.getSource());
-
-        title.setVisibleLength(MAX_LENGTH);
-        title.setValue(addedLink.getTitle());
-        title.addBlurHandler(new BlurHandler()
-        {
-            public void onBlur(final BlurEvent event)
+            if (null == addedLink)
             {
-                // This check is a workaround for the real problem, which is that the blur handler is getting wired up
-                // multiple times (once on the first time the user clicks 'add link' and once when the activity is
-                // posted and everything is being cleared out). Maybe this control will get redesigned when
-                // PostToStreamComposite gets refactored from MVC to the current design.
-                if (link != null)
-                {
-                    link.setTitle(title.getValue());
-                }
+                addedLink = new LinkInformation();
             }
-        });
 
-        linkDesc.setText(addedLink.getDescription());
+            addPanel.setVisible(false);
+            fetchLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
+            displayPanel.setVisible(null != link);
+            addLink.setVisible(null == link);
+
+            selector.setLink(addedLink);
+
+            if (!addedLink.getImageUrls().isEmpty())
+            {
+                displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
+            }
+
+            linkUrlDisplay.setText("source: " + addedLink.getSource());
+
+            title.setVisibleLength(MAX_LENGTH);
+            title.setValue(addedLink.getTitle());
+            title.addBlurHandler(new BlurHandler()
+            {
+                public void onBlur(final BlurEvent event)
+                {
+                    // This check is a workaround for the real problem, which is that the blur handler is getting wired
+                    // up
+                    // multiple times (once on the first time the user clicks 'add link' and once when the activity is
+                    // posted and everything is being cleared out). Maybe this control will get redesigned when
+                    // PostToStreamComposite gets refactored from MVC to the current design.
+                    if (link != null)
+                    {
+                        link.setTitle(title.getValue());
+                    }
+                }
+            });
+
+            linkDesc.setText(addedLink.getDescription());
+        }
     }
 
     /**
