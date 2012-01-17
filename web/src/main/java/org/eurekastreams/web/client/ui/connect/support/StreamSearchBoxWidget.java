@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.stream;
+package org.eurekastreams.web.client.ui.connect.support;
 
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -31,7 +31,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Widget with a text box used to initiate a stream search.
+ * Widget with a text box used to initiate a stream search. NOTE: This widget is only used with the Eureka Connect
+ * widgets.
  */
 public class StreamSearchBoxWidget extends Composite
 {

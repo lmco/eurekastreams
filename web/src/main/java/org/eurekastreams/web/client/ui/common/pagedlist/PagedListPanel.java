@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Label;
  * StaticResourceBundle.INSTANCE.coreCss().filters() (which can be though of as data sets. These's data sets can be
  * sorted and/or paged. Add sets by feeding it Fetchable models and a renderer for the individual items, and this
  * control should take care of all the logic.
- * 
+ *
  */
 public class PagedListPanel extends FlowPanel
 {
@@ -132,7 +132,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inListId
      *            the list id.
      */
@@ -143,7 +143,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inListId
      *            the list id.
      * @param inContextParam
@@ -159,7 +159,7 @@ public class PagedListPanel extends FlowPanel
         waitSpinner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitSpinner());
         renderContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().renderContainer());
 
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionMaster());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionMaster());
         filterContainer.add(new Label("View:"));
 
         navPanel = new FlowPanel();
@@ -190,24 +190,26 @@ public class PagedListPanel extends FlowPanel
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(SwitchToFilterOnPagedFilterPanelEvent.class,
-                new Observer<SwitchToFilterOnPagedFilterPanelEvent>()
-                {
-                    public void update(final SwitchToFilterOnPagedFilterPanelEvent event)
-                    {
-                        // ignore events for other lists
-                        if (!listId.equals(event.getListId()))
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(SwitchToFilterOnPagedFilterPanelEvent.class,
+                        new Observer<SwitchToFilterOnPagedFilterPanelEvent>()
                         {
-                            return;
-                        }
+                            public void update(final SwitchToFilterOnPagedFilterPanelEvent event)
+                            {
+                                // ignore events for other lists
+                                if (!listId.equals(event.getListId()))
+                                {
+                                    return;
+                                }
 
-                        updateStateIfChanged(event.getFilterName(), event.getSortKey(), null, null, !event
-                                .isFromUrlChange());
-                    }
-                });
+                                updateStateIfChanged(event.getFilterName(), event.getSortKey(), null, null,
+                                        !event.isFromUrlChange());
+                            }
+                        });
 
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
@@ -216,7 +218,7 @@ public class PagedListPanel extends FlowPanel
                         // "context parameter" (basically snoop on the URL to see if the tab we're on is showing); if
                         // present and it's not ours, bail out. Otherwise, we can't be sure if the update pertains to us
                         // or not, so we have to try to process it.
-                        HashMap<String, String> parms = event.getParameters();
+                        Map<String, String> parms = event.getParameters();
                         String eventListId = parms.get(URL_PARAM_LIST_ID);
                         if (eventListId == null)
                         {
@@ -242,8 +244,9 @@ public class PagedListPanel extends FlowPanel
                         // only handle event if initialized
                         else
                         {
-                            updateStateIfChanged(parms.get(URL_PARAM_FILTER), parms.get(URL_PARAM_SORT), parms
-                                    .get(Pager.URL_PARAM_START_INDEX), parms.get(Pager.URL_PARAM_END_INDEX), false);
+                            updateStateIfChanged(parms.get(URL_PARAM_FILTER), parms.get(URL_PARAM_SORT),
+                                    parms.get(Pager.URL_PARAM_START_INDEX), parms.get(Pager.URL_PARAM_END_INDEX), // \n
+                                    false);
                         }
                     }
                 }, true);
@@ -257,7 +260,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inListId
      *            the list id.
      * @param inPageRenderer
@@ -271,7 +274,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inListId
      *            the list id.
      * @param inPageRenderer
@@ -290,7 +293,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the state of the widget (loading data, etc.) if the current state does not match the desired state.
-     * 
+     *
      * @param inFilter
      *            Requested filter name.
      * @param inSort
@@ -374,8 +377,8 @@ public class PagedListPanel extends FlowPanel
             params.put(URL_PARAM_SORT, currentSortKey);
             params.put(Pager.URL_PARAM_START_INDEX, currentStartIndex.toString());
             params.put(Pager.URL_PARAM_END_INDEX, currentEndIndex.toString());
-            Session.getInstance().getEventBus().notifyObservers(
-                    new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+            Session.getInstance().getEventBus()
+                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
         }
 
         return true;
@@ -391,7 +394,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Normalizes a start/end index value.
-     * 
+     *
      * @param value
      *            String form.
      * @return Numeric form (null if not present/valid).
@@ -414,7 +417,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Reload the panel to a default filter.
-     * 
+     *
      * @param filter
      *            The default filter to use after reset.
      */
@@ -443,8 +446,8 @@ public class PagedListPanel extends FlowPanel
 
             if (sortLinks.get(currentFilter).get(currentSortKey) != null)
             {
-                sortLinks.get(currentFilter).get(currentSortKey).addStyleName(
-                        StaticResourceBundle.INSTANCE.coreCss().active());
+                sortLinks.get(currentFilter).get(currentSortKey)
+                        .addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
             }
         }
 
@@ -478,7 +481,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Add a filter w/o a sort.
-     * 
+     *
      * @param name
      *            name of the filter.
      * @param fetchable
@@ -497,7 +500,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Add a filter w/o a sort.
-     * 
+     *
      * @param name
      *            name of the filter.
      * @param fetchable
@@ -586,7 +589,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the request for a given set that has no sort key.
-     * 
+     *
      * @param name
      *            The name of the set to update.
      * @param request
@@ -599,7 +602,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the request for a given set.
-     * 
+     *
      * @param name
      *            The name of the set to update.
      * @param request
@@ -618,7 +621,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Render the panel.
-     * 
+     *
      * @param <T>
      *            the type of item.
      * @param items
@@ -634,11 +637,11 @@ public class PagedListPanel extends FlowPanel
 
         if (items.getTotal() > 0)
         {
-            this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
+            removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         else
         {
-            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
+            addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
 
@@ -656,7 +659,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Sets the text displayed on the filter link.
-     * 
+     *
      * @param name
      *            The name of the filter.
      * @param title

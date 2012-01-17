@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.pages.widget;
+package org.eurekastreams.web.client.ui.connect.widget;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -35,9 +35,7 @@ import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.stream.PostToStreamComposite;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
-import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
@@ -50,6 +48,9 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItem
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.NoteRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.ObjectRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.verb.VerbRenderer;
+import org.eurekastreams.web.client.ui.connect.support.PostToStreamComposite;
+import org.eurekastreams.web.client.ui.connect.support.StreamPanel;
+import org.eurekastreams.web.client.ui.connect.support.WidgetUtilities;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.CheckBox;

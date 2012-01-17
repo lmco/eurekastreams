@@ -707,7 +707,11 @@ public class ActivityContent extends Composite
             public void update(final HistoryViewsChangedEvent event)
             {
                 handleViewsChanged(event.getViews());
-                searchBox.setText(Session.getInstance().getParameterValue("search"));
+                final String searchText = Session.getInstance().getParameterValue("search");
+                if (!searchBox.getText().equals(searchText))
+                {
+                    searchBox.setText(searchText);
+                }
             }
         });
 

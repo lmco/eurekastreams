@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceCountWidget.CountType;
-import org.eurekastreams.web.client.ui.pages.widget.ActorListWidget;
-import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
-import org.eurekastreams.web.client.ui.pages.widget.FullStreamWidget;
-import org.eurekastreams.web.client.ui.pages.widget.LikeShareWidget;
-import org.eurekastreams.web.client.ui.pages.widget.ReadStreamWidget;
-import org.eurekastreams.web.client.ui.pages.widget.ShareActivityWidget;
-import org.eurekastreams.web.client.ui.pages.widget.ShareWidget;
-import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
+import org.eurekastreams.web.client.ui.connect.widget.ActorListWidget;
+import org.eurekastreams.web.client.ui.connect.widget.CommentWidget;
+import org.eurekastreams.web.client.ui.connect.widget.FullStreamWidget;
+import org.eurekastreams.web.client.ui.connect.widget.LikeShareWidget;
+import org.eurekastreams.web.client.ui.connect.widget.ReadStreamWidget;
+import org.eurekastreams.web.client.ui.connect.widget.ShareActivityWidget;
+import org.eurekastreams.web.client.ui.connect.widget.ShareWidget;
+import org.eurekastreams.web.client.ui.connect.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,17 +59,17 @@ public class HistoryHandler implements ValueChangeHandler<String>
     /**
      * The values.
      */
-    private HashMap<String, String> values = new HashMap<String, String>();
+    private Map<String, String> currentValues = new HashMap<String, String>();
 
     /**
      * The views.
      */
-    private List<String> views = new ArrayList<String>();
+    private List<String> currentViews = new ArrayList<String>();
 
     /**
      * The page.
      */
-    private Page page = null;
+    private Page currentPage = null;
 
     /**
      * Should we execute the value change.
@@ -106,14 +106,13 @@ public class HistoryHandler implements ValueChangeHandler<String>
                 updateHistory(event.getHistoryToken());
             }
         });
-        eventBus.addObserver(PreventHistoryChangeEvent.class,
-                new Observer<PreventHistoryChangeEvent>()
-                {
-                    public void update(final PreventHistoryChangeEvent event)
-                    {
-                        interruptHistoryChange = true;
-                    }
-                });
+        eventBus.addObserver(PreventHistoryChangeEvent.class, new Observer<PreventHistoryChangeEvent>()
+        {
+            public void update(final PreventHistoryChangeEvent event)
+            {
+                interruptHistoryChange = true;
+            }
+        });
         History.addValueChangeHandler(this);
     }
 
@@ -145,45 +144,27 @@ public class HistoryHandler implements ValueChangeHandler<String>
     {
         if (fireValueChange)
         {
-            List<String> originalViews = views;
-            Page originalPage = page;
-            HashMap<String, String> originalValues = values;
-            values.clear();
+            // save old state
+            List<String> originalViews = currentViews;
+            Page originalPage = currentPage;
+            Map<String, String> originalValues = currentValues;
 
-            if (historyToken.contains("?"))
-            {
-                // ? position
-                int questionMarkIndex = historyToken.indexOf("?") + 1;
+            // parse and store new state
+            CreateUrlRequest parsed = parseHistoryToken(historyToken);
+            currentPage = parsed.getPage();
+            currentViews = parsed.getViews();
+            currentValues = parsed.getParameters();
 
-                setPageAndView(historyToken.substring(0, questionMarkIndex - 1));
-
-                // get the sub string of parameters var=1&var2=2&var3=3
-                String[] arStr = historyToken.substring(questionMarkIndex, historyToken.length()).split("&");
-
-                for (int i = 0; i < arStr.length; i++)
-                {
-                    String[] substr = arStr[i].split("=");
-
-                    if (substr.length == 2)
-                    {
-                        values.put(jsniFacade.urlDecode(substr[0]), jsniFacade.urlDecode(substr[1]));
-                    }
-                }
-            }
-            else
-            {
-                setPageAndView(historyToken);
-            }
-
+            // check if the "views" part has changed
             boolean viewUpdated = false;
-
-            if (originalViews.size() == views.size())
+            if (originalViews.size() == currentViews.size())
             {
-                for (int i = 0; i < views.size() && !viewUpdated; i++)
+                for (int i = 0; i < currentViews.size(); i++)
                 {
-                    if (!views.get(i).equals(originalViews.get(i)))
+                    if (!currentViews.get(i).equals(originalViews.get(i)))
                     {
                         viewUpdated = true;
+                        break;
                     }
                 }
             }
@@ -191,18 +172,18 @@ public class HistoryHandler implements ValueChangeHandler<String>
             {
                 viewUpdated = true;
             }
-
             if (viewUpdated)
             {
-                EventBus.getInstance().notifyObservers(new HistoryViewsChangedEvent(views));
+                EventBus.getInstance().notifyObservers(new HistoryViewsChangedEvent(currentViews));
             }
 
-            // The view has updated.
-            if (originalPage != page)
+            // check if the page has changed
+            if (originalPage != currentPage)
             {
                 // Let developers know we're about to switch the view. Prep for it if necessary. If you want us
                 // to stop, throw a PreventHistoryChangeEvent and we'll set the boolean to stop it from going.
-                Session.getInstance().getEventBus().notifyObservers(new PreSwitchedHistoryViewEvent(page, views));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new PreSwitchedHistoryViewEvent(currentPage, currentViews));
 
                 // We're all clear. Go ahead. These are the events you're looking for.
                 if (!interruptHistoryChange)
@@ -214,15 +195,16 @@ public class HistoryHandler implements ValueChangeHandler<String>
                     Session.getInstance().getTimer().clearTempJobs();
                     // Tell listeners the URL has indicated a page/view change.
 
-                    Session.getInstance().getEventBus().notifyObservers(new SwitchedHistoryViewEvent(page, views));
+                    Session.getInstance().getEventBus()
+                            .notifyObservers(new SwitchedHistoryViewEvent(currentPage, currentViews));
                 }
                 // A developer has halted the process. He probably sees something he needs to alert the user
                 // of before they switch the page. Roll everything back.
                 else
                 {
-                    views = originalViews;
-                    page = originalPage;
-                    values = originalValues;
+                    currentViews = originalViews;
+                    currentPage = originalPage;
+                    currentValues = originalValues;
 
                     interruptHistoryChange = false;
                     fireValueChange = false;
@@ -233,7 +215,8 @@ public class HistoryHandler implements ValueChangeHandler<String>
                 }
             }
 
-            Session.getInstance().getEventBus().notifyObservers(new UpdatedHistoryParametersEvent(values, viewUpdated));
+            Session.getInstance().getEventBus()
+                    .notifyObservers(new UpdatedHistoryParametersEvent(currentValues, viewUpdated));
         }
         fireValueChange = true;
     }
@@ -250,25 +233,40 @@ public class HistoryHandler implements ValueChangeHandler<String>
     }
 
     /**
-     * Helper method since I need to do this twice in the method above.
+     * Parses a history token into its component parts.
      *
-     * @param token
-     *            the token.
+     * @param historyToken
+     *            History token.
+     * @return Component parts as a CreateUrlRequest.
      */
-    private void setPageAndView(final String token)
+    public CreateUrlRequest parseHistoryToken(final String historyToken)
     {
-        String[] tokens = token.split("/", 2);
-        page = Page.toEnum(tokens[0]);
+        HashMap<String, String> parameters = new HashMap<String, String>();
 
-        if (tokens.length > 1)
+        String concatenatedViews = historyToken;
+
+        int questionMarkIndex = historyToken.indexOf("?");
+        if (questionMarkIndex >= 0)
         {
-            views = Arrays.asList(tokens[1].split("/"));
-        }
-        else
-        {
-            views = new ArrayList<String>();
+            concatenatedViews = historyToken.substring(0, questionMarkIndex);
+
+            // get the sub string of parameters var=1&var2=2&var3=3
+            String[] paramString = historyToken.substring(questionMarkIndex + 1).split("&");
+            for (int i = 0; i < paramString.length; i++)
+            {
+                String[] substr = paramString[i].split("=");
+                if (substr.length == 2)
+                {
+                    parameters.put(jsniFacade.urlDecode(substr[0]), jsniFacade.urlDecode(substr[1]));
+                }
+            }
         }
 
+        String[] tokens = concatenatedViews.split("/", 2);
+        Page page = Page.toEnum(tokens[0]);
+        List<String> views = tokens.length > 1 ? Arrays.asList(tokens[1].split("/")) : Collections.EMPTY_LIST;
+
+        return new CreateUrlRequest(page, views, parameters);
     }
 
     /**
@@ -280,62 +278,67 @@ public class HistoryHandler implements ValueChangeHandler<String>
      */
     public String getHistoryToken(final CreateUrlRequest request)
     {
-        Page inPage = page;
-        List<String> inViews = views;
-        HashMap<String, String> previousParams = (HashMap<String, String>) values.clone();
+        Page inPage = currentPage;
+        List<String> inViews = currentViews;
 
+        // determine page
         if (request.getPage() != null)
         {
             inPage = request.getPage();
         }
-
         if (inPage == null)
         {
             inPage = Page.START;
         }
 
+        // determine views
         if (request.getViews() != null)
         {
             inViews = request.getViews();
         }
 
+        // determine parameters
+        Map<String, String> parameters;
         if (request.getReplacePrevious())
         {
-            previousParams.clear();
+            parameters = request.getParameters();
         }
-
-        for (String key : request.getParameters().keySet())
+        else
         {
-            previousParams.put(key, request.getParameters().get(key));
-            if (request.getParameters().containsKey(key) && request.getParameters().get(key) == null)
+            parameters = new HashMap<String, String>(currentValues);
+            for (Entry<String, String> entry : request.getParameters().entrySet())
             {
-                previousParams.remove(key);
+                if (entry.getValue() == null)
+                {
+                    parameters.remove(entry.getKey());
+                }
+                else
+                {
+                    parameters.put(entry.getKey(), entry.getValue());
+                }
             }
         }
 
-        String historyString;
-
-        historyString = inPage.toString();
-
+        // stringify page and views
+        StringBuilder sb = new StringBuilder(inPage.toString());
         for (String view : inViews)
         {
-            if (view != null && !view.equals(""))
+            if (view != null && !view.isEmpty())
             {
-                historyString += "/";
-                historyString += view;
+                sb.append("/").append(view);
             }
         }
 
+        // stringify parameters
         String prefix = "?";
-
-        for (Entry<String, String> entry : previousParams.entrySet())
+        for (Entry<String, String> entry : parameters.entrySet())
         {
-            historyString += prefix + jsniFacade.urlEncode(entry.getKey()) + "="
-                    + jsniFacade.urlEncode(entry.getValue());
+            sb.append(prefix).append(jsniFacade.urlEncode(entry.getKey())).append("=")
+                    .append(jsniFacade.urlEncode(entry.getValue()));
             prefix = "&";
         }
 
-        return historyString;
+        return sb.toString();
     }
 
     /**
@@ -348,9 +351,8 @@ public class HistoryHandler implements ValueChangeHandler<String>
      */
     public String getParameterValue(final String key)
     {
-        return values.get(key);
+        return currentValues.get(key);
     }
-
 
     /**
      * Gets the views.
@@ -359,7 +361,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
      */
     public List<String> getViews()
     {
-        return views;
+        return currentViews;
     }
 
     /**
@@ -367,7 +369,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
      */
     public Page getPage()
     {
-        return page;
+        return currentPage;
     }
 
     /**
@@ -375,6 +377,6 @@ public class HistoryHandler implements ValueChangeHandler<String>
      */
     public Map<String, String> getParameters()
     {
-        return Collections.unmodifiableMap(values);
+        return Collections.unmodifiableMap(currentValues);
     }
 }

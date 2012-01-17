@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,41 @@
  */
 package org.eurekastreams.web.client.events;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * History parameters have been updated.
- * 
  */
 public class UpdatedHistoryParametersEvent
 {
-    /**
-     * The parameters.
-     */
-    private HashMap<String, String> paramters;
+    /** The parameters. */
+    private final Map<String, String> parameters;
 
-    /**
-     * View has changed.
-     */
+    /** View has changed. */
     private Boolean viewChanged;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inParameters
      *            the updated parameters.
      * @param inViewChanged
      *            if the view changed.
      */
-    public UpdatedHistoryParametersEvent(final HashMap<String, String> inParameters, final Boolean inViewChanged)
+    public UpdatedHistoryParametersEvent(final Map<String, String> inParameters, final Boolean inViewChanged)
     {
-        paramters = inParameters;
+        parameters = inParameters;
         setViewChanged(inViewChanged);
     }
 
     /**
      * Get the parameters.
-     * 
+     *
      * @return the parameters.
      */
-    public HashMap<String, String> getParameters()
+    public Map<String, String> getParameters()
     {
-        return paramters;
+        return parameters;
     }
 
     /**
@@ -63,7 +58,7 @@ public class UpdatedHistoryParametersEvent
      */
     public void setViewChanged(final Boolean inViewChanged)
     {
-        this.viewChanged = inViewChanged;
+        viewChanged = inViewChanged;
     }
 
     /**

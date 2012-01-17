@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.pages.widget;
+package org.eurekastreams.web.client.ui.connect.widget;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
@@ -21,9 +21,10 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
-import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
+import org.eurekastreams.web.client.ui.connect.support.StreamPanel;
+import org.eurekastreams.web.client.ui.connect.support.WidgetUtilities;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.json.client.JSONArray;

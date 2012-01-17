@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.stream;
+package org.eurekastreams.web.client.ui.connect.support;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
@@ -42,6 +42,10 @@ import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
+import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
+import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
+import org.eurekastreams.web.client.ui.common.stream.StreamSearchStatusWidget;
+import org.eurekastreams.web.client.ui.common.stream.UnseenActivityNotificationPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -56,7 +60,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
- * Page to test advanced search features.
+ * Widget used to display the contents of a stream. NOTE: This widget is only used with the Eureka Connect widgets.
  */
 public class StreamPanel extends FlowPanel
 {
@@ -159,13 +163,12 @@ public class StreamPanel extends FlowPanel
      * Panel to hold a message when the subject is locked.
      */
     private final FlowPanel lockedMessage = new FlowPanel();
-    
+
     /**
      * Sort/search row.
      */
     private final FlowPanel sortSearchRow = new FlowPanel();
 
-    
     /**
      * Feed link widget.
      */
@@ -210,7 +213,7 @@ public class StreamPanel extends FlowPanel
      */
     public StreamPanel(final ShowRecipient inShowRecipients, final ItemRenderer<ActivityDTO> itemRenderer)
     {
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutContainer());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutContainer());
 
         stream = new StreamListPanel(itemRenderer);
         stream.addStyleName(StaticResourceBundle.INSTANCE.coreCss().stream());
@@ -494,9 +497,9 @@ public class StreamPanel extends FlowPanel
      *            the history.
      * @return true if it has changed.
      */
-    private Boolean checkHistory(final HashMap<String, String> history)
+    private boolean checkHistory(final Map<String, String> history)
     {
-        Boolean hasChanged = false;
+        boolean hasChanged = false;
 
         Long newActivityId = 0L;
         Long newStreamId = 0L;

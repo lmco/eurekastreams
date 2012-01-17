@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.stream;
+package org.eurekastreams.web.client.ui.connect.support;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.events.EventBus;

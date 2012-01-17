@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.stream;
+package org.eurekastreams.web.client.ui.connect.support;
 
 import java.util.HashMap;
 
@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;

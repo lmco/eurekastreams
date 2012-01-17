@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,4 +17,4 @@
 /**
  * Contains "pages" for displaying the Eureka Connect widgets.
  */
-package org.eurekastreams.web.client.ui.pages.widget;
+package org.eurekastreams.web.client.ui.connect.widget;
