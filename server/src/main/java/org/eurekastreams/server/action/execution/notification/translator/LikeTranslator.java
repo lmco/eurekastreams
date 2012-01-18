@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.eurekastreams.server.action.execution.notification.NotificationBatch;
 import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
@@ -39,7 +39,7 @@ public class LikeTranslator implements NotificationTranslator<ActivityNotificati
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActivityDAO
      *            For getting activity info.
      */
@@ -50,7 +50,7 @@ public class LikeTranslator implements NotificationTranslator<ActivityNotificati
 
     /**
      * Adds the person for the given entity to the recipient list, if ok to do so.
-     *
+     * 
      * @param entity
      *            Entity from activity (may be null).
      * @param actorId
@@ -58,7 +58,8 @@ public class LikeTranslator implements NotificationTranslator<ActivityNotificati
      * @param recipients
      *            List of recipients.
      */
-    private void addAuthorIfAppropriate(final StreamEntityDTO entity, final long actorId, final List<Long> recipients)
+    private void addAuthorIfAppropriate(final StreamEntityDTO entity, final long actorId,
+            final Collection<Long> recipients)
     {
         if (entity != null && EntityType.PERSON.equals(entity.getType()) && actorId != entity.getId())
         {
@@ -74,7 +75,7 @@ public class LikeTranslator implements NotificationTranslator<ActivityNotificati
     {
         ActivityDTO activity = activityDAO.execute(inRequest.getActivityId());
 
-        List<Long> recipients = new ArrayList<Long>();
+        Collection<Long> recipients = new HashSet<Long>();
         addAuthorIfAppropriate(activity.getActor(), inRequest.getActorId(), recipients);
         addAuthorIfAppropriate(activity.getOriginalActor(), inRequest.getActorId(), recipients);
         if (recipients.isEmpty())
