@@ -71,6 +71,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -174,7 +175,7 @@ public class PostBoxComposite extends Composite
      * UI element for post button.
      */
     @UiField
-    Label postButton;
+    PushButton postButton;
 
     /**
      * UI element for post char count.
@@ -604,26 +605,19 @@ public class PostBoxComposite extends Composite
              */
             public void onClick(final ClickEvent inEvent)
             {
-                // check the bounds of the position at the time this event fires, which is on the mouse up. Make sure
-                // the mouse is inside the bounds of the post button, which allows the user to change their mind and
-                // move the mouse out of the button
-                if (inEvent.getX() >= 0 && inEvent.getY() >= 0 && inEvent.getX() < postButton.getOffsetWidth()
-                        && inEvent.getY() < postButton.getOffsetHeight())
+                if (!postButton.getStyleName().contains(style.postButtonInactive()))
                 {
-                    if (!postButton.getStyleName().contains(style.postButtonInactive()))
-                    {
-                        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                                : new NotePopulator();
+                    ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                            : new NotePopulator();
 
-                        ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
-                                DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
-                                currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
-                        PostActivityRequest postRequest = new PostActivityRequest(activity);
+                    ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
+                            DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
+                            currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
+                    PostActivityRequest postRequest = new PostActivityRequest(activity);
 
-                        ActivityModel.getInstance().insert(postRequest);
+                    ActivityModel.getInstance().insert(postRequest);
 
-                        postButton.addStyleName(style.postButtonInactive());
-                    }
+                    postButton.addStyleName(style.postButtonInactive());
                 }
             }
         });
