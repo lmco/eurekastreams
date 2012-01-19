@@ -966,6 +966,16 @@ Eureka.PostBox = function(text, postcb, maxlength, contentWarning)
 
 		commentInput.css("width", jQuery("body").width() - 30);
 		postComment.append(commentInput);
+		
+		Eureka.EventBus.addObserver("goingBack", function(data) {
+			if (data == 1)
+			{
+				commentInput.val("");
+				postComment.hide();
+				jQuery('.post-count-down').html(maxlength);		
+				jQuery('.post-button').addClass('post-button-disabled');
+			}
+		    });
 
 		var post = jQuery("<div class='post-button post-button-disabled'>Post</div>");
 		post.click(function()
