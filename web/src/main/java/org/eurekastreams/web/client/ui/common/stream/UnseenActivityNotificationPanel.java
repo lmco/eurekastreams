@@ -56,6 +56,11 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     private static final int POLL_TIME_MINUTES = 1;
 
     /**
+     * Whether we're actively listening for new activity counts.
+     */
+    private boolean active = true;
+
+    /**
      * List of IDs of the activities authored by current employee during this session.
      */
     private final List<Long> authoredActivityIds;
@@ -87,77 +92,80 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         // listen to new activities getting posted by this user - ignore those activity ids when they come back from
         // "getActivityIDs" requests
         Session.getInstance().getEventBus()
-        .addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+                .addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
                 {
-            public void update(final MessageStreamAppendEvent response)
-            {
-                authoredActivityIds.add(response.getMessage().getId());
-            }
+                    public void update(final MessageStreamAppendEvent response)
+                    {
+                        authoredActivityIds.add(response.getMessage().getId());
+                    }
                 });
 
         Session.getInstance().getEventBus()
-        .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+                .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
                 {
-            public void update(final GotStreamResponseEvent event)
-            {
-                thisBuffered.setVisible(false);
+                    public void update(final GotStreamResponseEvent event)
+                    {
+                        thisBuffered.setVisible(false);
 
-                // remove job if present and clear job from paused list.
-                Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
+                        // remove job if present and clear job from paused list.
+                        Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
 
-                // Only show unseen activity if sorted by date.
-                if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
-                {
-                    JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
-                    request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
-                                    request);
-                    request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
+                        // Only show unseen activity if sorted by date.
+                        if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
+                        {
+                            JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
+                            request = StreamJsonRequestFactory.setMinId(
+                                    event.getStream().getPagedSet().get(0).getId(), request);
+                            request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
-                    // add and configure
-                    Session.getInstance()
-                    .getTimer()
-                    .addTimerJob("getUnseenActivityJob", POLL_TIME_MINUTES,
-                            UnseenActivityIDsForViewModel.getInstance(), request.toString(), false);
-                }
-            }
+                            // add and configure
+                            Session.getInstance()
+                                    .getTimer()
+                                    .addTimerJob("getUnseenActivityJob", POLL_TIME_MINUTES,
+                                            UnseenActivityIDsForViewModel.getInstance(), request.toString(), false);
+                        }
+                    }
                 });
 
         Session.getInstance()
-        .getEventBus()
-        .addObserver(GotUnseenActivitiesCountResponseEvent.class,
-                new Observer<GotUnseenActivitiesCountResponseEvent>()
-                {
-            public void update(final GotUnseenActivitiesCountResponseEvent ev)
-            {
-                ArrayList<Long> activityIds = new ArrayList<Long>();
-                activityIds.addAll(ev.getResponse());
+                .getEventBus()
+                .addObserver(GotUnseenActivitiesCountResponseEvent.class,
+                        new Observer<GotUnseenActivitiesCountResponseEvent>()
+                        {
+                            public void update(final GotUnseenActivitiesCountResponseEvent ev)
+                            {
+                                if (isActive())
+                                {
+                                    ArrayList<Long> activityIds = new ArrayList<Long>();
+                                    activityIds.addAll(ev.getResponse());
 
-                // Remove any from this list that we've posted ourself
-                activityIds.removeAll(authoredActivityIds);
+                                    // Remove any from this list that we've posted ourself
+                                    activityIds.removeAll(authoredActivityIds);
 
-                if (activityIds.size() > 0)
-                {
-                    thisBuffered.setVisible(true);
-                    if (activityIds.size() == 1)
-                    {
-                        unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
-                                + "</strong> new update</div>");
-                    }
-                    else
-                    {
-                        unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
-                                + "</strong> new updates</div>");
-                    }
-                }
-                else
-                {
-                    thisBuffered.setVisible(false);
-                }
-            }
-                });
+                                    if (activityIds.size() > 0)
+                                    {
+                                        thisBuffered.setVisible(true);
+                                        if (activityIds.size() == 1)
+                                        {
+                                            unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
+                                                    + "</strong> new update</div>");
+                                        }
+                                        else
+                                        {
+                                            unseenActivityCount.setHTML("<div><strong>" + activityIds.size()
+                                                    + "</strong> new updates</div>");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        thisBuffered.setVisible(false);
+                                    }
+                                }
+                            }
+                        });
 
         EventBus.getInstance().addObserver(ChangeActivityModeEvent.class, new Observer<ChangeActivityModeEvent>()
-                {
+        {
             public void update(final ChangeActivityModeEvent event)
             {
                 if (event.isSingleMode())
@@ -165,6 +173,24 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                     Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
                 }
             }
-                });
+        });
     }
+
+    /**
+     * @return the active
+     */
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    /**
+     * @param inActive
+     *            the active to set
+     */
+    public void setActive(final boolean inActive)
+    {
+        active = inActive;
+    }
+
 }
