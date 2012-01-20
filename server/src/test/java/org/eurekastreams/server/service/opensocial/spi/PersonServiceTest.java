@@ -166,7 +166,7 @@ public class PersonServiceTest
 
     /**
      * Test the getPerson method in the PersonService implementation.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -201,7 +201,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing an Exception.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -233,7 +233,7 @@ public class PersonServiceTest
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -265,7 +265,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing a NumberFormatException.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -277,7 +277,7 @@ public class PersonServiceTest
 
     /**
      * This test covers retrieving multiple people specified by a set of user ids.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -317,7 +317,7 @@ public class PersonServiceTest
 
     /**
      * This test covers retrieving multiple people specified by a set of user ids.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -356,7 +356,7 @@ public class PersonServiceTest
     /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     *
+     * 
      * @throws Exception
      *             - on unhandled errors.
      */
@@ -372,16 +372,10 @@ public class PersonServiceTest
         {
             {
                 allowing(mockToken).getViewerId();
-                will(returnValue(USERID_ONE));
+                will(throwException(new GeneralException()));
 
                 allowing(principalDao).execute(USERID_ONE);
                 will(returnValue(principal));
-
-                allowing(principal).getAccountId();
-
-                allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(any(ServiceAction.class)));
-                will(throwException(new GeneralException()));
             }
         });
 

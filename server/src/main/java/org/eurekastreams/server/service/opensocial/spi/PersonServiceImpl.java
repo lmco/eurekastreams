@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.opensocial.spi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +62,7 @@ import com.google.inject.name.Named;
 /**
  * This class is the Eureka Streams implementation of the Shindig interface for retrieving OpenSocial information about
  * People.
- *
+ * 
  */
 public class PersonServiceImpl implements PersonService
 {
@@ -100,7 +101,7 @@ public class PersonServiceImpl implements PersonService
 
     /**
      * Basic constructor for the PersonService implementation.
-     *
+     * 
      * @param inGetPeopleAction
      *            - this is the GetPeopleAction that is injected into this class with Spring. This action is used to
      *            retrieve multiple person objects in a single request.
@@ -118,7 +119,8 @@ public class PersonServiceImpl implements PersonService
      *            Top-level domain used for users' accounts.
      */
     @Inject
-    public PersonServiceImpl(@Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
+    public PersonServiceImpl(
+            @Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
             @Named("getFollowing") final ServiceAction inGetFollowingAction,
             @Named("openSocialPrincipalDaoTransWrapped") final DomainMapper<String, Principal> inOpenSocialPrincipalDao,
             final ActionController inServiceActionController,
@@ -136,7 +138,7 @@ public class PersonServiceImpl implements PersonService
     /**
      * This is the implementation method to retrieve a number of people generally associated with a group or by a set of
      * userids.
-     *
+     * 
      * @param userIds
      *            - set of userids to retrieve.
      * @param groupId
@@ -147,10 +149,11 @@ public class PersonServiceImpl implements PersonService
      *            - fields to retrieve with these users.
      * @param token
      *            - security token for this request.
-     *
+     * 
      * @return instance of person
-     *
+     * 
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Future<RestfulCollection<Person>> getPeople(final Set<UserId> userIds, final GroupId groupId,
             final CollectionOptions collectionOptions, final Set<String> fields, final SecurityToken token)
@@ -191,12 +194,33 @@ public class PersonServiceImpl implements PersonService
 
                 log.debug("Sending getPeople userIdList to action: " + userIdList.toString());
 
-                GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList,
-                        groupId.getType().toString().toLowerCase());
+                // This is iterating through the list to avoid failing entire call for users that are not
+                // in the Eureka db.
+                people = new LinkedList<PersonModelView>();
+                for (String userId : userIdList)
+                {
+                    GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(
+                            Arrays.asList(userId), groupId.getType().toString().toLowerCase());
 
-                ServiceActionContext currentContext = new ServiceActionContext(currentRequest, getPrincipal(token));
+                    ServiceActionContext currentContext = new ServiceActionContext(currentRequest, getPrincipal(token));
+                    PersonModelView result = null;
+                    try
+                    {
+                        result = ((LinkedList<PersonModelView>) serviceActionController.execute(currentContext,
+                                getPeopleAction)).getFirst();
+                    }
+                    catch (Exception e)
+                    {
+                        log.warn("Requested user: " + userId + " was requested, but not found in eureka system");
+                    }
 
-                people = (LinkedList<PersonModelView>) serviceActionController.execute(currentContext, getPeopleAction);
+                    if (result == null)
+                    {
+                        result = createNonUserPersonModelView(userId);
+                    }
+
+                    people.add(result);
+                }
             }
 
             if (log.isDebugEnabled())
@@ -219,18 +243,40 @@ public class PersonServiceImpl implements PersonService
     }
 
     /**
+     * Create bogus PersonModelView for users not in system.
+     * 
+     * @param userId
+     *            requested userId.
+     * @return Bogus PersonModelView for users not in system.
+     */
+    private PersonModelView createNonUserPersonModelView(final String userId)
+    {
+        PersonModelView nonUser = new PersonModelView();
+        // Populate the OpenSocial person properties.
+        nonUser.setDisplayName(userId);
+        nonUser.setOpenSocialId(userId);
+        nonUser.setDescription("Non Eureka user");
+        nonUser.setAccountId(userId);
+        nonUser.setEmail("nonEurekaUser@lmco.com");
+        nonUser.setAvatarId(null);
+
+        return nonUser;
+    }
+
+    /**
      * This is the implementation of the getPerson method specified by Shindig. This is how Shindig's OpenSocial api
      * will interact with our database.
-     *
+     * 
      * @param id
      *            - userid making the request.
      * @param fields
      *            - set of fields to be retrieved with this request.
      * @param token
      *            - token that goes with this request.
-     *
+     * 
      * @return instance of Person object
      */
+    @Override
     public Future<Person> getPerson(final UserId id, final Set<String> fields, final SecurityToken token)
     {
         log.trace("Entering getPerson");
@@ -258,15 +304,15 @@ public class PersonServiceImpl implements PersonService
             userIdList.add(openSocialId);
 
             // Build up request to retrieve a single person.
-            GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList, Type.all
-                    .toString());
+            GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList,
+                    Type.all.toString());
 
             // Create the actionContext
             PrincipalActionContext ac = new ServiceActionContext(currentRequest, getPrincipal(token));
 
             // execute action.
-            LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(
-                    ac, getPeopleAction);
+            LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(ac,
+                    getPeopleAction);
 
             if (people.size() > 0)
             {
@@ -294,7 +340,7 @@ public class PersonServiceImpl implements PersonService
      * opensocial information about a user. The authentication is handled within shindig, not here. There may be a need
      * for an authorization strategy to not allow this access even if you have anonymous auth configured in shindig.
      * TODO: Put in authorization strategy for the underlying action.
-     *
+     * 
      * @param inSecurityToken
      *            - current security token for the request.
      * @return Principal object based on the security token or null if an anonymous request.
@@ -311,7 +357,7 @@ public class PersonServiceImpl implements PersonService
 
     /**
      * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
-     *
+     * 
      * @param inPerson
      *            - eurekastreams person to be converted.
      * @return converted person object.
@@ -331,8 +377,7 @@ public class PersonServiceImpl implements PersonService
         osPerson.setEmails(emailList);
 
         AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
-        osPerson.setThumbnailUrl(containerBaseUrl
-                + generator.getNormalAvatarUrl(inPerson.getAvatarId()));
+        osPerson.setThumbnailUrl(containerBaseUrl + generator.getNormalAvatarUrl(inPerson.getAvatarId()));
 
         osPerson.setAccounts(Collections.singletonList((Account) new AccountImpl(accountTopLevelDomain, null, inPerson
                 .getAccountId())));
