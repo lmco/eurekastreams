@@ -17,6 +17,7 @@ package org.eurekastreams.server.service.restlets;
 
 import java.util.Date;
 
+import org.restlet.data.Cookie;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
@@ -41,7 +42,9 @@ public class EstablishSessionResource extends SmpResource
 
     /**
      * Constructor.
-     * @param inSessionCookieName session cookie name.
+     * 
+     * @param inSessionCookieName
+     *            session cookie name.
      */
     public EstablishSessionResource(final String inSessionCookieName)
     {
@@ -68,6 +71,14 @@ public class EstablishSessionResource extends SmpResource
     @Override
     protected void initParams(final Request request)
     {
-        sessionId = request.getCookies().getFirst("JSESSIONID", true).getValue();
+        Cookie cookie = request.getCookies().getFirst("JSESSIONID", true);
+        
+        if (cookie != null)
+        {
+            sessionId = cookie.getValue();
+        }
+        else {
+            sessionId = "NULL";
+        }
     }
 }
