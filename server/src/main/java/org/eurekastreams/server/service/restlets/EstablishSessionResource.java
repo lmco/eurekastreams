@@ -68,6 +68,6 @@ public class EstablishSessionResource extends SmpResource
     @Override
     protected void initParams(final Request request)
     {
-        sessionId = request.getCookies().getFirst("JSESSIONID").getValue();
+        sessionId = request.getCookies().getFirst("JSESSIONID", true).getValue();
     }
 }
