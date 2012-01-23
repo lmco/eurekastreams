@@ -23,6 +23,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
 import org.restlet.data.Form;
+import org.restlet.data.Parameter;
 import org.restlet.data.Request;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContext;
@@ -145,7 +146,15 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
             {
                 logger.debug("Checking headers");
                 Form httpHeaders = (Form) inTransformType.getAttributes().get("org.restlet.http.headers");
-
+                
+                if (httpHeaders.iterator() != null) 
+                {
+                    for(Parameter p : httpHeaders)
+                    {
+                        logger.debug("Header:" + p.getName() + "=" + p.getValue());
+                    }
+                }
+                
                 if (httpHeaders.getFirstValue(sessionHeaderName, true) != null)
                 {
                     String headerSessionId = httpHeaders.getFirstValue(sessionHeaderName, true);

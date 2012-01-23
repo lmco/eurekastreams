@@ -53,6 +53,7 @@
 			}
 			
 			@sprite body .postButtonInactive {
+				cursor: auto;
 				gwt-image: "postInactive";
 			}
 			

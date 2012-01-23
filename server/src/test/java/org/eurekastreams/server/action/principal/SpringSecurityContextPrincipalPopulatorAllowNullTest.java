@@ -242,9 +242,12 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
 
                 oneOf(cookie).getValue();
                 will(returnValue(sessionId));
-
+                
                 allowing(request).getAttributes();
                 will(returnValue(attribs));
+                
+                oneOf(headers).iterator();
+                will(returnValue(null));
 
                 allowing(headers).getFirstValue("sessionid", true);
                 will(returnValue(sessionId));
@@ -279,6 +282,9 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
 
                 allowing(request).getAttributes();
                 will(returnValue(attribs));
+                
+                oneOf(headers).iterator();
+                will(returnValue(null));
 
                 allowing(headers).getFirstValue("sessionid", true);
                 will(returnValue("adsf"));
