@@ -237,7 +237,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
                 oneOf(request).getCookies();
                 will(returnValue(cookies));
 
-                oneOf(cookies).getFirst("JSESSIONID");
+                oneOf(cookies).getFirst("JSESSIONID", true);
                 will(returnValue(cookie));
 
                 oneOf(cookie).getValue();
@@ -274,7 +274,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
                 oneOf(request).getCookies();
                 will(returnValue(cookies));
 
-                oneOf(cookies).getFirst("JSESSIONID");
+                oneOf(cookies).getFirst("JSESSIONID", true);
                 will(returnValue(cookie));
 
                 oneOf(cookie).getValue();
@@ -310,7 +310,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
                 oneOf(request).getCookies();
                 will(returnValue(cookies));
 
-                oneOf(cookies).getFirst("JSESSIONID");
+                oneOf(cookies).getFirst("JSESSIONID", true);
                 will(returnValue(cookie));
 
                 oneOf(cookie).getValue();
