@@ -19,9 +19,9 @@ import java.util.HashMap;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.ui.common.stream.transformers.ActivityStreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -35,13 +35,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a bookmark object.
- *
+ * 
  */
 public class BookmarkRenderer implements ObjectRenderer
 {
     /**
      * Renders the bookmark attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
@@ -87,7 +87,7 @@ public class BookmarkRenderer implements ObjectRenderer
 
     /**
      * Gets the base URL (host name and protocol) from a url.
-     *
+     * 
      * @param url
      *            the url.
      * @return the base url.
@@ -105,7 +105,7 @@ public class BookmarkRenderer implements ObjectRenderer
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
@@ -118,12 +118,12 @@ public class BookmarkRenderer implements ObjectRenderer
             return null;
         }
         activityContent = SafeHtmlUtils.htmlEscape(activityContent);
-        
+
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
-        
+
         // then transform hashtags to hyperlinks
-        html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
+        html = new HashtagLinkTransformer(new ActivityStreamSearchLinkBuilder(activity)).transform(html);
         HTML widget = new HTML(html);
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
