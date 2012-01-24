@@ -164,7 +164,7 @@ public class PagedListPanel extends FlowPanel
 
         navPanel = new FlowPanel();
         navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
-        navPanel.add(filterContainer);
+        this.add(filterContainer);
         navPanel.add(sortContainer);
         this.add(navPanel);
 
