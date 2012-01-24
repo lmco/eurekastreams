@@ -72,12 +72,13 @@ public class EstablishSessionResource extends SmpResource
     protected void initParams(final Request request)
     {
         Cookie cookie = request.getCookies().getFirst("JSESSIONID", true);
-        
+
         if (cookie != null)
         {
             sessionId = cookie.getValue();
         }
-        else {
+        else
+        {
             sessionId = "NULL";
         }
     }
