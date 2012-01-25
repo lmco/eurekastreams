@@ -136,7 +136,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNull implements Princip
         final Principal principal = getPrincipal(null, "");
         if (principal != null && verifySession)
         {
-            String sessionId = inTransformType.getCookies().getFirst(sessionCookieName).getValue();
+            String sessionId = inTransformType.getCookies().getFirst(sessionCookieName, true).getValue();
 
             boolean sessionMatch = false;
 
