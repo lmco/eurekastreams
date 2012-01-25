@@ -169,6 +169,8 @@ public class ActionResource extends SmpResource
         try
         {
             paramsJSON = URLDecoder.decode((String) request.getAttributes().get("paramsJSON"), "UTF-8");
+            //restore replaced backslash characters which are not allowed in the path section of a URL
+            paramsJSON = paramsJSON.replaceAll("<BSLASH>", "\\\\");
         }
         catch (UnsupportedEncodingException ex)
         {
