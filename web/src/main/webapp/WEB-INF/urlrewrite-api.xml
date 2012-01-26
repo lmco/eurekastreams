@@ -16,7 +16,12 @@
 	<!-- FULL API -->
 
 	<rule>
-		<from>^/api/0/(preauthfull|full|read)/([^/]*)/(.*)$</from>
+		<from>^/api/0/preauthfull/(\w+)$</from>
+		<to last="true">/newresources/apipreauth/executeSingle?apiName=$1</to>
+	</rule>
+
+	<rule>
+		<from>^/api/0/(full|read)/([^/]*)/(.*)$</from>
 		<to last="true">/resources/api/0/$1/$2/$3</to>
 	</rule>
 	

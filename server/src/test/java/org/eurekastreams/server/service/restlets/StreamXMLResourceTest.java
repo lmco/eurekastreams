@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,13 +42,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContext;
-import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Test for system filter restlet.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class StreamXMLResourceTest
@@ -66,27 +63,22 @@ public class StreamXMLResourceTest
     /**
      * Action.
      */
-    private ServiceAction action = context.mock(ServiceAction.class);
+    private final ServiceAction action = context.mock(ServiceAction.class);
 
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
+    private final ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
 
     /**
      * Principal populator.
      */
-    private PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
+    private final PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
 
     /**
      * Stream mapper.
      */
-    private FindByIdMapper<Stream> streamMapper = context.mock(FindByIdMapper.class);
-
-    /**
-     * Mocked security context.
-     */
-    private SecurityContext securityContext = context.mock(SecurityContext.class);
+    private final FindByIdMapper<Stream> streamMapper = context.mock(FindByIdMapper.class);
 
     /**
      * System under test.
@@ -97,11 +89,6 @@ public class StreamXMLResourceTest
      * Results.
      */
     private PagedSet<ActivityDTO> results = null;
-
-    /**
-     * Mocked authentication.
-     */
-    private Authentication auth = context.mock(Authentication.class);
 
     /**
      * Setup.
@@ -156,7 +143,7 @@ public class StreamXMLResourceTest
 
     /**
      * Test.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -170,22 +157,13 @@ public class StreamXMLResourceTest
         attributes.put("query", "");
         attributes.put("mode", "query");
 
-        SecurityContext originalContext = SecurityContextHolder.getContext();
-        SecurityContextHolder.setContext(securityContext);
-
         context.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(securityContext).getAuthentication();
-                will(returnValue(auth));
-
-                oneOf(auth).getName();
-                will(returnValue("guid"));
-
-                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(null, null);
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -195,13 +173,12 @@ public class StreamXMLResourceTest
         sut.initParams(request);
 
         Representation actual = sut.represent(null);
-        SecurityContextHolder.setContext(originalContext);
         context.assertIsSatisfied();
     }
 
     /**
      * Test.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -216,22 +193,13 @@ public class StreamXMLResourceTest
         attributes.put("query", query);
         attributes.put("mode", "query");
 
-        SecurityContext originalContext = SecurityContextHolder.getContext();
-        SecurityContextHolder.setContext(securityContext);
-
         context.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(securityContext).getAuthentication();
-                will(returnValue(auth));
-
-                oneOf(auth).getName();
-                will(returnValue("guid"));
-
-                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(null, null);
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -241,13 +209,12 @@ public class StreamXMLResourceTest
         sut.initParams(request);
 
         Representation actual = sut.represent(null);
-        SecurityContextHolder.setContext(originalContext);
         context.assertIsSatisfied();
     }
 
     /**
      * Test representing as ATOM with a bad request.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -263,22 +230,13 @@ public class StreamXMLResourceTest
         attributes.put("query", query);
         attributes.put("mode", "query");
 
-        SecurityContext originalContext = SecurityContextHolder.getContext();
-        SecurityContextHolder.setContext(securityContext);
-
         context.checking(new Expectations()
         {
             {
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(securityContext).getAuthentication();
-                will(returnValue(auth));
-
-                oneOf(auth).getName();
-                will(returnValue("guid"));
-
-                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(null, null);
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(throwException(new Exception("Something went wrong")));
@@ -289,13 +247,12 @@ public class StreamXMLResourceTest
 
         Representation actual = sut.represent(null);
 
-        SecurityContextHolder.setContext(originalContext);
         context.assertIsSatisfied();
     }
 
     /**
      * Test representing as JSON with a service exception.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -310,9 +267,6 @@ public class StreamXMLResourceTest
         attributes.put("query", query);
         attributes.put("mode", "query");
 
-        SecurityContext originalContext = SecurityContextHolder.getContext();
-        SecurityContextHolder.setContext(securityContext);
-
         context.checking(new Expectations()
         {
             {
@@ -324,7 +278,6 @@ public class StreamXMLResourceTest
         sut.initParams(request);
 
         Representation actual = sut.represent(null);
-        SecurityContextHolder.setContext(originalContext);
         context.assertIsSatisfied();
     }
 }

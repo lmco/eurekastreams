@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class EstablishSessionResource extends SmpResource
     /**
      * Session cookie name.
      */
-    private String sessionCookieName;
+    private final String sessionCookieName;
 
     /**
      * Session ID.
@@ -42,7 +42,7 @@ public class EstablishSessionResource extends SmpResource
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSessionCookieName
      *            session cookie name.
      */
@@ -53,7 +53,7 @@ public class EstablishSessionResource extends SmpResource
 
     /**
      * GET the session.
-     * 
+     *
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -72,12 +72,13 @@ public class EstablishSessionResource extends SmpResource
     protected void initParams(final Request request)
     {
         Cookie cookie = request.getCookies().getFirst("JSESSIONID", true);
-        
+
         if (cookie != null)
         {
             sessionId = cookie.getValue();
         }
-        else {
+        else
+        {
             sessionId = "NULL";
         }
     }

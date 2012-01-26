@@ -16,6 +16,7 @@
         <property name="urlMap">
         	<map>
         		<entry key="/emailcontact/**" value-ref="emailContactController" />
+        		<entry key="/apipreauth/**" value-ref="actionApiController" />
         	</map>
         </property>
     </bean>
@@ -38,6 +39,27 @@
 		<property name="url" value="/conf/templates/STREAM_EMAIL_CONTACT.vcf" />
 		<property name="velocityEngine" ref="velocityEngine" />
 		<property name="contentType" value="text/x-vcard" />
+	</bean>
+
+	<!-- autowire="constructor" is used to provide the BeanFactory without having to make ActionExecutor implement
+		BeanFactoryAware.  All other constructor arguments are explicitly specified, since we don't want Spring to
+		autowire them.  -->
+	<bean id="actionApiController" class="org.eurekastreams.web.services.ActionApiController" autowire="constructor">
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg>
+			<list>
+				<ref bean="springSecurityContextPrincipalPopulatorAllowNull" />
+			</list>
+		</constructor-arg>
+		<constructor-arg ref="clientExtractors" />
+		<constructor-arg>
+			<bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+		</constructor-arg>
+		<constructor-arg ref="jsonFieldObjectExtractor" />
+		<constructor-arg value="false" type="boolean" />
+		<constructor-arg ref="actionTypeMap" />
+		<constructor-arg ref="actionRewriteMap" />
+		<constructor-arg value="${eureka.fullapi.verifysession}" type="boolean" />
 	</bean>
 
 </beans>

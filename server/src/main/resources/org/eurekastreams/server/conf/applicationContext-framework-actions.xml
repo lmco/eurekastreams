@@ -44,18 +44,14 @@
 	-->
 
     <bean id="principalPopulator"
-        class="org.eurekastreams.server.action.principal.SpringSecurityPrincipalPopulator" />
-
-    <bean id="springSecurityContextPrincipalPopulatorAllowNull" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
-        <constructor-arg value="false" />    
-        <constructor-arg value="JSESSIONID" />    
-        <constructor-arg value="X-Sessionid" />    
+        class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulator">
+        <constructor-arg value="true" />
     </bean>
-    <bean id="springSecurityContextPrincipalPopulatorAllowNullRequireSession" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull">
-        <constructor-arg value="${eureka.fullapi.verifysession}" />
-        <constructor-arg value="JSESSIONID" />    
-        <constructor-arg value="X-Sessionid" />  
-	</bean>
+
+    <bean id="springSecurityContextPrincipalPopulatorAllowNull"
+        class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulator">
+        <constructor-arg value="false" />
+    </bean>
 	
     <bean id="serviceActionController" class="org.eurekastreams.commons.server.service.ServiceActionController">
         <constructor-arg ref="transactionManager"/>

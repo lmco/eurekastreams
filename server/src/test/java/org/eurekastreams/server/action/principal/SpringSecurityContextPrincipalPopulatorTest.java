@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,8 @@ package org.eurekastreams.server.action.principal;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
 import org.jmock.Expectations;
@@ -29,19 +27,15 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-import org.restlet.data.Cookie;
-import org.restlet.data.Form;
 import org.restlet.data.Request;
-import org.restlet.util.Series;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 
 /**
- * Test for SpringSecurityContextPrincipalPopulatorAllowNull.
- *
+ * Test for SpringSecurityContextPrincipalPopulator.
  */
-public class SpringSecurityContextPrincipalPopulatorAllowNullTest
+public class SpringSecurityContextPrincipalPopulatorTest
 {
 
     /**
@@ -71,30 +65,21 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
     /** Fixture: user details. */
     private final ExtendedUserDetails extUserDetails = context.mock(ExtendedUserDetails.class);
 
-    /** Fixture: cookie list. */
-    private final Series<Cookie> cookies = context.mock(Series.class);
-
-    /** Fixture: cookie. */
-    private final Cookie cookie = context.mock(Cookie.class);
-
-    /** Fixture: headers. */
-    private final Form headers = context.mock(Form.class);
-
     /**
      * Performs the core of running the test, including saving/restoring the security context.
-     *
-     * @param verifySession
-     *            If the SUT should be configured to verify the session.
+     * 
+     * @param exceptionOnError
+     *            If the SUT should be configured to throw exceptions on error.
      * @return Result of invoking SUT.
      */
-    private Principal runTest(final boolean verifySession)
+    private Principal runTest(final boolean exceptionOnError)
     {
         // Save off the current security context, so that it can be reset when this test is complete.
         SecurityContext originalSecurityContext = SecurityContextHolder.getContext();
         SecurityContextHolder.setContext(securityContext);
 
-        SpringSecurityContextPrincipalPopulatorAllowNull sut = new SpringSecurityContextPrincipalPopulatorAllowNull(
-                verifySession, "JSESSIONID", "sessionid");
+        SpringSecurityContextPrincipalPopulator sut = new SpringSecurityContextPrincipalPopulator(
+exceptionOnError);
 
         Principal result;
         try
@@ -151,7 +136,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
             }
         });
 
-        assertNull(runTest(false));
+        assertNull(runTest(true));
     }
 
     /**
@@ -171,7 +156,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
             }
         });
 
-        assertNull(runTest(false));
+        assertNull(runTest(true));
     }
 
     /**
@@ -218,111 +203,7 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
     public void testSuccess()
     {
         expectValidPrincipal();
-        assertNotNull(runTest(false));
-    }
-
-    /**
-     * Test and verify session.
-     */
-    @Test
-    public void testSuccessVerifySession()
-    {
-        final String sessionId = "123";
-        final Map<String, Object> attribs = new HashMap<String, Object>();
-        attribs.put("org.restlet.http.headers", headers);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(request).getCookies();
-                will(returnValue(cookies));
-
-                oneOf(cookies).getFirst("JSESSIONID", true);
-                will(returnValue(cookie));
-
-                oneOf(cookie).getValue();
-                will(returnValue(sessionId));
-                
-                allowing(request).getAttributes();
-                will(returnValue(attribs));
-                
-                oneOf(headers).iterator();
-                will(returnValue(null));
-
-                allowing(headers).getFirstValue("sessionid", true);
-                will(returnValue(sessionId));
-            }
-        });
-
-        expectValidPrincipal();
         assertNotNull(runTest(true));
-    }
-
-    /**
-     * Test and verify session.
-     */
-    @Test
-    public void testVerifySessionWrongSession()
-    {
-        final String sessionId = "123";
-        final Map<String, Object> attribs = new HashMap<String, Object>();
-        attribs.put("org.restlet.http.headers", headers);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(request).getCookies();
-                will(returnValue(cookies));
-
-                oneOf(cookies).getFirst("JSESSIONID", true);
-                will(returnValue(cookie));
-
-                oneOf(cookie).getValue();
-                will(returnValue(sessionId));
-
-                allowing(request).getAttributes();
-                will(returnValue(attribs));
-                
-                oneOf(headers).iterator();
-                will(returnValue(null));
-
-                allowing(headers).getFirstValue("sessionid", true);
-                will(returnValue("adsf"));
-            }
-        });
-
-        expectValidPrincipal();
-        assertNull(runTest(true));
-    }
-
-    /**
-     * Test and verify session.
-     */
-    @Test
-    public void testVerifySessionNoHeader()
-    {
-        final String sessionId = "123";
-        final Map<String, Object> attribs = new HashMap<String, Object>();
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(request).getCookies();
-                will(returnValue(cookies));
-
-                oneOf(cookies).getFirst("JSESSIONID", true);
-                will(returnValue(cookie));
-
-                oneOf(cookie).getValue();
-                will(returnValue(sessionId));
-
-                allowing(request).getAttributes();
-                will(returnValue(attribs));
-            }
-        });
-
-        expectValidPrincipal();
-        assertNull(runTest(true));
     }
 
     /**
@@ -340,5 +221,22 @@ public class SpringSecurityContextPrincipalPopulatorAllowNullTest
         });
 
         assertNull(runTest(false));
+    }
+
+    /**
+     * Test.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testExceptionThrow()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(securityContext).getAuthentication();
+                will(throwException(new Exception()));
+            }
+        });
+
+        assertNull(runTest(true));
     }
 }

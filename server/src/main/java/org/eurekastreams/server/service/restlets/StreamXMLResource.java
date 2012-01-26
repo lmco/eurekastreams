@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-import org.springframework.security.context.SecurityContextHolder;
 
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
@@ -56,29 +55,29 @@ import com.sun.syndication.io.SyndFeedOutput;
 
 /**
  * REST end point for stream filters.
- * 
+ *
  */
 public class StreamXMLResource extends SmpResource
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(StreamResource.class);
+    private final Log log = LogFactory.getLog(StreamResource.class);
 
     /**
      * Action.
      */
-    private ServiceAction action;
+    private final ServiceAction action;
 
     /**
      * Service Action Controller.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Principal populator.
      */
-    private PrincipalPopulator principalPopulator;
+    private final PrincipalPopulator principalPopulator;
 
     /**
      * Used for testing.
@@ -107,15 +106,15 @@ public class StreamXMLResource extends SmpResource
     private long streamId;
 
     /** Extracts the query out of the request path. */
-    private RestletQueryRequestParser requestParser;
+    private final RestletQueryRequestParser requestParser;
     /**
      * The base url for eurkea.
      */
-    private String baseUrl;
+    private final String baseUrl;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inAction
      *            the action.
      * @param inServiceActionController
@@ -143,7 +142,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * init the params.
-     * 
+     *
      * @param request
      *            the request object.
      */
@@ -161,7 +160,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * GET the activites.
-     * 
+     *
      * @param variant
      *            the variant.
      * @return the ATOM.
@@ -225,13 +224,11 @@ public class StreamXMLResource extends SmpResource
             }
 
             log.debug("Making request using: " + queryJson);
-            String acctId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator.getPrincipal(
-                    acctId, ""));
+            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(),
+                    principalPopulator.getPrincipal(null, null));
 
-            PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
-                    (ServiceActionContext) ac, action);
+            PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(ac, action);
 
             feed.setUri(baseUrl + getRequest().getResourceRef().getPath());
 
@@ -331,7 +328,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * Overrides the request path.
-     * 
+     *
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -342,7 +339,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * Get the request path.
-     * 
+     *
      * @return the path.
      */
     public String getPath()
