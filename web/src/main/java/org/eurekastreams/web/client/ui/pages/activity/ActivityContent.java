@@ -89,6 +89,7 @@ import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamSearchStatusWidget;
 import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
+import org.eurekastreams.web.client.ui.common.stream.UnseenActivityNotificationPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StickyActivityRenderer;
@@ -153,77 +154,77 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         *
+         * 
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         *
+         * 
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         *
+         * 
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         *
+         * 
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         *
+         * 
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         *
+         * 
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         *
+         * 
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         *
+         * 
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         *
+         * 
          * @return small avatar style.
          */
         String smallAvatar();
 
         /**
          * Current user configure link.
-         *
+         * 
          * @return current user configure link.
          */
         String currentUserConfLink();
 
         /**
          * Message when no bookmarks exist.
-         *
+         * 
          * @return message when no bookmarks exist.
          */
         String noBookmarksMessage();
@@ -370,6 +371,12 @@ public class ActivityContent extends Composite
     Anchor getEmailContactLink;
 
     /**
+     * Panel for unseen activity notifications - hidden when viewing a single activity.
+     */
+    @UiField
+    UnseenActivityNotificationPanel unseenActivityNotificationPanel;
+
+    /**
      * Message Renderer.
      */
     StreamMessageItemRenderer renderer = new StreamMessageItemRenderer(ShowRecipient.YES);
@@ -503,7 +510,7 @@ public class ActivityContent extends Composite
 
     /**
      * If the entity still needs to be received before making the activity query.
-     *
+     * 
      * Explanation: Fetching the activities for a group requires knowing which activity is sticky so it can be excluded
      * on the query. So the query must be built in loadStream and the DomainGroupModelView must be recieved.
      * Unfortunately, the event bus notifies inline instead of queuing, thus the call to the GroupModel in loadStream
@@ -612,17 +619,19 @@ public class ActivityContent extends Composite
 
         moreSpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
         noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+        unseenActivityNotificationPanel.setActive(true);
     }
 
     /**
      * Got activity.
-     *
+     * 
      * @param event
      *            the event.
      */
     private void gotActivity(final GotActivityResponseEvent event)
     {
         streamPanel.clear();
+        unseenActivityNotificationPanel.setActive(false);
         activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
         if (event.getResponse() != null)
@@ -690,6 +699,7 @@ public class ActivityContent extends Composite
                 else
                 {
                     streamPanel.clear();
+                    unseenActivityNotificationPanel.setActive(true);
                     activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
                     streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
@@ -917,7 +927,7 @@ public class ActivityContent extends Composite
 
     /**
      * Processing when group information is received.
-     *
+     * 
      * @param group
      *            The group.
      */
@@ -964,6 +974,7 @@ public class ActivityContent extends Composite
             errorPanel.add(button);
 
             streamPanel.clear();
+            unseenActivityNotificationPanel.setActive(true);
         }
         else
         {
@@ -1018,7 +1029,7 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     *
+     * 
      * @param inViews
      *            the views.
      */
@@ -1422,7 +1433,7 @@ public class ActivityContent extends Composite
 
     /**
      * Update subscription status consistently.
-     *
+     * 
      * @param inIsSubscribed
      *            New status.
      */
@@ -1435,7 +1446,7 @@ public class ActivityContent extends Composite
     /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     *
+     * 
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
@@ -1447,7 +1458,7 @@ public class ActivityContent extends Composite
 
     /**
      * Append a new message.
-     *
+     * 
      * @param message
      *            the messa.ge
      */
@@ -1461,7 +1472,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     *
+     * 
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1684,7 +1695,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     *
+     * 
      * @param panel
      *            the panel.
      */
@@ -1723,7 +1734,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     *
+     * 
      * @param name
      *            the name of the item.
      * @param view

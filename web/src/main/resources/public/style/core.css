@@ -1481,7 +1481,7 @@ body .post-expanded-panel .content-warning {
 
 .search-list-ie input {
 	background-attachment: fixed;
-	background-position: 84px 11px;
+	background-position: 113px 11px;
 }
 
 .search-list input {
@@ -5365,10 +5365,8 @@ body .stream-view-dialog .delete-button {
 }
 
 .gallery .options.views {
-	position: absolute;
 	width: 180px;
 	margin-top: 54px;
-	left: 20px;
 }
 
 .gallery .options.views .gwt-Label,.directory .options.views .gwt-Label
@@ -5377,7 +5375,7 @@ body .stream-view-dialog .delete-button {
 }
 
 .gallery .connection-master {
-	padding-left: 200px;
+	/*padding-left: 200px;*/
 }
 
 .gallery .options.views a,.directory .options.views a {
@@ -5686,7 +5684,8 @@ body .stream-view-dialog .delete-button {
 	padding-bottom: 10px;
 	padding-top: 10px;
 	font-size: 12px;
-	clear: both;
+	margin-left: 180px;
+	width: auto;
 }
 
 .gadget-meta-data .edit-button,.stream-plugins-meta-data .edit-button {

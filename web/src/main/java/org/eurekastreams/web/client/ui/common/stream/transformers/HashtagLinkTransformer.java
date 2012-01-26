@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.transformers;
 
-import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.strategies.HashTagExtractor;
 import org.eurekastreams.server.domain.strategies.Substring;
 
@@ -51,7 +50,7 @@ public class HashtagLinkTransformer
      */
     public String transform(final String content)
     {
-        return transform(content, null, null);
+        return transform(content, null);
     }
 
     /**
@@ -60,14 +59,12 @@ public class HashtagLinkTransformer
      * 
      * @param content
      *            the content to transform
-     * @param page
-     *            the page that the hashtag links should point to
-     * @param view
-     *            the view within the page that the hashtag links should point to
+     * @param streamSourceId
+     *            the stream source ID that the hashtag links should point to
      * @return a transformation of the input content with all valid hashtags that aren't already inside a hyperlink tag
      *         to hyperlink tags with links to search the stream with the input view id
      */
-    public String transform(final String content, final Page page, final String view)
+    public String transform(final String content, final Long streamSourceId)
     {
         HashTagExtractor hashTagExtractor = new HashTagExtractor();
 
@@ -87,9 +84,7 @@ public class HashtagLinkTransformer
             sb.append(content.substring(pos, hashTag.getStartIndex()));
 
             // add the linked hashtag
-            String url = page != null && view != null ? streamSearchLinkBuilder.buildHashtagSearchLink(
-                    hashTag.getContent(), page, view) : streamSearchLinkBuilder.buildHashtagSearchLink(
-                    hashTag.getContent(), null);
+            String url = streamSearchLinkBuilder.buildHashtagSearchLink(hashTag.getContent(), streamSourceId);
             sb.append("<a href=\"" + url + "\">" + hashTag.getContent() + "</a>");
 
             pos = hashTag.getStartIndex() + hashTag.getLength();

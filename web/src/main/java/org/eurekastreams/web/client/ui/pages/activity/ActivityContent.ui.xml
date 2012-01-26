@@ -405,7 +405,7 @@
 					ui:field="errorPanel"></g:FlowPanel>
 				<stream:StreamSearchStatusWidget
 					ui:field="streamSearchStatusWidget"></stream:StreamSearchStatusWidget>
-				<stream:UnseenActivityNotificationPanel></stream:UnseenActivityNotificationPanel>
+				<stream:UnseenActivityNotificationPanel ui:field="unseenActivityNotificationPanel"></stream:UnseenActivityNotificationPanel>
 				<div class="{style.sticky-activity-holder}" ui:field="stickyActivityArea">
 					<div class="{style.sticky-activity-pin}" />
 					<g:SimplePanel ui:field="stickyActivityHolder" />
