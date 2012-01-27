@@ -181,8 +181,15 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onSessionInitFailure(final Throwable caught)
     {
-        final Label errLabel = new Label(MAINTENANCE_MSG);
-        RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
+        if (caught.getMessage().startsWith("LOGIN_DISABLED"))
+        {
+            Window.Location.assign(ACCESS_DENIED_PAGE);
+        }
+        else
+        {
+            final Label errLabel = new Label(MAINTENANCE_MSG);
+            RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
+        }
     }
 
     /**
