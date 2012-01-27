@@ -187,7 +187,7 @@ public class ConnectEntryPoint implements EntryPoint
         }
         else
         {
-            final Label errLabel = new Label(MAINTENANCE_MSG);
+            final Label errLabel = new Label(MAINTENANCE_MSG + "; " + caught.getMessage());
             RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
         }
     }
@@ -221,7 +221,7 @@ public class ConnectEntryPoint implements EntryPoint
             }
         }
 
-        final Label errLabel = new Label(MAINTENANCE_MSG);
+        final Label errLabel = new Label(MAINTENANCE_MSG + "; error building page");
         RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
