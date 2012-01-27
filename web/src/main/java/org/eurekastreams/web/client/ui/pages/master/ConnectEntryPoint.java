@@ -46,10 +46,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConnectEntryPoint implements EntryPoint
 {
+    /**
+     * Relative URL of page to redirect to for users without access.
+     */
+    private static final String ACCESS_DENIED_PAGE = "/requestaccess.html";
+    
     /** Maintenance message. */
     private static final String MAINTENANCE_MSG = // \n
     "Eureka is down for maintenance and will be back as soon as possible.";
-
+    
     /**
      * Mandatory ID for the HTML element in which to create the widget.
      */
@@ -188,8 +193,7 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onPersonFetchFailure(final Throwable caught)
     {
-        final Label errLabel = new Label(MAINTENANCE_MSG);
-        RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
+        Window.Location.assign(ACCESS_DENIED_PAGE);
     }
 
     /**
