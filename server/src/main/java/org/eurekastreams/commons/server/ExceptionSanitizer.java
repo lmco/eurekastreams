@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.exceptions.InvalidActionException;
+import org.eurekastreams.commons.exceptions.SessionException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -62,6 +63,10 @@ public class ExceptionSanitizer implements Transformer<Exception, Exception>
         else if (ex instanceof NoSuchBeanDefinitionException)
         {
             return new GeneralException("Invalid action.");
+        }
+        else if (ex instanceof SessionException)
+        {
+            return new SessionException();
         }
         else
         {

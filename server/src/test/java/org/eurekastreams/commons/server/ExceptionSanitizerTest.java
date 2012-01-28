@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.exceptions.InvalidActionException;
+import org.eurekastreams.commons.exceptions.SessionException;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.junit.Test;
@@ -153,6 +155,19 @@ public class ExceptionSanitizerTest
         assertTrue(exOut instanceof GeneralException);
         assertTrue(exOut.getCause() == null || exOut.getCause() == exOut);
         assertTrue(!exOut.getMessage().equals(exIn.getMessage()));
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testSessionException()
+    {
+        Exception exIn = new SessionException("Inner message");
+        Exception exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof SessionException);
+        assertTrue(exOut.getCause() == null || exOut.getCause() == exOut);
+        assertTrue(StringUtils.isEmpty(exOut.getMessage()) || !exOut.getMessage().equals(exIn.getMessage()));
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.client.ActionRequest;
+import org.eurekastreams.commons.exceptions.InvalidActionException;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.springframework.beans.factory.BeanFactory;
@@ -58,7 +59,7 @@ public class ActionExecutor
 
     /**
      * Constructor.
-     * 
+     *
      * @param inBeanFactory
      *            The context from which this service can load action beans.
      * @param inServiceActionController
@@ -136,7 +137,7 @@ public class ActionExecutor
             }
             else
             {
-                throw new IllegalArgumentException("Supplied bean is not an executable action.");
+                throw new InvalidActionException("Supplied bean is not an executable action.");
             }
 
             // //////////////////////////////////////////////

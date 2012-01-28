@@ -17,6 +17,9 @@ package org.eurekastreams.web.services;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +32,16 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 import org.eurekastreams.commons.actions.context.ClientPrincipalActionContextImpl;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
+import org.eurekastreams.commons.exceptions.InvalidActionException;
+import org.eurekastreams.commons.exceptions.SessionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
@@ -63,6 +71,9 @@ public class ActionApiController
     /** Service Action Controller. */
     private final ActionController serviceActionController;
 
+    /** Prepares exceptions for returning to the client. */
+    private final Transformer<Exception, Exception> exceptionSanitizer;
+
     /** Principal populators. */
     private final List<Transformer<Request, Principal>> principalExtractors;
 
@@ -87,17 +98,27 @@ public class ActionApiController
     /** If the session should be verified. */
     private boolean verifySession = true;
 
+    /** JSON object mapper. */
+    private final ObjectMapper jsonObjectMapper;
+
+    /** List of fields to be excluded when serializing an exception. */
+    private Collection<String> exceptionFieldBlackList;
+
     /**
      * Default constructor.
      *
      * @param inServiceActionController
      *            the action controller.
+     * @param inExceptionSanitizer
+     *            Prepares exceptions for returning to the client.
      * @param inPrincipalExtractors
      *            the principal extractors.
      * @param inClientExtractors
      *            Strategies to extract the client.
      * @param inJsonFactory
      *            the json factory.
+     * @param inJsonObjectMapper
+     *            JSON object mapper.
      * @param inJsonFieldObjectExtractor
      *            Extracts request from the parameters block.
      * @param inReadOnly
@@ -112,22 +133,28 @@ public class ActionApiController
      *            The context from which this service can load action beans.
      */
     public ActionApiController(final ActionController inServiceActionController,
+            final Transformer<Exception, Exception> inExceptionSanitizer,
             final List<Transformer<Request, Principal>> inPrincipalExtractors,
             final List<Transformer<Request, String>> inClientExtractors, final JsonFactory inJsonFactory,
+            final ObjectMapper inJsonObjectMapper,
             final JsonFieldObjectExtractor inJsonFieldObjectExtractor, final boolean inReadOnly,
             final Map<String, String> inActionTypes, final Map<String, String> inActionRewrites,
             final boolean inVerifySession, final BeanFactory inBeanFactory)
     {
         serviceActionController = inServiceActionController;
+        exceptionSanitizer = inExceptionSanitizer;
         principalExtractors = inPrincipalExtractors;
         clientExtractors = inClientExtractors;
         jsonFactory = inJsonFactory;
+        jsonObjectMapper = inJsonObjectMapper;
         jsonFieldObjectExtractor = inJsonFieldObjectExtractor;
         readOnly = inReadOnly;
         actionTypes = inActionTypes;
         actionRewrites = inActionRewrites;
         verifySession = inVerifySession;
         beanFactory = inBeanFactory;
+
+        generateExceptionFieldBlackList();
     }
 
     /**
@@ -147,70 +174,122 @@ public class ActionApiController
      *             Only if setting an HTTP error code throws an error.
      */
     @RequestMapping(value = "executeSingle", method = RequestMethod.POST)
-    public void executeSingle(@RequestParam(value = "apiName", required = false) final String apiName,
-            @RequestParam(value = "sessionId", required = false) final String claimedSessionId,
-            @RequestParam(value = "parameters", required = false) final String parameters,
+    public void executeSingle(@RequestParam(value = "apiName", required = true) final String apiName,
+            @RequestParam(value = "sessionId", required = true) final String claimedSessionId,
+            @RequestParam(value = "parameters", required = true) final String parameters,
             final HttpServletRequest request, final HttpServletResponse response) throws IOException
     {
         try
         {
-            // verify session
-            if (verifySession)
-            {
-                // get real session
-                HttpSession session = request.getSession();
-                if (session == null)
-                {
-                    throw new Exception("Request has no session.");
-                }
-                String realSessionId = session.getId();
-                if (StringUtils.isBlank(realSessionId))
-                {
-                    throw new Exception("Request session has no valid ID.");
-                }
+            // do the main work
+            Serializable result = coreExecuteSingle(apiName, claimedSessionId, parameters, request);
 
-                // compare with claimed session
-                if (!realSessionId.equals(claimedSessionId))
-                {
-                    throw new Exception("Provided session ID does not match request session ID.");
-                }
+            // write headers - prevent caching
+            response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+            response.addHeader("Pragma", "no-cache");
+
+            // serialize
+            ActionApiTransport container = new ActionApiTransport();
+            JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(response.getWriter());
+            if (result instanceof Exception)
+            {
+                Exception ex = (Exception) result;
+                final Exception exClean = exceptionSanitizer.transform(ex);
+                log.error("Error performing action via API.  Will return sanitized exception.", ex);
+
+                container.setSuccess(false);
+                container.setResult(exClean);
+
+                // modify the exception to suit how we want to serialize it
+                JsonNode tree = jsonObjectMapper.valueToTree(container);
+                ObjectNode resultNode = (ObjectNode) tree.get("result");
+                resultNode.remove(exceptionFieldBlackList);
+                resultNode.put("type", exClean.getClass().getName());
+
+                jsonObjectMapper.writeTree(jsonGenerator, tree);
+            }
+            else
+            {
+                container.setSuccess(true);
+                container.setResult(result);
+
+                jsonObjectMapper.writeValue(jsonGenerator, container);
+            }
+        }
+        catch (Exception ex)
+        {
+            log.error("Error performing action via API.  Will return HTTP error.", ex);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Core logic for executeSingle.
+     *
+     * @param apiName
+     *            API action name.
+     * @param claimedSessionId
+     *            Session ID provided by the client (for XSRF prevention).
+     * @param parameters
+     *            Request parameter data as a JSON string.
+     * @param request
+     *            HTTP request.
+     * @return The object to return to the client: action result data or an exception.
+     */
+    private Serializable coreExecuteSingle(final String apiName, final String claimedSessionId,
+            final String parameters, final HttpServletRequest request)
+    {
+        // verify session
+        if (verifySession)
+        {
+            // get real session
+            HttpSession session = request.getSession();
+            if (session == null)
+            {
+                return new SessionException("Request has no session.");
+            }
+            String realSessionId = session.getId();
+            if (StringUtils.isBlank(realSessionId))
+            {
+                return new SessionException("Request session has no valid ID.");
             }
 
-            // get the principal (throws if none available)
-            Principal principal = getPrincipal(request);
-
-            // Skip determining the client - this flavor of the API is intended for preauth, so it would be directly
-            // accessed by a user's app and thus the client would not apply. (Client is used for OAuth scenarios where
-            // an app is accessing the API on behalf of a user.) When this code is updated/refactored to fully replace
-            // ActionResource (the Noelios version of the API), then determining the client will need to be done.
-
-            // determine request type
-            String actionName = actionRewrites.containsKey(apiName) ? actionRewrites.get(apiName) : apiName;
-            String requestType = actionTypes.get(actionName);
-            if (requestType == null)
+            // compare with claimed session
+            if (!realSessionId.equals(claimedSessionId))
             {
-                response.sendError(response.SC_NOT_FOUND);
-                log.error("Request for unknown API '{}'.", actionName);
-                return;
+                log.error("Provided session ID '{}' does not match request session ID '{}'.", claimedSessionId,
+                        realSessionId);
+                return new SessionException("Provided session ID does not match request session ID.");
             }
+        }
 
+        // get the principal (throws if none available)
+        Principal principal = getPrincipal(request);
+
+        // Skip determining the client - this flavor of the API is intended for preauth, so it would be directly
+        // accessed by a user's app and thus the client would not apply. (Client is used for OAuth scenarios where
+        // an app is accessing the API on behalf of a user.) When this code is updated/refactored to fully replace
+        // ActionResource (the Noelios version of the API), then determining the client will need to be done.
+
+        // determine request type
+        String actionName = actionRewrites.containsKey(apiName) ? actionRewrites.get(apiName) : apiName;
+        String requestType = actionTypes.get(actionName);
+        if (requestType == null)
+        {
+            return new InvalidActionException(String.format("Request for unknown API '%s'.", actionName));
+        }
+
+        try
+        {
             // get action parameter
             Serializable actionParameter = getRequestObject(parameters, requestType);
 
             // execute the action
-            Serializable actionResult = performAction(actionName, actionParameter, principal, "");
-
-            // prepare the response
-            response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-            response.addHeader("Pragma", "no-cache");
-
-            JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(response.getWriter());
-            jsonGenerator.writeObject(actionResult);
+            return performAction(actionName, actionParameter, principal, "");
         }
         catch (Exception ex)
         {
-            log.error("Error performing action via API", ex);
-            response.sendError(response.SC_INTERNAL_SERVER_ERROR);
+            return ex;
         }
     }
 
@@ -242,12 +321,12 @@ public class ActionApiController
 
     /**
      * Go from JSON to Request object.
-     * 
+     *
      * @param parameters
      *            Request parameter data as a JSON string.
      * @param requestType
      *            Name of the Java data type described by the request data.
-     * 
+     *
      * @return the request object.
      * @throws Exception
      *             possible exceptions.
@@ -313,11 +392,31 @@ public class ActionApiController
         }
         else if (springBean == null)
         {
-            throw new ExecutionException(String.format("Unknown bean '%s'.", actionName));
+            throw new InvalidActionException(String.format("Unknown bean '%s'.", actionName));
         }
         else
         {
-            throw new ExecutionException(String.format("Bean '%s' is not an action.", actionName));
+            throw new InvalidActionException(String.format("Bean '%s' is not an action.", actionName));
         }
+    }
+
+    /**
+     * Build the list of fields to be excluded when serializing an exception.
+     */
+    private void generateExceptionFieldBlackList()
+    {
+        // get list of fields in a basic Exception, use them all except 'message'
+        JsonNode tree = jsonObjectMapper.valueToTree(new Exception());
+        exceptionFieldBlackList = new ArrayList<String>(tree.size());
+        Iterator<String> iter = tree.getFieldNames();
+        while (iter.hasNext())
+        {
+            String fn = iter.next();
+            if (!"message".equals(fn))
+            {
+                exceptionFieldBlackList.add(fn);
+            }
+        }
+
     }
 }
