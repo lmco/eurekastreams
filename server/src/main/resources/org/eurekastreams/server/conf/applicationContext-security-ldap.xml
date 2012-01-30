@@ -25,6 +25,7 @@
         <intercept-url pattern="/org.eurekastreams.web.Application.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/*.cache.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/requestaccess.html" filters="none"/>
+        <intercept-url pattern="/requestaccess_connect.html" filters="none"/>
         <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/gwt-dnd.css" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/" access="ROLE_ANONYMOUS, ROLE_USER"/>
