@@ -38,7 +38,19 @@
   	
   	<bean id="messageProcessor" class="org.eurekastreams.server.service.email.MessageProcessor" autowire="constructor">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.service.email.MessageContentExtractor" />
+			<bean class="org.eurekastreams.server.service.email.MessageContentExtractor">
+				<constructor-arg>
+					<list>
+						<value>&#13;&#10;From: </value>
+					</list>
+				</constructor-arg>
+				<constructor-arg>
+					<list>
+						<value>&#13;&#10;-+\s*Original Message\s*-+&#13;&#10;</value>
+						<value>&#13;&#10;On [^&#13;&#10;]+,[^&#13;&#10;]+(?:&#13;&#10;)?[^&#13;&#10;]+ wrote:&#13;&#10;</value>
+					</list>
+				</constructor-arg>
+			</bean>
 		</constructor-arg>
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.service.email.ActionSelectorFactory" />

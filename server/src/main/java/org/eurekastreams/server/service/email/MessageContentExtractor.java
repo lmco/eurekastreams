@@ -16,6 +16,9 @@
 package org.eurekastreams.server.service.email;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,9 +44,33 @@ public class MessageContentExtractor
     /** Log. */
     private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
 
-    /** Compiled regex for extracting markdown links. */
-    private final Pattern replyMarkerRegex = Pattern.compile("\r\n-+\\s*Original Message\\s*-+\r\n",
-            Pattern.CASE_INSENSITIVE);
+    /** List of literal string that mark the beginning of a reply message. */
+    private final Collection<String> replyMarkersLiteral;
+
+    /** List of regex patterns that mark the beginning of a reply message. */
+    private final Collection<Pattern> replyMarkersRegex;
+
+    /**
+     * Constructor.
+     * 
+     * @param inReplyMarkersLiteral
+     *            List of literal string that mark the beginning of a reply message.
+     * @param inReplyMarkersRegex
+     *            List of regex patterns that mark the beginning of a reply message.
+     */
+    public MessageContentExtractor(final Collection<String> inReplyMarkersLiteral,
+            final Collection<String> inReplyMarkersRegex)
+    {
+        replyMarkersLiteral = inReplyMarkersLiteral == null ? Collections.EMPTY_LIST : inReplyMarkersLiteral;
+        replyMarkersRegex = new ArrayList<Pattern>();
+        if (inReplyMarkersRegex != null)
+        {
+            for (String regex : inReplyMarkersRegex)
+            {
+                replyMarkersRegex.add(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
+            }
+        }
+    }
 
     /**
      * Extracts the user-provided content from an email.
@@ -133,17 +160,26 @@ public class MessageContentExtractor
         }
 
         // look for the beginning of a forwarded or replied message
-        int end1 = content.indexOf("\r\nFrom: ");
-        Matcher matcher = replyMarkerRegex.matcher(content);
-        int end2 = matcher.find() ? matcher.start() : -1;
-        int end;
-        if (end1 < 0)
+        int end = content.length();
+        for (String marker : replyMarkersLiteral)
         {
-            end = end2 < 0 ? content.length() : end2;
+            int pos = content.indexOf(marker);
+            if (pos >= 0 && pos < end)
+            {
+                end = pos;
+            }
         }
-        else
+        for (Pattern regex : replyMarkersRegex)
         {
-            end = end2 < 0 ? end1 : Math.min(end1, end2);
+            Matcher matcher = regex.matcher(content);
+            if (matcher.find())
+            {
+                int pos = matcher.start();
+                if (pos < end)
+                {
+                    end = pos;
+                }
+            }
         }
 
         // remove trailing newlines and whitespace
