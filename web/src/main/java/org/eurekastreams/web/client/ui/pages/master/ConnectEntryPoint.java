@@ -49,7 +49,7 @@ public class ConnectEntryPoint implements EntryPoint
     /**
      * Relative URL of page to redirect to for users without access.
      */
-    private static final String ACCESS_DENIED_PAGE = "/requestaccess.html";
+    private static final String ACCESS_DENIED_PAGE = "/requestaccess_connect.html";
     
     /** Maintenance message. */
     private static final String MAINTENANCE_MSG = // \n
