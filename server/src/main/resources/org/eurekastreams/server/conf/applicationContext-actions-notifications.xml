@@ -271,6 +271,7 @@
         <constructor-arg ref="tokenContentFormatter" />
 		<constructor-arg ref="tokenContentEmailAddressBuilder" />
 		<constructor-arg ref="postActivityCommentAuthorizer" />
+		<constructor-arg value="${eureka.notification.mail.sendHtml}" />
     </bean>
 	
 	

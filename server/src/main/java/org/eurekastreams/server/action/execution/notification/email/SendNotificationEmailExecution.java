@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,10 @@ public class SendNotificationEmailExecution implements ExecutionStrategy<ActionC
 
             emailer.setSubject(message, request.getSubject());
             emailer.setTextBody(message, request.getTextBody());
-            emailer.setHtmlBody(message, request.getHtmlBody());
+            if (StringUtils.isNotBlank(request.getHtmlBody()))
+            {
+                emailer.setHtmlBody(message, request.getHtmlBody());
+            }
             if (StringUtils.isNotBlank(request.getToRecipient()))
             {
                 emailer.setTo(message, request.getToRecipient());

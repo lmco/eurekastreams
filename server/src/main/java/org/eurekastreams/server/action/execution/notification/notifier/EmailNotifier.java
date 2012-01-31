@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,9 @@ public class EmailNotifier implements Notifier
     /** For determining if users can comment on an activity. */
     private final ActivityInteractionAuthorizationStrategy activityAuthorizer;
 
+    /** If HTML emails will be sent. (These will be multipart with a plain text component.) */
+    private final boolean sendHtml;
+
     /**
      * Constructor.
      *
@@ -88,12 +91,14 @@ public class EmailNotifier implements Notifier
      *            Builds the recipient email address with a token.
      * @param inActivityAuthorizer
      *            For determining if users can comment on an activity.
+     * @param inSendHtml
+     *            If HTML emails will be sent. (These will be multipart with a plain text component.)
      */
     public EmailNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
             final Map<NotificationType, EmailNotificationTemplate> inTemplates, final String inSubjectPrefix,
             final TokenContentFormatter inTokenContentFormatter,
             final TokenContentEmailAddressBuilder inTokenAddressBuilder,
-            final ActivityInteractionAuthorizationStrategy inActivityAuthorizer)
+            final ActivityInteractionAuthorizationStrategy inActivityAuthorizer, final boolean inSendHtml)
     {
         velocityEngine = inVelocityEngine;
         velocityGlobalContext = inVelocityGlobalContext;
@@ -102,6 +107,7 @@ public class EmailNotifier implements Notifier
         tokenContentFormatter = inTokenContentFormatter;
         tokenAddressBuilder = inTokenAddressBuilder;
         activityAuthorizer = inActivityAuthorizer;
+        sendHtml = inSendHtml;
     }
 
     /**
@@ -230,31 +236,41 @@ public class EmailNotifier implements Notifier
         }
 
         // build the HTML body
-        vt = velocityEngine.getTemplate(template.getHtmlBodyTemplateResourcePath());
-        // HTML-escape all content inserted
-        EventCartridge ec = new EventCartridge();
-        ec.addEventHandler(new EscapeHtmlReference());
-        ec.attachToContext(velocityContext);
-        if (!addresses.isEmpty())
+        if (sendHtml)
         {
-            velocityContext.put("hasReplyAddress", false);
-            writer.getBuffer().setLength(0);
-            vt.merge(velocityContext, writer);
-            noReplyHtmlBody = writer.toString();
-        }
-        if (!addressesWithTokens.isEmpty())
-        {
-            velocityContext.put("hasReplyAddress", true);
-            writer.getBuffer().setLength(0);
-            vt.merge(velocityContext, writer);
-            replyHtmlBody = writer.toString();
+            final String htmlBodyTemplateResourcePath = template.getHtmlBodyTemplateResourcePath();
+            if (htmlBodyTemplateResourcePath != null)
+            {
+                vt = velocityEngine.getTemplate(htmlBodyTemplateResourcePath);
+                // HTML-escape all content inserted
+                EventCartridge ec = new EventCartridge();
+                ec.addEventHandler(new EscapeHtmlReference());
+                ec.attachToContext(velocityContext);
+                if (!addresses.isEmpty())
+                {
+                    velocityContext.put("hasReplyAddress", false);
+                    writer.getBuffer().setLength(0);
+                    vt.merge(velocityContext, writer);
+                    noReplyHtmlBody = writer.toString();
+                }
+                if (!addressesWithTokens.isEmpty())
+                {
+                    velocityContext.put("hasReplyAddress", true);
+                    writer.getBuffer().setLength(0);
+                    vt.merge(velocityContext, writer);
+                    replyHtmlBody = writer.toString();
+                }
+            }
         }
 
         // -- create requests to send emails --
         if (!addressesWithTokens.isEmpty())
         {
             email.setTextBody(replyTextBody);
-            email.setHtmlBody(replyHtmlBody);
+            if (replyHtmlBody != null)
+            {
+                email.setHtmlBody(replyHtmlBody);
+            }
             for (Entry<String, String> entry : addressesWithTokens.entrySet())
             {
                 NotificationEmailDTO userEmail = email.clone();
@@ -270,7 +286,10 @@ public class EmailNotifier implements Notifier
         if (!addresses.isEmpty())
         {
             email.setTextBody(noReplyTextBody);
-            email.setHtmlBody(noReplyHtmlBody);
+            if (noReplyHtmlBody != null)
+            {
+                email.setHtmlBody(noReplyHtmlBody);
+            }
 
             if (addresses.size() == 1)
             {

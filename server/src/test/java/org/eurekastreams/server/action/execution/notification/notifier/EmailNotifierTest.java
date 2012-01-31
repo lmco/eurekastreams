@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,18 +202,29 @@ public class EmailNotifierTest
     }
 
     /**
-     * Setup before each test.
+     * Setup for testing.
+     *
+     * @param sendHtml
+     *            If HTML emails should be built.
      */
-    @Before
-    public void setUp()
+    private void setup(final boolean sendHtml)
     {
         sut = new EmailNotifier(velocityEngine, velocityGlobalContext, templates, PREFIX, tokenContentFormatter,
-                tokenAddressBuilder, activityAuthorizer);
+                tokenAddressBuilder, activityAuthorizer, sendHtml);
 
         recipientIndex.clear();
         recipientIndex.put(RECIPIENT1, person1);
         recipientIndex.put(RECIPIENT2, person2);
         recipientIndex.put(RECIPIENT3, person3a);
+    }
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        setup(true);
     }
 
     /**
@@ -580,6 +591,79 @@ public class EmailNotifierTest
 
         NotificationEmailDTO request = assertGetSingleResult(results);
         assertTrue(request.isHighPriority());
+    }
+
+    // ----- NON-HTML TESTS -----
+
+    /**
+     * Test.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testNoHtmlTemplate() throws Exception
+    {
+        EmailNotificationTemplate template = new EmailNotificationTemplate();
+        template.setSubject(SUBJECT_TEMPLATE);
+        template.setTextBody(TEXT_BODY_RESOURCE);
+
+        sut = new EmailNotifier(velocityEngine, velocityGlobalContext, Collections.singletonMap(
+                NOTIFICATION_TYPE_NO_REPLY, template), PREFIX, tokenContentFormatter, tokenAddressBuilder,
+                activityAuthorizer, true);
+
+        recipientIndex.clear();
+        recipientIndex.put(RECIPIENT1, person1);
+        recipientIndex.put(RECIPIENT2, person2);
+        recipientIndex.put(RECIPIENT3, person3a);
+
+        commonSetup();
+
+        recipientIndex.put(RECIPIENT2, person2a);
+
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_NO_REPLY, recipients,
+                Collections.EMPTY_MAP, recipientIndex);
+        mockery.assertIsSatisfied();
+
+        NotificationEmailDTO request = assertGetSingleResult(results);
+        assertNull(request.getHtmlBody());
+        assertEquals(TEXT_BODY_RENDERED, request.getTextBody());
+        assertEquals(PREFIX + SUBJECT_RENDERED, request.getSubject());
+        assertEquals(EMAIL1, request.getToRecipient());
+        assertTrue(request.getBccRecipients() == null || request.getBccRecipients().isEmpty());
+        assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
+        assertFalse(request.isHighPriority());
+        assertNull(request.getReplyTo());
+    }
+
+    /**
+     * Test.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testDisableHtml() throws Exception
+    {
+        setup(false);
+
+        commonSetup();
+
+        recipientIndex.put(RECIPIENT2, person2a);
+
+        Collection<UserActionRequest> results = sut.notify(NOTIFICATION_TYPE_NO_REPLY, recipients,
+                Collections.EMPTY_MAP, recipientIndex);
+        mockery.assertIsSatisfied();
+
+        NotificationEmailDTO request = assertGetSingleResult(results);
+        assertNull(request.getHtmlBody());
+        assertEquals(TEXT_BODY_RENDERED, request.getTextBody());
+        assertEquals(PREFIX + SUBJECT_RENDERED, request.getSubject());
+        assertEquals(EMAIL1, request.getToRecipient());
+        assertTrue(request.getBccRecipients() == null || request.getBccRecipients().isEmpty());
+        assertTrue(request.getDescription() != null && !request.getDescription().isEmpty());
+        assertFalse(request.isHighPriority());
+        assertNull(request.getReplyTo());
     }
 
     // ----- ANOMALY TESTS -----

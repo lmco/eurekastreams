@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package org.eurekastreams.server.service.email;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -38,6 +40,10 @@ public class MessageContentExtractor
 {
     /** Log. */
     private final Logger log = LoggerFactory.getLogger(LogFactory.getClassName());
+
+    /** Compiled regex for extracting markdown links. */
+    private final Pattern replyMarkerRegex = Pattern.compile("\r\n-+\\s*Original Message\\s*-+\r\n",
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * Extracts the user-provided content from an email.
@@ -127,10 +133,17 @@ public class MessageContentExtractor
         }
 
         // look for the beginning of a forwarded or replied message
-        int end = content.indexOf("\r\nFrom: ");
-        if (end == -1)
+        int end1 = content.indexOf("\r\nFrom: ");
+        Matcher matcher = replyMarkerRegex.matcher(content);
+        int end2 = matcher.find() ? matcher.start() : -1;
+        int end;
+        if (end1 < 0)
         {
-            end = content.length();
+            end = end2 < 0 ? content.length() : end2;
+        }
+        else
+        {
+            end = end2 < 0 ? end1 : Math.min(end1, end2);
         }
 
         // remove trailing newlines and whitespace
