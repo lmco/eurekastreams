@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class MessageContentExtractorTest
 
     /**
      * Helper method: builds a multipart email part.
-     * 
+     *
      * @param topLevel
      *            If part should be a Message.
      * @param parts
@@ -98,7 +98,7 @@ public class MessageContentExtractorTest
 
     /**
      * Helper method: builds a content email part.
-     * 
+     *
      * @param type
      *            MIME type string.
      * @param isAttachment
@@ -213,5 +213,25 @@ public class MessageContentExtractorTest
         String result = sut.extract(msg);
         context.assertIsSatisfied();
         assertEquals("From: A\r\n\tFrom: B\r\n  \t\t  From: C\r\n\r\n From: D", result);
+    }
+
+    /**
+     * Tests parsing: "Original Message" check.
+     * 
+     * @throws IOException
+     *             Won't.
+     * @throws MessagingException
+     *             Won't.
+     */
+    @Test
+    public void testParse2() throws MessagingException, IOException
+    {
+        Message msg = (Message) makeMultipart(
+                true,
+                makeContentPart("text/plain", false,
+                        " From: A\r\n\tFrom: B\r\n-----Original Message-----\r\nFrom: C\r\n\r\n From: D\r\nFrom: E"));
+        String result = sut.extract(msg);
+        context.assertIsSatisfied();
+        assertEquals("From: A\r\n\tFrom: B", result);
     }
 }

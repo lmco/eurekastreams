@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,14 +70,21 @@ public class SendNotificationEmailExecutionTest
 
     /**
      * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new SendNotificationEmailExecution(emailer);
+    }
+
+    /**
+     * Setup for most tests.
      *
      * @throws MessagingException
      *             Won't.
      */
-    @Before
-    public void setUp() throws MessagingException
+    private void commonSetup() throws MessagingException
     {
-        sut = new SendNotificationEmailExecution(emailer);
         request = new NotificationEmailDTO();
         request.setSubject(SUBJECT);
         request.setTextBody(TEXT_BODY);
@@ -106,6 +113,7 @@ public class SendNotificationEmailExecutionTest
     @Test
     public void testExecute() throws MessagingException
     {
+        commonSetup();
         request.setToRecipient(TO_RECIPIENT);
         request.setBccRecipients(BCC_RECIPIENTS);
         request.setHighPriority(true);
@@ -136,8 +144,50 @@ public class SendNotificationEmailExecutionTest
      *             Won't.
      */
     @Test
+    public void testExecuteNoHtml() throws MessagingException
+    {
+        request = new NotificationEmailDTO();
+        request.setSubject(SUBJECT);
+        request.setTextBody(TEXT_BODY);
+        request.setDescription("whatever");
+        request.setToRecipient(TO_RECIPIENT);
+        request.setBccRecipients(BCC_RECIPIENTS);
+        request.setHighPriority(true);
+        final String replyTo = "replyto@eurekastreams.org";
+        request.setReplyTo(replyTo);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(emailer).createMessage();
+                will(returnValue(message));
+
+                oneOf(emailer).setSubject(message, SUBJECT);
+                oneOf(emailer).setTextBody(message, TEXT_BODY);
+                oneOf(emailer).setTo(message, TO_RECIPIENT);
+                oneOf(emailer).setBcc(message, BCC_RECIPIENTS);
+                oneOf(emailer).setReplyTo(message, replyTo);
+                oneOf(message).addHeader("Importance", "high");
+                oneOf(message).addHeader("X-Priority", "1");
+                oneOf(emailer).sendMail(with(same(message)));
+            }
+        });
+
+        sut.execute(TestContextCreator.createPrincipalActionContext(request, null));
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests execute.
+     * 
+     * @throws MessagingException
+     *             Won't.
+     */
+    @Test
     public void testExecuteBlankRecipients() throws MessagingException
     {
+        commonSetup();
         request.setToRecipient("");
         request.setBccRecipients("");
 
@@ -162,6 +212,7 @@ public class SendNotificationEmailExecutionTest
     @Test
     public void testExecuteNullRecipients() throws MessagingException
     {
+        commonSetup();
         context.checking(new Expectations()
         {
             {
@@ -183,6 +234,7 @@ public class SendNotificationEmailExecutionTest
     @Test(expected = ExecutionException.class)
     public void testExecuteException() throws MessagingException
     {
+        commonSetup();
         context.checking(new Expectations()
         {
             {
