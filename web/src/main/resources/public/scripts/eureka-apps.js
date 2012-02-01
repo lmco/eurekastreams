@@ -437,9 +437,6 @@ Eureka.ExpandableSectionContainer = function()
         var title = jQuery("<div class='title-bar clickable'></div>");
         section.append(title);
         var expandButton = jQuery("<span></span>");
-        title.append(expandButton);
-        
-        title.append("<span><strong> " + titleText + "</strong></span>");
         
         if (isEditable)
         {
@@ -468,6 +465,10 @@ Eureka.ExpandableSectionContainer = function()
         {
             title.append(additionalButton);
         }
+
+        // these two are not float right. List them last, because the float-right buttons act silly otherwise
+        title.append(expandButton);
+        title.append("<span><strong> " + titleText + "</strong></span>");
         
         this.sectionCount++;
 
