@@ -27,11 +27,15 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.CommentBodyTransformer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.content.ContentParser;
+import org.eurekastreams.web.client.ui.common.stream.renderers.content.ContentSegment;
+import org.eurekastreams.web.client.ui.common.stream.renderers.content.ParsedContentRenderer;
+import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -60,11 +64,14 @@ public class CommentPanel extends Composite
     private final EffectsFacade effects = new EffectsFacade();
 
     /** For converting to HTML. */
-    private final CommentBodyTransformer commentBodyTransformer = new CommentBodyTransformer(jsniFacade);
+    private final ParsedContentRenderer contentRenderer = new ParsedContentRenderer();
+
+    /** For determining link URLs. */
+    private final StreamSearchLinkBuilder searchLinkBuilder = new StreamSearchLinkBuilder();
 
     /**
      * Default constructor.
-     * 
+     *
      * @param comment
      *            the comment.
      */
@@ -81,29 +88,45 @@ public class CommentPanel extends Composite
         commentContainer.add(body);
 
         Widget author = new MetadataLinkRenderer("", comment.getAuthorAccountId(), comment.getAuthorDisplayName())
-        .render();
+                .render();
         author.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
         body.add(author);
 
+        // parse the comment content
+        ContentSegment segments = new ContentParser().split(comment.getBody().trim());
+        boolean oversize = isTooLong(segments);
+
         // build/display the comment content, truncating if too long
-        String rawCommentBody = comment.getBody().trim();
-        final String fullCommentBody = commentBodyTransformer.transform(rawCommentBody);
-        String initialCommentBody = fullCommentBody;
+        final HTML textContainer = new InlineHTML();
+        final Element textElement = textContainer.getElement();
+        textContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
+        body.add(textContainer);
 
-        boolean oversize = rawCommentBody.length() > COMMENT_LIMIT;
-        if (oversize)
+        // render only up to the limit
+        int size = 0;
+        ContentSegment segment = segments;
+        for (; segment != null; segment = segment.getNext())
         {
-            initialCommentBody = fullCommentBody.substring(0,
-                    commentBodyTransformer.determineTruncationPoint(fullCommentBody, TRUNCATE_LENGTH))
-                    + "...";
+            // check for when to stop
+            if (oversize && !segment.isTag())
+            {
+                size += segment.getContent().length();
+                if (size > TRUNCATE_LENGTH)
+                {
+                    break;
+                }
+            }
+
+            contentRenderer.renderSegment(segment, textElement, searchLinkBuilder);
         }
+        final ContentSegment remainingSegments = segment;
 
-        final HTML text = new InlineHTML(initialCommentBody);
-        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
-        body.add(text);
-
+        // if too long, add a ... and "show more" link
         if (oversize)
         {
+            final InlineLabel ellipsis = new InlineLabel("...");
+            body.add(ellipsis);
+
             final InlineLabel more = new InlineLabel("show more");
             more.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showMoreCommentLink());
             more.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
@@ -111,8 +134,12 @@ public class CommentPanel extends Composite
             {
                 public void onClick(final ClickEvent inEvent)
                 {
+                    // remove the ... and "show more"
                     more.removeFromParent();
-                    text.setHTML(fullCommentBody);
+                    ellipsis.removeFromParent();
+
+                    // render the rest of the content
+                    contentRenderer.renderList(remainingSegments, textElement, searchLinkBuilder);
                 }
             });
             body.add(more);
@@ -150,22 +177,22 @@ public class CommentPanel extends Composite
                     if (jsniFacade.confirm("Are you sure you want to delete this comment?"))
                     {
                         Session.getInstance().getActionProcessor()
-                        .makeRequest("deleteComment", comment.getId(), new AsyncCallback<Boolean>()
+                                .makeRequest("deleteComment", comment.getId(), new AsyncCallback<Boolean>()
                                 {
-                            /*
-                             * implement the async call back methods
-                             */
-                            public void onFailure(final Throwable caught)
-                            {
-                                // No failure state.
-                            }
+                                    /*
+                                     * implement the async call back methods
+                                     */
+                                    public void onFailure(final Throwable caught)
+                                    {
+                                        // No failure state.
+                                    }
 
-                            public void onSuccess(final Boolean result)
-                            {
-                                effects.fadeOut(commentContainer.getElement(), true);
-                                Session.getInstance().getEventBus()
-                                .notifyObservers(new CommentDeletedEvent(comment.getActivityId()));
-                            }
+                                    public void onSuccess(final Boolean result)
+                                    {
+                                        effects.fadeOut(commentContainer.getElement(), true);
+                                        Session.getInstance().getEventBus()
+                                                .notifyObservers(new CommentDeletedEvent(comment.getActivityId()));
+                                    }
                                 });
                     }
                 }
@@ -173,5 +200,29 @@ public class CommentPanel extends Composite
         }
 
         initWidget(commentContainer);
+    }
+
+    /**
+     * Determines if the content needs to be truncated.
+     *
+     * @param segments
+     *            List of segments.
+     * @return True if too long.
+     */
+    private boolean isTooLong(final ContentSegment segments)
+    {
+        int size = 0;
+        for (ContentSegment segment = segments; segment != null; segment = segment.getNext())
+        {
+            if (!segment.isTag())
+            {
+                size += segment.getContent().length();
+                if (size > COMMENT_LIMIT)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

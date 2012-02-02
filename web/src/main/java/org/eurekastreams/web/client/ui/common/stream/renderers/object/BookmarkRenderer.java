@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,10 @@ package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.ui.common.stream.transformers.ActivityStreamSearchLinkBuilder;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -35,17 +29,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a bookmark object.
- * 
+ *
  */
-public class BookmarkRenderer implements ObjectRenderer
+public class BookmarkRenderer extends ActivityWithContentRenderer
 {
     /**
      * Renders the bookmark attachment.
-     * 
+     *
      * @param activity
      *            the activity.
      * @return the widget.
      */
+    @Override
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
         HashMap<String, String> props = activity.getBaseObjectProperties();
@@ -87,7 +82,7 @@ public class BookmarkRenderer implements ObjectRenderer
 
     /**
      * Gets the base URL (host name and protocol) from a url.
-     * 
+     *
      * @param url
      *            the url.
      * @return the base url.
@@ -102,32 +97,4 @@ public class BookmarkRenderer implements ObjectRenderer
             return url;
         }
     }-*/;
-
-    /**
-     * Renders the content widget.
-     * 
-     * @param activity
-     *            the activity.
-     * @return the widget.
-     */
-    public Widget getContentWidget(final ActivityDTO activity)
-    {
-        String activityContent = activity.getBaseObjectProperties().get("content");
-        if (activityContent == null || activityContent.trim().isEmpty())
-        {
-            return null;
-        }
-        activityContent = SafeHtmlUtils.htmlEscape(activityContent);
-
-        // first transform links to hyperlinks
-        String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
-
-        // then transform hashtags to hyperlinks
-        html = new HashtagLinkTransformer(new ActivityStreamSearchLinkBuilder(activity)).transform(html);
-        HTML widget = new HTML(html);
-        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
-
-        return widget;
-    }
-
 }

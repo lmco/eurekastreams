@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,70 +16,24 @@
 package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.ui.common.stream.transformers.ActivityStreamSearchLinkBuilder;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a note.
- * 
  */
-public class NoteRenderer implements ObjectRenderer
+public class NoteRenderer extends ActivityWithContentRenderer
 {
     /**
-     * JSNI Facade.
-     */
-    private WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
-
-    /**
      * Renders the attachment.
-     * 
+     *
      * @param activity
      *            the activity.
      * @return the attachment.
      */
+    @Override
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
         return null;
     }
-
-    /**
-     * Renders the content widget.
-     * 
-     * @param activity
-     *            the activity.
-     * @return the widget.
-     */
-    public Widget getContentWidget(final ActivityDTO activity)
-    {
-        StreamEntityDTO actor = activity.getOriginalActor() != null ? activity.getOriginalActor() : activity
-                .getActor();
-        String activityContent = activity.getBaseObjectProperties().get("content")
-                .replace("%EUREKA:ACTORNAME%", actor.getDisplayName());
-
-        if (activityContent == null)
-        {
-            activityContent = "";
-        }
-
-        // Strip out any existing HTML.
-        activityContent = jSNIFacade.escapeHtml(activityContent);
-        activityContent = activityContent.replaceAll("(\r\n|\n|\r)", "<br />");
-
-        // first transform links to hyperlinks
-        String html = jSNIFacade.addMarkDownLinks(activityContent);
-        // then transform hashtags to hyperlinks
-        html = new HashtagLinkTransformer(new ActivityStreamSearchLinkBuilder(activity)).transform(html);
-
-        HTML widget = new HTML(html);
-        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
-
-        return widget;
-    }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
 package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
-import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -27,18 +23,17 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders videos.
- * 
  */
-public class VideoRenderer implements ObjectRenderer
+public class VideoRenderer extends ActivityWithContentRenderer
 {
-
     /**
      * Renders the bookmark attachment.
-     * 
+     *
      * @param activity
      *            the activity.
      * @return the widget.
      */
+    @Override
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
         String html = "<div class='" + StaticResourceBundle.INSTANCE.coreCss().messageLink() + " "
@@ -62,28 +57,5 @@ public class VideoRenderer implements ObjectRenderer
                 + activity.getBaseObjectProperties().get("description") + "</div></div>";
 
         return new HTML(html);
-    }
-
-    /**
-     * Renders the content widget.
-     * 
-     * @param activity
-     *            the activity.
-     * @return the widget.
-     */
-    public Widget getContentWidget(final ActivityDTO activity)
-    {
-        String activityContent = activity.getBaseObjectProperties().get("content");
-
-        // first transform links to hyperlinks
-        String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
-
-        // then transform hashtags to hyperlinks
-        html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
-
-        HTML widget = new HTML(html);
-        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
-
-        return widget;
     }
 }
