@@ -179,7 +179,7 @@ public class TabGroupMapper extends DomainEntityMapper<TabGroup>
                                     + "dateDeleted = null, tabGroupId = :tabGroupId " + "where id = :TabId")
                     .setParameter("TabId", tabToUndelete.getId()).setParameter("tabGroupId", tabGroup.getId())
                     .executeUpdate();
-            logger.info("***Done Update tab status (" + (System.currentTimeMillis() - start) + "ms");
+            logger.info("***Done Update tab status (" + (System.currentTimeMillis() - start) + "ms)");
 
             logger.debug("Un-deleted the tab with id=" + tabToUndelete.getId());
 
@@ -191,7 +191,7 @@ public class TabGroupMapper extends DomainEntityMapper<TabGroup>
                             "update versioned TabTemplate set deleted = false, " + "dateDeleted = null "
                                     + "where id = :TabTemplateId")
                     .setParameter("TabTemplateId", tabToUndelete.getTemplate().getId()).executeUpdate();
-            logger.info("***Done Update tab template status (" + (System.currentTimeMillis() - start) + "ms");
+            logger.info("***Done Update tab template status (" + (System.currentTimeMillis() - start) + "ms)");
 
             logger.debug("Un-deleted the tab template with id=" + tabToUndelete.getTemplate().getId());
 
@@ -203,15 +203,29 @@ public class TabGroupMapper extends DomainEntityMapper<TabGroup>
                             "update versioned Gadget set deleted = false, " + "dateDeleted = null "
                                     + "where template.id = :TabTemplateId")
                     .setParameter("TabTemplateId", tabToUndelete.getTemplate().getId()).executeUpdate();
-            logger.info("***Done Update tab template's gadgets status (" + (System.currentTimeMillis() - start) + "ms");
+            logger.info(//
+            "***Done Update tab template's gadgets status (" + (System.currentTimeMillis() - start) + "ms)");
 
             logger.debug("Un-deleted gadgets belonging to tab template with id=" + tabToUndelete.getTemplate().getId());
 
             // refresh the restored tab to reload previously deleted components
             start = System.currentTimeMillis();
-            logger.info("***entity manager refresh");
-            getEntityManager().refresh(tabToUndelete);
-            logger.info("***Done entity manager refresh (" + (System.currentTimeMillis() - start) + "ms");
+            logger.info("***entity manager flush");
+            // getEntityManager().refresh(tabToUndelete);
+            getEntityManager().flush();
+            getEntityManager().clear();
+            logger.info("***Done entity manager flush (" + (System.currentTimeMillis() - start) + "ms)");
+
+            start = System.currentTimeMillis();
+            logger.info("***Getting tab to return by tab Id and status");
+            /* get the deleted Tab from the tab group */
+            tabToUndelete = (Tab) getEntityManager()
+                    .createQuery("from Tab t left join fetch t.template where t.id = :tabId and t.deleted = 'false'")
+                    .setParameter("tabId", tabId).getSingleResult();
+            // Touch the gadgets so that they will be eagerly loaded.
+            tabToUndelete.getGadgets().size();
+            logger.info("***Done Getting tab to return by tab Id and status (" + (System.currentTimeMillis() - start)
+                    + "ms)");
 
             return tabToUndelete;
         }
