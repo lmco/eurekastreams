@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -343,9 +343,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         CommentsListPanel commentsPanel = null;
         if (!state.equals(State.READONLY))
         {
-            commentsPanel = new CommentsListPanel(msg.getFirstComment(), msg.getLastComment(), msg.getCommentCount(),
-                    msg.getEntityId(), msg.isCommentable(), msg.getDestinationStream().getType(), msg
-                            .getDestinationStream().getUniqueIdentifier(), activityLinkBuilder);
+            commentsPanel = new CommentsListPanel(msg.getCommentCount(), msg.getEntityId(), msg.isCommentable(),
+                    !singleView);
         }
 
         // row for who posted
@@ -454,6 +453,11 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             if (msg.getComments() != null && !msg.getComments().isEmpty())
             {
                 commentsPanel.renderAllComments(msg.getComments());
+            }
+            else
+            {
+                commentsPanel.renderFirstLast(msg.getFirstComment(), msg.getLastComment(), msg.getDestinationStream()
+                        .getType(), msg.getDestinationStream().getUniqueIdentifier(), activityLinkBuilder);
             }
             if (showComment)
             {

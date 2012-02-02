@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class CommentsListPanel extends FlowPanel
 {
     /**
+     * Only show 20 comments inline max.
+     */
+    private static final int MAX_INLINE_COMMENTS = 20;
+
+    /**
      * Effects facade for fading.
      */
     private final EffectsFacade effects = new EffectsFacade();
@@ -52,11 +57,6 @@ public class CommentsListPanel extends FlowPanel
      * Whether or not the post comment is shown.
      */
     private boolean postCommentShown = false;
-
-    /**
-     * Only show 20 comments inline max.
-     */
-    private static final int MAX_INLINE_COMMENTS = 20;
 
     /**
      * The post comment panel.
@@ -81,89 +81,42 @@ public class CommentsListPanel extends FlowPanel
     /** For building links to activities. (Static just to save overhead since it's stateless.) */
     private static LinkBuilderHelper activityPermalinkBuilder = new LinkBuilderHelper();
 
+    /** Message ID. */
+    private final Long messageId;
+
+    /** If long comments should be truncated. */
+    private final boolean truncate;
+
     /**
      * Default constructor.
      *
-     * @param firstComment
-     *            the first comment.
-     * @param lastComment
-     *            the last comment.
      * @param inCommentCount
      *            the comment count.
-     * @param messageId
+     * @param inMessageId
      *            the message id.
      * @param inAllowAdditionalComments
      *            if the commentsListpanel Should enable more commenting.
-     * @param streamType
-     *            Type of entity in whose stream the activity appears (for building an appropriate permalink URL).
-     *            Optional.
-     * @param streamUniqueId
-     *            Shortname of the stream in which the activity appears (for building an appropriate permalink URL).
-     *            Optional.
-     * @param activityLinkBuilder
-     *            For building the link to view the activity by itself with all comments.
+     * @param inTruncate
+     *            If long comments should be truncated.
      */
-    public CommentsListPanel(final CommentDTO firstComment, final CommentDTO lastComment,
-            final Integer inCommentCount, final Long messageId, final boolean inAllowAdditionalComments,
-            final EntityType streamType, final String streamUniqueId, final BaseActivityLinkBuilder activityLinkBuilder)
+    public CommentsListPanel(final Integer inCommentCount, final Long inMessageId,
+            final boolean inAllowAdditionalComments, final boolean inTruncate)
+
     {
+        truncate = inTruncate;
+        messageId = inMessageId;
         commentCount = inCommentCount;
         allowAdditionalComments = inAllowAdditionalComments;
-        postCommentPanel = new PostCommentPanel(messageId, inCommentCount == 0);
+        postCommentPanel = new PostCommentPanel(inMessageId, inCommentCount == 0);
         final CommentsListPanel thisBuffered = this;
-        if (commentCount > 0)
-        {
-            this.add(new CommentPanel(firstComment));
-            if (commentCount > MAX_INLINE_COMMENTS)
-            {
-                String url = activityLinkBuilder.buildActivityPermalink(messageId, streamType, streamUniqueId);
-
-                showAllComments = new Anchor("View all " + commentCount.toString() + " comments", "#" + url);
-
-                showAllComments.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAllComments());
-                this.add(showAllComments);
-            }
-            else if (commentCount > 2)
-            {
-                showAllComments = new Anchor("View all " + commentCount.toString() + " comments");
-                showAllComments.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAllComments());
-
-                showAllComments.addClickHandler(new ClickHandler()
-                {
-                    public void onClick(final ClickEvent event)
-                    {
-                        // TODO: refactor to use new simplified model design
-                        Session.getInstance().getActionProcessor()
-                                .makeRequest("getActivityById", messageId, new AsyncCallback<ActivityDTO>()
-                                {
-                                    public void onFailure(final Throwable caught)
-                                    {
-                                    }
-
-                                    public void onSuccess(final ActivityDTO result)
-                                    {
-                                        renderAllComments(result.getComments());
-                                    }
-                                });
-                    }
-                });
-                this.add(showAllComments);
-            }
-            if (commentCount > 1)
-            {
-                this.add(new CommentPanel(lastComment));
-            }
-
-            addPostCommentPanel();
-        }
 
         Session.getInstance().getEventBus().addObserver(CommentAddedEvent.class, new Observer<CommentAddedEvent>()
         {
             public void update(final CommentAddedEvent arg1)
             {
-                if (messageId.equals(arg1.getMessageId()))
+                if (inMessageId.equals(arg1.getMessageId()))
                 {
-                    CommentPanel commentPanel = new CommentPanel(arg1.getComment());
+                    CommentPanel commentPanel = new CommentPanel(arg1.getComment(), truncate);
 
                     int index = thisBuffered.getWidgetCount() - 1;
 
@@ -190,14 +143,14 @@ public class CommentsListPanel extends FlowPanel
                 Session.getInstance().getEventBus()
                         .notifyObservers(new ShowNotificationEvent(new Notification("Comment has been deleted")));
 
-                if (messageId.equals(arg1.getMessageId()))
+                if (inMessageId.equals(arg1.getMessageId()))
                 {
                     commentCount--;
                     if (commentCount <= 2)
                     {
                         // TODO: refactor to use new simplified model design
                         Session.getInstance().getActionProcessor()
-                                .makeRequest("getActivityById", messageId, new AsyncCallback<ActivityDTO>()
+                                .makeRequest("getActivityById", inMessageId, new AsyncCallback<ActivityDTO>()
                                 {
                                     public void onFailure(final Throwable caught)
                                     {
@@ -244,6 +197,72 @@ public class CommentsListPanel extends FlowPanel
     }
 
     /**
+     * Renders just the first and last comments (for stream view).
+     *
+     * @param firstComment
+     *            the first comment.
+     * @param lastComment
+     *            the last comment.
+     * @param streamType
+     *            Type of entity in whose stream the activity appears (for building an appropriate permalink URL).
+     *            Optional.
+     * @param streamUniqueId
+     *            Shortname of the stream in which the activity appears (for building an appropriate permalink URL).
+     *            Optional.
+     * @param activityLinkBuilder
+     *            For building the link to view the activity by itself with all comments.
+     */
+    public void renderFirstLast(final CommentDTO firstComment, final CommentDTO lastComment,
+            final EntityType streamType, final String streamUniqueId, final BaseActivityLinkBuilder activityLinkBuilder)
+    {
+        if (commentCount > 0)
+        {
+            this.add(new CommentPanel(firstComment, truncate));
+            if (commentCount > MAX_INLINE_COMMENTS)
+            {
+                String url = activityLinkBuilder.buildActivityPermalink(messageId, streamType, streamUniqueId);
+
+                showAllComments = new Anchor("View all " + commentCount.toString() + " comments", "#" + url);
+
+                showAllComments.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAllComments());
+                this.add(showAllComments);
+            }
+            else if (commentCount > 2)
+            {
+                showAllComments = new Anchor("View all " + commentCount.toString() + " comments");
+                showAllComments.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAllComments());
+
+                showAllComments.addClickHandler(new ClickHandler()
+                {
+                    public void onClick(final ClickEvent event)
+                    {
+                        // TODO: refactor to use new simplified model design
+                        Session.getInstance().getActionProcessor()
+                                .makeRequest("getActivityById", messageId, new AsyncCallback<ActivityDTO>()
+                                {
+                                    public void onFailure(final Throwable caught)
+                                    {
+                                    }
+
+                                    public void onSuccess(final ActivityDTO result)
+                                    {
+                                        renderAllComments(result.getComments());
+                                    }
+                                });
+                    }
+                });
+                this.add(showAllComments);
+            }
+            if (commentCount > 1)
+            {
+                this.add(new CommentPanel(lastComment, truncate));
+            }
+
+            addPostCommentPanel();
+        }
+    }
+
+    /**
      * Render all the comments.
      *
      * @param comments
@@ -251,10 +270,10 @@ public class CommentsListPanel extends FlowPanel
      */
     public void renderAllComments(final List<CommentDTO> comments)
     {
-        this.clear();
+        clear();
         for (CommentDTO comment : comments)
         {
-            this.add(new CommentPanel(comment));
+            this.add(new CommentPanel(comment, truncate));
         }
         addPostCommentPanel();
     }

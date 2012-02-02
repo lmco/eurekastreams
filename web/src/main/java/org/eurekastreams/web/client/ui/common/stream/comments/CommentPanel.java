@@ -74,8 +74,10 @@ public class CommentPanel extends Composite
      *
      * @param comment
      *            the comment.
+     * @param truncate
+     *            If long comments should be truncated.
      */
-    public CommentPanel(final CommentDTO comment)
+    public CommentPanel(final CommentDTO comment, final boolean truncate)
     {
         final FlowPanel commentContainer = new FlowPanel();
         commentContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
@@ -94,7 +96,7 @@ public class CommentPanel extends Composite
 
         // parse the comment content
         ContentSegment segments = new ContentParser().split(comment.getBody().trim());
-        boolean oversize = isTooLong(segments);
+        boolean oversize = truncate && isTooLong(segments);
 
         // build/display the comment content, truncating if too long
         final HTML textContainer = new InlineHTML();
