@@ -1369,7 +1369,7 @@ body .post-expanded-panel .content-warning {
 	 border-left: 1px solid #999999;
 	 border-right: 1px solid #999999;
 	 padding: 0;
-	 margin-left: -235px;
+	 margin-left: -10px;
 	 zoom: 1;
 }
 
@@ -7017,14 +7017,16 @@ body div.eureka-connect-liked-activity-wrapper {
 	.directory .options.views {
 		margin-top: -25px;
 	}
+	
+	.searchResultsAutocompleteResults
+	{
+		 margin-left: -235px;
+	}	
 
 } /* END IE SPECIFIC */
 	
 @if user.agent gecko1_8 { 
-	.searchResultsAutocompleteResults
-	{
-		 margin-left: -10px;
-	}	
+		
 }
 
 /* Empty rules needed since they are referenced by methods in CoreCss.  
