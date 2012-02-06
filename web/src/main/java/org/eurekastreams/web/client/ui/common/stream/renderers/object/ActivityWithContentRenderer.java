@@ -55,18 +55,22 @@ public abstract class ActivityWithContentRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
+        String activityContent = activity.getBaseObjectProperties().get("content");
+        if (activityContent == null)
+        {
+            return null;
+        }
+
         StreamEntityDTO actor = activity.getOriginalActor() != null ? activity.getOriginalActor() : activity
                 .getActor();
-        String activityContent = activity.getBaseObjectProperties().get("content")
-                .replace("%EUREKA:ACTORNAME%", actor.getDisplayName());
+        final String actorDisplayName = actor != null ? actor.getDisplayName() : "";
+        activityContent = activityContent.replace("%EUREKA:ACTORNAME%", actorDisplayName);
 
         HTML widget = new HTML();
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
-        if (activityContent != null)
-        {
-            ContentSegment segmentList = parser.split(activityContent);
-            renderer.renderList(segmentList, widget.getElement(), new ActivityStreamSearchLinkBuilder(activity));
-        }
+
+        ContentSegment segmentList = parser.split(activityContent);
+        renderer.renderList(segmentList, widget.getElement(), new ActivityStreamSearchLinkBuilder(activity));
 
         return widget;
     }
