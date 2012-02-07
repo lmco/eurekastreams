@@ -61,7 +61,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inStreamName
      *            the stream name.
      * @param streamRequest
@@ -164,7 +164,7 @@ public class FollowDialogContent extends BaseDialogContent
         Label tipsTitle = new Label("Tips");
         tips.add(tipsTitle);
 
-        tips.add(new Label("These options allow you to control over how to access the activity of this stream."));
+        tips.add(new Label("These options allow you to have control over how to access the activity of this stream."));
         tips.add(new Label(
                 "Don't worry, these selections are not permanent.  You can always change them in the future."));
 
@@ -177,7 +177,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the body panel.
-     *
+     * 
      * @return the body.
      */
     public Widget getBody()
@@ -187,7 +187,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the CSS name.
-     *
+     * 
      * @return the class.
      */
     @Override
@@ -198,7 +198,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the title.
-     *
+     * 
      * @return the title.
      */
     public String getTitle()
