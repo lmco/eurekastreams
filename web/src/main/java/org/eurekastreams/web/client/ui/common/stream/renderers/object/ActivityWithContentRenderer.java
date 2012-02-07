@@ -23,7 +23,8 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.content.ParsedCon
 import org.eurekastreams.web.client.ui.common.stream.transformers.ActivityStreamSearchLinkBuilder;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -66,11 +67,11 @@ public abstract class ActivityWithContentRenderer implements ObjectRenderer
         final String actorDisplayName = actor != null ? actor.getDisplayName() : "";
         activityContent = activityContent.replace("%EUREKA:ACTORNAME%", actorDisplayName);
 
-        HTML widget = new HTML();
+        ComplexPanel widget = new FlowPanel();
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
         ContentSegment segmentList = parser.split(activityContent);
-        renderer.renderList(segmentList, widget.getElement(), new ActivityStreamSearchLinkBuilder(activity));
+        renderer.renderList(segmentList, widget, new ActivityStreamSearchLinkBuilder(activity));
 
         return widget;
     }

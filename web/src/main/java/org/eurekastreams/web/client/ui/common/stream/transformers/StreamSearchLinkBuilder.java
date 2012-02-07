@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.util.HashMap;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.http.client.URL;
-
 /**
  * Builds a link to a stream search.
  */
@@ -29,7 +27,7 @@ public class StreamSearchLinkBuilder
 {
     /**
      * Build a hashtag search link.
-     * 
+     *
      * @param searchText
      *            the hashtag to create a link for
      * @param streamViewId
@@ -47,6 +45,6 @@ public class StreamSearchLinkBuilder
         {
             params.put("viewId", Long.toString(streamViewId));
         }
-        return URL.encode("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false)));
+        return "#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false));
     }
 }

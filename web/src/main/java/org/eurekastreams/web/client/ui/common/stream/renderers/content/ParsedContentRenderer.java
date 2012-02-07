@@ -20,6 +20,8 @@ import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLi
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.InlineHyperlink;
 
 /**
  * Renders split content (per ContentParser) into HTML DOM.
@@ -36,15 +38,20 @@ public class ParsedContentRenderer
      * @param streamSearchLinkBuilder
      *            For building links for hashtags.
      */
-    public void renderSegment(final ContentSegment segment, final Element parent,
+    public void renderSegment(final ContentSegment segment, final ComplexPanel parent,
             final StreamSearchLinkBuilder streamSearchLinkBuilder)
     {
-        // Note: The element setters automatically HTML encode content, hence it is not explicitly done.
+        // Notes:
+        // * The element and widget setters automatically HTML encode content, hence it is not explicitly done.
+        // * Using plain elements instead of widgets to keep markup cleaner, except for internal links. Although the
+        // internal links will go to the right place when implemented as plain anchors, IE will lose all its history.
+        // (So really this is working around another IE bug.)
 
-        Document doc = parent.getOwnerDocument();
+        final Element parentElement = parent.getElement();
+        final Document doc = parentElement.getOwnerDocument();
         if (segment.isText())
         {
-            parent.appendChild(doc.createTextNode(segment.getContent()));
+            parentElement.appendChild(doc.createTextNode(segment.getContent()));
         }
         else if (segment.isLink())
         {
@@ -61,18 +68,22 @@ public class ParsedContentRenderer
             }
 
             // May be internal or external; open in new window unless internal.
-            AnchorElement anchor = doc.createAnchorElement();
-            anchor.setHref(url);
-            anchor.appendChild(doc.createTextNode(segment.getContent()));
-            if (url.charAt(0) != '#')
+            if (url.charAt(0) == '#')
             {
-                anchor.setTarget("_blank");
+                parent.add(new InlineHyperlink(segment.getContent(), url.substring(1)));
             }
-            parent.appendChild(anchor);
+            else
+            {
+                AnchorElement anchor = doc.createAnchorElement();
+                anchor.setHref(url);
+                anchor.appendChild(doc.createTextNode(segment.getContent()));
+                anchor.setTarget("_blank");
+                parentElement.appendChild(anchor);
+            }
         }
         else if (segment.isTag() && "br/".equals(segment.getContent()))
         {
-            parent.appendChild(doc.createBRElement());
+            parentElement.appendChild(doc.createBRElement());
         }
     }
 
@@ -86,7 +97,7 @@ public class ParsedContentRenderer
      * @param streamSearchLinkBuilder
      *            For building links for hashtags.
      */
-    public void renderList(final ContentSegment list, final Element parent,
+    public void renderList(final ContentSegment list, final ComplexPanel parent,
             final StreamSearchLinkBuilder streamSearchLinkBuilder)
     {
         for (ContentSegment segment = list; segment != null; segment = segment.getNext())

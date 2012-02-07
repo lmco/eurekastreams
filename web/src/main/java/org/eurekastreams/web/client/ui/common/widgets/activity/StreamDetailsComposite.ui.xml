@@ -348,7 +348,7 @@
 						<h2>Interests</h2>
 						<div ui:field="streamInterests"></div>
 						<h2>Popular Hashtags</h2>
-						<div ui:field="streamHashtags"></div>
+						<g:FlowPanel ui:field="streamHashtags"></g:FlowPanel>
 					</div>
 					<g:HTMLPanel addStyleNames="{style.analyticsChartContainer}"
 						ui:field="analyticsChartContainer">

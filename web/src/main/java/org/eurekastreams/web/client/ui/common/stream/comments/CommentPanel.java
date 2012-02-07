@@ -35,12 +35,10 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -99,8 +97,7 @@ public class CommentPanel extends Composite
         boolean oversize = truncate && isTooLong(segments);
 
         // build/display the comment content, truncating if too long
-        final HTML textContainer = new InlineHTML();
-        final Element textElement = textContainer.getElement();
+        final ComplexPanel textContainer = new FlowPanel();
         textContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
         body.add(textContainer);
 
@@ -119,7 +116,7 @@ public class CommentPanel extends Composite
                 }
             }
 
-            contentRenderer.renderSegment(segment, textElement, searchLinkBuilder);
+            contentRenderer.renderSegment(segment, textContainer, searchLinkBuilder);
         }
         final ContentSegment remainingSegments = segment;
 
@@ -141,7 +138,7 @@ public class CommentPanel extends Composite
                     ellipsis.removeFromParent();
 
                     // render the rest of the content
-                    contentRenderer.renderList(remainingSegments, textElement, searchLinkBuilder);
+                    contentRenderer.renderList(remainingSegments, textContainer, searchLinkBuilder);
                 }
             });
             body.add(more);

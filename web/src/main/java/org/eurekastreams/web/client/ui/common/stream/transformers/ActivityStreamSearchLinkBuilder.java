@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.http.client.URL;
-
 /**
  * Builds a link to a stream search.
  */
@@ -35,22 +33,22 @@ public class ActivityStreamSearchLinkBuilder extends StreamSearchLinkBuilder
     /**
      * The activity that the link belongs to.
      */
-    private ActivityDTO activity;
+    private final ActivityDTO activity;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inActivity
      *            the activity that the link belongs to
      */
     public ActivityStreamSearchLinkBuilder(final ActivityDTO inActivity)
     {
-        this.activity = inActivity;
+        activity = inActivity;
     }
 
     /**
      * Build a hashtag search link for an activity.
-     * 
+     *
      * @param searchText
      *            the hashtag to create a link for
      * @param streamViewId
@@ -73,14 +71,14 @@ public class ActivityStreamSearchLinkBuilder extends StreamSearchLinkBuilder
             StreamEntityDTO destinationStream = activity.getDestinationStream();
             Page destinationPage = destinationStream.getEntityType() == EntityType.PERSON ? Page.PEOPLE : Page.GROUPS;
             String destinationView = destinationStream.getUniqueId();
-            return URL.encode("#"
+            return "#"
                     + Session.getInstance()
-                            .generateUrl(new CreateUrlRequest(destinationPage, destinationView, params)));
+                            .generateUrl(new CreateUrlRequest(destinationPage, destinationView, params));
         }
         // otherwise, search for hashtags in whatever stream the user is currently viewing
         else
         {
-            return URL.encode("#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false)));
+            return "#" + Session.getInstance().generateUrl(new CreateUrlRequest(params, false));
         }
     }
 }

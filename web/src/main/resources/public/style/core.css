@@ -4905,6 +4905,7 @@ body .dragdrop-proxy {
 
 .message-comment>.body>.message-comment-text {
 	padding-left: 5px;
+	display: inline;
 }
 
 .show-more-comment-link {
