@@ -964,9 +964,10 @@ public class ActivityContent extends Composite
                         public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
                         {
                             button.disable();
-                            EventBus.getInstance().notifyObservers(
-                                    new ShowNotificationEvent(
-                                            new Notification("Your request for access has been sent")));
+                            EventBus.getInstance()
+                                    .notifyObservers(
+                                            new ShowNotificationEvent(new Notification(
+                                                    "Your request for access has been sent")));
                         }
                     });
 
@@ -980,7 +981,8 @@ public class ActivityContent extends Composite
         {
             currentStreamEntity = group;
 
-            if (group.getStickyActivity() != null && !singleActivityMode)
+            if (group.getStickyActivity() != null && !singleActivityMode
+                    && (loadedSearchTerm == null || loadedSearchTerm == ""))
             {
                 stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
                 UIObject.setVisible(stickyActivityArea, true);
@@ -1386,9 +1388,8 @@ public class ActivityContent extends Composite
                 }
                 // TODO: get correct title from somewhere.
                 String prefs = "{\"streamQuery\":"
-                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, request.toString()))
-                        + ",\"gadgetTitle\":" + makeJsonString(currentDisplayName) + ",\"streamLocation\":"
-                        + makeJsonString(url) + "}";
+                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, request.toString())) + ",\"gadgetTitle\":"
+                        + makeJsonString(currentDisplayName) + ",\"streamLocation\":" + makeJsonString(url) + "}";
 
                 GadgetModel.getInstance().insert(
                         new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null, prefs));
