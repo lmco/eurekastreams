@@ -96,6 +96,12 @@
 					width: 100%;
 				}
 			}
+			
+			@if user.agent safari {
+				.resultsNum {
+					top: 8px;
+				}
+			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.pagerContainer}"

@@ -152,6 +152,13 @@
 					top: -1px;
 				}
 			}
+			
+			@if user.agent safari {
+				.goSearch {
+					position: relative;
+					top: -2px;
+				}
+			}
 		</ui:style>
 
 	<g:HTMLPanel addStyleNames="{style.discoveryPage}">

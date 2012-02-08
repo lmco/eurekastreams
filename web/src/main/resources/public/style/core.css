@@ -1488,20 +1488,6 @@ body .post-expanded-panel .content-warning {
 	vertical-align: text-top;
 }
 
-.header-bar .search-list-ie {
-	padding-left: 40px;
-	background-image: url("style/images/searchBackground.png");
-	background-repeat: no-repeat;
-	background-position: 10px 10px;
-}
-
-.header-bar .search-list-ie input {
-	background-image: none;
-	border-style: none;
-	padding: 3px 0px;
-	width: 196px;
-}
-
 .stream-titlebar .title-wrapper {
 	max-width: 300px;
 	overflow: hidden;
@@ -7023,6 +7009,20 @@ body div.eureka-connect-liked-activity-wrapper {
 	{
 		 margin-left: -235px;
 	}	
+	
+	.header-bar .search-list {
+		padding-left: 40px;
+		background-image: url("style/images/searchBackground.png");
+		background-repeat: no-repeat;
+		background-position: 10px 10px;
+	}
+
+	.header-bar .search-list input {
+		background-image: none;
+		border-style: none;
+		padding: 3px 0px;
+		width: 196px;
+	}
 
 } /* END IE SPECIFIC */
 	

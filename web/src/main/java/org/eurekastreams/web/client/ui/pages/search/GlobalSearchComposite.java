@@ -49,7 +49,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -107,12 +106,6 @@ public class GlobalSearchComposite extends FlowPanel
         searchTerm = new LabeledTextBox(label);
         resultsPanelContainer.setVisible(false);
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
-
-        // IE 7 specific hack to deal with the fact that IE awkwardly scrolls background images in text boxes
-        if (Navigator.getUserAgent().contains("MSIE 7.0"))
-        {
-            addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListIE());
-        }
 
         add(searchTerm);
 
