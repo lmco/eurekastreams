@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,10 +98,10 @@ public class ChangeStreamActivitySubscriptionExecutionTest
      * Test success when should receive notifications.
      */
     @Test
-    public void testSuccessOnTrue()
+    public void testSuccessOnYesUnrestricted()
     {
         final ChangeStreamActivitySubscriptionMapperRequest expected = // \n
-        new ChangeStreamActivitySubscriptionMapperRequest(PERSON_ID, STREAM_ENTITY_ID, true);
+        new ChangeStreamActivitySubscriptionMapperRequest(PERSON_ID, STREAM_ENTITY_ID, true, false);
 
         context.checking(new Expectations()
         {
@@ -115,7 +115,36 @@ public class ChangeStreamActivitySubscriptionExecutionTest
         });
 
         PrincipalActionContext actionContext = TestContextCreator.createPrincipalActionContext(
-                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, true),
+                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, true, false),
+                PERSON_ACCOUNT_ID, PERSON_ID);
+
+        sut.execute(actionContext);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test success when should receive notifications.
+     */
+    @Test
+    public void testSuccessOnYesRestricted()
+    {
+        final ChangeStreamActivitySubscriptionMapperRequest expected = // \n
+        new ChangeStreamActivitySubscriptionMapperRequest(PERSON_ID, STREAM_ENTITY_ID, true, true);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(entityIdFromUniqueIdDAO).execute(STREAM_ENTITY_UNIQUE_ID);
+                will(returnValue(STREAM_ENTITY_ID));
+
+                oneOf(changePreferenceDAO).execute(with(equalInternally(expected)));
+                will(returnValue(Boolean.TRUE));
+            }
+        });
+
+        PrincipalActionContext actionContext = TestContextCreator.createPrincipalActionContext(
+                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, true, true),
                 PERSON_ACCOUNT_ID, PERSON_ID);
 
         sut.execute(actionContext);
@@ -127,10 +156,10 @@ public class ChangeStreamActivitySubscriptionExecutionTest
      * Test success when should not receive notifications.
      */
     @Test
-    public void testSuccessOnFalse()
+    public void testSuccessOnNo()
     {
         final ChangeStreamActivitySubscriptionMapperRequest expected = // \n
-        new ChangeStreamActivitySubscriptionMapperRequest(PERSON_ID, STREAM_ENTITY_ID, false);
+        new ChangeStreamActivitySubscriptionMapperRequest(PERSON_ID, STREAM_ENTITY_ID, false, false);
 
         context.checking(new Expectations()
         {
@@ -144,7 +173,7 @@ public class ChangeStreamActivitySubscriptionExecutionTest
         });
 
         PrincipalActionContext actionContext = TestContextCreator.createPrincipalActionContext(
-                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, false),
+                new ChangeStreamActivitySubscriptionRequest(EntityType.GROUP, STREAM_ENTITY_UNIQUE_ID, false, false),
                 PERSON_ACCOUNT_ID, PERSON_ID);
 
         sut.execute(actionContext);

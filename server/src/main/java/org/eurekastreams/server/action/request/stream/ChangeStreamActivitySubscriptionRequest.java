@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,10 @@ public class ChangeStreamActivitySubscriptionRequest implements Serializable
     private String streamEntityUniqueId;
 
     /** Whether the user wants to receive new activity notifications. */
-    private Boolean receiveNewActivityNotifications;
+    private boolean receiveNewActivityNotifications;
+
+    /** If notifications should be generated for all posts, or just ones from coordinators. */
+    private boolean coordinatorOnlyNotifications;
 
     /**
      * Default constructor.
@@ -46,26 +49,29 @@ public class ChangeStreamActivitySubscriptionRequest implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inEntityType
      *            Entity type of stream.
      * @param inStreamEntityUniqueId
      *            The unique ID of the stream entity.
      * @param inReceiveNewActivityNotifications
      *            Whether the user wants to receive new activity notifications.
+     * @param inCoordinatorOnlyNotifications
+     *            Subscribe for coordinator posts only.
      */
     public ChangeStreamActivitySubscriptionRequest(final EntityType inEntityType, final String inStreamEntityUniqueId,
-            final Boolean inReceiveNewActivityNotifications)
+            final boolean inReceiveNewActivityNotifications, final boolean inCoordinatorOnlyNotifications)
     {
         entityType = inEntityType;
         streamEntityUniqueId = inStreamEntityUniqueId;
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
+        coordinatorOnlyNotifications = inCoordinatorOnlyNotifications;
     }
 
     /**
      * @return the receiveNewActivityNotifications
      */
-    public Boolean getReceiveNewActivityNotifications()
+    public boolean getReceiveNewActivityNotifications()
     {
         return receiveNewActivityNotifications;
     }
@@ -74,7 +80,7 @@ public class ChangeStreamActivitySubscriptionRequest implements Serializable
      * @param inReceiveNewActivityNotifications
      *            the receiveNewActivityNotifications to set
      */
-    public void setReceiveNewActivityNotifications(final Boolean inReceiveNewActivityNotifications)
+    public void setReceiveNewActivityNotifications(final boolean inReceiveNewActivityNotifications)
     {
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
@@ -102,5 +108,22 @@ public class ChangeStreamActivitySubscriptionRequest implements Serializable
     public EntityType getEntityType()
     {
         return entityType;
+    }
+
+    /**
+     * @return If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    public boolean getCoordinatorOnlyNotifications()
+    {
+        return coordinatorOnlyNotifications;
+    }
+
+    /**
+     * @param inCoordinatorOnlyNotifications
+     *            If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    public void setCoordinatorOnlyNotifications(final boolean inCoordinatorOnlyNotifications)
+    {
+        coordinatorOnlyNotifications = inCoordinatorOnlyNotifications;
     }
 }

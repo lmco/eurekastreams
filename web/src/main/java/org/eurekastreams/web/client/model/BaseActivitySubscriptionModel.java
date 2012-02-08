@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,8 +73,8 @@ public class BaseActivitySubscriptionModel extends BaseModel implements Fetchabl
                 Session.getInstance()
                         .getEventBus()
                         .notifyObservers(
-                                new GotStreamActivitySubscriptionResponseEvent(EntityType.GROUP, uniqueId,
-                                        isSubscribed));
+new GotStreamActivitySubscriptionResponseEvent(EntityType.GROUP, uniqueId, // \n
+                                isSubscribed));
             }
         }, useClientCacheIfAvailable);
     }
@@ -86,11 +86,13 @@ public class BaseActivitySubscriptionModel extends BaseModel implements Fetchabl
      *            Unique ID of the stream.
      * @param subscribe
      *            Whether to subscribe or not.
+     * @param coordOnly
+     *            Subscribe for coordinator posts only.
      */
-    private void update(final String uniqueId, final boolean subscribe)
+    private void update(final String uniqueId, final boolean subscribe, final boolean coordOnly)
     {
-        final ChangeStreamActivitySubscriptionRequest request = new ChangeStreamActivitySubscriptionRequest(
-                entityType, uniqueId, subscribe);
+        final ChangeStreamActivitySubscriptionRequest request = new ChangeStreamActivitySubscriptionRequest(entityType,
+                uniqueId, subscribe, coordOnly);
         super.callWriteAction(updateAction, request, new OnSuccessCommand<Boolean>()
         {
             public void onSuccess(final Boolean response)
@@ -104,23 +106,23 @@ public class BaseActivitySubscriptionModel extends BaseModel implements Fetchabl
 
     /**
      * Subscribe to new activity notifications for the group with the input short name.
-     * 
+     *
      * @param uniqueId
      *            Unique ID of the stream to subscribe notifications from.
      */
     public void insert(final String uniqueId)
     {
-        update(uniqueId, true);
+        update(uniqueId, true, false);
     }
 
     /**
      * Unsubscribe to new activity notifications for the group with the input short name.
-     * 
+     *
      * @param uniqueId
      *            Unique ID of the stream to unsubscribe notifications from.
      */
     public void delete(final String uniqueId)
     {
-        update(uniqueId, false);
+        update(uniqueId, false, false);
     }
 }

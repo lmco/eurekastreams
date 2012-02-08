@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,37 +21,37 @@ package org.eurekastreams.server.persistence.mappers.requests;
  */
 public class ChangeStreamActivitySubscriptionMapperRequest
 {
-    /**
-     * The id of the person subscribing.
-     */
+    /** The id of the person subscribing. */
     private long subscriberPersonId;
 
-    /**
-     * The id of the stream's entity (person/group).
-     */
+    /** The id of the stream's entity (person/group). */
     private long streamEntityId;
 
-    /**
-     * Whether the user should receive notifications on new activity to this group.
-     */
+    /** Whether the user should receive notifications on new activity to this group. */
     private boolean receiveNewActivityNotifications;
+
+    /** If notifications should be generated for all posts, or just ones from coordinators. */
+    private boolean coordinatorOnlyNotifications;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSubscriberPersonId
      *            the person id
      * @param inStreamEntityId
      *            the group id
      * @param inReceiveNewActivityNotifications
      *            whether to receive notifications
+     * @param inCoordinatorOnlyNotifications
+     *            If notifications should be generated for all posts, or just ones from coordinators.
      */
     public ChangeStreamActivitySubscriptionMapperRequest(final long inSubscriberPersonId, final long inStreamEntityId,
-            final boolean inReceiveNewActivityNotifications)
+            final boolean inReceiveNewActivityNotifications, final boolean inCoordinatorOnlyNotifications)
     {
         subscriberPersonId = inSubscriberPersonId;
         streamEntityId = inStreamEntityId;
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
+        coordinatorOnlyNotifications = inCoordinatorOnlyNotifications;
     }
 
     /**
@@ -104,4 +104,22 @@ public class ChangeStreamActivitySubscriptionMapperRequest
     {
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
+
+    /**
+     * @return If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    public boolean getCoordinatorOnlyNotifications()
+    {
+        return coordinatorOnlyNotifications;
+    }
+
+    /**
+     * @param inCoordinatorOnlyNotifications
+     *            If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    public void setCoordinatorOnlyNotifications(final boolean inCoordinatorOnlyNotifications)
+    {
+        coordinatorOnlyNotifications = inCoordinatorOnlyNotifications;
+    }
+
 }

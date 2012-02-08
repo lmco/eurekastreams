@@ -2606,6 +2606,14 @@
 		</constructor-arg>
 		<constructor-arg ref="flushMapper" />		
     </bean>
+    
+    <bean id="getAllGroupSubscribersDao" class="org.eurekastreams.server.persistence.mappers.db.GenericGetListDbMapper">
+    	<constructor-arg value="SELECT gf.pk.followerId FROM GroupFollower gf WHERE gf.pk.followingId = :id AND gf.receiveNewActivityNotifications = true" />
+    </bean>
+    
+    <bean id="getUnrestrictedGroupSubscribersDao" class="org.eurekastreams.server.persistence.mappers.db.GenericGetListDbMapper">
+    	<constructor-arg value="SELECT gf.pk.followerId FROM GroupFollower gf WHERE gf.pk.followingId = :id AND gf.receiveNewActivityNotifications = true AND gf.coordinatorOnlyNotifications = false" />
+    </bean>
 
 	<bean id="getActivePersonIdByEmail" class="org.eurekastreams.server.persistence.mappers.db.GetFieldFromTableByUniqueField">
        	<constructor-arg value="Person" />

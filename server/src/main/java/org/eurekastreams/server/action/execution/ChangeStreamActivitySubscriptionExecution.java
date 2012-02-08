@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,8 @@ public class ChangeStreamActivitySubscriptionExecution implements ExecutionStrat
 
         // update the user's preference
         changeNotificationPreferenceDAO.execute(new ChangeStreamActivitySubscriptionMapperRequest(inActionContext
-                .getPrincipal().getId(), id, request.getReceiveNewActivityNotifications()));
+                .getPrincipal().getId(), id, request.getReceiveNewActivityNotifications(), request
+                .getCoordinatorOnlyNotifications()));
 
         return null;
     }

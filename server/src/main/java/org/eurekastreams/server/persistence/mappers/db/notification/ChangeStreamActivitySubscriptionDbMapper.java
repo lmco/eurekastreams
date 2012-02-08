@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,11 @@ import org.eurekastreams.server.persistence.mappers.requests.ChangeStreamActivit
 public class ChangeStreamActivitySubscriptionDbMapper extends
         BaseArgDomainMapper<ChangeStreamActivitySubscriptionMapperRequest, Boolean>
 {
-    /** Name of entity to use in query. */
-    private String entityName;
+    /** Query string. */
+    private final String queryString;
+
+    /** Use extra params. */
+    private boolean extraParams;
 
     /**
      * Constructor.
@@ -39,6 +42,9 @@ public class ChangeStreamActivitySubscriptionDbMapper extends
      */
     public ChangeStreamActivitySubscriptionDbMapper(final EntityType entityType)
     {
+        String entityName;
+        String extraFields = "";
+
         switch (entityType)
         {
         case PERSON:
@@ -46,10 +52,16 @@ public class ChangeStreamActivitySubscriptionDbMapper extends
             break;
         case GROUP:
             entityName = "GroupFollower";
+            extraFields = ", coordinatorOnlyNotifications = :coordinatorOnlyNotifications";
+            extraParams = true;
             break;
         default:
             throw new IllegalArgumentException("Entity type " + entityType + " not allowed.  Only PERSON and GROUP.");
         }
+
+        queryString = "UPDATE " + entityName
+                + " SET receiveNewActivityNotifications = :receiveNewActivityNotifications " + extraFields
+                + " WHERE pk.followerId = :personId AND pk.followingId = :streamEntityId";
     }
 
     /**
@@ -63,14 +75,19 @@ public class ChangeStreamActivitySubscriptionDbMapper extends
     @Override
     public Boolean execute(final ChangeStreamActivitySubscriptionMapperRequest inRequest)
     {
-        String q = "UPDATE " + entityName + " SET receiveNewActivityNotifications = :receiveNewActivityNotifications "
-                + "WHERE pk.followerId = :personId AND pk.followingId = :streamEntityId";
-        Query query = getEntityManager().createQuery(q)
-                .setParameter("receiveNewActivityNotifications", inRequest.getReceiveNewActivityNotifications())
+        boolean receiveNewActivityNotifications = inRequest.getReceiveNewActivityNotifications();
+        boolean coordinatorOnlyNotifications = receiveNewActivityNotifications
+                && inRequest.getCoordinatorOnlyNotifications();
+        Query query = getEntityManager().createQuery(queryString)
+                .setParameter("receiveNewActivityNotifications", receiveNewActivityNotifications)
                 .setParameter("personId", inRequest.getSubscriberPersonId())
                 .setParameter("streamEntityId", inRequest.getStreamEntityId());
+        if (extraParams)
+        {
+            query.setParameter("coordinatorOnlyNotifications", coordinatorOnlyNotifications);
+        }
         query.executeUpdate();
 
-        return new Boolean(true);
+        return null;
     }
 }

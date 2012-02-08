@@ -113,11 +113,9 @@
         </entry>
         <entry key="POST_GROUP_STREAM">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.PostGroupStreamTranslator">
-                <constructor-arg>
-                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedPersonIdsForStreamDbMapper">
- 						<constructor-arg value="GROUP" />
-    				</bean>
-                </constructor-arg>
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
+                <constructor-arg ref="getAllGroupSubscribersDao" />
+                <constructor-arg ref="getUnrestrictedGroupSubscribersDao" />
             </bean>
         </entry>
         <entry key="COMMENT" value-ref="commentTranslator" />

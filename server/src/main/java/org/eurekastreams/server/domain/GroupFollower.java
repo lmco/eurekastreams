@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,12 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
      */
     @Basic
     private Boolean receiveNewActivityNotifications = false;
+
+    /**
+     * If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    @Basic
+    private Boolean coordinatorOnlyNotifications = false;
 
     /**
      * Constructor.
@@ -103,6 +109,23 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
     public void setReceiveNewActivityNotifications(final boolean inReceiveNewActivityNotifications)
     {
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
+    }
+
+    /**
+     * @return If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    public Boolean getCoordinatorOnlyNotifications()
+    {
+        return coordinatorOnlyNotifications;
+    }
+
+    /**
+     * @param inCoordinatorOnlyNotifications
+     *            If notifications should be generated for all posts, or just ones from coordinators.
+     */
+    public void setCoordinatorOnlyNotifications(final Boolean inCoordinatorOnlyNotifications)
+    {
+        coordinatorOnlyNotifications = inCoordinatorOnlyNotifications;
     }
 
     /**

@@ -4,4 +4,4 @@ insert into db_version (major, minor, patch, scriptname, description) values (2,
 DELETE FROM Feed WHERE id IN 
 (
 	SELECT f.id FROM Feed f LEFT OUTER JOIN FeedSubscriber fs ON f.id = fs.feedId GROUP BY f.id HAVING COUNT(fs.feedId)=0
-)
+);

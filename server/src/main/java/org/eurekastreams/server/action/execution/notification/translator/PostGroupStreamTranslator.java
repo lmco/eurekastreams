@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,37 +32,55 @@ import org.eurekastreams.server.service.utility.ui.UiUrlBuilder;
  */
 public class PostGroupStreamTranslator implements NotificationTranslator<ActivityNotificationsRequest>
 {
-    /** DAO to get list of members of a group. */
-    private final DomainMapper<Long, List<Long>> memberDAO;
+    /** DAO to get group coordinator ids. */
+    private final DomainMapper<Long, List<Long>> coordinatorDAO;
+
+    /** DAO to get all group subscriber ids. */
+    private final DomainMapper<Long, List<Long>> allSubscriberDAO;
+
+    /** DAO to get unrestricted group subscriber ids. */
+    private final DomainMapper<Long, List<Long>> unrestrictedSubscriberDAO;
 
     /**
      * Constructor.
-     *
-     * @param inMemberDAO
-     *            DAO to get list of members of a group.
+     * 
+     * @param inCoordinatorDAO
+     *            DAO to get group coordinator ids.
+     * @param inAllSubscriberDAO
+     *            DAO to get all group subscriber ids.
+     * @param inUnrestrictedSubscriberDAO
+     *            DAO to get unrestricted group subscriber ids.
      */
-    public PostGroupStreamTranslator(final DomainMapper<Long, List<Long>> inMemberDAO)
+    public PostGroupStreamTranslator(final DomainMapper<Long, List<Long>> inCoordinatorDAO,
+            final DomainMapper<Long, List<Long>> inAllSubscriberDAO,
+            final DomainMapper<Long, List<Long>> inUnrestrictedSubscriberDAO)
     {
-        memberDAO = inMemberDAO;
+        coordinatorDAO = inCoordinatorDAO;
+        allSubscriberDAO = inAllSubscriberDAO;
+        unrestrictedSubscriberDAO = inUnrestrictedSubscriberDAO;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
     public NotificationBatch translate(final ActivityNotificationsRequest inRequest)
     {
+        // determine if actor is a group coordinator to whether to get all subscribers or only those who subscribed
+        // to all notifications (unrestricted)
+        boolean fromCoord = coordinatorDAO.execute(inRequest.getTargetEntityId()).contains(inRequest.getActorId());
+        DomainMapper<Long, List<Long>> subscriberDAO = fromCoord ? allSubscriberDAO : unrestrictedSubscriberDAO;
+
         // NOTE: This code assumes that the DAO returns a list which can be safely altered, specifically that it
         // supports removing elements and is not used elsewhere (e.g. stored off).
-        List<Long> memberIdsToNotify = memberDAO.execute(inRequest.getTargetEntityId());
-        memberIdsToNotify.remove(inRequest.getActorId());
+        List<Long> idsToNotify = subscriberDAO.execute(inRequest.getTargetEntityId());
+        idsToNotify.remove(inRequest.getActorId());
 
-        if (memberIdsToNotify.isEmpty())
+        if (idsToNotify.isEmpty())
         {
             return null;
         }
 
-        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_FOLLOWED_STREAM, memberIdsToNotify);
+        NotificationBatch batch = new NotificationBatch(NotificationType.POST_TO_FOLLOWED_STREAM, idsToNotify);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());
         batch.setProperty("stream", DomainGroupModelView.class, inRequest.getTargetEntityId());
         batch.setProperty("activity", ActivityDTO.class, inRequest.getActivityId());

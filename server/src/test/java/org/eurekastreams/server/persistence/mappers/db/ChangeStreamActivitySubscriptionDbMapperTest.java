@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
     /**
      * Gets the subscription status from the database.
-     * 
+     *
      * @param entityName
      *            ORM entity type.
      * @param userId
@@ -63,6 +63,25 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
     private boolean getSubscription(final String entityName, final long userId, final long entityId)
     {
         final String q = "SELECT receiveNewActivityNotifications FROM " + entityName
+                + " WHERE followerId = :userId AND followingId = :entityId";
+        return (Boolean) getEntityManager().createQuery(q).setParameter("userId", userId)
+                .setParameter("entityId", entityId).getSingleResult();
+    }
+
+    /**
+     * Gets the subscription coordinator-only status from the database.
+     *
+     * @param entityName
+     *            ORM entity type.
+     * @param userId
+     *            User.
+     * @param entityId
+     *            Followed stream.
+     * @return subscription status.
+     */
+    private boolean getCoordOnly(final String entityName, final long userId, final long entityId)
+    {
+        final String q = "SELECT coordinatorOnlyNotifications FROM " + entityName
                 + " WHERE followerId = :userId AND followingId = :entityId";
         return (Boolean) getEntityManager().createQuery(q).setParameter("userId", userId)
                 .setParameter("entityId", entityId).getSingleResult();
@@ -93,7 +112,7 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
      * Test for unsubscribing from a group.
      */
     @Test
-    public void testExecuteUnsubscribingFromGroup()
+    public void testExecuteUnsubscribingFromGroup1()
     {
         final long userId = 98L;
         final long groupId = 1L;
@@ -103,17 +122,39 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
         sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
         ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, false));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, false, true));
 
         getEntityManager().clear();
         assertFalse(getSubscription("GroupFollower", userId, groupId));
+        assertFalse(getCoordOnly("GroupFollower", userId, groupId));
+    }
+
+    /**
+     * Test for unsubscribing from a group.
+     */
+    @Test
+    public void testExecuteUnsubscribingFromGroup2()
+    {
+        final long userId = 42L;
+        final long groupId = 1L;
+
+        assertTrue(getSubscription("GroupFollower", userId, groupId));
+        getEntityManager().clear();
+
+        sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, false, false));
+
+        getEntityManager().clear();
+        assertFalse(getSubscription("GroupFollower", userId, groupId));
+        assertFalse(getCoordOnly("GroupFollower", userId, groupId));
     }
 
     /**
      * Test subscribing to a group.
      */
     @Test
-    public void testExecuteSubscribingToGroup()
+    public void testExecuteSubscribingToGroup1()
     {
         final long userId = 99L;
         final long groupId = 1L;
@@ -123,10 +164,32 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
         sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
         ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, true));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, true, false));
 
         getEntityManager().clear();
         assertTrue(getSubscription("GroupFollower", userId, groupId));
+        assertFalse(getCoordOnly("GroupFollower", userId, groupId));
+    }
+
+    /**
+     * Test subscribing to a group.
+     */
+    @Test
+    public void testExecuteSubscribingToGroup2()
+    {
+        final long userId = 99L;
+        final long groupId = 1L;
+
+        assertFalse(getSubscription("GroupFollower", userId, groupId));
+        getEntityManager().clear();
+
+        sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
+        ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, true, true));
+
+        getEntityManager().clear();
+        assertTrue(getSubscription("GroupFollower", userId, groupId));
+        assertTrue(getCoordOnly("GroupFollower", userId, groupId));
     }
 
     /**
@@ -143,7 +206,7 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
         sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.GROUP);
         ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, true));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, groupId, true, false));
 
         getEntityManager().clear();
         assertEquals(0, getFollowingCount("GroupFollower", userId, groupId));
@@ -165,7 +228,7 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
         sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.PERSON);
         ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, personId, false));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, personId, false, false));
 
         getEntityManager().clear();
         assertFalse(getSubscription("Follower", userId, personId));
@@ -185,7 +248,7 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
         sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.PERSON);
         ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, personId, true));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, personId, true, false));
 
         getEntityManager().clear();
         assertTrue(getSubscription("Follower", userId, personId));
@@ -205,7 +268,7 @@ public class ChangeStreamActivitySubscriptionDbMapperTest extends MapperTest
 
         sut = new ChangeStreamActivitySubscriptionDbMapper(EntityType.PERSON);
         ((BaseDomainMapper) sut).setEntityManager(getEntityManager());
-        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, personId, true));
+        sut.execute(new ChangeStreamActivitySubscriptionMapperRequest(userId, personId, true, false));
 
         getEntityManager().clear();
         assertEquals(0, getFollowingCount("Follower", userId, personId));
