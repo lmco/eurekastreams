@@ -50,6 +50,10 @@
 			}
 			
 			@if user.agent ie6 ie8 {
+				.modal {
+					width: 400px;
+				}
+	
 				.buttons-row>* {
 					display: inline;
 					zoom: 1;
