@@ -72,7 +72,6 @@ import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.model.GroupModel;
-import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.PersonActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.model.StreamBookmarksModel;
@@ -86,6 +85,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.ActivityDetailPanel;
+import org.eurekastreams.web.client.ui.common.stream.GroupEmailSubscribeOptionsDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamSearchStatusWidget;
 import org.eurekastreams.web.client.ui.common.stream.StreamToUrlTransformer;
@@ -154,77 +154,77 @@ public class ActivityContent extends Composite
     {
         /**
          * Active sort style.
-         * 
+         *
          * @return Active sort style
          */
         String activeSort();
 
         /**
          * Active stream style.
-         * 
+         *
          * @return Active stream style.
          */
         String activeStream();
 
         /**
          * Stream options child.
-         * 
+         *
          * @return Stream options child.
          */
         String streamOptionChild();
 
         /**
          * Delete bookmark.
-         * 
+         *
          * @return delete bookmark.
          */
         String deleteBookmark();
 
         /**
          * Edit custom stream.
-         * 
+         *
          * @return edit custom stream.
          */
         String editCustomStream();
 
         /**
          * The stream name style.
-         * 
+         *
          * @return the stream name style.
          */
         String streamName();
 
         /**
          * Active search style.
-         * 
+         *
          * @return active search style.
          */
         String activeSearch();
 
         /**
          * Current user link style.
-         * 
+         *
          * @return current user stream style.
          */
         String currentUserStreamLink();
 
         /**
          * Small avatar.
-         * 
+         *
          * @return small avatar style.
          */
         String smallAvatar();
 
         /**
          * Current user configure link.
-         * 
+         *
          * @return current user configure link.
          */
         String currentUserConfLink();
 
         /**
          * Message when no bookmarks exist.
-         * 
+         *
          * @return message when no bookmarks exist.
          */
         String noBookmarksMessage();
@@ -510,7 +510,7 @@ public class ActivityContent extends Composite
 
     /**
      * If the entity still needs to be received before making the activity query.
-     * 
+     *
      * Explanation: Fetching the activities for a group requires knowing which activity is sticky so it can be excluded
      * on the query. So the query must be built in loadStream and the DomainGroupModelView must be recieved.
      * Unfortunately, the event bus notifies inline instead of queuing, thus the call to the GroupModel in loadStream
@@ -624,7 +624,7 @@ public class ActivityContent extends Composite
 
     /**
      * Got activity.
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -927,7 +927,7 @@ public class ActivityContent extends Composite
 
     /**
      * Processing when group information is received.
-     * 
+     *
      * @param group
      *            The group.
      */
@@ -1031,7 +1031,7 @@ public class ActivityContent extends Composite
 
     /**
      * Handle views changed.
-     * 
+     *
      * @param inViews
      *            the views.
      */
@@ -1073,9 +1073,9 @@ public class ActivityContent extends Composite
      */
     private void setupStreamsAndBookmarks()
     {
-        EventBus.getInstance().addObserver(GotCurrentUserStreamBookmarks.class,
+        final EventBus eventBus = EventBus.getInstance();
 
-        new Observer<GotCurrentUserStreamBookmarks>()
+        eventBus.addObserver(GotCurrentUserStreamBookmarks.class, new Observer<GotCurrentUserStreamBookmarks>()
         {
             private final AvatarUrlGenerator groupUrlGen = new AvatarUrlGenerator(EntityType.GROUP);
             private final AvatarUrlGenerator personUrlGen = new AvatarUrlGenerator(EntityType.PERSON);
@@ -1157,15 +1157,20 @@ public class ActivityContent extends Composite
             }
         });
 
-        EventBus.getInstance().addObserver(StreamActivitySubscriptionChangedEvent.class,
+        eventBus.addObserver(StreamActivitySubscriptionChangedEvent.class,
                 new Observer<StreamActivitySubscriptionChangedEvent>()
                 {
                     public void update(final StreamActivitySubscriptionChangedEvent ev)
                     {
-                        setSubscribeStatus(ev.getResponse().getReceiveNewActivityNotifications());
+                        boolean newStatus = ev.getResponse().getReceiveNewActivityNotifications();
+                        setSubscribeStatus(newStatus);
+
+                        String msg = newStatus ? "You will now receive emails for new activities to this stream"
+                                : "You will no longer receive emails for new activities to this stream";
+                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(msg)));
                     }
                 });
-        EventBus.getInstance().addObserver(GotStreamActivitySubscriptionResponseEvent.class,
+        eventBus.addObserver(GotStreamActivitySubscriptionResponseEvent.class,
                 new Observer<GotStreamActivitySubscriptionResponseEvent>()
                 {
                     public void update(final GotStreamActivitySubscriptionResponseEvent result)
@@ -1174,7 +1179,7 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        EventBus.getInstance().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
+        eventBus.addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
                 new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
                     public void update(final GotCurrentUserCustomStreamsResponseEvent event)
@@ -1226,14 +1231,13 @@ public class ActivityContent extends Composite
                     }
                 });
 
-        EventBus.getInstance().addObserver(StreamSearchBeginEvent.class, new Observer<StreamSearchBeginEvent>()
+        eventBus.addObserver(StreamSearchBeginEvent.class, new Observer<StreamSearchBeginEvent>()
         {
             public void update(final StreamSearchBeginEvent event)
             {
                 if (null == event.getSearchText())
                 {
-                    EventBus.getInstance().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest("search", "", false)));
+                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest("search", "", false)));
                     searchBox.setText("");
                 }
             }
@@ -1313,23 +1317,13 @@ public class ActivityContent extends Composite
             {
                 if (!isSubscribed)
                 {
-                    Insertable<String> insertable = null;
-
                     if (currentStream.getScopeType().equals(ScopeType.GROUP))
                     {
-                        insertable = GroupActivitySubscriptionModel.getInstance();
+                        Dialog.showCentered(new GroupEmailSubscribeOptionsDialogContent(currentStream.getUniqueKey()));
                     }
                     else if (currentStream.getScopeType().equals(ScopeType.PERSON))
                     {
-                        insertable = PersonActivitySubscriptionModel.getInstance();
-                    }
-
-                    if (insertable != null)
-                    {
-                        insertable.insert(currentStream.getUniqueKey());
-                        EventBus.getInstance().notifyObservers(
-                                new ShowNotificationEvent(new Notification(
-                                        "You will now receive emails for new activities to this stream")));
+                        PersonActivitySubscriptionModel.getInstance().insert(currentStream.getUniqueKey());
                         setSubscribeStatus(true);
                     }
                 }
@@ -1349,9 +1343,6 @@ public class ActivityContent extends Composite
                     if (deletable != null)
                     {
                         deletable.delete(currentStream.getUniqueKey());
-                        EventBus.getInstance().notifyObservers(
-                                new ShowNotificationEvent(new Notification(
-                                        "You will no longer receive emails for new activities to this stream")));
                         setSubscribeStatus(false);
                     }
                 }
@@ -1434,7 +1425,7 @@ public class ActivityContent extends Composite
 
     /**
      * Update subscription status consistently.
-     * 
+     *
      * @param inIsSubscribed
      *            New status.
      */
@@ -1447,7 +1438,7 @@ public class ActivityContent extends Composite
     /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     * 
+     *
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
@@ -1459,7 +1450,7 @@ public class ActivityContent extends Composite
 
     /**
      * Append a new message.
-     * 
+     *
      * @param message
      *            the messa.ge
      */
@@ -1473,7 +1464,7 @@ public class ActivityContent extends Composite
 
     /**
      * Load a stream.
-     * 
+     *
      * @param views
      *            the stream history link.
      * @param searchTerm
@@ -1696,7 +1687,7 @@ public class ActivityContent extends Composite
 
     /**
      * Set a stream as active.
-     * 
+     *
      * @param panel
      *            the panel.
      */
@@ -1735,7 +1726,7 @@ public class ActivityContent extends Composite
 
     /**
      * Create LI Element for stream lists.
-     * 
+     *
      * @param name
      *            the name of the item.
      * @param view

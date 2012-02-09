@@ -1,0 +1,78 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:image field="saveButtonImage" src="style/images/saveChangesBtn.png" />
+
+	<ui:style
+		type="org.eurekastreams.web.client.ui.common.stream.GroupEmailSubscribeOptionsDialogContent.LocalStyle">
+			@external gwt-RadioButton;
+		
+			.modal {
+				
+			}
+			
+			.main {
+				padding: 20px;
+				width: 400px;
+				/*height: 150px;*/
+			}
+			
+			.form-title {
+				margin-top: 0px !important;
+				margin-left: 0px !important;
+			}
+			
+			.choices-area {
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			.choices-area > .gwt-RadioButton {
+				display: block;
+				margin-bottom: 5px;
+			}
+			
+			.buttons-row>* {
+				display: inline-block;
+				vertical-align: middle;
+				margin-top: 15px;
+			}
+			
+			@sprite .save-button {
+				gwt-image: "saveButtonImage";
+				cursor: pointer;
+				margin-left: 5px;
+				margin-right: 20px;
+			}
+			
+			.cancel-button {
+				cursor: pointer;
+				color: #0066CC;
+			}
+			
+			@if user.agent ie6 ie8 {
+				.buttons-row>* {
+					display: inline;
+					zoom: 1;
+				}
+			}
+			
+		</ui:style>
+
+
+	<ui:with field="coreCss"
+		type="org.eurekastreams.web.client.ui.pages.master.CoreCss" />
+
+	<g:HTMLPanel addStyleNames="{style.main}">
+		<div class="{style.form-title} {coreCss.formTitle}">Select which posts you would like to subscribe to via email:</div>
+		<div class="{style.choices-area}">
+			<g:RadioButton ui:field="allSelectionButton" checked="true" name="whichPosts">All posts to this stream</g:RadioButton>
+			<g:RadioButton ui:field="coordOnlySelectionButton"  name="whichPosts">Only posts from coordinators of this stream</g:RadioButton>
+		</div>
+		
+		<div class="{style.buttons-row}">
+			<g:Label addStyleNames="{style.save-button}" ui:field="saveButton" title="Save Changes" />
+			<g:Label addStyleNames="{style.cancel-button}" ui:field="cancelButton" title="Cancel">Cancel</g:Label>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

@@ -89,7 +89,7 @@ new GotStreamActivitySubscriptionResponseEvent(EntityType.GROUP, uniqueId, // \n
      * @param coordOnly
      *            Subscribe for coordinator posts only.
      */
-    private void update(final String uniqueId, final boolean subscribe, final boolean coordOnly)
+    public void update(final String uniqueId, final boolean subscribe, final boolean coordOnly)
     {
         final ChangeStreamActivitySubscriptionRequest request = new ChangeStreamActivitySubscriptionRequest(entityType,
                 uniqueId, subscribe, coordOnly);
