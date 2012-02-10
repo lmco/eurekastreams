@@ -5,7 +5,7 @@
 ## See velocity.properties for related settings.
 ##
 ## The use of EscapeHtmlReference (in EmailNotifier) causes inserted references to be HTML-escaped, except for those
-## excluded by the eventhandler.escape.html.match setting (in velocity.properties).  (Currently calls to esc and
+## excluded by the eventhandler.escape.html.match setting (in velocity.properties).  (Currently calls to html and
 ## resolveMarkdownForHtml are excluded).
 
 
@@ -24,11 +24,11 @@ $activity.BaseObjectType##
 #end
 
 #macro( activityUrl $stream $activity )
-#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForActivity(${activity.id})##
+#appUrl($uiUrlBuilder.relativeUrlForActivity(${activity.id}))##
 #end
 
 #macro( profileUrl $whom )
-#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForEntity($whom)##
+#appUrl($uiUrlBuilder.relativeUrlForEntity($whom))##
 #end
 
 
@@ -91,7 +91,7 @@ $activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targ
 #end
 
 #macro( commentContent_html $comment )
-<p>" ${esc.html($helper.cleanWhitespace($comment.body)).replaceAll('(\r\n|\r|\n)','<br/>')} "</p>
+<p>" ${esctool.html($helper.cleanWhitespace($comment.body)).replaceAll('(\r\n|\r|\n)','<br/>')} "</p>
 #end
 
 #macro( commentContent_txt $comment )
@@ -119,4 +119,10 @@ You can reply directly to this message by replying to this email. Be mindful to 
 ## files that invoke them too.) 
 #macro( nl )
 
+#end
+
+## Makes a relative (#fragment) URL into a full absolute URL.
+## eureka.web.baseurlpath needs to end in a / since some clients require the trailing slash.
+#macro( appUrl $fragment )
+#prop('eureka.web.baseurlpath')$fragment##
 #end

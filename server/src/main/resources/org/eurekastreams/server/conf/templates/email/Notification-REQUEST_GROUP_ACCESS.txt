@@ -5,5 +5,5 @@ If you would like to grant this user access to your group, please visit the grou
 We also recommend that you please send the user an email stating your decision regarding their request.
 
 To see the membership request follow this link:
-#prop('eureka.web.baseurl')$uiUrlBuilder.relativeUrlForGroupAccessRequest($group.uniqueId)
+#appUrl($uiUrlBuilder.relativeUrlForGroupAccessRequest($group.uniqueId))
 #parse('Footer.txt')

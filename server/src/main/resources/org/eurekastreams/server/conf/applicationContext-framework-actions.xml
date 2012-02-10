@@ -443,7 +443,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.SendWelcomeEmailExecution">
                     <constructor-arg ref="emailerFactory" />
-                    <constructor-arg type="java.lang.String" value="${eureka.web.baseurl}" />
+                    <constructor-arg type="java.lang.String" value="${eureka.web.baseurlpath}" />
                     <constructor-arg type="java.lang.String" value="Welcome to Eureka Streams" />
                     <constructor-arg type="java.lang.String" value="Congratulations! You have just been given access to Eureka Streams. Eureka streams enables knowledge workers to make informed, timely decisions by finding relevant colleagues and groups, following their stream of activity, and engaging in conversation.&lt;br/&gt;&lt;a href='$(url)'&gt;Set up your profile&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;Thank you,&lt;br/&gt;Eureka Product Team" />
             </bean>

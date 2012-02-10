@@ -223,16 +223,19 @@
 				<entry key="properties" value-ref="applicationPropertiesAccessor" />
 				<entry key="helper">
 					<bean class="org.eurekastreams.server.action.execution.notification.notifier.NotificationMessageBuilderHelper">
-						<constructor-arg value="${eureka.web.baseurl}" />
+						<constructor-arg value="${eureka.web.baseurlpath}" />
 					</bean>
 				</entry>
 				<entry key="uiUrlBuilder">
 					<value type="java.lang.Class">org.eurekastreams.server.service.utility.ui.UiUrlBuilder</value>
 				</entry>
 				<entry key="typeToCategoryMap" value-ref="notificationTypeToCategoryMap" />
-				<entry key="esc">
+				<entry key="esctool">
 					<bean class="org.apache.velocity.tools.generic.EscapeTool" />
 				</entry>
+				<!-- <entry key="linktool">
+					<bean class="org.apache.velocity.tools.generic.LinkTool" />
+				</entry> -->
 			</map>
 		</constructor-arg>
 	</bean>
