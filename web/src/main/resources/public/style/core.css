@@ -20,6 +20,7 @@
 @external .auto-complete;
 @external .gwt-*;
 @external .gadget-preferences;
+@external .gadgets-gadget-user-prefs-dialog-action-bar;
 @external .gadgets-gadget;
 @external .dragdrop*;
 @external .onecolumn;
@@ -5986,6 +5987,10 @@ html,body {
             
 .gadget-preferences {
 	margin: 10px;
+}
+
+.gadgets-gadget-user-prefs-dialog-action-bar {
+	margin-left: 10px;
 }
 
 .avatar-badge-overlay {
