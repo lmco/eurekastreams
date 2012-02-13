@@ -1686,12 +1686,17 @@ Eureka.Format = function() {
 
 	var markdownLinkReplacer = function (t, r1, r2)
 	{
-		if (!r2)
+		if (!r2 || isNumber(r2))
 			r2 = r1;
 		if (r2 && r2.charAt && r2.charAt(0) === '#')
 			r2 = '${build.web.baseurl}' + r2;
 		return ' <a href="' + r2 + '" target="_blank">' + r1 + '</a>';
 	};
+	
+	function isNumber(n) 
+	{
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
 
 	return {
 		// Generates HTML for a markdown string.  Somewhat clumsy, and only supports links.
