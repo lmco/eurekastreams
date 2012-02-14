@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -738,7 +738,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("mission-statement")
     String missionStatement();
-    
+
     @ClassName("one-line-description")
     String oneLineDescription();
 
@@ -1362,6 +1362,8 @@ public interface CoreCss extends CssResource
     String followDialogTips();
 
     String followDialogButtonPanel();
+
+    String followDialogOptions();
 
     String followLink();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.stream;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BaseActivitySubscriptionModel;
@@ -32,6 +33,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -59,9 +62,15 @@ public class FollowDialogContent extends BaseDialogContent
      */
     private final FlowPanel tips = new FlowPanel();
 
+    /** Subscribe to all posts button. */
+    private RadioButton subscribeAllButton;
+
+    /** Subscribe to coord-only posts button. */
+    private RadioButton subscribeCoordButton;
+
     /**
      * Default constructor.
-     * 
+     *
      * @param inStreamName
      *            the stream name.
      * @param streamRequest
@@ -72,9 +81,12 @@ public class FollowDialogContent extends BaseDialogContent
      *            Model for subscribing to activity on the stream.
      * @param inEntityUniqueId
      *            Unique ID of entity owning the stream.
+     * @param streamType
+     *            Type of entity of the stream.
      */
     public FollowDialogContent(final String inStreamName, final String streamRequest, final Long inStreamId,
-            final BaseActivitySubscriptionModel inSubscribeModel, final String inEntityUniqueId)
+            final EntityType streamType, final BaseActivitySubscriptionModel inSubscribeModel,
+            final String inEntityUniqueId)
     {
         Label saveButton = new Label("");
         Label closeButton = new Label("No Thanks");
@@ -94,10 +106,10 @@ public class FollowDialogContent extends BaseDialogContent
 
         body.add(streamTitle);
 
-        FlowPanel options = new FlowPanel();
+        body.add(new Label("Below are additional ways to subscribe:"));
 
-        Label optionsText = new Label("Below are additional ways to subscribe:");
-        options.add(optionsText);
+        FlowPanel options = new FlowPanel();
+        options.addStyleName(StaticResourceBundle.INSTANCE.coreCss().followDialogOptions());
 
         final CheckBox addToStartPage = new CheckBox("Add this Stream to my Start Page");
         final CheckBox bookmarkStream = new CheckBox("Bookmark this stream");
@@ -137,7 +149,8 @@ public class FollowDialogContent extends BaseDialogContent
 
                 if (notifyViaEmail.getValue())
                 {
-                    inSubscribeModel.insert(inEntityUniqueId);
+                    inSubscribeModel.update(inEntityUniqueId, true,
+                            EntityType.GROUP == streamType ? subscribeCoordButton.getValue() : false);
                 }
 
                 close();
@@ -146,7 +159,34 @@ public class FollowDialogContent extends BaseDialogContent
 
         options.add(addToStartPage);
         options.add(bookmarkStream);
-        options.add(notifyViaEmail);
+
+        if (EntityType.GROUP == streamType)
+        {
+            Panel panel = new FlowPanel();
+            panel.add(notifyViaEmail);
+            subscribeAllButton = new RadioButton("whichPosts", "All posts to this stream");
+            subscribeAllButton.setValue(true);
+            subscribeAllButton.setEnabled(false);
+            subscribeCoordButton = new RadioButton("whichPosts", "Only posts from coordinators of this stream");
+            subscribeCoordButton.setEnabled(false);
+            panel.add(subscribeAllButton);
+            panel.add(subscribeCoordButton);
+            options.add(panel);
+
+            notifyViaEmail.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent inEvent)
+                {
+                    boolean checked = notifyViaEmail.getValue();
+                    subscribeAllButton.setEnabled(checked);
+                    subscribeCoordButton.setEnabled(checked);
+                }
+            });
+        }
+        else
+        {
+            options.add(notifyViaEmail);
+        }
 
         body.add(options);
 
@@ -177,7 +217,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -187,7 +227,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     @Override
@@ -198,7 +238,7 @@ public class FollowDialogContent extends BaseDialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()

@@ -1123,7 +1123,7 @@ public class StreamDetailsComposite extends Composite
                                 .getAccountId(), entityId, type, false, Follower.FollowerStatus.FOLLOWING);
                         ((Insertable<SetFollowingStatusRequest>) followModel).insert(request);
                         Dialog.showCentered(new FollowDialogContent(streamName.getInnerText(), streamReq, streamId,
-                                subscribeModel, entityId));
+                                type, subscribeModel, entityId));
                         onFollowerStatusChanged(Follower.FollowerStatus.FOLLOWING);
                         break;
                     default:

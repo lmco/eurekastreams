@@ -2669,11 +2669,24 @@ body .previous-arrow:hover {
 	padding: 10px;
 }
 
-.followDialogBody .gwt-CheckBox {
+.followDialogOptions > * {
     border-bottom: 1px dashed #C6C6C6;
     display: block;
-    margin: 5px 5px 5px 0;
-    padding: 5px 5px 5px 0;	
+    padding: 5px 5px 6px 0;	
+}
+
+.followDialogOptions {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.followDialogOptions .gwt-CheckBox > label {
+	margin-left: 3px;
+}
+
+.followDialogOptions .gwt-RadioButton {
+	display: block;
+    margin-left: 10px;	
 }
 
 .followDialogTips {
