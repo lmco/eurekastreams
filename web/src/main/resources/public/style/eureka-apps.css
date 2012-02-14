@@ -286,7 +286,6 @@ input.text-label
     .section .expandable-done, .gadget-browse
 {
     *position: relative;
-    *top: -20px;
 }
 
 .gadget-form .save-button
