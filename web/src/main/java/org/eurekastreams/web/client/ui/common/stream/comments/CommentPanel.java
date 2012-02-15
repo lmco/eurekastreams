@@ -102,6 +102,7 @@ public class CommentPanel extends Composite
         body.add(textContainer);
 
         // render only up to the limit
+        Widget shortTextWidget = null;
         int size = 0;
         ContentSegment segment = segments;
         for (; segment != null; segment = segment.getNext())
@@ -109,16 +110,28 @@ public class CommentPanel extends Composite
             // check for when to stop
             if (oversize && !segment.isTag())
             {
-                size += segment.getContent().length();
-                if (size > TRUNCATE_LENGTH)
+                int spaceLeft = TRUNCATE_LENGTH - size;
+                int contentLength = segment.getContent().length();
+                if (contentLength > spaceLeft)
                 {
+                    if (segment.isText())
+                    {
+                        String shortText = getTruncatedText(segment.getContent(), spaceLeft);
+                        if (shortText != null)
+                        {
+                            shortTextWidget = new InlineLabel(shortText);
+                            textContainer.add(shortTextWidget);
+                        }
+                    }
                     break;
                 }
+                size += contentLength;
             }
 
             contentRenderer.renderSegment(segment, textContainer, searchLinkBuilder);
         }
         final ContentSegment remainingSegments = segment;
+        final Widget shortTextToReplace = shortTextWidget;
 
         // if too long, add a ... and "show more" link
         if (oversize)
@@ -133,7 +146,11 @@ public class CommentPanel extends Composite
             {
                 public void onClick(final ClickEvent inEvent)
                 {
-                    // remove the ... and "show more"
+                    // remove the truncated segment, ... and "show more"
+                    if (shortTextToReplace != null)
+                    {
+                        shortTextToReplace.removeFromParent();
+                    }
                     more.removeFromParent();
                     ellipsis.removeFromParent();
 
@@ -223,5 +240,25 @@ public class CommentPanel extends Composite
             }
         }
         return false;
+    }
+
+    /**
+     * Gets a truncated piece of the given text, trimmed at a word break.
+     *
+     * @param fullSegment
+     *            Original full text.
+     * @param maxLength
+     *            Maximum length.
+     * @return Truncated text, or null
+     */
+    private String getTruncatedText(final String fullSegment, final int maxLength)
+    {
+        // start looking at the character after the desired break, looking for the end of a word
+        int i = maxLength;
+        while (i >= 0 && " \t".indexOf(fullSegment.charAt(i)) < 0)
+        {
+            i--;
+        }
+        return i <= 0 ? null : fullSegment.substring(0, i);
     }
 }
