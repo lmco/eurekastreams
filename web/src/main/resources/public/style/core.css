@@ -4939,7 +4939,7 @@ body .dragdrop-proxy {
 }
 
 .share-message-dialog .characters-remaining {
-	margin-right: -5px;
+	margin-right: 5px;
 }
 
 @sprite .message-comment .post-button {
@@ -5216,18 +5216,6 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	width: 580px;
 	padding: 6px 10px;
 	overflow: hidden;
-}
-
-.share-message-dialog .characters-remaining {
-	color: #666666;
-	font-weight: bold;
-	vertical-align: top;
-	width: 35px;
-	text-align: right;
-	display: inline-block;
-	position: absolute;
-	float: none;
-	right: 30px;
 }
 
 .form-share-button {
@@ -6886,12 +6874,6 @@ body div.eureka-connect-liked-activity-wrapper {
 	.stream-view-dialog .form-container .form-submit-spinny {
 		float: none;
 		height: 48px;
-	}
-	
-	.share-message-dialog .characters-remaining {
-		display: inline;
-		zoom: 1;
-		bottom: 50px;
 	}
 	
 }
