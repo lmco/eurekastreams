@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.notifier.UndoDeleteNotification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
-import org.eurekastreams.web.client.ui.pages.start.layouts.DropZonePanel;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -53,6 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * GadgetPanel. The UI Representation of a Gadget. This is used to wrap the shindig gadget around. JSNI methods are used
@@ -178,7 +178,7 @@ public class GadgetPanel extends FlowPanel
     /**
      * The parent drop zone.
      */
-    private DropZonePanel parentDropZone = null;
+    private Widget parentDropZone = null;
 
     /**
      * Is this gadget delegating?
@@ -497,7 +497,7 @@ public class GadgetPanel extends FlowPanel
      * @param inParentDropZone
      *            the parent drop zone.
      */
-    public void setDropZone(final DropZonePanel inParentDropZone)
+    public void setDropZone(final Widget inParentDropZone)
     {
         parentDropZone = inParentDropZone;
     }

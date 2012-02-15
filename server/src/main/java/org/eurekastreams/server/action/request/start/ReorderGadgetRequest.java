@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  * Request for reordering gadgets.
- * 
+ *
  */
 public class ReorderGadgetRequest implements Serializable
 {
@@ -31,22 +31,22 @@ public class ReorderGadgetRequest implements Serializable
     /**
      * The parameter index of the target Tab id.
      */
-    private Long currentTabId;
+    private long currentTabId;
 
     /**
      * The parameter index for the ID of the gadget being moved.
      */
-    private Long gadgetId;
+    private long gadgetId;
 
     /**
      * The parameter index for the target zone number that we're moving the gadget into.
      */
-    private Integer targetZoneNumber;
+    private int targetZoneNumber;
 
     /**
      * The parameter index for the target zone index that we're moving the gadget into.
      */
-    private Integer targetZoneIndex;
+    private int targetZoneIndex;
 
     /**
      * Constructor for serialization only.
@@ -59,7 +59,7 @@ public class ReorderGadgetRequest implements Serializable
 
     /**
      * Construcor.
-     * 
+     *
      * @param inCurrentTabId
      *            The parameter index of the target Tab id.
      * @param inGadgetId
@@ -69,8 +69,8 @@ public class ReorderGadgetRequest implements Serializable
      * @param inTargetZoneIndexNumber
      *            The parameter index for the target zone index that we're moving the gadget into.
      */
-    public ReorderGadgetRequest(final Long inCurrentTabId, final Long inGadgetId, final Integer inTargetZoneNumber,
-            final Integer inTargetZoneIndexNumber)
+    public ReorderGadgetRequest(final long inCurrentTabId, final long inGadgetId, final int inTargetZoneNumber,
+            final int inTargetZoneIndexNumber)
     {
         currentTabId = inCurrentTabId;
         gadgetId = inGadgetId;
@@ -81,7 +81,7 @@ public class ReorderGadgetRequest implements Serializable
     /**
      * @return the currentTabId
      */
-    public Long getCurrentTabId()
+    public long getCurrentTabId()
     {
         return currentTabId;
     }
@@ -90,7 +90,7 @@ public class ReorderGadgetRequest implements Serializable
      * @param inCurrentTabId
      *            the currentTabId to set
      */
-    public void setCurrentTabId(final Long inCurrentTabId)
+    public void setCurrentTabId(final long inCurrentTabId)
     {
         currentTabId = inCurrentTabId;
     }
@@ -98,7 +98,7 @@ public class ReorderGadgetRequest implements Serializable
     /**
      * @return the gadgetId
      */
-    public Long getGadgetId()
+    public long getGadgetId()
     {
         return gadgetId;
     }
@@ -107,7 +107,7 @@ public class ReorderGadgetRequest implements Serializable
      * @param inGadgetId
      *            the gadgetId to set
      */
-    public void setGadgetId(final Long inGadgetId)
+    public void setGadgetId(final long inGadgetId)
     {
         gadgetId = inGadgetId;
     }
@@ -115,7 +115,7 @@ public class ReorderGadgetRequest implements Serializable
     /**
      * @return the targetZoneNumber
      */
-    public Integer getTargetZoneNumber()
+    public int getTargetZoneNumber()
     {
         return targetZoneNumber;
     }
@@ -124,7 +124,7 @@ public class ReorderGadgetRequest implements Serializable
      * @param inTargetZoneNumber
      *            the targetZoneNumber to set
      */
-    public void setTargetZoneNumber(final Integer inTargetZoneNumber)
+    public void setTargetZoneNumber(final int inTargetZoneNumber)
     {
         targetZoneNumber = inTargetZoneNumber;
     }
@@ -132,7 +132,7 @@ public class ReorderGadgetRequest implements Serializable
     /**
      * @return the targetZoneIndex
      */
-    public Integer getTargetZoneIndex()
+    public int getTargetZoneIndex()
     {
         return targetZoneIndex;
     }
@@ -141,9 +141,8 @@ public class ReorderGadgetRequest implements Serializable
      * @param inTargetZoneIndex
      *            the targetZoneIndex to set
      */
-    public void setTargetZoneIndex(final Integer inTargetZoneIndex)
+    public void setTargetZoneIndex(final int inTargetZoneIndex)
     {
         targetZoneIndex = inTargetZoneIndex;
     }
-
 }

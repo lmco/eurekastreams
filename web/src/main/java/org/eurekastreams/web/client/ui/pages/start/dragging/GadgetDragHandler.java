@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,12 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.start.GadgetPanel;
 import org.eurekastreams.web.client.ui.pages.start.layouts.DropZonePanel;
 
+import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The gadget drag handler.
@@ -40,7 +42,7 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inTabId
      *            the tab id.
      */
@@ -48,8 +50,8 @@ public class GadgetDragHandler implements DragHandler
     {
         tabId = inTabId;
 
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
@@ -64,21 +66,29 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * What happens when we're done drag and dropping.
-     * 
+     *
      * @param event
      *            the event that fires when dragging ends.
      */
     public void onDragEnd(final DragEndEvent event)
     {
+        final DragContext context = event.getContext();
+        final GadgetPanel gadgetZone = (GadgetPanel) context.draggable;
 
-        final GadgetPanel gadgetZone = (GadgetPanel) event.getContext().draggable;
-        final DropZonePanel dropPanel = (DropZonePanel) event.getContext().finalDropController.getDropTarget();
+        int zoneNumber = 0;
+        int zoneIndex = 0;
+        final Widget dropTarget = context.finalDropController.getDropTarget();
+        if (dropTarget instanceof DropZonePanel)
+        {
+            final DropZonePanel dropPanel = (DropZonePanel) dropTarget;
+            zoneNumber = dropPanel.getZoneNumber();
+            zoneIndex = dropPanel.getVisibleGadgetPosition(gadgetZone);
+        }
 
-        gadgetZone.setDropZone(dropPanel);
+        gadgetZone.setDropZone(dropTarget);
 
         GadgetModel.getInstance().reorder(
-                new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()),
-                        dropPanel.getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
+                new ReorderGadgetRequest(tabId, gadgetZone.getGadgetData().getId(), zoneNumber, zoneIndex));
 
         // Not rerendering here because FF has an issue with rpc communitcations breaking afterwards.
         // gadgetZone.rerender();
@@ -86,7 +96,7 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * What happens when we start dragging (nothing).
-     * 
+     *
      * @param event
      *            the event that fires when dragging starts.
      */
@@ -96,7 +106,7 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * What happens right before we stop dragging (nothing).
-     * 
+     *
      * @param event
      *            the event that fires right before dragging ends.
      * @throws VetoDragException
@@ -110,7 +120,7 @@ public class GadgetDragHandler implements DragHandler
     /**
      * What happens right before we start dragging. Int his case, we want to widen the spacer widget from 1px to 30 px
      * to make it easier to drop into empty columns.
-     * 
+     *
      * @param event
      *            the event that fires right before dragging starts.
      * @throws VetoDragException

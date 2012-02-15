@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class DropZonePanel extends VerticalPanel
     /**
      * The zone number.
      */
-    private Integer zoneNumber = 0;
+    private int zoneNumber = 0;
 
     /**
      * Last history event.
@@ -55,11 +55,11 @@ public class DropZonePanel extends VerticalPanel
     /**
      * List of gadget zones.
      */
-    private List<GadgetPanel> gadgetZones = new LinkedList<GadgetPanel>();
+    private final List<GadgetPanel> gadgetZones = new LinkedList<GadgetPanel>();
 
     /**
      * Create a 33% width drop zone column.
-     * 
+     *
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -75,7 +75,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 66% width drop zone column.
-     * 
+     *
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -90,7 +90,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 50% width drop zone column.
-     * 
+     *
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -105,7 +105,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 25% width drop zone column.
-     * 
+     *
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -120,7 +120,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 100% width drop zone row.
-     * 
+     *
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -149,7 +149,7 @@ public class DropZonePanel extends VerticalPanel
     public DropZonePanel()
     {
         // this class is used for maximizing the drop zone.
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZone());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZone());
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
@@ -175,14 +175,14 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * How many gadgets do we have?
-     * 
+     *
      * @return the number of gadgets.
      */
     public int getVisibleGadgetCount()
     {
         int count = 0;
 
-        for (Widget panel : this.getChildren())
+        for (Widget panel : getChildren())
         {
             if (panel.isVisible())
             {
@@ -196,7 +196,7 @@ public class DropZonePanel extends VerticalPanel
     /**
      * Retrieve the position of the current gadget based on visible widgets. (Deleted gadgets are hidden and can throw
      * off the position).
-     * 
+     *
      * @param target
      *            - widget for which the locatin is to be determined.
      * @return location.
@@ -205,7 +205,7 @@ public class DropZonePanel extends VerticalPanel
     {
         int count = 0;
 
-        for (Widget panel : this.getChildren())
+        for (Widget panel : getChildren())
         {
             if (panel.equals(target))
             {
@@ -222,7 +222,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Insert a Gadget.
-     * 
+     *
      * @param gadget
      *            the gadget to insert.
      */
@@ -235,7 +235,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Insert a gadget with index.
-     * 
+     *
      * @param gadget
      *            the gadget panel.
      * @param index
@@ -245,7 +245,7 @@ public class DropZonePanel extends VerticalPanel
     {
         gadget.setDropZone(this);
 
-        if (index <= this.getWidgetCount())
+        if (index <= getWidgetCount())
         {
             this.insert(gadget, index);
         }
@@ -260,7 +260,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Set the space.
-     * 
+     *
      * @param inSpacer
      *            the spacer.
      */
@@ -273,7 +273,7 @@ public class DropZonePanel extends VerticalPanel
             public void onClick(final ClickEvent event)
             {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("dropzone", getZoneNumber().toString());
+                params.put("dropzone", Integer.toString(getZoneNumber()));
 
                 if (lastHistoryEvent == null || lastHistoryEvent.getParameters().get("tab") == null)
                 {
@@ -292,7 +292,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Getter for the gadget zones.
-     * 
+     *
      * @return the gadget zones.
      */
 
@@ -303,21 +303,21 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Set the zone number.
-     * 
+     *
      * @param inZoneNumber
      *            the zone number.
      */
-    public void setZoneNumber(final Integer inZoneNumber)
+    public void setZoneNumber(final int inZoneNumber)
     {
         zoneNumber = inZoneNumber;
     }
 
     /**
-     * Get thje zone numebr.
-     * 
+     * Get the zone numebr.
+     *
      * @return the zone number.
      */
-    public Integer getZoneNumber()
+    public int getZoneNumber()
     {
         return zoneNumber;
     }
