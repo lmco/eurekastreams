@@ -1,2 +1,2 @@
-Your request to join the $group.displayName group has been denied.
+Your request to follow the $group.displayName group has been denied.
 #parse('Footer.txt')

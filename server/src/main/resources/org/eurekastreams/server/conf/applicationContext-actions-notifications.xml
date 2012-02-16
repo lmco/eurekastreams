@@ -474,14 +474,14 @@
 		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your #activityType($activity)." />
 		<entry key="COMMENT_TO_COMMENTED_POST" value="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)." />
 		<entry key="FOLLOW_PERSON" value="$actor.displayName is following your stream." />
-		<entry key="FOLLOW_GROUP" value="$actor.displayName joined the $stream.displayName group." />
+		<entry key="FOLLOW_GROUP" value="$actor.displayName is following the $stream.displayName group." />
 		<entry key="FLAG_ACTIVITY" value="$actor.displayName flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream." />
 		<entry key="REQUEST_NEW_GROUP" value="The $group.name group is pending approval." />
 		<entry key="REQUEST_NEW_GROUP_APPROVED" value="Your request to create the $group.displayName group has been approved." />
 		<entry key="REQUEST_NEW_GROUP_DENIED" value="Your request to create the $groupName group has been denied." />
-		<entry key="REQUEST_GROUP_ACCESS" value="$actor.displayName requested to join the $group.displayName private group." />
-		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="Your request to join the $group.displayName group has been approved." />
-		<entry key="REQUEST_GROUP_ACCESS_DENIED" value="Your request to join the $group.displayName group has been denied." />
+		<entry key="REQUEST_GROUP_ACCESS" value="$actor.displayName requested to follow the $group.displayName private group." />
+		<entry key="REQUEST_GROUP_ACCESS_APPROVED" value="Your request to follow the $group.displayName group has been approved." />
+		<entry key="REQUEST_GROUP_ACCESS_DENIED" value="Your request to follow the $group.displayName group has been denied." />
 		<entry key="PASS_THROUGH" value="$message" />
 	</util:map>
 	
@@ -539,7 +539,7 @@
 		</entry>
 		<entry key="FOLLOW_GROUP">
 			<bean parent="notifEmailTemplate"
-				p:subject="$actor.displayName joined the $stream.displayName group"
+				p:subject="$actor.displayName is following the $stream.displayName group"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.html"
 				p:reply="ACTOR" />
@@ -572,20 +572,20 @@
 		</entry>
 		<entry key="REQUEST_GROUP_ACCESS">
 			<bean parent="notifEmailTemplate"
-				p:subject="$actor.displayName requested to join the $group.displayName private group"
+				p:subject="$actor.displayName requested to follow the $group.displayName private group"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.html"
 				p:reply="ACTOR" />
 		</entry>
 		<entry key="REQUEST_GROUP_ACCESS_APPROVED">
 			<bean parent="notifEmailTemplate"
-				p:subject="Request to join the $group.displayName private group has been approved"
+				p:subject="Request to follow the $group.displayName private group has been approved"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_APPROVED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_APPROVED.html" />
 		</entry>
 		<entry key="REQUEST_GROUP_ACCESS_DENIED">
 			<bean parent="notifEmailTemplate"
-				p:subject="Request to join the $group.displayName private group has been denied"
+				p:subject="Request to follow the $group.displayName private group has been denied"
 				p:text-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.txt"
 				p:html-body="/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.html" />
 		</entry>

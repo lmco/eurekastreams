@@ -1,4 +1,4 @@
-$actor.displayName requested to join the $group.displayName private group.  As a coordinator, 
+$actor.displayName requested to follow the $group.displayName private group.  As a coordinator, 
 you have the ability to approve or deny this person access.
 
 If you would like to grant this user access to your group, please visit the group profile Admin tab.

@@ -1,4 +1,4 @@
-$actor.displayName joined the $stream.displayName group.
+$actor.displayName is following the $stream.displayName group.
 
 To see $actor.displayName's profile follow this link:
 #profileUrl($actor) #nl()

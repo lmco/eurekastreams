@@ -1,4 +1,4 @@
-Your request to join the $group.displayName group has been approved.
+Your request to follow the $group.displayName group has been approved.
 
 To see the group follow this link:
 #profileUrl($group) #nl()
