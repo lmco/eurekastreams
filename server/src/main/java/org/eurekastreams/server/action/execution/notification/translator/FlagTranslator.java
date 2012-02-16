@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,8 +69,11 @@ public class FlagTranslator implements NotificationTranslator<ActivityNotificati
         ActivityDTO activity = activityDAO.execute(inRequest.getActivityId());
         StreamEntityDTO stream = activity.getDestinationStream();
 
-        // Get the list of admins
+        // Get the list of admins, remove actor (in case actor is an admin)
+        // NOTE: This code assumes that the DAO returns a list which can be safely altered, specifically that it
+        // supports removing elements and is not used elsewhere (e.g. stored off).
         List<Long> adminIds = systemAdminsDAO.execute(null);
+        adminIds.remove(inRequest.getActorId());
 
         NotificationBatch batch = new NotificationBatch(NotificationType.FLAG_ACTIVITY, adminIds);
         batch.setProperty(NotificationPropertyKeys.ACTOR, PersonModelView.class, inRequest.getActorId());

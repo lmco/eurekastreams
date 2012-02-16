@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.execution.notification.translator;
 import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +45,15 @@ import org.junit.Test;
 // TODO Make this a an integration test.
 public class FlagTranslatorTest
 {
+    /** Test data: actor id. */
+    private static final long ACTOR_ID = 1L;
+
+    /** Test data: List of admins. */
+    private static final List<Long> NON_ACTOR_ADMIN_IDS = Arrays.asList(7L, 5L);
+
+    /** Test data: List of admins. */
+    private static final List<Long> ADMIN_IDS = Arrays.asList(7L, 5L, ACTOR_ID);
+
     /** Used for mocking objects. */
     private final JUnit4Mockery context = new JUnit4Mockery()
     {
@@ -83,29 +93,29 @@ public class FlagTranslatorTest
         final ActivityDTO activity = new ActivityDTO();
         activity.setDestinationStream(stream);
 
-        final List<Long> admins = Arrays.asList(7L, 5L);
         context.checking(new Expectations()
         {
             {
                 allowing(activityDAO).execute(3L);
                 will(returnValue(activity));
                 allowing(systemAdminIdsMapper).execute(null);
-                will(returnValue(admins));
+                will(returnValue(new ArrayList<Long>(ADMIN_IDS)));
             }
         });
 
-        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, 3L));
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, 0L, 3L));
 
         context.assertIsSatisfied();
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
-        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_ACTIVITY, admins);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_ACTIVITY, NON_ACTOR_ADMIN_IDS);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
         assertEquals(6, props.size());
-        PropertyMapTestHelper.assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, 1L);
+        PropertyMapTestHelper
+                .assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
@@ -125,29 +135,29 @@ public class FlagTranslatorTest
         final ActivityDTO activity = new ActivityDTO();
         activity.setDestinationStream(stream);
 
-        final List<Long> admins = Arrays.asList(7L, 5L);
         context.checking(new Expectations()
         {
             {
                 allowing(activityDAO).execute(3L);
                 will(returnValue(activity));
                 allowing(systemAdminIdsMapper).execute(null);
-                will(returnValue(admins));
+                will(returnValue(new ArrayList<Long>(ADMIN_IDS)));
             }
         });
 
-        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, 1L, 0L, 3L));
+        NotificationBatch results = sut.translate(new ActivityNotificationsRequest(null, ACTOR_ID, 0L, 3L));
 
         context.assertIsSatisfied();
 
         // check recipients
         assertEquals(1, results.getRecipients().size());
-        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_ACTIVITY, admins);
+        TranslatorTestHelper.assertRecipients(results, NotificationType.FLAG_ACTIVITY, NON_ACTOR_ADMIN_IDS);
 
         // check properties
         PropertyMap<Object> props = results.getProperties();
         assertEquals(6, props.size());
-        PropertyMapTestHelper.assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, 1L);
+        PropertyMapTestHelper
+                .assertPlaceholder(props, NotificationPropertyKeys.ACTOR, PersonModelView.class, ACTOR_ID);
         PropertyMapTestHelper.assertValue(props, "stream", activity.getDestinationStream());
         PropertyMapTestHelper.assertAlias(props, "source", "stream");
         PropertyMapTestHelper.assertValue(props, "activity", activity);
