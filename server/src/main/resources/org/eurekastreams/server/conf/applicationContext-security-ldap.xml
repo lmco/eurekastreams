@@ -14,15 +14,12 @@
         <intercept-url pattern="/newresources/**" access="ROLE_DENY_ALL"/>
         <intercept-url pattern="/oldresources/**" access="ROLE_DENY_ALL"/>
 
-        <!-- Commented out to use "authFilter" below with manual configuration for exception mapping -->
-        <!-- <form-login default-target-url="/login_success.html" always-use-default-target="true"/> -->         
-        <!-- TODO: Most of these anonymous urls can be removed once apache is serving content in dev env. -->
         <intercept-url pattern="/index.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/login_disabled.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/no_credentials.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/style/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/scripts/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/org.eurekastreams.web.Application.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/eureka.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/*.cache.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/requestaccess.html" filters="none"/>
         <intercept-url pattern="/requestaccess_connect.html" filters="none"/>
@@ -31,17 +28,19 @@
         <intercept-url pattern="/" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/atom/**" access="ROLE_USER"/>
-        <intercept-url pattern="/resources/util/**" access="ROLE_ANONYMOUS ROLE_USER"/> 
-        <intercept-url pattern="/resources/emailcontact/**" access="ROLE_USER"/> 
-        <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/> 
+        <intercept-url pattern="/resources/util/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+		<intercept-url pattern="/resources/emailcontact/**" access="ROLE_USER"/>
+        <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>  
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>   
+        <intercept-url pattern="/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/org/eurekastreams/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/eurekastreams/photos/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
 	    <intercept-url pattern="/api/0/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
-        <intercept-url pattern="/**" access="ROLE_USER"/>       
+	    <intercept-url pattern="/plugins/**" access="ROLE_ANONYMOUS, ROLE_USER" />
+        <intercept-url pattern="/**" access="ROLE_USER"/>
         <anonymous />
         <!-- key MUST match key in persistentLoginService -->        
         <remember-me services-ref="persistentLoginService" key="595"/>        
