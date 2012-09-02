@@ -55,7 +55,16 @@ public class GroupPanel extends FlowPanel
     public GroupPanel(final DomainGroupModelView group, final boolean makeLinkable, final boolean showFollowers,
             final boolean showDescription)
     {
-        addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+        
+    	// @mereditk 8/2/2012: Show "Group Not Found" page
+    	// when a user searches for a non-existent group.
+    	if(group == null)
+    	{
+    		showNotFound();
+    		return;
+    	}
+    	
+    	addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
 
@@ -144,5 +153,37 @@ public class GroupPanel extends FlowPanel
         Label sep = new InlineLabel("\u2219");
         sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
+    }
+    
+    /**
+     * Shows a "not found" message. It shows up when a user tries to 
+     * browse to a group stream that cannot be found.
+     */
+    private void showNotFound()
+    {
+        Panel errorReport = new FlowPanel();
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReport());
+
+        FlowPanel centeringPanel = new FlowPanel();
+        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReportContainer());
+        centeringPanel.add(errorReport);
+        add(centeringPanel);
+
+        FlowPanel msgPanel = new FlowPanel();
+
+        Label msgHeader = new Label("Group not found");
+        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
+
+        Label msgText = new Label("The group you were looking for has already been deleted or could not be found.");
+        FlowPanel text = new FlowPanel();
+        text.add(msgText);
+        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
+
+        msgPanel.add(msgHeader);
+        msgPanel.add(msgText);
+
+        errorReport.add(msgPanel);
+        Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
+
     }
 }

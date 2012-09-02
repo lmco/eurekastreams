@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Displays an avatar and makes it link to the proper item's profile page.
@@ -58,12 +59,6 @@ public class AvatarLinkPanel extends Composite
         switch (entityType)
         {
         case PERSON:
-            // add overlay for people
-            if (allowBadge)
-            {
-                main.add(AvatarBadgeManager.getInstance().createOverlay(entityUniqueId, size));
-            }
-
             page = Page.PEOPLE;
             break;
         case GROUP:
@@ -78,6 +73,14 @@ public class AvatarLinkPanel extends Composite
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
         main.add(link);
+	// @sdw3kmm: manipulate HTML to put the 
+	// class, whose CSS includes a badge image,
+	// within the anchor tag for the gwt-InlineHyperlink
+	if(allowBadge)
+	    {
+		Widget badgeForGroupCoordinator = AvatarBadgeManager.getInstance().createOverlay(entityUniqueId, size);
+		link.getElement().appendChild(badgeForGroupCoordinator.getElement());
+	    }
         link.getElement().appendChild(avatar.getElement());
     }
 

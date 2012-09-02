@@ -179,8 +179,8 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         }
 
         // ================= Cache update task generation =======================
-
-        Long startAsync = null;
+       
+	Long startAsync = null;
         if (log.isInfoEnabled())
         {
             startAsync = System.currentTimeMillis();
@@ -291,7 +291,6 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
                     + (now - startAsync) + " Total time: " + (now - startDB);
             log.info(logMessage);
         }
-
         return Boolean.TRUE;
     }
 

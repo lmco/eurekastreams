@@ -23,6 +23,8 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -38,6 +40,11 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+	
     /** Mapper used to look up the group. */
     private final GetDomainGroupsByShortNames groupByShortNameMapper;
 
@@ -58,7 +65,7 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
 
     /** Mapper to get an activity. */
     private final DomainMapper<Long, ActivityDTO> activityMapper;
-
+    
     /**
      * Constructor.
      * 
@@ -98,7 +105,9 @@ public class GetDomainGroupModelViewByShortNameExecution implements ExecutionStr
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         String shortName = (String) inActionContext.getParams();
+        log.debug("shortName = " + shortName);
         DomainGroupModelView result = groupByShortNameMapper.fetchUniqueResult(shortName);
+        log.debug("result = " + result);
 
         if (result != null)
         {

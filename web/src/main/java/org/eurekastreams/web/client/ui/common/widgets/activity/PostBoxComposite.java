@@ -514,8 +514,12 @@ public class PostBoxComposite extends Composite
                     public void update(final MessageAttachmentChangedEvent evt)
                     {
                         attachment = evt.getAttachment();
-                    }
-                });
+		        /* ITAES-28 Aug-28-2012
+			   @sdw3kmm: When adding an attachment, 
+			   make the "Post" Button visible.      */
+			checkPostBox();
+		    }
+		});
 
         EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
