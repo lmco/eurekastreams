@@ -136,6 +136,7 @@
 		                    <needarch>noarch</needarch>
 		                    <defineStatements>
 		                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                                        <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
 		                    </defineStatements>
 		                    <mappings>
 		                        <mapping>
