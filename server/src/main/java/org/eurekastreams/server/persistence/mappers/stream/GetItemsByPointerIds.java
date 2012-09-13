@@ -17,9 +17,13 @@ package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.commons.logging.LogFactory;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Gets a list of objects for a given list of pointer ids.
@@ -29,6 +33,11 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
  */
 public abstract class GetItemsByPointerIds<ValueType> extends BaseDomainMapper
 {
+    /** 
+     * Logger. 
+     */
+    private Log log = LogFactory.make();
+	
     /**
      * Mapper to get the IDs of objects by a string property.
      */
@@ -63,9 +72,18 @@ public abstract class GetItemsByPointerIds<ValueType> extends BaseDomainMapper
      */
     public ValueType fetchUniqueResult(final String inId)
     {
+    	log.debug("inId = " + inId);
         List<String> ids = new ArrayList<String>();
         ids.add(inId);
+        
+        printArray(ids, "ids in fetchUniqueResult");
+        
         List<ValueType> results = execute(ids);
+        
+        printArray(results, "results in fetchUniqueResult");
+        
+        log.debug("results.size() = " + results.size());
+        
         return results.size() == 0 ? null : results.get(0);
     }
 
@@ -97,14 +115,78 @@ public abstract class GetItemsByPointerIds<ValueType> extends BaseDomainMapper
      * @return list of DTO objects.
      */
     public List<ValueType> execute(final List<String> inStringIds)
-    {
-        List<Long> ids = idsByStringsMapper.execute(inStringIds);
+    {   	
+    	printArray(inStringIds, "inStringIds within execute");
+    	
+    	if (idsByStringsMapper == null)
+    	{
+    		log.debug("idsByStringsMapper is null.");
+    	}
+    	
+    	List<Long> ids = idsByStringsMapper.execute(inStringIds);
 
+    	printArray(ids, "ids in execute()");
+    	
         // Checks to see if there's any real work to do
-        if (ids == null || ids.size() == 0)
+    	if (ids == null || ids.size() == 0 || containsAllNulls(ids))
         {
+        	log.debug("ids is null");
             return new ArrayList<ValueType>();
         }
         return new ArrayList<ValueType>(bulkExecute(ids));
+    }
+    
+    /**
+     * Check if every element in a list is null.
+     * 
+     * @param <T>
+     * 	   generic
+     * 
+     * @param list
+     * 		any list
+     * 
+     * @return whether list contains all null
+     */
+    private <T> boolean containsAllNulls(final List<T> list)
+    {
+        if (list != null)
+        {
+            Iterator<T> iterator = list.iterator();
+            
+            while (iterator.hasNext())
+            {
+            	if (iterator.next() != null)
+            	{
+            		return false;
+            	}
+            }
+        }
+        return true;
+    }
+
+    
+    /**
+     * Print out array for debugging purposes.
+     *
+     * @param <T>
+     * 	   generic
+     * 
+     * @param list
+     *     any list
+     *     
+     * @param message
+     * 	   message to be included in log statement
+     */
+    private <T> void printArray(final List<T> list, final String message)
+    {
+    	log.debug("logging " + message);
+    	int i = 0;
+    	
+        Iterator<T> iterator = list.iterator();
+        
+        while (iterator.hasNext())
+        {
+        	log.debug("iterator[" + i + "] = " + iterator.next());
+        }
     }
 }
