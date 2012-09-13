@@ -76,8 +76,19 @@ public class GetStreamActivitySubscriptionExecution implements ExecutionStrategy
         // get the stream entity id
         Long id = entityIdFromUniqueIdDAO.execute(uniqueId);
 
+        // A null 'id' indicates that no such group exists
+        // for this id. As a result, it's acceptable to return false,
+        // which means that the current user is not signed up for 
+        // notifications of the current group, which does not exist.
+        if (id == null)
+        {
+        	return false;
+        }
+        else
+        {
         // get the user's preference
         return getNotificationPreferenceDAO.execute(new GetStreamActivitySubscriptionMapperRequest(inActionContext
                 .getPrincipal().getId(), id));
+        }
     }
 }
