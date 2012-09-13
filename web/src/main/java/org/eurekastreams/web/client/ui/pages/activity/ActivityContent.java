@@ -933,102 +933,157 @@ public class ActivityContent extends Composite
      */
     private void onGroupModelViewReceived(final DomainGroupModelView group)
     {
-        currentDisplayName = group.getDisplayName();
-        currentScopeId = group.getStreamId();
-
-        currentStream.setDisplayName(group.getName());
-
-        if (group.isRestricted())
-        {
-            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
-            currentStream.setScopeType(null);
-            postBox.setVisible(false);
-
-            errorPanel.clear();
-            errorPanel.setVisible(true);
-            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-            errorPanel.add(new Label("Access to this group is restricted"));
-            errorPanel.add(new Label("To view this group's stream please request access from its coordinator"));
-
-            final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
-            {
-                public void onClick(final ClickEvent inArg0)
-                {
-                    GroupMembershipRequestModel.getInstance().insert(group.getShortName());
-                }
-            });
-
-            EventBus.getInstance().addObserver(InsertedRequestForGroupMembershipResponseEvent.class,
-                    new Observer<InsertedRequestForGroupMembershipResponseEvent>()
-                    {
-                        public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
-                        {
-                            button.disable();
-                            EventBus.getInstance()
-                                    .notifyObservers(
-                                            new ShowNotificationEvent(new Notification(
-                                                    "Your request for access has been sent")));
-                        }
-                    });
-
-            button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
-            errorPanel.add(button);
-
-            streamPanel.clear();
-            unseenActivityNotificationPanel.setActive(true);
-        }
-        else
-        {
-            currentStreamEntity = group;
-
-            if (group.getStickyActivity() != null && !singleActivityMode
-                    && (loadedSearchTerm == null || loadedSearchTerm == ""))
-            {
-                stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
-                UIObject.setVisible(stickyActivityArea, true);
-            }
-        }
-        boolean isCoordinator = false;
-
-        for (PersonModelView coordinator : group.getCoordinators())
-        {
-            AvatarBadgeManager.getInstance().setBadge(style.streamContainerPanel(), coordinator.getUniqueId());
-            if (coordinator.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
-            {
-                isCoordinator = true;
-            }
-        }
-        if (!group.isStreamPostable() && !isCoordinator)
-        {
-            currentStream.setScopeType(null);
-        }
-        else
-        {
-            getEmailContactLink.setHref("/resources/emailcontact/stream/group/" + group.getId());
-            getEmailContactLink.setVisible(true);
-        }
-
-        if (!singleActivityMode)
-        {
-            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN) || isCoordinator)
-            {
-                streamContainerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasOwnerRights());
-            }
-
-            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
-        }
-
-        if (deferLoadAwaitingEntityReceived)
-        {
-            deferLoadAwaitingEntityReceived = false;
-            currentRequestObj = StreamJsonRequestFactory.setExcludeId(group.getStickyActivityId(), currentRequestObj);
-            if (!deferLoadAwaitingQueryBuilt)
-            {
-                StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
-            }
-        }
+    	// If group is null, then that means that the group 
+    	// was not found. As a result, a "Group not found" 
+    	// page should be displayed. 
+    	// This page is very similar to the "Activity not found" page
+    	if (group == null)
+    	{	
+    		showGroupNotFoundPage();
+    	}
+    	else
+	    {
+	    	currentDisplayName = group.getDisplayName();
+	        currentScopeId = group.getStreamId();
+	
+	        currentStream.setDisplayName(group.getName());
+	
+	        if (group.isRestricted())
+	        {
+	            streamOptionsPanel.getStyle().setDisplay(Display.NONE);
+	            currentStream.setScopeType(null);
+	            postBox.setVisible(false);
+	
+	            errorPanel.clear();
+	            errorPanel.setVisible(true);
+	            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+	            errorPanel.add(new Label("Access to this group is restricted"));
+	            errorPanel.add(new Label("To view this group's stream please request access from its coordinator"));
+	
+	            final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
+	            {
+	                public void onClick(final ClickEvent inArg0)
+	                {
+	                    GroupMembershipRequestModel.getInstance().insert(group.getShortName());
+	                }
+	            });
+	
+	            EventBus.getInstance().addObserver(InsertedRequestForGroupMembershipResponseEvent.class,
+	                    new Observer<InsertedRequestForGroupMembershipResponseEvent>()
+	                    {
+	                        public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
+	                        {
+	                            button.disable();
+	                            EventBus.getInstance()
+	                                    .notifyObservers(
+	                                            new ShowNotificationEvent(new Notification(
+	                                                    "Your request for access has been sent")));
+	                        }
+	                    });
+	
+	            button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
+	            errorPanel.add(button);
+	
+	            streamPanel.clear();
+	            unseenActivityNotificationPanel.setActive(true);
+	        }
+	        else
+	        {
+	            currentStreamEntity = group;
+	
+	            if (group.getStickyActivity() != null && !singleActivityMode
+	                    && (loadedSearchTerm == null || loadedSearchTerm == ""))
+	            {
+	                stickyActivityHolder.add(stickyActivityRenderer.render(group.getStickyActivity()));
+	                UIObject.setVisible(stickyActivityArea, true);
+	            }
+	        }
+	        boolean isCoordinator = false;
+	
+	        for (PersonModelView coordinator : group.getCoordinators())
+	        {
+	            AvatarBadgeManager.getInstance().setBadge(style.streamContainerPanel(), coordinator.getUniqueId());
+	            if (coordinator.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+	            {
+	                isCoordinator = true;
+	            }
+	        }
+	        if (!group.isStreamPostable() && !isCoordinator)
+	        {
+	            currentStream.setScopeType(null);
+	        }
+	        else
+	        {
+	            getEmailContactLink.setHref("/resources/emailcontact/stream/group/" + group.getId());
+	            getEmailContactLink.setVisible(true);
+	        }
+	
+	        if (!singleActivityMode)
+	        {
+	            if (Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN) || isCoordinator)
+	            {
+	                streamContainerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasOwnerRights());
+	            }
+	
+	            EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
+	        }
+	
+	        if (deferLoadAwaitingEntityReceived)
+	        {
+	            deferLoadAwaitingEntityReceived = false;
+	            currentRequestObj = StreamJsonRequestFactory.setExcludeId(group.getStickyActivityId(), 
+	            		currentRequestObj);
+	            if (!deferLoadAwaitingQueryBuilt)
+	            {
+	                StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
+	            }
+	        }
+    	}
     }
+    
+    /**
+     * Shows a "not found" message.
+     */
+    private void showGroupNotFoundPage()
+    {
+    	activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+    	streamPanel.clear();
+		errorPanel.clear();
+		postBox.setVisible(false);
+		
+    	Panel errorReport = new FlowPanel();
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReport());
 
+        FlowPanel centeringPanel = new FlowPanel();
+        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReportContainer());
+        centeringPanel.add(errorReport);
+        streamPanel.add(centeringPanel);
+
+        FlowPanel msgPanel = new FlowPanel();
+
+        Label msgHeader = new Label("Group not found");
+        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
+
+        Label msgText = new Label("The group you were looking for has already been deleted or could not be found.");
+        FlowPanel text = new FlowPanel();
+        text.add(msgText);
+        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
+
+        msgPanel.add(msgHeader);
+        msgPanel.add(msgText);
+
+        streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        
+		streamPanel.setVisible(true);
+		streamContainerPanel.setVisible(true);
+        errorReport.add(msgPanel);
+		errorPanel.setVisible(true);
+		errorReport.setVisible(true);
+		centeringPanel.setVisible(true);
+		msgPanel.setVisible(true);
+
+    }
+    
     /**
      * Handle views changed.
      *
