@@ -91,6 +91,17 @@ public class AddLinkComposite extends FlowPanel
     private Label linkError = new Label("You must supply a valid url (example: http://www.example.com)");
 
     /**
+     * Get the text to be attached,
+     * as a link, to the post.
+     *
+     * @return link text
+     */
+    public String getLinkText()
+    {
+        return linkUrl.getText();
+    }
+    
+    /**
      * Constructor.
      */
     public AddLinkComposite()
@@ -168,7 +179,7 @@ public class AddLinkComposite extends FlowPanel
             {
                 if (evt.getAttachment() != null && evt.getAttachment() instanceof Bookmark)
                 {
-                    onLinkAdded(((Bookmark) evt.getAttachment()).getLinkInformation());
+                	onLinkAdded(((Bookmark) evt.getAttachment()).getLinkInformation());
                 }
                 else
                 {
@@ -254,12 +265,12 @@ public class AddLinkComposite extends FlowPanel
      *            the link that was added.
      */
     public void onLinkAdded(final LinkInformation link)
-    {
+    {    	
         // make sure the link hasn't changed - this prevents a slow site returning after user changed the link to a
         // faster one
         if (((fetchedLink == null || fetchedLink == "") && link == null) || fetchedLink == link.getUrl())
-        {
-            linkUrl.setText("");
+        {    	
+        	linkUrl.setText("");
             linkUrl.checkBox();
             LinkInformation addedLink = link;
 
@@ -312,7 +323,7 @@ public class AddLinkComposite extends FlowPanel
      */
     public void fetchLink(final String inLinkUrl)
     {
-        linkError.setVisible(false);
+    	linkError.setVisible(false);
 
         // very basic url validation
         final EventBus eventBus = Session.getInstance().getEventBus();
@@ -352,6 +363,7 @@ public class AddLinkComposite extends FlowPanel
                             {
                                 result.setTitle(result.getUrl());
                             }
+
                             eventBus.notifyObservers(event);
                         }
                     });

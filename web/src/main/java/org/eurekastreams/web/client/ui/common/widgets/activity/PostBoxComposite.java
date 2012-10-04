@@ -37,9 +37,11 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
 import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
+import org.eurekastreams.server.domain.stream.LinkInformation;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
 import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.AddLinkComposite;
+import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.Bookmark;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
@@ -464,7 +466,7 @@ public class PostBoxComposite extends Composite
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
             public void update(final MessageStreamAppendEvent event)
-            {
+            {  
                 attachment = null;
                 addLinkComposite.close();
                 postBox.setText("");
@@ -514,12 +516,11 @@ public class PostBoxComposite extends Composite
                     public void update(final MessageAttachmentChangedEvent evt)
                     {
                         attachment = evt.getAttachment();
-		        /* ITAES-28 Aug-28-2012
-			   @sdw3kmm: When adding an attachment, 
-			   make the "Post" Button visible.      */
-			checkPostBox();
-		    }
-		});
+					    // When adding an attachment, 
+					    // make the "Post" Button visible.
+                    	checkPostBox();
+                    }
+                });
 
         EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
@@ -608,23 +609,70 @@ public class PostBoxComposite extends Composite
              *            the click event
              */
             public void onClick(final ClickEvent inEvent)
-            {
-                if (!postButton.getStyleName().contains(style.postButtonInactive()))
+            {             	
+            	if (!postButton.getStyleName().contains(style.postButtonInactive()))
                 {
-                    ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                            : new NotePopulator();
+            		 if (!isLinkAttached() && addLinkComposite.inAddMode() && doesUnattachedLinkTextHaveText())
+                     {
+                             // Assume that the user meant to attach the link,
+                             // so attach the link to the message.
 
+                             // Grab the link text from the unattached link textbox
+                             LinkInformation linkInformation = new LinkInformation();
+                             String linkText = addLinkComposite.getLinkText();
+                             linkInformation.setUrl(linkText);
+                             linkInformation.setTitle(linkText);
+
+                         	 Bookmark bookmark = new Bookmark(linkInformation);
+                         	 attachment = bookmark;
+                     }
+            		
+            		ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                				: new NotePopulator();
+            		  
+                    
                     ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
                             DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
                             currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
-                    PostActivityRequest postRequest = new PostActivityRequest(activity);
 
+                    PostActivityRequest postRequest = new PostActivityRequest(activity);
+ 
                     ActivityModel.getInstance().insert(postRequest);
 
                     postButton.addStyleName(style.postButtonInactive());
                 }
             }
         });
+    }
+    
+    /**
+     * Checks whether there's text in an unattached link.
+     *
+     * @return boolean
+     *          true or false
+     */
+    private boolean doesUnattachedLinkTextHaveText()
+    {
+        String linkText = addLinkComposite.getLinkText();
+        String basicLegitimateHttpPattern = "://";
+
+        // Does the unattached link have "http://" and a period
+        if (linkText.toLowerCase().contains(basicLegitimateHttpPattern) && linkText.contains("."))
+        {
+                return true;
+        }
+                return false;
+    }
+
+    /**
+     * Returns whether a link is attached to a user's unsubmitted post.
+     *
+     * @return boolean
+     *          true or false
+     */
+    private boolean isLinkAttached()
+    {
+        return addLinkComposite.hasAttachment();
     }
 
 }
