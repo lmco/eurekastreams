@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,27 +44,18 @@ public class GroupPanel extends FlowPanel
      * Constructor.
      *
      * @param group
-     *            to display
+     * to display
      * @param showFollowers
-     *            to display
+     * to display
      * @param makeLinkable
-     *            whether to display it or not
+     * whether to display it or not
      * @param showDescription
-     *            Whether to display the description line.
+     * Whether to display the description line.
      */
     public GroupPanel(final DomainGroupModelView group, final boolean makeLinkable, final boolean showFollowers,
-            final boolean showDescription)
+		      final boolean showDescription)
     {
-        
-    	// @mereditk 8/2/2012: Show "Group Not Found" page
-    	// when a user searches for a non-existent group.
-    	if(group == null)
-    	{
-    		showNotFound();
-    		return;
-    	}
-    	
-    	addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
 
@@ -74,23 +65,23 @@ public class GroupPanel extends FlowPanel
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
 
         if (!group.isPublic())
-        {
-            Label icon = new Label();
-            icon.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privateIcon());
-            icon.setTitle("Private Group");
-            infoPanel.add(icon);
-        }
+	    {
+		Label icon = new Label();
+		icon.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privateIcon());
+		icon.setTitle("Private Group");
+		infoPanel.add(icon);
+	    }
 
         Widget name;
         if (makeLinkable)
-        {
-            String nameUrl = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, group.getShortName()));
-            name = new Hyperlink(group.getName(), nameUrl);
-        }
+	    {
+		String nameUrl = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, group.getShortName()));
+		name = new Hyperlink(group.getName(), nameUrl);
+	    }
         else
-        {
-            name = new Label(group.getName());
-        }
+	    {
+		name = new Label(group.getName());
+	    }
         
         name.setTitle(group.getName());
         
@@ -100,42 +91,42 @@ public class GroupPanel extends FlowPanel
         infoPanel.add(name);
 
         if (showDescription)
-        {
-            String descriptionText = group.getDescription();
-            if (descriptionText != null && !descriptionText.isEmpty())
-            {
-                Label about = new Label(descriptionText);
-                about.setTitle(descriptionText);
-                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().missionStatement());
-                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().oneLineDescription());
-                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());                
-                infoPanel.add(about);
-            }
-        }
+	    {
+		String descriptionText = group.getDescription();
+		if (descriptionText != null && !descriptionText.isEmpty())
+		    {
+			Label about = new Label(descriptionText);
+			about.setTitle(descriptionText);
+			about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().missionStatement());
+			about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().oneLineDescription());
+			about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().ellipsis());
+			infoPanel.add(about);
+		    }
+	    }
 
         if (showFollowers)
-        {
-            FlowPanel followersPanel = new FlowPanel();
-            followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
+	    {
+		FlowPanel followersPanel = new FlowPanel();
+		followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
-            InlineLabel followers = new InlineLabel("Followers: ");
-            followersPanel.add(followers);
+		InlineLabel followers = new InlineLabel("Followers: ");
+		followersPanel.add(followers);
 
-            InlineLabel followersCount = new InlineLabel(Integer.toString(group.getFollowersCount()));
-            followersCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
-            followersPanel.add(followersCount);
+		InlineLabel followersCount = new InlineLabel(Integer.toString(group.getFollowersCount()));
+		followersCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
+		followersPanel.add(followersCount);
 
-            insertActionSeparator(followersPanel);
+		insertActionSeparator(followersPanel);
 
-            followersPanel.add(new InlineLabel("Added: "));
+		followersPanel.add(new InlineLabel("Added: "));
 
-            DateFormatter dateFormatter = new DateFormatter(new Date());
-            InlineLabel dateAdded = new InlineLabel(dateFormatter.timeAgo(group.getDateAdded(), true));
-            dateAdded.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
-            followersPanel.add(dateAdded);
+		DateFormatter dateFormatter = new DateFormatter(new Date());
+		InlineLabel dateAdded = new InlineLabel(dateFormatter.timeAgo(group.getDateAdded(), true));
+		dateAdded.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
+		followersPanel.add(dateAdded);
 
-            infoPanel.add(followersPanel);
-        }
+		infoPanel.add(followersPanel);
+	    }
 
         infoPanel.add(new FollowPanel(group));
 
@@ -146,44 +137,12 @@ public class GroupPanel extends FlowPanel
      * Adds a separator (dot).
      *
      * @param panel
-     *            Panel to put the separator in.
+     * Panel to put the separator in.
      */
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
         sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
-    }
-    
-    /**
-     * Shows a "not found" message. It shows up when a user tries to 
-     * browse to a group stream that cannot be found.
-     */
-    private void showNotFound()
-    {
-        Panel errorReport = new FlowPanel();
-        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReport());
-
-        FlowPanel centeringPanel = new FlowPanel();
-        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReportContainer());
-        centeringPanel.add(errorReport);
-        add(centeringPanel);
-
-        FlowPanel msgPanel = new FlowPanel();
-
-        Label msgHeader = new Label("Group not found");
-        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
-
-        Label msgText = new Label("The group you were looking for has already been deleted or could not be found.");
-        FlowPanel text = new FlowPanel();
-        text.add(msgText);
-        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
-
-        msgPanel.add(msgHeader);
-        msgPanel.add(msgText);
-
-        errorReport.add(msgPanel);
-        Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
-
     }
 }
