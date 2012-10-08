@@ -73,7 +73,7 @@ public class AvatarLinkPanel extends Composite
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
         main.add(link);
-	// @sdw3kmm: manipulate HTML to put the 
+	// Manipulate HTML to put the 
 	// class, whose CSS includes a badge image,
 	// within the anchor tag for the gwt-InlineHyperlink
 	if(allowBadge)
