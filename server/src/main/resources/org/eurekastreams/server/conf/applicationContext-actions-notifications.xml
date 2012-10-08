@@ -173,6 +173,9 @@
 
 	<util:set id="notificationCategories">
 		<value>POST_TO_PERSONAL_STREAM</value>
+		<!-- kmm adding -->
+		<value>POST_TO_FOLLOWED_STREAM</value>
+		<!-- <end> -->
 		<value>COMMENT</value>
 		<value>FOLLOW</value>
 		<value>LIKE</value>
@@ -180,6 +183,9 @@
 
     <util:map id="notificationTypeToCategoryMap" key-type="org.eurekastreams.server.domain.NotificationType">
         <entry key="POST_TO_PERSONAL_STREAM" value="POST_TO_PERSONAL_STREAM" />
+        <!-- kmm adding -->
+        <entry key="POST_TO_FOLLOWED_STREAM" value="POST_TO_FOLLOWED_STREAM" />
+    	<!-- <end> -->
         <entry key="COMMENT_TO_PERSONAL_POST" value="COMMENT" />
         <entry key="COMMENT_TO_COMMENTED_POST" value="COMMENT" />
         <entry key="FOLLOW_PERSON" value="FOLLOW" />
@@ -470,7 +476,7 @@
 	<util:map id="inAppNotifierMessageTemplates">
 		<entry key="LIKE_ACTIVITY" value="$actor.displayName liked your #activityType($activity)." />
 		<entry key="POST_TO_PERSONAL_STREAM" value="$actor.displayName posted a #activityType($activity) to your stream." />
-<!-- 		<entry key="POST_TO_FOLLOWED_STREAM" value="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream." /> -->
+        <entry key="POST_TO_FOLLOWED_STREAM" value="$actor.displayName posted a #activityType($activity) to #streamDescription($stream,$recipient) stream." />
 		<entry key="COMMENT_TO_PERSONAL_POST" value="$actor.displayName commented on your #activityType($activity)." />
 		<entry key="COMMENT_TO_COMMENTED_POST" value="$actor.displayName also commented on $activity.actor.displayName's #activityType($activity)." />
 		<entry key="FOLLOW_PERSON" value="$actor.displayName is following your stream." />
