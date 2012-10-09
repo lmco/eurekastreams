@@ -1064,7 +1064,7 @@ public class ActivityContent extends Composite
         Label msgHeader = new Label("Group not found");
         msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
 
-        Label msgText = new Label("The group you were looking for has already been deleted or could not be found.");
+        Label msgText = new Label("The group you were looking for has been deleted or could not be found.");
         FlowPanel text = new FlowPanel();
         text.add(msgText);
         text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
