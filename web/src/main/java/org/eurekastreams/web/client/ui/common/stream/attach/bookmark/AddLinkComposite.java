@@ -96,7 +96,7 @@ public class AddLinkComposite extends FlowPanel
      *
      * @return link text
      */
-    public String getLinkText()
+    public final String getLinkText()
     {
         return linkUrl.getText();
     }
