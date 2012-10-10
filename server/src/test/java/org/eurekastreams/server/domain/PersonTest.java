@@ -441,7 +441,7 @@ public class PersonTest
         corePhoneNumberTest("+44 1865 123456", true);
 
         // check for too long
-        String tooLong = String.format("%1$#" + (Person.MAX_PHONE_NUMBER_LENGTH + 1) + "s", "");
+        String tooLong = String.format("%1" + (Person.MAX_PHONE_NUMBER_LENGTH + 1) + "s", "");
         corePhoneNumberTest(tooLong, false);
     }
 
