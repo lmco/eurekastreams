@@ -32,8 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Displays an avatar and makes it link to the proper item's profile page.
  */
-public class AvatarLinkPanel extends Composite
-{
+public class AvatarLinkPanel extends Composite {
     /**
      * Constructor.
      *
@@ -48,16 +47,15 @@ public class AvatarLinkPanel extends Composite
      * @param allowBadge
      *            If overlay badges should be created.
      */
-    private AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final Size size,
-            final AvatarWidget avatar, final boolean allowBadge)
-    {
+    private AvatarLinkPanel(final EntityType entityType,
+            final String entityUniqueId, final Size size,
+                final AvatarWidget avatar, final boolean allowBadge) {
         Panel main = new FlowPanel();
         main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         initWidget(main);
 
         Page page;
-        switch (entityType)
-        {
+        switch (entityType) {
         case PERSON:
             page = Page.PEOPLE;
             break;
@@ -69,18 +67,20 @@ public class AvatarLinkPanel extends Composite
             return;
         }
 
-        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId));
+        String linkUrl = Session.getInstance().generateUrl(
+                new CreateUrlRequest(page, entityUniqueId));
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
         main.add(link);
-	// Manipulate HTML to put the 
-	// class, whose CSS includes a badge image,
-	// within the anchor tag for the gwt-InlineHyperlink
-	if(allowBadge)
-	    {
-		Widget badgeForGroupCoordinator = AvatarBadgeManager.getInstance().createOverlay(entityUniqueId, size);
-		link.getElement().appendChild(badgeForGroupCoordinator.getElement());
-	    }
+        // Manipulate HTML to put the
+        // class, whose CSS includes a badge image,
+        // within the anchor tag for the gwt-InlineHyperlink
+        if (allowBadge) {
+            Widget badgeForGroupCoordinator = AvatarBadgeManager.getInstance()
+                        .createOverlay(entityUniqueId, size);
+            link.getElement().appendChild(badgeForGroupCoordinator
+                    .getElement());
+        }
         link.getElement().appendChild(avatar.getElement());
     }
 
@@ -98,10 +98,11 @@ public class AvatarLinkPanel extends Composite
      * @param title
      *            the titleText.
      */
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
-            final Size size, final String title)
-    {
-        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size, title), true);
+    public AvatarLinkPanel(final EntityType entityType,
+            final String entityUniqueId, final String avatarId,
+                final Size size, final String title) {
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId,
+                entityType, size, title), true);
     }
 
     /**
@@ -116,17 +117,18 @@ public class AvatarLinkPanel extends Composite
      * @param size
      *            the avatar size.
      */
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
-            final Size size)
-    {
-        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size), true);
+    public AvatarLinkPanel(final EntityType entityType,
+            final String entityUniqueId, final String avatarId,
+                final Size size) {
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId,
+                entityType, size), true);
     }
 
     /**
      * Constructor.
      *
      * @param entityType
-     *            the entity type.
+     *            the entity type
      * @param entityUniqueId
      *            Short name / account id of entity the avatar belongs to.
      * @param avatarId
@@ -136,9 +138,10 @@ public class AvatarLinkPanel extends Composite
      * @param allowBadge
      *            If overlay badges should be created.
      */
-    public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final String avatarId,
-            final Size size, final boolean allowBadge)
-    {
-        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId, entityType, size), allowBadge);
+    public AvatarLinkPanel(final EntityType entityType,
+            final String entityUniqueId, final String avatarId,
+                final Size size, final boolean allowBadge) {
+        this(entityType, entityUniqueId, size, new AvatarWidget(avatarId,
+                entityType, size), allowBadge);
     }
 }
