@@ -32,7 +32,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Displays an avatar and makes it link to the proper item's profile page.
  */
-public class AvatarLinkPanel extends Composite {
+public class AvatarLinkPanel extends Composite 
+{
     /**
      * Constructor.
      *
@@ -49,13 +50,15 @@ public class AvatarLinkPanel extends Composite {
      */
     private AvatarLinkPanel(final EntityType entityType,
             final String entityUniqueId, final Size size,
-                final AvatarWidget avatar, final boolean allowBadge) {
+                final AvatarWidget avatar, final boolean allowBadge) 
+    {
         Panel main = new FlowPanel();
         main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         initWidget(main);
 
         Page page;
-        switch (entityType) {
+        switch (entityType) 
+        {
         case PERSON:
             page = Page.PEOPLE;
             break;
@@ -75,7 +78,8 @@ public class AvatarLinkPanel extends Composite {
         // Manipulate HTML to put the
         // class, whose CSS includes a badge image,
         // within the anchor tag for the gwt-InlineHyperlink
-        if (allowBadge) {
+        if (allowBadge) 
+        {
             Widget badgeForGroupCoordinator = AvatarBadgeManager.getInstance()
                         .createOverlay(entityUniqueId, size);
             link.getElement().appendChild(badgeForGroupCoordinator
@@ -100,7 +104,8 @@ public class AvatarLinkPanel extends Composite {
      */
     public AvatarLinkPanel(final EntityType entityType,
             final String entityUniqueId, final String avatarId,
-                final Size size, final String title) {
+                final Size size, final String title) 
+    {
         this(entityType, entityUniqueId, size, new AvatarWidget(avatarId,
                 entityType, size, title), true);
     }
@@ -119,7 +124,8 @@ public class AvatarLinkPanel extends Composite {
      */
     public AvatarLinkPanel(final EntityType entityType,
             final String entityUniqueId, final String avatarId,
-                final Size size) {
+                final Size size) 
+    {
         this(entityType, entityUniqueId, size, new AvatarWidget(avatarId,
                 entityType, size), true);
     }
@@ -140,7 +146,8 @@ public class AvatarLinkPanel extends Composite {
      */
     public AvatarLinkPanel(final EntityType entityType,
             final String entityUniqueId, final String avatarId,
-                final Size size, final boolean allowBadge) {
+                final Size size, final boolean allowBadge) 
+    {
         this(entityType, entityUniqueId, size, new AvatarWidget(avatarId,
                 entityType, size), allowBadge);
     }
