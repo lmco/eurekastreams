@@ -1568,7 +1568,8 @@ public class ActivityContent extends Composite
 
         getEmailContactLink.setVisible(false);
 
-        if (views == null || views.size() == 0 || views.get(0).equals("following"))
+        if (views == null || views.size() == 0 || views.get(0).equals("following")
+                || ((views.get(0).equals("sort") && (views.size() == 2))))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
             setAsActiveStream(followingFilterPanel);
