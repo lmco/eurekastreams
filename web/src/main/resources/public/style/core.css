@@ -5853,7 +5853,7 @@ body .url-validator .required-form-label {
 }
 
 .removable-person>.delete {
-	display: none;
+	display: inline-block;
 }
 
 .radio-button-container {}

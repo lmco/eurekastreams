@@ -29,7 +29,10 @@ import org.eurekastreams.web.client.model.Fetchable;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
+import org.eurekastreams.web.client.ui.common.pagedlist.RemovableGroupMemberPersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.TwoColumnPagedListRenderer;
+
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -64,6 +67,12 @@ public class FollowerPagerUiStrategy implements PagerStrategy
     private PersonRenderer personRenderer = new PersonRenderer(false);
 
     /**
+     * Renders a person with a link so that an 
+     * Admin or Group Coordinator can remove them.
+     */
+    private RemovableGroupMemberPersonRenderer removablePersonRenderer;
+    
+    /**
      * Entity type.
      */
     private EntityType entityType;
@@ -73,6 +82,11 @@ public class FollowerPagerUiStrategy implements PagerStrategy
      */
     private String entityKey;
 
+    /**
+     * Group
+     */
+    private DomainGroupModelView group;
+    
     /**
      * Constructor.
      */
@@ -103,8 +117,10 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                     {
                         pager.setMaxCount(event.getResponse().getTotal());
 
+                        removablePersonRenderer = new RemovableGroupMemberPersonRenderer(entityKey, group);
+                        
                         FlowPanel responsePanel = new FlowPanel();
-                        twoColListRenderer.render(responsePanel, personRenderer, event.getResponse(), "No Followers");
+                        twoColListRenderer.render(responsePanel, removablePersonRenderer, event.getResponse(), "No Followers");
                         responseEvent.setWidget(responsePanel);
                         EventBus.getInstance().notifyObservers(responseEvent);
                     }
@@ -130,6 +146,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                         entityKey = event.getResponse().getShortName();
                         entityType = EntityType.GROUP;
                         model = GroupMembersModel.getInstance();
+                        group = event.getResponse();
                     }
                 });
     }

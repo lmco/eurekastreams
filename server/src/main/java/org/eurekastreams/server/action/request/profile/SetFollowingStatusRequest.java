@@ -55,6 +55,11 @@ public class SetFollowingStatusRequest implements Serializable
      * Local instance of the FollowerStatus determining what type of SetFollowingStatus request the action is handling.
      */
     private Follower.FollowerStatus followerStatus;
+    
+    /**
+     * Group Short Name (applicable when following a group)
+     */
+    private String groupShortName;
 
     /**
      * Empty constructor for GWT.
@@ -90,6 +95,33 @@ public class SetFollowingStatusRequest implements Serializable
         followerStatus = inFollowerStatus;
     }
 
+    /**
+     * Constructor for the Request object.
+     *
+     * @param inFollowerUniqueId
+     *            - unique id of the follower.
+     * @param inTargetUniqueId
+     *            - unique id of the target that the follower is following.
+     * @param inTargetEntityType
+     *            - Type of entity for the target.
+     * @param inOpenSocialRequest
+     *            - flag indicating whether this request represents an OpenSocial entity.
+     * @param inFollowerStatus
+     *            - status of the following relationship being requested.
+     * @param inGroupName
+     */
+    public SetFollowingStatusRequest(final String inFollowerUniqueId, final String inTargetUniqueId,
+            final EntityType inTargetEntityType, final boolean inOpenSocialRequest,
+            final Follower.FollowerStatus inFollowerStatus, final String inGroupShortName)
+    {
+        followerUniqueId = inFollowerUniqueId;
+        targetUniqueId = inTargetUniqueId;
+        targetEntityType = inTargetEntityType;
+        openSocialRequest = inOpenSocialRequest;
+        followerStatus = inFollowerStatus;
+        groupShortName = inGroupShortName;
+    }
+    
     /**
      * Getter.
      *
@@ -183,5 +215,15 @@ public class SetFollowingStatusRequest implements Serializable
     public void setFollowerStatus(final Follower.FollowerStatus inFollowerStatus)
     {
         followerStatus = inFollowerStatus;
+    }
+    
+    /**
+     * Getter.
+     * 
+     * @return - the Group Short Name.
+     */
+    public String getGroupShortName()
+    {
+        return groupShortName;
     }
 }

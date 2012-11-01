@@ -15,20 +15,34 @@
  */
 package org.eurekastreams.web.client.ui.common.pagedlist;
 
+import java.util.List;
+
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
+import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.BasicPager;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupMembersModel;
+import org.eurekastreams.web.client.model.Fetchable;
+import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 
 /**
  * Renders a person with an extra link to let them be removed from a group.
@@ -37,16 +51,23 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
 {
     /** Unique ID of group. */
     private String groupUniqueId;
+    
+    /** The group */
+    private DomainGroupModelView group;
 
     /**
      * Constructor.
      *
      * @param inGroupUniqueId
      *            Unique ID of group user is a member of.
+     *            
+     * @param inGroup
+     *            The group for which this Person is getting rendered.
      */
-    public RemovableGroupMemberPersonRenderer(final String inGroupUniqueId)
+    public RemovableGroupMemberPersonRenderer(final String inGroupUniqueId, final DomainGroupModelView inGroup)
     {
         groupUniqueId = inGroupUniqueId;
+        group = inGroup;
     }
 
     /**
@@ -54,18 +75,38 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
      */
     public Panel render(final PersonModelView item)
     {
-        PersonPanel panel = new PersonPanel(item, true, true, false, true);
+        PersonPanel panel = new PersonPanel(item, true, false, false, false);
 
-        // don't allow user to delete themselves
-        if (Session.getInstance().getCurrentPerson().getId() != item.getEntityId())
+        boolean currentUserIsAdmin = Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN);
+        
+        boolean currentUserIsGroupCoordinator = isGroupCoordinator(Session.getInstance().getCurrentPerson()); 
+        
+        boolean isGroupPrivate = !group.isPublic();
+        
+        // conditions by which a person should show up as 'Remove'-able:
+        // cannot delete himself AND private group AND (current user is ADMIN or GROUP COORD) 
+        if ((Session.getInstance().getCurrentPerson().getId() != item.getEntityId()) 
+                && (currentUserIsAdmin || currentUserIsGroupCoordinator) 
+                && (isGroupPrivate))
         {
+            boolean toBeRemovedFollowerIsGroupCoordinator = isGroupCoordinator(item);
+            
+            int numberOfGroupCoordinators = group.getCoordinators().size();
+            
+            // Cannot remove Group Coordinator if he/she is the last Group Coordinator.
+            if (toBeRemovedFollowerIsGroupCoordinator && (numberOfGroupCoordinators == 1))
+            {
+                // short-circuit as this Person is non-removable
+                return panel;
+            }
+            
             panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().removablePerson());
 
-            Label deleteLink = new Label("Delete");
+            Label deleteLink = new Label("Remove");
             deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().delete());
             panel.add(deleteLink);
-
+            
             deleteLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent inArg0)
@@ -75,12 +116,34 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
                     {
                         GroupMembersModel.getInstance().delete(
                                 new SetFollowingStatusRequest(item.getAccountId(), groupUniqueId, EntityType.GROUP,
-                                        false, FollowerStatus.NOTFOLLOWING));
+                                        false, FollowerStatus.NOTFOLLOWING, group.getShortName()));
                     }
                 }
             });
         }
 
         return panel;
+    }
+    
+    /**
+     * isCurrentUserGroupCoordinator
+     *
+     * @return Whether the current user is a Group Coordinator
+     */
+    private boolean isGroupCoordinator(PersonModelView toBeRemovedPerson)
+    {
+        String currentUserAccountId = toBeRemovedPerson.getAccountId();
+        
+        List<PersonModelView> groupCoordinators = group.getCoordinators();
+        
+        for (PersonModelView p: groupCoordinators) 
+        {
+            if (p.getAccountId().equals(currentUserAccountId))
+            {
+                return true;
+            }
+        }
+            
+        return false;
     }
 }

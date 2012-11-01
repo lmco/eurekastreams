@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.user.client.Window;
+
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
@@ -60,6 +64,11 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
+    /** 
+     * Logger. 
+     */
+    private final Log log = LogFactory.make();
+    
     /**
      * Local instance of the GetDomainGroupsByShortNames mapper.
      */
@@ -102,7 +111,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      * Delete cache key mapper.
      */
     private final DomainMapper<Set<String>, Boolean> deleteCacheKeyMapper;
-
+    
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
      *
@@ -287,27 +296,69 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                         inActionContext.getUserActionRequests());
             }
             break;
+            
         case NOTFOLLOWING:
-            // Update the db and cache for list of followers and following.
+            
+            // Check if the User to be removed is a Group Coordinator of the 
+            // Group from which he will be removed.
+            boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.isInputUserGroupCoordinator(followerId, targetId); 
+            
+            // If the Follower to be removed is the last Group Coordinator,
+            // do not proceed with his removal from the Group, nor proceed
+            // with his removal as a Group Coordinator
+            if ((domainGroupMapper.getGroupCoordinatorCount(targetId) == 1) 
+                    && isToBeRemovedUserGroupCoordinator)
+            {
+                log.error("Cannot remove followerId: " + followerId + " "
+                        + "from targetId:" + targetId + " since there's "
+                        + "only a single Group Coordinator remaining "
+                        + "in the Group");
+                throw new ExecutionException("Cannot remove followerId: " + followerId + " "
+                        + "from targetId:" + targetId + " since there's "
+                        + "only a single Group Coordinator remaining "
+                        + "in the Group");
+            }
+        
+           // Update the db for list of followers and following.
             domainGroupMapper.removeFollower(followerId, targetId);
-
+              
             // Queue async action to remove the newly followed group from cache (to sync follower counts)
             asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
-
+    
             // Remove the current user that is severing a relationship with the target group
             // from the list of followers for that target group.
             asyncRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
                     Collections.singletonList(CacheKeys.FOLLOWERS_BY_GROUP + targetId), Collections
                             .singletonList(followerId))));
-
+    
             // Remove the target group the current user is now following from the list of
             // groups that the current user is already following.
             asyncRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
                     Collections.singletonList(CacheKeys.GROUPS_FOLLOWED_BY_PERSON + followerId), Collections
                             .singletonList(targetId))));
-
+                
+            if (isToBeRemovedUserGroupCoordinator)
+            {
+                // delete group coordinator from db
+                domainGroupMapper.removeGroupCoordinator(followerId, targetId);
+                
+                // queue the removal the target group's list of coordinators
+                asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                    .singleton(CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID + targetId)));
+    
+                // Update the 'PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR' cache
+                // only if the Group is Private
+                if (domainGroupMapper.isGroupPrivate(targetId))
+                {
+                    // queue the removal the person's list of followed group ids
+                    asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                            .singleton(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + followerId)));
+                }
+            }
+            
             break;
+            
         default:
             // nothing to do here.
         }
@@ -328,4 +379,36 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     {
         return new DefaultPrincipal(followerAccountId, null, followerId);
     }
+    
+    /**
+     * isUserGroupCoordinator
+     *
+     * @param userAccountId
+     *          Account Id of User to check whether he/she's a Group Coordinator
+     * @param group
+     *          Group to check if userAccountId is a Group Coordinator for it     
+     *
+     * @return Whether the input user is a Group Coordinator
+     */
+    private boolean isUserGroupCoordinator(String userAccountId, DomainGroupModelView group)
+    {
+        List<PersonModelView> groupCoordinators = group.getCoordinators();
+        
+        log.debug("SetFollowingGroupStatusExecution group.getCoordinators() = " 
+                + group.getCoordinators());
+        
+        log.debug(".isUserGroupCoordinator"
+                + "group.getCoordinators().size() = " + group.getCoordinators().size()); 
+        
+        for (PersonModelView p: groupCoordinators) 
+        {
+            if (p.getAccountId().equals(userAccountId))
+            {
+                return true;
+            }
+        }
+            
+        return false;
+    }
+    
 }

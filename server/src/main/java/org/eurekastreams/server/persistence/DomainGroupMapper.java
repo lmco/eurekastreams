@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.FlushModeType;
 import javax.persistence.Query;
@@ -28,6 +29,8 @@ import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.GroupFollower;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 
 /**
  * This class provides the mapper functionality for DomainGroup entities.
@@ -35,6 +38,12 @@ import org.eurekastreams.server.domain.Person;
 @Deprecated
 public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implements FollowMapper, CompositeEntityMapper
 {
+    
+    /** 
+     * Logger. 
+     */
+    private final Log log = LogFactory.make();
+    
     /**
      * Constructor.
      * 
@@ -63,7 +72,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
         return (results.size() == 0) ? null : (DomainGroup) results.get(0);
     }
-
+    
     /**
      * @return the entity's type
      */
@@ -196,10 +205,14 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      * @param followerId
      *            The if of the follower Person
      * @param followingId
-     *            The group id being Followed.
+     *            The group id being Followed. 
      */
     public void removeFollower(final long followerId, final long followingId)
     {
+        log.debug("removeFollower(followerId = " + followerId + ", followingId = " + followingId + ")");
+        
+        DomainGroup followingEntity = findById(followingId);
+
         int rowsDeleted = getEntityManager().createQuery(
                 "DELETE FROM GroupFollower where followerId=:followerId and followingId=:followingId").setParameter(
                 "followerId", followerId).setParameter("followingId", followingId).executeUpdate();
@@ -218,16 +231,49 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         getEntityManager().createQuery(
                 "update versioned DomainGroup set followersCount = followers.size where id=:followingId").setParameter(
                 "followingId", followingId).executeUpdate();
-
+    
         getEntityManager().flush();
         getEntityManager().clear();
-
-        DomainGroup followingEntity = findById(followingId);
+        
+        followingEntity = findById(followingId);
 
         // reindex the following in the search index
         getFullTextSession().index(followingEntity);
     }
-
+    
+    /**
+     * Removes a follower/following relationship between a Person and a DomainGroup.coordinators.
+     * 
+     * @param followerId
+     *            The if of the follower Person
+     * @param followingId
+     *            The group id being Followed. 
+     */
+    public void removeGroupCoordinator(final long followerId, final long followingId)
+    {
+        log.debug("removeGroupCoordinator(followerId = " + followerId + ", followingId = " + followingId + ")");
+        
+        DomainGroup followingEntity = findById(followingId);
+        
+        Set<Person> groupCoordinators = followingEntity.getCoordinators();
+        
+        log.debug("groupCoordinators().size() = " + groupCoordinators.size());
+        
+        log.debug("Removed a Group Coordinator. Persisting updated list of Group Coordinators");
+        
+        removeGroupCoordinator(groupCoordinators, followerId, followingId);
+        
+        followingEntity.setCoordinators(groupCoordinators);
+        
+        log.debug("groupCoordinators = " + groupCoordinators);
+        
+        log.debug("followingEntity.getCoordinators() = " + followingEntity.getCoordinators());
+        
+        getEntityManager().persist(followingEntity);
+        getEntityManager().flush();
+        getEntityManager().clear();
+    }
+    
     /**
      * Get a String representation the Person.id of all of the Person.ids for coordinators and followers of the input
      * group.
@@ -265,5 +311,122 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         getEntityManager().remove(group);
 
         getEntityManager().flush();
+    }
+    
+    /**
+     * Is the input Person a Group Coordinator of the input Group?
+     * 
+     * @param - followerId
+     *          Person
+     * 
+     * @param - followingId
+     *          Group       
+     *          
+     * @return - Whether 'Person' is a Group Coordinator of 'Group'
+     */
+    public boolean isInputUserGroupCoordinator(final long followerId, final long followingId)
+    {
+        log.debug("isInputUserGroupCoordinator: followerId = " + followerId + " followingId = " + followingId);
+        
+        String groupCoordinatorQuery = "SELECT p.id FROM Person p, DomainGroup g WHERE p member of g.coordinators"
+                + " AND g.id = :groupId";
+        
+        List<Long> groupCoordinatorResult = getEntityManager()
+        .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId).getResultList();
+        
+        log.debug("groupCoordinatorResult = " + groupCoordinatorResult);
+        log.debug("groupCoordinatorResult.contains(new Long(followerId)) = " + groupCoordinatorResult.contains(new Long(followerId)));
+        
+        if (groupCoordinatorResult.contains(new Long(followerId)))
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Removes a User from being a Group Coordinator.
+     * 
+     * @param groupCoordinators
+     *          List of group coordinators
+     *         
+     * @param followerId
+     *          Id of User to Remove
+     *          
+     * @param followingId
+     *          Id of Group from which a User will be removed                            
+     * 
+     */
+    private void removeGroupCoordinator(Set<Person> groupCoordinators, final long followerId, 
+            final long followingId)
+    {   
+        String groupCoordinatorQuery = "SELECT p.accountId FROM Person p, DomainGroup g WHERE p member of g.coordinators"
+                + " AND g.id = :groupId AND p.id = :followerId";
+        
+        List<String> groupCoordinatorResult = getEntityManager()
+          .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId)
+             .setParameter("followerId", followerId).getResultList();
+        
+        // This means that isInputUserGroupCoordinator() is not working properly.
+        // We should not reach removeGroupCoordinator(...) unless
+        // the given Person should be removed as a Group Coordinator.
+        if (groupCoordinatorResult == null || groupCoordinatorResult.size() == 0 ) 
+        {
+            return; 
+        }
+        
+        String accountId = groupCoordinatorResult.get(0);
+        
+        for (Person p : groupCoordinators)
+        {
+            log.debug("p.getAccountId() = " + p.getAccountId() + "p.getLastName() = " + p.getLastName());
+            
+            if (p.getAccountId().equals(accountId))
+            {
+                groupCoordinators.remove(p);                
+                log.debug("removed p: " + p + " as Group Coordinator.");
+                return;
+            }
+        }
+    }
+    
+    /**
+     * isGroupPrivate - returns true/false depending if a given Group is private.
+     * 
+     * @param followingId - id of the Group
+     * 
+     * @return Whether the Group is Private
+     */
+    public boolean isGroupPrivate(final long followingId)
+    {
+        String groupCoordinatorQuery = "SELECT g FROM DomainGroup g WHERE g.id = :groupId";
+        
+        List<DomainGroup> groupCoordinatorResult = getEntityManager()
+          .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId).getResultList();
+        
+        DomainGroup group = groupCoordinatorResult.get(0);
+        
+        log.debug("isGroupPrivate | result =" + group.isPublicGroup());
+        
+        return !group.isPublicGroup();
+    }
+    
+    /**
+     * getGroupCoordinatorCount - returns the number of Group Coordinators for a given Group
+     * 
+     * @param followingId - id of the Group
+     * 
+     * @return number of Group Coordinators for Group
+     */
+    public int getGroupCoordinatorCount(final long followingId)
+    {
+        String groupCoordinatorQuery = "SELECT p.accountId FROM Person p, DomainGroup g WHERE p member of g.coordinators"
+                + " AND g.id = :groupId";
+        
+        List<String> groupCoordinatorResult = getEntityManager()
+                .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId).getResultList();
+        
+        return groupCoordinatorResult.size(); 
     }
 }
