@@ -18,32 +18,21 @@ package org.eurekastreams.web.client.ui.common.pagedlist;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
-import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.BasicPager;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupMembersModel;
-import org.eurekastreams.web.client.model.Fetchable;
-import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Location;
-
 /**
  * Renders a person with an extra link to let them be removed from a group.
  */
@@ -52,7 +41,7 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
     /** Unique ID of group. */
     private String groupUniqueId;
     
-    /** The group */
+    /** The group. */
     private DomainGroupModelView group;
 
     /**
@@ -126,17 +115,20 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
     }
     
     /**
-     * isCurrentUserGroupCoordinator
+     * Checks whether the current user is a Group Coordinator.
+     *
+     *@param toBeRemovedPerson  
+     *       - Group Coordinator to be removed.
      *
      * @return Whether the current user is a Group Coordinator
      */
-    private boolean isGroupCoordinator(PersonModelView toBeRemovedPerson)
+    private boolean isGroupCoordinator(final PersonModelView toBeRemovedPerson)
     {
         String currentUserAccountId = toBeRemovedPerson.getAccountId();
         
         List<PersonModelView> groupCoordinators = group.getCoordinators();
         
-        for (PersonModelView p: groupCoordinators) 
+        for (PersonModelView p : groupCoordinators) 
         {
             if (p.getAccountId().equals(currentUserAccountId))
             {

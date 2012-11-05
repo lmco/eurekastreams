@@ -299,8 +299,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             
             // Check if the User to be removed is a Group Coordinator of the 
             // Group from which he will be removed.
-            boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.isInputUserGroupCoordinator
-                (followerId, targetId); 
+            boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.
+                isInputUserGroupCoordinator(followerId, targetId); 
             
             // If the Follower to be removed is the last Group Coordinator,
             // do not proceed with his removal from the Group, nor proceed

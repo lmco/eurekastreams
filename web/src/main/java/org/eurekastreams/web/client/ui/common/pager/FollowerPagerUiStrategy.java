@@ -83,7 +83,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
     private String entityKey;
 
     /**
-     * Group
+     * Group.
      */
     private DomainGroupModelView group;
     
@@ -120,7 +120,8 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                         removablePersonRenderer = new RemovableGroupMemberPersonRenderer(entityKey, group);
                         
                         FlowPanel responsePanel = new FlowPanel();
-                        twoColListRenderer.render(responsePanel, removablePersonRenderer, event.getResponse(), "No Followers");
+                        twoColListRenderer.render(responsePanel, removablePersonRenderer, 
+                                event.getResponse(), "No Followers");
                         responseEvent.setWidget(responsePanel);
                         EventBus.getInstance().notifyObservers(responseEvent);
                     }

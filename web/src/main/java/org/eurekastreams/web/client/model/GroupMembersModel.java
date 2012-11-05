@@ -20,20 +20,14 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.domain.BasicPager;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupMembersResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowerStatusResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
-
-import com.google.gwt.user.client.Window;
-
 
 /**
  * Group Members Model.
@@ -121,8 +115,8 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
                 // then it's necessary to update the UI to see that
                 // the removed User is no longer is a member of this Group, and that
                 // the Followers Count decrements by 1.
-                if (!request.getFollowerUniqueId().equals
-                        (Session.getInstance().getCurrentPerson().getAccountId()))
+                if (!request.getFollowerUniqueId().equals(
+                        Session.getInstance().getCurrentPerson().getAccountId()))
                 {   
                     // Update "Followers" tab so that the removed
                     // follower no longer appears.
