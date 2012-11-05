@@ -316,13 +316,13 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
     /**
      * Is the input Person a Group Coordinator of the input Group?
      * 
-     * @param - followerId
+     * @param followerId
      *          Person
      * 
-     * @param - followingId
+     * @param followingId
      *          Group       
      *          
-     * @return - Whether 'Person' is a Group Coordinator of 'Group'
+     * @return Whether 'Person' is a Group Coordinator of 'Group'
      */
     public boolean isInputUserGroupCoordinator(final long followerId, final long followingId)
     {
@@ -335,7 +335,8 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId).getResultList();
         
         log.debug("groupCoordinatorResult = " + groupCoordinatorResult);
-        log.debug("groupCoordinatorResult.contains(new Long(followerId)) = " + groupCoordinatorResult.contains(new Long(followerId)));
+        log.debug("groupCoordinatorResult.contains(new Long(followerId)) = "
+                + groupCoordinatorResult.contains(new Long(followerId)));
         
         if (groupCoordinatorResult.contains(new Long(followerId)))
         {
@@ -358,11 +359,12 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      *          Id of Group from which a User will be removed                            
      * 
      */
-    private void removeGroupCoordinator(Set<Person> groupCoordinators, final long followerId, 
+    private void removeGroupCoordinator(final Set<Person> groupCoordinators, final long followerId, 
             final long followingId)
     {   
-        String groupCoordinatorQuery = "SELECT p.accountId FROM Person p, DomainGroup g WHERE p member of g.coordinators"
-                + " AND g.id = :groupId AND p.id = :followerId";
+        String groupCoordinatorQuery = "SELECT p.accountId FROM Person p, " 
+                  + "DomainGroup g WHERE p member of g.coordinators"
+                  + " AND g.id = :groupId AND p.id = :followerId";
         
         List<String> groupCoordinatorResult = getEntityManager()
           .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId)
@@ -371,7 +373,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         // This means that isInputUserGroupCoordinator() is not working properly.
         // We should not reach removeGroupCoordinator(...) unless
         // the given Person should be removed as a Group Coordinator.
-        if (groupCoordinatorResult == null || groupCoordinatorResult.size() == 0 ) 
+        if ((groupCoordinatorResult == null) || (groupCoordinatorResult.size() == 0)) 
         {
             return; 
         }
@@ -413,7 +415,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
     }
     
     /**
-     * getGroupCoordinatorCount - returns the number of Group Coordinators for a given Group
+     * getGroupCoordinatorCount - returns the number of Group Coordinators for a given Group.
      * 
      * @param followingId - id of the Group
      * 
@@ -421,7 +423,8 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      */
     public int getGroupCoordinatorCount(final long followingId)
     {
-        String groupCoordinatorQuery = "SELECT p.accountId FROM Person p, DomainGroup g WHERE p member of g.coordinators"
+        String groupCoordinatorQuery = "SELECT p.accountId FROM Person p, "
+                + "DomainGroup g WHERE p member of g.coordinators"
                 + " AND g.id = :groupId";
         
         List<String> groupCoordinatorResult = getEntityManager()

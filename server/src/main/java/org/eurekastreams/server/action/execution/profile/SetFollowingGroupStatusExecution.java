@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.client.Window;
-
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.InlineExecutionStrategyExecutor;
@@ -301,7 +299,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             
             // Check if the User to be removed is a Group Coordinator of the 
             // Group from which he will be removed.
-            boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.isInputUserGroupCoordinator(followerId, targetId); 
+            boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.isInputUserGroupCoordinator
+                (followerId, targetId); 
             
             // If the Follower to be removed is the last Group Coordinator,
             // do not proceed with his removal from the Group, nor proceed
@@ -381,7 +380,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     }
     
     /**
-     * isUserGroupCoordinator
+     * Checks whether the given user is a Group Coordinator.
      *
      * @param userAccountId
      *          Account Id of User to check whether he/she's a Group Coordinator
@@ -390,7 +389,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *
      * @return Whether the input user is a Group Coordinator
      */
-    private boolean isUserGroupCoordinator(String userAccountId, DomainGroupModelView group)
+    private boolean isUserGroupCoordinator(final String userAccountId, final DomainGroupModelView group)
     {
         List<PersonModelView> groupCoordinators = group.getCoordinators();
         

@@ -57,7 +57,7 @@ public class SetFollowingStatusRequest implements Serializable
     private Follower.FollowerStatus followerStatus;
     
     /**
-     * Group Short Name (applicable when following a group)
+     * Group Short Name (applicable when following a group).
      */
     private String groupShortName;
 
@@ -108,7 +108,8 @@ public class SetFollowingStatusRequest implements Serializable
      *            - flag indicating whether this request represents an OpenSocial entity.
      * @param inFollowerStatus
      *            - status of the following relationship being requested.
-     * @param inGroupName
+     * @param inGroupShortName
+     *            - group short name
      */
     public SetFollowingStatusRequest(final String inFollowerUniqueId, final String inTargetUniqueId,
             final EntityType inTargetEntityType, final boolean inOpenSocialRequest,
