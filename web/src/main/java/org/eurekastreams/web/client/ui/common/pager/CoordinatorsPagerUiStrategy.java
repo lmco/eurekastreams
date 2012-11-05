@@ -132,7 +132,7 @@ public class CoordinatorsPagerUiStrategy implements PagerStrategy
     {
         pager = new BasicPager();
         GetGroupCoordinatorsRequest req = new GetGroupCoordinatorsRequest(entityKey, coordinators);
-        req.setEndIndex(pager.getStartItem());
+        req.setEndIndex(pager.getEndItem());
         req.setStartIndex(pager.getStartItem());
         model.fetch(req, false);
     }
@@ -144,7 +144,7 @@ public class CoordinatorsPagerUiStrategy implements PagerStrategy
     {
         pager.nextPage();
         GetGroupCoordinatorsRequest req = new GetGroupCoordinatorsRequest(entityKey, coordinators);
-        req.setEndIndex(pager.getStartItem());
+        req.setEndIndex(pager.getEndItem());
         req.setStartIndex(pager.getStartItem());
         model.fetch(req, false);
     }
@@ -156,7 +156,7 @@ public class CoordinatorsPagerUiStrategy implements PagerStrategy
     {
         pager.previousPage();
         GetGroupCoordinatorsRequest req = new GetGroupCoordinatorsRequest(entityKey, coordinators);
-        req.setEndIndex(pager.getStartItem());
+        req.setEndIndex(pager.getEndItem());
         req.setStartIndex(pager.getStartItem());
         model.fetch(req, false);
     }
