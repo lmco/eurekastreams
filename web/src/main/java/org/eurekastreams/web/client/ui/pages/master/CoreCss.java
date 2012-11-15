@@ -1184,9 +1184,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("unseen-label")
     String unseenLabel();
-    
-    @ClassName("unseen-label-chrome")
-    String unseenLabelChrome();
 
     String url();
 

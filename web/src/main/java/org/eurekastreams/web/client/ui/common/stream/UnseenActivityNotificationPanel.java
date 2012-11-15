@@ -36,8 +36,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
-import com.google.gwt.user.client.Window;
-
 /**
  * Unseen notifications panel.
  * 
@@ -77,14 +75,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenActivity());
         this.setVisible(false);
 
-        if (Window.Navigator.getUserAgent().toLowerCase().contains("chrome"))
-        {
-            unseenActivityCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenLabelChrome());
-        }
-        else
-        {
-            unseenActivityCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenLabel());
-        }
+        unseenActivityCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenLabel());
 
         Anchor refreshStream = new Anchor("Refresh Stream");
         refreshStream.addClickHandler(new ClickHandler()

@@ -5433,26 +5433,17 @@ body .stream-view-dialog .delete-button {
 }
 
 .unseen-activity {
-	background: #FFE488;
+    background: #FFE488;
 	height: 31px;
-	height: 25px;
-	text-align: right;
-	padding: 3px 0;
+    height: 25px;
+    text-align: right;
+    padding: 3px 0;
 	position: relative;
-}
-
-.unseen-activity div.unseen-label-chrome {
-	display: inline;
-	position: absolute;
-	left: 520px;
-	padding: 3px 0;
-	margin: 0 auto;
 }
 
 .unseen-activity div.unseen-label {
 	display: inline;
-	position: absolute;
-	left: 480px;
+	position: absolute;	
 	padding: 3px 0;
 	margin: 0 auto;
 }
@@ -7036,6 +7027,17 @@ body div.eureka-connect-liked-activity-wrapper {
 @if user.agent gecko1_8 { 
 		
 }
+
+@if user.agent safari {
+    .unseen-activity div.unseen-label {
+        left: 510px;
+    }
+}
+@else {
+    .unseen-activity div.unseen-label {
+        left: 470px;
+    }
+} /* END WEBKIT SPECIFIC */
 
 /* Empty rules needed since they are referenced by methods in CoreCss.  
    The methods in CoreCss are called, but probably the widgets that use them are not used. */  
