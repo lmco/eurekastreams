@@ -5438,12 +5438,23 @@ body .stream-view-dialog .delete-button {
 	height: 25px;
 	text-align: right;
 	padding: 3px 0;
+	position: relative;
+}
+
+.unseen-activity div.unseen-label-chrome {
+	display: inline;
+	position: absolute;
+	left: 520px;
+	padding: 3px 0;
+	margin: 0 auto;
 }
 
 .unseen-activity div.unseen-label {
-	display: inline-block;
-	position: relative;
-	top: -5px;
+	display: inline;
+	position: absolute;
+	left: 480px;
+	padding: 3px 0;
+	margin: 0 auto;
 }
 
 .unseen-activity div.unseen-label a {
@@ -6362,11 +6373,7 @@ body div.eureka-connect-liked-activity-wrapper {
 	.unseen-activity div.unseen-label div {
 		display: inline;
 	}
-	
-	.unseen-activity div.unseen-label {
-		display: inline;
-		top: -2px;
-	}
+
 	
 	.settings-panel .settings-content .form-container {
 		margin-top: -10px;
