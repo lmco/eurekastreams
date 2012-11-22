@@ -40,7 +40,18 @@ public class DeleteGroupActivityTest extends MapperTest
      * Group id used in test.
      */
     private Long groupId = 1L;
+    
+    /**
+     * Group id used in test for deleting bookmarks
+     * upon group removal.
+     */
+    private Long groupIdForRemoveBookmarksTest = 8L;
 
+    /**
+     * StreamScope id of the group to be deleted.
+     */
+    private long streamscopeIdOfRemovedGroup = 881;
+    
     /**
      * Group id for non-existent group used in test.
      */
@@ -96,9 +107,29 @@ public class DeleteGroupActivityTest extends MapperTest
         // call sut.
         BulkActivityDeleteResponse response = sut.execute(fakeGroupId);
 
-        // assert that result is emtpy.
+        // assert that result is empty.
         assertEquals(0, response.getCommentIds().size());
         assertEquals(0, response.getActivityIds().size());
         assertEquals(0, response.getPeopleWithStarredActivities().keySet().size());
+    }
+    
+    /**
+     * Test when deleting a group, make sure that 
+     * any Person's bookmark to the group gets deleted.
+     * 
+     */
+    @Test
+    public void testDeleteGroupRemovesBookmark()
+    {
+        // assert that 1 Person has the to-be deleted group as a bookmark
+        assertEquals(1, getEntityManager().createQuery("From PersonBookmark pb WHERE pb.pk.scopeId = :groupId")
+                .setParameter("groupId", streamscopeIdOfRemovedGroup).getResultList().size());
+        
+        // call sut.
+        BulkActivityDeleteResponse response = sut.execute(groupIdForRemoveBookmarksTest);
+       
+        // assert that no Person has a bookmark to this deleted group
+        assertEquals(0, getEntityManager().createQuery("From PersonBookmark pb WHERE pb.pk.scopeId = :groupId")
+                .setParameter("groupId", streamscopeIdOfRemovedGroup).getResultList().size());
     }
 }

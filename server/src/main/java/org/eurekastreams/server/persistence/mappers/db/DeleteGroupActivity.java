@@ -83,6 +83,10 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
         // delete the activities.
         getEntityManager().createQuery("DELETE FROM Activity a WHERE a.recipientStreamScope.id = :groupStreamId")
                 .setParameter("groupStreamId", groupStreamId).executeUpdate();
+        
+        // delete any Person's bookmark to the group that's just about to be deleted
+        getEntityManager().createQuery("DELETE FROM PersonBookmark pb where pb.pk.scopeId = :groupStreamId)")
+                .setParameter("groupStreamId", groupStreamId).executeUpdate();
 
         return new BulkActivityDeleteResponse(activityIds, commentIds, peopleWithStarredActivities);
     }
