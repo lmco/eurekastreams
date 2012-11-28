@@ -138,6 +138,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActivityContent extends Composite
 {
+    /** Text displayed for locked users. */
+    private static final String LOCKED_USER_TEXT = "This employee has no profile in Eureka Streams.  This could be due"
+            + " to an incorrect or outdated link, a change in assignment within the company, or leaving the company.";
+
     /** Amount of time to wait after a key is pressed before performing a search. */
     private static final int SEARCH_UPDATE_DELAY = 500;
 
@@ -537,6 +541,9 @@ public class ActivityContent extends Composite
     /** Views used to load the current stream. */
     List<String> loadedViews = Collections.singletonList("[do not match]");
 
+    /** So results for the wrong stream can be detected and ignored. */
+    private String currentStreamRequest;
+
     /** Search term used to load the current stream. */
     String loadedSearchTerm = "";
 
@@ -672,6 +679,12 @@ public class ActivityContent extends Composite
         {
             public void update(final GotStreamResponseEvent event)
             {
+                // throw out results if for the wrong stream (or we don't want the results)
+                if (currentStreamRequest == null || !currentStreamRequest.equals(event.getRequest()))
+                {
+                    return;
+                }
+
                 final PagedSet<ActivityDTO> activitySet = event.getStream();
                 if (activitySet.getPagedSet().size() > 0)
                 {
@@ -887,15 +900,26 @@ public class ActivityContent extends Composite
                             errorPanel.clear();
                             errorPanel.setVisible(true);
                             activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-                            errorPanel.add(new Label("Employee no longer has access to Eureka Streams"));
-                            errorPanel.add(new Label("This employee no longer has access to Eureka Streams. "
-                                    + "This could be due to a change in assignment "
-                                    + "within the company or due to leaving the company."));
+                            errorPanel.add(new Label("Employee profile not found"));
+                            errorPanel.add(new Label(LOCKED_USER_TEXT));
                             streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+
+                            streamDetailsComposite.setVisible(false);
+                            currentStream.setScopeType(null);
+
+                            // block display of activities
+                            currentStreamRequest = null;
+                            streamPanel.clear();
+                            unseenActivityNotificationPanel.setActive(false);
+                            activitySpinner.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                            streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                            noResults.addClassName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                            moreLink.setVisible(false);
                         }
                         else
                         {
                             currentStream.setDisplayName(person.getDisplayName());
+                            streamDetailsComposite.setVisible(true);
                         }
                         if (!person.isStreamPostable()
                                 && !person.getAccountId().equals(
@@ -937,6 +961,7 @@ public class ActivityContent extends Composite
         currentScopeId = group.getStreamId();
 
         currentStream.setDisplayName(group.getName());
+        streamDetailsComposite.setVisible(true);
 
         if (group.isRestricted())
         {
@@ -964,10 +989,9 @@ public class ActivityContent extends Composite
                         public void update(final InsertedRequestForGroupMembershipResponseEvent inArg1)
                         {
                             button.disable();
-                            EventBus.getInstance()
-                                    .notifyObservers(
-                                            new ShowNotificationEvent(new Notification(
-                                                    "Your request for access has been sent")));
+                            EventBus.getInstance().notifyObservers(
+                                    new ShowNotificationEvent(
+                                            new Notification("Your request for access has been sent")));
                         }
                     });
 
@@ -1024,7 +1048,7 @@ public class ActivityContent extends Composite
             currentRequestObj = StreamJsonRequestFactory.setExcludeId(group.getStickyActivityId(), currentRequestObj);
             if (!deferLoadAwaitingQueryBuilt)
             {
-                StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
+                fetchStream(currentRequestObj);
             }
         }
     }
@@ -1258,7 +1282,7 @@ public class ActivityContent extends Composite
                 JSONObject moreItemsRequest = StreamJsonRequestFactory.setMaxId(longOldestActivityId,
                         StreamJsonRequestFactory.getJSONRequest(currentRequestObj.toString()));
 
-                StreamModel.getInstance().fetch(moreItemsRequest.toString(), false);
+                fetchStream(moreItemsRequest);
             }
         });
 
@@ -1379,8 +1403,9 @@ public class ActivityContent extends Composite
                 }
                 // TODO: get correct title from somewhere.
                 String prefs = "{\"streamQuery\":"
-                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, request.toString())) + ",\"gadgetTitle\":"
-                        + makeJsonString(currentDisplayName) + ",\"streamLocation\":" + makeJsonString(url) + "}";
+                        + makeJsonString(STREAM_URL_TRANSFORMER.getUrl(null, request.toString()))
+                        + ",\"gadgetTitle\":" + makeJsonString(currentDisplayName) + ",\"streamLocation\":"
+                        + makeJsonString(url) + "}";
 
                 GadgetModel.getInstance().insert(
                         new AddGadgetToStartPageRequest("{d7a58391-5375-4c76-b5fc-a431c42a7555}", null, prefs));
@@ -1407,6 +1432,18 @@ public class ActivityContent extends Composite
                         + currentStream.getUniqueKey());
             }
         });
+    }
+
+    /**
+     * Requests a stream via the model and tracks it for proper reciept matching.
+     *
+     * @param request
+     *            The request in JSON form.
+     */
+    private void fetchStream(final JSONObject request)
+    {
+        currentStreamRequest = request.toString();
+        StreamModel.getInstance().fetch(currentStreamRequest, false);
     }
 
     /**
@@ -1513,6 +1550,8 @@ public class ActivityContent extends Composite
 
         getEmailContactLink.setVisible(false);
 
+        boolean streamIsAnEntity = false;
+
         if (views == null || views.size() == 0 || views.get(0).equals("following"))
         {
             currentRequestObj = StreamJsonRequestFactory.setSourceAsFollowing(currentRequestObj);
@@ -1525,6 +1564,7 @@ public class ActivityContent extends Composite
         }
         else if (views.get(0).equals("person") && views.size() >= 2)
         {
+            streamIsAnEntity = true;
             showRecipient = ShowRecipient.RESOURCE_ONLY;
             String accountId = views.get(1);
             currentRequestObj = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, accountId, currentRequestObj);
@@ -1550,6 +1590,7 @@ public class ActivityContent extends Composite
         }
         else if (views.get(0).equals("group") && views.size() >= 2)
         {
+            streamIsAnEntity = true;
             showRecipient = ShowRecipient.RESOURCE_ONLY;
             String shortName = views.get(1);
             currentRequestObj = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, shortName, currentRequestObj);
@@ -1620,6 +1661,10 @@ public class ActivityContent extends Composite
             searchContainer.removeClassName(style.activeSearch());
         }
 
+        if (!streamIsAnEntity)
+        {
+            streamDetailsComposite.setVisible(true);
+        }
         renderer.setShowRecipientInStream(showRecipient);
 
         if (!singleActivityMode)
@@ -1661,7 +1706,7 @@ public class ActivityContent extends Composite
             deferLoadAwaitingQueryBuilt = false;
             if (!deferLoadAwaitingEntityReceived)
             {
-                StreamModel.getInstance().fetch(currentRequestObj.toString(), false);
+                fetchStream(currentRequestObj);
             }
         }
         else

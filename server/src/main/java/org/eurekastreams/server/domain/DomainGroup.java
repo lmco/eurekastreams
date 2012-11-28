@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,10 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge;
+import org.eurekastreams.server.search.bridge.IsPersonVisibleInSearchClassBridge;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -65,9 +67,11 @@ import org.hibernate.validator.Size;
  */
 @Entity
 @Indexed
-@ClassBridge(name = "followerAndCoordinatorIds", index = Index.TOKENIZED, store = Store.NO,
+@ClassBridges(value = { @ClassBridge(name = "followerAndCoordinatorIds", index = Index.TOKENIZED, store = Store.NO,
 // whitespace analyzer and custom class bridge to use JPA to get the ids rather than load extra objects
-analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class)
+analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class),
+        @ClassBridge(name = "isVisibleInSearch", index = Index.UN_TOKENIZED, store = Store.NO, // \n
+        impl = IsPersonVisibleInSearchClassBridge.class) })
 public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, DomainGroupEntity, CompositeEntity,
         Identifiable
 {

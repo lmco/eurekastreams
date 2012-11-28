@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,7 +176,7 @@ public class PostRenderer implements VerbRenderer
     {
         List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
 
-        RenderUtilities.renderActorName(renderers, activity);
+        RenderUtilities.addActorNameRenderers(renderers, activity);
 
         if (showRecipient)
         {

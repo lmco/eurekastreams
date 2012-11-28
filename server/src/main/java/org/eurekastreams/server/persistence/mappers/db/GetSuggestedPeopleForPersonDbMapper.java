@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsReq
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers 
+ * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers
  * are members of, sorted by follow count within that group, and ignoring the input user's followers as suggestions.
  */
 public class GetSuggestedPeopleForPersonDbMapper extends
@@ -33,7 +33,7 @@ public class GetSuggestedPeopleForPersonDbMapper extends
     /**
      * Get a list of suggested group streams for a person by getting all groups that their followers are members of,
      * sorted by follow count within that group.
-     * 
+     *
      * @param inRequest
      *            the request containing the person and stream count
      * @return the top NN suggested groups by their followers
@@ -57,6 +57,7 @@ public class GetSuggestedPeopleForPersonDbMapper extends
                                 + "(SELECT pk.scopeId FROM PersonBlockedSuggestion "
                                 + "WHERE personid = :personBlockedId) "
                                 + "AND person.id = peopleTheyFollow.pk.followingId "
+                                + "AND person.accountLocked = false AND person.accountDeactivated = false "
                                 + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
                                 + "person.lastName, person.dateAdded, person.streamScope.id "
                                 + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC")

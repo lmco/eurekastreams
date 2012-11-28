@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.avatar;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
@@ -27,12 +29,93 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Displays an avatar and makes it link to the proper item's profile page.
  */
 public class AvatarLinkPanel extends Composite
 {
+    /**
+     * Factory function for creating avatars.
+     *
+     * @param entity
+     *            Person for whom to create an avatar.
+     * @param size
+     *            Size.
+     * @param allowBadge
+     *            If badgeable.
+     * @return Appropriate widget.
+     */
+    public static Widget create(final PersonModelView entity, final Size size, final boolean allowBadge)
+    {
+        AvatarWidget avatarWidget = new AvatarWidget(entity.getAvatarId(), EntityType.PERSON, size,
+                entity.getDisplayName());
+        if (entity.isAccountLocked())
+        {
+            avatarWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
+            return avatarWidget;
+        }
+        else
+        {
+            return new AvatarLinkPanel(EntityType.PERSON, entity.getUniqueId(), size, avatarWidget, allowBadge);
+        }
+    }
+
+    /**
+     * Factory function for creating avatars.
+     *
+     * @param entity
+     *            Person for whom to create an avatar.
+     * @param size
+     *            Size.
+     * @return Appropriate widget.
+     */
+    public static Widget create(final PersonModelView entity, final Size size)
+    {
+        return create(entity, size, true);
+    }
+
+    /**
+     * Factory function for creating avatars.
+     *
+     * @param entity
+     *            Entity for whom to create an avatar.
+     * @param size
+     *            Size.
+     * @param allowBadge
+     *            If badgeable.
+     * @return Appropriate widget.
+     */
+    public static Widget create(final StreamEntityDTO entity, final Size size, final boolean allowBadge)
+    {
+        AvatarWidget avatarWidget = new AvatarWidget(entity.getAvatarId(), entity.getEntityType(), size,
+                entity.getDisplayName());
+        if (entity.isActive())
+        {
+            return new AvatarLinkPanel(entity.getEntityType(), entity.getUniqueId(), size, avatarWidget, allowBadge);
+        }
+        else
+        {
+            avatarWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
+            return avatarWidget;
+        }
+    }
+
+    /**
+     * Factory function for creating avatars.
+     *
+     * @param entity
+     *            Entity for whom to create an avatar.
+     * @param size
+     *            Size.
+     * @return Appropriate widget.
+     */
+    public static Widget create(final StreamEntityDTO entity, final Size size)
+    {
+        return create(entity, size, true);
+    }
+
     /**
      * Constructor.
      *

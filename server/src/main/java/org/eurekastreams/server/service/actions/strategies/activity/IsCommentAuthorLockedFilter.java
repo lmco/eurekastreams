@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Lockheed Martin Corporation
+ * Copyright (c) 2012-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,25 @@
 package org.eurekastreams.server.service.actions.strategies.activity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.commons.util.CollectionListAdapter;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Marks activities with whether the author is currently a locked user.
  */
-public class IsAuthorLockedFilter implements ActivityFilter
+public class IsCommentAuthorLockedFilter implements ActivityFilter
 {
     /** Mapper to get PersonModelViews. */
-    private final DomainMapper<List<Long>, List<PersonModelView>> getPeopleMapper;
+    private final DomainMapper<Collection<Long>, List<PersonModelView>> getPeopleMapper;
 
     /**
      * Constructor.
@@ -40,7 +42,7 @@ public class IsAuthorLockedFilter implements ActivityFilter
      * @param inGetPeopleMapper
      *            Mapper for getting authors.
      */
-    public IsAuthorLockedFilter(final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleMapper)
+    public IsCommentAuthorLockedFilter(final DomainMapper<Collection<Long>, List<PersonModelView>> inGetPeopleMapper)
     {
         getPeopleMapper = inGetPeopleMapper;
     }
@@ -51,42 +53,45 @@ public class IsAuthorLockedFilter implements ActivityFilter
     @Override
     public void filter(final List<ActivityDTO> inActivities, final PersonModelView inCurrentUserAccount)
     {
+        Collection<CommentDTO> comments = new ArrayList<CommentDTO>();
+        for (ActivityDTO activity : inActivities)
+        {
+            if (activity.getComments() != null)
+            {
+                comments.addAll(activity.getComments());
+            }
+            else if (activity.getFirstComment() != null)
+            {
+                comments.add(activity.getFirstComment());
+                if (activity.getLastComment() != null)
+                {
+                    comments.add(activity.getLastComment());
+                }
+            }
+        }
+
         // short-circuit if no work to do.
-        if (inActivities.isEmpty())
+        if (comments.isEmpty())
         {
             return;
         }
 
         Set<Long> ids = new HashSet<Long>();
-        for (ActivityDTO activity : inActivities)
+        for (CommentDTO comment : comments)
         {
-            if (activity.getActor().getType() == EntityType.PERSON)
-            {
-                ids.add(activity.getActor().getId());
-            }
-            if (activity.getOriginalActor() != null && activity.getOriginalActor().getType() == EntityType.PERSON)
-            {
-                ids.add(activity.getOriginalActor().getId());
-            }
+            ids.add(comment.getAuthorId());
         }
 
-        List<PersonModelView> peopleList = getPeopleMapper.execute(new ArrayList<Long>(ids));
+        List<PersonModelView> peopleList = getPeopleMapper.execute(new CollectionListAdapter<Long>(ids));
         HashMap<Long, Boolean> peopleIndex = new HashMap<Long, Boolean>();
         for (PersonModelView person : peopleList)
         {
             peopleIndex.put(person.getId(), person.isAccountLocked());
         }
 
-        for (ActivityDTO activity : inActivities)
+        for (CommentDTO comment : comments)
         {
-            if (activity.getActor().getType() == EntityType.PERSON)
-            {
-                activity.getActor().setActive(!peopleIndex.get(activity.getActor().getId()));
-            }
-            if (activity.getOriginalActor() != null && activity.getOriginalActor().getType() == EntityType.PERSON)
-            {
-                activity.getOriginalActor().setActive(!peopleIndex.get(activity.getOriginalActor().getId()));
-            }
+            comment.setAuthorActive(!peopleIndex.get(comment.getAuthorId()));
         }
     }
 }

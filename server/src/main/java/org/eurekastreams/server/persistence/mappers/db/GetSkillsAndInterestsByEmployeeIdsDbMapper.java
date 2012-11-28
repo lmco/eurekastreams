@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
  * DB mapper to get all of the interests.
  */
 public class GetSkillsAndInterestsByEmployeeIdsDbMapper extends
-        BaseArgDomainMapper<List<Long>, Map<Long, List<String>>>
+        BaseArgDomainMapper<Collection<Long>, Map<Long, List<String>>>
 {
 
     /**
@@ -38,7 +39,7 @@ public class GetSkillsAndInterestsByEmployeeIdsDbMapper extends
      * @return a map of PersonID -> skills & interests
      */
     @Override
-    public Map<Long, List<String>> execute(final List<Long> inPersonIds)
+    public Map<Long, List<String>> execute(final Collection<Long> inPersonIds)
     {
         Map<Long, List<String>> map = new HashMap<Long, List<String>>();
 

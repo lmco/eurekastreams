@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
 import org.eurekastreams.web.client.events.EventBus;
@@ -330,8 +329,7 @@ public class LikeCountWidget extends Composite
 
         for (PersonModelView liker : likers)
         {
-            avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker
-                    .getAvatarId(), Size.VerySmall, liker.getDisplayName()));
+            avatarPanel.add(AvatarLinkPanel.create(liker, Size.VerySmall));
         }
 
         if (likeCount > MAXLIKERSSHOWN)

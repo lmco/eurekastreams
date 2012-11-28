@@ -134,7 +134,7 @@
 	<bean id="directorySearchLuceneQueryBuilderForPeople"
 		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
 		<constructor-arg
-			value="(accountId:(%1$s)^20 (+lastName:(%1$s) +preferredName:(%1$s))^10 lastName:(%1$s)^8 title:(%1$s)^5 preferredName:(%1$s)^4 overview:(%1$s)^2 description:(%1$s)^2 biography:(%1$s)^2 jobs:(%1$s)^2 background:(%1$s)^2 education:(%1$s) location:(%1$s))^2 OR (accountId:(%1$s*)^20 (+lastName:(%1$s*) +preferredName:(%1$s*))^10 lastName:(%1$s*)^8 title:(%1$s*)^5 preferredName:(%1$s*)^4 overview:(%1$s*)^2 description:(%1$s*)^2 biography:(%1$s*)^2 jobs:(%1$s*)^2 background:(%1$s*)^2 education:(%1$s*) location:(%1$s*))" />
+			value="(accountId:(%1$s)^20 (+lastName:(%1$s) +preferredName:(%1$s))^10 lastName:(%1$s)^8 title:(%1$s)^5 preferredName:(%1$s)^4 overview:(%1$s)^2 description:(%1$s)^2 biography:(%1$s)^2 jobs:(%1$s)^2 background:(%1$s)^2 education:(%1$s) location:(%1$s))^2 OR (accountId:(%1$s*)^20 (+lastName:(%1$s*) +preferredName:(%1$s*))^10 lastName:(%1$s*)^8 title:(%1$s*)^5 preferredName:(%1$s*)^4 overview:(%1$s*)^2 description:(%1$s*)^2 biography:(%1$s*)^2 jobs:(%1$s*)^2 background:(%1$s*)^2 education:(%1$s*) location:(%1$s*)) -(isVisibleInSearch:f)" />
 		<constructor-arg ref="searchFieldBooster" />
 		<constructor-arg value="50" />
 	</bean>
@@ -147,7 +147,7 @@
 	<bean id="directorySearchLuceneQueryBuilderForGroups"
 		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
 		<constructor-arg
-			value="+((shortName:(%1$s)^4 name:(%1$s)^2 overview:(%1$s) description:(%1$s) capabilities:(%1$s))^2 OR (shortName:(%1$s*)^4 name:(%1$s*)^2 overview:(%1$s*) description:(%1$s*) capabilities:(%1$s*))) -(isPending:true)" />
+			value="+((shortName:(%1$s)^4 name:(%1$s)^2 overview:(%1$s) description:(%1$s) capabilities:(%1$s))^2 OR (shortName:(%1$s*)^4 name:(%1$s*)^2 overview:(%1$s*) description:(%1$s*) capabilities:(%1$s*))) -(isVisibleInSearch:f)" />
 		<constructor-arg ref="searchFieldBooster" />
 		<constructor-arg value="50" />
 	</bean>
@@ -161,7 +161,7 @@
 	<bean id="directorySearchLuceneQueryBuilderForPeopleGroups"
 		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
 		<constructor-arg
-			value="+((accountId:(%1$s)^20 shortName:(%1$s)^20 (+lastName:(%1$s) +preferredName:(%1$s))^10 lastName:(%1$s)^8 name:(%1$s)^6 title:(%1$s)^5 preferredName:(%1$s)^4 overview:(%1$s)^2 description:(%1$s)^2 biography:(%1$s)^2 jobs:(%1$s)^2 background:(%1$s)^2 capabilities:(%1$s)^2 education:(%1$s) location:(%1$s))^2 OR (accountId:(%1$s*)^20 shortName:(%1$s*)^20 (+lastName:(%1$s*) +preferredName:(%1$s*))^10 lastName:(%1$s*)^8 name:(%1$s*)^6 title:(%1$s*)^5 preferredName:(%1$s*)^4 overview:(%1$s*)^2 description:(%1$s*)^2 biography:(%1$s*)^2 jobs:(%1$s*)^2 background:(%1$s*)^2 capabilities:(%1$s*)^2 education:(%1$s*) location:(%1$s*))) -(isPending:true)" />
+			value="+((accountId:(%1$s)^20 shortName:(%1$s)^20 (+lastName:(%1$s) +preferredName:(%1$s))^10 lastName:(%1$s)^8 name:(%1$s)^6 title:(%1$s)^5 preferredName:(%1$s)^4 overview:(%1$s)^2 description:(%1$s)^2 biography:(%1$s)^2 jobs:(%1$s)^2 background:(%1$s)^2 capabilities:(%1$s)^2 education:(%1$s) location:(%1$s))^2 OR (accountId:(%1$s*)^20 shortName:(%1$s*)^20 (+lastName:(%1$s*) +preferredName:(%1$s*))^10 lastName:(%1$s*)^8 name:(%1$s*)^6 title:(%1$s*)^5 preferredName:(%1$s*)^4 overview:(%1$s*)^2 description:(%1$s*)^2 biography:(%1$s*)^2 jobs:(%1$s*)^2 background:(%1$s*)^2 capabilities:(%1$s*)^2 education:(%1$s*) location:(%1$s*))) -(isVisibleInSearch:f)" />
 		<constructor-arg ref="searchFieldBooster" />
 		<constructor-arg value="50" />
 	</bean>
