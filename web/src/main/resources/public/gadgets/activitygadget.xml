@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
     <ModulePrefs title="Activity" thumbnail="${build.web.baseurl}/style/images/isgs_news.png" title_url="http://communications.isgs.lmco.com" author="Eureka Streams"
@@ -275,6 +276,18 @@
 		else
 			params = '{}';
 		
+        // Sending an API request with a backslash
+	    // raises a 400 error. This happens
+        // somewhere in a Tomcat filter when incorrectly
+        // decoding %5C%5C as \\. 
+        // As a result, this \\ confuses
+        // the URL path, which results in a 400 error since there's
+        // no corresponding route for the request.                                                               
+        // As a workaround, we use <BSLASH> as custom encoding.
+        // On the server-side, <BSLASH> gets replaced
+        // with a single backslash.                                                                     
+        params = params.replace(/\\/g, "<BSLASH>");
+
 		return baseAPIURL + '/' + apiName + '/' + encodeURIComponent(params);
 	}
 	
