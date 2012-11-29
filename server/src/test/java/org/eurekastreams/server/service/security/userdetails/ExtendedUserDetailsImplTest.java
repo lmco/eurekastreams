@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.security.userdetails;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -115,10 +116,10 @@ public class ExtendedUserDetailsImplTest
     }
 
     /**
-     * Test that isEnabled checks Person isAccountLocked() property.
+     * Test isAccountNonLocked.
      */
     @Test
-    public void testIsEnabled()
+    public void testIsAccountNonLockedYes()
     {
         context.checking(new Expectations()
         {
@@ -128,7 +129,58 @@ public class ExtendedUserDetailsImplTest
             }
         });
         ExtendedUserDetailsImpl sut = new ExtendedUserDetailsImpl(person, null, null, null);
+        assertTrue(sut.isAccountNonLocked());
+    }
+
+    /**
+     * Test isAccountNonLocked.
+     */
+    @Test
+    public void testIsAccountNonLockedNo()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(person).isAccountLocked();
+                will(returnValue(true));
+            }
+        });
+        ExtendedUserDetailsImpl sut = new ExtendedUserDetailsImpl(person, null, null, null);
+        assertFalse(sut.isAccountNonLocked());
+    }
+
+    /**
+     * Test isEnabled.
+     */
+    @Test
+    public void testIsEnabledYes()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(person).isAccountDeactivated();
+                will(returnValue(false));
+            }
+        });
+        ExtendedUserDetailsImpl sut = new ExtendedUserDetailsImpl(person, null, null, null);
         assertTrue(sut.isEnabled());
+    }
+
+    /**
+     * Test isEnabled.
+     */
+    @Test
+    public void testIsEnabledNo()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(person).isAccountDeactivated();
+                will(returnValue(true));
+            }
+        });
+        ExtendedUserDetailsImpl sut = new ExtendedUserDetailsImpl(person, null, null, null);
+        assertFalse(sut.isEnabled());
     }
 
     /**
@@ -183,20 +235,9 @@ public class ExtendedUserDetailsImplTest
      * Bogus Test for now. Required interface method.
      */
     @Test
-    public void testIsAccountNonLocked()
-    {
-        ExtendedUserDetailsImpl sut = new ExtendedUserDetailsImpl(person, null, null, null);
-        assertTrue(sut.isAccountNonLocked());
-    }
-
-    /**
-     * Bogus Test for now. Required interface method.
-     */
-    @Test
     public void testIsCredentialsNonExpired()
     {
         ExtendedUserDetailsImpl sut = new ExtendedUserDetailsImpl(person, null, null, null);
         assertTrue(sut.isCredentialsNonExpired());
     }
-
 }

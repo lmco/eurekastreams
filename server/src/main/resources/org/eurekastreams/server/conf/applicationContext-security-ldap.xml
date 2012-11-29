@@ -63,6 +63,9 @@
 				<beans:prop key="org.springframework.security.DisabledException">
 					/login_disabled.html
 				</beans:prop>
+                <beans:prop key="org.springframework.security.LockedException">
+                    /login_disabled.html
+                </beans:prop>
 				<beans:prop key="org.springframework.security.userdetails.UsernameNotFoundException">
 					/login_disabled.html
 				</beans:prop>
