@@ -137,8 +137,6 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
      */
     public boolean isAccountNonLocked()
     {
-        System.out.print("isAccountNonLocked called from: ");
-        new Throwable().printStackTrace(System.out);
         return !person.isAccountLocked();
     }
 
@@ -157,8 +155,6 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
      */
     public boolean isEnabled()
     {
-        System.out.print("isEnabled called from :");
-        new Throwable().printStackTrace(System.out);
         return !person.isAccountDeactivated();
     }
 
