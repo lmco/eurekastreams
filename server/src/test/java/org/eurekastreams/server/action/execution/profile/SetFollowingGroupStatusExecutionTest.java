@@ -54,7 +54,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Test class for the {@link SetFollowingGroupStatusExecution} class.
- *
+ * 
  */
 public class SetFollowingGroupStatusExecutionTest
 {
@@ -182,7 +182,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -228,7 +228,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -326,7 +326,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the setFollowing method when a group is unfollowed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -336,12 +336,12 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-               /* allowing(group).getCoordinators().size();
-                will(returnValue(2));
-                
-                allowing(groupMapperMock).getGroupCoordinatorCount();
-                will(returnValue(2));*/
-                               
+                /*
+                 * allowing(group).getCoordinators().size(); will(returnValue(2));
+                 * 
+                 * allowing(groupMapperMock).getGroupCoordinatorCount(); will(returnValue(2));
+                 */
+
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(FOLLOWER_ID));
 
@@ -353,9 +353,9 @@ public class SetFollowingGroupStatusExecutionTest
 
                 oneOf(groupMapperMock).getGroupCoordinatorCount(with(GROUP_ID));
                 will(returnValue(2));
-                
+
                 oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
-                               
+
                 oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
                 will(returnValue(followerIds));
             }
@@ -371,10 +371,10 @@ public class SetFollowingGroupStatusExecutionTest
         assertEquals(5, result);
         assertEquals(3, actionContext.getUserActionRequests().size());
     }
-    
+
     /**
      * Test a failure. Try to remove the last Group Coordinator of a Group.
-     *
+     * 
      * @throws ExecutionException
      *             - on error.
      */
@@ -383,42 +383,42 @@ public class SetFollowingGroupStatusExecutionTest
     {
         context.checking(new Expectations()
         {
-            {               
+            {
                 allowing(group).getCoordinators().size();
                 will(returnValue(1));
-                               
+
                 allowing(groupMapperMock).isInputUserGroupCoordinator(FOLLOWER_ID, GROUP_ID);
                 will(returnValue(true));
-                
+
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(FOLLOWER_ID));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(group));
-                              
+
                 oneOf(groupMapperMock).isInputUserGroupCoordinator(with(FOLLOWER_ID), with(GROUP_ID));
                 will(returnValue(true));
-                
+
                 oneOf(groupMapperMock).getGroupCoordinatorCount(with(GROUP_ID));
                 will(returnValue(1));
 
                 oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
-                
+
                 oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
-                will(returnValue(followerIds));               
+                will(returnValue(followerIds));
             }
         });
-        
+
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.NOTFOLLOWING);
         TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
                 .createTaskHandlerContextWithPrincipal(currentRequest, principal);
         Serializable result = sut.execute(actionContext);
     }
-    
+
     /**
      * Test a removal of a group coordinator.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -426,32 +426,32 @@ public class SetFollowingGroupStatusExecutionTest
     {
         context.checking(new Expectations()
         {
-            {               
+            {
                 allowing(group).getCoordinators().size();
                 will(returnValue(2));
-                               
+
                 allowing(groupMapperMock).isInputUserGroupCoordinator(FOLLOWER_ID, GROUP_ID);
                 will(returnValue(true));
-                
+
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(FOLLOWER_ID));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(group));
-                              
+
                 oneOf(groupMapperMock).isInputUserGroupCoordinator(with(FOLLOWER_ID), with(GROUP_ID));
                 will(returnValue(true));
-                
+
                 oneOf(groupMapperMock).getGroupCoordinatorCount(with(GROUP_ID));
                 will(returnValue(1));
 
                 oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
-                
+
                 oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
-                will(returnValue(followerIds));               
+                will(returnValue(followerIds));
             }
         });
-        
+
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.NOTFOLLOWING);
         TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
@@ -461,7 +461,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test a failure case.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -485,7 +485,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */

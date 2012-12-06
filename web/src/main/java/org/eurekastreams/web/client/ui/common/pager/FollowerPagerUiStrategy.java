@@ -67,11 +67,10 @@ public class FollowerPagerUiStrategy implements PagerStrategy
     private PersonRenderer personRenderer = new PersonRenderer(false);
 
     /**
-     * Renders a person with a link so that an 
-     * Admin or Group Coordinator can remove them.
+     * Renders a person with a link so that an Admin or Group Coordinator can remove them.
      */
     private RemovableGroupMemberPersonRenderer removablePersonRenderer;
-    
+
     /**
      * Entity type.
      */
@@ -86,7 +85,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
      * Group.
      */
     private DomainGroupModelView group;
-    
+
     /**
      * Constructor.
      */
@@ -118,10 +117,10 @@ public class FollowerPagerUiStrategy implements PagerStrategy
                         pager.setMaxCount(event.getResponse().getTotal());
 
                         removablePersonRenderer = new RemovableGroupMemberPersonRenderer(entityKey, group);
-                        
+
                         FlowPanel responsePanel = new FlowPanel();
-                        twoColListRenderer.render(responsePanel, removablePersonRenderer, 
-                                event.getResponse(), "No Followers");
+                        twoColListRenderer.render(responsePanel, removablePersonRenderer, event.getResponse(),
+                                "No Followers");
                         responseEvent.setWidget(responsePanel);
                         EventBus.getInstance().notifyObservers(responseEvent);
                     }
@@ -213,28 +212,27 @@ public class FollowerPagerUiStrategy implements PagerStrategy
         return "follower";
     }
 
-	
     /**
      * @return the start index from the pager.
      */
-	public int getStartIndex() 
-	{
-		return pager.getStartItem();
-	}
+    public int getStartIndex()
+    {
+        return pager.getStartItem();
+    }
 
     /**
      * @return the end item fro the pager.
      */
-	public int getEndIndex()
-	{
-		return pager.getEndItem();
-	}
-	
+    public int getEndIndex()
+    {
+        return pager.getEndItem();
+    }
+
     /**
      * @return the total from the pager.
      */
-	public int getTotal() 
-	{
-		return pager.getMaxCount();
-	}
+    public int getTotal()
+    {
+        return pager.getMaxCount();
+    }
 }

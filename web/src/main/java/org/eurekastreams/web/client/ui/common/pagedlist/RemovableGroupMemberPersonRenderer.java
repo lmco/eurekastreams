@@ -33,6 +33,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+
 /**
  * Renders a person with an extra link to let them be removed from a group.
  */
@@ -40,16 +41,16 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
 {
     /** Unique ID of group. */
     private String groupUniqueId;
-    
+
     /** The group. */
     private DomainGroupModelView group;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupUniqueId
      *            Unique ID of group user is a member of.
-     *            
+     * 
      * @param inGroup
      *            The group for which this Person is getting rendered.
      */
@@ -67,33 +68,32 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
         PersonPanel panel = new PersonPanel(item, true, false, false, false);
 
         boolean currentUserIsAdmin = Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN);
-        
-        boolean currentUserIsGroupCoordinator = isGroupCoordinator(Session.getInstance().getCurrentPerson()); 
-        
+
+        boolean currentUserIsGroupCoordinator = isGroupCoordinator(Session.getInstance().getCurrentPerson());
+
         // conditions by which a person should show up as 'Remove'-able:
-        // cannot delete himself AND private group AND (current user is ADMIN or GROUP COORD) 
-        if ((Session.getInstance().getCurrentPerson().getId() != item.getEntityId()) 
-                && (currentUserIsAdmin || currentUserIsGroupCoordinator) 
-                && (!group.isPublic()))
+        // cannot delete himself AND private group AND (current user is ADMIN or GROUP COORD)
+        if ((Session.getInstance().getCurrentPerson().getId() != item.getEntityId())
+                && (currentUserIsAdmin || currentUserIsGroupCoordinator) && (!group.isPublic()))
         {
             boolean toBeRemovedFollowerIsGroupCoordinator = isGroupCoordinator(item);
-            
+
             int numberOfGroupCoordinators = group.getCoordinators().size();
-            
+
             // Cannot remove Group Coordinator if he/she is the last Group Coordinator.
             if (toBeRemovedFollowerIsGroupCoordinator && (numberOfGroupCoordinators == 1))
             {
                 // short-circuit as this Person is non-removable
                 return panel;
             }
-            
+
             panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().removablePerson());
 
             Label deleteLink = new Label("Remove");
             deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().delete());
             panel.add(deleteLink);
-            
+
             deleteLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent inArg0)
@@ -111,29 +111,29 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
 
         return panel;
     }
-    
+
     /**
      * Checks whether the current user is a Group Coordinator.
-     *
-     *@param toBeRemovedPerson  
-     *       - Group Coordinator to be removed.
-     *
+     * 
+     * @param toBeRemovedPerson
+     *            - Group Coordinator to be removed.
+     * 
      * @return Whether the current user is a Group Coordinator
      */
     private boolean isGroupCoordinator(final PersonModelView toBeRemovedPerson)
     {
         String currentUserAccountId = toBeRemovedPerson.getAccountId();
-        
+
         List<PersonModelView> groupCoordinators = group.getCoordinators();
-        
-        for (PersonModelView p : groupCoordinators) 
+
+        for (PersonModelView p : groupCoordinators)
         {
             if (p.getAccountId().equals(currentUserAccountId))
             {
                 return true;
             }
         }
-            
+
         return false;
     }
 }
