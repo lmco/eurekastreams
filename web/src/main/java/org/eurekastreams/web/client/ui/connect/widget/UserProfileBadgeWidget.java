@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Eureka Connect "profile badge widget" - displays a person's avatar and information.
@@ -76,10 +77,8 @@ public class UserProfileBadgeWidget extends Composite
                         }
                         else
                         {
-                            AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
-                                    entity.getAvatarId(), Size.Normal, false);
+                            Widget linkPanel = AvatarLinkPanel.create(entity, Size.Normal, false);
                             linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
-
                             widget.add(linkPanel);
 
                             String linkUrl = "/#"

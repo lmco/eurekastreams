@@ -39,7 +39,7 @@
 	</ui:style>
 
 	<g:HTMLPanel addStyleNames="{coreCss.connectionItem} {coreCss.listItem} {coreCss.person} {style.main}">
-		<eavatar:AvatarLinkPanel addStyleNames="{style.stream-avatar}" ui:field="avatarPanel" />
+		<g:Widget addStyleNames="{style.stream-avatar}" ui:field="avatarPanel" />
 		<g:HTMLPanel addStyleNames="{coreCss.connectionItemInfo}" ui:field="infoPanel">
 			<g:Hyperlink addStyleNames="{coreCss.connectionItemName} {style.stream-name} {coreCss.ellipsisChild}" ui:field="streamNameLink" />
 			<span class="{style.message-count}" ui:field="messageCount" />

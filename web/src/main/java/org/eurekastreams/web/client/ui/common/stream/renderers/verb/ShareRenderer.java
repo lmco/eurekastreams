@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
-import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
@@ -38,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Render a share verb activity.
- * 
+ *
  */
 public class ShareRenderer implements VerbRenderer
 {
@@ -61,7 +60,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Setup.
-     * 
+     *
      * @param inObjectRendererDictionary
      *            object dictionary.
      * @param inActivity
@@ -82,7 +81,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow commenting.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowComment()
@@ -92,7 +91,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow sharing.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowShare()
@@ -102,7 +101,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow starring.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowStar()
@@ -112,7 +111,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Should the verb allow liking.
-     * 
+     *
      * @return the value.
      */
     public boolean getAllowLike()
@@ -122,7 +121,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the avatar.
-     * 
+     *
      * @return the avatar.
      */
     public Widget getAvatar()
@@ -139,7 +138,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Get the content.
-     * 
+     *
      * @return the content.
      */
     public Widget getContent()
@@ -163,7 +162,7 @@ public class ShareRenderer implements VerbRenderer
 
     /**
      * Return a list of appropriate metadata link renderers.
-     * 
+     *
      * @return the list.
      */
     public List<StatefulRenderer> getMetaDataItemRenderers()
@@ -182,18 +181,15 @@ public class ShareRenderer implements VerbRenderer
         // If it fails, fall back to the normal renderer.
         try
         {
-            renderers.add(new MetadataLinkRenderer("", activity.getOriginalActor().getEntityType(), activity
-                    .getOriginalActor().getUniqueIdentifier(), activity.getOriginalActor().getDisplayName()));
-
+            RenderUtilities.addEntityNameRenderers(renderers, activity.getOriginalActor(), null);
             if (activity.getActor().getEntityId() != activity.getOriginalActor().getEntityId())
             {
-                renderers.add(new MetadataLinkRenderer("via", activity.getActor().getUniqueIdentifier(), activity
-                        .getActor().getDisplayName()));
+                RenderUtilities.addEntityNameRenderers(renderers, activity.getActor(), "via");
             }
         }
         catch (Exception e)
         {
-            RenderUtilities.renderActorName(renderers, activity);
+            RenderUtilities.addEntityNameRenderers(renderers, activity.getActor(), null);
         }
 
         if (showRecipient)
@@ -205,8 +201,7 @@ public class ShareRenderer implements VerbRenderer
             }
             else
             {
-                renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
-                        .getDisplayName()));
+                RenderUtilities.addEntityNameRenderers(renderers, stream, "to");
             }
         }
 

@@ -162,7 +162,7 @@
 		startTabGroupId="4231" avatarId="sdfsdsd"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="1" streamScopeId="1"
-		commentable="true" streamPostable="true" accountlocked="false"
+		commentable="true" streamPostable="true" accountlocked="false" accountDeactivated="false"
 		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
         isAdministrator="true"/>
 	<Person id="142" version="1117" accountId="fordp2" firstName="Ford"
@@ -173,7 +173,7 @@
 		startTabGroupId="4231" avatarId="sdfsd"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1142" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
-		commentable="true" streamPostable="false" accountlocked="false"
+		commentable="true" streamPostable="false" accountlocked="false" accountDeactivated="false"
 		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
         isAdministrator="true"/>
 		
@@ -345,7 +345,7 @@
 		startTabGroupId="5393" avatarId="abcdefg"
 		openSocialId="2d359911-0977-418a-9490-57e8252b4507" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="3" 
-		commentable="true" streamPostable="true" accountlocked="false"
+		commentable="true" streamPostable="true" accountlocked="false" accountDeactivated="false"
 		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
         isAdministrator="false"/>
 		
@@ -357,7 +357,7 @@
 		startTabGroupId="4231" avatarId="heynow"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a98" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="87433" 
-		commentable="true" streamPostable="true" accountlocked="false"
+		commentable="true" streamPostable="true" accountlocked="false" accountDeactivated="false"
 		groupstreamhiddenlineindex="3" optOutVideoIds="6;"
         isAdministrator="false"/>
 
@@ -369,7 +369,7 @@
 		startTabGroupId="4231" avatarId="foofoo"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a99" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="4" 
-		commentable="true" streamPostable="true" accountlocked="false"
+		commentable="true" streamPostable="true" accountlocked="false" accountDeactivated="false"
 		groupstreamhiddenlineindex="3" optOutVideoIds="5;"
         isAdministrator="false"/>
 

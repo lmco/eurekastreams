@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.List;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * Common code for activity rendering.
  */
@@ -38,19 +40,60 @@ public final class RenderUtilities
      * @param activity
      *            Activity to render.
      */
-    public static void renderActorName(final List<StatefulRenderer> renderers, final ActivityDTO activity)
+    public static void addActorNameRenderers(final List<StatefulRenderer> renderers, final ActivityDTO activity)
     {
-        final StreamEntityDTO actor = activity.getActor();
+        addEntityNameRenderers(renderers, activity.getActor(), null);
+    }
 
-        if (activity.isLockedAuthor())
+    /**
+     * Supplies renderers for a stream name.
+     *
+     * @param renderers
+     *            List to add renderers to.
+     * @param entity
+     *            Stream entity whose name to render.
+     * @param label
+     *            Label to place before the name.
+     */
+    public static void addEntityNameRenderers(final List<StatefulRenderer> renderers, final StreamEntityDTO entity,
+            final String label)
+    {
+        renderers.add(getEntityNameRenderer(entity, label));
+    }
+
+    /**
+     * Gets the renderer for a stream name.
+     *
+     * @param entity
+     *            Stream entity whose name to render.
+     * @param label
+     *            Label to place before the name.
+     * @return Renderer for stream name.
+     */
+    public static StatefulRenderer getEntityNameRenderer(final StreamEntityDTO entity, final String label)
+    {
+        String name = entity.getDisplayName();
+        if (entity.isActive())
         {
-            renderers.add(new SimpleTextRenderer(actor.getDisplayName()));
+            return new MetadataLinkRenderer(label, entity.getType(), entity.getUniqueIdentifier(), name);
         }
         else
         {
-            renderers.add(new MetadataLinkRenderer("", actor.getType(), actor.getUniqueIdentifier(), actor
-                    .getDisplayName()));
+            return new SimpleTextRenderer(label == null || label.isEmpty() ? name : label + " " + name);
         }
     }
 
+    /**
+     * Gets the renderer for a stream name.
+     * 
+     * @param entity
+     *            Stream entity whose name to render.
+     * @param label
+     *            Label to place before the name.
+     * @return Rendered widget.
+     */
+    public static Widget renderEntityName(final StreamEntityDTO entity, final String label)
+    {
+        return getEntityNameRenderer(entity, label).render();
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,10 +73,12 @@ public class CommentDTO extends ModelView
     private long activityId = UNINITIALIZED_LONG_VALUE;
 
     /**
-
      * boolean representing if the comment able to be deleted by user.
      */
     private Boolean deletable = false;
+
+    /** If the comment author's account is active. */
+    private boolean authorActive = true;
 
     /**
      * Load this object's properties from the input Map.
@@ -282,4 +284,20 @@ public class CommentDTO extends ModelView
         this.deletable = inDeletable;
     }
 
+    /**
+     * @return If the comment author's account is active.
+     */
+    public boolean isAuthorActive()
+    {
+        return authorActive;
+    }
+
+    /**
+     * @param inAuthorActive
+     *            If the comment author's account is active.
+     */
+    public void setAuthorActive(final boolean inAuthorActive)
+    {
+        authorActive = inAuthorActive;
+    }
 }

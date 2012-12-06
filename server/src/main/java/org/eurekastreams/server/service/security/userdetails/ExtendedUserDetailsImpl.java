@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ import org.springframework.security.GrantedAuthority;
 import org.springframework.util.Assert;
 
 /**
- * UserDetails implementation that extends Spring's UserDetails to allow access
- * to Person and PersistentLogin object.
+ * UserDetails implementation that extends Spring's UserDetails to allow access to Person and PersistentLogin object.
  *
  */
 @SuppressWarnings("serial")
@@ -47,7 +46,7 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
     /**
      * Authentication type.
      */
-    private AuthenticationType authenticationType;
+    private final AuthenticationType authenticationType;
 
     /**
      * Constructor.
@@ -62,18 +61,14 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
      *            Authentication type.
      *
      */
-    public ExtendedUserDetailsImpl(final Person inPerson,
-            final PersistentLogin inLogin,
-            final GrantedAuthority[] inGrantedAuthorities,
-            final AuthenticationType inAuthenticationType)
+    public ExtendedUserDetailsImpl(final Person inPerson, final PersistentLogin inLogin,
+            final GrantedAuthority[] inGrantedAuthorities, final AuthenticationType inAuthenticationType)
     {
         Assert.notNull(inPerson);
         person = inPerson;
         persistentLogin = inLogin;
-        grantedAuthorities = (inGrantedAuthorities == null)
-            ? new GrantedAuthority[0] : inGrantedAuthorities;
-        authenticationType = (inAuthenticationType == null)
-            ? AuthenticationType.NOTSET : inAuthenticationType;
+        grantedAuthorities = (inGrantedAuthorities == null) ? new GrantedAuthority[0] : inGrantedAuthorities;
+        authenticationType = (inAuthenticationType == null) ? AuthenticationType.NOTSET : inAuthenticationType;
 
     }
 
@@ -138,13 +133,11 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
     }
 
     /**
-     * Determine accountNonExpired value.
-     *
-     * @return accountNonLocked boolean value.
+     * @return If the account is not locked.
      */
     public boolean isAccountNonLocked()
     {
-        return true;
+        return !person.isAccountLocked();
     }
 
     /**
@@ -158,13 +151,11 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
     }
 
     /**
-     * Determine enabled value.
-     *
-     * @return enabled boolean value.
+     * @return If the account has not been deactivated.
      */
     public boolean isEnabled()
     {
-        return !person.isAccountLocked();
+        return !person.isAccountDeactivated();
     }
 
     /**
