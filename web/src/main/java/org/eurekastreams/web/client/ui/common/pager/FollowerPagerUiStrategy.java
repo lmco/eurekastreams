@@ -78,7 +78,7 @@ public class FollowerPagerUiStrategy implements PagerStrategy
     private EntityType entityType;
 
     /**
-     * Evnet key.
+     * Event key.
      */
     private String entityKey;
 

@@ -42,6 +42,7 @@ import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShor
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.testing.TestContextCreator;
+import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -335,14 +336,26 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
+               /* allowing(group).getCoordinators().size();
+                will(returnValue(2));
+                
+                allowing(groupMapperMock).getGroupCoordinatorCount();
+                will(returnValue(2));*/
+                               
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(FOLLOWER_ID));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(group));
 
-                oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
+                oneOf(groupMapperMock).isInputUserGroupCoordinator(with(FOLLOWER_ID), with(GROUP_ID));
+                will(returnValue(false));
 
+                oneOf(groupMapperMock).getGroupCoordinatorCount(with(GROUP_ID));
+                will(returnValue(2));
+                
+                oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
+                               
                 oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
                 will(returnValue(followerIds));
             }
@@ -357,6 +370,93 @@ public class SetFollowingGroupStatusExecutionTest
         context.assertIsSatisfied();
         assertEquals(5, result);
         assertEquals(3, actionContext.getUserActionRequests().size());
+    }
+    
+    /**
+     * Test a failure. Try to remove the last Group Coordinator of a Group.
+     *
+     * @throws ExecutionException
+     *             - on error.
+     */
+    @Test(expected = ExecutionException.class)
+    public void testRemoveLastGroupCoordinators() throws ExecutionException
+    {
+        context.checking(new Expectations()
+        {
+            {               
+                allowing(group).getCoordinators().size();
+                will(returnValue(1));
+                               
+                allowing(groupMapperMock).isInputUserGroupCoordinator(FOLLOWER_ID, GROUP_ID);
+                will(returnValue(true));
+                
+                oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
+                will(returnValue(FOLLOWER_ID));
+
+                oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
+                will(returnValue(group));
+                              
+                oneOf(groupMapperMock).isInputUserGroupCoordinator(with(FOLLOWER_ID), with(GROUP_ID));
+                will(returnValue(true));
+                
+                oneOf(groupMapperMock).getGroupCoordinatorCount(with(GROUP_ID));
+                will(returnValue(1));
+
+                oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
+                
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));               
+            }
+        });
+        
+        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
+                EntityType.GROUP, false, Follower.FollowerStatus.NOTFOLLOWING);
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(currentRequest, principal);
+        Serializable result = sut.execute(actionContext);
+    }
+    
+    /**
+     * Test a removal of a group coordinator.
+     *
+     * @throws Exception
+     *             - on error.
+     */
+    public void testRemoveGroupCoordinators() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {               
+                allowing(group).getCoordinators().size();
+                will(returnValue(2));
+                               
+                allowing(groupMapperMock).isInputUserGroupCoordinator(FOLLOWER_ID, GROUP_ID);
+                will(returnValue(true));
+                
+                oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
+                will(returnValue(FOLLOWER_ID));
+
+                oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
+                will(returnValue(group));
+                              
+                oneOf(groupMapperMock).isInputUserGroupCoordinator(with(FOLLOWER_ID), with(GROUP_ID));
+                will(returnValue(true));
+                
+                oneOf(groupMapperMock).getGroupCoordinatorCount(with(GROUP_ID));
+                will(returnValue(1));
+
+                oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
+                
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));               
+            }
+        });
+        
+        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
+                EntityType.GROUP, false, Follower.FollowerStatus.NOTFOLLOWING);
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(currentRequest, principal);
+        Serializable result = sut.execute(actionContext);
     }
 
     /**

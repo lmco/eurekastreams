@@ -240,6 +240,137 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     }
 
     /**
+     * Test whether the input user is a group coordinator - true.
+     */
+    @Test
+    public void testInputUserIsGroupCoordinator()
+    {
+        final long personId = 99L;
+        final long groupId = 1L;
+
+        Person p = jpaPersonMapper.findById(personId);
+        DomainGroup g = jpaGroupMapper.findById(groupId);
+     
+        if(!jpaGroupMapper.isInputUserGroupCoordinator(personId, groupId))
+        {
+            g.addCoordinator(p);
+        }
+        
+        boolean result = jpaGroupMapper.isInputUserGroupCoordinator(personId, groupId);
+
+        assertEquals(true, result);
+    }
+    
+    /**
+     * Test whether the input user is a group coordinator - false.
+     */
+    @Test
+    public void testInputUserIsNotGroupCoordinator()
+    {
+        final long personId = 99L;
+        final long groupId = 1L;
+
+        Person p = jpaPersonMapper.findById(personId);
+        DomainGroup g = jpaGroupMapper.findById(groupId);
+     
+        if(jpaGroupMapper.isInputUserGroupCoordinator(personId, groupId))
+        {
+            jpaGroupMapper.removeGroupCoordinator(personId, groupId);
+        }
+        
+        boolean result = jpaGroupMapper.isInputUserGroupCoordinator(personId, groupId);
+
+        assertEquals(false, result);
+    }
+    
+    /**
+     * Test the Group Coordinator count. 
+     */
+    @Test
+    public void testGetGroupCoordinatorCount()
+    {
+        final long personId = 99L;
+        final long groupId = 1L;
+
+        Person p = jpaPersonMapper.findById(personId);
+        DomainGroup g = jpaGroupMapper.findById(groupId);
+
+        int numberOfGroupCoordinators = g.getCoordinators().size();
+        int result = jpaGroupMapper.getGroupCoordinatorCount(groupId);
+
+        assertEquals(numberOfGroupCoordinators, result);
+    }
+    
+    /**
+     * Test remove a group coordinator.
+     */
+    @Test
+    public void testRemoveGroupCoordinator()
+    {
+        final long personId = 99L;
+        final long groupId = 1L;
+
+        Person p = jpaPersonMapper.findById(personId);
+        DomainGroup g = jpaGroupMapper.findById(groupId);
+
+        int numberOfGroupCoordinatorsBeforeRemoval = jpaGroupMapper.getGroupCoordinatorCount(groupId);
+        
+        Object[] groupCoordinators = g.getCoordinators().toArray();
+        
+        long firstGroupCoordinatorId = ((Person) groupCoordinators[0]).getEntityId();
+        
+        jpaGroupMapper.removeGroupCoordinator(firstGroupCoordinatorId, groupId);
+        
+        int numberOfGroupCoordinatorsAfterRemoval = jpaGroupMapper.getGroupCoordinatorCount(groupId);
+        
+        assertEquals(numberOfGroupCoordinatorsBeforeRemoval - 1, numberOfGroupCoordinatorsAfterRemoval);
+    }
+    
+    /**
+     * Test whether a group is private - true. 
+     */
+    @Test
+    public void testIsGroupPrivate()
+    {
+        final long personId = 99L;
+        final long groupId = 1L;
+
+        Person p = jpaPersonMapper.findById(personId);
+        DomainGroup g = jpaGroupMapper.findById(groupId);
+
+        if(g.isPublicGroup())
+        {
+            g.setPublicGroup(false);
+        }
+        
+        boolean result = jpaGroupMapper.isGroupPrivate(groupId);
+        
+        assertEquals(true, result);
+    }
+    
+    /**
+     * Test whether a group is private - false. 
+     */
+    @Test
+    public void testIsGroupNotPrivate()
+    {
+        final long personId = 99L;
+        final long groupId = 1L;
+
+        Person p = jpaPersonMapper.findById(personId);
+        DomainGroup g = jpaGroupMapper.findById(groupId);
+
+        if(!g.isPublicGroup())
+        {
+            g.setPublicGroup(true);
+        }
+        
+        boolean result = jpaGroupMapper.isGroupPrivate(groupId);
+        
+        assertEquals(false, result);
+    }
+    
+    /**
      * Test remove follower.
      */
     @Test

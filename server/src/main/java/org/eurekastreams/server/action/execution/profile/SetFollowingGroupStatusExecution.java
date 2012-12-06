@@ -297,14 +297,11 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             
         case NOTFOLLOWING:
             
-            // Check if the User to be removed is a Group Coordinator of the 
-            // Group from which he will be removed.
+            // Check if the User to be removed is a Group Coordinator.
             boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.
                 isInputUserGroupCoordinator(followerId, targetId); 
             
-            // If the Follower to be removed is the last Group Coordinator,
-            // do not proceed with his removal from the Group, nor proceed
-            // with his removal as a Group Coordinator
+            // Do not remove the last Group Coordinator.
             if ((domainGroupMapper.getGroupCoordinatorCount(targetId) == 1) 
                     && isToBeRemovedUserGroupCoordinator)
             {
@@ -342,12 +339,11 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                 // delete group coordinator from db
                 domainGroupMapper.removeGroupCoordinator(followerId, targetId);
                 
-                // queue the removal the target group's list of coordinators
+                // queue the removal of the target group's coordinator
                 asyncRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID + targetId)));
     
-                // Update the 'PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR' cache
-                // only if the Group is Private
+                // Update the 'PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR' cache if Private Group
                 if (domainGroupMapper.isGroupPrivate(targetId))
                 {
                     // queue the removal the person's list of followed group ids
@@ -392,12 +388,6 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     private boolean isUserGroupCoordinator(final String userAccountId, final DomainGroupModelView group)
     {
         List<PersonModelView> groupCoordinators = group.getCoordinators();
-        
-        log.debug("SetFollowingGroupStatusExecution group.getCoordinators() = " 
-                + group.getCoordinators());
-        
-        log.debug(".isUserGroupCoordinator"
-                + "group.getCoordinators().size() = " + group.getCoordinators().size()); 
         
         for (PersonModelView p: groupCoordinators) 
         {

@@ -70,13 +70,11 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
         
         boolean currentUserIsGroupCoordinator = isGroupCoordinator(Session.getInstance().getCurrentPerson()); 
         
-        boolean isGroupPrivate = !group.isPublic();
-        
         // conditions by which a person should show up as 'Remove'-able:
         // cannot delete himself AND private group AND (current user is ADMIN or GROUP COORD) 
         if ((Session.getInstance().getCurrentPerson().getId() != item.getEntityId()) 
                 && (currentUserIsAdmin || currentUserIsGroupCoordinator) 
-                && (isGroupPrivate))
+                && (!group.isPublic()))
         {
             boolean toBeRemovedFollowerIsGroupCoordinator = isGroupCoordinator(item);
             

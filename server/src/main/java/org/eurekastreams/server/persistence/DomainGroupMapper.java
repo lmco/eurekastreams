@@ -38,15 +38,15 @@ import org.eurekastreams.commons.logging.LogFactory;
 @Deprecated
 public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implements FollowMapper, CompositeEntityMapper
 {
-    
-    /** 
+
+    /**
      * Logger. 
      */
     private final Log log = LogFactory.make();
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
      */
@@ -208,11 +208,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      *            The group id being Followed. 
      */
     public void removeFollower(final long followerId, final long followingId)
-    {
-        log.debug("removeFollower(followerId = " + followerId + ", followingId = " + followingId + ")");
-        
-        DomainGroup followingEntity = findById(followingId);
-
+    {        
         int rowsDeleted = getEntityManager().createQuery(
                 "DELETE FROM GroupFollower where followerId=:followerId and followingId=:followingId").setParameter(
                 "followerId", followerId).setParameter("followingId", followingId).executeUpdate();
@@ -235,7 +231,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         getEntityManager().flush();
         getEntityManager().clear();
         
-        followingEntity = findById(followingId);
+        DomainGroup followingEntity = findById(followingId);
 
         // reindex the following in the search index
         getFullTextSession().index(followingEntity);
@@ -250,24 +246,14 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      *            The group id being Followed. 
      */
     public void removeGroupCoordinator(final long followerId, final long followingId)
-    {
-        log.debug("removeGroupCoordinator(followerId = " + followerId + ", followingId = " + followingId + ")");
-        
+    {       
         DomainGroup followingEntity = findById(followingId);
         
         Set<Person> groupCoordinators = followingEntity.getCoordinators();
         
-        log.debug("groupCoordinators().size() = " + groupCoordinators.size());
-        
-        log.debug("Removed a Group Coordinator. Persisting updated list of Group Coordinators");
-        
         removeGroupCoordinator(groupCoordinators, followerId, followingId);
         
         followingEntity.setCoordinators(groupCoordinators);
-        
-        log.debug("groupCoordinators = " + groupCoordinators);
-        
-        log.debug("followingEntity.getCoordinators() = " + followingEntity.getCoordinators());
         
         getEntityManager().persist(followingEntity);
         getEntityManager().flush();
@@ -325,18 +311,12 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      * @return Whether 'Person' is a Group Coordinator of 'Group'
      */
     public boolean isInputUserGroupCoordinator(final long followerId, final long followingId)
-    {
-        log.debug("isInputUserGroupCoordinator: followerId = " + followerId + " followingId = " + followingId);
-        
+    {        
         String groupCoordinatorQuery = "SELECT p.id FROM Person p, DomainGroup g WHERE p member of g.coordinators"
                 + " AND g.id = :groupId";
         
         List<Long> groupCoordinatorResult = getEntityManager()
         .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId).getResultList();
-        
-        log.debug("groupCoordinatorResult = " + groupCoordinatorResult);
-        log.debug("groupCoordinatorResult.contains(new Long(followerId)) = "
-                + groupCoordinatorResult.contains(new Long(followerId)));
         
         if (groupCoordinatorResult.contains(new Long(followerId)))
         {
@@ -370,9 +350,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
           .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId)
              .setParameter("followerId", followerId).getResultList();
         
-        // This means that isInputUserGroupCoordinator() is not working properly.
-        // We should not reach removeGroupCoordinator(...) unless
-        // the given Person should be removed as a Group Coordinator.
         if ((groupCoordinatorResult == null) || (groupCoordinatorResult.size() == 0)) 
         {
             return; 
@@ -381,13 +358,10 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         String accountId = groupCoordinatorResult.get(0);
         
         for (Person p : groupCoordinators)
-        {
-            log.debug("p.getAccountId() = " + p.getAccountId() + "p.getLastName() = " + p.getLastName());
-            
+        {            
             if (p.getAccountId().equals(accountId))
             {
                 groupCoordinators.remove(p);                
-                log.debug("removed p: " + p + " as Group Coordinator.");
                 return;
             }
         }
@@ -409,8 +383,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         
         DomainGroup group = groupCoordinatorResult.get(0);
         
-        log.debug("isGroupPrivate | result =" + group.isPublicGroup());
-        
         return !group.isPublicGroup();
     }
     
@@ -430,6 +402,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
         List<String> groupCoordinatorResult = getEntityManager()
                 .createQuery(groupCoordinatorQuery).setParameter("groupId", followingId).getResultList();
         
-        return groupCoordinatorResult.size(); 
+        return groupCoordinatorResult.size();
     }
 }
