@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,26 +21,16 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 /**
  * Stream response event.
  */
-public class GotStreamResponseEvent
+public class GotStreamResponseEvent extends BaseDataRequestResponseEvent<String, PagedSet<ActivityDTO>>
 {
-    /**
-     * The Stream.
-     */
-    private PagedSet<ActivityDTO> stream;
-
-    /**
-     * The JSON request.
-     */
-    private String jsonRequest;
-
     /**
      * The sort type.
      */
-    private String sortType;
+    private final String sortType;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inStream
      *            the stream.
      * @param inJsonRequest
@@ -51,34 +41,33 @@ public class GotStreamResponseEvent
     public GotStreamResponseEvent(final PagedSet<ActivityDTO> inStream, final String inJsonRequest,
             final String sortString)
     {
-        stream = inStream;
-        jsonRequest = inJsonRequest;
+        super(inJsonRequest, inStream);
         sortType = sortString;
     }
 
     /**
      * Get the stream.
-     * 
+     *
      * @return the stream.
      */
     public PagedSet<ActivityDTO> getStream()
     {
-        return stream;
+        return getResponse();
     }
 
     /**
      * Get the JSON request.
-     * 
+     *
      * @return the JSON request.
      */
     public String getJsonRequest()
     {
-        return jsonRequest;
+        return getRequest();
     }
 
     /**
      * Get the sort type.
-     * 
+     *
      * @return the sort type.
      */
     public String getSortType()

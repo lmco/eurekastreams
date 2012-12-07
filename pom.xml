@@ -52,7 +52,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>Eureka Streams repository</id>
-            <url>http://maven.eurekastreams.org/</url>
+            <url>${build.maven.repo.eurekastreams.url}/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -76,7 +76,7 @@
 	    <snapshots>
 	    	<enabled>false</enabled>
 	    </snapshots>
-	    <url>http://maven.eurekastreams.org</url>
+	    <url>${build.maven.repo.eurekastreams.url}</url>
 	  </repository>
       <repository>
         <id>central</id>
@@ -169,10 +169,11 @@
         <build.queue.nonui.name>queue/eurekaNonUi</build.queue.nonui.name>
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>
-        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
+        <build.report.checkstyle.rulesurl>checkstyle-rules.xml</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>2.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
+        <build.maven.repo.eurekastreams.url>http://maven.eurekastreams.org</build.maven.repo.eurekastreams.url>
         <build.infosite.url>http://eurekastreams.org</build.infosite.url>
         <build.infosite.text>eurekastreams.org</build.infosite.text>
         <build.profile.emailregex>.*@.*</build.profile.emailregex>

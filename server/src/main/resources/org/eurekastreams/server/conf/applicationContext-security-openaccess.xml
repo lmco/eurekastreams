@@ -8,9 +8,9 @@
      http://www.springframework.org/schema/security 
      http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
                 
-    <http>
-        <form-login login-page="/no_credentials.html" default-target-url="/login_success.html" always-use-default-target="true"/>     
-        <http-basic />
+    <http entry-point-ref="authenticationProcessingFilterEntryPoint">
+<!--         <form-login login-page="/no_credentials.html" default-target-url="/login_success.html" always-use-default-target="true"/>      -->
+<!--         <http-basic /> -->
         <anonymous />
 
     	<!-- block direct access to targets of rewrites -->
@@ -50,10 +50,39 @@
         <logout />
     </http>       
 
-    <beans:bean
-        class="org.eurekastreams.server.service.security.openaccess.OpenAccessAuthenticationProvider">
+    <beans:bean id="authenticationProcessingFilterEntryPoint"
+        class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+        <beans:property name="loginFormUrl" value="/no_credentials.html" />
+    </beans:bean>
+
+    <beans:bean id="authFilter" class="org.springframework.security.ui.webapp.AuthenticationProcessingFilter">
+        <custom-filter position="AUTHENTICATION_PROCESSING_FILTER" />
+        <beans:property name="alwaysUseDefaultTargetUrl" value="true" />
+        <beans:property name="defaultTargetUrl" value="/login_success.html" />
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <beans:property name="exceptionMappings">
+            <beans:props>
+                <beans:prop key="org.springframework.security.DisabledException">
+                    /login_disabled.html
+                </beans:prop>
+                <beans:prop key="org.springframework.security.LockedException">
+                    /login_disabled.html
+                </beans:prop>
+                <beans:prop key="org.springframework.security.userdetails.UsernameNotFoundException">
+                    /login_disabled.html
+                </beans:prop>
+            </beans:props>
+        </beans:property>       
+    </beans:bean>
+    
+    <authentication-manager alias="authenticationManager" /> 
+
+    <beans:bean class="org.eurekastreams.server.service.security.openaccess.OpenAccessAuthenticationProvider">
         <custom-authentication-provider />
-        <beans:property name="userDetailsService" ref="userDetailsService" />
+        <beans:constructor-arg ref="userDetailsService" />
+        <beans:constructor-arg>
+            <beans:bean class="org.springframework.security.userdetails.checker.AccountStatusUserDetailsChecker" />
+        </beans:constructor-arg>
     </beans:bean>
     
     <beans:bean id="userDetailsService" class="org.eurekastreams.server.service.security.userdetails.UserDetailsServiceImpl">

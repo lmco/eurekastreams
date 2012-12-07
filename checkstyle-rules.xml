@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This configuration file was written by the eclipse-cs plugin configuration editor
+-->
+<!--
+    Checkstyle-Configuration: Eureka Streams Checks
+    Description: 
+Slightly modified version of Sun Checks that better matches the default code formatter setting of Eclipse.
+-->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+    <property name="severity" value="error"/>
+    <module name="FileLength">
+	<property name="fileExtensions" value="java" />
+	<property name="max" value="2000" />
+	<property name="severity" value="warning" />
+    </module>
+    <module name="FileTabCharacter">
+            <property name="severity" value="ignore"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="severity" value="ignore"/>
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+    <module name="RegexpHeader">
+	    <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Insure the Lockheed Martin Copyright header is in place."/>
+	    <metadata name="com.atlassw.tools.eclipse.checkstyle.customMessage" value="Must include Lockheed Martin custom copyright header."/>
+	    <property name="severity" value="error"/>
+	    <property name="id" value="copyrightheader"/>
+	    <property name="header" value="^/\*$\n^ \* Copyright \(c\) 20\d\d(-201\d)? Lockheed Martin Corporation$\n^ \*$\n^ \*.*Apache.*$\n^.*$\n^.*$\n^.*$\n^.*http://www\.apache\.org/licenses/LICENSE-2\.0$\n^.*$\n^.*$\n^.*$\n^.*$\n^.*$\n^.*License\.$\n^ \*/$"/>
+	    <property name="fileExtensions" value="java" />
+    </module> 
+    <module name="TreeWalker">
+        <property name="tabWidth" value="4"/>
+        <module name="JavadocMethod">
+            <property name="logLoadErrors" value="true"/>
+            <property name="suppressLoadErrors" value="true"/>
+        </module>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
+        <module name="JavadocStyle"/>
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+        <module name="LineLength">
+            <property name="max" value="120"/>
+            <property name="ignorePattern" value=".*::.*"/>
+        </module>
+        <module name="MethodLength">
+            <property name="max" value="200"/>
+            <property name="countEmpty" value="false"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="severity" value="warning"/>
+            <property name="max" value="9"/>
+        </module>
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter">
+            <property name="tokens" value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS"/>
+        </module>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <property name="severity" value="warning"/>
+            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,EQUAL,GE,GT,LAND,LCURLY,LE,LITERAL_ASSERT,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND,WILDCARD_TYPE"/>
+        </module>
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+        </module>
+        <module name="DoubleCheckedLocking"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="HiddenField"/>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
+        </module>
+        <module name="MissingSwitchDefault"/>
+        <module name="RedundantThrows">
+            <property name="logLoadErrors" value="true"/>
+            <property name="allowUnchecked" value="true"/>
+            <property name="suppressLoadErrors" value="true"/>
+        </module>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier">
+            <property name="packageAllowed" value="true"/>
+        </module>
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters"/>
+        <module name="TodoComment">
+            <property name="severity" value="ignore"/>
+        </module>
+        <module name="UpperEll"/>
+        <module name="LeftCurly">
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.customMessage" value="Move the curly brace to the new line"/>
+            <property name="id" value="lcb-1"/>
+            <property name="option" value="nl"/>
+        </module>
+    </module>
+    <module name="JavadocPackage">
+        <property name="severity" value="warning"/>
+    </module>
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="warning"/>
+        <property name="lineSeparator" value="lf"/>
+    </module>
+</module>
+

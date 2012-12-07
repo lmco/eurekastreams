@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param label
      *            the label for the uninitialized textbox.
      */
@@ -207,8 +207,7 @@ public class GlobalSearchComposite extends FlowPanel
                         if (result instanceof PersonModelView)
                         {
                             final PersonModelView person = (PersonModelView) result;
-                            itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
-                                    .getAvatarId(), Size.Small, false));
+                            itemPanel.add(AvatarLinkPanel.create(person, Size.Small, false));
                             name.setText(person.getDisplayName());
                             name.setTitle(person.getDisplayName());
                             historyToken = Session.getInstance().generateUrl(
@@ -328,7 +327,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Select an item.
-     * 
+     *
      * @param item
      *            the item.
      */
@@ -344,7 +343,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

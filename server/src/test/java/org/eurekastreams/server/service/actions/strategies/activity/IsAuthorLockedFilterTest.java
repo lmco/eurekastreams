@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,31 +79,48 @@ public class IsAuthorLockedFilterTest
         final StreamEntityDTO e1 = context.mock(StreamEntityDTO.class, "e1");
         final StreamEntityDTO e2 = context.mock(StreamEntityDTO.class, "e2");
         final StreamEntityDTO e3 = context.mock(StreamEntityDTO.class, "e3");
+        final StreamEntityDTO e1o = context.mock(StreamEntityDTO.class, "e1o");
+        final StreamEntityDTO e3o = context.mock(StreamEntityDTO.class, "e3o");
         final ActivityDTO a1 = context.mock(ActivityDTO.class, "a1");
         final ActivityDTO a2 = context.mock(ActivityDTO.class, "a2");
         final ActivityDTO a3 = context.mock(ActivityDTO.class, "a3");
         final PersonModelView p7 = context.mock(PersonModelView.class, "p7");
         final PersonModelView p8 = context.mock(PersonModelView.class, "p8");
+        final PersonModelView p9 = context.mock(PersonModelView.class, "p9");
 
         context.checking(new Expectations()
         {
             {
                 allowing(a1).getActor();
                 will(returnValue(e1));
-                allowing(a2).getActor();
-                will(returnValue(e2));
-                allowing(a3).getActor();
-                will(returnValue(e3));
-                allowing(e1).getType();
-                will(returnValue(EntityType.PERSON));
-                allowing(e2).getType();
-                will(returnValue(EntityType.GROUP));
-                allowing(e3).getType();
-                will(returnValue(EntityType.PERSON));
+                allowing(a1).getOriginalActor();
+                will(returnValue(e1o));
                 allowing(e1).getId();
                 will(returnValue(7L));
+                allowing(e1).getType();
+                will(returnValue(EntityType.PERSON));
+                allowing(e1o).getType();
+                will(returnValue(EntityType.GROUP));
+
+                allowing(a2).getActor();
+                will(returnValue(e2));
+                allowing(a2).getOriginalActor();
+                will(returnValue(null));
+                allowing(e2).getType();
+                will(returnValue(EntityType.GROUP));
+
+                allowing(a3).getActor();
+                will(returnValue(e3));
+                allowing(a3).getOriginalActor();
+                will(returnValue(e3o));
                 allowing(e3).getId();
                 will(returnValue(8L));
+                allowing(e3).getType();
+                will(returnValue(EntityType.PERSON));
+                allowing(e3o).getId();
+                will(returnValue(9L));
+                allowing(e3o).getType();
+                will(returnValue(EntityType.PERSON));
 
                 allowing(p7).getId();
                 will(returnValue(7L));
@@ -113,19 +130,25 @@ public class IsAuthorLockedFilterTest
                 will(returnValue(8L));
                 allowing(p8).isAccountLocked();
                 will(returnValue(false));
+                allowing(p9).getId();
+                will(returnValue(9L));
+                allowing(p9).isAccountLocked();
+                will(returnValue(false));
 
                 oneOf(personMapper).execute(with(new EasyMatcher<List<Long>>()
                 {
                     @Override
                     protected boolean isMatch(final List<Long> inTestObject)
                     {
-                        return inTestObject.size() == 2 && inTestObject.contains(7L) && inTestObject.contains(8L);
+                        return inTestObject.size() == 3 && inTestObject.contains(7L) && inTestObject.contains(8L)
+                                && inTestObject.contains(9L);
                     }
                 }));
-                will(returnValue(Arrays.asList(p7, p8)));
+                will(returnValue(Arrays.asList(p7, p8, p9)));
 
-                oneOf(a1).setLockedAuthor(true);
-                oneOf(a3).setLockedAuthor(false);
+                oneOf(e1).setActive(false);
+                oneOf(e3).setActive(true);
+                oneOf(e3o).setActive(true);
             }
         });
 

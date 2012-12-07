@@ -270,7 +270,7 @@ public class CommentWidget extends Composite
         {
             List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
 
-            RenderUtilities.renderActorName(renderers, activity);
+            RenderUtilities.addActorNameRenderers(renderers, activity);
 
             if (activity.getBaseObjectType() == BaseObjectType.BOOKMARK
                     && activity.getDestinationStream().getType() != EntityType.RESOURCE)

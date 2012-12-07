@@ -1880,6 +1880,7 @@
                     <ref bean="likeFilter" />
                     <ref bean="savedFilter" />
                     <ref bean="authorLockedFilter" />
+                    <ref bean="commentAuthorLockedFilter" />
                     <ref bean="serverTimeFilter" />
                 </list>
             </constructor-arg>
@@ -1938,6 +1939,7 @@
                 <ref bean="likeFilter" />
                 <ref bean="savedFilter" />
                 <ref bean="authorLockedFilter" />
+                <ref bean="commentAuthorLockedFilter" />
                 <ref bean="serverTimeFilter" />
             </list>
         </constructor-arg>
@@ -1969,6 +1971,7 @@
                 <ref bean="likeFilter" />
                 <ref bean="savedFilter" />
                 <ref bean="authorLockedFilter" />
+                <ref bean="commentAuthorLockedFilter" />
                 <ref bean="serverTimeFilter" />
             </list>
         </constructor-arg>
@@ -1999,6 +2002,7 @@
                 <ref bean="likeFilter" />
                 <ref bean="savedFilter" />
                 <ref bean="authorLockedFilter" />
+                <ref bean="commentAuthorLockedFilter" />
                 <ref bean="serverTimeFilter" />
             </list>
         </constructor-arg>
@@ -2596,6 +2600,7 @@
                         <ref bean="deleteFilter" />
                         <ref bean="savedFilter" />
                         <ref bean="authorLockedFilter" />
+                        <ref bean="commentAuthorLockedFilter" />
                         <ref bean="serverTimeFilter" />
                     </list>
                 </constructor-arg>
@@ -3667,6 +3672,11 @@
 		<constructor-arg ref="getPersonsByIdsMapper" />
 	</bean>
 
+    <bean id="commentAuthorLockedFilter"
+        class="org.eurekastreams.server.service.actions.strategies.activity.IsCommentAuthorLockedFilter">
+        <constructor-arg ref="getPersonsByIdsMapper" />
+    </bean>
+
 
     <bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4596,6 +4606,7 @@
 		         <constructor-arg ref="streamDiscoverListsMapper" />
 		         <constructor-arg ref="displayInfoSettableDataPopulator" />
 		         <constructor-arg ref="followerStatusPopulator" />
+		         <constructor-arg ref="getPersonsByIdsMapper" />
 		    </bean>
         </constructor-arg>
         <constructor-arg value="true" />

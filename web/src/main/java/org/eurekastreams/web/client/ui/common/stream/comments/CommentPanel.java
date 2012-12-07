@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.web.client.events.CommentDeletedEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
@@ -26,7 +27,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
-import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.content.ContentParser;
 import org.eurekastreams.web.client.ui.common.stream.renderers.content.ContentSegment;
 import org.eurekastreams.web.client.ui.common.stream.renderers.content.ParsedContentRenderer;
@@ -80,17 +81,20 @@ public class CommentPanel extends Composite
         final FlowPanel commentContainer = new FlowPanel();
         commentContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
 
-        commentContainer.add(new AvatarLinkPanel(EntityType.PERSON, comment.getAuthorAccountId(), comment
-                .getAuthorAvatarId(), Size.VerySmall));
+        StreamEntityDTO author = new StreamEntityDTO(EntityType.PERSON, comment.getAuthorAccountId());
+        author.setAvatarId(comment.getAuthorAvatarId());
+        author.setActive(comment.isAuthorActive());
+        author.setDisplayName(comment.getAuthorDisplayName());
+
+        commentContainer.add(AvatarLinkPanel.create(author, Size.VerySmall));
 
         FlowPanel body = new FlowPanel();
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
         commentContainer.add(body);
 
-        Widget author = new MetadataLinkRenderer("", comment.getAuthorAccountId(), comment.getAuthorDisplayName())
-                .render();
-        author.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
-        body.add(author);
+        Widget authorName = RenderUtilities.renderEntityName(author, "");
+        authorName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
+        body.add(authorName);
 
         // parse the comment content
         ContentSegment segments = new ContentParser().split(comment.getBody().trim());
