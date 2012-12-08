@@ -1,0 +1,42 @@
+<<<<<<< .merge_file_YNYE7M
+## Global Header
+![](images/GlobalNav.png)
+
+The global nav appears at the top of every page in the application.
+1. Links to http://www.eurekastreams.org.
+2. Links to the Start Page
+3. Links to the Discover Page
+4. Links to the Following stream
+5. Links to the logged in user's stream
+6. Links to the Notification modal.
+7. Allows users to preform a search.
+
+
+## Global Footer
+
+![](images/PS_UX_globalFooter.png)
+
+1. Terms links to [Terms and Conditions][Login to the system] without the 'I have read...' checkbox and Agree and Disagree buttons.
+=======
+## Global Header
+![](images/PS_UX_globalNavigation.png)
+
+1. The global nav appears at the top of every page in the application, each element in the global navigation with the exception of the search box has a rollover state.
+2. Links to http://www.eurekastreams.org.
+3. Links to [start page][Customize the start page].
+4. Links to [activity page][Manage lists, groups, and saved searches].
+5. Links to the [root organization profile page][View and manage an organization profile].
+6. Links to the [notification modal window][Manage and receive notifications].
+7. Links to the logged in [knowledge worker's profile page][View and manage an employee profile].
+8. Links to the [System Settings][Manage system settings].
+9. Links to the [Help page][Manage system settings].
+10. Refer to [Profile search box UX designs][Search profiles].
+11. Global navigation drop shadow.
+
+## Global Footer
+
+![](images/PS_UX_globalFooter.png)
+
+1. Terms links to [Terms and Conditions][Login to the system] without the 'I have read...' checkbox and Agree and Disagree buttons.
+>>>>>>> .merge_file_ygUJ4N
+2. Linked to http://www.eurekastreams.org/ and opens a new window when clicked.

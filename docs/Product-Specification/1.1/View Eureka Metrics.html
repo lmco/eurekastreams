@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>View Eureka Metrics</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; View Eureka Metrics</p>
+
+<h1 class="title">View Eureka Metrics</h1>
+
+<p><a href='Using Eureka Connect.html'><span id="nextlink">Using Eureka Connect</span></a>
+<a href='Suggestions App.html'><span id="prevlink">Suggestions App</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Conversion Funnel provides viewers with stats that show metrics at
+different progressing stages of engagement.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The system must display the number unique visitors.</li>
+<li>The system must display the number of visits per visitor.</li>
+<li>The system must display the number of people viewing a stream.</li>
+<li>The system must display the number of requests to view a stream per spectator.</li>
+<li>The system must display the number of people posting a message.</li>
+<li>The system must display the number of messages posted per contributor.</li>
+<li>The system must display the number of minutes elapsed for a response to a message.</li>
+<li>All metrics must be rolling daily (Monday - Friday) averages over a 30 days period.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<p><img id="" src="images/Conversion_Funnel_Stats.png" alt="" title="" /></p>
+
+<ol>
+<li>The number of unique visitors</li>
+<li>The number of visits per user over a 30 day period</li>
+<li>The number of people viewing any stream. For the
+Activity App only register a view if a mouse click is detected in the app.</li>
+<li>The number of stream requests per spectator (not per
+unique visitor). Only count views from the Activity App on mouse click.</li>
+<li>The number of people posting an activity or comment</li>
+<li>The daily number of activities and comments per contributor
+(not per visitor or spectator)</li>
+<li>The daily number of minutes it takes for an activity to
+receive it&#8217;s first comment. Activities without comments are not included in
+this metric.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: View the average number of unique visitors</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of unique visitors</li>
+<li>Verify the number for uniques vistors appears reasonable (approximately between 10,000 and 20,000 in production)</li></ul></li>
+<li><strong>Action: View the average number of visits per visitor</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of visits per visitor</li></ul></li>
+<li><strong>Action: View the average number of people viewing a stream</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of people viewing a stream</li>
+<li>Verify the number for people viewing a stream appears reasonable (approximately between 10,000 and 20,000 in production)</li></ul></li>
+<li><strong>Action: View the average number of request to view a stream per spectator</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of request to view a stream per spectator</li></ul></li>
+<li><strong>Action: View the average number of people posting a message</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of people posting a message</li>
+<li>Verify the number for people posting a message appears reasonable (approximately between 1,000 and 2,000 in production)</li></ul></li>
+<li><strong>Action: View the average number of messages posted per contributor</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of messages posted per contributor</li></ul></li>
+<li><strong>Action: View the average number of minutes elapsed for a response to a message</strong>
+<ul><li>Verfiy the Eureka Metrics page can be accessed with the appropriate url</li>
+<li>Verify the Eureka Metrics page includes a count for the number of minutes elapsed for a response to a message</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorgcoordinator">Root Org Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorgcoordinator">Root Org Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.5/Product%20Specification.html">1.5</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

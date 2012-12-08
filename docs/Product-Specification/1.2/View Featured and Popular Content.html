@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>View Featured and Popular Content</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; View Featured and Popular Content</p>
+
+<h1 class="title">View Featured and Popular Content</h1>
+
+<p><a href='Suggestions App.html'><span id="nextlink">Suggestions App</span></a>
+<a href='Feed Reader App.html'><span id="prevlink">Feed Reader App</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Featured &amp; Popular page on Eureka allows for users to view a high level summary of content from across Eureka, including feature groups and people, popular groups, people and links, and suggested groups and people to follow.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to access the Featured &amp; Popular page from the global nav</li>
+<li>The knowledge worker must be able to see the top 10 most viewed groups and people as shown and calcuated by the 30 day daily average of stream views.</li>
+<li>The knowledge worker must be able to see the top 10 most active groups and people as shown and calculated by the 30 day daily average of number of messages.</li>
+<li>The knowledge worker must be able to see the top 10 suggested groups and people as shown and calculated by the intersection of the knowledge worker&#8217;s following and the stream&#8217;s following. Only unfollowed streams will be suggested.</li>
+<li>The knowledge worker must be able to see the top 10 links as shown and calculated by a weighted average of shares, comments and likes the link has received</li>
+<li>The knowledge worker must be able to see all the featured groups and people, their avatars and their description</li>
+<li>The knowledge worker must be able to follow any stream listed on Featured &amp; Popular page</li>
+<li>The knowledge worker must be able to search from the Featured &amp; Popular page for any stream by keyword.</li>
+<li>The knowledge worker must be able to browse all streams filtering by groups or people and sorting by recently added or follower count.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="featuredpopularpage">Featured &amp; Popular Page</h3>
+
+<p><img id="" src="images/featuredPopular.png" alt="" title="" /></p>
+
+<ol>
+<li>The list of featured streams, both groups and people, in the order of when they were featured, with the most recent first</li>
+<li>Pager controls which set of 3 featured streams the user sees. When clicked, the streams should slide over until there&#8217;s the next or previous 3 streams (depending on which button is hit). If there are no more streams in any given direction, that direction&#8217;s button should be disabled.</li>
+<li>The follow button shows up only if the user hasn&#8217;t followed the group/person and allows them to follow it from here. When clicked the button disappears and a notifcation appears saying &#8220;You are now following [Stream Name]&#8221;</li>
+<li>Search box functions exactly the same as the box on the top of the page</li>
+<li>The browse button opens the browse all streams modal (see below).</li>
+<li>Suggested streams, with the ability to follow. When the user has followed the stream the button should disappear, and the same notification should show up as detailed in UX condition 3.</li>
+<li>The top ten most viewed streams, sorted by views. </li>
+<li>The top ten most active streams, sorted by messages</li>
+<li>The top ten links in the system. When clicked, they should take the user to the link itself.</li>
+<li>The follow button only appears on hover if the stream is not already being followed. When clicked the follow button should disappear, and the same notification should show up as detailed in UX condition 3.</li>
+</ol>
+
+<h3 id="browseallstreamsmodal">Browse All Streams Modal</h3>
+
+<p><img id="" src="images/featuredPopular_browseAll.png" alt="" title="" /></p>
+
+<ol>
+<li>The browe streams modal allows the user to filter between employees and groups (default is Groups)</li>
+<li>The user is also able to sort by recently added (the date added to the sytem) or followers (total number of followers)</li>
+<li>The user is able to see 10 at a time and page through the list.</li>
+</ol>
+
+<h3 id="emptystate">Empty State</h3>
+
+<p><img id="" src="images/featuredPopular_emptyState.png" alt="" title="" /></p>
+
+<ol>
+<li>Above are the empty states for each section of this page. </li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Navigate to the Featured &amp; Popular page from the global nav</strong>
+<ul><li>Verify the Featured &amp; Popular page is accessible from the global nav</li></ul></li>
+<li><strong>Action: View featured streams</strong>
+<ul><li>Verify all featured streams are visible</li>
+<li>Verify the streams are viewable 3 at a time and pageable</li>
+<li>Verify the back button is disabled on the first page</li>
+<li>Verify the forward button is disabled on the last page</li></ul></li>
+<li><strong>Action: Search all streams</strong>
+<ul><li>Verify the search box works exactly the same as the search box in the global nav </li></ul></li>
+<li><strong>Action: Browse all streams</strong>
+<ul><li>Verify the browse all streams button opens the browse all streams modal</li>
+<li>Verify streams can be filtered by groups or employees</li>
+<li>Verify streams can be sorted by recently added, popular, or alphabetical</li>
+<li>Verify streams show up 10 at a time and are pageable</li>
+<li>Verify the back button is disabled on the first page</li>
+<li>Verify the forward button is disabled on the last page</li></ul></li>
+<li><strong>Action: View suggestion streams</strong>
+<ul><li>Verify at most 10 suggested streams show up, none of which the currently logged in user is following</li></ul></li>
+<li><strong>Action: View most viewed streams</strong>
+<ul><li>Verify the 10 streams with the most views show up.</li></ul></li>
+<li><strong>Action: view most active streams</strong>
+<ul><li>Verify the 10 streams with the most daily messages show up.</li></ul></li>
+<li><strong>Action: View popular links</strong>
+<ul><li>Verify at most 10 popular links show up</li></ul></li>
+<li><strong>Action: Follow any stream on the Featured &amp; Popular page</strong>
+<ul><li>Verify any stream on the Featured &amp; Popular page not currently being followed can be followed.</li>
+<li>Verify the follow button disappears when followed</li>
+<li>Verify a notification pops up confirming the stream has been followed</li>
+<li>Verify on refresh that any followed streams disappear from the suggested list.</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#featuredpopularpage">Featured &amp; Popular Page</a></li>
+<li><a href="#browseallstreamsmodal">Browse All Streams Modal</a></li>
+<li><a href="#emptystate">Empty State</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

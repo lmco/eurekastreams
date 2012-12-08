@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>MERGE Post to a stream</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Old%20Spec.html">Old Spec</a> &gt; MERGE Post to a stream</p>
+
+<h1 class="title">MERGE Post to a stream</h1>
+
+<p><a href='DELETE View and manage an employee profile.html'><span id="nextlink">DELETE View and manage an employee profile</span></a>
+<a href='UPDATE Discover a Stream.html'><span id="prevlink">UPDATE Discover a Stream</span></a></p>
+
+<p>This page will replace the 0.9 specification for <a href="../0.9/Post%20to%20a%20stream.html">Post to a stream</a> when Eureka Stream 1.0 is released.  This product specification is a work in process.  In the 1.0 release, autocomplete of hashtags is being added.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can post messages and links to their activity steam,  another employee&#8217;s activty stream or to a group&#8217;s activity stream.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to post a message to his stream or another he has selected.</li>
+<li>The knowledge worker must be able to post a url to his stream or another he has selected.</li>
+<li>The knowledge worker must be able to select from a set of available images associated to a url.</li>
+<li>The system must validate the url.</li>
+<li>The system must auto-detect the title for an unsecure url.</li>
+<li>The system must parse an unsecure url for the description meta tag.</li>
+<li>The knowledge worker must be able to edit the title for a url.</li>
+<li>The knowledge worker must be able to delete a message or url he has posted to a stream.</li>
+<li>The group coordinator must be able to delete any message or url posted to his group stream.</li>
+<li>The organization coordinator must be able to delete any message or  url posted to a stream associated to his organization or  sub-organization.</li>
+<li>The message must be restricted to 250 characters with visual feedback when the limit has been reached.</li>
+<li>The knowledge worker must be able to immediately view the posted  message or url if it is associated to the stream he is currently  viewing.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="postingamessagetoastream">Posting a message to a stream</h3>
+
+<p><img id="" src="images/PS_F11_post_to_stream_postToStream_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Minimized state of post box, clicking in the box expands the box to a editable text area.</li>
+<li>Post button inactive.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postToStream_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Expanded post box</li>
+<li>Remaining character count. When the character count is less than 250  and greater than 0, the text color changes to red and appears as a  negative number.</li>
+<li>Post button. The post button is only active when the remaining character count is 0 or greater.</li>
+<li>Content warning message (configured in systems settings).</li>
+<li>If the user types a # symbol an autocomplete will pop up of popular hashtags.  The pop up will update as the user types to match the user&#8217;s input.</li>
+</ol>
+
+<h3 id="deletingamessageorurl">Deleting a message or URL</h3>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postToStream_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Knowledge workers can delete posts by hovering over the activity and clicking on the delete link.  After deletion, feedback is displayed at the top of the page with a close option: &#8220;Activity has been deleted&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design  pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="postingamessagetoanotherstream">Posting a message to another stream</h3>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postToAnotherStream_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>On the activity page, knowledge workers have the option to post  messages to another stream. Knowledge workers can enter the name of the  stream they want to post by clicking in the input box.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postToAnotherStream_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>As the knowledge worker types, matches to individual or group streams are displayed in a drop down menu.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postToAnotherStream_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Entering or selecting a valid stream name displays the name of the  stream. Knowledge workers can remove the stream by clicking the &#8220;x&#8221;  button which will display an empty input box.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postToAnotherStream_fig04.png" alt="" title="" /></p>
+
+<ol>
+<li>Warning message that is displayed when the knowledge worker attempts to posts to an invalid stream.</li>
+</ol>
+
+<h3 id="postalink">Post a Link</h3>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postLink_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Knowledge workers can attach a link to their post by clicking on &#8220;attach link&#8221;.</li>
+<li>Clicking attach link displays the add link form where the knowledge worker can enter the URL of the link they want to attach.</li>
+<li>The form can be closed by clicking the &#8220;x&#8221; button.</li>
+<li>Clicking the Add button submits the link. URL should be in the  following example format: http://www.example.com.  Validate that at  least one &#8216;.&#8217; exists in the url.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postLink_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Link thumbnail</li>
+<li>Link title, editable input box is populated with the auto-detected the title.</li>
+<li>Link source</li>
+<li>Link description</li>
+<li>Paging controls allowing the knowledge worker select a link thumbnail  from a set of available images associated the attached url.</li>
+<li>Check box allowing the knowledge worker to suppress the display of the link thumbnail.</li>
+<li>Clicking &#8216;x&#8217; removes the link.</li>
+</ol>
+
+<h3 id="testplans">Test plans</h3>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Post activity to a stream</strong>
+<ul><li>Verify that when a hashtag is entered into the post box, an autocomplete box displays with the list of popular hashtags within the stream that match the user input.  Verify in both the profile and activity pages.</li>
+<li>Verify the knowledge worker is immediately able to view the posted activity in the stream</li>
+<li>Verify activity can be posted with or without a url in the following types of streams:
+<ul><li>to a colleagues stream</li>
+<li>to your stream</li>
+<li>to a public group stream</li>
+<li>to a private group stream where knowledge worker is a group member</li></ul></li></ul></li>
+<li><strong>Action: Post activity containing a url to a profile stream</strong>
+<ul><li>Verify the ability to select from a set of available images associated with a url</li>
+<li>Verify the system validates the url</li>
+<li>Verify the system auto-detects the title for an unsecure url</li>
+<li>Verify the system is able to parse an unsecure url for the description meta tag</li>
+<li>Verify the title for a url can be changed</li>
+<li>Verify the ability to immediately view the url if it is associated to the stream currently being viewed</li>
+<li>Verify the ability to select from a set of available images associated to a url</li></ul></li>
+<li><strong>Action: Delete activity</strong>
+<ul><li>Verify the ability to delete an activity posted by yourself</li>
+<li>Verify the ability to delete a url posted by yourself</li></ul></li>
+<li><strong>Action: Restrict character limits for posting activity</strong>
+<ul><li>Verify commenting is limited to 250 characters</li>
+<li>Verify visual feedback is provided to notify character count</li></ul></li>
+<li><strong>Action: Immediately view the post</strong>
+<ul><li>Verify the ability to immediately view a post</li>
+<li>Verify the ability to immediately view a url</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Delete any message or url</strong>
+<ul><li>Verify a Group Coordinator is able to delete any message or url posted to an activity stream associated to his group</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Delete any message or url</strong>
+<ul><li>Verify an Organization Coordinator can delete any message or url  posted to a stream associated to his organization or sub-organization</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Execute same tests as Organization Coordinator</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#postingamessagetoastream">Posting a message to a stream</a></li>
+<li><a href="#deletingamessageorurl">Deleting a message or URL</a></li>
+<li><a href="#postingamessagetoanotherstream">Posting a message to another stream</a></li>
+<li><a href="#postalink">Post a Link</a></li>
+<li><a href="#testplans">Test plans</a></li>
+<li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

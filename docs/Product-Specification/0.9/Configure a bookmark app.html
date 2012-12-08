@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Configure a bookmark app</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Configure a bookmark app</p>
+
+<h1 class="title">Configure a bookmark app</h1>
+
+<p><a href='Configure a feed app.html'><span id="nextlink">Configure a feed app</span></a>
+<a href='Browse a gallery of apps and themes.html'><span id="prevlink">Browse a gallery of apps and themes</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can browse an a-z listing of intranet bookmarks and can add and remove personal bookmarks.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to browse an a-z listing of intranet bookmarks.</li>
+<li>The knowledge worker must be able to add and remove a personal bookmark.</li>
+<li>The knowledge worker must be able to save a bookmark from the a-z listing of intranet bookmarks.</li>
+<li>The knowledge worker must be able to perform a keyword search for bookmarks matching on title.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="emptystate">Empty State</h3>
+
+<p><img id="" src="images/PS_F20_bookmarkGadgetDefaultEmpty.png" alt=" " title="" /></p>
+
+<ol>
+<li>Allows the knowledge worker to search all bookmarks based on title keywords.</li>
+<li>Links to the canvas view displaying all bookmarks.</li>
+<li>Link to add a new bookmark.</li>
+<li>Links to canvas view displaying the IS&amp;GS A-Z listing of intranet bookmarks. This message only appears when the knowledge worker has no saved bookmarks.</li>
+</ol>
+
+<h3 id="fullstate">Full State</h3>
+
+<p><img id="" src="images/PS_F20_bookmarkGadgetDefault.png" alt=" " title="" /></p>
+
+<ol>
+<li>Hovering over the link displays a trash icon that allows the knowledge worker to delete the bookmark. When the knowledge worker clicks the icon a pop-up window appears asking the knowledge worker if they are sure they want to delete the bookmark.</li>
+</ol>
+
+<h3 id="addbookmarkform">Add Bookmark Form</h3>
+
+<p><img id="" src="images/PS_F20_bookmarkGadgetAdd.png" alt=" " title="" /></p>
+
+<ol>
+<li>Input box for the bookmark title. Title field supports up to 50 characters.</li>
+<li>Input box for the bookmark URL. URL must be in the following example format: http://www.example.com.  Validate that at least one &#8216;.&#8217; exists in the url.</li>
+<li>Submits the form and closes the form. A feedback message is displayed at the top of the page &#8220;New bookmark added&#8221;.</li>
+<li>Discards the information entered in the form and closes the form.</li>
+</ol>
+
+<h3 id="searchresults">Search Results</h3>
+
+<p><img id="" src="images/PS_F20_bookmarkGadgetSearch.png" alt=" " title="" /></p>
+
+<ol>
+<li>Clicking the &#8220;x&#8221; closes the search results and returns the app to the default view.</li>
+<li>Hovering over the search results displays a link allowing the knowledge worker to save the item to their bookmarks list.</li>
+</ol>
+
+<h3 id="canvasview">Canvas View</h3>
+
+<p><img id="" src="images/PS_F20_bookmarkGadgetCanvas.png" alt=" " title="" /></p>
+
+<ol>
+<li>Clicking the letters display the bookmarks that begin with the selected letter.</li>
+<li>Hovering over a link displays a link allowing the knowledge worker to save the item to their bookmarks list. After the link is saved the text of the link changes to &#8220;added&#8221;. A feedback message is also displayed at the top of the page: &#8220;Link saved to bookmarks&#8221; .</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Browse an a-z listing of intranet bookmarks</strong>
+<ul><li>Verify the a-z listing of intranet bookmarks can be browsed</li></ul></li>
+<li><strong>Action: Add and remove a personal bookmark</strong>
+<ul><li>Verify a personal bookmark can be added</li>
+<li>Verify a personal bookmark can be removed</li></ul></li>
+<li><strong>Action: Save a bookmark from the a-z listing of intranet bookmarks</strong>
+<ul><li>Verify a bookmark can be saved to the knowledge workers personal bookmark list</li></ul></li>
+<li><strong>Action: Perform a keyword search for bookmarks matching on title</strong>
+<ul><li>Verify bookmarks are returned in the search results based on the title keyword entered</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#emptystate">Empty State</a></li>
+<li><a href="#fullstate">Full State</a></li>
+<li><a href="#addbookmarkform">Add Bookmark Form</a></li>
+<li><a href="#searchresults">Search Results</a></li>
+<li><a href="#canvasview">Canvas View</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

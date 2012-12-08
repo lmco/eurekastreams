@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>User interface framework</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; <a href="Software%20architecture.html">Software architecture</a> &gt; User interface framework</p>
+
+<h1 class="title">User interface framework</h1>
+
+<p><a href='Action framework.html'><span id="nextlink">Action framework</span></a>
+<a href='OpenSocial framework.html'><span id="prevlink">OpenSocial framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The design of the front end is simple, modular and loosely coupled. There are two layers that exist in the front end, connected by the <strong>Event Bus</strong>. The top layer that communicates directly with the servers are the <strong>Client Models</strong> that communicate through the <strong>Action Processor</strong>. The bottom layers are the collection of views that draw the screen. Each view requests data directly from a Client Model, and is notified via the Event Bus when the data has been returned. With that data the view then renders the screen through the use of GWT widgets. All views extend an already existing GWT widget. There is a master view that is the top level view for all others. It contains a content view, as well as views for the header and footer. The content view is changed when the URL is updated via <strong>History Management</strong>, also through the <strong>Event Bus</strong>. This design follows the MVP pattern, with the Event Bus representing a common and generic Controller.</p>
+
+<p><img id="" src="images/UI_UI-Framework-Class-Diagram.jpg" alt="" title="" /></p>
+
+<p><img id="" src="images/UI_UI-Framework-Sequence-Diagram.jpg" alt="" title="" /></p>
+
+<h2 id="eventbus">Event Bus</h2>
+
+<p>The event bus is the primary means of communication on the front end. It follows the publisher/subscriber pattern. It allows for the views and models on the client side to communicate, as well as communication between views, without tightly coupling them.</p>
+
+<h3 id="design">Design</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Manages the event&#8217;s subscribed to by observers, and the notifications going out to those observers by clients.</li>
+<li>Allows for the ability to buffer off observers and reset to that buffered off point. Useful for initially loading the event bus with observers and resetting it to that point on page changes.</li>
+</ul>
+
+<p>The event bus has two main methods on it, one for a subscriber to listen to an event, and one for a publisher to notify observers an event has been fired. These two methods tie together what would be tightly coupled controls into a loosely coupled structure. It allows for event driven design where a control can listen to an event without caring who issued it.</p>
+
+<h3 id="observerinterface">Observer Interface</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Contains the update method that gets fired when an observer is notified.</li>
+</ul>
+
+<p>The observer interface is generic with generic <t>, which represents the event class type. The observer interface has one method, public void update (T event).</p>
+
+<h3 id="events">Events</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Contain necessary data for the event (optional)</li>
+</ul>
+
+<p>Events are standard Java classes that do not need to implement any interface or have any member variables. They are keyed in the event bus by their class name. Member variables are added to event classes as needed, if data is necessary to transmit through the event.</p>
+
+<h2 id="actionprocessor">Action Processor</h2>
+
+<p>The Action Processor is the client side component responsible for communicating directly with the Action Framework on the server.</p>
+
+<h3 id="actionprocessor">ActionProcessor</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Make requests to the GWT RPC servlet</li>
+<li>Allow clients to buffer requests to save on HTTP requests</li>
+<li>Store async callbacks per request and fire their onFailure or onSuccess depending on the response from the server.</li>
+</ul>
+
+<p>The ActionProcess has a method to make a server request that takes in an ActionRequest object and a callback. If buffering is on, it queues the request up until buffering is turned off, or it is told to fire the buffered requests. On callback from the server, if the response is of type Throwable (and thus, an Error) the callbacks onFailure is called. Otherwise, its onSuccess is called. An array of requests/responses is sent between the client and server to accommodate buffered requests.</p>
+
+<h3 id="actionrequest">ActionRequest</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Store action key to execute on server</li>
+<li>Store request DTO</li>
+<li>Store user&#8217;s session ID to prevent cross site forgery requests.</li>
+</ul>
+
+<p>The ActionRequest object is a collection of the action key, request DTO, and session ID, which gets sent to the server to define what to execute and what to execute it with.</p>
+
+<h3 id="asynccallback">AsyncCallback</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Has onSuccess method called during success of server execution.</li>
+<li>Has onFailure method called when server returns a Throwable.</li>
+</ul>
+
+<p>AsyncCallbacks are generally made as anonymous inner classes implementing the two methods required: onSuccess and onFailure. By design, only the BaseModel communicates with the Action Processor, and thus, should be the only one creating an AsyncCallback. All views respond to data through the Event Bus.</p>
+
+<h2 id="historymanagement">History Management</h2>
+
+<p>History management in Eureka is done 100% client side. All valid URLs redirect the user to a single index.html page. Once loaded, all subsequent pages are loaded asynchronously, with history being stored in the URLs hash. (e.g. http://domain.com#hash). The hash is broken into 3 components: the page, the view(s), and the parameter(s).</p>
+
+<h3 id="exampleurl">Example Url</h3>
+
+<p><strong>eureka.com/#people/romano?tab=About</strong></p>
+
+<ul>
+<li>page: people</li>
+<li>view: romano</li>
+<li>parameters: tab | About</li>
+</ul>
+
+<p>There can be more than one view, for example:</p>
+
+<p><strong>eureka.com/#people/romano/edit</strong></p>
+
+<ul>
+<li>page: people</li>
+<li>view<a href="#">0</a>: romano</li>
+<li>view<a href="#">1</a>: edit</li>
+</ul>
+
+<h3 id="historyhandler">HistoryHandler</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Fire off event(s) when history token changes</li>
+<li>Listen for history changing events and change the token</li>
+<li>Provide a url generation method for static links</li>
+</ul>
+
+<p>There is only one place in the system that listens for changes to the history token (hash) and that is the HistoryHandler class. This class is responsible for breaking apart the hash into the correct components and calling the events associated with them. It is also responsible for consuming an event that says to update the history, generating the token, and updating the hash. Lastly, this token generation method is statically accessible so that hyperlink controls that demand a static run-time known URL, may be generated.</p>
+
+<h3 id="updatehistoryevent">UpdateHistoryEvent</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Contains the new page, view(s), and parameter(s) to put in the history token.</li>
+</ul>
+
+<p>Is fired off by any client wishing to change the history token. For example, if when the user clicks on a tab, it is desired that a refresh brings them back to this tab, they may add the parameter to the history token by issuing an UpdateHistoryEvent on the event bus.</p>
+
+<h3 id="switchedhistoryviewevent">SwitchedHistoryViewEvent</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Contains the new page and view(s) that have just been changed in the history token</li>
+</ul>
+
+<p>This event is only ever fired off by the history handler and only when either the page or view(s) have changed. If only parameters have changed, this is not fired.</p>
+
+<h3 id="updatedhistoryparametersevent">UpdatedHistoryParametersEvent</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Contains the new parameters in the history token.</li>
+</ul>
+
+<p>This event is only ever fired off by the history handler and only when the parameters have been updated. It does not contain the page and/or view(s).</p>
+
+<h3 id="pagefactory">PageFactory</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Creates a GWT widget representing the page content given a current page</li>
+</ul>
+
+<p>This factory takes in a page and feeds out a GWT widget reflecting the contents of that page.</p>
+
+<h3 id="mastercomposite">MasterComposite</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Draws header and footer</li>
+<li>Switches inner content based on current page and PageFactory.</li>
+</ul>
+
+<p>The master composite listens for SwitchedHistoryViewEvent&#8217;s and uses the PageFactory to get the page contents for the current page and view(s). It then sets the inner contents of the page to the returned widget.</p>
+
+<h2 id="clientmodels">Client Models</h2>
+
+<p>Data is stored and modified through the use of client models. A client model is responsible for all CRUD on an object and typically exists in a one to one relationship with objects in the system. Client models are also capable of caching their results to avoid subsequent http requests.</p>
+
+<h3 id="basemodel">BaseModel</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Is the only class on the client who should be talking to the server</li>
+<li>Is responsible therefore for <em>all</em> client-server interaction</li>
+<li>Caches responses client side</li>
+</ul>
+
+<p>All client models extend BaseModel. BaseModel has 4 helper methods for fetching, updating, inserting, and deleting. It also has a helper method for calling any other miscellaneous action. BaseModel&#8217;s fetch implementation takes in a boolean to determine whether or not to pull from cache if available. This cache is stored client side in Javascript and is eliminated on page refresh. Because all pages on the system are loaded asynchronously, the client cache can be very valuable.</p>
+
+<h3 id="fetchableupdateableinsertabledeleteablereorderable">Fetchable, Updateable, Insertable, Deleteable, Reorderable</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Add behavior to the client models</li>
+<li>Define the action to call for the behavior</li>
+<li>Define the callback method that fires the event on success of the transmission.</li>
+</ul>
+
+<p>These interfaces add behavior to the client models. They have two generics representing the request and response object types for each operation. Each interface has three methods, one which defines the action key to call. The other which exposes the method to users of the client model (i.e. .fetch(&#8230;), .update(&#8230;) etc). and lastly, a callback method which is called on success of the operation. In this callback method the client model should fire an event on the event bus representing that it received/updated the data at hand.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#eventbus">Event Bus</a>
+<ul><li><a href="#design">Design</a></li>
+<li><a href="#observerinterface">Observer Interface</a></li>
+<li><a href="#events">Events</a></li></ul></li>
+<li><a href="#actionprocessor">Action Processor</a>
+<ul><li><a href="#actionprocessor">ActionProcessor</a></li>
+<li><a href="#actionrequest">ActionRequest</a></li>
+<li><a href="#asynccallback">AsyncCallback</a></li></ul></li>
+<li><a href="#historymanagement">History Management</a>
+<ul><li><a href="#exampleurl">Example Url</a></li>
+<li><a href="#historyhandler">HistoryHandler</a></li>
+<li><a href="#updatehistoryevent">UpdateHistoryEvent</a></li>
+<li><a href="#switchedhistoryviewevent">SwitchedHistoryViewEvent</a></li>
+<li><a href="#updatedhistoryparametersevent">UpdatedHistoryParametersEvent</a></li>
+<li><a href="#pagefactory">PageFactory</a></li>
+<li><a href="#mastercomposite">MasterComposite</a></li></ul></li>
+<li><a href="#clientmodels">Client Models</a>
+<ul><li><a href="#basemodel">BaseModel</a></li>
+<li><a href="#fetchableupdateableinsertabledeleteablereorderable">Fetchable, Updateable, Insertable, Deleteable, Reorderable</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

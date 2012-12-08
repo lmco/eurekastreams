@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Architecture tradeoff analysis</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; Architecture tradeoff analysis</p>
+
+<h1 class="title">Architecture tradeoff analysis</h1>
+
+<p><a href='Software architecture.html'><span id="nextlink">Software architecture</span></a>
+<a href='Security architecture.html'><span id="prevlink">Security architecture</span></a></p>
+
+<h2 id="architecturetradeoffanalysis">Architecture Tradeoff Analysis</h2>
+
+<h3 id="browseruserinterface">Browser / User Interface</h3>
+
+<p>When architecting the solution for the user interface, many principals were taken into consideration.  First, to leverage open standards, the focus was placed on creating a Web interface made up of HTML, CSS, JavaScript, and images as opposed to close standard products like Adobe Air, Adobe Flash, and Java Applets.  In order to achieve a rich interactive experience, the technique of AJAX (asynchronous JavaScript and XML) is needed.  Given the interpreted nature of JavaScript, testing code is difficult.</p>
+
+<p>The development framework selected is the <a href="http://code.google.com/webtoolkit/">Google Web Toolkit (GWT)</a>.  This framework allows the developer to code in the formal Java language providing a robust testing framework.  The code created in Java is then compiled down into HTML and JavaScript for deployment.</p>
+
+<h3 id="webserver">Web Server</h3>
+
+<p>The Web server selected is Apache HTTPd due to it being the de facto standard.  HTTPd is used on 54.55% of all Web servers <a href="http://news.netcraft.com/"></a>.  Apache HTTPd is a free and open source product that is easily packaged and deployed.</p>
+
+<h3 id="applicationserverandtaskqueueserver">Application Server and Task Queue Server</h3>
+
+<p>The application server implementation is <a href="http://tomcat.apache.org/">Apache Tomcat</a> with the task queue server implementation as <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.  These two implementations are separate projects that get configured and deployed independently.</p>
+
+<p>Apache Tomcat is a Java Servlet and JSP container implemented the J2EE specification specific each technology.  Apache Active MQ is an implementation of the <a href="http://java.sun.com/products/jms/docs.html">Java Messaging Service (JMS) specification</a> providing both topic and queues.</p>
+
+<p>Alternatives to this approach include full Java Enterprise Edition (J2EE) implementations like <a href="http://www.jboss.org/">JBoss</a> and <a href="http://www.oracle.com/appserver/weblogic/weblogic-suite.html">Oracle WebLogic</a>.  The full J2EE deployments would complicate configuration and potentially require leaving active components that are not used so to simplify deployment allowing for a more focused view on tuning and performance.</p>
+
+<p>Both Tomcat and Active MQ are free and open source projects that implement the open standards associated with the technology.</p>
+
+<h3 id="taskexecutor">Task Executor</h3>
+
+<p>The task executor implements a JMS client message drive bean (MDB), which is also an open standard within the Java domain.</p>
+
+<p>This product is free and open source.  The task queue server is in place to enable longer running or low priority operations and tasks to be executed</p>
+
+<h3 id="cache">Cache</h3>
+
+<p>The solution for the cache node is <a href="http://memcached.org/" title="memcached">memcached</a>.  The system is designed with a cache in support of the rich interactive experience for the user.  With the cache node, data can be available outside of the persistent relational database in a form readily delivered to the client enabling a quick response time from client request to server response.</p>
+
+<p><a href="http://memcached.org/" title="memcached">Memcached</a> is a free and open source product based on a simple and open protocol of &#8220;gets&#8221; and &#8220;sets&#8221;.  Many large sites and industry IT leaders leverage this technology including: <a href="http://en.wikipedia.org/wiki/Memcached">Google, Facebook, Twitter, Wikipedia, Amazon.com</a>, to name a few.</p>
+
+<h3 id="databasecomponent">Database component</h3>
+
+<p>The data component uses the Java Persistence API (JPA) with <a href="http://www.hibernate.org/">Hibernate</a> as the implementing framework.  While the guiding principal to use open standards directs us to only use JPA, there are some instances where Hibernate-specific queries were used in cases where optimizations were needed.  This is where the principal to support a rich interactive experience overrides the open standards principal.</p>
+
+<p>The database server selected is <a href="http://www.postgresql.org/">PostgreSQL</a>.  This relational database management system is fully interoperable with the data component.  While PostgreSQL is not as popular of a database platform, there are several major companies that use this RDMS in some way.  One notable company is <a href="http://en.wikipedia.org/wiki/Skype">Skype</a> with 521 million users as of the third quarter of 2009.
+Another reason the PostgreSQL database is selected is the licensing for the open source project.  The closets competitor in the database space to PostgreSQL is MySQL.  In evaluating the two database products, the license for PostgreSQL is the best fit for Eureka Streams given the initiative to open source part of the Eureka Streams project.  <a href="http://www.wikivs.com/wiki/MySQL_vs_PostgreSQL#Licensing">PostgresSQL versus MySQL, Licensing</a></p>
+
+<h3 id="searchcomponent">Search component</h3>
+
+<p>The implementation for the search component is <a href="http://lucene.apache.org/java/docs/">Apache Lucene</a>.  This embedded text search engine is known for its rich feature-set and excellent speed.  Many large companies use Apache Lucene for their search implementations including: Disney, AOL, IBM, Wikipedia, and CNet Reviews.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#architecturetradeoffanalysis">Architecture Tradeoff Analysis</a>
+<ul><li><a href="#browseruserinterface">Browser / User Interface</a></li>
+<li><a href="#webserver">Web Server</a></li>
+<li><a href="#applicationserverandtaskqueueserver">Application Server and Task Queue Server</a></li>
+<li><a href="#taskexecutor">Task Executor</a></li>
+<li><a href="#cache">Cache</a></li>
+<li><a href="#databasecomponent">Database component</a></li>
+<li><a href="#searchcomponent">Search component</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

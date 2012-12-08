@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Task framework</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; <a href="Software%20architecture.html">Software architecture</a> &gt; Task framework</p>
+
+<h1 class="title">Task framework</h1>
+
+<p><a href='OpenSocial framework.html'><span id="nextlink">OpenSocial framework</span></a>
+<a href='Persistence framework.html'><span id="prevlink">Persistence framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Task Framework contains the mechanisms that allow an Action to submit a request for another Action to be executed in a separate thread. This allows Eureka to offload heavy load processes to a separate server where the load can be distributed and removed from the web servers that are responding to user requests.</p>
+
+<p><img id="" src="images/TF_1_Task-Framework-Class-Diagram.jpg" alt="" title="" /></p>
+
+<h2 id="inlinehandlingoftaskrequest">Inline Handling of Task Request</h2>
+
+<p>This scenario describes a TaskHandlerAction that is configured to use the InlineTaskHandler instance. This means that when the TaskHandlerActionController tells the TaskHandler to handle the passed in requests, the InlineTaskHandler executes the action based on the passed in request immediately.</p>
+
+<p><img id="" src="images/TF_1_Inline-Execution-of-a-Task-Request-Component-Diagram.jpg" alt="" title="" /></p>
+
+<h2 id="queuehandlingoftaskrequest">Queue Handling of Task Request</h2>
+
+<p>This scenario describes a TaskHandlerAction that is configured to use the QueueTaskHandler instance. This means that when the TaskHandlerActionController tells the TaskHandler to handle the passed in requests, the QueueTaskHandler places a JMS message onto the queue to be processed later by the Task Queue Processor.</p>
+
+<p><img id="" src="images/TF_1_Queue-Submission-of-a-Task-Request-Component-Diagram.jpg" alt="" title="" /></p>
+
+<h2 id="taskqueueprocessorexecution">Task Queue Processor Execution</h2>
+
+<p>The Task Queue Processor is a separate daemon that runs on the job server. The Task Queue Processor retrieves messages (TaskRequests) from the queue and executes the AsyncActions that they represent.</p>
+
+<p><img id="" src="images/TF_1_Task-Queue-Processor-Execution-Component-Diagram.jpg" alt="" title="" /></p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inlinehandlingoftaskrequest">Inline Handling of Task Request</a></li>
+<li><a href="#queuehandlingoftaskrequest">Queue Handling of Task Request</a></li>
+<li><a href="#taskqueueprocessorexecution">Task Queue Processor Execution</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

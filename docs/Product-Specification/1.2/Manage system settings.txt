@@ -1,0 +1,414 @@
+<<<<<<< .merge_file_7qZ0kP
+## Overview
+
+The Eureka Administrator can manage system settings.  This 
+includes adding new users, 
+setting the content expiration length, and configuring a system label for the header/footers, a terms of service message, and stream plugin warning message.
+
+## Conditions of Satisfaction
+
+### System
+
+01. The Eureka Administrator must be able to add colleagues as Eureka Administrators.
+02. The Eureka Administrator must be able to control system access via a list of LDAP 
+groups or attributes.
+03. The Eureka Administrator must be able to optionally associate a default tab or 
+theme from the gallery with any LDAP group or attribute.
+04. The Eureka Administrator must have the option to send email invitations to 
+Knowledge Workers when their account is created.
+05. The system must periodically synchronize the access list.
+06. The Eureka Administrator must be able to synchronize the access list on-demand.
+07. The Eureka Administrator must have the option to configure a notification text 
+(limited to 250 characters, target link and whether of not it is high priority which is 
+sent to all users.
+08. The Eureka Administrator must have the option to configure a system label displayed 
+in the header and footer.
+09. The Eureka Administrator must have the option to configure a content warning 
+message displayed to a Knowledge Worker when posting an activity.
+10. The Eureka Administrator must have the option to configure a stream plugin warning 
+message displayed to a Knowledge Worker when configuring a stream plugin for a stream.
+11. The Eureka Administrator must have the option to configure a terms of service 
+message displayed at a configurable interval that must be confirmed by the Knowledge Worker.
+12. The Eureka Administrator must be able to set the content expiration length between 
+1 and 365 days.
+13. The Eureka Administrator must be able to configure the support stream.
+14. The Eureka Administrator must have the option to require group creation approval.
+
+
+### Plugins
+
+01. The Eureka Administrator must be able to upload a plugin that adheres to the Google 
+gadget specification and eureka stream plugin feature.
+02. The Eureka Administrator must be able to publish and categorize a stream plugin 
+referenced by a URL.
+03. The Eureka Administrator must be able to remove a published stream plugin.
+
+
+### Pending Items
+
+01. The Eureka Administrator must be able to approve or deny pending group 
+creation requests.
+02. The Eureka Administrator must be able to delete or allow an activity that has been flagged 
+as inappropriate.
+
+
+## User Experience
+
+### Systems Settings
+
+![](images/PS_F19_systemSettings.png)
+
+1. Eureka Administrators can be added by clicking on Add Administrator. An employee lookup 
+modal pops up allowing the new Administrator to be picked.
+2. Clicking delete removes the Administrator.
+3. Admins can select "Group Name" to enter an LDAP group name. The Knowledge Worker can select "Attribute" the message under the input box changes to: "Specify an LDAP attribute (in the format: attribute=value)".
+4. Admins can optionally select a default tab from the gallery to appear on everyone within the access list's start page.
+5. Admins can optionally select a default tab from the gallery to appear on everyone within the access list's start page.
+6. Clicking the add button adds to the access list below.  When a user enters a group name or attribute and clicks add a processing animation appear while the system validates the group or attribute. If the group or attribute is not found an error message is shown at the top of the page.
+7. Hovering over the group or attribute displays a Delete link allowing the Knowledge Worker 
+to delete the item. When the delete icon is clicked, a pop-up window is displayed asking the user if they are sure that they want to remove the item. If they click yes the item is removed and the other items move up.
+8. The Knowledge Worker has the option to send welcome emails to users when their accounts 
+are created.
+9. Refreshes the system with the current access lists. Feedback displays at the top of the page with a close option: "Access List Refresh is now processing".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.   Access list refreshes and new users in the group or attribute are added to the database.
+10. Allows the admins to specify the notification to send to all users, including whether or not it's high priority, the message and the target link. Links must start with http:// or https://
+11. Site Labeling is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.
+12. Content Warning is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.
+13.  Plugin Configuration Warning is disabled by default.  When enabled the text box is required and the Plugin Configuration Warning rich text editor supports an infinite amount of characters.
+14. Terms of Service is disabled by default.  When enabled the text box and prompt interval are required.  Terms of Service rich text editor supports an infinite amount of characters.   Days field supports up to 5 numeric characters.
+15. The Eureka Administrator can enter the name of the group stream they want to specify by 
+clicking in the 
+input box. As they type matches to individual or group streams are displayed in a drop down 
+menu. Entering or selecting a valid stream name removes the input box and displays the name 
+of the stream. The Eureka Administrator can remove the stream by clicking the "x" button 
+next to the stream 
+name which will display an empty input box. If the Eureka Administrator enters an invalid 
+stream name and tries 
+to save the changes to the page a warning message will be displayed saying "The stream you entered could not be found".  Field supports up to 50 characters (same length as group name in [View and manage a group profile][]
+16. Activity Expiration is disabled by default.  When enabled the text box is required, supports a number between 1 and 365.
+17. Saves the edits made to the form and returns the Knowledge Worker to the start page.  Feedback displays at the top of the page with a close option: "Settings saved".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+18. Discards the changes made to the form and returns the Eureka Administrator to the start 
+page.
+
+### Plugin System Settings
+#### View Existing Plugins
+
+![](images/PS_F19_systemSettings_Plugins_fig01.png)
+
+1. Allows the Eureka Administrator to filter by Category.
+2. Hovering over the plugin icon or text displays the Edit and Delete links. Clicking edit displays the plugin configuration form titled Submit a Plugin.
+3. Hovering over the plugin icon or text displays the Edit and Delete links. Clicking the delete icon displays a pop-up window asking the Knowledge Worker: "Are you sure you want to delete this plugin" if the Knowledge Worker clicks "yes" the plugin is deleted and a warning message is displayed: "Stream plugin [insert name] has been deleted". Refer to the [Action Feedback UI design pattern][Action feedback] for implementation specifics.
+4. Allows the Eureka Administrator to Add a new plugin
+
+#### Submit a Plugin
+
+![](images/PS_F19_systemSettings_Plugins_fig02.png)
+
+1. Select a Category.
+2. Enter Plugin XML.
+3. Submits new plugin, returns user to the Plugin page and feedback displays at top of page with a close option: "Stream Plugin has been successfully added" Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+4. Cancels plugin submission and returns user to the Plugin page.
+
+
+### Pending Tab
+
+![](images/PS_F19_systemSettings_Pending.png)
+
+1. Flagged activities show up in this section. Clicking "Allow" removes the activity from the pending status and keeps the activity in the system.
+2. Clicking "Delete" deletes the activity from the system
+3. Pending groups show up in this section. Clicking "approve" approves the group.
+4. Clicking "Deny" denies the group.
+
+## Test Plans
+
+### System
+
+1. **Verify the Eureka Administrator can add colleagues as Eureka Administrators**
+	* Verify a Eureka Administrator can be selected and added
+	* Verify a Eureka Administrator can be deleted
+	* Verify an error message if no Eureka Administrators are selected
+2. **Verify the Eureka Administrator can control system access via a list of ldap groups or attributes**
+	* Verify a Eureka Administrator can add a Group Name
+	* Verify a Eureka Administrator can delete a Group Name
+	* Verify an error message is displayed if a blank or invalid Group Name is entered
+	* Verify a Eureka Administrator can add an Attribute
+	* Verify a Eureka Administrator can delete an Attribute
+	* Verify an error message is displayed if a blank or invalid Attribute is entered
+3. **Verify the Eureka Administrator can specify a default tab or theme from the gallery and associate it with any lDAP Group or Attribute**
+	* Verify the ability to choose a tab and associate it with an LDAP Group
+	* Verify the ability to choose a theme and associate it with an LDAP Group
+	* Verify the ability to choose both a tab and theme and associate it with an LDAP Group
+	* Verify the ability to choose a tab and associate it with an Attribute
+	* Verify the ability to choose a theme and associate it with an Attribute
+	* Verify the ability to choose both a tab and a theme and associate it with an Attribute
+	* Verify the ability to not choose a tab and/or theme associate with an LDAP Group or an Attribute
+4. **Verify the Eureka Administrator has the option to send email invitations to Knowledge Workers when their account is created**
+	* Verify the ability to send email invitation to Knowledge Workers when their account is create
+	* Verify the ability to not send email invitations to Knowledge Workers when their account is create
+5. **Verify the system periodically synchronize the access list**
+	* Verify the access list is synchronized
+6. **Verify the Eureka Administrator has the ability to synchronize the access list on-demand**
+	* Verify the access list is synchronized
+7. **Verify the Eureka Administrator can configure notification text**
+        * Verify the ability to send a notification to all users, without being marked as high priority
+        * Verify the ability to send a high priority notification to all users
+        * Verify that notifications are limited to 250 characters.
+	* Verify that feedback is provided regarding the numbers of characters in the notification
+	* Verify a 250 character limit for notifications
+	* Verify the ability to include a notification destination
+8. **Verify the Eureka Administrator can configure a system label displayed in the header and footer**
+	* Verify the ability to enable or disable the system label displayed in the header and footer
+	* Verify when the option is enabled, a text input box displays, text is required and error handling is present if text is empty and the user attempts to submit
+	* Verify when the option is enabled and text is submitted, the text is displayed in the header and footer
+	* Verify when the option is disabled, the text box is hidden
+	* Verify when the option is disabled, there is no text displayed in the header and footer when submitted.
+9. **Verify the Eureka Administrator can configure a content warning message displayed to a Knowledge Worker when posting an activity**
+	* Verify the ability to enable or disable displaying a content warning message when posting activity
+	* Verify when the content warning message is enabled, a text input box displays, text is required and error handling is present if text is empty and the user attempts to submit
+	* Verify when the option is enabled and the text is submitted, the text is displayed below the activity posting text box and commenting text box
+	* Verify when the option is disabled, the text box is hidden
+	* Verify when the option is disabled, there is no text displayed below the activity posting text box 
+	* Verify when the option is disabled, there is no text displayed below the commenting text box
+10. **Verify the Eureka Administrator can configure a plugin warning message displayed to a Knowledge Worker when adding a plugin**
+	 * Verify the ability to enable or disable the plugin warning
+	 * Verify that when the plugin warning is enabled a text input box displays, text is required and error handling is present if text is empty and the user attempts to submit
+	 * Verify when the option is enabled and the text is submitted, the text is displayed in the Terms of Use for each plugin
+	 * Verify when the option is disabled, the text box is hidden
+	 * Verify when the option is disabled, there is no text displayed in the Terms of Use for each plugin
+11. **Verify the Eureka Administrator can configure a terms of service message displayed at a configurable interval that must be confirmed by the knowledge worker**
+	 * Verify the ability to enable or disable the terms of service
+	 * Verify that when the terms of service is enabled:
+	 	* A text input box displays
+		 * There is an option to choose to display the terms of service at a specific interval
+	 * Verify when the option is enabled and the text is submitted, the text is displayed when launching the site at the intervals selected
+	 * Verify when the option is disabled, the text box is hidden
+	 * Verify when the option is disabled, there is no text displayed in the terms of service when launching the site at the intervals selected
+12. **Verify the Eureka Administrator can set the content expiration length between 1 and 365 days**
+	 * Verify the ability to enable or disable the activity expiration
+	 * Verify that when the activity expiration is enabled a text input box displays and represents the number of days and a number is required
+	 * Verify that when the activity expiration is enabled error handling is present if text is empty or has a non-numeric value and the user attempts to submit
+	 * Verify that the value must be between 1 and 365
+	 * Verify when the option is enabled and the number is saved
+	 * Verify when the option is disabled, the text box is hidden
+	 * Verify when the option is disabled, data is not deleted
+13. **Verify the Eureka Administrator can configure the Support Stream**
+	 * Verify a support group can be selected and that the support group displays
+14. **Verify the Eureka Administrator can require group creation approval**
+	 * Verify the ability to require group creation approval
+	 * Verify a Knowledge Worker cannot create a group without approval
+	 * Verify the ability to not require group creation approval
+	 * Verify a Knowledge Worker is able to create a group without approval
+
+
+### Plugins
+
+1. **Verify the Eureka Administrator can configure a stream plugin adheres to the Google app specification and eureka stream plug in feature**
+	* Verify a stream plug in that is uploaded must adhere to the Eureka stream plug in feature and the Google app specification
+	* Verify that if a stream plug in does not adhere, there is error handling
+	* Verify there is a link which will direct the user to the developers guide
+2. **Verify the Eureka Administrator can publish and categorize a stream plug in referenced by a url**
+	* Verify there is a link from the gallery directing the user to a form to upload a stream plug in
+	* Verify error handling is present when required fields are not populated
+	* Verify a category can be selected and associated with the stream plug in
+3. **Verify the Eureka Administrator can remove a published stream plugin**
+	* Verify a plug in can be removed
+	* Verify there is removal confirmation
+	* Verify the plug in is removed from the gallery, but and is stripped from start pages of users with the stream plug in applied
+
+### Pending Items
+
+1. **Verify the Eureka Administrator can approve or deny pending group creation requests**
+	* Verify that when group creation approval is enabled, all requests for group creates are displayed on the Admin Tab, with the Group Request filter set 
+	* Verify there is an accurate count of pending group requests displayed next to the Group Requests filter option 
+	* Verify that a group can be approved 
+	* Verify that when a group is approved, the count of outstanding group creation requests is decreased by one
+	* Verify that the approved group appears in the directory 
+	* Verify that a group creation request can be denied 
+	* Verify that when a group is denied, the count of outstanding group creation requests is decreased by one 
+	* Verify the denied group does not appear in the directory
+2. **Verify the Eureka Administrator can restore an activity that has been flagged as inappropriate**
+	* Verify an activity which has been flagged as inappropriate is displayed on the Admin tab of the organization 
+	* Verify the number beside the sort option for Flagged activities accurately reflects the number of activities which are flagged 
+	* Verify the ability to restore the flagged as inappropriate activity 
+	* Verify the restored activity is returned to the stream in the appropriate place based on time 
+	* Verify the number of flagged activities is decreased by one after a flagged activity has been restored 
+	* Verify a flagged activity can be deleted from the admin page 
+	* Verify the number of flagged activities is decreased by one after a flagged activity has been deleted 
+	* Verify the deleted activity does not return to the stream
+
+=======
+##Overview
+Root Organization Coordinators can manage system settings.  This includes adding new users, setting the content expiration length, and configuring a system label for the header/footers, a terms of service message, and stream plugin warning message.
+##Conditions of satisfaction
+1. The root organization coordinator must be able to control system access via a list of ldap groups or attributes.
+2. The root organization coordinator must have the option to send email invitations to knowledge workers when their account is created.
+3. The system must periodically synchronize the access list.
+4. The root organization coordinator must be able to synchronize the access list on-demand.
+5. The root organization coordinator must have the option to configure a system label displayed in the header and footer.
+6. The root organization coordinator must have the option to configure a content warning message displayed to a knowledge worker when posting an activity.
+7. The root organization coordinator must have the option to configure a stream plugin warning message displayed to a knowledge worker when configuring a stream plugin for a stream.
+8. The root organization coordinator must have the option to configure a terms of service message displayed at a configurable interval that must be confirmed by the knowledge worker.
+9. The root organization coordinator must be able to set the content expiration length between 1 and 360 days.
+10. The system must periodically remove activities older than the content expiration length with the exception of those saved by a knowledge worker.
+11. The root organization coordinator must be able to configure the support group.
+12. The root organization coordinator must be able to configure the help desk contact information.
+13. The knowledge worker must be able to lookup contact information for product support.
+14. The root organization coordinator must be able to publish and categorize a stream plugin referenced by a url.
+15. The system must verify that the stream plugin adheres to the Google gadget specification and eureka stream plugin feature.
+16. The root organization coordinator must be able to modify the category and url for a published stream plugin.
+17. The root organization coordinator must be able to remove a published stream plugin.
+
+##User experience
+### Systems Settings
+
+![](images/PS_F19_systemSettings.png)
+
+1. Knowledge workers can select "Group Name" to enter an LDAP group name. The knowledge worker can select "Attribute" the message under the input box changes to: "Specify an LDAP attribute (in the format: attribute=value)".
+2. Hovering over the group or attribute displays a Delete link allowing the knowledge worker to delete the item. When the delete icon is clicked, a pop-up window is displayed asking the user if they are sure that they want to remove the item. If they click yes the item is removed and the other items move up.
+3. The knowledge worker has the option to send welcome emails to users when their accounts are created.
+4. When a user enters a group name or attribute and clicks add a processing animation appear while the system validates the group or attribute. If the group or attribute is not found an error message is shown at the top of the page.
+5. Feedback displays at the top of the page with a close option: "Access List Refresh is now processing".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.   Access list refreshes and new users in the group or attribute are added to the database.
+6. Site Labeling is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.
+7. Content Warning is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.
+8.  Plugin Configuration Warning is disabled by default.  When enabled the text box is required and the Plugin Configuration Warning rich text editor supports an infinite amount of characters.
+9. Terms of Service is disabled by default.  When enabled the text box and prompt interval are required.  Terms of Service rich text editor supports an infinite amount of characters.   Days field supports up to 5 numeric characters.
+10. Links to the help page.
+11. The root organization coordinator can enter the name of the group stream they want to specify by clicking in the input box. As they type matches to individual or group streams are displayed in a drop down menu. Entering or selecting a valid stream name removes the input box and displays the name of the stream. The root organization coordinator can remove the stream by clicking the "x" button next to the stream name which will display an empty input box. If the organization coordinator enters an invalid stream name and tries to save the changes to the page a warning message will be displayed saying "The stream you entered could not be found".  Field supports up to 50 characters (same length as group name in [View and manage a group profile][]
+12. Support Phone Number field supports up to 50 characters.
+13. The root organization coordinator will be warned if they enter an email address that is not properly formatted.  Support Email Address field supports up to 50 characters.
+14. Activity Expiration is disabled by default.  When enabled the text box is required, supports a number between 1 and 360.
+15. Saves the edits made to the form and returns the knowledge worker to the start page.  Feedback displays at the top of the page with a close option: "Settings saved".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+16. Discards the changes made to the form and returns the knowledge worker to the start page.
+
+### Plugin System Settings
+#### View existing Plugins
+
+![](images/PS_F19_systemSettings_Plugins_fig01.png)
+
+1. Allows root organization coordinator to filter by Category.
+2. Hovering over the plugin icon or text displays the Edit and Delete links. Clicking edit displays the plugin configuration form titled Submit a Plugin.
+3. Hovering over the plugin icon or text displays the Edit and Delete links. Clicking the delete icon displays a pop-up window asking the knowledge worker: "Are you sure you want to delete this plugin" if the knowledge worker clicks "yes" the plugin is deleted and a warning message is displayed: "Stream plugin [insert name] has been deleted". Refer to the [Action Feedback UI design pattern][Action feedback] for implementation specifics.
+4. Allows root organization coordinator to Add a new plugin
+
+#### Submit a Plugin
+
+![](images/PS_F19_systemSettings_Plugins_fig02.png)
+
+1. Select a Category.
+2. Enter Plugin XML.
+3. Submits new plugin, returns user to the Plugin page and feedback displays at top of page with a close option: "Stream Plugin has been successfully added" Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+4. Cancels plugin submission and returns user to the Plugin page.
+
+#### Edit Plugin
+
+![](images/PS_F19_systemSettings_Plugins_fig03.png)
+
+1. Modify the Category.
+2. Update Plugin XML.
+3. Saves plugin, returns user to the Plugin page and feedback displays at top of page with a close option: "Stream Plugin has been successfully saved" Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+4. Cancels plugin updates and returns user to the Plugin page.
+
+### Help Page
+
+![](images/PS_F19_helpPage.png)
+
+1. Avatar and link go to the support stream
+2. Clicking the email link opens the knowledge worker's new email from the knowledge worker's local email client.
+3. Link opens a new window to http://eurekastreams.org
+
+##Test plans
+###Knowledge Worker
+1. **Action: Attempt to Manage System Settings**
+    * Verify that the knowledge worker is unable to edit system settings
+2. **Action: Lookup contact information for product support**
+    * Verify that the product support contact information can be viewed
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Root Organization Coordinator
+1. **Action: Control system access via a list of ldap groups or attributes**
+    * Verify a root organization coordinator can add a Group Name
+    * Verify a root organization coordinator can delete a Group Name
+    * Verify an error message is displayed if a blank or invalid Group Name is entered
+    * Verify a root organization coordinator can add an Attribute
+    * Verify a root organization coordinator can delete an Attribute
+    * Verify an error message is displayed if a blank or invalid Attribute is entered
+2. **Action: Confirm the option to send email invitations to knowledge workers when their account is created**
+    * Verify the ability to send email invitation to knowledge workers when their account is create
+    * Verify the ability to not send email invitations to knowledge workers when their account is create
+3. **Action: Confirm the system periodically synchronize the access list**
+    * Verify the access list is synchronized
+4. **Action: Synchronize the access list on-demand**
+    * Verify the access list is synchronized
+5. **Action: Confirm the option to configure a system label displayed in the header and footer**
+    * Verify the ability to enable or disable the system label displayed in the header and footer
+    * Verify when the option is enabled,
+        * a text input box displays
+        * text is required
+        * error handling is present if text is empty and the user attempts to submit
+    * Verify when the option is enabled and text is submitted, the text is displayed in the header and footer
+    * Verify when the option is disabled, the text box is hidden
+    * Verify when the option is disabled, there is no text displayed in the header and footer when submitted.
+6. **Action: Confirm the option to configure a content warning message displayed to a knowledge worker when posting an activity**
+    * Verify the ability to enable or disable displaying a content warning message when posting activity
+    * Verify when the content warning message is enabled,
+        * a text input box displays
+        * text is required
+        * error handling is present if text is empty and the user attempts to submit
+    * Verify when the option is enabled and the text is submitted, the text is displayed below the activity posting text box and commenting text box
+    * Verify when the option is disabled, the text box is hidden
+    * Verify when the option is disabled, there is no text displayed below the activity posting text box
+    * Verify when the option is disabled, there is no text displayed below the commenting text box
+7. **Action: Confirm the option to configure a plugin warning message displayed to a knowledge worker when adding a plugin**
+    * Verify the ability to enable or disable the plugin warning
+    * Verify that when the plugin warning is enabled
+        * a text input box displays
+        * text is required
+        * error handling is present if text is empty and the user attempts to submit
+    * Verify when the option is enabled and the text is submitted, the text is displayed in the Terms of Use for each plugin
+    * Verify when the option is disabled, the text box is hidden
+    * Verify when the option is disabled, there is no text displayed in the Terms of Use for each plugin
+8. **Action: Confirm the option to configure a terms of service message displayed at a configurable interval that must be confirmed by the knowledge worker**
+    * Verify the ability to enable or disable the terms of service
+    * Verify that when the terms of service is enabled
+        * a text input box displays
+9. There is an option to choose to display the terms of service at a specific interval
+    * Verify when the option is enabled and the text is submitted, the text is displayed when launching the site at the intervals selected
+    * Verify when the option is disabled, the text box is hidden
+    * Verify when the option is disabled, there is no text displayed in the terms of service when launching the site at the intervals selected
+10. **Action: Set the content expiration length between 1 and 360 days**
+    * Verify the ability to enable or disable the activity expiration
+    * Verify that when the activity expiration is enabled
+        * a text input box displays and represents the number of days
+        * # is required
+        * error handling is present if text is empty or has a non-numeric value and the user attempts to submit
+        * Value must be between 1 and 360
+    * Verify when the option is enabled and the number is saved
+    * Verify when the option is disabled, the text box is hidden
+    * Verify when the option is disabled, data is not deleted
+11. **Action: Periodically remove activities older than the content expiration length with the exception of those saved as favorite**
+    * Verify that activities are saved and have an original activity post date older than the content expiration are not removed
+    * Verify that activities that are not saved and have an original activity post date older than the content expiration are removed
+12.  **Action: Configure the support group**
+    * Verify that the support group displays
+13. **Action: Configure the help desk contact information**
+    * Verify that the help desk contact information displays
+14. **Action: Publish and categorize a stream plug in referenced by a url**
+    * Verify there is a link directing the user to a form to upload a stream plug in
+    * Verify error handling is present when required fields are not populated
+    * Verify a category can be selected and associated with the stream plug in
+15. **Action: Confirm stream plugins adheres to the Google gadget specification and eureka stream plugin feature**
+    * Verify a stream plug in that is uploaded must adhere to the Eureka stream plugin feature and the Google gadget specification
+    * Verify that if a stream plugin does not adhere, there is error handling
+    * Verify there is a link which will direct the user to the developers guide
+16. **Action: Modify the category and url for a published stream plugin**
+    * Verify the category can be changed for a stream plugin that has been uploaded
+    * Verify the URL can be changed for a published stream plugin that has been uploaded
+    * Verify there is error handling in the edit mode
+17. **Action:  Remove a published stream plugin**
+    * Verify a plugin can be removed
+    * Verify there is removal confirmation
+    * Verify the plugin is removed, but is not stripped from user or group streams with the stream plug in configured
+>>>>>>> .merge_file_pX335K

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Activity Stream App</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Start%20Page%20Apps.html">Start Page Apps</a> &gt; Activity Stream App</p>
+
+<h1 class="title">Activity Stream App</h1>
+
+<p><a><span id="nonextlink">&nbsp;</span></a>
+<a href='Suggestions App.html'><span id="prevlink">Suggestions App</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Activity Stream app allows a user to view and interact with a single stream.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<ol>
+<li>The activity app must display all activities in a given stream </li>
+<li>The activity app must allow sorting by recent, popular and active posts </li>
+<li>The activity app must allow a user to view the comments of an activity </li>
+<li>The activity app must allow a user to comment to an activity </li>
+<li>The activity app must allow a user to like an activity, and unlike activities already liked </li>
+<li>The activity app must allow a user to view all who liked an activity </li>
+<li>The activity app must allow a user to post to a stream if and only if it is a group stream. </li>
+<li>The activity app must allow a user to search against the stream </li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="appview">App View</h3>
+
+<p><img id="" src="images/activityapp_1.png" alt="" title="" /></p>
+
+<ol>
+<li>Search bar follows the Standard UX guidelines for search and searches against the stream </li>
+<li>Tabs allow user to sort by recent, popular and active. Sorts should behave the same way they do in the stream </li>
+<li>Page up button should be disabled if the user is already at the top of the list and should allow them to scroll up when clicked and held.  </li>
+<li>Page down button should be disabled if the user is already at the bottom of the list and should allow them to scroll down when clicked and held </li>
+</ol>
+
+<p>Unshown in this image: If this is a group stream show a &#8220;Post to this Group&#8221; box identical to the post comment box seen below that allows the user to post to the group</p>
+
+<p><img id="" src="images/activityapp_2.png" alt="" title="" /></p>
+
+<ol>
+<li>When an activity is clicked, a detail pane is open with the activity at the top, Clicking the like button allows the user to like the activity. </li>
+<li>Below the activity should be all the comments, these should be in a scrollable list like the activities. </li>
+<li>At the very bottom should a post comment box </li>
+</ol>
+
+<p><img id="" src="images/activityapp_3.png" alt="" title="" /></p>
+
+<ol>
+<li>When the &#8220;Post a comment&#8221; box is clicked an input box appears and allows the user to type a comment up to 250 characters in length. If over this limit, or if no characters have been entered yet, the post box is disabled. </li>
+</ol>
+
+<p><img id="" src="images/activityapp_4.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking on &#8220;3 Likes&#8221; takes you to a like detail page showing a scrollable list of the people who liked the activity.</li>
+</ol>
+
+<h2 id="testplans">Test Plans</h2>
+
+<ol>
+<li><strong>Verify a Knowledge Worker can display all activities in a given stream</strong>
+<ul><li>Verify once the app is created it displays all the activities that are available from the source stream</li></ul></li>
+<li><strong>Verify a Knowledge Worker can sort by recent, popular, and active posts</strong>
+<ul><li>Verify the Knowledge Worker can sort the activities in the app by recents</li>
+<li>Verify the activities are being displayed with the most recent activities first</li>
+<li>Verify the Knowledge Worker can sort the activities in the app by most popular</li>
+<li>Verify the activities are being displayed with the activities with the highest like counts first</li>
+<li>Verify the Knowledge Worker can sort the activities in the app by most active</li>
+<li>Verify the activities are being displayed with the activities with the highest comment and like counts first</li></ul></li>
+<li><strong>Verify a Knowledge Worker can view the comments of an activity</strong>
+<ul><li>Verify the activity within the app notes the number of comments on the activity</li>
+<li>Verify clicking on the activity changes the view to display the comments on the activity</li>
+<li>Verify the Knowledge Worker can navigate back to the activity list from the comments view</li></ul></li>
+<li><strong>Verify a Knowledge Worker can comment on an activity</strong>
+<ul><li>Verify the activity within the app notes the number of comments on the activity</li>
+<li>Verify clicking on the activity changes the view to display the comments on the activity</li>
+<li>Verify there is a post field at the bottom of the app in the comment view</li>
+<li>Verify the post field section expands when the knowlege worker clicks in the text area</li>
+<li>Verify that the expand section includes a text button, that is inactive until text is entered</li>
+<li>Verify that the comment is limited to 250 characters and there is a visual indicator of the text limit</li>
+<li>Verify the Knowledge Worker can cancel out of the post section without posting a message</li>
+<li>Verify the Knowledge Worker can successful post to the stream with a message no longer than 250 characters and no less than 1 long</li></ul></li>
+<li><strong>Verify a Knowledge Worker can Like/Unlike an activity</strong>
+<ul><li>Verify the activity within the app notes the number of likes in the activity</li>
+<li>Verify clicking on the activity changes the view to show only that activity and all the comments to that activity</li>
+<li>Verify the Knowledge Worker has the ability to like the activity from a link within the comments view</li>
+<li>Verify the like count increments when the Knowledge Worker likes the activity</li>
+<li>Verify the Knowledge Worker has the ability to unlike an activity from a link within the comments view</li>
+<li>Verify the like count decrements when the Knowledge Worker unlikes the activity</li></ul></li>
+<li><strong>Verify a Knowledge Worker can view all who liked an activity</strong>
+<ul><li>Verify the activity within the app notes the number of likes in the activity</li>
+<li>Verify clicking on the activity changes the view to show only that activity and all the comments to that activity</li>
+<li>Verify that if the like count is greater than 0 it is hyperlinked in the comments view</li>
+<li>Verify that when the knowledge work clicks the like count in the comments view, the view changes to display the names of all the colleagues that liked the activity</li>
+<li>Verify that clicking on the names in the liked view takes the Knowledge Worker to the profile of the colleague</li></ul></li>
+<li><strong>Verify a Knowledge Worker can post to a group stream</strong>
+<ul><li>Verify there is a post field at the bottom of the app if the source stream is a group stream</li>
+<li>Verify the post field section expands when the knowlege worker clicks in the text area</li>
+<li>Verify that the expand section includes a text button, that is inactive until text is entered</li>
+<li>Verify that the comment is limited to 250 characters and there is a visual indicator of the text limit</li>
+<li>Verify the Knowledge Worker can cancel out of the post section without posting a message</li>
+<li>Verify the Knowledge Worker can successful post to the stream with a message no longer than 250 characters and no less than 1 long</li>
+<li>Verify the post field is not present if the source stream is not a group stream</li></ul></li>
+<li><strong>Verify a Knowledge Worker can search against the stream</strong>
+<ul><li>Verify there is a search field at the top of the app</li>
+<li>Verify that the search returns only those activities that contain the keywords entered by the Knowledge Worker within the activity or its comments</li>
+<li>Verify the search uses AND logic by default</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#appview">App View</a></li></ul></li>
+<li><a href="#testplans">Test Plans</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

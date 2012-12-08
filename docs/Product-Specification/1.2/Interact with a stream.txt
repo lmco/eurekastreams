@@ -1,0 +1,203 @@
+## Overview
+
+Knowledge Workers can share activity between employee and group streams, like an activity, flag activity as inappropriate, or add comments to activities.
+
+## Conditions of Satisfaction
+
+### Post to a Stream
+
+01. The Knowledge Worker must be able to post a message up to 250 characters to any public stream with visual feedback when the limit has been reached.
+02. The Knowledge Worker must be able to attach a link to any message he is posting.
+03. The Knowledge Worker must be able to select from a set of available images associated to a URL.
+04. The Knowledge Worker must be able to edit the title of the URL, which is pulled from the site itself if the link is unsecured and accessible.
+05. The Knowledge Worker must see the description of the link parsed from any unsecured and accessible URL.
+06. The Knowledge Worker must receive a warning if the URL is in the correct format but inaccessible.
+07. The Knowledge Worker must receive an error if the URL is not in the correct format (*://)
+08. The Knowledge Worker must be able to immediately view the posted message if it is associated to the stream he is currenlty viewing. 
+### Actions on an Activity 
+
+01. The Knowledge Worker must be able to comment on an activity when he is not restricted by stream moderation.
+02. The comment must be restricted to 1000 characters with visual feedback when the limit has been reached.
+03. The Knowledge Worker must be able to share an activity to a colleague, public group, or private group he is a member of.
+04. The Knowledge Worker must not be able to share activity posted to a private group.
+05. The Knowledge Worker must be able to attach a comment to an activity he is sharing.
+06. The Knowledge Worker must be able to flag an activity as inappropriate.
+07. The Knowledge Worker must be able to like and unlike an activity.
+
+### Delete from a Stream
+
+01. The Knowledge Worker must be able to delete any activity or comment he has posted.
+02. The Knowledge Worker must be able to delete any activity or comment posted to his stream or a stream he coordinates.
+03. The Eureka Administrator must be able to delete any activity or comment.
+
+## User Experience
+
+### Post an Activity
+
+![](images/Interact_Post_Default.png)
+
+1. Default state of the post box. Show only the user's avatar and the name of the stream that will be posted to inside.
+
+![](images/Interact_Post_Expanded.png)
+
+1. The user types his message in the expanded box, up to 250 characters
+2. If the user tpyes a hashtag (a word beginning with a #) a menu pops up with popular hashtags for the stream he's posting to
+3. A countdown starts at 250 and counts down as the characters are typed, indicating the remaining characters. When at 0 and below, the number turns red
+4. Attach a link opens up the attach link section defined below.
+5. The configurable message that appears below the post box.
+6. The post button is inactive if there the number of characters in the box are 0 or >250, other wise it is active and posts the message. The stream must refresh to show the message after it has been posted. If the post button is hit when a user has pasted a link into the attach link section but not hit the "add" button, the system should hit the add button for the user.
+
+![](images/R1_PS_F11_post_to_stream_postLink_fig01.png)
+
+1. Clicking attach link displays the add link form where the Knowledge Worker can enter the URL of the link they want to attach.
+2. The form can be closed by clicking the "x" button.
+3. Clicking the Add button submits the link. URL should be in the  following example format: http://www.example.com.  Validate that at  least one '.' exists in the url.
+
+![](images/R1_PS_F11_post_to_stream_postLink_fig02.png)
+
+1. Link thumbnail
+2. Link title, editable input box is populated with the auto-detected the title.
+3. Link source
+4. Link description
+5. Paging controls allowing the Knowledge Worker select a link thumbnail  from a set of available images associated the attached url.
+6. Check box allowing the Knowledge Worker to suppress the display of the link thumbnail.
+7. Clicking 'x' removes the link.
+
+
+### Comment on an Activity
+
+![](images/R1_PS_F13_sharesaveflag_CommentOnActivity_fig01.png)
+
+1. A Knowledge Worker can comment on an activity by hovering over an activity and clicking on the comment link.
+
+![](images/R1_PS_F13_actionsonanactivity_CommentOnActivity_fig02.png)
+
+1. Avatar of the Knowledge Worker posting the comment.
+2. Content warning message (configured in system settings).
+3. Remaining character count. When the character count is less than 0, the text color changes to red and appears as a negative number.
+4. The post button is only active when the remaining character count is 0 or greater.
+
+![](images/PS_F13_sharesaveflag_CommentOnActivity_fig03.png)
+
+1. Minimized state of post box, clicking in the box expands the box to a editable text area.
+
+### Share an Activity
+
+![](images/R1_PS_F13_sharesaveflag_ShareActivity_fig01.png)
+
+1. A Knowledge Worker can share an activity by hovering over an activity and clicking on the share link.  Share option is not available for activities posted in a private group.
+
+![](images/R1_PS_F13_actionsonanactivity_ShareActivity_fig02.png)
+
+1. A Knowledge Worker can share an activity to their own stream or to another individual or group stream.  If posting is turned off, the individual or group should not be displayed in the autocomplete.
+2. Activity being shared.
+3. Input box to enter a comment.
+4. Remaining characters
+5. The share button is only active when the remaining character count is less than 250 or 0 or greater.
+
+![](images/PS_F13_sharesaveflag_ShareActivity_fig03.png)
+
+1. Name of the Knowledge Worker sharing the activity and the stream it is being shared to.
+2. Name of the Knowledge Worker that authored the activity.
+3. Comment from the Knowledge Worker sharing the activity.
+
+### Like an Activity
+
+![](images/R1_PS_F13_sharesaveflag_LikeActivity_fig01.png)
+
+![](images/R1_PS_F13_sharesaveflag_LikeActivity_fig02.png)
+
+![](images/R1_PS_F13_sharesaveflag_LikeActivity_fig03.png)
+
+1.  An activity displays it's like count (if over 0) to the Knowledge Worker. When the Knowledge Worker clicks on the thumbs up icon or the like button, the user has 'liked' the activity and the number increments.
+2. A Knowledge Worker can hover over the like count showing a hovering card displaying the last 10 people to have liked the activity with an option to view more.
+3. A Knowledge Worker is able to unlike the activity by clicking on 'unlike'.
+
+![](images/R1_PS_F13_actionsonanactivity_like_fig04.png)
+
+1. A Knowledge Worker will be presented with this modal listing all employees who liked an activity if he/she clicks on 'view all'
+
+### Flag an Activity
+
+![](images/R1_PS_F13_sharesaveflag_FlagActivity_fig01.png)
+
+1. A Knowledge Worker can flag an activity by hovering over an activity and clicking on the flag link. When the Knowledge Worker clicks the flag link, a pop-up window will be displayed asking them: "Flagged activities will be sent to the Eureka Administrator for review.  Are you sure you want to flag this activity as inappropriate?" If the Knowledge Worker clicks yes the activity remains on the page.  Feedback is displayed at the top of the page with a close option: "Activity has been flagged".  Refer to the [Action Feedback UI design pattern](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.   The actions described in the [View and manage an organization profile](/docs/product-specification/features/view-manage-org-profile/) Flagged activities section and [Manage and Receive Notifications](/docs/product-specification/features/manage-receive-notifications/) UX designs are performed.
+
+
+## Test Plan
+
+### Post to a Stream
+
+1. **Verify a Knowledge Worker can post activity to a stream**
+	* Verify that when a hashtag is entered into the post box, an autocomplete box displays with the list of popular hashtags within the stream that match the user input. Verify in both the profile and activity pages.
+	* Verify the Knowledge Worker is immediately able to view the posted activity in the stream
+	* Verify activity can be posted with or without a url in the following types of streams:
+	  * to a colleagues stream
+	  * to your stream 
+	  * to to a public group stream
+	  * to to a private group stream where Knowledge Worker is a group member
+2. **Verify a Knowledge Worker can post activity containing a url to a profile stream**
+	* Verify the ability to select from a set of available images associated with a url
+	* Verify the system validates the url
+	* Verify the system auto-detects the title for an unsecure url
+	* Verify the system is able to parse an unsecure url for the description meta tag
+	* Verify the title for a url can be changed
+	* Verify the ability to immediately view the url if it is associated to the stream currently being viewed
+	* Verify the ability to select from a set of available images associated to a url
+3. **Verify a Knowledge Worker can delete activity**
+	* Verify the ability to delete an activity posted by yourself
+	* Verify the ability to delete a url posted by yourself
+4. **Verify a Knowledge Worker can restrict character limits for posting activity**
+	* Verify commenting is limited to 250 characters
+	* Verify visual feedback is provided to notify character count
+5. **Verify a Knowledge Worker can immediately view the post**
+	* Verify the ability to immediately view a post
+	* Verify the ability to immediately view a url
+
+### Actions on an Activity
+
+1. **Verify a Knowledge Worker can comment on activity (assuming commenting is enabled)**
+	* Verify a comment can be posted against any activity
+2. **Verify a Knowledge Worker can share activities**
+	* Verify an activity can be shared in the following cases:
+	  * colleague to colleague
+ 	  * colleague to public group
+	  * colleague to private group where Knowledge Worker is a member
+	  * public group to public group
+      * public group to private group where Knowledge Worker is a member
+	  * public group to colleague
+3. **Verify a Knowledge Worker can like and un-like an activity**
+	* Verify activities can be liked
+	* Verify activities can be un-liked
+	* Verify that liked activity appears in the liked default stream on the activity page
+4. **Verify a Knowledge Worker can attempt to share activity within a private group**
+	* Verify share link is not provided for an activity with comments
+	* Verify share link is not provided for an activity without comments
+5. **Verify a Knowledge Worker can attach comment when sharing an activity**
+	* Verify comments can be added when sharing activities
+	* Verify character count is limited to 250 characters
+	* Verify visual notification indicating character count
+6. **Verify a Knowledge Worker can flag an activity as inappropriate**
+	* Verify the ability to flag an activity as inappropriate
+7. **Verify a Knowledge Worker can restrict character limits for commenting on activity**
+	* Verify commenting is limited to 250 characters
+	* Verify visual notification indicating character count
+
+### Delete from a Stream
+
+1. **Verify a Knowledge Worker can delete a comment**
+	* Verify a comment can be deleted only by the Knowledge Worker it was posted by
+	* Verify a delete confirmation is presented
+	* Verify the delete confirmation must be acknowledged before the delete is processed
+2. **Verify a Knowledge Worker can delete an activity or comment posted by another Knowledge Worker to his personal stream**
+	* Verify a delete confirmation is presented
+	* Verify the delete confirmation must be acknowledged before the delete is processed
+3. **Verify a Knowledge Worker can delete an activity or comment posted by another Knowledge Worker a stream he coordinates**
+	* Verify a delete confirmation is presented
+	* Verify the delete confirmation must be acknowledged before the delete is processed
+4. **Verify a Knowledge Worker can delete an activity or comment (Eureka Administrator)**
+	* Verify a delete confirmation is presented
+	* Verify the delete confirmation must be acknowledged before the delete is processed
+
+
+

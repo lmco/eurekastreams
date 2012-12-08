@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Follow a colleague or join a group</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Follow a colleague or join a group</p>
+
+<h1 class="title">Follow a colleague or join a group</h1>
+
+<p><a href='Share, save, flag, or comment on an activity.html'><span id="nextlink">Share, save, flag, or comment on an activity</span></a>
+<a href='Post to a stream.html'><span id="prevlink">Post to a stream</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge Workers are able to follow specific employee, groups or activities they have saved.  They are also able to follow everyone&#8217;s activity and the activity within their organization.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to follow the stream of a colleague.</li>
+<li>The knowledge worker must be able to stop following the stream of a colleague.</li>
+<li>The knowledge worker must be following himself by default.</li>
+<li>The knowledge worker must not be able to stop following himself.</li>
+<li>The knowledge worker must be able to join a public group.</li>
+<li>The knowledge worker must be able to leave a public group.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="followacolleague">Follow a Colleague</h3>
+
+<p><img id="" src="images/FollowColleague.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can follow another colleague by clicking the &#8220;follow&#8221; button on that colleague&#8217;s profile. After the knowledge worker clicks the &#8220;follow&#8221; button a &#8220;unfollow&#8221; button is displayed.  The Follow button is not displayed for a knowledge workers personal profile.  Knowledge workers automatically follow themselves in the <a href="View%20a%20stream%20of%20activity.html">Follow Activity Stream</a> by default.</li>
+</ol>
+
+<h3 id="unfollowacolleague">Unfollow a Colleague</h3>
+
+<p><img id="" src="images/UnfollowColleague.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can stop following another colleague by clicking the &#8220;unfollow&#8221; button that colleague&#8217;s profile. After the knowledge worker clicks the &#8220;stop following&#8221; button a &#8220;follow&#8221; button is displayed. The Unfollow button is not displayed for a knowledge workers personal profile.  Knowledge workers automatically follow themselves in the <a href="View%20a%20stream%20of%20activity.html">Follow Activity Stream</a> by default and can not unfollow themselves.</li>
+</ol>
+
+<h3 id="joinagroup">Join a Group</h3>
+
+<p><img id="" src="images/JoinGroup.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can join a group by clicking the &#8220;join&#8221; button on that group&#8217;s profile. After the knowledge worker clicks the &#8220;join&#8221; button a &#8220;leave&#8221; button is displayed.</li>
+</ol>
+
+<h3 id="leaveagroup">Leave a Group</h3>
+
+<p><img id="" src="images/LeaveGroup.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can leave a group they are following by clicking the &#8220;leave&#8221; button that group&#8217;s profile. After the knowledge worker clicks the &#8220;leave&#8221; button a &#8220;join&#8221; button is displayed.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Follow a colleague</strong>
+<ul><li>Verify the follow button changes to stop following</li>
+<li>Verify the ability to view the activity of the colleague being followed within the following stream</li></ul></li>
+<li><strong>Action: Stop following a colleague</strong>
+<ul><li>Verify the stop following button changes to follow</li>
+<li>Verify the colleagues activity no longer appears in the following list</li></ul></li>
+<li><strong>Action: Follow yourself</strong>
+<ul><li>Verify a knowledge worker follows his/herself by default</li>
+<li>Verify a knowledge worker is not able to stop following his/herself</li></ul></li>
+<li><strong>Action: Join a public group</strong>
+<ul><li>Verify the join button changes to leave</li>
+<li>Verify the group has been added as a list on the activity page</li>
+<li>Verify the group list is displaying the stream for that group</li></ul></li>
+<li><strong>Action: Leave a public group</strong>
+<ul><li>Verify the leave button changes to join</li>
+<li>Verify the group list no longer appears on the activity page</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#followacolleague">Follow a Colleague</a></li>
+<li><a href="#unfollowacolleague">Unfollow a Colleague</a></li>
+<li><a href="#joinagroup">Join a Group</a></li>
+<li><a href="#leaveagroup">Leave a Group</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

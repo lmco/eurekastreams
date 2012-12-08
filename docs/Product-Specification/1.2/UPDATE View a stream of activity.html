@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>UPDATE View a stream of activity</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; UPDATE View a stream of activity</p>
+
+<h1 class="title">UPDATE View a stream of activity</h1>
+
+<p><a href='Suggestions App.html'><span id="nextlink">Suggestions App</span></a>
+<a href='UPDATE Manage system settings.html'><span id="prevlink">UPDATE Manage system settings</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can view an activity stream for employees being followed or groups that were joined.  Activities for everyone or the primary organization of the employee can also be viewed.  Custom streams can be used to quickly and easily access activities from the knowledge workers employee or group streams.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to view a stream of activity by reverse chronological order showing the first 10 items by default.</li>
+<li>The knowledge worker must also be able to view a stream of activity by most recent comment date</li>
+<li>The knowledge worker must be able to view a stream of activity by a measure of popularity that takes into account the number of likes and comments.</li>
+<li>The knowledge worker must be able to view inline more activities showing the next 10 items.</li>
+<li>The system must not display an action to view more activities if none remain.</li>
+<li>The knowledge worker must be able to view each activity&#8217;s message, author&#8217;s name and avatar, timestamp, and plugin source.</li>
+<li>The knowledge worker must be able to view each posted url&#8217;s  hyperlinked title, source, optional description, and optional image.</li>
+<li>The knowledge worker must be able to click on a hashtag within an  activity and view matching activity from the stream he is currently  viewing.</li>
+<li>The knowledge worker must be able to click on and navigate to a url embedded in an activity or comment.</li>
+<li>The knowledge worker must be able to view the original author of a shared activity.</li>
+<li>The knowledge worker must be able to view inline the first and last comments posted to an activity.</li>
+<li>The knowledge worker must be able to click and view inline all comments for an activity if the comment count is 20 or less.</li>
+<li>The knowledge worker must be able to click and view all comments for  an activity on a separate page if the comment count is greater than 20.</li>
+<li>The knowledge worker must be able to navigate to a permalink for an activity.</li>
+<li>The knowledge worker must be able to view a stream of activity from a predefined stream representing the colleagues he is following.</li>
+<li>The knowledge worker must be able to view a stream of activity from a predefined stream representing everyone in the system. </li>
+<li>The knowledge worker must be able to view a stream of activity from a predefined stream representing his primary organization.</li>
+<li>The knowledge worker must be able to view a stream of activity from a predefined stream representing his saved items.</li>
+<li>The knowledge worker must be able to view a stream of activity from each group he is a member of.</li>
+<li>The knowledge worker must be able to view a stream of activity from a custom stream.</li>
+<li>The knowledge worker must not be able to view activity posted to a private group he is not a member of.</li>
+<li>The organization coordinator must be able to view activity posted to  a private group associated to his organization or sub-organization.</li>
+<li>The system must check for new activity posted to the current stream every 60 seconds and display a count of new activity.</li>
+<li>The knowledge worker must be able to update a stream with new activities without refreshing the page.</li>
+<li>As a knowledge worker I want to discover an ATOM feed for any stream in Eureka through the same URL structure as the gadget restlet while looking at the stream</li>
+<li>As a knowledge worker I want the feed to contain the eureka logo and for each activity the user name and post and to be sorted only by activity date</li>
+<li>As a knowledge worker I want the activity stream feeds to be authenticated</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="activitystream">Activity Stream</h3>
+
+<p><img id="" src="images/R1_PS_F14_viewstreamofactivity_ViewStream_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Stream title</li>
+<li>Create app button (words create app appear to the right of the button on hover)</li>
+<li>Search box</li>
+<li>Sort options. Recent sorts activity by date posted. Popular sorts by an algorithm that takes into account comment count, comment authors, and like count. Active sorts by last comment date.</li>
+<li>Paging link (available on the Recent sort option only)</li>
+</ol>
+
+<h3 id="refreshstream">Refresh Stream</h3>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ViewStream_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Refresh bar slides down and is visible only when new activities  are available. The refresh bar slides up after refresh if there are no  new activities. The refresh bar is ONLY active when the &#8220;Recent&#8221; sort is selected.</li>
+<li>Count of new activity since last refresh</li>
+<li>Refresh button displays the new activities, current activities slide down and the new activities appear.</li>
+</ol>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ViewStream_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Refresh bar also appears when viewing search results.</li>
+</ol>
+
+<h3 id="activitycomponents">Activity Components</h3>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityType_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Avatar</li>
+<li>Author of post</li>
+<li>Content</li>
+<li>Time-date stamp</li>
+</ol>
+
+<h3 id="activitycontenttypes">Activity Content Types</h3>
+
+<h4 id="note">Note</h4>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityType_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Above is an example of a note, notes are the messages users post to an activity stream.</li>
+</ol>
+
+<h4 id="bookmark">Bookmark</h4>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityType_fig04.png" alt="" title="" /></p>
+
+<p>Please note, in the image above, a note appears above the bookmark.</p>
+
+<ol>
+<li>Bookmark link</li>
+<li>Bookmark source</li>
+<li>Bookmark description</li>
+<li>Bookmark thumbnail image</li>
+</ol>
+
+<h4 id="video">Video</h4>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityType_fig05.png" alt="" title="" /></p>
+
+<ol>
+<li>Link to the video source, opens in a new window</li>
+<li>Video thumbnail, link opens a new window displaying the video at default size of 425 X 344</li>
+<li>Video description (first 150 characters, with spaces)</li>
+<li>Video length and link to YouTube user page.</li>
+<li>Video opened in a new window</li>
+</ol>
+
+<h3 id="activityhovercontrols">Activity Hover Controls</h3>
+
+<p><img id="" src="images/R1_PS_F14_viewstreamofactivity_ActivityHoverControls.png" alt="" title="" /></p>
+
+<ol>
+<li>Hovering over an activity displays the actions a user can take on an activity.</li>
+<li>Hovering over a comment displays the actions a user can take on that comment.</li>
+</ol>
+
+<h3 id="activityhashtaglinks">Activity Hashtag Links</h3>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_hashtags_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>When knowledge workers enter hash tags into messages they appear in the activity as links.</li>
+</ol>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_hashtags_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking on any hash tag returns the list of activities that match  that keyword. Note that the create app button is not displayed when a  search is active.</li>
+</ol>
+
+<h3 id="sharedactivity">Shared Activity</h3>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ShareActivity.png" alt="" title="" /></p>
+
+<ol>
+<li>The author of the activity that was shared appears above the time date stamp.</li>
+</ol>
+
+<h3 id="activitycomments">Activity Comments</h3>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityComments.png" alt="" title="" /></p>
+
+<ol>
+<li>When there are three or more comments on an activity the first and last are displayed.</li>
+<li>When there are more than three comments for an activity the total  number of comments are displayed hyper-linked to the activity permalink.</li>
+</ol>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityComments_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Knowledge worker is returned to the profile associated with the  activity and the activity and comments are displayed in a modified  version of the knowledge workers stream as shown above.</li>
+</ol>
+
+<h3 id="activitypermalink">Activity Permalink</h3>
+
+<p><img id="" src="images/PS_F14_viewstreamofactivity_ActivityPermalink.png" alt="" title="" /></p>
+
+<p>The user accesses an activity&#8217;s permalink by clicking on the  time-date stamp, clicking on the link to view all of an activity&#8217;s  comments, or clicking from clicking on a link from the Notifications  modal.</p>
+
+<ol>
+<li>Returns the user back to the individual or group stream that  contains the activity. If they came from the activity page they are  returned to the group or stream they were viewing.</li>
+<li>An Activity&#8217;s post and all comments are listed.</li>
+</ol>
+
+<h3 id="activitypage">Activity Page</h3>
+
+<p><img id="" src="images/R1_PS_F14_viewstreamofactivity_ActivityPage.png" alt="" title="" /></p>
+
+<ol>
+<li>Predefined streams: following, user&#8217;s primary organization, everyone, My saved items.</li>
+<li>Clicking on any predefined or custom stream or group displays that stream of activity.</li>
+<li>Custom stream</li>
+<li>Groups a user has joined</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F14_viewstreamofactivity_LinkGroupnametoprofile.png" alt="" title="" /></p>
+
+<ol>
+<li>Link the Group Name on the activity page to the Group profile.</li>
+</ol>
+
+<h3 id="rssfeed">RSS Feed</h3>
+
+<p>&lt;item&gt;
+&lt;title&gt;Anthony Romano: This would be an example of a message.&lt;/title&gt;
+&lt;description&gt;Anthony Romano: This would be an example of a message.&lt;/description&gt;
+&lt;pubDate&gt;Tue, 17 Aug 2010 12:58:20 +0000&lt;/pubDate&gt;
+&lt;guid&gt;{opensocialGUID}&lt;/guid&gt;
+&lt;link&gt;https://eurekastreams.org/#activity?viewId=1&amp;listId=1&amp;activityId=11956&lt;/link&gt;
+&lt;/item&gt;</p>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: View a stream of activity</strong>
+<ul><li>Verify the activity can be displayed in reverse chronological order with the first 10 items displayed</li>
+<li>Verify the activity can be displayed by most recent comment date</li>
+<li>Verify the activity can be displayed by a measure of popularity that takes into account the number of likes and comments </li></ul></li>
+<li><strong>Action: View More stream activities</strong>
+<ul><li>Verify that when there are more than 10 activities, the next 10 items can be viewed in line (on the Recent sort option only)</li>
+<li>Verify that if there are not more than 10 activities, there is no action to View More (on the Recent sort option only)</li>
+<li>Verify there is no View More link for the Popular and Active sort options</li></ul></li>
+<li><strong>Action: View an activity</strong>
+<ul><li>Verify the ability to view each activity&#8217;s message, author&#8217;s name and avatar, timestamp, and plug-in source</li>
+<li>Verify that the Employee Name and Group Names are posted on an  activity as appropriate and are hyperlinked to the employee or group  profile as appropriate based on the following patterns.
+<ul><li>to (employee posting a message to a group)</li>
+<li>(employee posting a message to their own stream)</li>
+<li>to (employee posting a message to another employee&#8217;s stream)</li></ul></li>
+<li>Verify the following patterns are displayed for time stamps:
+<ul><li>Less than one minute ago (where time is &lt;60 sec)</li>
+<li>x minutes ago - where x is a number between 1 and 59 (1 min - 59 minutes)</li>
+<li>x hours ago – where x is the number of full hours elapsed since activity (> 60 min) </li></ul></li>
+<li>Yesterday at TIME - where TIME is the time of the activity (24 - 47 hours)
+<ul><li>DAY at TIME - where DAY is the day of the week the activity occurred on (2 - 7 days) </li>
+<li>MONTH DAY at TIME (use after 1 week and within the current year)</li>
+<li>MONTH DAY, YEAR at TIME (use after the current year)</li></ul></li></ul></li>
+<li><strong>Action: View an activity with a URL</strong>
+<ul><li>Verify the ability to view each posted url&#8217;s hyperlinked title, source, optional description, and optional image</li>
+<li>Verify the ability to click on and navigate to a url embedded in an activity or comment</li></ul></li>
+<li><strong>Action: Click on a hashtag within an activity</strong>
+<ul><li>View matching activity from the stream the knowledge worker is currently viewing</li></ul></li>
+<li><strong>Action: View the original author of shared activity</strong>
+<ul><li>Verify the name of the original author is displayed when an activity is shared</li></ul></li>
+<li><strong>Action: View Comments</strong>
+<ul><li>Verify the ability to view the first and last comments posted to an activity inline</li>
+<li>Verify the ability to click and view inline all comments for an activity if the comment count is 20 or less</li>
+<li>Verify the ability to click and view all comments for an activity  on a separate page if the comment count is greater than 20</li></ul></li>
+<li><strong>Action: Navigate to a permalink for an activity</strong>
+<ul><li>Verify that message opens in its own page</li>
+<li>Verify that message timestamp is displayed</li></ul></li>
+<li><strong>Action: View the activity stream of colleagues being followed</strong>
+<ul><li>Verify the following stream is predefined in the activity page</li>
+<li>Verify only the activities of yourself and those of the colleagues or groups being followed are displayed in the stream</li></ul></li>
+<li><strong>Action: View the activity stream of everyone</strong>
+<ul><li>Verify the everyone stream is predefined in the activity page</li>
+<li>Verify all activity is displayed within the everyone stream except private groups where knowledge worker is not a member</li></ul></li>
+<li><strong>Action: View the activity stream of colleagues and groups in a knowledge workers primary organization</strong>
+<ul><li>Verify the primary organization stream is named after the knowledge workers primary organization</li>
+<li>Verify the primary organization stream is predefined in the activity page</li>
+<li>Verify that activity posted by employees or groups within that  primary organization are the only activities displayed in this stream</li></ul></li>
+<li><strong>Action: View the activity stream of saved items</strong>
+<ul><li>Verify the Saved items stream is predefined in the activity page</li>
+<li>Verify that only activities which have been saved by the knowledge worker are displayed on this list</li></ul></li>
+<li><strong>Action: View the stream of activity from a group the knowledge worker has joined</strong>
+<ul><li>Verify there is a separate stream for each group the knowledge worker has joined</li>
+<li>Verify that when the knowledge worker leaves the group there is no longer a list displayed to access the groups stream</li>
+<li>Verify the group stream only contains activity and comments for the group the knowledge worker has joined</li></ul></li>
+<li><strong>Action: View a stream of activity from a custom stream</strong>
+<ul><li>Verify the custom streams are accessible in the activity page</li>
+<li>Verify the custom streams display only the activities of the groups or colleagues specified in the custom stream</li></ul></li>
+<li><strong>Action: View a stream of activity posted to a private group</strong>
+<ul><li>Verify activity posted to a private group is not viewable when the knowledge worker is not a member of the private group</li>
+<li>Verify the knowledge worker is able to view activity posted to a  private group when the knowledge worker is a member of the group</li></ul></li>
+<li><strong>Action: Confirm the system is checking for new activity posted to  the current stream every 60 seconds and displaying a count of activity</strong>
+<ul><li>Verify that every 60 seconds the count of new activity added to any given stream is updated</li></ul></li>
+<li><strong>Action: Update the stream with new activities without refreshing the page</strong>
+<ul><li>Verify the ability to refresh the stream and have the newly added activity appear</li>
+<li>Verify the newly posted activity count is returned to zero</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: View activity within a private group</strong>
+<ul><li>Verify an Organization Coordinator is able to view the activity  associated with a private group within his organization or  sub-organization</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Execute same tests as Organization Coordinator</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#activitystream">Activity Stream</a></li>
+<li><a href="#refreshstream">Refresh Stream</a></li>
+<li><a href="#activitycomponents">Activity Components</a></li>
+<li><a href="#activitycontenttypes">Activity Content Types</a>
+<ul><li><a href="#note">Note</a></li>
+<li><a href="#bookmark">Bookmark</a></li>
+<li><a href="#video">Video</a></li></ul></li>
+<li><a href="#activityhovercontrols">Activity Hover Controls</a></li>
+<li><a href="#activityhashtaglinks">Activity Hashtag Links</a></li>
+<li><a href="#sharedactivity">Shared Activity</a></li>
+<li><a href="#activitycomments">Activity Comments</a></li>
+<li><a href="#activitypermalink">Activity Permalink</a></li>
+<li><a href="#activitypage">Activity Page</a></li>
+<li><a href="#rssfeed">RSS Feed</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Share, save, flag, or comment on an activity</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Share, save, flag, or comment on an activity</p>
+
+<h1 class="title">Share, save, flag, or comment on an activity</h1>
+
+<p><a href='View a stream of activity.html'><span id="nextlink">View a stream of activity</span></a>
+<a href='Follow a colleague or join a group.html'><span id="prevlink">Follow a colleague or join a group</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can share activity between employee and group streams, save favorite activity, flag activity as inappropriate or add comments to activities.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to share an activity to a colleague, public group, or private group he is a member of.</li>
+<li>The knowledge worker must not be able to share activity posted to a private group.</li>
+<li>The knowledge worker must be able to attach a comment to an activity he is sharing.</li>
+<li>The knowledge worker must be able to save and un-save an activity.</li>
+<li>The knowledge worker must be able to comment on an activity when he is not restricted by stream moderation.</li>
+<li>The knowledge worker must be able to delete a comment he has posted.</li>
+<li>The comment must be restricted to 250 characters with visual feedback when the limit has been reached.</li>
+<li>The knowledge worker must be able to flag an activity as inappropriate.</li>
+<li>The organization coordinator must be able to delete any comment posted to a stream associated to his organization or sub-organization.</li>
+<li>The group coordinator must be able to delete any comment posted to his group stream.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="commentonanactivity">Comment on an activity</h3>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_CommentOnActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can comment on an activity by hovering over an activity and clicking on the comment link.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_CommentOnActivity_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Avatar of the knowledge worker posting the comment.</li>
+<li>Content warning message (configured in system settings).</li>
+<li>Remaining character count. When the character count is less than 0, the text color changes to red and appears as a negative number.</li>
+<li>The post button is only active when the remaining character count is 0 or greater.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_CommentOnActivity_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Minimized state of post box, clicking in the box expands the box to a editable text area.</li>
+</ol>
+
+<h3 id="shareanactivity">Share an activity</h3>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_ShareActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can share an activity by hovering over an activity and clicking on the share link.  Share option is not available for activities posted in a private group.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_ShareActivity_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can share an activity to their own stream or to another individual or group stream.  If posting is turned off, the individual or group should not be displayed in the autocomplete.</li>
+<li>Activity being shared.</li>
+<li>Input box to enter a comment.</li>
+<li>Remaining characters</li>
+<li>The share button is only active when the remaining character count is less than 250 or 0 or greater.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_ShareActivity_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Name of the knowledge worker sharing the activity and the stream it is being shared to.</li>
+<li>Name of the knowledge worker that authored the activity.</li>
+<li>Comment from the knowledge worker sharing the activity.</li>
+</ol>
+
+<h3 id="flaganactivity">Flag an activity</h3>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_FlagActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can flag an activity by hovering over an activity and clicking on the flag link. When the knowledge worker clicks the flag link, a pop-up window will be displayed asking them: &#8220;Flagged activities will be sent to the organization coordinator for review.  Are you sure you want to flag this activity as inappropriate?&#8221; If the knowledge worker clicks yes the activity remains on the page.  Feedback is displayed at the top of the page with a close option: &#8220;Activity has been flagged&#8221;.  Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.   The actions described in the <a href="View%20and%20manage%20an%20organization%20profile.html">View and manage an organization profile</a> Flagged activities section and <a href="Manage%20and%20receive%20notifications.html">Manage and receive notifications</a> UX designs are performed.</li>
+</ol>
+
+<h3 id="saveanactivity">Save an activity</h3>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_SaveActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can save an activity by hovering over an activity and clicking on save link.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_SaveActivity_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>When an activity is saved the save link changes to &#8220;Unsave&#8221; allowing the knowledge worker to remove the activity from their saved items.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge worker</h3>
+
+<ol>
+<li><strong>Action: Share activities</strong>
+<ul><li>Verify an activity can be shared in the following cases:
+     * colleague to colleague
+     * colleague to public group
+     * colleague to private group where knowledge worker is a member
+     * public group to public group
+     * public group to private group where knowledge worker is a member
+     * public group to colleague</li></ul></li>
+<li><strong>Action: Attempt to share activity within a private group</strong>
+<ul><li>Verify share link is not provided for an activity with comments</li>
+<li>Verify share link is not provided for an activity without comments</li></ul></li>
+<li><strong>Action: Attach comment when sharing an activity</strong>
+<ul><li>Verify comments can be added when sharing activities</li>
+<li>Verify character count is limited to 250 characters</li>
+<li>Verify visual notification indicating character count</li></ul></li>
+<li><strong>Action: Save and un-save an activity</strong>
+<ul><li>Verify activities can be saved</li>
+<li>Verify activities can be un-saved</li>
+<li>Verify that saved activity appears in the Saved items stream</li></ul></li>
+<li><strong>Action: Comment on activity (assuming commenting is enabled)</strong>
+<ul><li>Verify a comment can be posted against any activity</li></ul></li>
+<li><strong>Action: Delete a comment</strong>
+<ul><li>Verify a comment can be deleted only by the knowledge worker it was posted by</li>
+<li>Verify a delete confirmation is presented</li>
+<li>Verify the delete confirmation must be acknowledged before the delete is processed</li></ul></li>
+<li><strong>Action: Restrict character limits for commenting on activity</strong>
+<ul><li>Verify commenting is limited to 250 characters</li>
+<li>Verify visual notification indicating character count</li></ul></li>
+<li><strong>Action: Flag an activity as inappropriate</strong>
+<ul><li>Verify the ability to flag an activity as inappropriate</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Delete Comments</strong>
+<ul><li>Verify a Group Coordinator is able to delete any comments in the activity stream of his group</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Delete Comments</strong>
+<ul><li>Verify an Organization Coordinator is able to delete any comments in the activity stream of his organization or sub-organization</li></ul></li>
+</ol>
+
+<h3 id="rootorgcoordinator">Root Org Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+<li><strong>Action: Execute same tests as Organization Coordinator</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#commentonanactivity">Comment on an activity</a></li>
+<li><a href="#shareanactivity">Share an activity</a></li>
+<li><a href="#flaganactivity">Flag an activity</a></li>
+<li><a href="#saveanactivity">Save an activity</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorgcoordinator">Root Org Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

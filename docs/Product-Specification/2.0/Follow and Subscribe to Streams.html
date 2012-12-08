@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Follow and Subscribe to Streams</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Follow and Subscribe to Streams</p>
+
+<h1 class="title">Follow and Subscribe to Streams</h1>
+
+<p><a href='Interact with a stream.html'><span id="nextlink">Interact with a stream</span></a>
+<a href='View and Manage gallery items.html'><span id="prevlink">View and Manage gallery items</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Eureka Streams is enabled to accept e-mails that will post a message to a stream or comment on a post.  Users will be able to add to their contacts list the e-mail address of individual streams.  Users will be able to reply to post notifications in order to comment on that particular post.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<h3 id="followunfollow">Follow/Unfollow</h3>
+
+<ol>
+<li>The knowledge worker must be able to follow any public stream.</li>
+<li>The knowledge worker must be able to stop following any stream he is following.</li>
+</ol>
+
+<h3 id="emailsubscription">Email Subscription</h3>
+
+<ol>
+<li>The knowledge worker must be able to subscribe via email to any stream</li>
+<li>The knowledge worker must be able to unsubscribe from email to any subscribed stream.</li>
+</ol>
+
+<h3 id="rssfeed">RSS Feed</h3>
+
+<ol>
+<li>The knowledge worker must be able to view an ATOM feed for a stream.</li>
+<li>The knowledge worker must see for each activity the user name and activity content and 
+for the feed to be sorted by activity date</li>
+<li>The system must authenticate the ATOM feeds.</li>
+</ol>
+
+<h3 id="bookmarks">Bookmarks</h3>
+
+<ol>
+<li>The knowledge worker must be able to bookmark any stream</li>
+<li>The knowledge worker must be able to reorder his bookmarks</li>
+<li>The knowledge worker must be able to remove a bookmark.</li>
+</ol>
+
+<h3 id="addtostartpage">Add to Start Page</h3>
+
+<ol>
+<li>The knowledge worker must be able to create an app from a stream, custom stream, or 
+group stream.</li>
+<li>The knowledge worker must be redirected to the start page after creating an app from a 
+stream, custom stream, or group stream.</li>
+</ol>
+
+<h3 id="filters">Filters</h3>
+
+<ol>
+<li>The knowledge worker must be able to create a filter that includes one or more 
+colleagues, groups, or predefined streams and optional keywords.</li>
+<li>The knowledge worker must be warned when the title for a filter is not provided.</li>
+<li>The knowledge worker must be able to edit a filter.</li>
+<li>The knowledge worker must be able to delete a filter.</li>
+<li>The knowledge worker must be able to reorder filters.</li>
+</ol>
+
+<h3 id="defaultstreams">Default Streams</h3>
+
+<ol>
+<li>The knowledge worker must be able to view a stream of activity from a predefined stream 
+representing the streams he is following.</li>
+<li>The knowledge worker must be able to view a stream of activity from a predefined stream 
+representing everyone in the system. </li>
+<li>The knowledge worker must have one undeletable filter to his liked items.</li>
+<li>The knowledge worker must have one undeletable bookmark to his personal stream.</li>
+</ol>
+
+<h3 id="addinganemailcontactforastream">Adding an Email Contact for a Stream</h3>
+
+<ol>
+<li>The knowledge worker must be able to select, for a stream, a link that will
+add a contact in their contact list.</li>
+</ol>
+
+<h3 id="replyingtoapostnotificatione-mail">Replying to a post notification e-mail</h3>
+
+<ol>
+<li>The knowledge worker must be able to &#8220;reply to &#8220;an e-mail received from a post in order 
+to send an e-mail to the Eureka Streams e-mail box.</li>
+</ol>
+
+<h3 id="e-mailpostingorcommenting">E-mail posting or commenting</h3>
+
+<ol>
+<li>The knowledge worker must be able to post a message to a stream via e-mail. </li>
+<li>The knowledge worker must be able to comment on an activity in stream via e-mail. </li>
+<li>The knowledge worker must be able to e-mail with a signature, original e-mail text, etc. 
+and have these extra itemsremoved allowing only the post or comment text to be processed.</li>
+<li>The knowledge worker must be able to send an e-mail that includes a multipart form 
+and/or HTML and have the HTML stripped out and/or the additional multipart forms ignored allowing only the post or comment text to be processed.</li>
+<li>The knowledge worker must be able to e-mail a post larger than 250 characters and have 
+the extra characters appear as a comment below their post.</li>
+<li>The knowledge worker must be able to e-mail a comment longer than 1,000 characters and 
+have the extra characters appear as additional comments below their comment.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="followingastream">Following a Stream</h3>
+
+<p><img id="" src="images/Subscribe_Follow.png" alt="" title="" /></p>
+
+<ol>
+<li>A user is able to follow any stream (except his own) by clicking on the &#8220;Follow&#8221; button on their stream.</li>
+</ol>
+
+<p><img id="" src="images/Subscribe_Follow_Menu.png" alt="" title="" /></p>
+
+<ol>
+<li>When the user hits the &#8220;Follow&#8221; button a Subscribe modal pops up. Checking &#8220;Add this Stream to my Start Page&#8221; will add the stream to the users start page after they click &#8220;Save Changes&#8221;.</li>
+<li>Checking &#8220;Bookmark this Stream&#8221; will bookmark the stream after the user clicks &#8220;Save Changes&#8221;</li>
+<li>Checking &#8220;Notify my via Email&#8221; will sign the user up to receive email alerts on posts to the stream when the user clicks &#8220;Save Changes&#8221;</li>
+<li>Clicking &#8220;Save Changes&#8221; executes the changes checked.</li>
+<li>Clicking &#8220;No Thanks&#8221; closes the modal and ignores all of the check boxes</li>
+</ol>
+
+<p><img id="" src="images/Subscribe_Unfollow.png" alt="" title="" /></p>
+
+<ol>
+<li>A user is able to unfollow any followed stream by clicking on the &#8220;Unfollow&#8221; button. The Unfollow button shows up in the same place the follow button does.</li>
+</ol>
+
+<h3 id="managingstreamsubscriptions">Managing Stream Subscriptions</h3>
+
+<p><img id="" src="images/Subscribe_Menu.png" alt="" title="" /></p>
+
+<ol>
+<li>Hovering over the subscriptions icon pops up the subscriptions menu.</li>
+<li>Clicking &#8220;Bookmark Stream&#8221; adds the stream to the knowledge worker&#8217;s bookmarks</li>
+<li>Clicking &#8220;Add to Start Page&#8221; adds the stream to the knowledge worker&#8217;s start page.</li>
+<li>Clicking &#8220;Subscribe via Email&#8221; signs the knowledge worker up to receive emails for every 
+post 
+to the stream. When clicked the menu option should change to &#8220;Unsubscribe to email&#8221;</li>
+<li>Clicking &#8220;RSS Feed&#8221; opens the streams RSS feed in a new window.</li>
+<li>Clicking &#8220;Save as Contact&#8221; opens the save to outlook dialog defined below.</li>
+</ol>
+
+<h4 id="exampleoftherssfeed">Example of the RSS Feed</h4>
+
+<p>&lt;item&gt;
+&lt;title&gt;Anthony Romano: This would be an example of a message.&lt;/title&gt;
+&lt;description&gt;Anthony Romano: This would be an example of a message.&lt;/description&gt;
+&lt;pubDate&gt;Tue, 17 Aug 2010 12:58:20 +0000&lt;/pubDate&gt;
+&lt;guid&gt;{opensocialGUID}&lt;/guid&gt;
+&lt;link&gt;https://eurekastreams.org/#activity?viewId=1&amp;listId=1&amp;activityId=11956&lt;/link&gt;
+&lt;/item&gt;</p>
+
+<h3 id="managingbookmarks">Managing Bookmarks</h3>
+
+<p><img id="" src="images/Subscribe_Add_Bookmark.png" alt="" title="" /></p>
+
+<ol>
+<li>Bookmarks can be added by clicking on &#8220;Bookmark a Stream&#8221;. When clicked, a search box opens up allowing the user to instantly search for any stream.</li>
+<li>Hovering over the bookmark shows a &#8220;+&#8221; sign that when clicked adds the stream to the 
+knowledge worker&#8217;s bookmarks.</li>
+</ol>
+
+<p><img id="" src="images/Subscribe_Remove_Bookmark.png" alt="" title="" /> </p>
+
+<ol>
+<li>Hovering over bookmarks shows an &#8220;X&#8221; icon that when clicked removes the bookmark from the user&#8217;s list.</li>
+</ol>
+
+<h3 id="addtostartpage">Add to Start Page</h3>
+
+<p><img id="" src="images/Add_to_Start_Menu.png" alt="" title="" /></p>
+
+<p><img id="" src="images/Add_to_Start_App.png" alt="" title="" /></p>
+
+<ol>
+<li>Hovering over the RSS icon shows a menu. </li>
+<li>Selecting &#8220;Add to Start Page&#8221; creates an app on the knowledge worker&#8217;s Start Page.</li>
+</ol>
+
+<h3 id="managingfilters">Managing Filters</h3>
+
+<p><img id="" src="images/Subscribe_Filter_Hover.png" alt="" title="" /></p>
+
+<ol>
+<li>Hovering over a filter shows an edit and delete button. Clicking edit brings up the edit modal defined below. Clicking the delete button deletes the filter.</li>
+</ol>
+
+<h3 id="addingafilter">Adding a Filter</h3>
+
+<p><img id="" src="images/R1_PS_F16_managelists_CreateNewSavedSearch.png" alt="" title="" /></p>
+
+<ol>
+<li>Input box to enter a name for the custom stream.  Name fields supports up to 50 characters.</li>
+<li>The knowledge worker can select the following options: Everyone, Following, Groups I&#8217;ve 
+Joined, Posted To, Authored By, and Liked By.</li>
+<li>Input box to enter one or more keywords.  Keywords field supports up to 50 characters per keyword and an infinite number of characters.</li>
+<li>When a new list is successfully saved, a warning message will appear at the top of the page telling the user: &#8220;Your stream has been successfully saved&#8221; If one or both of the required fields are left blank the following message will appear above the form: &#8220;Name field is required&#8221; and &#8220;At least one stream is required&#8221;</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F16_managelists_CreateNewSavedSearch_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can select the empty text box to input 1 to many people or group 
+streams by typing in their name and selecting the stream.</li>
+</ol>
+
+<h3 id="editingafilter">Editing a Filter</h3>
+
+<p><img id="" src="images/R1_PS_F16_managelists_EditSavedSearch_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Input box to edit a stream name.</li>
+<li>The knowledge worker can select a predefined or custom stream.</li>
+<li>Input box to enter one or more keywords.</li>
+<li>When a new stream is successfully saved, a warning message will appear at the top of the page telling the user: &#8220;Your stream has been successfully saved&#8221; If one or both of the required fields are left blank the following message will appear above the form: &#8220;Name field is required&#8221; and &#8220;At least one stream is required&#8221;</li>
+<li>Clicking the delete icon displays a pop-up window asking the knowledge worker the following: &#8220;Apps based on this stream will need to be manually deleted from the Start Page.  Are you sure you want to delete this custom stream?&#8221;  If the knowledge worker clicks &#8220;yes&#8221; the stream is deleted and a warning message is displayed with a close link: &#8220;The custom stream has been deleted&#8221;.</li>
+</ol>
+
+<p>Note: There are additional scenarios where a custom stream is automatically modified or deleted.</p>
+
+<ol>
+<li>If a knowledge worker leaves a private group and a stream is based on the private group&#8217;s 
+stream, automatically delete the stream.</li>
+<li>If a knowledge worker leaves a public group, do not delete the stream.</li>
+<li>If a public or private group is deleted and a stream is based on the private group&#8217;s 
+stream, automatically delete the stream.</li>
+</ol>
+
+<h3 id="addingastreamcontact">Adding a Stream Contact</h3>
+
+<p><img id="" src="images/save_in_outlook.png" alt="" title="" /></p>
+
+<ol>
+<li>When clicked from the menu, the add stream contact option brings up this
+dialog which allows the user to add the stream to their mail application.</li>
+</ol>
+
+<h3 id="postnotificatione-mailtext">Post Notification E-mail Text</h3>
+
+<p>Jeffrey H Stephens posted a message to the C&amp;ES Communications Product Team
+stream.</p>
+
+<p>&#8220;Everything is going well&#8221;</p>
+
+<p>To see the post follow this link.</p>
+
+<p>You can reply directly to this message by replying to this email. Be mindful
+to remove your email signature so as to not attach it to your comment within
+Eureka. </p>
+
+<p>Thank You,
+Eureka Streams</p>
+
+<h2 id="testplan">Test Plan</h2>
+
+<h3 id="followunfollow">Follow/UnFollow</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can follow a colleague</strong>
+<ul><li>Verify the follow button changes to stop following</li>
+<li>Verify the ability to view the activity of the colleague being followed within the following stream</li></ul></li>
+<li><strong>Verify a knowledge worker can stop following a colleague</strong>
+<ul><li>Verify the stop following button changes to follow</li>
+<li>Verify the colleagues activity no longer appears in the following list</li></ul></li>
+<li><strong>Verify a knowledge worker can follow yourself</strong>
+<ul><li>Verify a knowledge worker follows his/herself by default</li>
+<li>Verify a knowledge worker is not able to stop following his/herself</li></ul></li>
+<li><strong>Verify a knowledge worker can follow a public group</strong>
+<ul><li>Verify the follow button changes to unfollow</li>
+<li>Verify the group has been added as a list on the activity page</li>
+<li>Verify the group list is displaying the stream for that group</li></ul></li>
+<li><strong>Verify a knowledge worker can leave a public group</strong>
+<ul><li>Verify the unfollow button changes to follow</li>
+<li>Verify the group list no longer appears on the activity page</li></ul></li>
+</ol>
+
+<h3 id="emailsubscription">Email Subscription</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can subscribe via email to a stream</strong>
+<ul><li>Verify the ability to subscribe via email to a group stream</li>
+<li>Verfiy the ability to subscribe via email to a persons stream</li></ul></li>
+<li><strong>Verify a knowledge worker can unsubscribe via email to a stream</strong>
+<ul><li>Verify the ability to unsubscribe via email to a group stream</li>
+<li>Verfiy the ability to unsubscribe via email to a persons stream</li></ul></li>
+</ol>
+
+<h3 id="rssfeed">RSS Feed</h3>
+
+<h3 id="bookmarks">Bookmarks</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can bookmark a stream</strong>
+*Verfiy the bookmark is added</li>
+<li><strong>Verify a knowledge worker can reorder your bookmarked streams</strong>
+*Verify the ability to reorder your bookmarks</li>
+<li><strong>Verify a knowledge worker can remove a bookmarked stream</strong>
+*Verify the bookmark is removed</li>
+</ol>
+
+<h3 id="addtostartpage">Add to Start Page</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can create an app from a stream</strong> 
+<ul><li>Click on the icon to create an app from a knowledge workers stream </li>
+<li>Verify the redirect to the start page and the presence of the app based on the knowledge workers stream which was chosen</li>
+<li>Click on the icon to create an app from a group stream </li>
+<li>Verify the redirect to the start page and the presence of the app based on the group stream which was chosen</li>
+<li>Click on the icon to create an app from a custom stream </li>
+<li>Verify the redirect to the start page and the presence of the app based on the custom stream which was chosen</li></ul></li>
+</ol>
+
+<h3 id="filters">Filters</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can create a custom stream including one or more colleagues, 
+predefined streams or groups and 1 or more keywords</strong>
+<ul><li>Verify a custom list can be created including 1 or more colleagues or group</li>
+<li>Verify the custom list is displayed in the list section of the activity page</li>
+<li>Verify the activity of the colleagues or groups added to the custom list are displayed on the list’s stream</li></ul></li>
+<li><strong>Verify a knowledge worker can check error handling when creating a custom stream</strong>
+<ul><li>Verify error handling is present when the title is not present</li>
+<li>Verify error handling is present when no colleagues, predefined streams, or groups have been selected</li></ul></li>
+<li><strong>Verify a knowledge worker can edit a custom stream</strong>
+<ul><li>Verify a custom stream can be edited</li>
+<li>Verify error handling is present when editing</li></ul></li>
+<li><strong>Verify a knowledge worker can delete a custom stream</strong>
+<ul><li>Verify the custom stream is removed from the activity page</li></ul></li>
+<li><strong>Verify a knowledge worker can reorder stream</strong>
+<ul><li>Verify default and custom streams can be reordered within the list section on the activity page</li></ul></li>
+<li><strong>Verify a knowledge worker can hide and show stream</strong>
+<ul><li>Verify custom stream are hidden by default</li>
+<li>Verify the ability to toggle between show more and show less</li></ul></li>
+<li><strong>Verify a knowledge worker can view a stream of activity from a custom stream</strong>
+<ul><li>Verify the custom streams are accessible in the activity page</li>
+<li>Verify the custom streams display only the activities of the groups or colleagues specified in the custom stream</li></ul></li>
+</ol>
+
+<h3 id="defaultstreams">Default Streams</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can view the activity stream of colleagues being followed</strong>
+<ul><li>Verify the following stream is predefined in the activity page</li>
+<li>Verify only the activities of yourself and those of the colleagues or groups being followed are displayed in the stream</li></ul></li>
+<li><strong>Verify a knowledge worker can view the activity stream of everyone</strong>
+<ul><li>Verify the everyone stream is predefined in the activity page</li>
+<li>Verify all activity is displayed within the everyone stream except private groups where knowledge worker is not a member</li></ul></li>
+<li><strong>Verify a knowledge worker can view the activity stream of liked items</strong>
+<ul><li>Verify the liked filter is undeleteable</li>
+<li>Verify the liked items stream is predefined in the activity page</li>
+<li>Verify that only activities which have been liked by the knowledge worker are displayed on this list</li></ul></li>
+<li><strong>Verify a knowledge worker can view the activity stream of personal activity</strong>
+<ul><li>Verify the the bookmark to the knowledge workers personal stream is undeletable</li>
+<li>Verify the bookmark to the knowledge workers personal stream is predefined on the activity page</li>
+<li>Verify that only activities which have been posted to the knowledge workers personal stream are displayed</li></ul></li>
+</ol>
+
+<h3 id="replyingtoapostnotificatione-mail">Replying to a post notification e-mail</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can &#8220;rely to&#8221; an email recieved from a post</strong> 
+<ul><li>Verify a knowledge worker recieved an email </li>
+<li>Verify the ability to reply to the email</li>
+<li>Verify the email was sent to the Eureka Streams e-mail box</li></ul></li>
+</ol>
+
+<h3 id="downloadingastreamcontact">Downloading a stream contact</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can add e-mail address to their contacts list on their 
+streams</strong>
+<ul><li>Verify the ability to select a contact from the drop down selection</li>
+<li>Verify the ability to add a contact in their contact list</li></ul></li>
+</ol>
+
+<h3 id="e-mailpostingorcommenting">E-mail posting or commenting</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can posts message to a stream by via e-mail.</strong> 
+<ul><li>Verify the ability to e-mail a posts message with a signature</li>
+<li>Verify the ability to change the following items on the e-mail, allowing the individual posts to process.
+<ul><li>Verify the ability to edit text from the email</li>
+<li>Verity the abitity to remove items such as original e-mail text </li></ul></li>
+<li>Verify e-mail a post is limited to 250 characters </li>
+<li>Verify if e-mail post exceed 250 characters, the extra charecters appear as a comment below their post    </li></ul></li>
+<li><strong>Verify a knowledge worker can comment on posts</strong>
+<ul><li>Verify the ability to e-mail comments on a post with a signature</li>
+<li>Verify the ability to change the following items on the e-mail, allowing the individual comments to process.
+<ul><li>Verify the ability to edit text from the email</li>
+<li>Verity the abitity to remove items such as text </li></ul></li>
+<li>Verify e-mail a comment is limited to 1,000 characters </li>
+<li>Verify if e-mail comment exceed 1,000 characters, the extra charecters appear as additional comments below their comment      </li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a>
+<ul><li><a href="#followunfollow">Follow/Unfollow</a></li>
+<li><a href="#emailsubscription">Email Subscription</a></li>
+<li><a href="#rssfeed">RSS Feed</a></li>
+<li><a href="#bookmarks">Bookmarks</a></li>
+<li><a href="#addtostartpage">Add to Start Page</a></li>
+<li><a href="#filters">Filters</a></li>
+<li><a href="#defaultstreams">Default Streams</a></li>
+<li><a href="#addinganemailcontactforastream">Adding an Email Contact for a Stream</a></li>
+<li><a href="#replyingtoapostnotificatione-mail">Replying to a post notification e-mail</a></li>
+<li><a href="#e-mailpostingorcommenting">E-mail posting or commenting</a></li></ul></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#followingastream">Following a Stream</a></li>
+<li><a href="#managingstreamsubscriptions">Managing Stream Subscriptions</a>
+<ul><li><a href="#exampleoftherssfeed">Example of the RSS Feed</a></li></ul></li>
+<li><a href="#managingbookmarks">Managing Bookmarks</a></li>
+<li><a href="#addtostartpage">Add to Start Page</a></li>
+<li><a href="#managingfilters">Managing Filters</a></li>
+<li><a href="#addingafilter">Adding a Filter</a></li>
+<li><a href="#editingafilter">Editing a Filter</a></li>
+<li><a href="#addingastreamcontact">Adding a Stream Contact</a></li>
+<li><a href="#postnotificatione-mailtext">Post Notification E-mail Text</a></li></ul></li>
+<li><a href="#testplan">Test Plan</a>
+<ul><li><a href="#followunfollow">Follow/UnFollow</a></li>
+<li><a href="#emailsubscription">Email Subscription</a></li>
+<li><a href="#rssfeed">RSS Feed</a></li>
+<li><a href="#bookmarks">Bookmarks</a></li>
+<li><a href="#addtostartpage">Add to Start Page</a></li>
+<li><a href="#filters">Filters</a></li>
+<li><a href="#defaultstreams">Default Streams</a></li>
+<li><a href="#replyingtoapostnotificatione-mail">Replying to a post notification e-mail</a></li>
+<li><a href="#downloadingastreamcontact">Downloading a stream contact</a></li>
+<li><a href="#e-mailpostingorcommenting">E-mail posting or commenting</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 2.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

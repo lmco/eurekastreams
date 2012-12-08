@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Notification framework</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; <a href="Software%20architecture.html">Software architecture</a> &gt; Notification framework</p>
+
+<h1 class="title">Notification framework</h1>
+
+<p><a href='Resource framework.html'><span id="nextlink">Resource framework</span></a>
+<a href='Action framework.html'><span id="prevlink">Action framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Notifications are sent by calling an async action whenever an &#8220;event&#8221; occurs, typically done inside another action such as PostActivityComment. A single system event may require multiple notifications to be sent, and the flavors required may depend on rules or dynamic runtime conditions. (For example, commenting on an activity sends different notifications to the stream owner, the author of the activity, and any other people who commented, but should not notify the person making the comment.) To handle this, Translators are defined for each event type and are responsible for generating the appropriate list of notifications for that particular event. These are wired up by Spring. These translators choose from the enumeration NotificationType when determining which notifications to generate. Notifications themselves are transport- and medium-agnostic - they only contain the data itself. Notifiers are responsible for sending a notification on a specific medium, such as email. One or more Notifiers are defined in a Spring configuration file and are responsible for sending notifications for each NotificationType that a Translator returns.</p>
+
+<p>The high-level flow looks as follows:</p>
+
+<p><img id="" src="images/NF_EurekaNotifications-diagram1.png" alt="" title="" /></p>
+
+<p>The most complex NotificationTranslator by far is the CommentTranslator. Distinct notifications need to be sent when someone comments on a post you made, comments to a post in your stream, and also comments on something you have also commented on. To manage this complexity, the CommentTranslator uses a mapper (GetPeopleToNotifyForComment) to find the users appropriate for each comment case.</p>
+
+<p>The GenerateNotificationsAction class itself glues everything together by determining what the event was and retreiving the appropriate Translator (the system event is represented by a RequestType enumeration within the GenerateNotificationRequest). This Translator then returns a collection of NotificationDTO objects, each with a specific NotificationType and list of recipients. Finally, the action loops over each Notifier to send each NotificationDTO.</p>
+
+<p>Currently, we define an EmailNotifier and an ApplicationAlertNotifier. The goal of the EmailNotifier is obviously simple. The ApplicationAlertNotifier stores the necessary notification metadata in a Eureka Streams database table for display by the UI. The entity used for this is ApplicationAlertNotification.</p>
+
+<p><img id="" src="images/NF_Notifications-Class-Diagram.jpg" alt="" title="" /></p>
+
+<h2 id="emaildesignimplementation">Email Design / Implementation</h2>
+
+<p>Email sending is handled asynchronously to allow:</p>
+
+<ol>
+<li>Delays interacting with email servers to not hold up GenerateNotificationsAction.</li>
+<li>When coupled with an appropriate queuing mechanism, allows emails which failed to send to be re-queued and tried again.</li>
+</ol>
+
+<p>Email sending plugs into the flow with a Notifier. The AsyncNotifier is used, which queues a SendNotificationRequest asynchronously to the SendEmailNotificationAction. This action builds the email then sends it. The email is built by invoking an email builder (which implements NotificationEmailBuilder) specific to the type of notification. The list of email builders is injected via Spring, and as of this writing consists of multiple instances of TemplateEmailBuilder.</p>
+
+<p>The conceptual flow is:</p>
+
+<p><img id="" src="images/NF_EurekaNotifications-diagram2.png" alt="" title="" /></p>
+
+<p>SendEmailNotificationAction swallows exceptions relating to building an email, but passes out ones relating to sending. This is so that a failure to build an email does not cause a retry, but a failure to send will.</p>
+
+<p>TemplateEmailBuilder constructs an email using configured template strings for the subject, text body, and HTML body. The text and HTML forms of the body are separate templates so that both forms can be designed specifically to look good; automatic conversion from HTML to text or vice versa would yield an ugly / sub-optimal message in the generated format. Dynamic content is handled by placing named parameters in the template which are replaced by the actual values using the Apache Commons Lang class StrSubstitutor. Should more advanced template processing be desired, Apache Velocity could be used. The actual text of the templates is provided as constructor arguments and currently is specified directly in the Spring configuration file. If desired, a bean could be written to read the templates from a file using Spring resource management.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#emaildesignimplementation">Email Design / Implementation</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

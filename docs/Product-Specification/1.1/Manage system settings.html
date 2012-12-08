@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Manage system settings</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Manage system settings</p>
+
+<h1 class="title">Manage system settings</h1>
+
+<p><a href='Feed Reader App.html'><span id="nextlink">Feed Reader App</span></a>
+<a href='Manage and receive notifications.html'><span id="prevlink">Manage and receive notifications</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Root Organization Coordinators can manage system settings.  This includes adding new users, setting the content expiration length, and configuring a system label for the header/footers, a terms of service message, and stream plugin warning message.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The root organization coordinator must be able to control system access via a list of ldap groups or attributes.</li>
+<li>The root organization coordinator must have the option to send email invitations to knowledge workers when their account is created.</li>
+<li>The system must periodically synchronize the access list.</li>
+<li>The root organization coordinator must be able to synchronize the access list on-demand.</li>
+<li>The root organization coordinator must have the option to configure a system label displayed in the header and footer.</li>
+<li>The root organization coordinator must have the option to configure a content warning message displayed to a knowledge worker when posting an activity.</li>
+<li>The root organization coordinator must have the option to configure a stream plugin warning message displayed to a knowledge worker when configuring a stream plugin for a stream.</li>
+<li>The root organization coordinator must have the option to configure a terms of service message displayed at a configurable interval that must be confirmed by the knowledge worker.</li>
+<li>The root organization coordinator must be able to set the content expiration length between 1 and 360 days.</li>
+<li>The system must periodically remove activities older than the content expiration length with the exception of those saved by a knowledge worker.</li>
+<li>The root organization coordinator must be able to configure the support group.</li>
+<li>The root organization coordinator must be able to configure the help desk contact information.</li>
+<li>The knowledge worker must be able to lookup contact information for product support.</li>
+<li>The root organization coordinator must be able to publish and categorize a stream plugin referenced by a url.</li>
+<li>The system must verify that the stream plugin adheres to the Google gadget specification and eureka stream plugin feature.</li>
+<li>The root organization coordinator must be able to modify the category and url for a published stream plugin.</li>
+<li>The root organization coordinator must be able to remove a published stream plugin.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="systemssettings">Systems Settings</h3>
+
+<p><img id="" src="images/PS_F19_systemSettings.png" alt="" title="" /></p>
+
+<ol>
+<li>Knowledge workers can select &#8220;Group Name&#8221; to enter an LDAP group name. The knowledge worker can select &#8220;Attribute&#8221; the message under the input box changes to: &#8220;Specify an LDAP attribute (in the format: attribute=value)&#8221;.</li>
+<li>Hovering over the group or attribute displays a Delete link allowing the knowledge worker to delete the item. When the delete icon is clicked, a pop-up window is displayed asking the user if they are sure that they want to remove the item. If they click yes the item is removed and the other items move up.</li>
+<li>The knowledge worker has the option to send welcome emails to users when their accounts are created.</li>
+<li>When a user enters a group name or attribute and clicks add a processing animation appear while the system validates the group or attribute. If the group or attribute is not found an error message is shown at the top of the page.</li>
+<li>Feedback displays at the top of the page with a close option: &#8220;Access List Refresh is now processing&#8221;.  Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.   Access list refreshes and new users in the group or attribute are added to the database.</li>
+<li>Site Labeling is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.</li>
+<li>Content Warning is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.</li>
+<li>Plugin Configuration Warning is disabled by default.  When enabled the text box is required and the Plugin Configuration Warning rich text editor supports an infinite amount of characters.</li>
+<li>Terms of Service is disabled by default.  When enabled the text box and prompt interval are required.  Terms of Service rich text editor supports an infinite amount of characters.   Days field supports up to 5 numeric characters.</li>
+<li>Links to the help page.</li>
+<li>The root organization coordinator can enter the name of the group stream they want to specify by clicking in the input box. As they type matches to individual or group streams are displayed in a drop down menu. Entering or selecting a valid stream name removes the input box and displays the name of the stream. The root organization coordinator can remove the stream by clicking the &#8220;x&#8221; button next to the stream name which will display an empty input box. If the organization coordinator enters an invalid stream name and tries to save the changes to the page a warning message will be displayed saying &#8220;The stream you entered could not be found&#8221;.  Field supports up to 50 characters (same length as group name in <a href="View%20and%20manage%20a%20group%20profile.html">View and manage a group profile</a></li>
+<li>Support Phone Number field supports up to 50 characters.</li>
+<li>The root organization coordinator will be warned if they enter an email address that is not properly formatted.  Support Email Address field supports up to 50 characters.</li>
+<li>Activity Expiration is disabled by default.  When enabled the text box is required, supports a number between 1 and 360.</li>
+<li>Saves the edits made to the form and returns the knowledge worker to the start page.  Feedback displays at the top of the page with a close option: &#8220;Settings saved&#8221;.  Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>Discards the changes made to the form and returns the knowledge worker to the start page.</li>
+</ol>
+
+<h3 id="pluginsystemsettings">Plugin System Settings</h3>
+
+<h4 id="viewexistingplugins">View existing Plugins</h4>
+
+<p><img id="" src="images/PS_F19_systemSettings_Plugins_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Allows root organization coordinator to filter by Category.</li>
+<li>Hovering over the plugin icon or text displays the Edit and Delete links. Clicking edit displays the plugin configuration form titled Submit a Plugin.</li>
+<li>Hovering over the plugin icon or text displays the Edit and Delete links. Clicking the delete icon displays a pop-up window asking the knowledge worker: &#8220;Are you sure you want to delete this plugin&#8221; if the knowledge worker clicks &#8220;yes&#8221; the plugin is deleted and a warning message is displayed: &#8220;Stream plugin [insert name] has been deleted&#8221;. Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for implementation specifics.</li>
+<li>Allows root organization coordinator to Add a new plugin</li>
+</ol>
+
+<h4 id="submitaplugin">Submit a Plugin</h4>
+
+<p><img id="" src="images/PS_F19_systemSettings_Plugins_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Select a Category.</li>
+<li>Enter Plugin XML.</li>
+<li>Submits new plugin, returns user to the Plugin page and feedback displays at top of page with a close option: &#8220;Stream Plugin has been successfully added&#8221; Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>Cancels plugin submission and returns user to the Plugin page.</li>
+</ol>
+
+<h4 id="editplugin">Edit Plugin</h4>
+
+<p><img id="" src="images/PS_F19_systemSettings_Plugins_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Modify the Category.</li>
+<li>Update Plugin XML.</li>
+<li>Saves plugin, returns user to the Plugin page and feedback displays at top of page with a close option: &#8220;Stream Plugin has been successfully saved&#8221; Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>Cancels plugin updates and returns user to the Plugin page.</li>
+</ol>
+
+<h3 id="helppage">Help Page</h3>
+
+<p><img id="" src="images/PS_F19_helpPage.png" alt="" title="" /></p>
+
+<ol>
+<li>Avatar and link go to the support stream</li>
+<li>Clicking the email link opens the knowledge worker&#8217;s new email from the knowledge worker&#8217;s local email client.</li>
+<li>Link opens a new window to http://eurekastreams.org</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Attempt to Manage System Settings</strong>
+<ul><li>Verify that the knowledge worker is unable to edit system settings</li></ul></li>
+<li><strong>Action: Lookup contact information for product support</strong>
+<ul><li>Verify that the product support contact information can be viewed</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Control system access via a list of ldap groups or attributes</strong>
+<ul><li>Verify a root organization coordinator can add a Group Name</li>
+<li>Verify a root organization coordinator can delete a Group Name</li>
+<li>Verify an error message is displayed if a blank or invalid Group Name is entered</li>
+<li>Verify a root organization coordinator can add an Attribute</li>
+<li>Verify a root organization coordinator can delete an Attribute</li>
+<li>Verify an error message is displayed if a blank or invalid Attribute is entered</li></ul></li>
+<li><strong>Action: Confirm the option to send email invitations to knowledge workers when their account is created</strong>
+<ul><li>Verify the ability to send email invitation to knowledge workers when their account is create</li>
+<li>Verify the ability to not send email invitations to knowledge workers when their account is create</li></ul></li>
+<li><strong>Action: Confirm the system periodically synchronize the access list</strong>
+<ul><li>Verify the access list is synchronized</li></ul></li>
+<li><strong>Action: Synchronize the access list on-demand</strong>
+<ul><li>Verify the access list is synchronized</li></ul></li>
+<li><strong>Action: Confirm the option to configure a system label displayed in the header and footer</strong>
+<ul><li>Verify the ability to enable or disable the system label displayed in the header and footer</li>
+<li>Verify when the option is enabled,
+<ul><li>a text input box displays</li>
+<li>text is required</li>
+<li>error handling is present if text is empty and the user attempts to submit</li></ul></li>
+<li>Verify when the option is enabled and text is submitted, the text is displayed in the header and footer</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed in the header and footer when submitted.</li></ul></li>
+<li><strong>Action: Confirm the option to configure a content warning message displayed to a knowledge worker when posting an activity</strong>
+<ul><li>Verify the ability to enable or disable displaying a content warning message when posting activity</li>
+<li>Verify when the content warning message is enabled,
+<ul><li>a text input box displays</li>
+<li>text is required</li>
+<li>error handling is present if text is empty and the user attempts to submit</li></ul></li>
+<li>Verify when the option is enabled and the text is submitted, the text is displayed below the activity posting text box and commenting text box</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed below the activity posting text box</li>
+<li>Verify when the option is disabled, there is no text displayed below the commenting text box</li></ul></li>
+<li><strong>Action: Confirm the option to configure a plugin warning message displayed to a knowledge worker when adding a plugin</strong>
+<ul><li>Verify the ability to enable or disable the plugin warning</li>
+<li>Verify that when the plugin warning is enabled
+<ul><li>a text input box displays</li>
+<li>text is required</li>
+<li>error handling is present if text is empty and the user attempts to submit</li></ul></li>
+<li>Verify when the option is enabled and the text is submitted, the text is displayed in the Terms of Use for each plugin</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed in the Terms of Use for each plugin</li></ul></li>
+<li><strong>Action: Confirm the option to configure a terms of service message displayed at a configurable interval that must be confirmed by the knowledge worker</strong>
+<ul><li>Verify the ability to enable or disable the terms of service</li>
+<li>Verify that when the terms of service is enabled
+<ul><li>a text input box displays</li></ul></li></ul></li>
+<li>There is an option to choose to display the terms of service at a specific interval
+<ul><li>Verify when the option is enabled and the text is submitted, the text is displayed when launching the site at the intervals selected</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed in the terms of service when launching the site at the intervals selected</li></ul></li>
+<li><strong>Action: Set the content expiration length between 1 and 360 days</strong>
+<ul><li>Verify the ability to enable or disable the activity expiration</li>
+<li>Verify that when the activity expiration is enabled
+<ul><li>a text input box displays and represents the number of days</li>
+<li># is required</li>
+<li>error handling is present if text is empty or has a non-numeric value and the user attempts to submit</li>
+<li>Value must be between 1 and 360</li></ul></li>
+<li>Verify when the option is enabled and the number is saved</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, data is not deleted</li></ul></li>
+<li><strong>Action: Periodically remove activities older than the content expiration length with the exception of those saved as favorite</strong>
+<ul><li>Verify that activities are saved and have an original activity post date older than the content expiration are not removed</li>
+<li>Verify that activities that are not saved and have an original activity post date older than the content expiration are removed</li></ul></li>
+<li><strong>Action: Configure the support group</strong>
+<ul><li>Verify that the support group displays</li></ul></li>
+<li><strong>Action: Configure the help desk contact information</strong>
+<ul><li>Verify that the help desk contact information displays</li></ul></li>
+<li><strong>Action: Publish and categorize a stream plug in referenced by a url</strong>
+<ul><li>Verify there is a link directing the user to a form to upload a stream plug in</li>
+<li>Verify error handling is present when required fields are not populated</li>
+<li>Verify a category can be selected and associated with the stream plug in</li></ul></li>
+<li><strong>Action: Confirm stream plugins adheres to the Google gadget specification and eureka stream plugin feature</strong>
+<ul><li>Verify a stream plug in that is uploaded must adhere to the Eureka stream plugin feature and the Google gadget specification</li>
+<li>Verify that if a stream plugin does not adhere, there is error handling</li>
+<li>Verify there is a link which will direct the user to the developers guide</li></ul></li>
+<li><strong>Action: Modify the category and url for a published stream plugin</strong>
+<ul><li>Verify the category can be changed for a stream plugin that has been uploaded</li>
+<li>Verify the URL can be changed for a published stream plugin that has been uploaded</li>
+<li>Verify there is error handling in the edit mode</li></ul></li>
+<li><strong>Action:  Remove a published stream plugin</strong>
+<ul><li>Verify a plugin can be removed</li>
+<li>Verify there is removal confirmation</li>
+<li>Verify the plugin is removed, but is not stripped from user or group streams with the stream plug in configured</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#systemssettings">Systems Settings</a></li>
+<li><a href="#pluginsystemsettings">Plugin System Settings</a>
+<ul><li><a href="#viewexistingplugins">View existing Plugins</a></li>
+<li><a href="#submitaplugin">Submit a Plugin</a></li>
+<li><a href="#editplugin">Edit Plugin</a></li></ul></li>
+<li><a href="#helppage">Help Page</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.5/Product%20Specification.html">1.5</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

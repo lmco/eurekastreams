@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>View and manage an employee profile</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; View and manage an employee profile</p>
+
+<h1 class="title">View and manage an employee profile</h1>
+
+<p><a href='View and manage a group profile.html'><span id="nextlink">View and manage a group profile</span></a>
+<a href='Manage gallery items.html'><span id="prevlink">Manage gallery items</span></a></p>
+
+<p>This page will replace the 0.9 specification for <a href="../0.9/View%20and%20manage%20an%20employee%20profile.html">View and manage an employee profile</a> when Eureka Stream 1.0 is released. This product specification is a work in process. In the 1.0 release, popular hashtags, sorting, and RSS feeds are being added.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>An employee&#8217;s profile information allows other colleagues to discover and follow their activity. The employee can capture profile information including work history, education, interest, skills and hobbies. You are also able to upload an avatar for your stream. This information may assist knowledge workers in the discovery of expertise within the enterprise.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to navigate the organization hierarchy from an employee profile.</li>
+<li>The system must display the banner selected by the parent organization (recursively) when a banner is not configured for the employee profile.</li>
+<li>The knowledge worker must be able to upload and resize an image acting as an avatar for his profile.</li>
+<li>The knowledge worker must be able to set a display name in place of his first name and middle initial.</li>
+<li>The knowledge worker must be able to select his primary and supporting organizations for his profile.</li>
+<li>The system must set the root organization as a knowledge worker&#8217;s primary organization by default.</li>
+<li>The knowledge worker must be able to set a short description describing his profile.</li>
+<li>The knowledge worker must be able to set his current title.</li>
+<li>The knowledge worker must be able to publish his interests as keywords to his profile.</li>
+<li>The knowledge worker must be able to publish a biography to his profile.</li>
+<li>The knowledge worker must be able to publish his education experience to his profile.</li>
+<li>The knowledge worker must be able to publish his work experience to his profile.</li>
+<li>The knowledge worker must be able to publish his contact information to his profile.</li>
+<li>The knowledge worker must be able to browse the followers, following, and groups associated with an employee profile.</li>
+<li>The knowledge worker must be able to view a checklist indicating progress towards completing his profile including the avatar, description, interests, biography, education experience, and work experience.</li>
+<li>The knowledge worker must be able to post to a stream of activity associated with an employee profile.</li>
+<li>The knowledge worker must be able to view a stream of activity associated with an employee profile.</li>
+<li>The knowledge worker must be able to see a list of popular hash tags in activities for the profile stream that is selected.</li>
+<li>The knowledge worker must be given a visual indication that a profile is inactive.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="employeeprofile">Employee Profile</h3>
+
+<p><img id="" src="images/R1_PS_F07_manage_employee_profile_employeeProfile_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Employee photo, name, title, description, primary and secondary organization.</li>
+<li>Button that adds a knowledge worker as a follower.</li>
+<li>Links to the popular hashtags. Maximum of 5. When clicked, change the content of the stream to reflect that hashtag as if the user had clicked on the hashtag from within a stream.</li>
+<li>Links to the list of followers, following, and groups.</li>
+<li>Knowledge worker contact information, clicking the email link opens the knowledge worker&#8217;s new email from the knowledge worker&#8217;s local email client.</li>
+<li>Profile % complete, link opens a modal displaying the profile percent complete breakdown. If the percent complete is 100%, this section should be hidden.</li>
+<li>Tab contains activity as described in the <a href="/docs/product-specification/features/post-to-a-stream/">Post to a stream</a>, <a href="/docs/product-specification/features/view-a-stream-of-activity/">View a stream of activity</a>, and <a href="/docs/product-specification/features/search-a-stream/">Search a stream</a> designs.</li>
+<li>Tab contains a list of employees and groups the knowledge worker is following and a list of employees following that knowledge worker.</li>
+<li>Tab contains additional profile information</li>
+<li>Button to configure the profile.</li>
+<li>Display the banner selected by the parent organization (recursively) when a banner is not configured for the employee profile. System default banner should be displayed if the parent organizations do not have a custom banner.</li>
+</ol>
+
+<h3 id="inactiveemployeeprofile">Inactive Employee Profile</h3>
+
+<p><img id="" src="images/R1_PS_F07_manage_employee_profile_inactiveemployeeProfile_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>This message displays in the employee profile to indicate that the employee no longer has access to Eureka Streams.</li>
+</ol>
+
+<h3 id="connectionstab">Connections Tab</h3>
+
+<h4 id="followersampfollowingtabs">Followers &amp; Following Tabs</h4>
+
+<p><img id="" src="images/PS_F07_manage_employee_profile_employeeProfileConnect_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Indicates the View being displayed</li>
+<li>Name and avatar link to the employee&#8217;s profile page, the organization name links to the organization profile.</li>
+<li>Paging controls</li>
+</ol>
+
+<h4 id="groupstab">Groups Tab</h4>
+
+<p><img id="" src="images/PS_F07_manage_employee_profile_employeeProfileConnect_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Name and avatar link to the group&#8217;s profile page, the organization name links to the organization profile.</li>
+<li>Links to private group profile. Private groups should be displayed to all knowledge workers. If knowledge worker hovers over the icon, the message &#8220;Private Group&#8221; should be displayed. If the knowledge worker clicks on the private group profile link and does not have access to the private group, the Request Access to Private Group message in the <a href="/docs/product-specification/features/view-manage-group-profile/">View and Manage Group Profile design</a> should be displayed.</li>
+</ol>
+
+<h3 id="abouttab">About Tab</h3>
+
+<p><img id="" src="images/PS_F07_manage_employee_profile_employeeProfileAbout.png" alt="" title="" /></p>
+
+<ol>
+<li>Biography</li>
+<li>Interests, link to the search results page displaying other employees that share the same keyword.</li>
+<li>Work History - company name, industry and title link to search results page displaying all the employees that have the same company name or title in their work history.</li>
+<li>Education Background - school name and area of study link to search results page displaying all the employees that have the same school or area of study in their education background.</li>
+</ol>
+
+<h3 id="launchchecklist">Launch Checklist</h3>
+
+<p><img id="" src="images/PS_F07_manage_employee_profile_employeeProfileChecklist.png" alt="" title="" /></p>
+
+<ol>
+<li>Links to the basic info tab of the employee profile configuration page.</li>
+<li>Links to the work history &amp; education tab of the employee profile configuration page.</li>
+<li>When the section is not completed, the box is empty with 0% complete displayed.</li>
+<li>Check mark and percent complete appear when section is completed.</li>
+<li>Percent complete total</li>
+</ol>
+
+<h3 id="configureemployeeprofile-basicinfo">Configure Employee Profile - Basic info</h3>
+
+<p><img id="" src="images/R1_PS_F07_editEmployeeProfile_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Upload photo. Refer to the <a href="/docs/product-specification/user-experience-guidelines/upload-photo-avatar/">Upload Photo UX Guidelines</a> for additional details.</li>
+<li>Primary Organization is pre-populated with the root organization. Hovering over an organization displays a Change link allowing the knowledge worker to Change the selected organization. Changing a primary organization displays the organization lookup modal. Refer to the <a href="/docs/product-specification/user-experience-guidelines/employee-or-organization-lookup/">Organization Lookup UX Guidelines</a> for additional details.</li>
+<li>Clicking the Add Organization link opens the organization lookup modal allowing the knowledge worker to select an organization. Refer to the <a href="/docs/product-specification/user-experience-guidelines/employee-or-organization-lookup/">Organization Lookup UX Guidelines</a> for additional details. Knowledge workers can select multiple secondary organizations.</li>
+<li>Title field supports up to 50 characters. It is pre-populated with the knowledge workers title.</li>
+<li>Display Name field supports up to 50 characters. It is pre-populated with the knowledge workers First Name and Middle Initial.</li>
+<li>Text area to enter a knowledge workers job description. Text area is restricted to 250 characters.</li>
+<li>Input field to enter a list of keywords that represent the knowledge worker&#8217;s work and personal interests. As the knowledge worker types in the text area an auto-complete window is displayed showing matches to keywords entered by other knowledge workers. Interests field supports an infinite amount of characters.</li>
+<li>Work Phone field supports up to 50 characters.</li>
+<li>Cell field supports up to 50 characters.</li>
+<li>Fax field supports up to 50 characters.</li>
+<li>Email field supports up to 100 characters and needs to be properly formatted as &#8220;user@example.com&#8221;. Email is pre-populated with the knowledge workers email address.</li>
+<li>Saves the edits made to the form and keeps the knowledge worker on the Basic Info tab. Feedback displays at the top of the page with a close option: &#8220;Your profile has been updated&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made to the form and returns the knowledge worker to the profile page.</li>
+<li>Discards the unsaved changes made to the form and returns the knowledge worker to the profile page.</li>
+</ol>
+
+<h3 id="configureemployeeprofile-workhistoryandeducation">Configure Employee Profile - Work History and Education</h3>
+
+<p><img id="" src="images/PS_F07_editEmployeeProfile_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Biography rich text editor supports an infinite amount of characters.</li>
+<li>Hovering over any of the position information displays the edit link allowing the knowledge worker to edit the items (brings up the edit position form, see below).
+<ul><li>Clicking the Delete link pops up a window asking the knowledge worker if they are sure that they want to delete the position. If knowledge worker selects &#8220;yes&#8221; the item is deleted. Upon delete the other items in the list slide up to take up the space. Feedback displays at the top of the page with a close option: &#8220;Your Position has been deleted&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li></ul></li>
+<li>Opens the add a new position form (see below).</li>
+<li>Hovering over any of the school information displays the edit link allowing the knowledge worker to edit the items (brings up the edit position form, see below).
+<ul><li>Clicking the Delete link pops up a window asking the knowledge worker if they are sure that they want to delete the school. If knowledge worker selects &#8220;yes&#8221; the item is deleted. Upon delete the other items in the list slide up to take up the space. Feedback displays at the top of the page with a close option: &#8220;Your School has been deleted&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li></ul></li>
+<li>Opens the add a new school form (see below).</li>
+<li>Saves the edits made to the form and closes the form. Feedback displays at the top of the page with a close option: &#8220;Your biography has been successfully updated&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made and closes the form.</li>
+</ol>
+
+<h3 id="addposition">Add Position</h3>
+
+<p><img id="" src="images/PS_F07_editEmployeeProfile_fig04.png" alt="" title="" /></p>
+
+<ol>
+<li>Input field auto completes as the knowledge worker types. The auto complete displays matches for companies previously entered by other knowledge workers. Company Name field supports up to 50 alpha numeric characters.</li>
+<li>Drop down menu displaying a list of industries.</li>
+<li>Input field auto completes as the knowledge worker types. The auto complete displays matches for titles previously entered by other knowledge workers. The Title field supports up to 50 alpha numeric characters.</li>
+<li>Drop down menus populated with a list of all the months of the year. Selecting the check box removes the words &#8220;to&#8221;, second drop down menu and year input field and replaces them with the words &#8220;to present&#8221;. Year field supports 4 numeric characters.</li>
+<li>Description supports up to 200 characters.</li>
+<li>Saves the edits made to the form and closes the form. Feedback displays at the top of the page with a close option: &#8220;Your position has been created&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made and closes the form.</li>
+</ol>
+
+<h3 id="editposition">Edit Position</h3>
+
+<p><img id="" src="images/PS_F07_editEmployeeProfile_fig06.png" alt="" title="" /></p>
+
+<ol>
+<li>Editing a position form.</li>
+<li>Saves the edits made to the form and closes the form. Feedback displays at the top of the page with a close option: &#8216;Your position has been saved&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made and closes the form.</li>
+</ol>
+
+<h3 id="addschool">Add School</h3>
+
+<p><img id="" src="images/PS_F07_editEmployeeProfile_fig05.png" alt="" title="" /></p>
+
+<ol>
+<li>Input field auto completes as the knowledge worker types. The auto complete displays matches for schools previously entered by other knowledge workers. Name of School field supports up to 50 characters.</li>
+<li>Drop down menu displaying: Associate, Bachelors, Masters and Doctorate.</li>
+<li>Input field auto completes as the knowledge worker types. The auto complete displays matches with areas of study previously entered by other knowledge workers. Area of Study field supports up to 50 characters.</li>
+<li>Year Graduated field supports up to 4 numeric characters.</li>
+<li>Additional Details field supports up to 200 characters.</li>
+<li>Saves the edits made to the form and closes the form. Feedback displays at the top of the page with a close option: &#8220;Your school has been created&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made and closes the form.</li>
+</ol>
+
+<h3 id="editschool">Edit School</h3>
+
+<p><img id="" src="images/PS_F07_editEmployeeProfile_fig07.png" alt="" title="" /></p>
+
+<ol>
+<li>Editing a school form.</li>
+<li>Saves the edits made to the form and closes the form. Feedback displays at the top of the page with a close option: &#8220;Your school has been saved&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made and closes the form.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Navigate the organization hierarchy from an employee profile</strong>
+<ul><li>Verify the employee can navigate to the primary organization he is associated with</li></ul></li>
+<li><strong>Action: View the banner selected by the knowledge worker&#8217;s primary organization on his profile</strong>
+<ul><li>Verify that the parent organizations banner displays (recursively)</li>
+<li>Verify that the system default banner displays when the parent organization and recursive organizations do not have a custom banner defined</li></ul></li>
+<li><strong>Action: Upload and resize an image acting as an avatar for his profile</strong>
+<ul><li>Verify the ability to upload a file only of type JPG, PNG, GIF</li>
+<li>Verify error handling is present if the file type is not correct</li>
+<li>Verify the ability to upload a file that is 4MB or smaller</li>
+<li>Verify error handling is present if the file is larger than 4MB</li>
+<li>Verify the ability to crop the image</li>
+<li>Verify the avatar is correctly displayed in the following locations:
+<ul><li>Activities with no comments</li>
+<li>Activity with a single comment that you authored</li>
+<li>Activity where you authored only the last comment</li>
+<li>Activity where you authored only the comments in the middle, not the first and last</li>
+<li>Activity with comments you didn&#8217;t author</li>
+<li>Comments on activities you didn&#8217;t author</li>
+<li>Activity shared to your own stream</li>
+<li>Activity shared to a stream other than your own</li></ul></li></ul></li>
+<li><strong>Action: Set a display name in place of his first name and middle initial</strong>
+<ul><li>Verify the display name is a required field on the Basic Info tab of the edit profiles page</li>
+<li>Verify that the display name defaults to the knowledge workers first name and middle initial</li>
+<li>Verify the ability to edit the display name entered</li>
+<li>Verify that any change to the display name appears in the following locations:
+<ul><li>On an activity you posted with no comments</li>
+<li>On an activity you posted with comments</li>
+<li>On an activity with comments you didn&#8217;t author</li>
+<li>On comments on activities you didn&#8217;t author</li>
+<li>On activity shared to your own stream</li>
+<li>On activity shared to a stream other than your own</li>
+<li>On activity you share</li>
+<li>On comments you have made</li>
+<li>On existing notifications</li></ul></li></ul></li>
+<li><strong>Action: Select his primary and supporting organizations for his profile</strong>
+<ul><li>Verify the ability to select a primary organization on the Basic Info tab of the edit profiles page</li>
+<li>Verify the primary organization selected appears on the profile</li>
+<li>Verify the ability to select a supporting organization</li>
+<li>Verify the supporting organization can be deleted</li>
+<li>Verify multiple supporting organizations can be noted</li>
+<li>Verify the supporting organization selected appears on the profile</li></ul></li>
+<li><strong>Action: Confirm the root organization as a knowledge worker&#8217;s primary organization by default</strong>
+<ul><li>Verify the root organization of the knowledge worker is displayed by default</li></ul></li>
+<li><strong>Action: Set a short description describing his profile</strong>
+<ul><li>Verify the short description is an optional field on the Basic Info tab of the edit profiles page</li>
+<li>Verify the short description is limited to 250 characters</li>
+<li>Verify the short description is displayed on the profile</li></ul></li>
+<li><strong>Action: Set his current title</strong>
+<ul><li>Verify the ability to enter a current title via the Basic Info tab of the Edit Profile page</li>
+<li>Verify the title appears on the profile</li>
+<li>Verify the title can be edited</li>
+<li>Verify the title is a required field</li>
+<li>Verify error handling occurs when the field is not populated</li></ul></li>
+<li><strong>Action: Publish his interests as keywords to his profile</strong>
+<ul><li>Verify the interests field is optional</li>
+<li>Verify the interests can be added, edited and deleted on the Basic Info tab of Edit profile</li>
+<li>Verify interests must be displayed on the about tab in the profile</li></ul></li>
+<li><strong>Action: Publish a biography to his profile</strong>
+<ul><li>Verify the biography is optional</li>
+<li>Verify the biography is displayed on the About tab of the knowledge workers profile</li>
+<li>Verify the biography text box offers rich text formatting</li>
+<li>Verify the biography can be added or edited via the Work History &amp; Education tab of the Edit Profile page</li></ul></li>
+<li><strong>Action: Publish his education experience to his profile</strong>
+<ul><li>Verify that adding an education experience is optional</li>
+<li>Verify that the Name of school, degree and area of study are required fields when adding an educational experience</li>
+<li>Verify the year graduated and additional details are optional fields when adding an educational experience</li>
+<li>Verify the education experience can be added or edited via the Work History &amp; Education tab of the Edit Profile page</li>
+<li>Verify the education experience is displayed on the About tab of the knowledge workers profile</li></ul></li>
+<li><strong>Action: Publish his work experience to his profile</strong>
+<ul><li>Verify that adding an work experience is optional</li>
+<li>Verify that the Company Name, Industry, Title, and time period are required fields when adding an work experience</li>
+<li>Verify the work experience can be added or edited via the Work History &amp; Education tab of the Edit Profile page</li>
+<li>Verify the work experience is displayed on the About tab of the knowledge workers profile</li></ul></li>
+<li><strong>Action: Publish his contact information to his profile</strong>
+<ul><li>Verify the work phone, cell phone and fax fields are optional</li>
+<li>Verify the email field is required</li>
+<li>Verify the email field is populated by default with the knowledge workers LMCO email address</li>
+<li>Verify contact information added or changed on the Basic Info tab of Edit profile</li>
+<li>Verify contact information is displayed on the about tab in the profile</li></ul></li>
+<li><strong>Action: Browse the followers, following, and groups associated with an employee profile</strong>
+<ul><li>Verify the connections of the knowledge worker can be browsed via the Connections tab on the profile</li>
+<li>Verify the connections can be displayed based on Followers, Following or Groups</li>
+<li>Verify only people who are followers of the knowledge worker are displayed as a follower</li>
+<li>Verify only people who the knowledge worker is following, are displayed on Following sort</li>
+<li>Verify only groups the knowledge worker has joined are displayed on the Groups sort</li></ul></li>
+<li><strong>Action: View a checklist indicating progress towards completing his profile</strong>
+<ul><li>Verify a checklist can easily be launched from the profile page</li>
+<li>Verify the various sections composing the profile checklist are easily accessible from the profile checklist</li>
+<li>Verify there is a percent indication on the profile page accurately representing the percent complete of the profile</li>
+<li>Verify that the checklist section is hidden once it is 100% complete</li></ul></li>
+<li><strong>Action: Post to a stream of activity associated with an employee profile</strong>
+<ul><li>Verify the ability to post to another knowledge workers stream</li>
+<li>Verify the ability to post an activity containing a URL to another knowledge workers stream</li>
+<li>Verify the ability to comment on a knowledge workers activities within his/her stream</li>
+<li>Verify the ability to post to your own stream</li>
+<li>Verify the ability to post an activity containing a URL to a knowledge workers stream</li>
+<li>Verify the ability to comment on activities within your own stream</li></ul></li>
+<li><strong>Action: View a stream of activity associated with an employee profile</strong>
+<ul><li>Verify all activity associated with the knowledge workers stream is displayed, including a:</li>
+<li>Post to your own stream</li>
+<li>Post for an activity containing a URL to a knowledge workers stream</li>
+<li>Comment on activity within your own stream</li>
+<li>Verify all activity associated with another knowledge workers stream is displayed, including a:</li>
+<li>Post to another knowledge workers stream</li>
+<li>Post for an activity containing a URL to another knowledge workers stream</li>
+<li>Comment on a knowledge workers activities within his/her stream</li></ul></li>
+<li><strong>Action: Post several messages with hashtags within the knowledge workers stream</strong>
+<ul><li>Verify that the popular hashtags displayed in the knowledge workers profile represent the top 5 hashtags entered.</li></ul></li>
+<li><strong>Action: View an employee that was locked by the refresh job (i.e. no longer belongs to company or left root org)</strong>
+<ul><li>Verify that the message in the Inactive message in the UX Designs is displayed when the employee is locked by the refresh job.</li></ul></li>
+<li><strong>Action: Delete a knowledge worker&#8217;s parent organization</strong>
+<ul><li>Verify that the message in the UX Designs is displayed when the parent organization assigned to a knowledge worker is in the process of being deleted and 1) a collegue attempts to post or delete a message in the knowledge workers profile or 2) attempts to share a post to the knowledge workers profile. </li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#employeeprofile">Employee Profile</a></li>
+<li><a href="#inactiveemployeeprofile">Inactive Employee Profile</a></li>
+<li><a href="#connectionstab">Connections Tab</a>
+<ul><li><a href="#followersfollowingtabs">Followers &amp; Following Tabs</a></li>
+<li><a href="#groupstab">Groups Tab</a></li></ul></li>
+<li><a href="#abouttab">About Tab</a></li>
+<li><a href="#launchchecklist">Launch Checklist</a></li>
+<li><a href="#configureemployeeprofile-basicinfo">Configure Employee Profile - Basic info</a></li>
+<li><a href="#configureemployeeprofile-workhistoryandeducation">Configure Employee Profile - Work History and Education</a></li>
+<li><a href="#addposition">Add Position</a></li>
+<li><a href="#editposition">Edit Position</a></li>
+<li><a href="#addschool">Add School</a></li>
+<li><a href="#editschool">Edit School</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Developer Integration Guidelines</title>
+		<link rel="stylesheet" href="style/Developer Integration Guidelines.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; Developer Integration Guidelines</p>
+
+<h1 class="title">Developer Integration Guidelines</h1>
+
+<p><a href='Introduction.html'><span id="nextlink">Introduction</span></a>
+<a><span id="noprevlink">&nbsp;</span></a></p>
+
+<p>Eureka Connect API Documentation</p>
+
+<h2><a href="Introduction.html">Introduction</a></h2>
+
+<h2><a href="APIs.html">APIs</a></h2>
+
+<ul>
+<li><a href="authorizeUpdateGroup.html">authorizeUpdateGroup</a></li>
+<li><a href="deleteActivityAction.html">deleteActivityAction</a></li>
+<li><a href="deleteComment.html">deleteComment</a></li>
+<li><a href="deleteStreamForCurrentUser.html">deleteStreamForCurrentUser</a></li>
+<li><a href="flagActivity.html">flagActivity</a></li>
+<li><a href="getActivitiesByRequest.html">getActivitiesByRequest</a></li>
+<li><a href="getActivityById.html">getActivityById</a></li>
+<li><a href="getActivityCount.html">getActivityCount</a></li>
+<li><a href="getActivityLikers.html">getActivityLikers</a></li>
+<li><a href="getAllPopularHashTags.html">getAllPopularHashTags</a></li>
+<li><a href="getBreadcrumbsList.html">getBreadcrumbsList</a></li>
+<li><a href="getCurrentUserFollowedGroups.html">getCurrentUserFollowedGroups</a></li>
+<li><a href="getDirectorySearchResults.html">getDirectorySearchResults</a></li>
+<li><a href="getDirectorySearchResultsGroups.html">getDirectorySearchResultsGroups</a></li>
+<li><a href="getDirectorySearchResultsPeople.html">getDirectorySearchResultsPeople</a></li>
+<li><a href="getEducation.html">getEducation</a></li>
+<li><a href="getEmployment.html">getEmployment</a></li>
+<li><a href="getFollowing.html">getFollowing</a></li>
+<li><a href="getFollowingGroups.html">getFollowingGroups</a></li>
+<li><a href="getGroupFollowers.html">getGroupFollowers</a></li>
+<li><a href="getGroupModelView.html">getGroupModelView</a></li>
+<li><a href="getParsedLinkInformation.html">getParsedLinkInformation</a></li>
+<li><a href="getPersonFollowers.html">getPersonFollowers</a></li>
+<li><a href="getPersonModelView.html">getPersonModelView</a></li>
+<li><a href="getPopularHashTagsForStream.html">getPopularHashTagsForStream</a></li>
+<li><a href="getRequestForGroupMembershipByGroupAction.html">getRequestForGroupMembershipByGroupAction</a></li>
+<li><a href="getSystemSettings.html">getSystemSettings</a></li>
+<li><a href="getUnreadApplicationAlertCount.html">getUnreadApplicationAlertCount</a></li>
+<li><a href="modifyStreamForCurrentUser.html">modifyStreamForCurrentUser</a></li>
+<li><a href="postActivityCommentAction.html">postActivityCommentAction</a></li>
+<li><a href="postGroupActivityServiceActionTaskHandler.html">postGroupActivityServiceActionTaskHandler</a></li>
+<li><a href="postPersonActivityServiceActionTaskHandler.html">postPersonActivityServiceActionTaskHandler</a></li>
+<li><a href="setActivityLiked.html">setActivityLiked</a></li>
+<li><a href="setActivityStar.html">setActivityStar</a></li>
+<li><a href="setFollowingStatusGroupTaskHandler.html">setFollowingStatusGroupTaskHandler</a></li>
+<li><a href="setFollowingStatusPersonTaskHandler.html">setFollowingStatusPersonTaskHandler</a></li>
+<li><a href="setStreamOrder.html">setStreamOrder</a></li>
+<li><a href="getCurrentUserFollowingStatus.html">getCurrentUserFollowingStatus</a></li>
+<li><a href="getCurrentUserStreams.html">getCurrentUserStreams</a></li>
+</ul>
+
+<h2><a href="Data%20Types.html">Data Types</a></h2>
+
+<ul>
+<li><a href="ActivityDTO.html">ActivityDTO</a></li>
+<li><a href="ActivityVerb.html">ActivityVerb</a></li>
+<li><a href="AuthenticationType.html">AuthenticationType</a></li>
+<li><a href="BackgroundItem.html">BackgroundItem</a></li>
+<li><a href="BackgroundItemType.html">BackgroundItemType</a></li>
+<li><a href="BaseObjectType.html">BaseObjectType</a></li>
+<li><a href="BreadcrumbDTO.html">BreadcrumbDTO</a></li>
+<li><a href="CommentDTO.html">CommentDTO</a></li>
+<li><a href="DomainGroupModelView.html">DomainGroupModelView</a></li>
+<li><a href="Enrollment.html">Enrollment</a></li>
+<li><a href="EntityType.html">EntityType</a></li>
+<li><a href="Follow.FollowerStatus.html">Follow.FollowerStatus</a></li>
+<li><a href="GetCurrentUserFollowingStatusRequest.html">GetCurrentUserFollowingStatusRequest</a></li>
+<li><a href="GetCurrentUserStreamFilterResponse.html">GetCurrentUserStreamFilterResponse</a></li>
+<li><a href="GetDirectorySearchResultsRequest.html">GetDirectorySearchResultsRequest</a></li>
+<li><a href="GetFollowersFollowingRequest.html">GetFollowersFollowingRequest</a></li>
+<li><a href="GetRequestForGroupMembershipRequest.html">GetRequestForGroupMembershipRequest</a></li>
+<li><a href="Job.html">Job</a></li>
+<li><a href="LinkInformation.html">LinkInformation</a></li>
+<li><a href="LongidToLookup.html">LongidToLookup</a></li>
+<li><a href="MembershipCriteria.html">MembershipCriteria</a></li>
+<li><a href="OrganizationModelView.html">OrganizationModelView</a></li>
+<li><a href="Page.html">Page</a></li>
+<li><a href="PagedSet.html">PagedSet</a></li>
+<li><a href="PersonModelView.html">PersonModelView</a></li>
+<li><a href="PostActivityRequest.html">PostActivityRequest</a></li>
+<li><a href="ResourceSortCriteria.html">ResourceSortCriteria</a></li>
+<li><a href="ResourceSortCriterion.SortDirection.html">ResourceSortCriterion.SortDirection</a></li>
+<li><a href="ResourceSortCriterion.SortField.html">ResourceSortCriterion.SortField</a></li>
+<li><a href="ResourceSortCriterion.html">ResourceSortCriterion</a></li>
+<li><a href="SetActivityLikeRequest.LikeActionType.html">SetActivityLikeRequest.LikeActionType</a></li>
+<li><a href="SetActivityLikeRequest.html">SetActivityLikeRequest</a></li>
+<li><a href="Stream.html">Stream</a></li>
+<li><a href="StreamEntityDTO.html">StreamEntityDTO</a></li>
+<li><a href="StreamScope.ScopeType.html">StreamScope.ScopeType</a></li>
+<li><a href="SystemSettings.html">SystemSettings</a></li>
+<li><a href="PersonModelView.Role.html">PersonModelView.Role</a></li>
+<li><a href="StreamPopularHashTagsRequest.html">StreamPopularHashTagsRequest</a></li>
+<li><a href="GetBreadCrumbsListRequest.html">GetBreadCrumbsListRequest</a></li>
+</ul>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="Introduction.html">Introduction</a></li>
+<li><a href="APIs.html">APIs</a></li>
+<li><a href="Data%20Types.html">Data Types</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

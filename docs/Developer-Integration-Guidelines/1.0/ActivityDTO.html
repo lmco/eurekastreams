@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>ActivityDTO</title>
+		<link rel="stylesheet" href="style/Developer Integration Guidelines.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Developer%20Integration%20Guidelines.html">Developer Integration Guidelines</a> &gt; <a href="Data%20Types.html">Data Types</a> &gt; ActivityDTO</p>
+
+<h1 class="title">ActivityDTO</h1>
+
+<p><a href='ActivityVerb.html'><span id="nextlink">ActivityVerb</span></a>
+<a href='Data Types.html'><span id="prevlink">Data Types</span></a></p>
+
+<h2 id="description">Description</h2>
+
+<p>Contains the componets of an activty.</p>
+
+<h3 id="contents">Contents</h3>
+
+<table cellspacing="10" border="0" style="text-align: left;">
+<thead>
+<tr>
+<th>Type</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number</td>
+<td>id</td>
+<td>Uniquely identifies the activity</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/ActivityVerb.html" title="ActivityVerb">ActivityVerb</a></td>
+<td>verb</td>
+<td>Describes the action on the activity (post,share)</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/BaseObjectType.html" title="BaseObjectType">BaseObjectType</a></td>
+<td>baseObjectType</td>
+<td>An enumeration of object types for activities</td>
+</tr>
+<tr>
+<td>HashMap&lt;String, String&gt;</td>
+<td>baseObjectProperties</td>
+<td>Describes the properties for objects for an activty</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/StreamEntityDTO.html" title="StreamEntityDTO">StreamEntityDTO</a></td>
+<td>actor</td>
+<td>Person that put the activity in the stream</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/StreamEntityDTO.html" title="StreamEntityDTO">StreamEntityDTO</a></td>
+<td>originalActor</td>
+<td>For shared activity, the original author of the activity</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/StreamEntityDTO.html" title="StreamEntityDTO">StreamEntityDTO</a></td>
+<td>proxyActor</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/StreamEntityDTO.html" title="StreamEntityDTO">StreamEntityDTO</a></td>
+<td>destinationStream</td>
+<td>The stream in which the activity resides</td>
+</tr>
+<tr>
+<td>String</td>
+<td>location</td>
+<td></td>
+</tr>
+<tr>
+<td>String</td>
+<td>mood</td>
+<td></td>
+</tr>
+<tr>
+<td>String</td>
+<td>annotation</td>
+<td></td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>starred</td>
+<td>True/False flag defining if the activity has been saved or not</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>postedTime</td>
+<td>Date/time stamp marking when the activity was posted</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/CommentDTO.html" title="CommentDTO">CommentDTO</a></td>
+<td>firstComment</td>
+<td>Data set representing the first comment for the activity</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/CommentDTO.html" title="CommentDTO">CommentDTO</a></td>
+<td>lastComment</td>
+<td>Data set representing the last comment for the activity</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>commentable</td>
+<td>True/false flag defining whether commenting is enabled for the activity</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>commentCount</td>
+<td>Number of comments posted to the activity</td>
+</tr>
+<tr>
+<td>List&lt;<a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/CommentDTO.html" title="CommentDTO">CommentDTO</a>&gt;</td>
+<td>comments</td>
+<td>List of commets for the activity</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>deletable</td>
+<td>True/false flag defining whether the current user may delete the activity</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>isDestinationStreamPublic</td>
+<td>True/false flag defining whether the stream where the activity resides is public or not</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>shareable</td>
+<td>Defines whether the activity is shareable or not</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/EntityType.html" title="EntityType">EntityType</a></td>
+<td>appType</td>
+<td>The application type for the activity</td>
+</tr>
+<tr>
+<td>String</td>
+<td>appName</td>
+<td>The name of the application where the activity resides</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>appId</td>
+<td>The unique identifier for the application where the activity resides</td>
+</tr>
+<tr>
+<td>String</td>
+<td>appSource</td>
+<td>The name of the source stream for the application where the activity resides</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>liked</td>
+<td>True/false flag defining whether the activityhas been liked or not</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>likeCount</td>
+<td>Number of times the activity was liked</td>
+</tr>
+<tr>
+<td>List&lt;<a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/PersonModelView.html" title="PersonModelView">PersonModelView</a>&gt;</td>
+<td>likers</td>
+<td>List of users who liked the activity</td>
+</tr>
+</tbody>
+</table>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#description">Description</a>
+<ul><li><a href="#contents">Contents</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Introduction</title>
+		<link rel="stylesheet" href="style/Developer Integration Guidelines.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Developer%20Integration%20Guidelines.html">Developer Integration Guidelines</a> &gt; Introduction</p>
+
+<h1 class="title">Introduction</h1>
+
+<p><a href='APIs.html'><span id="nextlink">APIs</span></a>
+<a href='Developer Integration Guidelines.html'><span id="prevlink">Developer Integration Guidelines</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>This document will describe, for developers, how to use this API to integrate Eureka Connect into a website.</p>
+
+<h2 id="apicalls">API Calls</h2>
+
+<p>API calls are made by inserting JSON request into a URL.  The URL will need to follow the specific format below.</p>
+
+<h3 id="exampleapicall">Example API Call</h3>
+
+<p>The following sections will walk a developer through creating an API call.</p>
+
+<h4 id="urlformat">URL Format</h4>
+
+<p>The URL that calls the Eureka Connect API includes, is as follows:</p>
+
+<p>host_name/api/api_version/read_only/api_name/JSON_request</p>
+
+<p><strong>host_name</strong> is the URL of the Eureka instance
+<strong>api</strong> is the literal string &#8220;api&#8221;
+<strong>api_version</strong> is the version number of the Eureka Connect API being used
+<strong>read_only</strong> can have the value of either full or read.  Full means that all APIs are available, read means that only the READ-ONLY APIs are available. <br />
+Each of these settings can have different security configured.  For example full can be OAUTH while read is Integrated Authorization.  It is recommended that Integrate Authentication not be used for full, as this opens your system to potential security threats.
+<strong>api</strong> is the name of the API being called.  Full descriptions of the APIs available are listed in the <a href="APIs.html">API section</a>.
+<strong>JSON_request</strong> is the JSON request object</p>
+
+<h4 id="creatingajsonrequestobject">Creating a JSON Request Object</h4>
+
+<p>To make a call to the API the JSON object only requires one parameter, the request parameter.  The JSON object, therefore, has the following appearance:</p>
+
+<p>{&#8220;request&#8221;:7}</p>
+
+<p>Where 7 is the request object as defined in the API description.  If the API does not require a request parameter, the JSON object appears as follows:</p>
+
+<p>{}</p>
+
+<p>So, for example, suppose it was necessary to post the comment &#8220;That&#8217;s very helpful!&#8221; to an activity with an ID of 42. The API to use would be <br />
+[postActivtyCommentAction].  That API takes a <a href="CommentDTO.html">CommentDTO</a> as a request item.  Specifically to comment what is needed is the activity ID and the comment <br />
+text.  So the JSON object would have the following appearance:</p>
+
+<p>{&#8220;request&#8221;:{&#8220;activityId&#8221;:42.&#8221;body&#8221;:&#8221;That&#8217;s very helpful!&#8221;}}</p>
+
+<h4 id="encodingthejsonrequestobject">Encoding the JSON Request Object</h4>
+
+<p>Since the JSON Request Object will be part of the URL, it is important to encode the JSON Request Object so that no illegal characters are used in the <br />
+URL.  In JavaScript the function encodeURIComponent() will execute the necessary transformations to the JSON request object so that no syntax errors will <br />
+occur in the URL.</p>
+
+<h4 id="finalapicallurl">Final API call URL</h4>
+
+<p>To complete our example lets use the post a comment request above along with the following assumptions:</p>
+
+<p>URL to Eureka: http://demo.eurekastreams.org/
+API Version: 0
+Since posting to comment is making an edit to the stream, the read_only value to use is full.
+API name: postActivityCommentAction</p>
+
+<p>So after encoding the JSON request object, the following is the complete API call URL:</p>
+
+<p>http://demo.eurekastreams.org/api/0/full/postActivityCommentAction/%7B%22request%22%3A%7B%22activityId%22%3A42%2C%22body%22%3A%22That&#8217;s%20very%20helpful! 
+%22%7D%7D</p>
+
+<h3 id="apiresponse">API Response</h3>
+
+<p>The response from the API is unencoded JSON of the APIs documented response type as described in the <a href="APIs.html">API section</a>.  If the response is a simple type <br />
+(e.g. Number, Date, String), the response will simply be that value in the appropriate type, otherwise the returned value will be a JSON object.</p>
+
+<p><strong>Please Note</strong> There may be additional data items in returned types than are explained in the documentation.  Considered these reserved values that may <br />
+be removed or changed without notice.  It is strongly recommended not to use these values.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#apicalls">API Calls</a>
+<ul><li><a href="#exampleapicall">Example API Call</a>
+<ul><li><a href="#urlformat">URL Format</a></li>
+<li><a href="#creatingajsonrequestobject">Creating a JSON Request Object</a></li>
+<li><a href="#encodingthejsonrequestobject">Encoding the JSON Request Object</a></li>
+<li><a href="#finalapicallurl">Final API call URL</a></li></ul></li>
+<li><a href="#apiresponse">API Response</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

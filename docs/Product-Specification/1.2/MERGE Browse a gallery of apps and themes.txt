@@ -1,0 +1,76 @@
+##Overview
+The gallery showcases a catalog of apps, tabs, and themes that a knowledge worker can use to customize pages. Organizations are responsible for vetting what items are available within the gallery for their employees.
+##Conditions of satisfaction
+1. The knowledge worker must be able to browse a list of apps by recently published.
+2. The knowledge worker must be able to browse a list of apps by popularity.
+3. The knowledge worker must be able to browse a list of apps by category.
+4. The knowledge worker must be able to browse a list of themes by recently published.
+5. The knowledge worker must be able to browse a list of themes by popularity.
+6. The knowledge worker must be able to browse a list of themes by category.
+7. The knowledge worker must be able to view an app's title, thumbnail, website url, description, user count, author, category, and publish date.
+8. The knowledge worker must be able to view a theme's title, thumbnail, website url, description, user count, author, category, and publish date.
+##User experience
+### Browse Apps
+![](images/PS_F04_BrowseGallery_apps.png)
+
+1. Clicking the category name displays the apps for that category
+2. Sorts the list of apps by date added to the gallery.
+3. Sorts the list of apps by the number of users that added the app to their start page.
+4. Opens a new window and displays and link to the developer website
+5. Displays all apps in the specified category.
+6. Link to the Author's email address.
+7. Adds app to the Start page. Focus remains on the App Configure page after an app is added.  Feedback displays at top of page indicating "App has been added".
+8. Closes the configuration window and returns the knowledge worker to the Start Page.
+
+### Browse Themes
+![](images/PS_F04_BrowseGallery_themes.png)
+
+1. Clicking the category names displays the themes for that category
+2. Sorts the list of themes by date added to the gallery.
+3. Sorts the list of themes by the number of users that applied the theme to their start page.
+4. Displays all themes in the specified category.
+5. Link to the Author's email address.
+6. Applies theme and returns knowledge worker to the Start Page. Feedback displays at top of page indicating "Theme has been applied".
+7. Closes the configuration window and returns the knowledge worker to the Start Page.
+
+##Test Plans
+###Knowledge Worker
+1. **Action: Browse a list of apps by recently published**
+    * Verify the ability to browse recently published apps in the gallery
+2. **Action: Browse a list of apps by popularity**
+    * Verify the ability to browse apps in the gallery by popularity
+3. **Action: Browse a list of apps by category**
+    * Verify the ability to browse apps in the gallery by category
+4. **Action: Browse a list of themes by recently published**
+    * Verify the ability to browse recently published themes in the gallery
+5. **Action: Browse a list of themes by popularity**
+    * Verify the ability to browse themes in the gallery by popularity
+6. **Action: Browse a list of themes by category**
+    * Verify the ability to browse themes in the gallery by category
+7. **Action: View an app's title, thumbnail, description, user count, author, category, and publish date**
+    * Verify the title is present
+    * Verify a thumbnail image is present
+    * Verify a description is present
+    * Verify the user count is present
+    * Verify the author is present
+    * Verify the category is present
+    * Verify the date published is present
+    * Verify all of these attributes are present for apps in the gallery
+8. **Action: View a theme's title, thumbnail, description, user count, author, category, and publish date**
+    * Verify the title is present
+    * Verify a thumbnail image is present
+    * Verify a description is present
+    * Verify the user count is present
+    * Verify the author is present
+    * Verify the category is present
+    * Verify the date published is present
+    * Verify all of these attributes are present for themes in the gallery
+### Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+### Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+### Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully

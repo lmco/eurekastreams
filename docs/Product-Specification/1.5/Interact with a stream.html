@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Interact with a stream</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Interact with a stream</p>
+
+<h1 class="title">Interact with a stream</h1>
+
+<p><a href='View Eureka Metrics.html'><span id="nextlink">View Eureka Metrics</span></a>
+<a href='Follow and Subscribe to Streams.html'><span id="prevlink">Follow and Subscribe to Streams</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can share activity between employee and group streams, like an activity, 
+flag activity as inappropriate, or add comments to activities.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<h3 id="posttoastream">Post to a Stream</h3>
+
+<ol>
+<li>The knowledge worker must be able to post a message up to 250 characters to any public 
+stream with visual feedback when the limit has been reached.</li>
+<li>The knowledge worker must be able to attach a link to any message he is posting.</li>
+<li>The knowledge worker must be able to select from a set of available images associated to 
+a URL.</li>
+<li>The knowledge worker must be able to edit the title of the URL, which is pulled from the 
+site itself if the link is unsecured and accessible.</li>
+<li>The knowledge worker must see the description of the link parsed from any unsecured and 
+accessible URL.</li>
+<li>The knowledge worker must receive a warning if the URL is in the correct format but 
+inaccessible.</li>
+<li>The knowledge worker must receive an error if the URL is not in the correct format 
+(*://)</li>
+<li>The knowledge worker must be able to immediately view the posted message if it is 
+associated to the stream he is currenlty viewing. </li>
+</ol>
+
+<h3 id="actionsonanactivity">Actions on an Activity</h3>
+
+<ol>
+<li>The knowledge worker must be able to comment on an activity when he is not restricted by 
+stream moderation.</li>
+<li>The comment must be restricted to 1000 characters with visual feedback when the limit has been reached.</li>
+<li>The knowledge worker must be able to share an activity to a colleague, public group, or 
+private group he is a member of.</li>
+<li>The knowledge worker must not be able to share activity posted to a private group.</li>
+<li>The knowledge worker must be able to attach a comment to an activity he is sharing.</li>
+<li>The knowledge worker must be able to flag an activity as inappropriate.</li>
+<li>The knowledge worker must be able to like and unlike an activity.</li>
+<li>The group coordinator must be able to select exactly one exisiting activity at a time to &#8220;stick&#8221; to the top of the stream</li>
+</ol>
+
+<h3 id="deletefromastream">Delete from a Stream</h3>
+
+<ol>
+<li>The knowledge worker must be able to delete any activity or comment he has posted.</li>
+<li>The knowledge worker must be able to delete any activity or comment posted to his stream 
+or a stream he coordinates.</li>
+<li>The Eureka administrator must be able to delete any activity or comment.</li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="postanactivity">Post an Activity</h3>
+
+<p><img id="" src="images/Interact_Post_Default.png" alt="" title="" /></p>
+
+<ol>
+<li>Default state of the post box. Show only the user&#8217;s avatar and the name of the stream that will be posted to inside.</li>
+</ol>
+
+<p><img id="" src="images/Interact_Post_Expanded.png" alt="" title="" /></p>
+
+<ol>
+<li>The user types his message in the expanded box, up to 250 characters</li>
+<li>If the user tpyes a hashtag (a word beginning with a #) a menu pops up with popular hashtags for the stream he&#8217;s posting to</li>
+<li>A countdown starts at 250 and counts down as the characters are typed, indicating the remaining characters. When at 0 and below, the number turns red</li>
+<li>Attach a link opens up the attach link section defined below.</li>
+<li>The configurable message that appears below the post box.</li>
+<li>The post button is inactive if there the number of characters in the box are 0 or >250, other wise it is active and posts the message. The stream must refresh to show the message after it has been posted. If the post button is hit when a user has pasted a link into the attach link section but not hit the &#8220;add&#8221; button, the system should hit the add button for the user.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postLink_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking attach link displays the add link form where the knowledge worker can enter the URL of the link they want to attach.</li>
+<li>The form can be closed by clicking the &#8220;x&#8221; button.</li>
+<li>Clicking the Add button submits the link. URL should be in the  following example format: http://www.example.com.  Validate that at  least one &#8216;.&#8217; exists in the url.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F11_post_to_stream_postLink_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Link thumbnail</li>
+<li>Link title, editable input box is populated with the auto-detected the title.</li>
+<li>Link source</li>
+<li>Link description</li>
+<li>Paging controls allowing the knowledge worker select a link thumbnail  from a set of available images associated the attached url.</li>
+<li>Check box allowing the knowledge worker to suppress the display of the link thumbnail.</li>
+<li>Clicking &#8216;x&#8217; removes the link.</li>
+</ol>
+
+<h3 id="actionsonanactivity">Actions on an Activity</h3>
+
+<h4 id="commentonanactivity">Comment on an Activity</h4>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_CommentOnActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can comment on an activity by hovering over an activity and clicking 
+on the comment link.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F13_actionsonanactivity_CommentOnActivity_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Avatar of the knowledge worker posting the comment.</li>
+<li>Content warning message (configured in system settings).</li>
+<li>Remaining character count. When the character count is less than 0, the text color changes to red and appears as a negative number.</li>
+<li>The post button is only active when the remaining character count is 0 or greater.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_CommentOnActivity_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Minimized state of post box, clicking in the box expands the box to a editable text area.</li>
+</ol>
+
+<h4 id="shareanactivity">Share an Activity</h4>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_ShareActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can share an activity by hovering over an activity and clicking on the 
+share link.  Share option is not available for activities posted in a private group.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F13_actionsonanactivity_ShareActivity_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can share an activity to their own stream or to another individual or 
+group stream.  If posting is turned off, the individual or group should not be displayed in the autocomplete.</li>
+<li>Activity being shared.</li>
+<li>Input box to enter a comment.</li>
+<li>Remaining characters</li>
+<li>The share button is only active when the remaining character count is less than 1000 or 0 or greater.</li>
+</ol>
+
+<p><img id="" src="images/PS_F13_sharesaveflag_ShareActivity_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Name of the knowledge worker sharing the activity and the stream it is being shared to.</li>
+<li>Name of the knowledge worker that authored the activity.</li>
+<li>Comment from the knowledge worker sharing the activity.</li>
+</ol>
+
+<h4 id="likeanactivity">Like an Activity</h4>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_LikeActivity_fig01.png" alt="" title="" /></p>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_LikeActivity_fig02.png" alt="" title="" /></p>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_LikeActivity_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>An activity displays it&#8217;s like count (if over 0) to the knowledge worker. When the 
+knowledge worker clicks on the thumbs up icon or the like button, the user has &#8216;liked&#8217; the 
+activity and the number increments.</li>
+<li>A knowledge worker can hover over the like count showing a hovering card displaying the 
+last 10 people to have liked the activity with an option to view more.</li>
+<li>A knowledge worker is able to unlike the activity by clicking on &#8216;unlike&#8217;.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F13_actionsonanactivity_like_fig04.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker will be presented with this modal listing all employees who liked an 
+activity if he/she clicks on &#8216;view all&#8217;</li>
+</ol>
+
+<h4 id="flaganactivity">Flag an Activity</h4>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_FlagActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can flag an activity by hovering over an activity and clicking on the 
+flag link. When the knowledge worker clicks the flag link, a pop-up window will be displayed 
+asking them: &#8220;Flagged activities will be sent to the Eureka Administrator for review.  Are you sure you want to flag this activity as inappropriate?&#8221; If the knowledge worker clicks yes the activity remains on the page.  Feedback is displayed at the top of the page with a close option: &#8220;Activity has been flagged&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.   The actions described in the <a href="/docs/product-specification/features/view-manage-org-profile/">View and manage an organization profile</a> Flagged activities section and <a href="/docs/product-specification/features/manage-receive-notifications/">Manage and Receive Notifications</a> UX designs are performed.</li>
+</ol>
+
+<h4 id="stickanactivity">Stick an Activity</h4>
+
+<p><img id="" src="images/R1_PS_F13_interactWirhStream_StickActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A group coordinator can &#8220;stick&#8221; an activity to the top of the stream by hovering over an activity and clicking on the stick link.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F13_interactWirhStream_StickActivity_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>A group coordinator can &#8220;unstick&#8221; an activity by hovering over the activity and clicking the unstick link. The only activities available on a &#8220;stuck&#8221; activity is to share and unstick. Associated comments are not shown.</li>
+</ol>
+
+<h3 id="deletefromastream">Delete from a Stream</h3>
+
+<p><img id="" src="images/R1_PS_F13_sharesaveflag_DeleteActivity_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>An actvity can be deleted by hovering over an activity and clicking on the delete link.  Knowledge workers may delete actvities and comments they have personally authored, or any activities and comments posted to the knowledge worker&#8217;s stream.  Stream coordinators may delete comments and activities on the stream they coordinate. Eureka administrators can deleted any activity or comment.</li>
+</ol>
+
+<h2 id="testplan">Test Plan</h2>
+
+<h3 id="posttoastream">Post to a Stream</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can post activity to a stream</strong>
+<ul><li>Verify that when a hashtag is entered into the post box, an autocomplete box displays with the list of popular hashtags within the stream that match the user input. Verify in both the profile and activity pages.</li>
+<li>Verify the knowledge worker is immediately able to view the posted activity in the
+stream</li>
+<li>Verify activity can be posted with or without a url in the following types of streams:
+<ul><li>to a colleagues stream</li>
+<li>to your stream </li>
+<li>to to a public group stream</li>
+<li>to to a private group stream where knowledge worker is a group member</li></ul></li>
+</ul></li>
+<li><strong>Verify a knowledge worker can post activity containing a url to a profile stream</strong>
+<ul><li>Verify the ability to select from a set of available images associated with a url</li>
+<li>Verify the system validates the url</li>
+<li>Verify the system auto-detects the title for an unsecure url</li>
+<li>Verify the system is able to parse an unsecure url for the description meta tag</li>
+<li>Verify the title for a url can be changed</li>
+<li>Verify the ability to immediately view the url if it is associated to the stream currently being viewed</li>
+<li>Verify the ability to select from a set of available images associated to a url</li></ul></li>
+<li><strong>Verify a knowledge worker can delete activity</strong>
+<ul><li>Verify the ability to delete an activity posted by yourself</li>
+<li>Verify the ability to delete a url posted by yourself</li></ul></li>
+<li><strong>Verify a knowledge worker can restrict character limits for posting activity</strong>
+<ul><li>Verify commenting is limited to 250 characters</li>
+<li>Verify visual feedback is provided to notify character count</li></ul></li>
+<li><strong>Verify a knowledge worker can immediately view the post</strong>
+<ul><li>Verify the ability to immediately view a post</li>
+<li>Verify the ability to immediately view a url</li></ul></li>
+</ol>
+
+<h3 id="actionsonanactivity">Actions on an Activity</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can comment on activity (assuming commenting is enabled)</strong>
+<ul><li>Verify a comment can be posted against any activity</li></ul></li>
+<li><strong>Verify a knowledge worker can share activities</strong>
+<ul><li>Verify an activity can be shared in the following cases:
+<ul><li>colleague to colleague</li>
+<li>colleague to public group</li>
+<li>colleague to private group where knowledge worker is a member</li>
+<li>public group to public group</li>
+<li>public group to private group where knowledge worker is a member</li>
+<li>public group to colleague</li></ul></li></ul></li>
+<li><strong>Verify a knowledge worker can like and un-like an activity</strong>
+<ul><li>Verify activities can be liked</li>
+<li>Verify activities can be un-liked</li>
+<li>Verify that liked activity appears in the liked default stream on the activity page</li></ul></li>
+<li><strong>Verify a knowledge worker can attempt to share activity within a private group</strong>
+<ul><li>Verify share link is not provided for an activity with comments</li>
+<li>Verify share link is not provided for an activity without comments</li></ul></li>
+<li><strong>Verify a knowledge worker can attach comment when sharing an activity</strong>
+<ul><li>Verify comments can be added when sharing activities</li>
+<li>Verify character count is limited to 1000 characters</li>
+<li>Verify visual notification indicating character count</li></ul></li>
+<li><strong>Verify a knowledge worker can flag an activity as inappropriate</strong>
+<ul><li>Verify the ability to flag an activity as inappropriate</li></ul></li>
+<li><strong>Verify a knowledge worker can restrict character limits for commenting on activity</strong>
+<ul><li>Verify commenting is limited to 250 characters</li>
+<li>Verify visual notification indicating character count</li></ul></li>
+<li><strong>Verify a group coordinator can stick an activity to the top of a stream</strong>
+    * Verify the stick option is available to group coordinators only on hover of an activity
+    * Verify the activity moves to the top of the stream and higlighted when the group coordinator clicks the stick link
+    * Verify comments do not appear for &#8220;stuck&#8221; activities
+    * Verify the Share and Unstick links are the only options available on hover of the &#8220;stuck&#8221; activity
+    * Verify the activtiy returns to its default location once it is &#8220;unstuck&#8221;</li>
+</ol>
+
+<h3 id="deletefromastream">Delete from a Stream</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can delete a comment</strong>
+<ul><li>Verify a comment can be deleted only by the knowledge worker it was posted by</li>
+<li>Verify a delete confirmation is presented</li>
+<li>Verify the delete confirmation must be acknowledged before the delete is processed</li></ul></li>
+<li><strong>Verify a knowledge worker can delete an activity or comment posted by another knowledge 
+worker to his personal stream</strong>
+<ul><li>Verify a delete confirmation is presented</li>
+<li>Verify the delete confirmation must be acknowledged before the delete is processed</li></ul></li>
+<li><strong>Verify a knowledge worker can delete an activity or comment posted by another knowledge 
+worker a stream he coordinates</strong>
+<ul><li>Verify a delete confirmation is presented</li>
+<li>Verify the delete confirmation must be acknowledged before the delete is processed</li></ul></li>
+<li><strong>Verify a knowledge worker can delete an activity or comment (Eureka administrator)</strong>
+<ul><li>Verify a delete confirmation is presented</li>
+<li>Verify the delete confirmation must be acknowledged before the delete is processed</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a>
+<ul><li><a href="#posttoastream">Post to a Stream</a></li>
+<li><a href="#actionsonanactivity">Actions on an Activity</a></li>
+<li><a href="#deletefromastream">Delete from a Stream</a></li></ul></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#postanactivity">Post an Activity</a></li>
+<li><a href="#actionsonanactivity">Actions on an Activity</a>
+<ul><li><a href="#commentonanactivity">Comment on an Activity</a></li>
+<li><a href="#shareanactivity">Share an Activity</a></li>
+<li><a href="#likeanactivity">Like an Activity</a></li>
+<li><a href="#flaganactivity">Flag an Activity</a></li>
+<li><a href="#stickanactivity">Stick an Activity</a></li></ul></li>
+<li><a href="#deletefromastream">Delete from a Stream</a></li></ul></li>
+<li><a href="#testplan">Test Plan</a>
+<ul><li><a href="#posttoastream">Post to a Stream</a></li>
+<li><a href="#actionsonanactivity">Actions on an Activity</a></li>
+<li><a href="#deletefromastream">Delete from a Stream</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.5</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

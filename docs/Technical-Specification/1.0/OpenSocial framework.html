@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>OpenSocial framework</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; <a href="Software%20architecture.html">Software architecture</a> &gt; OpenSocial framework</p>
+
+<h1 class="title">OpenSocial framework</h1>
+
+<p><a href='User interface framework.html'><span id="nextlink">User interface framework</span></a>
+<a href='Task framework.html'><span id="prevlink">Task framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The OpenSocial Framework within Eureka Streams covers two particular aspects, access to the OpenSocial API as well as the OpenSocial Gadget Container. The implementation of the OpenSocial specification is covered with the open source <a href="http://shindig.apache.org">Apache Shindig</a> project in Java. Eureka Streams integrates with Shindig in 2 different places: JavaScript container file, and Java interface implementations. These two integration points enable Eureka Streams to be an OpenSocial 0.9 Container.</p>
+
+<h2 id="opensocialapi">OpenSocial API</h2>
+
+<p>The <a href="http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/OpenSocial-Specification.html">OpenSocial v0.9 specification</a> provides details on what information needs to be provided from an OpenSocial container supporting the OpenSocial API. Shindig provides the Java interfaces for connecting your container implementation into the spec implementation. With these interfaces implemented in Eureka Streams, the REST endpoints provided by Shindig provide access to Eureka Streams Profile information through the OpenSocial Standard.</p>
+
+<p><img id="" src="images/OSF_Shindig_OpenSocial_Interface_Integration.jpg" alt="" title="" /></p>
+
+<h3 id="opensocialadapter">OpenSocial Adapter</h3>
+
+<p>The OpenSocial adapter is the Eureka Streams implementation of the Shindig interfaces for OpenSocial: ActivityService, AppDataService, and PersonService. This adapter layer transforms the OpenSocial API requests received from Shindig into Action Framework requests that can then access the appropriate part of Eureka Streams.</p>
+
+<h3 id="decouplingtheimplementation">Decoupling the implementation</h3>
+
+<p>Shindig uses <a href="http://code.google.com/p/google-guice/">Google Guice</a> for dependency injection, and this mechanism allows Eureka Streams to create Shindig&#8217;s OpenSocial interface implementations within Java and wire it into Shindig while remaining decoupled from the project directly. This offers an advantage for Eureka Streams to take on new versions of Shindig with minimal points of integration.</p>
+
+<h2 id="opensocialgadgetcontainer">OpenSocial Gadget Container</h2>
+
+<p>Another aspect of the OpenSocial Specification that Eureka Streams supports is the <a href="http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/Gadgets-API-Specification.html">OpenSocial Gadget v0.9 specification</a>. The OpenSocial Gadget Specification describes how a container can support XML based Web Applications in the form of Gadgets, a popular OpenSocial container is iGoogle. iGoogle currently supports OpenSocial v0.8.</p>
+
+<p><img id="" src="images/OSF_OpenSocial_Gadget_Container_Component_Diagram.jpg" alt="" title="" /></p>
+
+<h3 id="opensocialgadgetcontainer-client">OpenSocial Gadget Container - Client</h3>
+
+<p>The portion of the OpenSocial Gadget Container that is responsible for rendering gadgets and providing the sandbox that gadgets can execute within is located within javascript on the client. The client container also provides the mechanism to allow a gadget to communicate with the container. This communication includes both OpenSocial API calls as well as calls to other external resources that the OpenSocial Gadget Container - Server proxies on behalf of the gadget.</p>
+
+<h3 id="opensocialgadgetcontainer-server">OpenSocial Gadget Container - Server</h3>
+
+<p>The OpenSocial Gadget Container server side provides the linkage into the Shindig interface implementations for the OpenSocial API as well as proxying of requests from gadgets to external resources. Caching occurs on this side of the OpenSocial Gadget container for performance gains.</p>
+
+<h3 id="gadgetrenderer">Gadget Renderer</h3>
+
+<p>The Gadget Renderer&#8217;s responsibility is to take the gadget definition xml, parse it, gather data necessary for its execution and transform it into HTML to be displayed within the OpenSocial Gadget Container - Client.</p>
+
+<h3 id="rpcchannelandrpcrestendpoint">RPC Channel and RPC REST Endpoint</h3>
+
+<p>The RPC mechanism within the OpenSocial Gadget Container is an important piece of the security paradigm for OpenSocial gadgets rendered as iFrames. The RPC channel is established by the OpenSocial Gadget Container and gadgets are linked to that channel when they are rendered. The RPC channel provides a scoped communications mechanism for the gadget back to the container. All of this occurs on the Client. An RPC request from a gadget could be merely a client side activity where all communication happens on the client, i.e. maximizing a gadget.</p>
+
+<p>There is also a mechanism to allow gadgets to make RPC calls that then call back to the server, as in the case of an OpenSocial API call. In this scenario the client based OpenSocial Gadget Container assembles the request information on behalf of the gadget, submits the request, and provides the appropriate callback to the gadget when the call is complete.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#opensocialapi">OpenSocial API</a>
+<ul><li><a href="#opensocialadapter">OpenSocial Adapter</a></li>
+<li><a href="#decouplingtheimplementation">Decoupling the implementation</a></li></ul></li>
+<li><a href="#opensocialgadgetcontainer">OpenSocial Gadget Container</a>
+<ul><li><a href="#opensocialgadgetcontainer-client">OpenSocial Gadget Container - Client</a></li>
+<li><a href="#opensocialgadgetcontainer-server">OpenSocial Gadget Container - Server</a></li>
+<li><a href="#gadgetrenderer">Gadget Renderer</a></li>
+<li><a href="#rpcchannelandrpcrestendpoint">RPC Channel and RPC REST Endpoint</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

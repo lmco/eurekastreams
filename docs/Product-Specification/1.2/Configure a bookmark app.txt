@@ -1,0 +1,67 @@
+## Overview
+Knowledge workers can browse an a-z listing of intranet bookmarks and can add and remove personal bookmarks.
+## Conditions of satisfaction
+1. The knowledge worker must be able to browse an a-z listing of intranet bookmarks.
+2. The knowledge worker must be able to add and remove a personal bookmark.
+3. The knowledge worker must be able to save a bookmark from the a-z listing of intranet bookmarks.
+4. The knowledge worker must be able to perform a keyword search for bookmarks matching on title.
+## User experience
+### Empty State
+
+![ ](images/PS_F20_bookmarkGadgetDefaultEmpty.png)
+
+1. Allows the knowledge worker to search all bookmarks based on title keywords.
+2. Links to the canvas view displaying all bookmarks.
+3. Link to add a new bookmark.
+4. Links to canvas view displaying the IS&GS A-Z listing of intranet bookmarks. This message only appears when the knowledge worker has no saved bookmarks.
+
+### Full State
+
+![ ](images/PS_F20_bookmarkGadgetDefault.png)
+
+1. Hovering over the link displays a trash icon that allows the knowledge worker to delete the bookmark. When the knowledge worker clicks the icon a pop-up window appears asking the knowledge worker if they are sure they want to delete the bookmark.
+
+### Add Bookmark Form
+
+![ ](images/PS_F20_bookmarkGadgetAdd.png)
+
+1. Input box for the bookmark title. Title field supports up to 50 characters.
+2. Input box for the bookmark URL. URL must be in the following example format: http://www.example.com.  Validate that at least one '.' exists in the url.
+3. Submits the form and closes the form. A feedback message is displayed at the top of the page "New bookmark added".
+4. Discards the information entered in the form and closes the form.
+
+### Search Results
+
+![ ](images/PS_F20_bookmarkGadgetSearch.png)
+
+1. Clicking the "x" closes the search results and returns the app to the default view.
+2. Hovering over the search results displays a link allowing the knowledge worker to save the item to their bookmarks list.
+
+### Canvas View
+
+![ ](images/PS_F20_bookmarkGadgetCanvas.png)
+
+1. Clicking the letters display the bookmarks that begin with the selected letter.
+2. Hovering over a link displays a link allowing the knowledge worker to save the item to their bookmarks list. After the link is saved the text of the link changes to "added". A feedback message is also displayed at the top of the page: "Link saved to bookmarks" .
+
+
+## Test plans
+### Knowledge Worker
+1. **Action: Browse an a-z listing of intranet bookmarks**
+    * Verify the a-z listing of intranet bookmarks can be browsed
+2. **Action: Add and remove a personal bookmark**
+    * Verify a personal bookmark can be added
+    * Verify a personal bookmark can be removed
+3. **Action: Save a bookmark from the a-z listing of intranet bookmarks**
+    * Verify a bookmark can be saved to the knowledge workers personal bookmark list
+4. **Action: Perform a keyword search for bookmarks matching on title**
+    * Verify bookmarks are returned in the search results based on the title keyword entered
+### Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+### Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+### Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully

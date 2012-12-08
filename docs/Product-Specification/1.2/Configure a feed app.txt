@@ -1,0 +1,46 @@
+##Overview
+The feed reader app feature allows knowledge workers to quickly and easily subscribe to feeds. The normal app view displays 5 articles from the feed with title, image, and an abbreviated description of each article. The canvas view contains the full listing of articles from the feed with images and complete descriptions. Also provided on the canvas view is a look at popular subscriptions from people the knowledge worker is following as well as everyone on the system.
+##Conditions of satisfaction
+1. The knowledge worker must be able to configure a feed app to display the latest entries from a rss or atom feed.
+2. The knowledge worker must be able to browse within feed app popular subscriptions from colleagues he follows or everyone.
+3. The knowledge worker must be able to share a feed entry to his employee stream from a feed app .
+##User experience
+
+### App View
+![](images/PS_F05_feedGadgetDefaultView.png)
+
+1. Empty state of app.
+2. Title of feed
+3. Banner image from feed (if available)
+4. On hover, the text changes to read "Share to my stream". Clicking the link posts the article to the user's stream. Please note: the activity posted to the user's stream should be of type bookmark, please see the activity content types section for more details.
+5. After an item is shared, the link is disabled for the current session and is renamed Shared.  This helps the user to keep track of articles shared in the current session.   If the user leaves the page or refreshes the page, the link should change back to Share and be enabled.
+6. Opens canvas view
+
+### Canvas View
+![](images/PS_F05_feedGadgetCanvasView.png)
+
+1. Feed
+2. Link to display a list of popular feeds configured by other knowledge workers the knowledge worker is following.
+3. Link to display a list of popular feeds configured by other knowledge workers in the system. This list takes the same design as the popular feed for followers. The instruction text displayed will read: "Popular feeds from all employees".
+4. Link opens a new window displaying the feed.
+
+##Test plans
+###Knowledge Worker
+1. **Action: Configure a feed app to display the latest entries from a rss or atom feed**
+    * Verify the feed app displays the latest entries from a rss feed
+    * Verify the feed app displays the latest entries from an atom feed
+    * Verify a message is displayed if there is an error importing the feed
+2. **Action:  Browse within a feed app popular subscriptions from colleagues he follows or everyone**
+    * Verify the following option displays the feeds associated with members the knowledge worker is following and the number of followers using each feed
+    * Verify the everyone option displays feeds from all employees and the number of people using each feed
+3. **Action: Share a feed entry to his employee stream from a feed app **
+    * Verify that a feed entry can be shared to an employee stream from a feed app
+### Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+### Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+### Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully

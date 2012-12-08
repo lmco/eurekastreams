@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Customize the start page</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Customize the start page</p>
+
+<h1 class="title">Customize the start page</h1>
+
+<p><a href='Configure a stream.html'><span id="nextlink">Configure a stream</span></a>
+<a href='Login to the system.html'><span id="prevlink">Login to the system</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Testing gerrit&#8230;</p>
+
+<p>The start page serves as a private homepage for the knowledge worker allowing them to 
+organize and find the information they need on a daily basis. The user has access 
+to a gallery where they can choose from a collection of apps that they place on their start 
+page. A knowledge worker can also organize the apps on their start page by grouping them under tabs. Unlike traditional enterprise web portals, knowledge workers not only have complete control over the content but they may also apply a theme to change the look and feel.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<h3 id="themes">Themes</h3>
+
+<ol>
+<li>The knowledge worker must be able to apply a theme to the start page.</li>
+</ol>
+
+<h3 id="tabs">Tabs</h3>
+
+<ol>
+<li>The knowledge worker must be able to create up to six tabs on the start page.</li>
+<li>The knowledge worker must see a three-column layout as the default when a new tab is 
+created</li>
+<li>The knowledge worker must be able to apply a layout to a tab.</li>
+<li>The knowledge worker must be able to re-arrange the order of the tabs on the start page.</li>
+<li>The knowledge worker must be able to rename a tab.</li>
+<li>The knowledge worker must be able to remove a tab unless it is the last one on the start 
+page.</li>
+<li>The knowledge worker must be able to undo the removal of a tab.</li>
+</ol>
+
+<h3 id="apps">Apps</h3>
+
+<ol>
+<li>The knowledge worker must be able see empty zones on a tab and an explicit action to add 
+an app.</li>
+<li>The knowledge worker must be able to add an app to a tab.</li>
+<li>The knowledge worker must be able to remove an app from a tab.</li>
+<li>The knowledge worker must be able to undo the removal of an app from a tab.</li>
+<li>The knowledge worker must be able to drag and drop an app within a tab.</li>
+<li>The knowledge worker must be able to drag and drop an app onto another tab.</li>
+<li>The knowledge worker must be able edit the settings of an app.</li>
+<li>The knowledge worker must not be able to see an option to edit settings if none exist 
+for an app.</li>
+<li>The knowledge worker must be able to minimize and restore an app.</li>
+<li>The knowledge worker must be able to maximize and restore an app.</li>
+<li>The system must remember the minimized and maximized states for an app.</li>
+<li>The knowledge worker must be able to refresh the content of an app.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="themes">Themes</h3>
+
+<h3 id="applyathemetothestartpage">Apply a theme to the start page</h3>
+
+<p><img id="" src="images/PS_F02_startPage_ApplyTheme.png" alt="" title="" /></p>
+
+<ol>
+<li>Applies the selected theme and takes the knowledge worker to their start page. Feedback displays at top of page with a close option: &#8216;Theme has been applied&#8217;. Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>Sorts the available themes by a recently added or popular views.</li>
+<li>The default sort view is recent. </li>
+</ol>
+
+<h3 id="tabs">Tabs</h3>
+
+<h3 id="createatab">Create a tab</h3>
+
+<p><img id="" src="images/PS_F02_CreateTab_05.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking on the + will add another tab.
+The + will not be present if there are 6 tabs created</li>
+<li>The default name of the tab when added will be New Tab; the knowledge worker must be able to type the desired tab name.
+Tabs only display the first 16 characters. Pressing enter will commit the name of the tab.</li>
+</ol>
+
+<h3 id="defaultthreecolumnlayoutwhencreatinganewtab">Default three column layout when creating a new tab</h3>
+
+<p><img id="" src="images/PS_F02_startPage_PageLayout_fig04.png" alt="" title="" /></p>
+
+<ol>
+<li>A three column layout is the default layout when a new tab is added</li>
+</ol>
+
+<h3 id="applyalayouttoatab">Apply a layout to a tab</h3>
+
+<p><img id="" src="images/PS_F02_startPage_ChangeLayout.png" alt="" title="" /></p>
+
+<ol>
+<li>Selecting &#8220;Change Layout&#8221; from the tab menu displays the change layout window.</li>
+<li>Carousel paging</li>
+<li>Hover state, clicking on the layout applies the layout to the tab and changes the currently selected layout image on the right.</li>
+<li>If the layout selected will be reducing the number of columns currently being used, the knowledge worker will be presented with a message confirming the movement of thier apps.  Clicking ok will change the layout. Clicking cancel will return the user to the change layout page.</li>
+</ol>
+
+<h3 id="re-arragetheorderofthetabs">Re-arrage the order of the tabs</h3>
+
+<p><img id="" src="images/PS_F02_startPage_appDragOnTab.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can reorder the tabs by dragging and dropping the tab into place. Dragging the title bar of an app displays a proxy image containing the name of the app. 
+When the knowledge worker drags the app over an empty column a dashed box appears. When the proxy is released over the column the app appears in that column.</li>
+</ol>
+
+<h3 id="renameatab">Rename a tab</h3>
+
+<p><img id="" src="images/PS_F02_startPage_ManageTabs_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking the tab menu icon displays a drop down menu.</li>
+<li>Link to rename the tab, when this is selected the name of the tab appears in an editable input box. Tab names are limited to 16 characters</li>
+</ol>
+
+<h3 id="removeatab">Remove a tab</h3>
+
+<p><img id="" src="images/PS_F02_startPage_RemoveTabs_fig05.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking the tab menu icon displays a drop down menu.</li>
+<li>Select the &#8220;Remove&#8221; option. Once the tab is removed, a delete conformation is displayed 
+at the top of the page with an undo and close option: &#8220;[tab name] has been removed&#8221;. Refer 
+to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="undotheremovalofatab">Undo the removal of a tab</h3>
+
+<p><img id="" src="images/PS_F02_startPage_RestoreTabs_fig04.png" alt="" title="" /></p>
+
+<ol>
+<li>Click undo</li>
+<li>The tab will be added back to the start page and all of the apps which were on the tab when it was removed will be returned as well</li>
+</ol>
+
+<h2 id="apps">Apps</h2>
+
+<h3 id="addinganapp">Adding an app</h3>
+
+<p><img id="" src="images/PS_F02_startPage_ConfigureTab.png" alt="" title="" /></p>
+
+<ol>
+<li>The configure button should take the background color of the inactive tab and the text color of the inactive tab. There should also be a 1px line around the configure button that takes the color of the inactive tab text. Clicking the configure button displays the Configure page.  Apps are added to the first column in the start page by default.</li>
+<li>Clicking the Add an App link displays the Configure page.  Apps are added to the column on the start page where the Add an App link was selected.</li>
+</ol>
+
+<p><img id="" src="images/PS_F02_startPage_AddApp.png" alt="" title="" /></p>
+
+<ol>
+<li>Adds the app to the first tab of the knowledge worker&#8217;s start page.  Feedback displays at top of page with a close option: &#8216;App has been added&#8217;. Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>The add button becomes inactive after the app has been added.  Multiple apps can be added while on this page.</li>
+<li>Clicking will return the user to the start page.</li>
+</ol>
+
+<h3 id="removalofanapp">Removal of an app</h3>
+
+<p><img id="" src="images/PS_F02_startPage_RemoveApp_fig06.png" alt="" title="" /></p>
+
+<ol>
+<li>Deletes app from the tab. Upon clicking the icon a pop up window is displayed asking the knowledge worker if they are sure they want to delete the app. </li>
+</ol>
+
+<h3 id="undotheremovalofanapp">Undo the removal of an app</h3>
+
+<p><img id="" src="images/PS_F02_startPage_UndoRemoveApp_fig07.png" alt="" title="" /></p>
+
+<ol>
+<li>After the app is deleted, feedback is displayed at the top of the page with an undo and close option: &#8220;App has been removed&#8221;. Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="draganddropanappwithinataboronantohertab">Drag and drop an app within a tab or on antoher tab</h3>
+
+<p><img id="" src="images/PS_F02_startPage_appDragBetweenTabs.png" alt="" title="" /></p>
+
+<ol>
+<li>**Dragging the title bar of an app displays a proxy image containing the name of the app. 
+Dragging the proxy over an inactive tab highlights the tab. 
+Releasing the proxy over the tab activates the tab and places the app in the upper left hand corner of the tab.</li>
+</ol>
+
+<h3 id="editsettings">Edit settings</h3>
+
+<p><img id="" src="images/PS_F02_startPage_EditAppSetting_fig07.png" alt="" title="" /></p>
+
+<ol>
+<li>The edit settings icon is only present if the app has settings that are able to be edited</li>
+</ol>
+
+<h3 id="resizinganapp">Resizing an app</h3>
+
+<p><img id="" src="images/PS_F02_startPage_ResizeApp_fig10.png" alt="" title="" /></p>
+
+<ol>
+<li>Minimizes the app</li>
+<li>Restores the app</li>
+<li>Opens app in canvas view (maximize)</li>
+</ol>
+
+<p><img id="" src="images/PS_F02_startPage_appCanvasView.png" alt="" title="" />
+1. App title
+2. Restores the app.</p>
+
+<h3 id="refreshinganapp">Refreshing an app</h3>
+
+<p><img id="" src="images/PS_F02_startPage_RefreshApp_fig09.png" alt="" title="" /></p>
+
+<ol>
+<li>Refreshes app</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="themes">Themes</h3>
+
+<ol>
+<li><strong>The knowledge worker must be able to apply a theme to the start page.</strong> 
+<ul><li>Verify the default view when viewing themes in the gallery is all categories sorted by recent</li>
+<li>Verify that when sorted by recent, the public dates on the themes reflect
+this
+<ul><li>Verify the knowledge worker can apply a theme from this view </li></ul></li>
+<li>Verify the knowledge worker can view theme options by categories
+<ul><li>Verify that when sorted by popular, the users number on the themes reflect this</li>
+<li>Verify the knowledge worker can apply a theme from a specific category</li></ul></li>
+</ul></li>
+</ol>
+
+<h3 id="tabs">Tabs</h3>
+
+<ol>
+<li><strong>The knowledge worker must be able to create up to six tabs on the start page.</strong> 
+<ul><li>Verify when there are 5 or less tabs, there is a tab with the +</li>
+<li>Verify clicking the + tab results in a new tab being added</li>
+<li>Verify a 16 character limit when naming a new tab</li>
+<li>Verify when there are 6 tabs present; the + tab is not </li></ul></li>
+<li><strong>The knowledge worker must see a three-column layout as the default when a new tab is created.</strong> 
+<ul><li>Verify three columns are displayed by default</li>
+<li>Verify the presence of a link to Add an App within each column</li></ul></li>
+<li><strong>The knowledge worker must be able to apply a layout to a tab.</strong> 
+<ul><li>Verify the change layout option on the tab drop down menu</li>
+<li>Verify the ability to scroll through layout options</li>
+<li>Verify when choosing a layout which has less columns than the tab currently has, a
+request to move apps automatically is presented.</li>
+<li>Verify the ability to change the layout of a tab</li>
+<li>Verify no apps are lost when layouts are changed</li>
+<li>Verify the ability to close the change layout view</li>
+</ul></li>
+<li><strong>The knowledge worker must be able to re-arrange the order of the tabs on the start page.</strong> 
+<ul><li>Verify the ability to drag and drop the order of the tabs on the start page</li></ul></li>
+<li><strong>The knowledge worker must be able to rename a tab.</strong> 
+<ul><li>Verify the ability to rename a tab</li>
+<li>Verify a 16 character limit when renaming a tab</li>
+<li>Verify there is an error message is the knowledge worker fails to enter a tab name</li></ul></li>
+<li><strong>The knowledge worker must be able to remove a tab unless it is the last one on the start page.</strong>
+<ul><li>Verify the remove option is present on the tab drop down menu</li>
+<li>Verify the ability to remove a tab</li>
+<li>Verify a tab removal confirmation</li>
+<li>Verify the remove option is not present on the tab drop down menu when it is the only tab (not counting the + tab)</li></ul></li>
+<li><strong>The knowledge worker must be able to undo the removal of a tab.</strong> 
+<ul><li>Verify the ability to undo the removal of a tab from the removal confirmation
+<ul><li>Verify all of the apps which were present on the tab at the time of removal have also been restored</li></ul></li></ul></li>
+</ol>
+
+<h3 id="apps">Apps</h3>
+
+<ol>
+<li><strong>The knowledge worker must be able see empty zones on a tab and an explicit action to add an app.</strong> 
+<ul><li>Verify empty zones on a tab are present when a new tab is added.  </li>
+<li>Verify there is a link to add an app</li>
+<li>Verify there is a link to add an app when all apps have been removed from a column on an existing tab</li></ul></li>
+<li><strong>The knowledge worker must be able to add an app to a tab.</strong> 
+<ul><li>Verify the ability to press Configure and see all apps within the galley</li>
+<li>Verify apps selected are added to the tab which was selected when the configure button was pressed</li></ul></li>
+<li><strong>The knowledge worker must be able to remove an app from a tab.</strong> 
+<ul><li>Verify an app can be removed from a tab by selecting the remove option</li>
+<li>Verify there is confirmation that the app has been removed</li></ul></li>
+<li><strong>The knowledge worker must be able to undo the removal of an app from a tab.</strong> 
+<ul><li>Verify there is an option in the app removal confirmation to undo the action</li>
+<li>Verify that the app is returned to the tab in the same location when undoing the removal</li></ul></li>
+<li><strong>The knowledge worker must be able to drag and drop an app within a tab.</strong> 
+<ul><li>Verify there is a visual indication as to which app is being moved</li>
+<li>Verify there is a visual indication as to the placement of the app when it is dropped</li>
+<li>Verify apps can be moved within a column</li>
+<li>Verify apps can be moved between columns</li></ul></li>
+<li><strong>The knowledge worker must be able to drag and drop an app onto another tab.</strong> 
+<ul><li>Verify there is a visual indication as to which app is being moved</li>
+<li>Verify there is a visual indication as to the placement of the app when it is dropped</li></ul></li>
+<li><strong>The knowledge worker must be able edit the settings of an app.</strong>
+<ul><li>Verify the system displays an option to edit settings and that settings can be modified</li></ul></li>
+<li><strong>The knowledge worker must not be able to see an option to edit settings if none exist for an app.</strong> 
+<ul><li>Verify the system does not display an option to edit settings if none exist for an app</li></ul></li>
+<li><strong>The knowledge worker must be able to minimize and restore an app.</strong> <br />
+<ul><li>Verify an app can be successfully minimized</li>
+<li>Verify an app can be successfully restored</li></ul></li>
+<li><strong>The knowledge worker must be able to maximize and restore an app.</strong> 
+<ul><li>Verify an app can be successfully maximized</li>
+<li>Verify an app can be successfully restored</li></ul></li>
+<li><strong>The system must remember the minimized and maximized states for an app.</strong> 
+<ul><li>Verify that the minimized app is still minimized when returning to the Start Page</li>
+<li>Verify that the maximized app is still maximized when returning to the Start Page</li></ul></li>
+<li><strong>The knowledge worker must be able to refresh the content of an app.</strong> <br />
+<ul><li>Verify the contents of the app can be refreshed</li>
+<li>Verify only the app is refreshed async without reloading the entire page</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a>
+<ul><li><a href="#themes">Themes</a></li>
+<li><a href="#tabs">Tabs</a></li>
+<li><a href="#apps">Apps</a></li></ul></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#themes">Themes</a></li>
+<li><a href="#applyathemetothestartpage">Apply a theme to the start page</a></li>
+<li><a href="#tabs">Tabs</a></li>
+<li><a href="#createatab">Create a tab</a></li>
+<li><a href="#defaultthreecolumnlayoutwhencreatinganewtab">Default three column layout when creating a new tab</a></li>
+<li><a href="#applyalayouttoatab">Apply a layout to a tab</a></li>
+<li><a href="#re-arragetheorderofthetabs">Re-arrage the order of the tabs</a></li>
+<li><a href="#renameatab">Rename a tab</a></li>
+<li><a href="#removeatab">Remove a tab</a></li>
+<li><a href="#undotheremovalofatab">Undo the removal of a tab</a></li></ul></li>
+<li><a href="#apps">Apps</a>
+<ul><li><a href="#addinganapp">Adding an app</a></li>
+<li><a href="#removalofanapp">Removal of an app</a></li>
+<li><a href="#undotheremovalofanapp">Undo the removal of an app</a></li>
+<li><a href="#draganddropanappwithinataboronantohertab">Drag and drop an app within a tab or on antoher tab</a></li>
+<li><a href="#editsettings">Edit settings</a></li>
+<li><a href="#resizinganapp">Resizing an app</a></li>
+<li><a href="#refreshinganapp">Refreshing an app</a></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#themes">Themes</a></li>
+<li><a href="#tabs">Tabs</a></li>
+<li><a href="#apps">Apps</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

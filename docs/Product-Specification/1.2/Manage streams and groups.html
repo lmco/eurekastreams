@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Manage streams and groups</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Manage streams and groups</p>
+
+<h1 class="title">Manage streams and groups</h1>
+
+<p><a href='Configure a stream.html'><span id="nextlink">Configure a stream</span></a>
+<a href='Search a stream.html'><span id="prevlink">Search a stream</span></a></p>
+
+<p>This page will replace the 0.9 specification for <a href="../0.9/Manage%20lists,%20groups,%20and%20saved%20searches.html">Manage lists, groups, and saved searches</a> when Eureka Stream 1.0 is released.  This product specification is a work in process.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can create apps based on default or custom streams that are created.  Custom streams allow the knowledge worker to quickly and easily review activity.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to create an app from a stream, custom stream, or group stream.</li>
+<li>The knowledge worker must be redirected to the start page after creating an app from a stream, custom stream, or group stream.</li>
+<li>The knowledge worker must be able to create a custom stream that includes one or more colleagues, groups, or predefined streams.</li>
+<li>The knowledge worker must be warned when the title for a custom stream is not provided.</li>
+<li>The knowledge worker must be warned when a stream is not selected for a custom stream.</li>
+<li>The knowledge worker must be able to edit the streams that comprise a custom stream.</li>
+<li>The knowledge worker must be able to delete a custom stream.</li>
+<li>The knowledge worker must be able to reorder streams.</li>
+<li>The knowledge worker must be able to hide streams from the default view.</li>
+<li>The system must set the predefined stream representing the colleagues a knowledge worker is following.</li>
+<li>The knowledge worker must be able to create a custom stream that includes one or more keywords.</li>
+<li>The knowledge worker must be able to reorder groups.</li>
+<li>The knowledge worker must be able to hide groups from the default view.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="customstreamsoverview">Custom Streams Overview</h3>
+
+<p><img id="" src="images/R1_PS_F16_managelists_CreateCustomListSavedSearch.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking the &#8220;show more&#8221; link displays all the stream or group items.</li>
+<li>Clicking the &#8220;show less&#8221; link hides stream or group items.</li>
+<li>Launches the Create a Stream modal. A knowledge worker can create a custom stream by clicking on the add link. Custom streams can be edited and deleted.</li>
+</ol>
+
+<h3 id="managingcustomstreams">Managing Custom Streams</h3>
+
+<p><img id="" src="images/R1_PS_F16_managelists_ManageLists.png" alt="" title="" /></p>
+
+<ol>
+<li>Default state</li>
+<li>Hover state</li>
+<li>Selected state of stream. Clicking edit displays a modal titled &#8220;Edit Stream&#8221; which is pre-populated with the parameters of that stream.</li>
+<li>Clicking and dragging the move icon allows the knowledge worker to reposition the item anywhere in the list.</li>
+<li>A dashed drop zone image appears as the knowledge worker drags the items within the stream. As the knowledge worker drags the item, the other streams move to provide a space for the stream.</li>
+<li>Dragging the stream below the show more link expands the section allowing the user to reposition the stream.</li>
+<li>Releasing the stream leaves the item selected.</li>
+</ol>
+
+<h3 id="creatingacustomstream">Creating a Custom Stream</h3>
+
+<p><img id="" src="images/R1_PS_F16_managelists_CreateNewSavedSearch.png" alt="" title="" /></p>
+
+<ol>
+<li>Input box to enter a name for the custom stream.  Name fields supports up to 50 characters.</li>
+<li>The knowledge worker can select the following options: Everyone, Parent Org (put the name of the parent org as the option), Saved Items, Following, Groups I&#8217;ve Joined, Posted To, Authored By, and Liked By.</li>
+<li>Input box to enter one or more keywords.  Keywords field supports up to 50 characters per keyword and an infinite number of characters.</li>
+<li>When a new list is successfully saved, a warning message will appear at the top of the page telling the user: &#8220;Your stream has been successfully saved&#8221; If one or both of the required fields are left blank the following message will appear above the form: &#8220;Name field is required&#8221; and &#8220;At least one stream is required&#8221;</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F16_managelists_CreateNewSavedSearch_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can select the empty text box to input 1 to many people or group streams by typing in their name and selecting the stream.</li>
+</ol>
+
+<h3 id="editingacustomstream">Editing a Custom Stream</h3>
+
+<p><img id="" src="images/R1_PS_F16_managelists_EditSavedSearch_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Input box to edit a stream name.</li>
+<li>The knowledge worker can select a predefined or custom stream.</li>
+<li>Input box to enter one or more keywords.</li>
+<li>When a new stream is successfully saved, a warning message will appear at the top of the page telling the user: &#8220;Your stream has been successfully saved&#8221; If one or both of the required fields are left blank the following message will appear above the form: &#8220;Name field is required&#8221; and &#8220;At least one stream is required&#8221;</li>
+<li>Clicking the delete icon displays a pop-up window asking the knowledge worker the following: &#8220;Apps based on this stream will need to be manually deleted from the Start Page.  Are you sure you want to delete this custom stream?&#8221;  If the knowledge worker clicks &#8220;yes&#8221; the stream is deleted and a warning message is displayed with a close link: &#8220;The custom stream has been deleted&#8221;.</li>
+</ol>
+
+<p>Note: There are additional scenarios where a custom stream is automatically modified or deleted.</p>
+
+<ol>
+<li>If a knowledge worker leaves a private group and a stream is based on the private group&#8217;s stream, automatically delete the stream.</li>
+<li>If a knowledge worker leaves a public group, do not delete the stream.</li>
+<li>If a Public or Private group is deleted and a stream is based on the private group&#8217;s stream, automatically delete the stream.</li>
+</ol>
+
+<h3 id="creatinganactivityapp">Creating an activity app</h3>
+
+<p><img id="" src="images/PS_F16_managelists_CreateApp_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Knowledge workers can create an activity stream app by clicking on the create app icon.</li>
+<li>Hovering over the create app icon displays the text &#8220;create app&#8221;. When the user clicks the icon or link, the user is taken to their start page where the new activity app is placed in the upper left hand corner of the first tab.</li>
+<li>For longer names, the name should be faded out with 20px between the end of the name and start of the create app icon.  There should also be 20px between &#8216;create app&#8217; and the &#8216;search all activity&#8217; box.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F16_managelists_CreateApp_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>App title is the name of the stream, employee, group, or organization.</li>
+<li>Links to activity detail page, opens the comment box and puts it in focus.</li>
+<li>Date/time stamp links to the activity permalink page.</li>
+<li>Link to the group or stream.</li>
+</ol>
+
+<p><img id="" src="images/PS_F16_managelists_CreateApp_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>If the group or stream no longer exists, display this message.  If the knowledge worker is no longer a member of a private group, display the Request Access to Private Group message in the <a href="/docs/product-specification/features/view-manage-group-profile/">View and Manage Group Profile design</a></li>
+</ol>
+
+<h2 id="testplans">Test Plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Create an app from a stream, custom stream or group stream</strong>
+<ul><li>Verify the option to create an app is present</li>
+<li>Verify the app successfully appears on the start page</li></ul></li>
+<li><strong>Action: Redirect user to start page after creating an app from a stream, custom stream or group stream</strong>
+<ul><li>Verify the correct content is being displayed within the app</li>
+<li>Verify the title of the app reflects the type of stream the app was based on</li></ul></li>
+<li><strong>Action: Delete a custom stream, unjoin a private group, or delete group that has an app tied to it on the start page</strong>
+<ul><li>Verify that the message in the UX designs displays when the custom stream or group are no longer available.</li></ul></li>
+<li><strong>Action: Create a custom stream including one or more colleagues, predefined streams or groups and 1 or more keywords</strong>
+<ul><li>Verify a custom list can be created including 1 or more colleagues or group</li>
+<li>Verify the custom list is displayed in the list section of the activity page</li>
+<li>Verify the activity of the colleagues or groups added to the custom list are displayed on the list&#8217;s stream</li></ul></li>
+<li><em>*Action: Check error handling when creating a custom stream *</em>
+<ul><li>Verify error handling is present when the title is not present</li>
+<li>Verify error handling is present when no colleagues, predefined streams, or groups have been selected</li></ul></li>
+<li><strong>Action: Edit a custom stream</strong>
+<ul><li>Verify a custom stream can be edited</li>
+<li>Verify error handling is present when editing</li></ul></li>
+<li><strong>Action: Delete a custom stream</strong>
+<ul><li>Verify the custom stream is removed from the activity page</li></ul></li>
+<li><strong>Action: Reorder stream</strong>
+<ul><li>Verify default and custom streams can be reordered within the list section on the activity page</li></ul></li>
+<li><strong>Action: Hide and show stream</strong>
+<ul><li>Verify custom stream are hidden by default</li>
+<li>Verify the ability to toggle between show more and show less</li></ul></li>
+<li><strong>Action: Show following list</strong>
+<ul><li>Verify the following list is shown</li></ul></li>
+<li><strong>Action: Reorder saved groups</strong>
+<ul><li>Verify groups can be reordered within the groups section on the activity page</li></ul></li>
+<li><strong>Action: Hide and show groups</strong>
+<ul><li>Verify the ability to toggle between show more and show less</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#customstreamsoverview">Custom Streams Overview</a></li>
+<li><a href="#managingcustomstreams">Managing Custom Streams</a></li>
+<li><a href="#creatingacustomstream">Creating a Custom Stream</a></li>
+<li><a href="#editingacustomstream">Editing a Custom Stream</a></li>
+<li><a href="#creatinganactivityapp">Creating an activity app</a></li></ul></li>
+<li><a href="#testplans">Test Plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>First Class Email Support</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; First Class Email Support</p>
+
+<h1 class="title">First Class Email Support</h1>
+
+<p><a href='Discover a Stream.html'><span id="nextlink">Discover a Stream</span></a>
+<a href='View Eureka Metrics.html'><span id="prevlink">View Eureka Metrics</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Eureka Streams is enabled to accept e-mails that will post a message to a stream or comment on a post.  Users will be able to add to their contacts list the e-mail address of individual streams.  Users will be able to reply to post notifications in order to comment on that particular post.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<h3 id="replyingtoapostnotificatione-mail">Replying to a post notification e-mail</h3>
+
+<ol>
+<li>The Knowledge Worker must be able to &#8220;reply to &#8220;an e-mail received from a post in order to send an e-mail to the Eureka Streams e-mail box.</li>
+</ol>
+
+<h3 id="e-mailpostingorcommenting">E-mail posting or commenting</h3>
+
+<ol>
+<li>The Knowledge Worker must be able to post a message to a stream via e-mail. </li>
+<li>The Knowledge Worker must be able to comment on an activity in stream via e-mail. </li>
+<li>The Knowledge Worker must be able to e-mail with a signature, original e-mail text, etc. and have these extra itemsremoved allowing only the post or comment text to be processed.</li>
+<li>The Knowledge Worker must be able to send an e-mail that includes a multipart form and/or HTML and have the HTML stripped out and/or the additional multipart forms ignored allowing only the post or comment text to be processed.</li>
+<li>The Knowledge Worker must be able to e-mail a post larger than 250 characters and have the extra characters appear as a comment below their post.</li>
+<li>The Knowledge Worker must be able to e-mail a comment longer than 1,000 characters and have the extra characters appear as additional comments below their comment.</li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="postnotificatione-mailtext">Post Notification E-mail Text</h3>
+
+<p>Jeffrey H Stephens posted a message to the C&amp;ES Communications Product Team
+stream.</p>
+
+<p>&#8220;Everything is going well&#8221;</p>
+
+<p>To see the post follow this link.</p>
+
+<p>You can reply directly to this message by replying to this email. Be mindful
+to remove your email signature so as to not attach it to your comment within
+Eureka. </p>
+
+<p>Thank You,
+Eureka Streams</p>
+
+<h2 id="testplan">Test Plan</h2>
+
+<h3 id="replyingtoapostnotificatione-mail">Replying to a post notification e-mail</h3>
+
+<ol>
+<li><strong>Verify a Knowledge Worker can &#8220;rely to&#8221; an email recieved from a post</strong> 
+<ul><li>Verify a Knowledge Worker recieved an email </li>
+<li>Verify the ability to reply to the email</li>
+<li>Verify the email was sent to the Eureka Streams e-mail box</li></ul></li>
+</ol>
+
+<h3 id="downloadingastreamcontact">Downloading a stream contact</h3>
+
+<ol>
+<li><strong>Verify a Knowledge Worker can add e-mail address to their contacts list on their streams</strong>
+<ul><li>Verify the ability to select a contact from the drop down selection</li>
+<li>Verify the ability to add a contact in their contact list</li></ul></li>
+</ol>
+
+<h3 id="e-mailpostingorcommenting">E-mail posting or commenting</h3>
+
+<ol>
+<li><strong>Verify a Knowledge Worker can posts message to a stream by via e-mail.</strong> 
+<ul><li>Verify the ability to e-mail a posts message with a signature</li>
+<li>Verify the ability to change the following items on the e-mail, allowing the individual posts to process.
+<ul><li>Verify the ability to edit text from the email</li>
+<li>Verity the abitity to remove items such as original e-mail text </li></ul></li>
+<li>Verify e-mail a post is limited to 250 characters </li>
+<li>Verify if e-mail post exceed 250 characters, the extra charecters appear as a comment below their post    </li></ul></li>
+<li><strong>Verify a Knowledge Worker can comment on posts</strong>
+<ul><li>Verify the ability to e-mail comments on a post with a signature</li>
+<li>Verify the ability to change the following items on the e-mail, allowing the individual comments to process.
+<ul><li>Verify the ability to edit text from the email</li>
+<li>Verity the abitity to remove items such as text </li></ul></li>
+<li>Verify e-mail a comment is limited to 1,000 characters </li>
+<li>Verify if e-mail comment exceed 1,000 characters, the extra charecters appear as additional comments below their comment      </li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a>
+<ul><li><a href="#replyingtoapostnotificatione-mail">Replying to a post notification e-mail</a></li>
+<li><a href="#e-mailpostingorcommenting">E-mail posting or commenting</a></li></ul></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#postnotificatione-mailtext">Post Notification E-mail Text</a></li></ul></li>
+<li><a href="#testplan">Test Plan</a>
+<ul><li><a href="#replyingtoapostnotificatione-mail">Replying to a post notification e-mail</a></li>
+<li><a href="#downloadingastreamcontact">Downloading a stream contact</a></li>
+<li><a href="#e-mailpostingorcommenting">E-mail posting or commenting</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

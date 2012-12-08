@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Conceptual architecture</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; Conceptual architecture</p>
+
+<h1 class="title">Conceptual architecture</h1>
+
+<p><a href='Logical architecture.html'><span id="nextlink">Logical architecture</span></a>
+<a href='Meta-architecture.html'><span id="prevlink">Meta-architecture</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The conceptual architecture provides a high component view of the system architecture including the relationship between components.  Also included are the architecture decisions, trade offs, and principals that are pervasive in the architecture.</p>
+
+<h2 id="conceptualarchitecturediagram">Conceptual architecture diagram</h2>
+
+<p><img id="" src="images/Conceptual-Architecture-Diagram.png" alt="" title="" /></p>
+
+<h2 id="components">Components</h2>
+
+<h3 id="browser">Browser</h3>
+
+<p>The browser provides resource retrieval and execution tied to the presentation of the system.  The browser is responsible for requesting static content, executing browser-side code, and request additional resources.  The static content is retrieved from the Web server.  Additional dynamic resources are retrieved from the application server through the Web server where the Web server is acting as a request proxy.</p>
+
+<p>The browser must authenticate itself with the Web server and is authorized based on its login credentials.</p>
+
+<h3 id="webserver">Web Server</h3>
+
+<p>The Web server provides the security capability of authenticating and authorizing the user, returning static content, and proxying dynamic content to the application server.</p>
+
+<p>There are configuration options for user authentication and authorization.  One option makes the Web server responsible for authenticating the user.  After successful authentication, a pre-determined key is passed with the value being the username of the authenticated user to the application server.  Another configuration option is to allow the Web server to pass the request onto the application server leaving the authentication responsibility onto that component.</p>
+
+<p>Dynamic resource requests are routed through the Web server to the application server.</p>
+
+<h3 id="applicationserver">Application Server</h3>
+
+<p>The application server is responsible for accepting dynamic resource requests, executing the appropriate actions, and returning the results.  These dynamic requests are proxied though the Web server over the AJP 1.3 protocol.</p>
+
+<p>The application server is also responsible for maintaining connections to other system components like the cache, database, task queue, and other required enterprise resources like LDAP and Mail gateway.</p>
+
+<h3 id="cache">Cache</h3>
+
+<p>The cache is responsible for providing fast, in memory storage for key/value pairs.  The cache is temporal and is organized for quick retrieval and usage in dynamic requests.</p>
+
+<h3 id="database">Database</h3>
+
+<p>The database is responsible for providing persistent storage of system data.  The database is organized following standard data normalization rules providing relationships between tables and constraints where necessary.  The database exhibits the <a href="http://en.wikipedia.org/wiki/ACID">ACID</a> properties for data integrity.</p>
+
+<h3 id="search">Search</h3>
+
+<p>The search is responsible for accepting search requests and returning results based on indexed data and custom logic.  The search accepts items to be indexed and incorporates these items into its indexes to make the items available as results.</p>
+
+<h3 id="taskqueue">Task Queue</h3>
+
+<p>The task queue server is responsible for accepting inbound and outbound connections to the task queues.  Inbound connections allow messages to be added to the queue while outbound connections allow messages to be removed from the queue.</p>
+
+<p>The task queue supports two types of queues: a queue for tasks that are to be executed and a queue for items to be indexed by the search component.  The tasks executor is responsible for consuming both types of messages and perform the necessary steps to satisfy them.</p>
+
+<h3 id="taskexecutor">Task Executor</h3>
+
+<p>The task executor is responsible for receiving task requests and handling them.  The task executor retrieves tasks from the task queue and handles these tasks resulting in updates to the cache, the database, or both.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conceptualarchitecturediagram">Conceptual architecture diagram</a></li>
+<li><a href="#components">Components</a>
+<ul><li><a href="#browser">Browser</a></li>
+<li><a href="#webserver">Web Server</a></li>
+<li><a href="#applicationserver">Application Server</a></li>
+<li><a href="#cache">Cache</a></li>
+<li><a href="#database">Database</a></li>
+<li><a href="#search">Search</a></li>
+<li><a href="#taskqueue">Task Queue</a></li>
+<li><a href="#taskexecutor">Task Executor</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

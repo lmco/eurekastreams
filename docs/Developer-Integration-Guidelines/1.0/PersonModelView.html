@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>PersonModelView</title>
+		<link rel="stylesheet" href="style/Developer Integration Guidelines.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Developer%20Integration%20Guidelines.html">Developer Integration Guidelines</a> &gt; <a href="Data%20Types.html">Data Types</a> &gt; PersonModelView</p>
+
+<h1 class="title">PersonModelView</h1>
+
+<p><a href='PostActivityRequest.html'><span id="nextlink">PostActivityRequest</span></a>
+<a href='PagedSet.html'><span id="prevlink">PagedSet</span></a></p>
+
+<h2 id="datatype">Datatype</h2>
+
+<h3 id="description">Description</h3>
+
+<p>Date set that contains the parameters necessary to define a person</p>
+
+<h3 id="contents">Contents</h3>
+
+<table cellspacing="10" border="0" style="text-align: left;">
+<thead>
+<tr>
+<th>Type</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number</td>
+<td>entityId</td>
+<td>Unique identifier for the person</td>
+</tr>
+<tr>
+<td>Set&lt;<a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/PersonModelView.Role.html" title="PersonModelView.Role">PersonModelView.Role</a>&gt;</td>
+<td>roles</td>
+<td>List that defines the roles the user holds</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>dateAdded</td>
+<td>Date/time stamp for when the person was added to the system</td>
+</tr>
+<tr>
+<td>String</td>
+<td>accountId</td>
+<td>The person&#8217;s operating system id</td>
+</tr>
+<tr>
+<td>String</td>
+<td>openSocialId</td>
+<td>The person&#8217;s unique identifier within the OpenSocial social media data interchange</td>
+</tr>
+<tr>
+<td>String</td>
+<td>title</td>
+<td>The person&#8217;s job title</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>parentOrganizationId</td>
+<td>The unique identifier for the person&#8217;s parent organization</td>
+</tr>
+<tr>
+<td>String</td>
+<td>parentOrganizationShortName</td>
+<td>The short name for the person&#8217;s parent organization</td>
+</tr>
+<tr>
+<td>String</td>
+<td>parentOrganizationName</td>
+<td>The full name of the person&#8217;s parent organization</td>
+</tr>
+<tr>
+<td>String</td>
+<td>description</td>
+<td>The description for the person</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>followersCount</td>
+<td>The number of followers the person has</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>followingCount</td>
+<td>The number of people the person is following</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>groupsCount</td>
+<td>The number of groups the person is a member of</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>compositeStreamHiddenLineIndex</td>
+<td></td>
+</tr>
+<tr>
+<td>String</td>
+<td>displayName</td>
+<td>The person&#8217;s display name</td>
+</tr>
+<tr>
+<td>String</td>
+<td>avatarId</td>
+<td>The unique identifier for the person&#8217;s avatar</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>avatarCropSize</td>
+<td>the size of the person&#8217;s avatar in square pixels</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>avatarCropX</td>
+<td>The width of the person&#8217;s avatar in pixels</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>avatarCropY</td>
+<td>The height of the person&#8217;s avatar in pixels</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>updatesCount</td>
+<td>The number of updates to the person&#8217;s stream since it was last refreshed</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>streamId</td>
+<td>The unique identifier for the person&#8217;s stream</td>
+</tr>
+<tr>
+<td>HashSet&lt;Number&gt;</td>
+<td>optOutVideos</td>
+<td>A list identifying which of the getting started videos the person has opted out of</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>tosAcceptance</td>
+<td>True/False flag defining if the person has accepted the terms of service</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>commentable</td>
+<td>True/False flag defining if commenting is enabled on the person&#8217;s stream</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>streamPostable</td>
+<td>True/False flag defining id posting is enabled on the person&#8217;s stream</td>
+</tr>
+<tr>
+<td><a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/AuthenticationType.html" title="AuthenticationType">AuthenticationType</td>
+<td>authenticationType</td>
+<td>Defines the type of authentication being used for the person</td>
+</tr>
+<tr>
+<td>String</td>
+<td>email</td>
+<td>The person&#8217;s email address</td>
+</tr>
+<tr>
+<td>List&lt;Number&gt;</td>
+<td>relatedOrganizationIds</td>
+<td>List of identifiers for the organizations the person is a member of</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>lastAcceptedTermsOfService</td>
+<td>Date/time stamp for when the terms of service was accepted</td>
+</tr>
+<tr>
+<td>Hashmap&lt;String, String&gt;</td>
+<td>additionalProperties</td>
+<td>List of additional properties for the person</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>accountLocked</td>
+<td>True/False flag defining if the person&#8217;s Eureka account has been locked</td>
+</tr>
+<tr>
+<td>String</td>
+<td>lastName</td>
+<td>The person&#8217;s last name</td>
+</tr>
+<tr>
+<td>String</td>
+<td>preferredName</td>
+<td>The person&#8217;s preferred name</td>
+</tr>
+<tr>
+<td>String</td>
+<td>jobDescription</td>
+<td>The person&#8217;s job description</td>
+</tr>
+<tr>
+<td>String</td>
+<td>workPhone</td>
+<td>The person&#8217;s work phone number</td>
+</tr>
+<tr>
+<td>String</td>
+<td>cellPhone</td>
+<td>The person&#8217;s cell phone number</td>
+</tr>
+<tr>
+<td>String</td>
+<td>fax</td>
+<td>The person&#8217;s fax number</td>
+</tr>
+<tr>
+<td>List&lt;<a href="http://docs.ces.isgs.lmco.com/Developer-Integration-Guidelines/1.0/OrganizationModalView.html" title="OrganizationModalView">OrganizationModalView</a>&gt;</td>
+<td>relatedOrganizations</td>
+<td>List of the organization data sets for the organizations the person is a member of</td>
+</tr>
+<tr>
+<td>List&lt;String&gt;</td>
+<td>interests</td>
+<td>List of the person&#8217;s interest</td>
+</tr>
+<tr>
+<td>String</td>
+<td>biography</td>
+<td>The person&#8217;s biography</td>
+</tr>
+<tr>
+<td>String</td>
+<td>bannerId</td>
+<td>The unique identifer for the banner assocuated with the person&#8217;s profile</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>bannerEntityId</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#datatype">Datatype</a>
+<ul><li><a href="#description">Description</a></li>
+<li><a href="#contents">Contents</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

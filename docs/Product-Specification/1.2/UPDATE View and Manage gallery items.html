@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>UPDATE View and Manage gallery items</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Old%20Spec.html">Old Spec</a> &gt; UPDATE View and Manage gallery items</p>
+
+<h1 class="title">UPDATE View and Manage gallery items</h1>
+
+<p><a href='Customize the start page.html'><span id="nextlink">Customize the start page</span></a>
+<a href='UPDATE Manage system settings.html'><span id="prevlink">UPDATE Manage system settings</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Gallery can be updated with default apps and themes.  Organization Coordinators are responsible for vetting the item available within the gallery for their employees.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The system must restrict the publication, modification, and removal of a gallery item to an organization coordinator.</li>
+<li>The organization coordinator must be able to publish and categorize an app referenced by a url.</li>
+<li>The system must verify that the app adheres to the google app specification.</li>
+<li>The organization coordinator must be able to modify the category and url for a published app.</li>
+<li>The organization coordinator must be able to remove a published app.</li>
+<li>The organization coordinator must be able to publish and categorize a theme referenced by a url.</li>
+<li>The system must verify that the theme adheres to the eureka theme schema.</li>
+<li>The organization coordinator must be able to modify the category and url for a published theme.</li>
+<li>The organization coordinator must be able to remove a published theme.</li>
+<li>The organization coordinator must be able to publish and categorize a stream plugin referenced by a url.</li>
+<li>The system must verify that the stream plugin adheres to the Google app specification and eureka stream plugin feature.</li>
+<li>The organization coordinator must be able to modify the category and url for a published stream plugin.</li>
+<li>The organization coordinator must be able to remove a published stream plugin.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="managingapps">Managing Apps</h3>
+
+<p><img id="" src="images/PS_F06_manageGallery_apps.png" alt="" title="" /></p>
+
+<ol>
+<li>Opens the add app form.</li>
+<li>Hovering over the app thumbnail, title, description or meta data displays the edit link. Clicking edit displays the edit app form. </li>
+<li>Hovering over the app thumbnail, title, description or meta data displays the Delete link. Clicking the Delete link removes the app from the gallery. When the Organizational Coordinator clicks the Delete link a popup window is displayed asking the user: &#8220;Are you sure you want to delete this app? Deleting this app will remove it from the start page of every user that has added it to a tab.&#8221; If the app is deleted a feedback message is displayed saying: &#8220;The [app name] app has been deleted&#8221;. </li>
+</ol>
+
+<h4 id="addingapps">Adding Apps</h4>
+
+<p><img id="" src="images/PS_F06_manageGallery_addApp.png" alt="" title="" /></p>
+
+<ol>
+<li>Drop down menu containing a list of app categories</li>
+<li>Input field for app XML address</li>
+<li>Submits the form and returns the organization coordinator back to the configure page defaulted to the all apps view.  A feedback message &#8220;Your app has been successfully added&#8221; is also displayed at the top of the page with a close link next to it.</li>
+<li>Discards the changes made to the form and returns the organization coordinator back to the configure page.</li>
+</ol>
+
+<h4 id="editingapps">Editing Apps</h4>
+
+<p><img id="" src="images/PS_F06_manageGallery_editApp.png" alt="" title="" /></p>
+
+<ol>
+<li>Populated with the app category.</li>
+<li>Populated with URL to app XML file.</li>
+<li>Saves changes to the form and returns the organization coordinator back to the configure page defaulted to the all apps view.  A feedback message &#8220;Your app has been successfully saved&#8221; is also displayed at the top of the page with a close link next to it.</li>
+<li>Discards the changes made to the form and returns the organization coordinator back to the configure page.</li>
+</ol>
+
+<h3 id="managingthemes">Managing Themes</h3>
+
+<p><img id="" src="images/PS_F06_manageGallery_themes.png" alt="" title="" /></p>
+
+<ol>
+<li>Opens the add theme form.</li>
+<li>Hovering over the theme thumbnail, title, or meta data displays an edit link. Clicking edit displays the edit theme form. </li>
+<li>Hovering over the theme thumbnail, title, or meta data displays the Delete link. Clicking the Delete link removes the theme from the gallery. When the Organizational Coordinator clicks the Delete link a popup window is displayed asking the user: &#8220;Are you sure you want to delete this theme? Deleting a theme will remove it from the start page and apply the default theme for every user that has applied it.&#8221; If the theme is deleted a feedback message is displayed saying: &#8220;The [theme name] theme has been deleted&#8221; with a close link next to it. </li>
+</ol>
+
+<h4 id="addingthemes">Adding Themes</h4>
+
+<p><img id="" src="images/PS_F06_manageGallery_addTheme.png" alt="" title="" /></p>
+
+<ol>
+<li>Drop down menu containing a list of theme categories</li>
+<li>Input field for theme XML address</li>
+<li>Submits the form and returns the organization coordinator back to the configure page defaulted to the all themes view.  A feedback message &#8220;Your theme has been successfully added&#8221; is also displayed at the top of the page with a close link next to it.</li>
+<li>Discards the changes made to the form and returns the organization coordinator back to the configure page.</li>
+</ol>
+
+<h4 id="editingthemes">Editing Themes</h4>
+
+<p><img id="" src="images/PS_F06_manageGallery_editTheme.png" alt="" title="" /></p>
+
+<ol>
+<li>Populated with the theme category.</li>
+<li>Populated with URL to theme XML file.</li>
+<li>Saves changes to the form and returns the organization coordinator back to the configure page defaulted to the all themes view.  A feedback message &#8220;Your theme has been successfully saved&#8221; is also displayed at the top of the page with a close link next to it.</li>
+<li>Discards the changes made to the form and returns the organization coordinator back to the configure page.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Attempt to publish, modify, or remove a gallery item</strong>
+<ul><li>Verify a knowledge worker is unable to publish, modify, or remove a gallery item</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Attempt to publish, modify, or remove a gallery item</strong>
+<ul><li>Verify a group coordinator is unable to publish, modify, or remove a gallery item</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Publish and categorize an app referenced by a url</strong>
+<ul><li>Verify there is a link from the gallery directing the user to a form to upload an app</li>
+<li>Verify error handling is present when required fields are not populated</li>
+<li>Verify a category can be selected and associated with the app</li></ul></li>
+<li><strong>Action: Confirm apps adhere to the Google app specification</strong>
+<ul><li>Verify a theme that is uploaded must adhere to the Google app specification</li>
+<li>Verify that if a app does not adhere there is error handling</li>
+<li>Verify there is a link which will direct the user to the app specification guide</li></ul></li>
+<li><strong>Action: Modify the category and url for a published app</strong>
+<ul><li>Verify the category can be changed for an app that has been uploaded to the gallery</li>
+<li>Verify the URL can be changed for an app that has been uploaded to the gallery</li>
+<li>Verify there is error handling in the edit mode</li></ul></li>
+<li><strong>Action: Remove a published app</strong>
+<ul><li>Verify a published app can be removed</li>
+<li>Verify there is removal confirmation</li>
+<li>Verify the app is removed from the gallery, but is not removed from any tabs of users with that app currently applied</li></ul></li>
+<li><strong>Action: Publish and categorize a theme referenced by a url</strong>
+<ul><li>Verify there is a link from the gallery directing the user to a form to upload a theme</li>
+<li>Verify error handling is present when required fields are not populated</li>
+<li>Verify a category can be selected and associated with the theme</li></ul></li>
+<li><strong>Action: Confirm theme adheres to the Eureka theme schema</strong>
+<ul><li>Verify a theme that is uploaded must adhere to the Eureka theme schema</li>
+<li>Verify that if a theme does not adhere there is error handling</li>
+<li>Verify there is a link which will direct the user to the preparation guide</li></ul></li>
+<li><strong>Action: Modify the category and url for a published theme</strong>
+<ul><li>Verify the category can be changed for a theme that has been uploaded to the gallery</li>
+<li>Verify the URL can be changed for a theme that has been uploaded to the gallery</li>
+<li>Verify there is error handling in the edit mode</li></ul></li>
+<li><strong>Action: Remove a published theme</strong>
+<ul><li>Verify a published theme can be removed</li>
+<li>Verify there is removal confirmation</li>
+<li>Verify the theme is removed from the gallery, and is stripped from start pages of users with that theme currently applied</li></ul></li>
+<li><strong>Action: Publish and categorize a stream plug in referenced by a url</strong>
+<ul><li>Verify there is a link from the gallery directing the user to a form to upload a stream plug in</li>
+<li>Verify error handling is present when required fields are not populated</li>
+<li>Verify a category can be selected and associated with the stream plug in</li></ul></li>
+<li><strong>Action: Confirm stream plugins adheres to the Google app specification and eureka stream plug in feature</strong>
+<ul><li>Verify a stream plug in that is uploaded must adhere to the Eureka stream plug in feature and the Google app specification</li>
+<li>Verify that if a stream plug in does not adhere, there is error handling</li>
+<li>Verify there is a link which will direct the user to the developers guide</li></ul></li>
+<li><strong>Action: Modify the category and url for a published stream plugin</strong>
+<ul><li>Verify the category can be changed for a stream plug in that has been uploaded to the gallery</li>
+<li>Verify the URL can be changed for a published stream plug in that has been uploaded to the gallery</li>
+<li>Verify there is error handling in the edit mode</li></ul></li>
+<li><strong>Action:  Remove a published stream plugin</strong>
+<ul><li>Verify a plug in can be removed</li>
+<li>Verify there is removal confirmation</li>
+<li>Verify the plug in is removed from the gallery, but and is stripped from start pages of users with the stream plug in applied</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Organization Coordinator</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#managingapps">Managing Apps</a>
+<ul><li><a href="#addingapps">Adding Apps</a></li>
+<li><a href="#editingapps">Editing Apps</a></li></ul></li>
+<li><a href="#managingthemes">Managing Themes</a>
+<ul><li><a href="#addingthemes">Adding Themes</a></li>
+<li><a href="#editingthemes">Editing Themes</a></li></ul></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

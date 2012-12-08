@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>UPDATE Configure a stream</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; UPDATE Configure a stream</p>
+
+<h1 class="title">UPDATE Configure a stream</h1>
+
+<p><a href='UPDATE Manage system settings.html'><span id="nextlink">UPDATE Manage system settings</span></a>
+<a href='Feed Reader App.html'><span id="prevlink">Feed Reader App</span></a></p>
+
+<p>This page will replace the 0.9 specification for <a href="../0.9/Configure%20a%20stream.html">Configure a stream</a> when Eureka Stream 1.0 is released.  This product specification is a work in process.  </p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can configure a stream to allow or restrict posting and commenting on the knowledge workers stream.   Stream plugins can also be configured to provide the employee or group with the most up to date data from sources such as delicious, google reader, or youtube.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must have the option to not allow colleagues to post to his employee or group stream.</li>
+<li>The knowledge worker must have the option to not allow colleagues to comment on activity in his employee or group stream.</li>
+<li>The system must allow knowledge workers to post and comment on activity in an employee or public group stream by default.</li>
+<li>The knowledge worker must be able to select from and configure a stream plugin to import activity into his employee or group stream.</li>
+<li>The knowledge worker must be able to remove a stream plugin configured for his employee or group stream.</li>
+<li>The system must display a warning message if a stream plugin failed to import activity.</li>
+<li>The knowledge worker must be able to import an atom or rss feed&#8217;s entries into his employee or group stream.</li>
+<li>The knowledge worker must be able to import a delicious user&#8217;s bookmarks into his employee or group stream.</li>
+<li>The knowledge worker must be able to import a google reader user&#8217;s shared items into his employee or group stream.</li>
+<li>The knowledge worker must be able to import a youtube channel&#8217;s videos into his employee or group stream.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="streamsettingsemployeeprofile">Stream Settings Employee Profile</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_employeeStreamSettings.png" alt="" title="" /></p>
+
+<ol>
+<li>Stream plugin settings</li>
+<li>When changes are saved, feedback is displayed at the top of the page with a close option: &#8220;Stream Settings saved&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="streammoderationemployeeprofile">Stream Moderation Employee Profile</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_employeepoststreamModeration.png" alt="" title="" /></p>
+
+<ol>
+<li>Message displayed in the knowledge workers profile and the activity page when the &#8220;Allow others to post to your stream.&#8221; option is disabled.  The knowledge worker who owns the profile should be the only one able to post to the stream.</li>
+</ol>
+
+<p><img id="" src="images/R1_PS_F17_configure_stream_employeecommentstreamModeration.png" alt="" title="" /></p>
+
+<ol>
+<li>Comment link should be hidden in all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page when the &#8220;Allow others to comment on activity in your stream.&#8221; option is disabled. The knowledge worker who owns the profile should be the only one able to comment on the post.</li>
+<li>Sharing to a knowledge workers profile from other profiles (root org, sub org, group, and other knowledge workers) and the activity page should be prohibited when the &#8220;Allow others to post to your stream.&#8221; option is disabled.  The knowledge worker who owns the profile should be the only one able to share to the stream.  Do not display the knowledge workers name in the auto complete results in this scenario.</li>
+<li>Delete link should be hidden in all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page when the &#8220;Allow others to post to your stream.&#8221; option is disabled or the comment when the &#8220;Allow others to comment on activity in your stream.&#8221; is disabled. The knowledge worker who owns the profile and the parent org coordinators (i.e. if message is flagged) should be able to delete the post and comments.</li>
+</ol>
+
+<h3 id="streamsettingsgroupprofile">Stream Settings Group Profile</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_groupStreamSettings.png" alt="" title="" /></p>
+
+<ol>
+<li>Stream plugin settings</li>
+<li>When changes are saved, feedback is displayed at the top of the page with a close option: &#8220;Stream Settings saved&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="streammoderationgroupprofile">Stream Moderation Group Profile</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_grouppoststreamModeration.png" alt="" title="" /></p>
+
+<ol>
+<li>Message displayed in the group profile and the activity page when the  &#8220;Allow others to post to your group&#8217;s stream.&#8221; is disabled.  Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be able to post to the group stream.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_groupcommentstreamModeration.png" alt="" title="" /></p>
+
+<ol>
+<li>Comment link should be hidden in all profiles that display the post (root org, sub org, and group profile)and the activity page when the &#8220;Allow others to comment on activity in your group&#8217;s stream.&#8221; option is disabled. Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be able to comment on posts in the group stream.</li>
+<li>Sharing to a group profile from other profiles (root org, sub org, and other knowledge workers) or activity page should be prohibited when the &#8220;Allow others to comment on activity in your group&#8217;s stream.&#8221; option is disabled. Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be able to share posts to the group stream. Do not display the group name in the auto complete results in this scenario.</li>
+<li>Delete link should be hidden in all profiles that display the post (root org, sub org, and group profile) and the activity page when the &#8220;Allow others to comment on activity in your group&#8217;s stream.&#8221; option is disabled. Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be the only ones able to delete a post from a group stream.</li>
+</ol>
+
+<h3 id="addingstreamplugins">Adding Stream Plugins</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking the plugin name displays the plugin configuration form.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig02.png" alt="" title="" /></p>
+
+<p>Stream plugin components</p>
+
+<ol>
+<li>Header- provides an overview of the plugin and instructions on how to configure it.</li>
+<li>Plugin form - composed of one or more form elements required to configure the plugin.</li>
+<li>Terms of service message - each knowledge worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.</li>
+<li>Clicking submit completes the configuration and takes the knowledge worker to list of configured plugins.  Feedback displays at the top of the page with a close option: &#8220;Stream Plugin has been successfully added&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="pluginforminteraction">Plugin Form Interaction</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_pluginFormInteraction.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker enters a URL or username and clicks import.</li>
+<li>This displays a process animation while the system validates the entered information. If the information can&#8217;t be validated a warning message is displayed to the knowledge worker.</li>
+<li>When the entered information is successfully validated the feed name is displayed. The knowledge worker can delete their entry by clicking the Delete link which will return the input form.</li>
+</ol>
+
+<h3 id="managingplugins">Managing Plugins</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Plugins are listed in reverse chronological order</li>
+<li>Hovering over the plugin icon or text displays the Edit and Delete links.
+<ul><li>Clicking edit displays the plugin configuration form titled edit plugin.</li>
+<li>Clicking the delete icon displays a pop-up window asking the knowledge worker: &#8220;Are you sure you want to delete this plugin&#8221; if the knowledge worker clicks &#8220;yes&#8221; the plugin is deleted and a warning message is displayed: &#8220;Stream plugin [insert name] has been deleted&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li></ul></li>
+</ol>
+
+<h3 id="editingstreamplugins">Editing Stream Plugins</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig04.png" alt="" title="" /></p>
+
+<p>Stream plugin components</p>
+
+<ol>
+<li>Header- provides an overview of the plugin and instructions on how to configure it.</li>
+<li>Plugin form - composed of one or more form elements required to configure the plugin.</li>
+<li>Terms of service message - each knowledge worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.</li>
+<li>Clicking save changes completes the configuration and takes the knowledge worker to list of configured plugins.  Feedback displays at the top of the page with a close option: &#8220;Stream Plugin has been successfully edited&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h3 id="deliciousplugin">Delicious Plugin</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureDeliciousPlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated user name</li>
+</ol>
+
+<h4 id="activitygeneratedfromthedeliciousplugin">Activity Generated from the Delicious Plugin</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureDeliciousPlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureDeliciousPlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Bookmark content type</li>
+<li>Link opens a new window displaying the user&#8217;s shared bookmarks page.</li>
+</ol>
+
+<h3 id="webfeedplugin">Web Feed Plugin</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureFeedPlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated web feed</li>
+</ol>
+
+<h4 id="activitygeneratedfromthewebfeedplugin">Activity Generated from the Web Feed Plugin</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureFeedPlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.   Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureFeedPlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Bookmark content type</li>
+<li>Name of the source of the feed</li>
+<li>Time Stamp and Source</li>
+</ol>
+
+<h3 id="googlereader">Google Reader</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated shared items feed</li>
+</ol>
+
+<h4 id="activitygeneratedfromthegooglereaderplugin">Activity Generated from the Google Reader Plugin</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Bookmark content type</li>
+<li>Link opens a new window displaying the user&#8217;s shared items.</li>
+<li>Time Stamp and Source</li>
+</ol>
+
+<h3 id="youtube">YouTube</h3>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureYoutubePlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated YouTube feed</li>
+</ol>
+
+<h4 id="activitygeneratedfromthegooglereaderplugin">Activity Generated from the Google Reader Plugin</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureYoutubePlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureYoutubePlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Video content type</li>
+<li>Link opens a new window displaying the profile page of the configured YouTube user.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: From the employee profile, disable the option to &#8216;&#8220;Allow others to post to your stream.&#8221;</strong>
+<ul><li>Verify posting to an employee stream
+<ul><li>Verify the knowledge worker who owns the employee stream can post to the stream from the knowledge workers profile or the activity page</li>
+<li>Verify that a colleague cannot post to the employee stream from the knowledge workers profile or the activity page</li>
+<li>Verify a group coordinator cannot post to the employee stream from the knowledge workers profile or the activity page</li>
+<li>Verify a sub organization coordinator cannot post to the employee stream from the knowledge workers profile or the activity page</li>
+<li>Verify a root organization coordinator cannot post to the employee stream from the knowledge workers profile or the activity page</li></ul></li>
+<li>Verify sharing to and from the employee stream
+<ul><li>Verify for all user roles, a post can be shared from the knowledge workers profile to another profile (root org, sub org, group and other knowledge workers)</li>
+<li>Verify that a colleague cannot share to the employee stream from another profile (root org, sub org, and other knowledge workers) or the activity page</li>
+<li>Verify a group coordinator cannot share to the employee stream from another profile (root org, sub org, group, and other knowledge workers) or the activity page</li>
+<li>Verify a sub organization coordinator cannot share to the employee stream from another profile (root org, sub org, group, and other knowledge workers) or the activity page</li>
+<li>Verify a root organization coordinator cannot share to the employee stream from another profile (root org, sub org, group, and other knowledge workers) or the activity page</li></ul></li>
+<li>Verify deletion of a post
+<ul><li>Verify that a colleague cannot see the delete link for posts in the employee stream from the knowledge workers profile or the activity page</li>
+<li>Verify a group coordinator cannot see the delete link for posts in the employee stream from the knowledge workers profile or the activity page</li>
+<li>Verify a parent organization coordinator can delete posts in the employee stream from the knowledge workers profile or the activity page (this is needed if activity is flagged and reviewed by the parent organization)</li>
+<li>Verify a sub organization coordinator who is not the parent organization coordinator cannot view the delete link for posts in the employee stream from the knowledge workers profile or the activity page (this is needed if activity is flagged and reviewed by the parent organization)</li>
+<li>Verify a root organization coordinator who is not the parent organization coordinator cannot view the delete link for posts in the employee stream from the knowledge workers profile or the activity page (this is needed if activity is flagged and reviewed by the parent organization)</li></ul></li></ul></li>
+<li><strong>Action: From the group profile, disable the option to &#8220;Allow others to post to your group&#8217;s stream.&#8221;</strong>
+<ul><li>Verify posting to the group stream
+<ul><li>Verify that a colleague cannot post to the group stream from the group profile or the activity page</li>
+<li>Verify a group coordinator can post to the group stream from the group profile or the activity page</li>
+<li>Verify a sub organization coordinator can post to the group stream within his organization or sub organization from the group profile or the activity page</li>
+<li>Verify a root organization coordinator can post to the group stream within his organization or sub organization from the group profile or the activity page</li></ul></li>
+<li>Verify sharing to and from the group stream
+<ul><li>Verify for all user roles, a post cannot be shared from a private group to another profile (root org, sub org, and other knowledge workers)</li>
+<li>Verify that a colleague cannot share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page</li>
+<li>Verify that a colleague can share from a public group stream to another profile (root org, sub org, and other knowledge workers)</li>
+<li>Verify a group coordinator can share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page</li>
+<li>Verify a sub organization coordinator can share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page</li>
+<li>Verify a root organization coordinator can share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page</li></ul></li>
+<li>Verify deletion of a group post
+<ul><li>Verify that a colleague cannot see the delete link for posts in the group stream or the activity page</li>
+<li>Verify a group coordinator can delete posts in the group stream or the activity page</li>
+<li>Verify a sub organization coordinator can delete posts in the group stream or the activity page</li>
+<li>Verify a root organization organization coordinator can delete posts in the group stream or the activity page</li></ul></li></ul></li>
+<li><strong>Action: In the employee profile, disable the &#8220;Allow others to comment on activity in your stream.&#8221;  option.</strong>
+<ul><li>Verify that the knowledge worker can comment on posts in his own employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page</li>
+<li>Verify that a colleague cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page</li>
+<li>Verify a group coordinator cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page</li>
+<li>Verify a sub organization coordinator cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page</li>
+<li>Verify a root organization coordinator cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page</li></ul></li>
+<li><strong>Action: In the group profile, disable the &#8220;Allow others to comment on activity in your group&#8217;s stream.&#8221;  option.</strong>
+<ul><li>Verify that a colleague cannot view the comment link for posts in the group stream from all profiles that display the post (root org, sub org, and group profile) and the activity page</li>
+<li>Verify a group coordinator can comment on posts in the employee stream from all profiles that display the post (root org, sub org, and group profile) and the activity page</li>
+<li>Verify a sub organization coordinator can comment on posts in the employee stream from all profiles that display the post (root org, sub org, and group profile) and the activity page</li>
+<li>Verify a root organization coordinator can comment on posts in the employee stream from all profiles that display the post (root org, sub org, and group profile) and the activity page</li></ul></li>
+<li><strong>Action: Confirm that posting and commenting on activity in an employee or public group stream is set as the default</strong>
+<ul><li>Verify the &#8216;Allow others to post to your stream&#8217; option is enabled by default</li>
+<li>Verify the &#8216;Allow others to comment on activity in your stream&#8217; option is enabled by default</li>
+<li>Verify that the &#8216;Allow others to post to your groups stream&#8217; option is enabled by default</li>
+<li>Verify that the &#8216;Allow others to comment or activity in your group&#8217;s stream&#8217; option is enabled by default</li></ul></li>
+<li><strong>Action: Select from and configure a stream plugin to import activity into an employee or group stream</strong>
+<ul><li>Fullfilled by executing Steps 7-11</li></ul></li>
+<li><strong>Action: Remove a stream plugin configured in an employee or group stream</strong>
+<ul><li>Fullfilled by executing Steps 7-11</li></ul></li>
+<li><strong>Action: Create a failure scenario for a stream plugin in an employee or group stream</strong>
+<ul><li>Fullfilled by executing Steps 7-11</li></ul></li>
+<li><strong>Action: Import an atom or rss feed&#8217;s entries into an employee or group stream</strong>
+<ul><li>Verify a rss feed can be imported for an employee or group</li>
+<li>Verify a atom feed can be imported for an employee or group</li>
+<li>Verify a valid Public RSS / Atom URL is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify the feed is displayed when clicking on the source link</li>
+<li>Verify the feed plugin can be edited</li>
+<li>Verify the feed plugin can be deleted</li>
+<li>Verify the feed is displayed in the employee&#8217;s activity stream</li>
+<li>Verify the feed is displayed in the group activity stream</li></ul></li>
+<li><strong>Action: Import a delicious user&#8217;s bookmarks into an employee or group stream</strong>
+<ul><li>Verify the delicious plugin can be imported for an employee or group</li>
+<li>Verify a valid user name is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a delicious plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the delicious feed is displayed when clicking on the source link</li>
+<li>Verify the delicious plugin can be edited</li>
+<li>Verify the delicious plugin can be deleted</li>
+<li>Verify the delicious feed is displayed in the employee&#8217;s activity stream</li>
+<li>Verify the delicious feed is displayed in the group activity stream</li></ul></li>
+<li><strong>Action: Import a google reader user&#8217;s shared items into an employee or group stream</strong>
+<ul><li>Verify the google reader plugin can be imported for an employee or group</li>
+<li>Verify a Shared Items URL is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a Google Reader plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the google reader feed is displayed when clicking on the source link</li>
+<li>Verify the google reader plugin can be edited</li>
+<li>Verify the google reader plugin can be deleted</li>
+<li>Verify the google reader feed is displayed in the employee&#8217;s activity stream</li>
+<li>Verify the google reader feed is displayed in the group activity stream</li></ul></li>
+<li><strong>Action: Import a youtube channel&#8217;s videos into an employee or group stream</strong>
+<ul><li>Verify the youtube plugin can be imported for an employee or group</li>
+<li>Verify a valid user name is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a youtube plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the youtube feed is displayed when clicking on the source link</li>
+<li>Verify the youtube plugin can be edited</li>
+<li>Verify the youtube plugin can be deleted</li>
+<li>Verify the youtube feed is displayed in the employee&#8217;s activity stream</li>
+<li>Verify the youtube feed is displayed in the group activity stream</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#streamsettingsemployeeprofile">Stream Settings Employee Profile</a></li>
+<li><a href="#streammoderationemployeeprofile">Stream Moderation Employee Profile</a></li>
+<li><a href="#streamsettingsgroupprofile">Stream Settings Group Profile</a></li>
+<li><a href="#streammoderationgroupprofile">Stream Moderation Group Profile</a></li>
+<li><a href="#addingstreamplugins">Adding Stream Plugins</a></li>
+<li><a href="#pluginforminteraction">Plugin Form Interaction</a></li>
+<li><a href="#managingplugins">Managing Plugins</a></li>
+<li><a href="#editingstreamplugins">Editing Stream Plugins</a></li>
+<li><a href="#deliciousplugin">Delicious Plugin</a>
+<ul><li><a href="#activitygeneratedfromthedeliciousplugin">Activity Generated from the Delicious Plugin</a></li></ul></li>
+<li><a href="#webfeedplugin">Web Feed Plugin</a>
+<ul><li><a href="#activitygeneratedfromthewebfeedplugin">Activity Generated from the Web Feed Plugin</a></li></ul></li>
+<li><a href="#googlereader">Google Reader</a>
+<ul><li><a href="#activitygeneratedfromthegooglereaderplugin">Activity Generated from the Google Reader Plugin</a></li></ul></li>
+<li><a href="#youtube">YouTube</a>
+<ul><li><a href="#activitygeneratedfromthegooglereaderplugin">Activity Generated from the Google Reader Plugin</a></li></ul></li></ul></li>
+<li><a href="#testplans">Test plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

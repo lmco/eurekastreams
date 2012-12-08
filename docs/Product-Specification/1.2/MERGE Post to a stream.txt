@@ -1,0 +1,117 @@
+This page will replace the 0.9 specification for [Post to a stream](../0.9/Post%20to%20a%20stream.html) when Eureka Stream 1.0 is released.  This product specification is a work in process.  In the 1.0 release, autocomplete of hashtags is being added.
+## Overview
+Knowledge workers can post messages and links to their activity steam,  another employee's activty stream or to a group's activity stream.
+## Conditions of satisfaction
+1. The knowledge worker must be able to post a message to his stream or another he has selected.
+2. The knowledge worker must be able to post a url to his stream or another he has selected.
+3. The knowledge worker must be able to select from a set of available images associated to a url.
+4. The system must validate the url.
+5. The system must auto-detect the title for an unsecure url.
+6. The system must parse an unsecure url for the description meta tag.
+7. The knowledge worker must be able to edit the title for a url.
+8. The knowledge worker must be able to delete a message or url he has posted to a stream.
+9. The group coordinator must be able to delete any message or url posted to his group stream.
+10. The organization coordinator must be able to delete any message or  url posted to a stream associated to his organization or  sub-organization.
+11. The message must be restricted to 250 characters with visual feedback when the limit has been reached.
+12. The knowledge worker must be able to immediately view the posted  message or url if it is associated to the stream he is currently  viewing.
+## User experience
+### Posting a message to a stream
+
+![](images/PS_F11_post_to_stream_postToStream_fig01.png)
+
+1. Minimized state of post box, clicking in the box expands the box to a editable text area.
+2. Post button inactive.
+
+![](images/R1_PS_F11_post_to_stream_postToStream_fig02.png)
+
+1. Expanded post box
+2. Remaining character count. When the character count is less than 250  and greater than 0, the text color changes to red and appears as a  negative number.
+3. Post button. The post button is only active when the remaining character count is 0 or greater.
+4. Content warning message (configured in systems settings).
+5. If the user types a # symbol an autocomplete will pop up of popular hashtags.  The pop up will update as the user types to match the user's input.
+
+### Deleting a message or URL
+
+![](images/R1_PS_F11_post_to_stream_postToStream_fig03.png)
+
+1.  Knowledge workers can delete posts by hovering over the activity and clicking on the delete link.  After deletion, feedback is displayed at the top of the page with a close option: "Activity has been deleted".  Refer to the [Action Feedback UI design  pattern](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.
+
+###Posting a message to another stream
+
+![](images/R1_PS_F11_post_to_stream_postToAnotherStream_fig01.png)
+
+1. On the activity page, knowledge workers have the option to post  messages to another stream. Knowledge workers can enter the name of the  stream they want to post by clicking in the input box.
+
+![](images/R1_PS_F11_post_to_stream_postToAnotherStream_fig02.png)
+
+1. As the knowledge worker types, matches to individual or group streams are displayed in a drop down menu.
+
+![](images/R1_PS_F11_post_to_stream_postToAnotherStream_fig03.png)
+
+1. Entering or selecting a valid stream name displays the name of the  stream. Knowledge workers can remove the stream by clicking the "x"  button which will display an empty input box.
+
+![](images/R1_PS_F11_post_to_stream_postToAnotherStream_fig04.png)
+
+1. Warning message that is displayed when the knowledge worker attempts to posts to an invalid stream.
+
+### Post a Link
+
+![](images/R1_PS_F11_post_to_stream_postLink_fig01.png)
+
+1. Knowledge workers can attach a link to their post by clicking on "attach link".
+2. Clicking attach link displays the add link form where the knowledge worker can enter the URL of the link they want to attach.
+3. The form can be closed by clicking the "x" button.
+4. Clicking the Add button submits the link. URL should be in the  following example format: http://www.example.com.  Validate that at  least one '.' exists in the url.
+
+![](images/R1_PS_F11_post_to_stream_postLink_fig02.png)
+
+1. Link thumbnail
+2. Link title, editable input box is populated with the auto-detected the title.
+3. Link source
+4. Link description
+5. Paging controls allowing the knowledge worker select a link thumbnail  from a set of available images associated the attached url.
+6. Check box allowing the knowledge worker to suppress the display of the link thumbnail.
+7. Clicking 'x' removes the link.
+
+###Test plans
+###Knowledge Worker
+1. **Action: Post activity to a stream**
+    * Verify that when a hashtag is entered into the post box, an autocomplete box displays with the list of popular hashtags within the stream that match the user input.  Verify in both the profile and activity pages.
+    * Verify the knowledge worker is immediately able to view the posted activity in the stream
+    * Verify activity can be posted with or without a url in the following types of streams:
+        * to a colleagues stream
+        * to your stream
+        * to a public group stream
+        * to a private group stream where knowledge worker is a group member
+2. **Action: Post activity containing a url to a profile stream**
+    * Verify the ability to select from a set of available images associated with a url
+    * Verify the system validates the url
+    * Verify the system auto-detects the title for an unsecure url
+    * Verify the system is able to parse an unsecure url for the description meta tag
+    * Verify the title for a url can be changed
+    * Verify the ability to immediately view the url if it is associated to the stream currently being viewed
+    * Verify the ability to select from a set of available images associated to a url
+3. **Action: Delete activity**
+    * Verify the ability to delete an activity posted by yourself
+    * Verify the ability to delete a url posted by yourself
+4. **Action: Restrict character limits for posting activity**
+    * Verify commenting is limited to 250 characters
+    * Verify visual feedback is provided to notify character count
+5. **Action: Immediately view the post**
+    * Verify the ability to immediately view a post
+    * Verify the ability to immediately view a url
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Delete any message or url**
+    * Verify a Group Coordinator is able to delete any message or url posted to an activity stream associated to his group
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Delete any message or url**
+    * Verify an Organization Coordinator can delete any message or url  posted to a stream associated to his organization or sub-organization
+###Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Execute same tests as Organization Coordinator**
+    * Verify tests executed successfully

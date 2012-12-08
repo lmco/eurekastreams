@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Configure a stream</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Configure a stream</p>
+
+<h1 class="title">Configure a stream</h1>
+
+<p><a href='Manage and receive notifications.html'><span id="nextlink">Manage and receive notifications</span></a>
+<a href='Customize the start page.html'><span id="prevlink">Customize the start page</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Information specific to the stream can be configured as well as allowing or 
+restricting posting and commenting on a stream.  Group coordinators can also approve/deny 
+membership to private groups and add/remove group coordinators.  Stream plugins can also be 
+configured to provide the employee or group with the most up to date data from sources such 
+as delicious, google reader, or youtube. </p>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<h3 id="personal-streamdetails">Personal - Stream Details</h3>
+
+<ol>
+<li>The knowledge worker must be able to upload and resize an image acting as an avatar for 
+his personal stream.</li>
+<li>The knowledge worker must be able to set his current title in his stream. </li>
+<li>The knowledge worker must be able to set a display name in place of his first name and 
+middle initial on his personal stream.</li>
+<li>The knowledge worker must be able to set a short description describing his stream.</li>
+<li>The knowledge worker must be able to publish his interests as keywords for his stream.</li>
+<li>The knowledge worker must be able to publish his email and phone number to his stream.</li>
+</ol>
+
+<h3 id="personal-streamadmin">Personal - Stream Admin</h3>
+
+<ol>
+<li>The knowledge worker must have the option to not allow colleagues to post to his 
+personal stream (posting is enabled by default).</li>
+<li>The knowledge worker must have the option to not allow colleagues to comment on activity 
+in his personal stream. (commenting is enabled by default)</li>
+</ol>
+
+<h3 id="personal-plugins">Personal - Plugins</h3>
+
+<ol>
+<li>The knowledge worker must be able to select from and configure a stream plugin to import 
+activity into his personal stream.</li>
+<li>The knowledge worker must be able to remove a stream plugin configured for his personal 
+stream.</li>
+<li>The knowledge worker must see a warning message if a stream plugin failed to import 
+activity.</li>
+<li>The knowledge worker must be able to import an ATOM or RSS feed&#8217;s entries into his 
+personal stream.</li>
+<li>The knowledge worker must be able to import a delicious user&#8217;s bookmarks into his 
+personal stream.</li>
+<li>The knowledge worker must be able to import a Google Reader user&#8217;s shared items into his 
+personal stream.</li>
+<li>The knowledge worker must be able to import a Youtube channel&#8217;s videos into his personal 
+stream.</li>
+</ol>
+
+<h3 id="group-streamdetails">Group - Stream Details</h3>
+
+<ol>
+<li>The group coordinator must be able to upload and resize an image acting as an avatar 
+for a group stream he coordinates.</li>
+<li>The group coordinator must be able to set a short description describing the group 
+stream he coordinates.</li>
+<li>The group coordinator must be able to publish the groups interests as keywords for a 
+group stream he coordinates.</li>
+<li>The group coordinator must be able to set a URL representing the website for the group.</li>
+</ol>
+
+<h3 id="group-streamadmin">Group - Stream Admin</h3>
+
+<ol>
+<li>The knowledge worker must be able to create a new group and select whether it is public 
+or private.</li>
+<li>The group coordinator must have the option to not allow colleagues to post to a group he 
+coordinates (posting is enabled by default).</li>
+<li>The group coordinator must have the option to not allow colleagues to comment on 
+activity in a group he coordinates (commenting is enabled by default).</li>
+<li>The group coordinator must be able to add and remove colleagues as coordinators for the 
+profile of a group he coordinates.</li>
+<li>The group coordinator must be able to approve or deny a membership request to a private 
+group he coordinates.</li>
+<li>The group coordinator or Eureka administrator must be able to remove a group profile for 
+a group he coordinates.</li>
+<li>The Eureka administrator must be able to remove any group profile.</li>
+</ol>
+
+<h3 id="group-plugins">Group - Plugins</h3>
+
+<ol>
+<li>The group coordinator must be able to select from and configure a stream plugin to 
+import activity into a group stream he coordinates.</li>
+<li>The group coordinator must be able to remove a stream plugin configured for a group 
+stream he coordinates.</li>
+<li>The group coordinator must see a warning message if a stream plugin failed to import 
+activity.</li>
+<li>The group coordinator must be able to import an ATOM or RSS feed&#8217;s entries into a group 
+stream he coordinates.</li>
+<li>The group coordinator must be able to import a delicious user&#8217;s bookmarks into a group 
+stream he coordinates.</li>
+<li>The group coordinator must be able to import a Google Reader user&#8217;s shared items into a 
+group stream he coordinates.</li>
+<li>The group coordinator must be able to import a Youtube channel&#8217;s videos into a group 
+stream he coordinates.</li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="personal-streamdetails">Personal - Stream details</h3>
+
+<p><img id="" src="images/Stream_Personal.png" alt="" title="" /></p>
+
+<ol>
+<li>From the knowledge worker&#8217;s profile. Takes the knowledge worker to the Configure Stream screen.</li>
+</ol>
+
+<h4 id="uploadandresizetheavatar">Upload and resize the avatar</h4>
+
+<p><img id="" src="images/Stream_Config_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Discards the changes made to the form and returns the knowledge worker to the profile page.</li>
+<li>Upload photo. Refer to the <a href="/docs/product-specification/user-experience-guidelines/upload-photo-avatar/">Upload Photo UX Guidelines</a> for additional details.</li>
+</ol>
+
+<h4 id="settitleinpersonalstream">Set title in personal stream</h4>
+
+<p><img id="" src="images/Stream_Config_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>For a personal stream this is the title field. It supports up to 50 characters. It is pre-populated with the knowledge workers title. The description reads: &#8220;</li>
+</ol>
+
+<h4 id="setdisplayname">Set display name</h4>
+
+<p><img id="" src="images/Stream_Config_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Display Name field supports up to 50 characters. It is pre-populated with the knowledge workers First Name and Middle Initial.</li>
+</ol>
+
+<h4 id="setshortdescription">Set short description</h4>
+
+<p><img id="" src="images/Stream_Config_fig04.png" alt="" title="" /></p>
+
+<ol>
+<li>Text area to enter a description for the stream (reads &#8220;Job Description&#8221; for employee streams). Text area is restricted to 250 characters.</li>
+</ol>
+
+<h4 id="publishinterests">Publish interests</h4>
+
+<p><img id="" src="images/Stream_Config_fig05.png" alt="" title="" /></p>
+
+<ol>
+<li>Input field to enter a list of interests as keywords for the stream.</li>
+</ol>
+
+<h4 id="publishemailaddressandphonenumbers">Publish email address and phone numbers</h4>
+
+<p><img id="" src="images/Stream_Config_fig06.png" alt="" title="" /></p>
+
+<ol>
+<li>Work Phone only shows up in employee streams: Phone field supports up to 50 characters.</li>
+<li>Cell only shows up in employee streams: Phone field supports up to 50 characters.</li>
+<li>Fax only shows up in employee streams: Phone field supports up to 50 characters.</li>
+<li>Email only shows up in employee streams: Email field supports up to 100 characters and needs to be properly formatted as &#8220;user@example.com&#8221;. Email is pre-populated with the knowledge workers email address.</li>
+</ol>
+
+<h3 id="personal-streamadmin">Personal - Stream Admin</h3>
+
+<h4 id="enabledisablepostingandcommenting">Enable/Disable posting and commenting</h4>
+
+<p><img id="" src="images/Stream_Config_fig07.png" alt="" title="" /></p>
+
+<ol>
+<li>Stream moderation, allows users to enable or disable posting to their stream.</li>
+<li>Stream moderation, allows users to enable or disable commenting on activities on their stream.</li>
+</ol>
+
+<h3 id="personal-plugins">Personal - Plugins</h3>
+
+<h4 id="selectandconfigurestreamplugin">Select and configure stream plugin</h4>
+
+<h5 id="addingstreamplugins">Adding stream plugins</h5>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Clicking the plugin name displays the plugin configuration form.</li>
+</ol>
+
+<h5 id="streamplugincomponents">Stream plugin components</h5>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Header- provides an overview of the plugin and instructions on how to configure it.</li>
+<li>Plugin form - composed of one or more form elements required to configure the plugin.</li>
+<li>Terms of service message - each knowledge worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.</li>
+<li>Clicking submit completes the configuration and takes the knowledge worker to list of configured plugins.  Feedback displays at the top of the page with a close option: &#8220;Stream Plugin has been successfully added&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li>
+</ol>
+
+<h5 id="pluginforminteraction">Plugin Form Interaction</h5>
+
+<p><img id="" src="images/PS_F17_configure_stream_pluginFormInteraction.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker enters a URL or username and clicks import.</li>
+<li>This displays a process animation while the system validates the entered information. If the information can&#8217;t be validated a warning message is displayed to the knowledge worker.</li>
+<li>When the entered information is successfully validated the feed name is displayed. The knowledge worker can delete their entry by clicking the Delete link which will return the input form.</li>
+</ol>
+
+<h4 id="removestreampluginconfiguredonthestream">Remove stream plugin configured on the stream</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_managePlugins_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Plugins are listed in reverse chronological order</li>
+<li>Hovering over the plugin icon or text displays the Edit and Delete links.
+<ul><li>Clicking edit displays the plugin configuration form titled edit plugin.</li>
+<li>Clicking the delete icon displays a pop-up window asking the knowledge worker: &#8220;Are you sure you want to delete this plugin&#8221; if the knowledge worker clicks &#8220;yes&#8221; the plugin is deleted and a warning message is displayed: &#8220;Stream plugin [insert name] has been deleted&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li></ul></li>
+</ol>
+
+<h4 id="warningmessage">Warning message</h4>
+
+<p><img id="" src="images/PS_17_configure_stream_errorMessage.png" alt="" title="" /></p>
+
+<ol>
+<li>Error display when stream plugin failed to import activity</li>
+</ol>
+
+<h4 id="importdeliciousbookmarksintothestream">Import Delicious bookmarks into the stream</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureDeliciousPlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated user name</li>
+</ol>
+
+<h5 id="activitygeneratedfromthedeliciousplugin">Activity Generated from the Delicious Plugin</h5>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureDeliciousPlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for a personal stream.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureDeliciousPlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Bookmark content type</li>
+<li>Link opens a new window displaying the user&#8217;s shared bookmarks page.</li>
+</ol>
+
+<h4 id="importgooglereadershareditemsintothestream">Import Google Reader shared items into the stream</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated shared items feed</li>
+</ol>
+
+<h5 id="activitygeneratedfromthegooglereaderplugin">Activity Generated from the Google Reader Plugin</h5>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Bookmark content type</li>
+<li>Link opens a new window displaying the user&#8217;s shared items.</li>
+<li>Time Stamp and Source</li>
+</ol>
+
+<h4 id="importayoutubechannelsvideosintothestream">Import a YouTube channel&#8217;s video&#8217;s into the stream</h4>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureYoutubePlugin_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Header</li>
+<li>Form</li>
+<li>Process animation</li>
+<li>Validated YouTube feed</li>
+</ol>
+
+<h5 id="activitygeneratedfromtheyoutubeplugin">Activity Generated from the YouTube Plugin</h5>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureYoutubePlugin_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.</li>
+<li>Time since stream-plugin was configured.</li>
+</ol>
+
+<p><img id="" src="images/PS_F17_configure_stream_configureYoutubePlugin_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Video content type</li>
+<li>Link opens a new window displaying the profile page of the configured YouTube user.</li>
+</ol>
+
+<h3 id="group-streamdetails">Group - Stream details</h3>
+
+<p><img id="" src="images/PS_F09_streamdetails.png" alt="" title="" /> </p>
+
+<ol>
+<li>Takes the user back to the stream.</li>
+<li>Upload photo. Refer to the <a href="/docs/product-specification/user-experience-guidelines/upload-photo-avatar/">Upload Photo UX Guidelines</a> for additional details.</li>
+<li>Text area to enter a description for the group stream. Text area is restricted to 250 characters.</li>
+<li>Input field to enter a list of keywords for the stream.</li>
+<li>Stream moderation, allows users to control access to the group stream.</li>
+<li>Saves the edits made to the form and keeps the group coordinator on the Basic Info tab. Feedback displays at the top of the page with a close option: &#8220;Your profile has been updated&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made to the form and returns the group coordinator to the profile page.</li>
+</ol>
+
+<h3 id="group-streamadmin">Group - Stream admin</h3>
+
+<p><img id="" src="images/PS_F08_createGroupProfile.png" alt="" title="" /></p>
+
+<ol>
+<li>Group Name field supports up to 50 characters.</li>
+<li>Group Web Address field supports up to 20 lower case characters.</li>
+<li>Text area to enter a description of the group stream. Text area is restricted to 250 characters.</li>
+<li>Hovering over an employee name, meta data or avatar displays a Delete link allowing the knowledge worker to remove the employee as a group coordinator.</li>
+<li>Add Coordinator link displays the employee lookup modal which allows the knowledge Worker to select employees that will be group coordinators. Refer to the <a href="/docs/product-specification/user-experience-guidelines/employee-or-organization-lookup/">Employee Lookup UX Guidelines</a> for more information. The knowledge worker must be selected by default as the group coordinator. At least one employee must be selected as a coordinator.</li>
+<li>Public is the default option. All knowledge workers are able to view and follow a public group.</li>
+<li>Group is restricted to knowledge workers added by the group coordinator.</li>
+<li>Submits the form and returns the knowledge worker to the <FILL IN THE BLANK>. The new group profile displays the following feedback at the top of the page with a close option: &#8220;Your group has been successfully created&#8221;. If the parent organization requires that new groups be approved, return the knowledge worker to the parent organization profile and display the following feedback at the top of the page with a close option: &#8220;Your group has been submitted to an organization coordinator for approval&#8221;. Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UX Guidelines</a> for additional details.</li>
+<li>Discards the changes made to the form and returns the knowledge worker to the group&#8217;s configure stream.</li>
+</ol>
+
+<h2 id="testplan">Test Plan</h2>
+
+<p><strong>Following are the URLS for the plugins</strong>
+1. https://eureka-uat.smp.isgs.lmco.com/plugins/delicious.xml
+2. https://eureka-uat.smp.isgs.lmco.com/plugins/googlereader.xml
+3. https://eureka-uat.smp.isgs.lmco.com/plugins/rss.xml
+4. https://eureka-uat.smp.isgs.lmco.com/plugins/twitter.xml
+5. https://eureka-uat.smp.isgs.lmco.com/plugins/unity.xml
+6. https://eureka-uat.smp.isgs.lmco.com/plugins/youtube.xml</p>
+
+<h3 id="personal-streamdetails">Personal - Stream Details</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can upload and resize an image acting as an avatar for stream</strong>
+<ul><li>Verify the ability to upload a file only of type JPG, PNG, GIF</li>
+<li>Verify error handling is present if the file type is not correct</li>
+<li>Verify the ability to upload a file that is 4MB or smaller</li>
+<li>Verify error handling is present if the file is larger than 4MB</li>
+<li>Verify the ability to crop the image</li>
+<li>Verify the avatar is correctly displayed in the following locations:
+<em>*  Activities with no comments
+<em></em>  Activity with a single comment that you authored
+<em></em>  Activity where you authored only the last comment
+<em></em>  Activity where you authored only the comments in the middle, not the first and last
+<em></em>  Activity with comments you did not author
+<em></em>  Comments on activities you did not author
+<em></em>  Activity shared to your own stream
+*</em>  Activity shared to a stream other than your own</li></ul></li>
+<li><strong>Verify a knowledge worker can publish his current title on his stream</strong>
+<ul><li>Verify the ability to enter a current title via the Basic Info tab of the Configure Stream page</li>
+<li>Verify the title appears on the profile</li>
+<li>Verify the title can be edited</li>
+<li>Verify the title is a required field</li>
+<li>Verify error handling occurs when the field is not populated</li></ul></li>
+<li><strong>Verify a knowledge worker can set a display name in place of his first name and middle initial</strong>
+<ul><li>Verify the display name is a required field on the Basic Info tab of the Configure Stream page</li>
+<li>Verify that the display name defaults to the knowledge workers first name and middle initial</li>
+<li>Verify the ability to edit the display name entered</li>
+<li>Verify that any change to the display name appears in the following locations:
+<em>*  On an activity you posted with no comments
+<em></em>  On an activity you posted with comments
+<em></em>  On an activity with comments you did not author
+<em></em>  On comments on activities you did not author
+<em></em>  On activity shared to your own stream
+<em></em>  On activity shared to a stream other than your own
+<em></em>  On activity you share
+<em></em>  On comments you have made
+*</em>  On existing notifications</li></ul></li>
+<li><strong>Verify a knowledge worker can set a short description describing his stream</strong>
+<ul><li>Verify the short description is an optional field on the Basic Info tab of the Configure Stream page</li>
+<li>Verify the short description is limited to 250 characters</li>
+<li>Verify the short description is displayed on the profile</li></ul></li>
+<li><strong>Verify a knowledge worker can to publish his interests as keywords</strong>
+<ul><li>Verify the interests field is optional</li>
+<li>Verify the interests can be added, edited and deleted on the Basic Info tab of Configure Stream page</li>
+<li>Verify interests must be displayed on the about tab in the profile</li></ul></li>
+<li><strong>Verify a knowledge worker can publish his contact information</strong>
+<ul><li>Verify the work phone, cell phone and fax fields are optional</li>
+<li>Verify the email field is required</li>
+<li>Verify the email field is populated by default with the knowledge workers LMCO email address</li>
+<li>Verify contact information added or changed on the Basic Info tab of Edit profile</li>
+<li>Verify contact information is displayed on the about tab in the profile</li></ul></li>
+</ol>
+
+<h3 id="personal-streamadmin">Personal - Stream Admin</h3>
+
+<ol>
+<li><strong>Verify the knowledge worker has the option to not allow colleagues to post to his personal stream</strong>
+<ul><li>Verify the option to allow others to post to your personal stream is enabled by default</li>
+<li>Verify that when enabled, other knowledge workers are able to post activity to your personal stream</li>
+<li>Verify that when disabled, other knowledge workers are not able to post activity to your personal stream</li></ul></li>
+<li><strong>Verify the knowledge worker has the option to not allow colleagues to comment on activity in his personal stream</strong>
+<ul><li>Verify the option to allow others to comment on activity within your personal stream is enabled by default</li>
+<li>Verify that when enabled, other knowledge workers are able to comment on activity within your personal stream</li>
+<li>Verify that when disabled, other knowledge workers are not able to comment on activity within your personal stream</li></ul></li>
+</ol>
+
+<h3 id="personal-plugins">Personal - Plugins</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can select from and configure a stream plugin to import activity into his personal stream</strong>
+<ul><li>Fullfilled by executing Steps 5-8</li></ul></li>
+<li><strong>Verify a knowledge worker can remove a stream plugin configured into his personal stream</strong>
+<ul><li>Fullfilled by executing Steps5-8</li></ul></li>
+<li><strong>Verify a knowledge worker can create a failure scenario for a stream plugin into his personal stream</strong>
+<ul><li>Fullfilled by executing Steps 5-8</li></ul></li>
+<li><strong>Verify a knowledge worker can import an atom or rss feed&#8217;s entries into his personal stream</strong>
+<ul><li>Verify a rss feed can be imported for a personal stream</li>
+<li>Verify a atom feed can be imported for a personal stream</li>
+<li>Verify a valid Public RSS / Atom URL is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify the feed is displayed when clicking on the source link</li>
+<li>Verify the feed plugin can be edited</li>
+<li>Verify the feed plugin can be deleted</li>
+<li>Verify the feed is displayed in his personal stream</li></ul></li>
+<li><strong>Verify a knowledge worker can import a delicious user&#8217;s bookmarks into his personal stream</strong>
+<ul><li>Verify the delicious plugin can be imported for an employee</li>
+<li>Verify a valid user name is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a delicious plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the delicious feed is displayed when clicking on the source link</li>
+<li>Verify the delicious plugin can be edited</li>
+<li>Verify the delicious plugin can be deleted</li>
+<li>Verify the delicious feed is displayed in his personal stream</li></ul></li>
+<li><strong>Verify a knowledge worker can import a Google reader user&#8217;s shared items into his personal streamm</strong>
+<ul><li>Verify the google reader plugin can be imported for a personal stream</li>
+<li>Verify a Shared Items URL is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a Google Reader plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the google reader feed is displayed when clicking on the source link</li>
+<li>Verify the google reader plugin can be edited</li>
+<li>Verify the google reader plugin can be deleted</li>
+<li>Verify the google reader feed is displayed in his personal stream</li></ul></li>
+<li><strong>Verify a knowledge worker can import a Youtube channel&#8217;s videos into his personal stream</strong>
+<ul><li>Verify the youtube plugin can be imported for a personal stream</li>
+<li>Verify a valid user name is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a youtube plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the youtube feed is displayed when clicking on the source link</li>
+<li>Verify the youtube plugin can be edited</li>
+<li>Verify the youtube plugin can be deleted</li>
+<li>Verify the youtube feed is displayed in his personal stream</li></ul></li>
+</ol>
+
+<h3 id="group-streamdetails">Group - Stream Details</h3>
+
+<ol>
+<li><strong>Verify a Group Coordinator can upload and resize an image acting as an avatar for a stream he coordinates</strong>
+<ul><li>Verify the ability to upload a file only of type JPG, PNG, GIF</li>
+<li>Verify error handling is present if the file type is not correct</li>
+<li>Verify the ability to upload a file that is 4MB or smaller</li>
+<li>Verify error handling is present if the file is larger than 4MB</li>
+<li>Verify the ability to crop the image</li>
+<li>Verify the avatar is correctly displayed </li></ul></li>
+<li><strong>Verify a Group Coordinator can set a short description describing the stream he coordinates</strong>
+<ul><li>Verify the short description is an optional field on the Basic Info tab of Configure Stream</li>
+<li>Verify the short description is limited to 250 characters</li>
+<li>Verify the short description is displayed on the profile</li></ul></li>
+<li><strong>Verify a Group Coordinator can to publish the groups interests as keywords</strong>
+<ul><li>Verify the interests field is optional</li>
+<li>Verify the interests can be added, edited and deleted on the Basic Info tab of Configure Stream</li>
+<li>Verify interests must be displayed on the about tab in the profile</li></ul></li>
+<li><strong>Verify a Group Coordinator can set a URL representing a website for the group he coordinates</strong>
+<ul><li>Verify field is optional</li>
+<li>Verify when a URL is saved; there is a link available on the stream to access the URL</li>
+<li>Verify when a URL is not present; there is not a link present on the stream</li>
+<li>Verify error handling when an invalid URL is entered</li></ul></li>
+</ol>
+
+<h3 id="group-streamadmin">Group - Stream Admin</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can create a new group and select whether it is public or private</strong>
+Verify a group name can be set
+<ul><li>Verify a group web address can be set</li>
+<li>Verify a new public group can be created</li>
+<li>Verify the receipt of an automated email with general directions for the next steps for group coordinators upon approval of the creation of the group</li>
+<li>Verify the public group appears in the directory</li>
+<li>Verify a new private group can be created</li>
+<li>Verify it appears in the directory</li>
+<li>Verify the knowledge worker is not able to access the group</li>
+<li>Verify the group coordinator(s) are able to access the private group</li></ul></li>
+<li><strong>Verify a knowledge worker can request access to a private group that his is not a member of and verify access once approved or denied</strong>
+<ul><li>Verify knowledge worker has access to the private group after access has been granted</li>
+<li>Verify knowledge worker does not have access to the private group if access has not been granted</li></ul></li>
+<li><strong>Verify a group coordinator can approve or deny a membership request to a private group</strong>
+<ul><li>Verify group coordinators can approve or deny membership to a private group</li></ul></li>
+<li><strong>Verify a group coordinator can create a new group while group moderation enabled</strong>
+<ul><li>Verify a message is received when the group is created indicating that the group is pending approval by Eureka Administrators (refer to UX designs for exact message).</li>
+<li>Verify a message displays in the group profile indicating the group is pending approval when it is accessed by a knowledge worker (refer to UX designs for exact message).</li></ul></li>
+<li><strong>Verify a group coodinator can enable notification settings</strong>
+<ul><li>Verify that group members receive emails and in app notifications when the option is enabled in the group configure page and individual user settings notification tab.</li>
+<li>Verify that group members do not receive emails and in app notifications if the option is disabled in the group configure page and/or individual user settings notification tab.</li>
+<li>Verify that group coordinators receive emails and in app notifications when the option is enabled in the group configure page and individual user settings notification tab.</li>
+<li>Verify that group coordinators do not receive emails and in app notifications if the option is disabled in the group configure page and/or individual user settings notification tab.</li></ul></li>
+</ol>
+
+<h3 id="group-plugins">Group - Plugins</h3>
+
+<ol>
+<li><strong>Verify a Group Coordinator can select from and configure a stream plugin to import activity into a group stream he coordinates</strong>
+<ul><li>Fulfilled by executing Steps 5-8</li></ul></li>
+<li><strong>Verify a Group Coordinator can remove a stream plugin configured in a group stream he coordinates</strong>
+<ul><li>Fulfilled by executing Steps 5-8</li></ul></li>
+<li><strong>Verify a Group Coordinator can create a failure scenario for a stream plugin in a group stream he coordinates</strong>
+<ul><li>Fulfilled by executing Steps 5-8</li></ul></li>
+<li><strong>Verify a Group Coordinator can import an atom or rss feed&#8217;s entries into a group stream he coordinates</strong>
+<ul><li>Verify a rss feed can be imported for a group stream he coordinates</li>
+<li>Verify a atom feed can be imported for a group stream he coordinates</li>
+<li>Verify a valid Public RSS / Atom URL is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify the feed is displayed when clicking on the source link</li>
+<li>Verify the feed plugin can be edited</li>
+<li>Verify the feed plugin can be deleted</li>
+<li>Verify the feed is displayed in the group&#8217;s stream</li></ul></li>
+<li><strong>Verify a Group Coordinator can import a delicious user&#8217;s bookmarks into a group stream he coordinates</strong>
+<ul><li>Verify the delicious plugin can be imported for a group stream he coordinates</li>
+<li>Verify a valid user name is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a Delicious plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the Delicious feed is displayed when clicking on the source link</li>
+<li>Verify the Delicious plugin can be edited</li>
+<li>Verify the Delicious plugin can be deleted</li>
+<li>Verify the Delicious feed is displayed in the group activity stream</li></ul></li>
+<li><strong>Verify a Group Coordinator can import a google reader user&#8217;s shared items into a group stream</strong>
+<ul><li>Verify the Google Reader plugin can be imported for a group stream he coordinates</li>
+<li>Verify a Shared Items URL is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a Google Reader plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the Google Reader feed is displayed when clicking on the source link</li>
+<li>Verify the Google Reader plugin can be edited</li>
+<li>Verify the Google Reader plugin can be deleted</li>
+<li>Verify the Google Reader feed is displayed in the group&#8217;s stream</li></ul></li>
+<li><strong>Verify a Group Coordinator can import a Youtube channel&#8217;s videos into group stream he coordinates</strong>
+<ul><li>Verify the youtube plugin can be imported for a group stream</li>
+<li>Verify a valid user name is required</li>
+<li>Verify a message is displayed if there is an error importing the feed</li>
+<li>Verify the Terms of Use is required</li>
+<li>Verify that a youtube plugin avatar, user name, and source of the feed are displayed in the My Plugins</li>
+<li>Verify the Youtube feed is displayed when clicking on the source link</li>
+<li>Verify the Youtube plugin can be edited</li>
+<li>Verify the Youtube plugin can be deleted</li>
+<li>Verify the Youtube feed is displayed in the group&#8217;s stream</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a>
+<ul><li><a href="#personal-streamdetails">Personal - Stream Details</a></li>
+<li><a href="#personal-streamadmin">Personal - Stream Admin</a></li>
+<li><a href="#personal-plugins">Personal - Plugins</a></li>
+<li><a href="#group-streamdetails">Group - Stream Details</a></li>
+<li><a href="#group-streamadmin">Group - Stream Admin</a></li>
+<li><a href="#group-plugins">Group - Plugins</a></li></ul></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#personal-streamdetails">Personal - Stream details</a>
+<ul><li><a href="#uploadandresizetheavatar">Upload and resize the avatar</a></li>
+<li><a href="#settitleinpersonalstream">Set title in personal stream</a></li>
+<li><a href="#setdisplayname">Set display name</a></li>
+<li><a href="#setshortdescription">Set short description</a></li>
+<li><a href="#publishinterests">Publish interests</a></li>
+<li><a href="#publishemailaddressandphonenumbers">Publish email address and phone numbers</a></li></ul></li>
+<li><a href="#personal-streamadmin">Personal - Stream Admin</a>
+<ul><li><a href="#enabledisablepostingandcommenting">Enable/Disable posting and commenting</a></li></ul></li>
+<li><a href="#personal-plugins">Personal - Plugins</a>
+<ul><li><a href="#selectandconfigurestreamplugin">Select and configure stream plugin</a>
+<ul><li><a href="#addingstreamplugins">Adding stream plugins</a></li>
+<li><a href="#streamplugincomponents">Stream plugin components</a></li>
+<li><a href="#pluginforminteraction">Plugin Form Interaction</a></li></ul></li>
+<li><a href="#removestreampluginconfiguredonthestream">Remove stream plugin configured on the stream</a></li>
+<li><a href="#warningmessage">Warning message</a></li>
+<li><a href="#importdeliciousbookmarksintothestream">Import Delicious bookmarks into the stream</a>
+<ul><li><a href="#activitygeneratedfromthedeliciousplugin">Activity Generated from the Delicious Plugin</a></li></ul></li>
+<li><a href="#importgooglereadershareditemsintothestream">Import Google Reader shared items into the stream</a>
+<ul><li><a href="#activitygeneratedfromthegooglereaderplugin">Activity Generated from the Google Reader Plugin</a></li></ul></li>
+<li><a href="#importayoutubechannelsvideosintothestream">Import a YouTube channel&#8217;s video&#8217;s into the stream</a>
+<ul><li><a href="#activitygeneratedfromtheyoutubeplugin">Activity Generated from the YouTube Plugin</a></li></ul></li></ul></li>
+<li><a href="#group-streamdetails">Group - Stream details</a></li>
+<li><a href="#group-streamadmin">Group - Stream admin</a></li></ul></li>
+<li><a href="#testplan">Test Plan</a>
+<ul><li><a href="#personal-streamdetails">Personal - Stream Details</a></li>
+<li><a href="#personal-streamadmin">Personal - Stream Admin</a></li>
+<li><a href="#personal-plugins">Personal - Plugins</a></li>
+<li><a href="#group-streamdetails">Group - Stream Details</a></li>
+<li><a href="#group-streamadmin">Group - Stream Admin</a></li>
+<li><a href="#group-plugins">Group - Plugins</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 2.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

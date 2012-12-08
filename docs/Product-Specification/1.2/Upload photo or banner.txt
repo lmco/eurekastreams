@@ -1,0 +1,56 @@
+<<<<<<< .merge_file_cfonTS
+## Overview
+
+Knowledge Workers has the ability to update their avatar. Both Eureka Administrator and Group Coordinators have the ability to change a group banner.
+
+## Conditions of Satisfaction
+
+01. The Knowledge Worker must be able to browser file shares for an image.
+02. The Knowledge Worker must be able to upload the image to the profile avatar.
+03. The Knowledge Worker must be able to resize and save the avatar image.
+04. The Knowledge Worker must be able to delete the avatar image.
+05. The Group Coordinators must be able to browser file shares for an banner.
+06. The Group Coordinators must be able to upload the image to the banner to the group profile.
+07. The Group Coordinators must be able to delete the banner.
+
+## User Experience
+### Upload Photo
+
+![](images/UEG_photo_upload.png)
+
+1. Browse button allow the Knowledge Worker to search for an image on their file share.
+2. Once the image is selected, click on the "Upload" button to load the profile avatar image.
+3. Resize hyperlink allow the Knowledge Worker to crop the image.
+4. Delete hyperlink allow the Knowledge Worker to delete the image.
+5. Once updates are completed, click on the "Save Changes" button to save the changes.
+
+### Upload Banner  
+ 
+![](images/ueg_banner_upload.png)
+
+1. Browse button allow the Group Coordinators to search for an image on their file share.
+2. Once the image is selected, click on the "Upload" button to load the group banner.
+3. Once updates are completed, click on the "Save Changes" button to save the changes.
+
+##  Test plans
+
+### Upload Photo
+
+1. **Verify a Knowledge Worker can browser their file share for an image.**
+ 	* Verify the Knowledge Worker can upload the image to their profile avatar.
+2. **Verify a Knowledge Worker can resize the avatar image.**
+	* Verify the resized image posted to the profile avatar.
+3. **Verify a Knowledge Worker can delete their profile avatar.**
+	* Verify the avatar has been removed once deleted.
+
+### Upload Banner
+
+1. **Verify a Eureka Administrator can browser their file share for an banner.**
+	* Verify the Eureka Administrator can upload the banner. 
+	* Verify the Eureka Administrator can replace the banner by uploading a new image.
+2. **Verify a Group Coordinators can browser their file share for an banner.**
+	* Verify the Group Coordinators can upload the banner.
+	* Verify the Group Coordinators can replace the banner by uploading a new image.
+=======
+Specifications are coming soon...
+>>>>>>> .merge_file_1DII6O

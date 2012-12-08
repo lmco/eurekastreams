@@ -1,0 +1,75 @@
+##Overview
+The Featured & Popular page on Eureka allows for users to view a high level summary of content from across Eureka, including feature groups and people, popular groups, people and links, and suggested groups and people to follow.
+##Conditions of satisfaction
+1. The knowledge worker must be able to access the Featured & Popular page from the global nav
+2. The knowledge worker must be able to see the top 10 most viewed groups and people as shown and calcuated by the 30 day daily average of stream views.
+3. The knowledge worker must be able to see the top 10 most active groups and people as shown and calculated by the 30 day daily average of number of messages.
+4. The knowledge worker must be able to see the top 10 suggested groups and people as shown and calculated by the intersection of the knowledge worker's following and the stream's following. Only unfollowed streams will be suggested.
+5. The knowledge worker must be able to see the top 10 links as shown and calculated by a weighted average of shares, comments and likes the link has received
+6. The knowledge worker must be able to see all the featured groups and people, their avatars and their description
+7. The knowledge worker must be able to follow any stream listed on Featured & Popular page
+8. The knowledge worker must be able to search from the Featured & Popular page for any stream by keyword.
+9. The knowledge worker must be able to browse all streams filtering by groups or people and sorting by recently added or follower count.
+
+##User experience
+
+###Featured & Popular Page
+
+![](images/featuredPopular.png)
+
+1. The list of featured streams, both groups and people, in the order of when they were featured, with the most recent first
+2. Pager controls which set of 3 featured streams the user sees. When clicked, the streams should slide over until there's the next or previous 3 streams (depending on which button is hit). If there are no more streams in any given direction, that direction's button should be disabled.
+3. The follow button shows up only if the user hasn't followed the group/person and allows them to follow it from here. When clicked the button disappears and a notifcation appears saying "You are now following [Stream Name]"
+4. Search box functions exactly the same as the box on the top of the page
+5. The browse button opens the browse all streams modal (see below).
+6. Suggested streams, with the ability to follow. When the user has followed the stream the button should disappear, and the same notification should show up as detailed in UX condition 3.
+7. The top ten most viewed streams, sorted by views. 
+8. The top ten most active streams, sorted by messages
+9. The top ten links in the system. When clicked, they should take the user to the link itself.
+10. The follow button only appears on hover if the stream is not already being followed. When clicked the follow button should disappear, and the same notification should show up as detailed in UX condition 3.
+ 
+###Browse All Streams Modal
+
+![](images/featuredPopular_browseAll.png)
+
+1. The browe streams modal allows the user to filter between employees and groups (default is Groups)
+2. The user is also able to sort by recently added (the date added to the sytem) or followers (total number of followers)
+3. The user is able to see 10 at a time and page through the list.
+
+###Empty State
+
+![](images/featuredPopular_emptyState.png)
+
+1. Above are the empty states for each section of this page. 
+
+##Test plans
+###Knowledge Worker
+1. **Action: Navigate to the Featured & Popular page from the global nav**
+    * Verify the Featured & Popular page is accessible from the global nav
+2. **Action: View featured streams**
+    * Verify all featured streams are visible
+    * Verify the streams are viewable 3 at a time and pageable
+    * Verify the back button is disabled on the first page
+    * Verify the forward button is disabled on the last page
+3. **Action: Search all streams**
+    * Verify the search box works exactly the same as the search box in the global nav 
+4. **Action: Browse all streams**
+    * Verify the browse all streams button opens the browse all streams modal
+    * Verify streams can be filtered by groups or employees
+    * Verify streams can be sorted by recently added, popular, or alphabetical
+    * Verify streams show up 10 at a time and are pageable
+    * Verify the back button is disabled on the first page
+    * Verify the forward button is disabled on the last page
+5. **Action: View suggestion streams**
+    * Verify at most 10 suggested streams show up, none of which the currently logged in user is following
+6. **Action: View most viewed streams**
+    * Verify the 10 streams with the most views show up.
+7. **Action: view most active streams**
+    * Verify the 10 streams with the most daily messages show up.
+8. **Action: View popular links**
+    * Verify at most 10 popular links show up
+9. **Action: Follow any stream on the Featured & Popular page**
+    * Verify any stream on the Featured & Popular page not currently being followed can be followed.
+    * Verify the follow button disappears when followed
+    * Verify a notification pops up confirming the stream has been followed
+    * Verify on refresh that any followed streams disappear from the suggested list.

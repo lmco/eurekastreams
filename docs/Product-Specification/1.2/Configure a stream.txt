@@ -1,0 +1,761 @@
+<<<<<<< .merge_file_cSr0um
+## Overview
+
+Information specific to the stream can be configured as well as allowing or 
+restricting posting and commenting on a stream.  Group coordinators can also approve/deny 
+membership to private groups and add/remove group coordinators.  Stream plugins can also be 
+configured to provide the employee or group with the most up to date data from sources such 
+as delicious, google reader, or youtube. 
+
+## Conditions of Satisfaction
+
+### Personal - Stream Details 
+
+01. The knowledge worker must be able to upload and resize an image acting as an avatar for 
+his personal stream.
+02. The knowledge worker must be able to set a display name in place of his first name and 
+middle initial on his personal stream.
+03. The knowledge worker must be able to set a short description describing his stream.
+04. The knowledge worker must be able to set his current title in his stream.
+05. The knowledge worker must be able to publish his interests as keywords for his stream.
+06. The knowledge worker must be able to publish his email and phone number to his stream.
+
+### Group - Stream Details
+
+01. The group coordinator must be able to upload and resize an image acting as an avatar 
+for a group stream he coordinates.
+02. The group coordinator must be able to set a short description describing the group 
+stream he coordinates.
+03. The group coordinator must be able to publish the groups interests as keywords for a 
+group stream he coordinates.
+04. The group coordinator must be able to set a URL representing the website for the group.
+
+### Personal - Plugins
+
+01. The knowledge worker must be able to select from and configure a stream plugin to import 
+activity into his personal stream.
+02. The knowledge worker must be able to remove a stream plugin configured for his personal 
+stream.
+03. The knowledge worker must see a warning message if a stream plugin failed to import 
+activity.
+04. The knowledge worker must be able to import an ATOM or RSS feed's entries into his 
+personal stream.
+05. The knowledge worker must be able to import a delicious user's bookmarks into his 
+personal stream.
+06. The knowledge worker must be able to import a Google Reader user's shared items into his 
+personal stream.
+07. The knowledge worker must be able to import a Youtube channel's videos into his personal 
+stream.
+
+### Group - Plugins
+
+01. The group coordinator must be able to select from and configure a stream plugin to 
+import activity into a group stream he coordinates.
+02. The group coordinator must be able to remove a stream plugin configured for a group 
+stream he coordinates.
+03. The group coordinator must see a warning message if a stream plugin failed to import 
+activity.
+04. The group coordinator must be able to import an ATOM or RSS feed's entries into a group 
+stream he coordinates.
+05. The group coordinator must be able to import a delicious user's bookmarks into a group 
+stream he coordinates.
+06. The group coordinator must be able to import a Google Reader user's shared items into a 
+group stream he coordinates.
+07. The group coordinator must be able to import a Youtube channel's videos into a group 
+stream he coordinates.
+
+### Personal - Stream Admin
+
+01. The knowledge worker must have the option to not allow colleagues to post to his 
+personal stream (posting is enabled by default).
+02. The knowledge worker must have the option to not allow colleagues to comment on activity 
+in his personal stream. (commenting is enabled by default)
+
+### Group - Stream Admin
+
+01. The knowledge worker must be able to create a new group and select whether it is public 
+or private.
+02. The group coordinator must have the option to not allow colleagues to post to a group he 
+coordinates (posting is enabled by default).
+03. The group coordinator must have the option to not allow colleagues to comment on 
+activity in a group he coordinates (commenting is enabled by default).
+04. The group coordinator must be able to add and remove colleagues as coordinators for the 
+profile of a group he coordinates.
+05. The group coordinator must be able to approve or deny a membership request to a private 
+group he coordinates.
+06. The group coordinator or Eureka administrator must be able to remove a group profile for 
+a group he coordinates.
+07. The Eureka administrator must be able to remove any group profile.
+
+##User Experience
+
+###Stream Settings 
+
+![](images/Stream_Config.png)
+
+1. Takes the user back to the stream.
+2. Upload photo. Refer to the [Upload Photo UX Guidelines](/docs/product-specification/user-experience-guidelines/upload-photo-avatar/) for additional details.
+3. For a personal stream this is the title field. It supports up to 50 characters. It is pre-populated with the Knowledge Workers title. For a group stream this field is a "Website URL" and must be a valid URL. The description reads: "
+4. Only shows up in employee streams: Display Name field supports up to 50 characters. It is pre-populated with the Knowledge Workers First Name and Middle Initial.
+5. Text area to enter a description for the stream (reads "Job Description" for employee streams). Text area is restricted to 250 characters.
+6. Input field to enter a list of keywords for the stream.
+7. Only shows up in employee streams: Phone field supports up to 50 characters.
+8 Only shows up in employee streams: Email field supports up to 100 characters and needs to be properly formatted as "user@example.com". Email is pre-populated with the Knowledge Workers email address.
+9. Stream moderation, allows users to control access to their stream.
+10. Saves the edits made to the form and keeps the Knowledge Worker on the Basic Info tab. Feedback displays at the top of the page with a close option: "Your profile has been updated". Refer to the [Action Feedback UX Guidelines](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.
+11. Discards the changes made to the form and returns the Knowledge Worker to the profile page.
+
+###Adding Stream Plugins
+
+![](images/PS_F17_configure_stream_managePlugins_fig01.png)
+
+1. Clicking the plugin name displays the plugin configuration form.
+
+![](images/PS_F17_configure_stream_managePlugins_fig02.png)
+
+Stream plugin components
+
+1. Header- provides an overview of the plugin and instructions on how to configure it.
+2. Plugin form - composed of one or more form elements required to configure the plugin.
+3. Terms of service message - each Knowledge Worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.
+4. Clicking submit completes the configuration and takes the Knowledge Worker to list of configured plugins.  Feedback displays at the top of the page with a close option: "Stream Plugin has been successfully added".  Refer to the [Action Feedback UI design pattern](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.
+
+###Plugin Form Interaction
+
+![](images/PS_F17_configure_stream_pluginFormInteraction.png)
+
+1. The Knowledge Worker enters a URL or username and clicks import.
+2. This displays a process animation while the system validates the entered information. If the information can't be validated a warning message is displayed to the Knowledge Worker.
+3. When the entered information is successfully validated the feed name is displayed. The Knowledge Worker can delete their entry by clicking the Delete link which will return the input form.
+
+###Managing Plugins
+
+![](images/PS_F17_configure_stream_managePlugins_fig03.png)
+
+1. Plugins are listed in reverse chronological order
+2. Hovering over the plugin icon or text displays the Edit and Delete links.
+    * Clicking edit displays the plugin configuration form titled edit plugin.
+    * Clicking the delete icon displays a pop-up window asking the Knowledge Worker: "Are you sure you want to delete this plugin" if the Knowledge Worker clicks "yes" the plugin is deleted and a warning message is displayed: "Stream plugin [insert name] has been deleted".  Refer to the [Action Feedback UI design pattern](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.
+
+###Editing Stream Plugins
+
+![](images/PS_F17_configure_stream_managePlugins_fig04.png)
+
+Stream plugin components
+
+1. Header- provides an overview of the plugin and instructions on how to configure it.
+2. Plugin form - composed of one or more form elements required to configure the plugin.
+3. Terms of service message - each Knowledge Worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.
+4. Clicking save changes completes the configuration and takes the Knowledge Worker to list of configured plugins.  Feedback displays at the top of the page with a close option: "Stream Plugin has been successfully edited".  Refer to the [Action Feedback UI design pattern](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.
+
+###Delicious Plugin
+
+![](images/PS_F17_configure_stream_configureDeliciousPlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated user name
+
+####Activity Generated from the Delicious Plugin
+
+![](images/PS_F17_configure_stream_configureDeliciousPlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for a personal stream.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureDeliciousPlugin_fig02.png)
+
+1. Bookmark content type
+2. Link opens a new window displaying the user's shared bookmarks page.
+
+###Web Feed Plugin
+
+![](images/PS_F17_configure_stream_configureFeedPlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated web feed
+
+####Activity Generated from the Web Feed Plugin
+
+![](images/PS_F17_configure_stream_configureFeedPlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.   Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureFeedPlugin_fig02.png)
+
+1. Bookmark content type
+2. Name of the source of the feed
+3. Time Stamp and Source
+
+###Google Reader
+
+![](images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated shared items feed
+
+####Activity Generated from the Google Reader Plugin
+
+![](images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig02.png)
+
+1. Bookmark content type
+2. Link opens a new window displaying the user's shared items.
+3. Time Stamp and Source
+
+###YouTube
+
+![](images/PS_F17_configure_stream_configureYoutubePlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated YouTube feed
+
+####Activity Generated from the Google Reader Plugin
+
+![](images/PS_F17_configure_stream_configureYoutubePlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureYoutubePlugin_fig02.png)
+
+1. Video content type
+2. Link opens a new window displaying the profile page of the configured YouTube user.
+
+###Create a New Group
+![](images/PS_F08_createGroupProfile.png)
+
+1. Group Name field supports up to 50 characters.
+2. Group Web Address field supports up to 20 lower case characters.
+3. Hovering over an employee name, meta data or avatar displays a Delete link allowing the Knowledge Worker to remove the employee as a group coordinator.
+4. Add Coordinator link displays the employee lookup modal which allows the Knowledge Worker to select employees that will be group coordinators. Refer to the [Employee Lookup UX Guidelines](/docs/product-specification/user-experience-guidelines/employee-or-organization-lookup/) for more information. The Knowledge Worker must be selected by default as the group coordinator. At least one employee must be selected as a coordinator.
+5. Public is the default option. All Knowledge Workers are able to view and follow a public group.
+6. Group is restricted to Knowledge Workers added by the group coordinator.
+7. Submits the form and returns the Knowledge Worker to the <FILL IN THE BLANK>. Return the Knowledge Worker to the new group profile and display the following feedback at the top of the page with a close option: "Your group has been successfully created". If the parent organization requires that new groups be approved, return the Knowledge Worker to the parent organization profile and display the following feedback at the top of the page with a close option: "Your group has been submitted to an organization coordinator for approval". Refer to the [Action Feedback UX Guidelines](/docs/product-specification/user-experience-guidelines/action-feedback/) for additional details.
+8. Discards the changes made to the form and returns the Knowledge Worker to the <FILL IN THE BLANK>.
+9. Discards the changes made to the form and returns the Knowledge Worker to the group's Configure Stream.
+
+## Test Plan
+
+### Personal - Stream Details
+
+1. **Verify a Knowledge Worker can upload and resize an image acting as an avatar for stream**
+    *  Verify the ability to upload a file only of type JPG, PNG, GIF
+    *  Verify error handling is present if the file type is not correct
+    *  Verify the ability to upload a file that is 4MB or smaller
+    *  Verify error handling is present if the file is larger than 4MB
+    *  Verify the ability to crop the image
+    *  Verify the avatar is correctly displayed in the following locations:
+    **  Activities with no comments
+    **  Activity with a single comment that you authored
+    **  Activity where you authored only the last comment
+    **  Activity where you authored only the comments in the middle, not the first and last
+    **  Activity with comments you did not author
+    **  Comments on activities you did not author
+    **  Activity shared to your own stream
+    **  Activity shared to a stream other than your own
+2. **Verify a Knowledge Worker can set a display name in place of his first name and middle initial**
+    *  Verify the display name is a required field on the Basic Info tab of the Configure Stream page
+    *  Verify that the display name defaults to the Knowledge Workers first name and middle initial
+    *  Verify the ability to edit the display name entered
+    *  Verify that any change to the display name appears in the following locations:
+    **  On an activity you posted with no comments
+    **  On an activity you posted with comments
+    **  On an activity with comments you did not author
+    **  On comments on activities you did not author
+    **  On activity shared to your own stream
+    **  On activity shared to a stream other than your own
+    **  On activity you share
+    **  On comments you have made
+    **  On existing notifications
+3. **Verify a Knowledge Worker can set a short description describing his stream**
+    *  Verify the short description is an optional field on the Basic Info tab of the Configure Stream page
+    *  Verify the short description is limited to 250 characters
+    *  Verify the short description is displayed on the profile
+4. **Verify a Knowledge Worker can publish his current title on his stream**
+    *  Verify the ability to enter a current title via the Basic Info tab of the Configure Stream page
+    *  Verify the title appears on the profile
+    *  Verify the title can be edited
+    *  Verify the title is a required field
+    *  Verify error handling occurs when the field is not populated
+5. **Verify a Knowledge Worker can to publish his interests as keywords**
+    *  Verify the interests field is optional
+    *  Verify the interests can be added, edited and deleted on the Basic Info tab of Configure Stream page
+    *  Verify interests must be displayed on the about tab in the profile
+6. **Verify a Knowledge Worker can publish his contact information**
+    *  Verify the work phone, cell phone and fax fields are optional
+    *  Verify the email field is required
+    *  Verify the email field is populated by default with the Knowledge Workers LMCO email address
+    *  Verify contact information added or changed on the Basic Info tab of Edit profile
+    *  Verify contact information is displayed on the about tab in the profile
+
+### Group - Stream Details
+
+1. **Verify a Group Coordinator can upload and resize an image acting as an avatar for a stream he coordinates**
+    *  Verify the ability to upload a file only of type JPG, PNG, GIF
+    *  Verify error handling is present if the file type is not correct
+    *  Verify the ability to upload a file that is 4MB or smaller
+    *  Verify error handling is present if the file is larger than 4MB
+    *  Verify the ability to crop the image
+    *  Verify the avatar is correctly displayed 
+2. **Verify a Group Coordinator can set a short description describing the stream he coordinates**
+    *  Verify the short description is an optional field on the Basic Info tab of Configure Stream
+    *  Verify the short description is limited to 250 characters
+    *  Verify the short description is displayed on the profile
+3. **Verify a Group Coordinator can to publish the groups interests as keywords**
+    *  Verify the interests field is optional
+    *  Verify the interests can be added, edited and deleted on the Basic Info tab of Configure Stream
+    *  Verify interests must be displayed on the about tab in the profile
+4. **Verify a Group Coordinator can set a URL representing a website for the group he coordinates**
+    *  Verify field is optional
+    *  Verify when a URL is saved; there is a link available on the stream to access the URL
+    *  Verify when a URL is not present; there is not a link present on the stream
+    *  Verify error handling when an invalid URL is entered
+    
+
+### Personal - Plugins
+
+1. **Verify a Knowledge Worker can select from and configure a stream plugin to import activity into his personal stream**
+    *  Fullfilled by executing Steps 5-8
+2. **Verify a Knowledge Worker can remove a stream plugin configured into his personal stream**
+    *  Fullfilled by executing Steps5-8
+3. **Verify a Knowledge Worker can create a failure scenario for a stream plugin into his personal stream**
+    *  Fullfilled by executing Steps 5-8
+4. **Verify a Knowledge Worker can import an atom or rss feed's entries into his personal stream**
+    *  Verify a rss feed can be imported for a personal stream
+    *  Verify a atom feed can be imported for a personal stream
+    *  Verify a valid Public RSS / Atom URL is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify the feed is displayed when clicking on the source link
+    *  Verify the feed plugin can be edited
+    *  Verify the feed plugin can be deleted
+    *  Verify the feed is displayed in his personal stream
+5. **Verify a Knowledge Worker can import a delicious user's bookmarks into his personal stream**
+    *  Verify the delicious plugin can be imported for an employee
+    *  Verify a valid user name is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify that a delicious plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    *  Verify the delicious feed is displayed when clicking on the source link
+    *  Verify the delicious plugin can be edited
+    *  Verify the delicious plugin can be deleted
+    *  Verify the delicious feed is displayed in his personal stream
+6. **Verify a Knowledge Worker can import a Google reader user's shared items into his personal streamm**
+    *  Verify the google reader plugin can be imported for a personal stream
+    *  Verify a Shared Items URL is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify that a Google Reader plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    *  Verify the google reader feed is displayed when clicking on the source link
+    *  Verify the google reader plugin can be edited
+    *  Verify the google reader plugin can be deleted
+    *  Verify the google reader feed is displayed in his personal stream
+7. **Verify a Knowledge Worker can import a Youtube channel's videos into his personal stream**
+    *  Verify the youtube plugin can be imported for a personal stream
+    *  Verify a valid user name is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify that a youtube plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    *  Verify the youtube feed is displayed when clicking on the source link
+    *  Verify the youtube plugin can be edited
+    *  Verify the youtube plugin can be deleted
+    *  Verify the youtube feed is displayed in his personal stream
+
+### Group - Plugins
+
+1. **Verify a Group Coordinator can select from and configure a stream plugin to import activity into a group stream he coordinates**
+    *  Fulfilled by executing Steps 5-8
+2. **Verify a Group Coordinator can remove a stream plugin configured in a group stream he coordinates**
+    *  Fulfilled by executing Steps 5-8
+3. **Verify a Group Coordinator can create a failure scenario for a stream plugin in a group stream he coordinates**
+    *  Fulfilled by executing Steps 5-8
+4. **Verify a Group Coordinator can import an atom or rss feed's entries into a group stream he coordinates**
+    *  Verify a rss feed can be imported for a group stream he coordinates
+    *  Verify a atom feed can be imported for a group stream he coordinates
+    *  Verify a valid Public RSS / Atom URL is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify the feed is displayed when clicking on the source link
+    *  Verify the feed plugin can be edited
+    *  Verify the feed plugin can be deleted
+    *  Verify the feed is displayed in the group's stream
+5. **Verify a Group Coordinator can import a delicious user's bookmarks into a group stream he coordinates**
+    *  Verify the delicious plugin can be imported for a group stream he coordinates
+    *  Verify a valid user name is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify that a Delicious plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    *  Verify the Delicious feed is displayed when clicking on the source link
+    *  Verify the Delicious plugin can be edited
+    *  Verify the Delicious plugin can be deleted
+    *  Verify the Delicious feed is displayed in the group activity stream
+6. **Verify a Group Coordinator can import a google reader user's shared items into a group stream**
+    *  Verify the Google Reader plugin can be imported for a group stream he coordinates
+    *  Verify a Shared Items URL is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify that a Google Reader plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    *  Verify the Google Reader feed is displayed when clicking on the source link
+    *  Verify the Google Reader plugin can be edited
+    *  Verify the Google Reader plugin can be deleted
+    *  Verify the Google Reader feed is displayed in the group's stream
+7. **Verify a Group Coordinator can import a Youtube channel's videos into group stream he coordinates**
+    *  Verify the youtube plugin can be imported for a group stream
+    *  Verify a valid user name is required
+    *  Verify a message is displayed if there is an error importing the feed
+    *  Verify the Terms of Use is required
+    *  Verify that a youtube plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    *  Verify the Youtube feed is displayed when clicking on the source link
+    *  Verify the Youtube plugin can be edited
+    *  Verify the Youtube plugin can be deleted
+    *  Verify the Youtube feed is displayed in the group's stream
+
+### Personal - Stream Admin
+
+1. **Verify the Knowledge Worker has the option to not allow colleagues to post to his personal stream**
+    *  Verify the option to allow others to post to your personal stream is enabled by default
+    *  Verify that when enabled, other Knowledge Workers are able to post activity to your personal stream
+    *  Verify that when disabled, other Knowledge Workers are not able to post activity to your personal stream
+2. **Verify the Knowledge Worker has the option to not allow colleagues to comment on activity in his personal stream**
+    *  Verify the option to allow others to comment on activity within your personal stream is enabled by default
+    *  Verify that when enabled, other Knowledge Workers are able to comment on activity within your personal stream
+    *  Verify that when disabled, other Knowledge Workers are not able to comment on activity within your personal stream
+
+
+### Group - Stream Admin
+
+1. **Verify a Knowledge Worker can create a new group and select whether it is public or private**
+    Verify a group name can be set
+    *  Verify a group web address can be set
+    *  Verify a new public group can be created
+    *  Verify the receipt of an automated email with general directions for the next steps for group coordinators upon approval of the creation of the group
+    *  Verify the public group appears in the directory
+    *  Verify a new private group can be created
+    *  Verify it appears in the directory
+    *  Verify the Knowledge Worker is not able to access the group
+    *  Verify the group coordinator(s) are able to access the private group
+2. **Verify a Knowledge Worker can request access to a private group that his is not a member of and verify access once approved or denied**
+    *  Verify Knowledge Worker has access to the private group after access has been granted
+    *  Verify Knowledge Worker does not have access to the private group if access has not been granted
+3. **Verify a Group Coordinator can approve or deny a membership request to a private group**
+    *  Verify group coordinators can approve or deny membership to a private group
+4. **Verify a Group Coordinator can create a new group while group moderation enabled**
+    *  Verify a message is received when the group is created indicating that the group is pending approval by Eureka Administrators (refer to UX designs for exact message).
+    *  Verify a message displays in the group profile indicating the group is pending approval when it is accessed by a Knowledge Worker (refer to UX designs for exact message).
+5. **Verify a Group Coodinator can enable notification settings**
+    *  Verify that group members receive emails and in app notifications when the option is enabled in the group configure page and individual user settings notification tab.
+    *  Verify that group members do not receive emails and in app notifications if the option is disabled in the group configure page and/or individual user settings notification tab.
+    *  Verify that group coordinators receive emails and in app notifications when the option is enabled in the group configure page and individual user settings notification tab.
+    *  Verify that group coordinators do not receive emails and in app notifications if the option is disabled in the group configure page and/or individual user settings notification tab.
+=======
+##Overview
+Knowledge workers can configure a stream to allow or restrict posting and commenting on the knowledge workers stream.   Stream plugins can also be configured to provide the employee or group with the most up to date data from sources such as delicious, google reader, or youtube.
+##Conditions of satisfaction
+1. The knowledge worker must have the option to not allow colleagues to post to his employee or group stream.
+2. The knowledge worker must have the option to not allow colleagues to comment on activity in his employee or group stream.
+3. The system must allow knowledge workers to post and comment on activity in an employee or public group stream by default.
+4. The knowledge worker must be able to select from and configure a stream plugin to import activity into his employee or group stream.
+5. The knowledge worker must be able to remove a stream plugin configured for his employee or group stream.
+6. The system must display a warning message if a stream plugin failed to import activity.
+7. The knowledge worker must be able to import an atom or rss feed's entries into his employee or group stream.
+8. The knowledge worker must be able to import a delicious user's bookmarks into his employee or group stream.
+9. The knowledge worker must be able to import a google reader user's shared items into his employee or group stream.
+10. The knowledge worker must be able to import a youtube channel's videos into his employee or group stream.
+##User experience
+
+###Stream Settings Employee Profile
+
+![](images/PS_F17_configure_stream_employeeStreamSettings.png)
+
+1. Stream plugin settings
+2. When changes are saved, feedback is displayed at the top of the page with a close option: "Stream Settings saved". Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+
+### Stream Moderation Employee Profile
+
+![](images/PS_F17_configure_stream_employeepoststreamModeration.png)
+
+1. Message displayed in the knowledge workers profile and the activity page when the "Allow others to post to your stream." option is disabled.  The knowledge worker who owns the profile should be the only one able to post to the stream.
+
+
+![](images/PS_F17_configure_stream_employeecommentstreamModeration.png)
+
+1. Comment link should be hidden in all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page when the "Allow others to comment on activity in your stream." option is disabled. The knowledge worker who owns the profile should be the only one able to comment on the post.
+2. Sharing to a knowledge workers profile from other profiles (root org, sub org, group, and other knowledge workers) and the activity page should be prohibited when the "Allow others to post to your stream." option is disabled.  The knowledge worker who owns the profile should be the only one able to share to the stream.  Do not display the knowledge workers name in the auto complete results in this scenario.
+3. Delete link should be hidden in all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page when the "Allow others to post to your stream." option is disabled or the comment when the "Allow others to comment on activity in your stream." is disabled. The knowledge worker who owns the profile and the parent org coordinators (i.e. if message is flagged) should be able to delete the post and comments.
+
+###Stream Settings Group Profile
+
+![](images/PS_F17_configure_stream_groupStreamSettings.png)
+
+1. Stream plugin settings
+2. When changes are saved, feedback is displayed at the top of the page with a close option: "Stream Settings saved". Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+
+### Stream Moderation Group Profile
+
+![](images/PS_F17_configure_stream_grouppoststreamModeration.png)
+
+1. Message displayed in the group profile and the activity page when the  "Allow others to post to your group's stream." is disabled.  Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be able to post to the group stream.
+
+![](images/PS_F17_configure_stream_groupcommentstreamModeration.png)
+
+1. Comment link should be hidden in all profiles that display the post (root org, sub org, and group profile)and the activity page when the "Allow others to comment on activity in your group's stream." option is disabled. Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be able to comment on posts in the group stream.
+2. Sharing to a group profile from other profiles (root org, sub org, and other knowledge workers) or activity page should be prohibited when the "Allow others to comment on activity in your group's stream." option is disabled. Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be able to share posts to the group stream. Do not display the group name in the auto complete results in this scenario.
+3. Delete link should be hidden in all profiles that display the post (root org, sub org, and group profile) and the activity page when the "Allow others to comment on activity in your group's stream." option is disabled. Group coordinators, sub organization coordinators (if applicable), and root organization coordinators should be the only ones able to delete a post from a group stream.
+
+###Adding Stream Plugins
+
+![](images/PS_F17_configure_stream_managePlugins_fig01.png)
+
+1. Clicking the plugin name displays the plugin configuration form.
+
+![](images/PS_F17_configure_stream_managePlugins_fig02.png)
+
+Stream plugin components
+
+1. Header- provides an overview of the plugin and instructions on how to configure it.
+2. Plugin form - composed of one or more form elements required to configure the plugin.
+3. Terms of service message - each knowledge worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.
+4. Clicking submit completes the configuration and takes the knowledge worker to list of configured plugins.  Feedback displays at the top of the page with a close option: "Stream Plugin has been successfully added".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+
+###Plugin Form Interaction
+
+![](images/PS_F17_configure_stream_pluginFormInteraction.png)
+
+1. The knowledge worker enters a URL or username and clicks import.
+2. This displays a process animation while the system validates the entered information. If the information can't be validated a warning message is displayed to the knowledge worker.
+3. When the entered information is successfully validated the feed name is displayed. The knowledge worker can delete their entry by clicking the Delete link which will return the input form.
+
+###Managing Plugins
+
+![](images/PS_F17_configure_stream_managePlugins_fig03.png)
+
+1. Plugins are listed in reverse chronological order
+2. Hovering over the plugin icon or text displays the Edit and Delete links.
+    * Clicking edit displays the plugin configuration form titled edit plugin.
+    * Clicking the delete icon displays a pop-up window asking the knowledge worker: "Are you sure you want to delete this plugin" if the knowledge worker clicks "yes" the plugin is deleted and a warning message is displayed: "Stream plugin [insert name] has been deleted".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+
+###Editing Stream Plugins
+
+![](images/PS_F17_configure_stream_managePlugins_fig04.png)
+
+Stream plugin components
+
+1. Header- provides an overview of the plugin and instructions on how to configure it.
+2. Plugin form - composed of one or more form elements required to configure the plugin.
+3. Terms of service message - each knowledge worker is required to affirm that they understand the terms of use statement before they they can complete the configuration of the plugin.
+4. Clicking save changes completes the configuration and takes the knowledge worker to list of configured plugins.  Feedback displays at the top of the page with a close option: "Stream Plugin has been successfully edited".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+
+###Delicious Plugin
+
+![](images/PS_F17_configure_stream_configureDeliciousPlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated user name
+
+####Activity Generated from the Delicious Plugin
+
+![](images/PS_F17_configure_stream_configureDeliciousPlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureDeliciousPlugin_fig02.png)
+
+1. Bookmark content type
+2. Link opens a new window displaying the user's shared bookmarks page.
+
+###Web Feed Plugin
+
+![](images/PS_F17_configure_stream_configureFeedPlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated web feed
+
+####Activity Generated from the Web Feed Plugin
+
+![](images/PS_F17_configure_stream_configureFeedPlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.   Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureFeedPlugin_fig02.png)
+
+1. Bookmark content type
+2. Name of the source of the feed
+3. Time Stamp and Source
+
+###Google Reader
+
+![](images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated shared items feed
+
+####Activity Generated from the Google Reader Plugin
+
+![](images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureGoogleReaderPlugin_fig02.png)
+
+1. Bookmark content type
+2. Link opens a new window displaying the user's shared items.
+3. Time Stamp and Source
+
+###YouTube
+
+![](images/PS_F17_configure_stream_configureYoutubePlugin_fig01.png)
+
+1. Header
+2. Form
+3. Process animation
+4. Validated YouTube feed
+
+####Activity Generated from the Google Reader Plugin
+
+![](images/PS_F17_configure_stream_configureYoutubePlugin_fig03.png)
+
+1. Post indicating that a stream plugin has been configured for an employee profile.  For a group profile stream plugin message, substitute employee name for group name.  Only new activity from this point forward is imported from the stream plugin.
+2. Time since stream-plugin was configured.
+
+![](images/PS_F17_configure_stream_configureYoutubePlugin_fig02.png)
+
+1. Video content type
+2. Link opens a new window displaying the profile page of the configured YouTube user.
+
+##Test plans
+###Knowledge Worker
+1. **Action: From the employee profile, disable the option to '"Allow others to post to your stream."**
+    * Verify posting to an employee stream
+        * Verify the knowledge worker who owns the employee stream can post to the stream from the knowledge workers profile or the activity page
+        * Verify that a colleague cannot post to the employee stream from the knowledge workers profile or the activity page
+        * Verify a group coordinator cannot post to the employee stream from the knowledge workers profile or the activity page
+        * Verify a sub organization coordinator cannot post to the employee stream from the knowledge workers profile or the activity page
+        * Verify a root organization coordinator cannot post to the employee stream from the knowledge workers profile or the activity page
+    * Verify sharing to and from the employee stream
+        * Verify for all user roles, a post can be shared from the knowledge workers profile to another profile (root org, sub org, group and other knowledge workers)
+        * Verify that a colleague cannot share to the employee stream from another profile (root org, sub org, and other knowledge workers) or the activity page
+        * Verify a group coordinator cannot share to the employee stream from another profile (root org, sub org, group, and other knowledge workers) or the activity page
+        * Verify a sub organization coordinator cannot share to the employee stream from another profile (root org, sub org, group, and other knowledge workers) or the activity page
+        * Verify a root organization coordinator cannot share to the employee stream from another profile (root org, sub org, group, and other knowledge workers) or the activity page
+    * Verify deletion of a post
+        * Verify that a colleague cannot see the delete link for posts in the employee stream from the knowledge workers profile or the activity page
+        * Verify a group coordinator cannot see the delete link for posts in the employee stream from the knowledge workers profile or the activity page
+        * Verify a parent organization coordinator can delete posts in the employee stream from the knowledge workers profile or the activity page (this is needed if activity is flagged and reviewed by the parent organization)
+        * Verify a sub organization coordinator who is not the parent organization coordinator cannot view the delete link for posts in the employee stream from the knowledge workers profile or the activity page (this is needed if activity is flagged and reviewed by the parent organization)
+        * Verify a root organization coordinator who is not the parent organization coordinator cannot view the delete link for posts in the employee stream from the knowledge workers profile or the activity page (this is needed if activity is flagged and reviewed by the parent organization)
+2. **Action: From the group profile, disable the option to "Allow others to post to your group's stream."**
+    * Verify posting to the group stream
+        * Verify that a colleague cannot post to the group stream from the group profile or the activity page
+        * Verify a group coordinator can post to the group stream from the group profile or the activity page
+        * Verify a sub organization coordinator can post to the group stream within his organization or sub organization from the group profile or the activity page
+        * Verify a root organization coordinator can post to the group stream within his organization or sub organization from the group profile or the activity page
+    * Verify sharing to and from the group stream
+        * Verify for all user roles, a post cannot be shared from a private group to another profile (root org, sub org, and other knowledge workers)
+        * Verify that a colleague cannot share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page
+        * Verify that a colleague can share from a public group stream to another profile (root org, sub org, and other knowledge workers)
+        * Verify a group coordinator can share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page
+        * Verify a sub organization coordinator can share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page
+        * Verify a root organization coordinator can share to the group stream from another profile (root org, sub org, and other knowledge workers) or the activity page
+    * Verify deletion of a group post
+        * Verify that a colleague cannot see the delete link for posts in the group stream or the activity page
+        * Verify a group coordinator can delete posts in the group stream or the activity page
+        * Verify a sub organization coordinator can delete posts in the group stream or the activity page
+        * Verify a root organization organization coordinator can delete posts in the group stream or the activity page
+3. **Action: In the employee profile, disable the "Allow others to comment on activity in your stream." option.**
+    * Verify that the knowledge worker can comment on posts in his own employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page
+    * Verify that a colleague cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page
+    * Verify a group coordinator cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page
+    * Verify a sub organization coordinator cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page
+    * Verify a root organization coordinator cannot view the comment link for posts in the employee stream from all profiles that display the post (root org, sub org, and knowledge worker profile) and the activity page
+4. **Action: In the group profile, disable the "Allow others to comment on activity in your group's stream." option.**
+    * Verify that a colleague cannot view the comment link for posts in the group stream from all profiles that display the post (root org, sub org, and group profile) and the activity page
+    * Verify a group coordinator can comment on posts in the employee stream from all profiles that display the post (root org, sub org, and group profile) and the activity page
+    * Verify a sub organization coordinator can comment on posts in the employee stream from all profiles that display the post (root org, sub org, and group profile) and the activity page
+    * Verify a root organization coordinator can comment on posts in the employee stream from all profiles that display the post (root org, sub org, and group profile) and the activity page
+5. **Action: Confirm that posting and commenting on activity in an employee or public group stream is set as the default**
+    * Verify the 'Allow others to post to your stream' option is enabled by default
+    * Verify the 'Allow others to comment on activity in your stream' option is enabled by default
+    * Verify that the 'Allow others to post to your groups stream' option is enabled by default
+    * Verify that the 'Allow others to comment or activity in your group's stream' option is enabled by default
+6. **Action: Select from and configure a stream plugin to import activity into an employee or group stream**
+    * Fullfilled by executing Steps 7-11
+7. **Action: Remove a stream plugin configured in an employee or group stream**
+    * Fullfilled by executing Steps 7-11
+8. **Action: Create a failure scenario for a stream plugin in an employee or group stream**
+    * Fullfilled by executing Steps 7-11
+9. **Action: Import an atom or rss feed's entries into an employee or group stream**
+    * Verify a rss feed can be imported for an employee or group
+    * Verify a atom feed can be imported for an employee or group
+    * Verify a valid Public RSS / Atom URL is required
+    * Verify a message is displayed if there is an error importing the feed
+    * Verify the Terms of Use is required
+    * Verify the feed is displayed when clicking on the source link
+    * Verify the feed plugin can be edited
+    * Verify the feed plugin can be deleted
+    * Verify the feed is displayed in the employee's activity stream
+    * Verify the feed is displayed in the group activity stream
+10. **Action: Import a delicious user's bookmarks into an employee or group stream**
+    * Verify the delicious plugin can be imported for an employee or group
+    * Verify a valid user name is required
+    * Verify a message is displayed if there is an error importing the feed
+    * Verify the Terms of Use is required
+    * Verify that a delicious plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    * Verify the delicious feed is displayed when clicking on the source link
+    * Verify the delicious plugin can be edited
+    * Verify the delicious plugin can be deleted
+    * Verify the delicious feed is displayed in the employee's activity stream
+    * Verify the delicious feed is displayed in the group activity stream
+11. **Action: Import a google reader user's shared items into an employee or group stream**
+    * Verify the google reader plugin can be imported for an employee or group
+    * Verify a Shared Items URL is required
+    * Verify a message is displayed if there is an error importing the feed
+    * Verify the Terms of Use is required
+    * Verify that a Google Reader plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    * Verify the google reader feed is displayed when clicking on the source link
+    * Verify the google reader plugin can be edited
+    * Verify the google reader plugin can be deleted
+    * Verify the google reader feed is displayed in the employee's activity stream
+    * Verify the google reader feed is displayed in the group activity stream
+12. **Action: Import a youtube channel's videos into an employee or group stream**
+    * Verify the youtube plugin can be imported for an employee or group
+    * Verify a valid user name is required
+    * Verify a message is displayed if there is an error importing the feed
+    * Verify the Terms of Use is required
+    * Verify that a youtube plugin avatar, user name, and source of the feed are displayed in the My Plugins
+    * Verify the youtube feed is displayed when clicking on the source link
+    * Verify the youtube plugin can be edited
+    * Verify the youtube plugin can be deleted
+    * Verify the youtube feed is displayed in the employee's activity stream
+    * Verify the youtube feed is displayed in the group activity stream
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+>>>>>>> .merge_file_IQjzTi

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Stream plugin framework</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; <a href="Software%20architecture.html">Software architecture</a> &gt; Stream plugin framework</p>
+
+<h1 class="title">Stream plugin framework</h1>
+
+<p><a><span id="nonextlink">&nbsp;</span></a>
+<a href='Resource framework.html'><span id="prevlink">Resource framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>When a user subscribes to an internet feed such as flickr, google news reader, YouTube, del.icio.us, or twitter, Eureka polls these feeds for content and inserts this content into their Activity Feed. The following is the design surrounding this.</p>
+
+<h2 id="problemstatement">Problem Statement</h2>
+
+<p>The user wants to subscribe to a feed and publish this feed (and subsequent updates) to their activity stream.</p>
+
+<h2 id="repercussions">Repercussions</h2>
+
+<p>Since the activity streams are denormalized across user lists, this causes many updates to memcached entries in addition to many database updates and network traffic.</p>
+
+<h2 id="design">Design</h2>
+
+<p>The Design has been divided into three sections, Submit Feed Update Actions to the Queue, Retrieve Feed Contents, and Update Streams with Buffered Activities.</p>
+
+<h3 id="submitfeedupdateactionstothequeue">Submit Feed Update Actions to the Queue</h3>
+
+<p>The first step for the feed importer is to retrieve the content of the feeds that are registered within the system. An action then accesses those feeds and buffer off the activities that are created from their parsed content.</p>
+
+<p>A scheduled job invokes a single action that is responsible for retrieving the list of feeds from the database that need to be parsed and content converted to activities to be placed into the streams that are configured with those corresponding plugins. The scheduled action places a single Async Action onto the queue for each of those feed updates.</p>
+
+<p><img id="" src="images/SF_Fill-Queue-with-Feed-Update-Actions.jpg" alt="" title="" /></p>
+
+<h3 id="retrievefeedcontents">Retrieve Feed Contents</h3>
+
+<p>The tasks that have been placed on the queue are now processed by the task queue processor. The Task Queue Processor pulls a message from the queue, assembles the appropriate action and passes it to the Service Action Controller. The Service Action Controller then executes the action to retrieve the feed contents, creates activities for the entries in the feed and buffers them off for the next step.</p>
+
+<p><img id="" src="images/SF_Retrieve-Feed-Contents-and-Update-Db-Cache.jpg" alt="" title="" /></p>
+
+<h3 id="updatestreamswithbufferedactivities">Update Streams with Buffered Activities</h3>
+
+<p>The scheduler invokes the ServiceActionController to execute another Async Action that pulls bufferred activities off of the queue and update the appropriate streams with those activity entries.</p>
+
+<p><img id="" src="images/SF_Update-Streams-with-Buffered-Actions.jpg" alt="" title="" /></p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#problemstatement">Problem Statement</a></li>
+<li><a href="#repercussions">Repercussions</a></li>
+<li><a href="#design">Design</a>
+<ul><li><a href="#submitfeedupdateactionstothequeue">Submit Feed Update Actions to the Queue</a></li>
+<li><a href="#retrievefeedcontents">Retrieve Feed Contents</a></li>
+<li><a href="#updatestreamswithbufferedactivities">Update Streams with Buffered Activities</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

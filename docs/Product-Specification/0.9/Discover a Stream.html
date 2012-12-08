@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Discover a Stream</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Discover a Stream</p>
+
+<h1 class="title">Discover a Stream</h1>
+
+<p><a href='Use Eureka Connect.html'><span id="nextlink">Use Eureka Connect</span></a>
+<a href='View Eureka Metrics.html'><span id="prevlink">View Eureka Metrics</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Featured &amp; Popular page on Eureka allows for users to view a high level summary of 
+content from across Eureka, including featured groups and people, popular groups, people and links, and suggested groups and people to follow.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<h3 id="featuringagroup">Featuring a Group</h3>
+
+<ol>
+<li>The Eureka administrator must be able to feature a group from the profile.</li>
+<li>The Eureka administrator must be able to override the group description (max 250 chars) 
+while featuring.</li>
+<li>The Eureka administrator must be able to unfeature a group that has been featured from 
+the profile.</li>
+</ol>
+
+<h3 id="discoverpage">Discover Page</h3>
+
+<ol>
+<li>The knowledge worker must be able to see all the featured streams, their avatars and 
+their description</li>
+<li>The knowledge worker must be able to see all the streams ordered by most active groups 
+and people as shown and calculated by the 30 day daily average of number of messages.</li>
+<li>The knowledge worker must be able to see the top 10 most viewed streams e as shown and 
+calculated by the 30 day daily average of stream viewers.</li>
+<li>The knowledge worker must be able to see the top 10 suggested groups and people as shown 
+and calculated by the intersection of the knowledge worker&#8217;s following and the stream&#8217;s 
+following. Only unfollowed streams will be suggested.</li>
+<li>The knowledge worker must be able to see the top 10 most recent streams created in the 
+system.</li>
+<li>The knowledge worker must be able to see the top 10 most followed streams created in the 
+system.</li>
+<li>The knowledge worker must be able to follow any stream listed on Featured &amp; Popular page</li>
+</ol>
+
+<h3 id="searchingforastream">Searching For a Stream</h3>
+
+<ol>
+<li>The knowledge worker must be able to perform a keyword search matching streams based on 
+name, title, description, and interests fields from the title bar or the Discover page.</li>
+<li>The knowledge worker must be able to use OR logic when performing a keyword search on 
+streams.</li>
+<li>The knowledge worker must be able to filter search results by group, or employee stream 
+types.</li>
+<li>The knowledge worker must be able to follow hyperlinked profile information and view 
+matching search results.</li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="featureagroup">Feature a Group</h3>
+
+<p><img id="" src="images/Discover_Feature_Button.png" alt="" title="" /></p>
+
+<ol>
+<li>Eureka administrators can see a Feature button that when clicked brings up the Feature 
+modal to feature the group. After being featured, this button changes to an &#8220;Unfeature&#8221; button.</li>
+</ol>
+
+<p><img id="" src="images/group_profile_feature_modal.png" alt="" title="" /></p>
+
+<ol>
+<li>When the org admin clicks the feature button the feature stream modal opens allowing the org admin to override the group description before featuring, with a maximum of 250 characters.</li>
+</ol>
+
+<h3 id="discoverpage">Discover Page</h3>
+
+<p><img id="" src="images/Discover_Page.png" alt="" title="" /></p>
+
+<ol>
+<li>The list of featured streams, both groups and people, in the order of when they were featured, with the most recent first</li>
+<li>Pager controls which set of 3 featured streams the user sees. When clicked, the streams should slide over until there&#8217;s the next or previous 3 streams (depending on which button is hit). If there are no more streams in any given direction, that direction&#8217;s button should be disabled.</li>
+<li>Search box executes a full search detailed below</li>
+<li>Most active streams. </li>
+<li>Pager controls let the user page through the entire set of streams ordered by most active.</li>
+<li>The top ten most suggested streams.</li>
+<li>The top ten most viewed streams, sorted by views. </li>
+<li>The top ten most followed streams.</li>
+<li>The top ten most recent streams</li>
+<li>The follow button shows up on hover. It allows the user to follow the stream. It brings up the subscriptions modal.</li>
+<li>When a stream is already followed on hover it shows a  Followed label.</li>
+</ol>
+
+<h4 id="emptystateforsuggestions">Empty State for Suggestions</h4>
+
+<p>When there are no streams to suggest display the following message in the Suggested box:</p>
+
+<p>&#8220;We have no suggested streams for you at this time. Try searching for people you know in the search box above and follow them to help us generate some suggestions!&#8221;</p>
+
+<h3 id="search">Search</h3>
+
+<p><img id="" src="images/Discover_Nav_Search.png" alt="" title="" /></p>
+
+<ol>
+<li>Typing in the search box immediately brings up the search results on the third character typed.</li>
+<li>Search results when clicked bring the user to the stream.</li>
+<li>Clicking on &#8220;View all Results&#8221; brings the user to the full results page detailed below.</li>
+</ol>
+
+<p><img id="" src="images/PS_F10_searchProfiles_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Search keywords</li>
+<li>Links to filter the search results</li>
+<li>Link to the employee profile</li>
+<li>Links to the public group profile.</li>
+<li>Links to private group profile.  Private groups should be displayed to all knowledge 
+workers.   If knowledge worker hovers over the icon, the message &#8220;Private Group&#8221; should be 
+displayed. If the knowledge worker clicks on the private group profile link and does not 
+have access to the private group, the Request Access to Private Group message in the [View and Manage Group Profile design][View and manage a group profile] should be displayed.</li>
+</ol>
+
+<p><img id="" src="images/PS_F10_searchProfiles_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>When no results are found the message &#8220;No matches found&#8221; is displayed in the search results</li>
+</ol>
+
+<h2 id="testplan">Test Plan</h2>
+
+<h3 id="featuringagroup">Featuring a Group</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can feature a group from the profile</strong>
+<ul><li>Verify that clicking on the Feature button results in the Feature a Stream model appearing</li>
+<li>Veify the ability to enter a description for the group being featured</li>
+<li>Verify the featured group appears on the discover page</li></ul></li>
+<li><strong>Verify a knowledge worker can Unfeature a group</strong>
+<ul><li>Verfiy the ability to click on the unfeature button</li>
+<li>Verfity the group is no long on the discover page and the group desciption is the original one</li></ul></li>
+</ol>
+
+<h3 id="discoverpage">Discover Page</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can view Featured Streams</strong>
+<ul><li>Verify the streams avatar and description are present</li></ul></li>
+<li><strong>Verify a knowledge worker can view the streams ordered by most active</strong>
+<ul><li>Verify the ability to view streams ordered by most active groups</li>
+<li>Verify the most active groups listed have the highest 30 day daily average of number of messages</li>
+<li>Vefity the ability to view streams ordered by most active people</li>
+<li>Verify the most active people listed have the highest 30 day daily average of number of messages</li></ul></li>
+<li><strong>Verify a knowledge worker can view the 10 ten most viewed streams</strong>
+<ul><li>Verify the ability to view the 10 ten most viewed </li>
+<li>Verify the most viewed streams have the highest 30 day daily average of number of stream viewers</li></ul></li>
+<li><strong>Verify a knowledge worker can view the 10 ten most viewed streams</strong>
+<ul><li>Verify the ability to view the 10 ten most viewed </li>
+<li>Verify the most viewed streams have the highest 30 day daily average of number of stream viewers</li></ul></li>
+<li><strong>Verify a knowledge worker can view the top 10 suggested groups and people</strong>
+<ul><li>Verify the ability to view the top 10 suggested groups</li>
+<li>Verify the suggested groups are an intersection intersection of the knowledge worker&#8217;s following and the stream&#8217;s following. </li>
+<li>Verify only group streams that the knowledge worker is not following are suggested</li>
+<li>Verify the ability to view the top 10 suggested people groups</li>
+<li>Verify the suggested people are an intersection intersection of the knowledge worker&#8217;s following and the stream&#8217;s following. </li>
+<li>Verify only people streams that the knowledge worker is not following are suggested</li></ul></li>
+<li><strong>Verify a knowledge worker can view the 10 most recently created streams</strong>
+<ul><li>Verify the ability to view the ten most recently created streams </li></ul></li>
+<li><strong>Verify a knowledge worker can view the 10 most followed streams</strong>
+<ul><li>Verify the ability to view the ten most followed streams </li></ul></li>
+<li><strong>Verify a knowledge worker can follow a stream listed on the Featured &amp; Popular page</strong>
+<ul><li>Vefity the ability to follow any stream listed on the featured and popular page</li></ul></li>
+</ol>
+
+<h3 id="searchingforastream">Searching For a Stream</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can perform a keyword search matching employee profiles based 
+on name, title, description, and interests</strong>
+<ul><li>Verify that employees are returned if the keyword is contained in the employees display name, title, description, interests, fields</li></ul></li>
+<li><strong>Verify a knowledge worker can perform a keyword search matching group profiles based on 
+name, description, and keywords fields</strong>
+<ul><li>Verify groups are returned if the keyword is contained in the group name, description and/or keywords fields</li></ul></li>
+<li><strong>Verify a knowledge worker can confirm system is using OR logic when performing a 
+keyword search on profiles</strong>
+<ul><li>Verify that system is using OR logic when performing a keyword search on profiles</li></ul></li>
+<li><strong>Verify a knowledge worker can filter search results by group or employee profile 
+types</strong>
+<ul><li>Verify a keyword search results can be displayed by group, employee or both</li></ul></li>
+<li><strong>Verify a knowledge worker can follow hyperlink&#8217;d profile information and view matching 
+search results</strong>
+<ul><li>Verify that the search results match the hyperlink&#8217;d profile information clicked</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a>
+<ul><li><a href="#featuringagroup">Featuring a Group</a></li>
+<li><a href="#discoverpage">Discover Page</a></li>
+<li><a href="#searchingforastream">Searching For a Stream</a></li></ul></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#featureagroup">Feature a Group</a></li>
+<li><a href="#discoverpage">Discover Page</a>
+<ul><li><a href="#emptystateforsuggestions">Empty State for Suggestions</a></li></ul></li>
+<li><a href="#search">Search</a></li></ul></li>
+<li><a href="#testplan">Test Plan</a>
+<ul><li><a href="#featuringagroup">Featuring a Group</a></li>
+<li><a href="#discoverpage">Discover Page</a></li>
+<li><a href="#searchingforastream">Searching For a Stream</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.2/Product%20Specification.html">1.2</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

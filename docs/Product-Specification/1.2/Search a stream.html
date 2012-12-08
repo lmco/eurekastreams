@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Search a stream</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Search a stream</p>
+
+<h1 class="title">Search a stream</h1>
+
+<p><a href='Manage streams and groups.html'><span id="nextlink">Manage streams and groups</span></a>
+<a href='View a stream of activity.html'><span id="prevlink">View a stream of activity</span></a></p>
+
+<p>This page will replace the 0.9 specification for <a href="../0.9/Search%20a%20stream.html">Search a stream</a> when Eureka Stream 1.0 is released.  This product specification is a work in process.  In the 1.0 release, the ability to search comments and to use the OR, NOT and +/- operators in a stream search are being added.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Knowledge workers can view an activity stream including browsing and searching for employees, groups, and organizations activities.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to perform a keyword search on a stream matching activity or comments based on message text or url titles.</li>
+<li>The knowledge worker must be able to perform a keyword search on a stream matching activity based on hashtags.</li>
+<li>The system must support Lucene search operators (AND, OR, NOT, + / -) while performing a search.</li>
+<li>The knowledge worker must be able to clear a keyword search on a stream.</li>
+<li>The knowledge worker must be able to save a keyword search performed on a stream.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="performingakeywordsearch">Performing a keyword search</h3>
+
+<p><img id="" src="images/PS_F15_searchstream_hashtags_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Keyword search can be performed on hashtags.  Searching on hashtags returns an exact match on the keywords.  In this example, only posts with #scrum (in upper or lower case) are returned in the results.</li>
+</ol>
+
+<p><img id="" src="images/PS_F15_searchstream_hashtags_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Searching on hashtags returns an exact match on the keywords.  In this example, only posts with #scrummaster (in upper or lower case) are returned in the results.</li>
+</ol>
+
+<p><img id="" src="images/PS_F15_searchstream_hashtags_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>Searching on a regular (non-hashtag) term returns all results that match the word or stem from the word.  In this example, all activities with scrum in the post or hashtag are returned.</li>
+</ol>
+
+<h3 id="savingakeywordsearch">Saving a keyword search</h3>
+
+<p><img id="" src="images/PS_F15_searchStream_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>A knowledge worker can perform a keyword search on a stream by entering one or more keywords into the search box.</li>
+</ol>
+
+<p><img id="" src="images/PS_F15_searchStream_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Keywords entered by knowledge worker separated by spaces.  Create App icon is removed when a search is active in the stream.</li>
+<li>Link to save the search, clicking this link launches the save search modal (see below).</li>
+<li>Clicking the close icon closes the search results and returns the user back to the stream.</li>
+</ol>
+
+<p><img id="" src="images/PS_F15_searchStream_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>The knowledge worker can name the search, the search keywords are populated in this field by default.</li>
+<li>The knowledge worker can edit the search criteria they originally entered.</li>
+<li>The knowledge worker can save a search from a profile activity stream and the activity page. The following are the expected results depending on where the search is saved.
+<ul><li>When a search is successfully saved from a profile activity stream, the knowledge worker is returned to the profile page, feedback displays at the top of the page with a close option: &#8220;Your search has been successfully saved&#8221;, and the + Save Search link is still displayed in the stream.  If one or both of the required fields are left blank the following message appears above the form: &#8220;Please enter a name and at least one keyword&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li>
+<li>When a search is successfully saved from the Activity page, the knowledge worker is returned to the new search stream and displays at the top of the page with a close option: &#8220;Your search has been successfully saved.&#8221; If one or both of the required fields are left blank the following message appears above the form: &#8220;Please enter a name and at least one keyword&#8221;.  Refer to the <a href="/docs/product-specification/user-experience-guidelines/action-feedback/">Action Feedback UI design pattern</a> for additional details.</li></ul></li>
+</ol>
+
+<h2 id="testplans">Test Plans</h2>
+
+<h3 id="knowledgeworker">Knowledge Worker</h3>
+
+<ol>
+<li><strong>Action: Perform a keyword search on an activity stream based on message text, url titles, or comments</strong>
+<ul><li>Verify the ability to search any activity stream
+<ul><li>Organization, Everyone, Following, Lists, Profiles, Groups, and Sub Organizations</li></ul></li>
+<li>Verify the system returns search results matching the keywords found within messages, URL titles, and comments</li>
+<li>Verify the system returns search results for feeds and posts as appropriate</li>
+<li>Verify the system displays a method to view more results if there are more than 10 results</li>
+<li>Verify the system uses AND, OR, NOT, and +/- logic when performing a keyword search on a stream</li></ul></li>
+<li><strong>Action: Perform a keyword search on an activity stream based on hashtags</strong>
+<ul><li>Verify the ability to search any activity stream
+<ul><li>Organization, Everyone, Following, Lists, Profiles, Groups, and Sub Organizations</li></ul></li>
+<li>Verify the system returns search results matching the hashtags found within messages or URL titles</li>
+<li>Verify the system returns search results for feeds and posts as appropriate</li>
+<li>Verify the system displays a method to view more results if there are more than 10 results</li>
+<li>Verify the system uses AND, OR, NOT, and +/- logic when performing a keyword search on a stream</li></ul></li>
+<li><strong>Action: Clear a keyword search</strong>
+<ul><li>Verify the search is cleared when user closes the search box</li></ul></li>
+<li><strong>Action: Save a keyword search</strong>
+<ul><li>Verify a keyword search can be saved</li>
+<li>Verify it appears under saved searches on the activity page</li></ul></li>
+</ol>
+
+<h3 id="groupcoordinator">Group Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="organizationcoordinator">Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+
+<h3 id="rootorganizationcoordinator">Root Organization Coordinator</h3>
+
+<ol>
+<li><strong>Action: Execute same tests as Knowledge Worker</strong>
+<ul><li>Verify tests executed successfully</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#performingakeywordsearch">Performing a keyword search</a></li>
+<li><a href="#savingakeywordsearch">Saving a keyword search</a></li></ul></li>
+<li><a href="#testplans">Test Plans</a>
+<ul><li><a href="#knowledgeworker">Knowledge Worker</a></li>
+<li><a href="#groupcoordinator">Group Coordinator</a></li>
+<li><a href="#organizationcoordinator">Organization Coordinator</a></li>
+<li><a href="#rootorganizationcoordinator">Root Organization Coordinator</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

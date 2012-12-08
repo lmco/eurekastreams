@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Theme Format</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; Theme Format</p>
+
+<h1 class="title">Theme Format</h1>
+
+<p><a><span id="nonextlink">&nbsp;</span></a>
+<a href='Stream plugin framework.html'><span id="prevlink">Stream plugin framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Eureka Streams allows for custom themes to be added by administrators. These themes are then visible for end-users to activate on the start page.</p>
+
+<h2 id="xsd">XSD</h2>
+
+<p>The following is the XML Schema Definition for a custom Theme file</p>
+
+<pre><code>&lt;?xml version="1.0"?&gt;
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+    &lt;xs:element name="Theme"&gt;
+        &lt;xs:complexType&gt;
+            &lt;xs:all&gt;
+                &lt;xs:element name="HeaderBackground"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:all&gt;
+                            &lt;xs:element name="HeaderBackgroundColor" type="xs:string" /&gt;
+                            &lt;xs:element name="HeaderForegroundColor" type="xs:string" /&gt;
+                            &lt;xs:element name="HeaderBackgroundImage"&gt;
+                                &lt;xs:complexType&gt;
+                                    &lt;xs:simpleContent&gt;
+                                        &lt;xs:extension base="xs:string"&gt;
+                                            &lt;xs:attribute name="Center" type="xs:boolean"
+                                                default="false" /&gt;
+                                        &lt;/xs:extension&gt;
+                                    &lt;/xs:simpleContent&gt;
+                                &lt;/xs:complexType&gt;
+                            &lt;/xs:element&gt;
+                        &lt;/xs:all&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+                &lt;xs:element name="Title" type="xs:string" /&gt;
+                &lt;xs:element name="Description" type="xs:string" /&gt;
+                &lt;xs:element name="AuthorName" type="xs:string" /&gt;
+                &lt;xs:element name="AuthorEmail" type="xs:string" /&gt;
+                &lt;xs:element name="ActiveTabBorderColor" type="xs:string" /&gt;
+                &lt;xs:element name="ActiveTabForegroundColor" type="xs:string" /&gt;
+                &lt;xs:element name="InactiveTabBackgroundColor" type="xs:string" /&gt;
+                &lt;xs:element name="InactiveTabBorderColor" type="xs:string" /&gt;
+                &lt;xs:element name="InactiveTabForegroundColor" type="xs:string" /&gt;
+                &lt;xs:element name="GadgetTitleBackgroundColor" type="xs:string" /&gt;
+                &lt;xs:element name="GadgetTitleForegroundColor" type="xs:string" /&gt;
+                &lt;xs:element name="GadgetBorderColor" type="xs:string" /&gt;
+                &lt;xs:element name="PageBackground"&gt;
+                    &lt;xs:complexType&gt;
+                        &lt;xs:all&gt;
+                            &lt;xs:element name="PageBackgroundColor" type="xs:string" /&gt;
+                            &lt;xs:element name="PageBackgroundImage"&gt;
+                                &lt;xs:complexType&gt;
+                                    &lt;xs:simpleContent&gt;
+                                        &lt;xs:extension base="xs:string"&gt;
+                                            &lt;xs:attribute name="RepeatX" type="xs:boolean"
+                                                default="false" /&gt;
+                                            &lt;xs:attribute name="RepeatY" type="xs:boolean"
+                                                default="false" /&gt;
+                                        &lt;/xs:extension&gt;
+                                    &lt;/xs:simpleContent&gt;
+                                &lt;/xs:complexType&gt;
+                            &lt;/xs:element&gt;
+                        &lt;/xs:all&gt;
+                    &lt;/xs:complexType&gt;
+                &lt;/xs:element&gt;
+            &lt;/xs:all&gt;
+        &lt;/xs:complexType&gt;
+    &lt;/xs:element&gt;
+&lt;/xs:schema&gt;</code></pre>
+
+<h2 id="samplexml">Sample XML</h2>
+
+<p>The following is a sample theme conforming to the XSD above:</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Theme&gt;
+    &lt;Title&gt;My Theme&lt;/Title&gt;
+    &lt;Description&gt;A theme for Eureka Streams&lt;/Description&gt;
+    &lt;AuthorName&gt;Eureka Streams&lt;/AuthorName&gt;
+    &lt;AuthorEmail&gt;support@eurekastreams.org&lt;/AuthorEmail&gt;
+    &lt;HeaderBackground&gt;
+        &lt;HeaderBackgroundColor&gt;white&lt;/HeaderBackgroundColor&gt;
+        &lt;HeaderForegroundColor&gt;white&lt;/HeaderForegroundColor&gt;
+        &lt;HeaderBackgroundImage&gt;/style/images/Start_page.jpg&lt;/HeaderBackgroundImage&gt;
+    &lt;/HeaderBackground&gt;
+    &lt;ActiveTabBorderColor&gt;#A4A5A9&lt;/ActiveTabBorderColor&gt;
+    &lt;ActiveTabForegroundColor&gt;#313007&lt;/ActiveTabForegroundColor&gt;
+    &lt;InactiveTabBackgroundColor&gt;#505657&lt;/InactiveTabBackgroundColor&gt;
+    &lt;InactiveTabBorderColor&gt;#2E3131&lt;/InactiveTabBorderColor&gt;
+    &lt;InactiveTabForegroundColor&gt;white&lt;/InactiveTabForegroundColor&gt;
+    &lt;GadgetTitleBackgroundColor&gt;#2E4523&lt;/GadgetTitleBackgroundColor&gt;
+    &lt;GadgetTitleForegroundColor&gt;white&lt;/GadgetTitleForegroundColor&gt;
+    &lt;GadgetBorderColor&gt;#313007&lt;/GadgetBorderColor&gt;
+    &lt;PageBackground&gt;
+        &lt;PageBackgroundColor&gt;#E6E1D0&lt;/PageBackgroundColor&gt;
+        &lt;PageBackgroundImage/&gt;
+    &lt;/PageBackground&gt;
+&lt;/Theme&gt;</code></pre>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#xsd">XSD</a></li>
+<li><a href="#samplexml">Sample XML</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+## Employee Lookup Modal - Inactive State
+
+![](images/PS_UX_lookupmodals_employeeinactive.png)
+
+1. Search box. Search icon is disabled until the first character is entered in the search box.
+2. Search results are blank until Go is clicked.
+3. Select button is disabled until a name is selected in the search results.
+4. Disgards changes and returns Knowledge Worker to the Profile Configure page.
+
+## Employee Lookup Modal - Active State
+
+![](images/PS_UX_lookupmodals_employeeactive.png)
+
+1. When the first character is typed in the search box, the Go button is enabled.
+2. The search result selected is highlighted.
+<<<<<<< .merge_file_tLKY7V
+3. Represents the Avatar, Name, Title, Primary Organization, and email address of the Knowledge Worker selected in the search results.
+4. Select button is enabled once a Knowledge Worker is selected in the search results.
+5. Disgards changes and returns Knowledge Worker to the Profile Configure page.
+=======
+3. Represents the Avatar, Name, Title, Primary Organization, and email address of the knowledge worker selected in the search results.
+4. Select button is enabled once a knowledge worker is selected in the search results.
+5. Disgards changes and returns knowledge worker to the Profile Configure page.
+>>>>>>> .merge_file_QIurCU
+
+
+## Organization Lookup Modal - Inactive State
+
+![](images/PS_UX_lookupmodals_orginactive.png)
+
+1. Search box.
+2. Search results are defaulted to the root org until a search is performed or navigation through the hierarchy is performed.
+3. Select button is disabled until an organization is selected in the search results.
+4. Disgards changes and returns Knowledge Worker to the Profile Configure page.
+
+## Organization Lookup Modal - Active State
+
+![](images/PS_UX_lookupmodals_orgactive.png)
+
+1. Search box.  Search icon is disabled until the first character is entered in the search box.
+2. The search result selected is highlighted.
+3. Represents the Avatar and Organization Name of the organization selected in the search results.
+4. Select button is enabled once an organization is selected in the search results.
+<<<<<<< .merge_file_tLKY7V
+5. Disgards changes and returns Knowledge Worker to the Profile Configure page.
+=======
+5. Disgards changes and returns knowledge worker to the Profile Configure page.
+>>>>>>> .merge_file_QIurCU

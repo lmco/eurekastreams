@@ -1,0 +1,61 @@
+##Overview
+
+The Conversion Funnel provides viewers with stats that show metrics at
+different progressing stages of engagement.
+
+##Conditions of Satisfaction
+
+1. The system must display the number unique visitors.
+2. The system must display the number of visits per visitor.
+3. The system must display the number of people viewing a stream.
+4. The system must display the number of requests to view a stream per spectator.
+5. The system must display the number of people posting a message.
+6. The system must display the number of messages posted per contributor.
+7. The system must display the number of minutes elapsed for a response to a message.
+8. All metrics must be rolling daily (Monday - Friday) averages over a 30 days period.
+
+##User Experience
+
+![](images/Conversion_Funnel_Stats.png)
+
+1. The number of unique visitors
+2. The number of visits per user over a 30 day period
+3. The number of people viewing any stream. For the
+Activity App only register a view if a mouse click is detected in the app.
+4. The number of stream requests per spectator (not per
+unique visitor). Only count views from the Activity App on mouse click.
+5. The number of people posting an activity or comment
+6. The daily number of activities and comments per contributor
+(not per visitor or spectator)
+7. The daily number of minutes it takes for an activity to
+receive it's first comment. Activities without comments are not included in
+this metric.
+
+##Test Plans
+
+1. **The Knowledge Worker must be able to view the average number of unique visitors**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url. The 
+production URL is https://eureka.isgs.lmco.com/#metrics
+    * Verify the Eureka Metrics page includes a count for the number of unique visitors
+    * Verify the number for uniques vistors appears reasonable (approximately between 10,000 and 20,000 in production)
+2. **The Knowledge Worker must be able to view the average number of visits per visitor**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url
+    * Verify the Eureka Metrics page includes a count for the number of visits per visitor
+3. **The Knowledge Worker must be able to view the average number of people viewing a stream**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url
+    * Verify the Eureka Metrics page includes a count for the number of people viewing a stream
+    * Verify the number for people viewing a stream appears reasonable (approximately between 10,000 and 20,000 in production)
+4. **The Knowledge Worker must be able to view the average number of request to view a stream per spectator**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url
+    * Verify the Eureka Metrics page includes a count for the number of request to view a stream per spectator
+5. **The Knowledge Worker must be able to view the average number of people posting a message**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url
+    * Verify the Eureka Metrics page includes a count for the number of people posting a message
+    * Verify the number for people posting a message appears reasonable (approximately between 1,000 and 2,000 in production)
+6. **The Knowledge Worker must be able to view the average number of messages posted per contributor**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url
+    * Verify the Eureka Metrics page includes a count for the number of messages posted per contributor
+7. **The Knowledge Worker must be able to view the average number of minutes elapsed for a response to a message**
+    * Verfiy the Eureka Metrics page can be accessed with the appropriate url
+    * Verify the Eureka Metrics page includes a count for the number of minutes elapsed for a response to a message
+

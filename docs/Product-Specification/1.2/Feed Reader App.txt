@@ -1,0 +1,65 @@
+## Overview
+The feed reader app allows the user to view a particular feed
+## Conditions of satisfaction
+1. The app must display the contents off a given RSS/ATOM source 
+2. The app must display popular subscriptions across the system 
+3. The app must display popular subscriptions from the user's following list 
+
+## User experience
+
+### Configure Feed Reader App
+
+![](images/PS_F05_feedGadgetConfig_fig01.png)
+
+1. Empty App.
+
+![](images/PS_F05_feedGadgetConfig_fig02.png)
+
+1. On mouse over, tools appear to the Knowledge Worker. The Knowledge Worker selects the 'gear' icon to configure the Feed Reader App.
+
+![](images/PS_F05_feedGadgetConfig_fig03.png)
+
+1. The Knowledge Worker enters the RSS or Atom feed URL for here.
+2. Once the URL is entered, the Knowledge Worker selects Save to save off configuration settings and begin reading from the specified feed.
+3. The Knowledge Worker may select Cancel to returen to the empty App.
+
+
+### App View
+
+![](images/PS_F05_feedGadgetDefaultView.png)
+
+1. Title of feed.
+2. Title of the first feed/article.  Links to the full article on the source site in a new browser window.
+3. Links to the full article on the source site in a new browser window.
+4. Banner image from feed (if available).
+5. Collaspable section featuring the seven most recent feeds from the source site.
+6. Feed from the source site.  Clicking will open the feed app in canvas mode with this article featured in the right-hand pane.
+7. Opens canvas view.
+
+### Canvas View
+
+![](images/PS_F05_feedGadgetCanvasView.png)
+
+1. Currently selected feed.
+2. Feed title, links to full article on the source site in a new browser window.
+3. Feed summary.
+4. Link to rate or comment on article
+5. Click to share this feed on the Knowledge Workers profile.
+6. Click to open a new window showing all feeds from the source site.
+7. Click to close the canvas view and return to the default feed app view.
+
+## Test plans
+
+1. **Verify a Knowledge Worker can display the contents off a given RSS/ATOM source**
+    * Verify the contents are displayed when the feed reader is configured to read from an RSS source
+    * Verify the contents are displayed when the feed reader is configured to read from an ATOM source
+    * Verify that no more than 8 entries are displayed from the app view
+    * Verify that the summary text from the first entry is displayed in "head line" form at the top of the app view
+    * Verify that a link to the full article is visible for the first entry
+    * Verify that clicking on entries 2-8 in the app view will open the app in the canvas view
+    * Verify that clicking on the "See more" link will open the app in canvas view
+    * Verify the default for canvas view, when no particular article was selected, is to display the first article on the right
+    * Verify clicking on one of the entry headings displays that entry's article on the right side of the canvas view
+    * Verify clicking "View All" link in canvas view opens the feed in a new window
+2. **Verify a Knowledge Worker can share a feed entry to his employee stream from a feed app**
+    * Verify that a feed entry can be shared to an employee stream from a feed app

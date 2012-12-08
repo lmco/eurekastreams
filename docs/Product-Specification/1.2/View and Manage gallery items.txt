@@ -1,0 +1,170 @@
+## Overview
+
+Gallery can be updated with default apps, themes and tabs. Eureka Administrators are responsible for vetting the item available within the gallery for their employees.
+
+## Conditions of satisfaction
+
+### Browse
+
+01. The Knowledge Worker must be able to browse a list of apps, themes and tabs by recently published, popularity or category.
+02. The Knowledge Worker must be able to view an app's title, thumbnail, website URL, description, user count, author, category, and publish date.
+03. The Knowledge Worker must be able to view a theme's title, thumbnail, website URL, description, user count, author, category, and publish date.
+04. The Knowledge Worker must be able to view a tab's title, description, user count, category, and publish date.
+05. The Knowledge Worker must be able to copy a snapshot of a tab in the gallery onto his start page when adding a tab.
+
+### Manage
+
+01. The Eureka Administrator must be able to add apps that adhere to the Google App Specification to the gallery
+02. The Eureka Administrator must be able to add themes that adhere to the theme schema to the gallery
+03. The Eureka Administrator must be able to add any tab on his start page to the gallery.
+04. The Eureka Administrator must be able to remove apps, themes or tabs from the gallery.
+05. The Eureka Administrator must be able to specify category for any app, theme or tab in the gallery.
+06. The Eureka Administrator must be able to modify URL for a published app or theme.
+07. The Eureka Administrator must be able to specify and modify a description for a published tab.
+
+## User Experience
+ 
+### Viewing and Managing Apps
+![](images/PS_F06_manageGallery_apps.png)
+
+1. Opens the add app form.
+2. Hovering over the app thumbnail, title, description or meta data displays the edit link. Clicking edit displays the edit app form. 
+3. Hovering over the app thumbnail, title, description or meta data displays the Delete link. Clicking the Delete link removes the app from the gallery. When the Eureka Administrator clicks the Delete link a popup window is displayed asking the user: "Are you sure you want to delete this app? Deleting this app will remove it from the start page of every user that has added it to a tab." If the app is deleted a feedback message is displayed saying: "The [app name] app has been deleted". 
+4. Adds the app to the user's start page.
+
+#### Adding Apps
+
+![](images/PS_F06_manageGallery_addApp.png)
+
+1. Drop down menu containing a list of app categories
+1. Input field for app XML address
+1. Submits the form and returns the Eureka Administrator back to the configure page defaulted to the all apps view.  A feedback message "Your app has been successfully added" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the Eureka Administrator back to the configure page.
+
+#### Editing Apps
+
+![](images/PS_F06_manageGallery_editApp.png)
+
+1. Populated with the app category.
+1. Populated with URL to app XML file.
+1. Saves changes to the form and returns the Eureka Administrator back to the configure page defaulted to the all apps view.  A feedback message "Your app has been successfully saved" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the Eureka Administrator back to the configure page.
+
+### Managing and Viewing Themes
+![](images/PS_F06_manageGallery_themes.png)
+
+1. Opens the add theme form.
+2. Hovering over the theme thumbnail, title, or meta data displays an edit link. Clicking edit displays the edit theme form. 
+3. Hovering over the theme thumbnail, title, or meta data displays the Delete link. Clicking the Delete link removes the theme from the gallery. When the Eureka Administrator clicks the Delete link a popup window is displayed asking the user: "Are you sure you want to delete this theme? Deleting a theme will remove it from the start page and apply the default theme for every user that has applied it." If the theme is deleted a feedback message is displayed saying: "The [theme name] theme has been deleted" with a close link next to it. 
+4. Applys the theme to the user's start page.
+
+#### Adding Themes
+
+![](images/PS_F06_manageGallery_addTheme.png)
+
+1. Drop down menu containing a list of theme categories
+1. Input field for theme XML address
+1. Submits the form and returns the Eureka Administrator back to the configure page defaulted to the all themes view.  A feedback message "Your theme has been successfully added" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the Eureka Administrator back to the configure page.
+
+#### Editing Themes
+
+![](images/PS_F06_manageGallery_editTheme.png)
+
+1. Populated with the theme category.
+1. Populated with URL to theme XML file.
+1. Saves changes to the form and returns the Eureka Administrator back to the configure page defaulted to the all themes view.  A feedback message "Your theme has been successfully saved" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the Eureka Administrator back to the configure page.
+
+### Managing and Viewing Tabs
+![](images/PS_F06_manageGallery_tabs.png)
+
+1. Opens the add theme form.
+2. Hovering over the theme thumbnail, title, or meta data displays an edit link. Clicking edit displays the edit theme form. 
+3. Hovering over the theme thumbnail, title, or meta data displays the Delete link. Clicking the Delete link removes the theme from the gallery. When the Eureka Administrator clicks the Delete link a popup window is displayed asking the user: "Are you sure you want to delete this theme? Deleting a theme will remove it from the start page and apply the default theme for every user that has applied it." If the theme is deleted a feedback message is displayed saying: "The [theme name] theme has been deleted" with a close link next to it. 
+4. Adds the tab to the user's start page.
+
+#### Adding Tabs
+
+![](images/PS_F06_manageGallery_addTab.png)
+
+1. Drop down menu containing a list of tab's from the Eureka Administrator's start page.
+1. Description of the tab.
+1. Drop down menu containing a list of theme categories
+1. Submits the form and returns the Eureka Administrator back to the configure page defaulted to the all tabs view.  A feedback message "Your tab has been successfully added" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the Eureka Administrator back to the configure page.
+
+#### Editing Tabs
+
+![](images/PS_F06_manageGallery_editTab.png)
+
+1. Drop down menu containing a list of tab's from the Eureka Administrator's start page.
+1. Description of the tab.
+1. Drop down menu containing a list of theme categories
+1. Submits the form and returns the Eureka Administrator back to the configure page defaulted to the all tabs view.  A feedback message "Your tab has been successfully saved" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the Eureka Administrator back to the configure page.
+
+## Test Plan
+
+### Browse
+
+1. **Verify a Knowledge Worker can browse a list of apps by recently published, popularity or category**
+	* Verify the ability to browse recently published apps in the gallery
+	* Verify the ability to browse apps in the gallery by popularity
+	* Verify the ability to browse apps in the gallery by category
+2. **Verify a Knowledge Worker can browse a list of themes by recently published, popularity or category**
+	* Verify the ability to browse recently published themes in the gallery
+	* Verify the ability to browse themes in the gallery by popularity
+	* Verify the ability to browse themes in the gallery by category
+3. **Verify a Knowledge Worker can browse a list of categories by recently published, popularity or category**
+	* Verify the ability to browse recently published categories in the gallery
+	* Verify the ability to browse categories in the gallery by popularity
+	* Verify the ability to browse categories in the gallery by category
+4. **Verify a Knowledge Worker can view an app's attributes**
+	* Verify the title, thumbnail, website URL, description, user count, author, category and date published are present
+	* Verify all of these attributes are present for all apps in the gallery
+5. **Verify a Knowledge Worker can view a theme's attributes**
+	* Verify the title, thumbnail, website URL, description, user count, author, category and date published are present
+	* Verify all of these attributes are present for all themes in the gallery
+6. **Verify a Knowledge Worker can view a tab's attributes**
+	* Verify the title, description, user count, category and date published are present
+	* Verify all of these attributes are present for all tab's in the gallery
+7. **Verify a Knowledge Worker can confirm the ability to copy a snapshot of a tab from the gallery to a start page tab**
+
+
+### Manage
+
+1. **Verify a Knowledge Worker can publish and categorize an app referenced by a url**
+    * Verify there is a link from the gallery directing the user to a form to upload an app
+    * Verify error handling is present when required fields are not populated
+    * Verify a category can be selected and associated with the app
+2. **Verify a Knowledge Worker can confirm apps adhere to the Google app specification**
+    * Verify a theme that is uploaded must adhere to the Google app specification
+    * Verify that if a app does not adhere there is error handling
+    * Verify there is a link which will direct the user to the app specification guide
+3. **Verify a Knowledge Worker can modify the category and url for a published app**
+    * Verify the category can be changed for an app that has been uploaded to the gallery
+    * Verify the URL can be changed for an app that has been uploaded to the gallery
+    * Verify there is error handling in the edit mode
+4. **Verify a Knowledge Worker can remove a published app**
+    * Verify a published app can be removed
+    * Verify there is removal confirmation
+    * Verify the app is removed from the gallery, but is not removed from any tabs of users with that app currently applied
+5. **Verify a Knowledge Worker can publish and categorize a theme referenced by a url**
+    * Verify there is a link from the gallery directing the user to a form to upload a theme
+    * Verify error handling is present when required fields are not populated
+    * Verify a category can be selected and associated with the theme
+6. **Verify a Knowledge Worker can confirm theme adheres to the Eureka theme schema**
+    * Verify a theme that is uploaded must adhere to the Eureka theme schema
+    * Verify that if a theme does not adhere there is error handling
+    * Verify there is a link which will direct the user to the preparation guide
+7. **Verify a Knowledge Worker can modify the category and url for a published theme**
+    * Verify the category can be changed for a theme that has been uploaded to the gallery
+    * Verify the URL can be changed for a theme that has been uploaded to the gallery
+    * Verify there is error handling in the edit mode
+8. **Verify a Knowledge Worker can remove a published theme**
+    * Verify a published theme can be removed
+    * Verify there is removal confirmation
+    * Verify the theme is removed from the gallery, and is stripped from start pages of users with that theme currently applied
+
+

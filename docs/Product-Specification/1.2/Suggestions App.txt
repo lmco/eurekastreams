@@ -1,0 +1,26 @@
+## Overview
+The suggestions app displays suggestions posted to a pre-determined stream.
+## Conditions of Satisfaction
+1. The suggestions app must display all activities as suggestions in a pre-determined stream 
+2. The suggestions app must allow sorting by recent and most liked 
+3. The suggestions app must allow a user to view the comments of a suggestion 
+4. The suggestions app must allow a user to comment to a suggestion 
+5. The suggestions app must allow a user to like a suggestion, and unlike suggestions already liked 
+6. The suggestions app must allow a user to view all who liked an suggestion 
+7. The suggestions app must allow a user to search against the stream 
+
+## User Experience
+
+### App View
+
+![](images/suggestionapp_1.png)
+
+The Suggestions app looks and behaves exactly as the activities app except for in the following ways
+
+1. The sorts are Recent and Liked, where liked sorts by the most liked suggestions 
+2. The user name isn't display for the person posting the suggestion 
+3. The avatar isn't displayed for the person posting the suggestion, with a large like button and count replacing it. 
+
+## Test Plans
+
+1. **Verify a Knowledge Worker can...** 

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Security architecture</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; Security architecture</p>
+
+<h1 class="title">Security architecture</h1>
+
+<p><a href='Architecture tradeoff analysis.html'><span id="nextlink">Architecture tradeoff analysis</span></a>
+<a href='Logical architecture.html'><span id="prevlink">Logical architecture</span></a></p>
+
+<h2 id="securitycontextdiagram">Security Context Diagram</h2>
+
+<p><img id="securitycontextdiagram" src="images/Security-Context-Diagram.png" alt="Security Context Diagram" title="" /></p>
+
+<h2 id="logical">Logical</h2>
+
+<h3 id="clientauthenticationandauthorization-pre-authenticationconfiguration">Client Authentication and Authorization - Pre-authentication configuration</h3>
+
+<p><img id="clientauthenticationandauthorization-pre-authenticationconfiguration" src="images/Client-Authentication-and-Authorization-Application-auth.png" alt="Client Authentication and Authorization - Pre-authentication configuration" title="" /></p>
+
+<h3 id="clientauthenticationandauthorization-jaasauthenticationconfiguration">Client Authentication and Authorization - JAAS Authentication configuration</h3>
+
+<p><img id="clientauthenticationandauthorization-pre-authenticationconfiguration" src="images/Client-Authentication-and-Authorization-Web-auth.png" alt="Client Authentication and Authorization -  Pre-authentication configuration" title="" /></p>
+
+<h3 id="applicationsecurity">Application Security</h3>
+
+<p>Depending on the configuration, either the Web component or the Application component has the role of authenticating the client.  If the Web component provides the authentication service, then it can also perform in initial authorization.  Regardless of the Web component performing authorization, the Application component performs authorization.</p>
+
+<h4 id="authentication">Authentication</h4>
+
+<p>The Web component provides basic HTTP services as well as client authentication.  A client must first pass through this component and depending on configuration, authenticate in order for their credentials to be passed on.  The application server component accepts the credentials from the Web component and uses them to set the client identity in the system.  A de-authenticated user has an empty set of credentials and is stopped by the application server component when client identity is required.</p>
+
+<p>If the configuration has the application component authenticating, then the client is passed through the Web component de-authentication in order for the application component to fulfill this task.  Once the application component has successfully authenticated the client, their credentials are set and can move on to the authorization step.</p>
+
+<h4 id="authorization">Authorization</h4>
+
+<p>The Web component provides the ability to authorize client access to the system via Active Directory id or membership in an LDAP group providing the system is configured to authenticate the client.</p>
+
+<p>The application server component enforces client authorization to the system as set by the root organization coordinator.  An authenticated client that does not have system authorization is redirected to a page enabling them to request system access from the root organization coordinator.</p>
+
+<h3 id="oauthsecurity">OAuth Security</h3>
+
+<p>The Eureka <a href="http://oauth.net/">OAuth</a> Provider stores all current Consumer Keys and Access Tokens for OAuth requests made within Eureka.  This OAuth Provider secures both the OpenSocial container as well as the REST endpoints within Eureka.</p>
+
+<h4 id="oauthproviderresponsibilities">OAuth Provider Responsibilities</h4>
+
+<ul>
+<li>Maintains a store of Consumer Keys - the provider maintains the list of keys that match up with registered applications within the container.</li>
+<li>Authorizes <a href="http://oauth.net/core/1.0/#auth_step1">request tokens</a> from Consumers wishing to access protected content.</li>
+<li>Maintains active <a href="http://oauth.net/core/1.0/#auth_step3">access tokens</a> for successfully authorized OAuth requests used to verify additional requests from that consumer to that particular resource.</li>
+<li>The following diagram describes the flow of OAuth authorization (<a href="http://oauth.googlecode.com/svn/spec/core/1.0/diagram.png">diagram</a>)</li>
+</ul>
+
+<p><img id="oauthauthenticationflowdiagram" src="images/OAuth-Authentication-Flow-Diagram.png" alt="OAuth Authentication Flow Diagram" title="" /></p>
+
+<h3 id="opensocialcontainer">OpenSocial Container</h3>
+
+<h4 id="opensocialcontainerandgadgetrendererdiagram">OpenSocial Container and Gadget Renderer Diagram</h4>
+
+<p><img id="" src="images/OpenSocial-Container-and-Gadget-Security-Diagram.png" alt="" title="" /></p>
+
+<p>OpenSocial Gadget Rendering is handled by <a href="http://shindig.apache.org/" title="Apache Shindig 1.1">Apache Shindig 1.1</a>. For the purposes of this article, container refers to Eureka Streams.</p>
+
+<h4 id="gadgetrenderingsecurity">Gadget Rendering Security</h4>
+
+<ul>
+<li>Gadgets consist of an XML definition that contains the HTML and JavaScript code that runs the application.  An <a href="http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/Gadgets-API-Specification.html">OpenSocial Compliant Gadget</a> adheres to the OpenSocial Specification for gadgets and can be successfully executed within an <a href="http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/OpenSocial-Specification.html">OpenSocial container</a>.</li>
+<li>The gadget container is responsible for identifying the XML gadget definition and presenting the parsed content to the browser for rendering.</li>
+<li>To obtain the parsed gadget definition content for rendering, the container contacts the gadget renderer.  For Eureka, the gadget renderer is based on the Apache Shindig Framework version 1.1 - which implements the OpenSocial 0.9 specification at the time of this wiki page.</li>
+<li>The gadget container creates a unique token for each gadget that is rendered and passes that token to the gadget renderer.  From then on, any request made by the gadget to the gadget container includes that secure token for validation.  This is one basic level of trust that the container establishes with the gadget.</li>
+</ul>
+
+<h4 id="gadgetsecuritywithiframes">Gadget Security with IFrames</h4>
+
+<ul>
+<li>Currently, Eureka renders gadgets within IFrames to take advantage of built in browser security for frames.</li>
+<li>In order to take full advantage of the security benefits of IFrames for Gadget Security, the Gadget Rendering needs to be hosted on a different domain than the container.  This ensures that the gadgets cannot access the container through JavaScript code.  For Eureka, Gadget Rendering still occurs on the same server but is separated onto a different port.  The separate port is sufficient for the browser to distinguish the container from the gadget and enforce the <a href="http://en.wikipedia.org/wiki/Same_origin_policy">Same Origin Policy</a>.</li>
+<li>The Same Origin Policy ensures that scripts running on the same domain have access to each others scope, and scripts running on different domains are isolated from one another.  This is the fundamental concept in securing Eureka gadgets using IFrame rendering.  This is the same approach the iGoogle.com uses to secure its gadgets.</li>
+<li>Since gadgets still need to communicate with the container in order to send messages back to the server and authenticate with the user, a technique for communications is necessary.</li>
+<li>Shindig provides a communications framework for gadgets using RPC methods that are registered on the container and called through IFrame relays.  These relays provide a secure channel for gadgets to pass messages to the container where the container cannot access the gadget and the gadget cannot access the container.</li>
+</ul>
+
+<h4 id="opensocialapisandoauth">OpenSocial APIs and OAuth</h4>
+
+<ul>
+<li><a href="http://wiki.opensocial.org/index.php?title=JavaScript_API_Reference">OpenSocial APIs</a> are the way that a gadget gains access to the social data of the container.  Shindig provides methods to access the OpenSocial data of the container.  This content is secured using the secure token described above as well as <a href="http://oauth.net">OAuth</a>.  The secure token ensures that the originator of the request is a gadget rendered within the container, and OAuth ensures that the calling user has provided the necessary credentials to access the requested OpenSocial data of the container.  This <a href="http://hueniverse.com/2007/10/beginners-guide-to-oauth-part-ii-protocol-workflow/">example</a> provides an example of how the OAuth protocol works.</li>
+<li>OAuth has two forms: &#8220;two legged&#8221; and &#8220;three legged&#8221;.  In both forms, the application making a request for content needs to be authorized by the OAuth provider before a request is completed.</li>
+<li>Three legged OAuth - This was the first OAuth model.  A requesting application (OAuth Consumer) sends an OAuth request to another application&#8217;s OAuth provider identifying itself with an OAuth Consumer key.  The Provider validates that key and returns a request token along with a URL to redirect the user to where they can supply their credentials and provide the Consumer with access to data.  Once the credentials are verified, the Provider responds with an access token to the Consumer and is able to access the content on the other system.</li>
+<li>Two legged OAuth - This is a variant in OAuth to simplify a sometimes complicated user experience.  This process works the same, but skips the step for prompting the user for credentials and access options.  In this scenario, the Provider and Consumer have a predefined trusted relationship with a shared key.  Two legged OAuth is commonly used when a gadget needs to &#8220;Phone Home&#8221; for some piece of information.  Since the home server doesn&#8217;t contain any pre-existing user data, there is nothing that the user needs to authorize.  This is also referred to as a Signed Fetch.  This can also be used when a gadget contacts its home server and the home server needs additional information about user that is included in the request.  This scenario is referred to as a &#8220;Reverse Phone Home&#8221; and the home server in this case wouldn&#8217;t need the user to authorize its access to the OpenSocial content since the gadget has already been granted that access.  The home server can use two legged OAuth in this case.</li>
+<li>Eureka supports both two and three legged OAuth for access to OpenSocial API&#8217;s as well as REST based Eureka Endpoints.  Users is not prompted to authorize access for gadgets to OpenSocial content because those users are already logged into Eureka and are under the control of the Eureka access controls.  The container&#8217;s authentication mechanism provides the appropriate credentials to allow the gadget access to the OpenSocial content provided the correct OAuth handshake is completed successfully.</li>
+<li>Only those Consumers that have been granted a Consumer key and that key is registered in Eureka&#8217;s OAuth Provider key store has access to OpenSocial data within Eureka.  Requests made to OpenSocial API&#8217;s must use OAuth, all other requests are rejected with an HTTP 401 error message.</li>
+</ul>
+
+<h4 id="datasecurity">Data Security</h4>
+
+<p>The database component, search component, and cache component are responsible for persisting data within the Eureka Streams system.</p>
+
+<p><strong>Database Component</strong></p>
+
+<p>The database component is implemented with a relational database management systems that provides its own authentication and authorization mechanism.  The data is stored in native format and is not encrypted.  Connection to this component is made by the application component via a JDBC driver.</p>
+
+<p><strong>Search Component</strong></p>
+
+<p>The search component is implemented via the Lucene search engine.  The search indexes are persisted in files located in the file system.  These files are protected by file permissions within the operating system.   The data is stored in the native Lucene search engine format.</p>
+
+<p><strong>Cache Component</strong></p>
+
+<p>The cache component is implemented via the memcached system.  The system persists the data to volatile memory space supported by the operating system.  The data persisted is not encrypted.  The cache is   accessed via a network socket that does not provide authentication or authorization.  All components that interact with the cache system exist within the trusted private VLAN and are trusted systems, thus does not require authentication or data encryption.</p>
+
+<h2 id="execution">Execution</h2>
+
+<h2 id="systemmanagement">System Management</h2>
+
+<p>The component systems for Eureka Streams are virtual machines executing within a virtual farm composed of VMWare ESX physical hosts.  Management of the virtual machines is done via client software making a network connection to the physical server hyper-visor software.  System administration is accomplished by making a client software connection, opening up a console window to the virtual machine, and using the terminal session to administer the server or make a connection to other servers if needed.</p>
+
+<h2 id="networking">Networking</h2>
+
+<h3 id="nodetcpstack">Node TCP Stack</h3>
+
+<p>Each node within the system deployment has an operating system utility enabled named iptables.  This utility is a TCP packet filter that enables the configuration of all network traffic into and out of the node.</p>
+
+<p>Each node is configured implicitly to deny incoming network traffic with explicit allows in place for ports from hosts that are allowed to communicate.  For example, the cache nodes deny all incoming network traffic except for Web nodes trying to reach port 11211.  The cache nodes deny all outbound network traffic originated from the node itself.  The configuration allows for state-full connections so that this node can communicate back out to hosts that open a connection with it.</p>
+
+<h3 id="firewallsubnetlan">Firewall/Subnet LAN</h3>
+
+<p>The component systems that make up Eureka Streams are protected behind the firewall component and exist in a standalone switch on a subnet LAN.  The component systems can communicate with each other as they exist on the same subnet LAN and their network traffic does not leave the standalone switch.</p>
+
+<p>The firewall component is configured to implicitly deny all inbound and outbound traffic.  Specific network ports and addresses that are allowed in and out are explicitly stated in the firewall rules.</p>
+
+<p>The network components all reside within the same data center, thus keep within the same local LAN and not travel over a WAN.</p>
+
+<h3 id="securesocketlayerssl">Secure Socket Layer (SSL)</h3>
+
+<p>Interaction with the Web node from the client is done via transport layer security using the security socket layer (SSL) protocol version 3.0.  The load balancing component provides the SSL hardware acceleration capability <a href="http://www.f5.com/products/big-ip/feature-modules/ssl-acceleration.html">F5 Big IP - SSL</a>.  Socket connections from the client to the load balancing component are secured via SSL.  Socket connections from the load balancing component to the firewall component and onto the Web Server component systems are not secured and travel unencrypted.  The connection path from load balancer to firewall to Web server are within the same data center, thus keep within the same local LAN and not travel over a WAN.</p>
+
+<p>Due to the fact that no out-of-subnet LAN connections can be made from node to node ensure that unencrypted data is not exposed to unintended destinations and save in data encryption costs that would normally be needed to ensure data security.</p>
+
+<h2 id="references">References</h2>
+
+<ol>
+    <li><a href="http://shindig.apache.org/">Apache Shindig 1.1</a></li>
+    <li><a href="http://en.wikipedia.org/wiki/Same_origin_policy">Same Origin Policy</a></li>
+    <li><a href="http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/OpenSocial-Specification.html#rfc.section.4.2.5">OpenSocial Spec v0.9 Fetching Content From Remote Server</a></li>
+    <li><a href="http://sites.google.com/site/oauthgoog/2leggedoauth/2opensocialrestapi">2-legged OAuth for the OpenSocial REST API</a></li>
+    <li><a href="http://wiki.opensocial.org/index.php?title=JavaScript_API_Reference">OpenSocial APIs</a></li>
+    <li><a href="http://hueniverse.com/2007/10/beginners-guide-to-oauth-part-ii-protocol-workflow/">Beginner&#8217;s Guide to OAuth Part II: Protocol Workflow</a></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#securitycontextdiagram">Security Context Diagram</a></li>
+<li><a href="#logical">Logical</a>
+<ul><li><a href="#clientauthenticationandauthorization-pre-authenticationconfiguration">Client Authentication and Authorization - Pre-authentication configuration</a></li>
+<li><a href="#clientauthenticationandauthorization-jaasauthenticationconfiguration">Client Authentication and Authorization - JAAS Authentication configuration</a></li>
+<li><a href="#applicationsecurity">Application Security</a>
+<ul><li><a href="#authentication">Authentication</a></li>
+<li><a href="#authorization">Authorization</a></li></ul></li>
+<li><a href="#oauthsecurity">OAuth Security</a>
+<ul><li><a href="#oauthproviderresponsibilities">OAuth Provider Responsibilities</a></li></ul></li>
+<li><a href="#opensocialcontainer">OpenSocial Container</a>
+<ul><li><a href="#opensocialcontainerandgadgetrendererdiagram">OpenSocial Container and Gadget Renderer Diagram</a></li>
+<li><a href="#gadgetrenderingsecurity">Gadget Rendering Security</a></li>
+<li><a href="#gadgetsecuritywithiframes">Gadget Security with IFrames</a></li>
+<li><a href="#opensocialapisandoauth">OpenSocial APIs and OAuth</a></li>
+<li><a href="#datasecurity">Data Security</a></li></ul></li></ul></li>
+<li><a href="#execution">Execution</a></li>
+<li><a href="#systemmanagement">System Management</a></li>
+<li><a href="#networking">Networking</a>
+<ul><li><a href="#nodetcpstack">Node TCP Stack</a></li>
+<li><a href="#firewallsubnetlan">Firewall/Subnet LAN</a></li>
+<li><a href="#securesocketlayerssl">Secure Socket Layer (SSL)</a></li></ul></li>
+<li><a href="#references">References</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

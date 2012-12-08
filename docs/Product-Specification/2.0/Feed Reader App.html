@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Feed Reader App</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Start%20Page%20Apps.html">Start Page Apps</a> &gt; Feed Reader App</p>
+
+<h1 class="title">Feed Reader App</h1>
+
+<p><a href='Suggestions App.html'><span id="nextlink">Suggestions App</span></a>
+<a href='Start Page Apps.html'><span id="prevlink">Start Page Apps</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The feed reader app allows the user to view a particular feed</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The app must display the contents off a given RSS/ATOM source </li>
+<li>The app must display popular subscriptions across the system </li>
+<li>The app must display popular subscriptions from the user&#8217;s following list </li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<h3 id="configurefeedreaderapp">Configure Feed Reader App</h3>
+
+<p><img id="" src="images/PS_F05_feedGadgetConfig_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Empty App.</li>
+</ol>
+
+<p><img id="" src="images/PS_F05_feedGadgetConfig_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>On mouse over, tools appear to the Knowledge Worker. The Knowledge Worker selects the &#8216;gear&#8217; icon to configure the Feed Reader App.</li>
+</ol>
+
+<p><img id="" src="images/PS_F05_feedGadgetConfig_fig03.png" alt="" title="" /></p>
+
+<ol>
+<li>The Knowledge Worker enters the RSS or Atom feed URL for here.</li>
+<li>Once the URL is entered, the Knowledge Worker selects Save to save off configuration settings and begin reading from the specified feed.</li>
+<li>The Knowledge Worker may select Cancel to returen to the empty App.</li>
+</ol>
+
+<h3 id="appview">App View</h3>
+
+<p><img id="" src="images/PS_F05_feedGadgetDefaultView.png" alt="" title="" /></p>
+
+<ol>
+<li>Title of feed.</li>
+<li>Title of the first feed/article.  Links to the full article on the source site in a new browser window.</li>
+<li>Links to the full article on the source site in a new browser window.</li>
+<li>Banner image from feed (if available).</li>
+<li>Collaspable section featuring the seven most recent feeds from the source site.</li>
+<li>Feed from the source site.  Clicking will open the feed app in canvas mode with this article featured in the right-hand pane.</li>
+<li>Opens canvas view.</li>
+</ol>
+
+<h3 id="canvasview">Canvas View</h3>
+
+<p><img id="" src="images/PS_F05_feedGadgetCanvasView.png" alt="" title="" /></p>
+
+<ol>
+<li>Currently selected feed.</li>
+<li>Feed title, links to full article on the source site in a new browser window.</li>
+<li>Feed summary.</li>
+<li>Link to rate or comment on article</li>
+<li>Click to share this feed on the Knowledge Workers profile.</li>
+<li>Click to open a new window showing all feeds from the source site.</li>
+<li>Click to close the canvas view and return to the default feed app view.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<ol>
+<li><strong>Verify a Knowledge Worker can display the contents off a given RSS/ATOM source</strong>
+<ul><li>Verify the contents are displayed when the feed reader is configured to read from an RSS source</li>
+<li>Verify the contents are displayed when the feed reader is configured to read from an ATOM source</li>
+<li>Verify that no more than 8 entries are displayed from the app view</li>
+<li>Verify that the summary text from the first entry is displayed in &#8220;head line&#8221; form at the top of the app view</li>
+<li>Verify that a link to the full article is visible for the first entry</li>
+<li>Verify that clicking on entries 2-8 in the app view will open the app in the canvas view</li>
+<li>Verify that clicking on the &#8220;See more&#8221; link will open the app in canvas view</li>
+<li>Verify the default for canvas view, when no particular article was selected, is to display the first article on the right</li>
+<li>Verify clicking on one of the entry headings displays that entry&#8217;s article on the right side of the canvas view</li>
+<li>Verify clicking &#8220;View All&#8221; link in canvas view opens the feed in a new window</li></ul></li>
+<li><strong>Verify a Knowledge Worker can share a feed entry to his employee stream from a feed app</strong>
+<ul><li>Verify that a feed entry can be shared to an employee stream from a feed app</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a>
+<ul><li><a href="#configurefeedreaderapp">Configure Feed Reader App</a></li>
+<li><a href="#appview">App View</a></li>
+<li><a href="#canvasview">Canvas View</a></li></ul></li>
+<li><a href="#testplans">Test plans</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 2.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

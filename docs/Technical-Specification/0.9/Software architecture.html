@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Software architecture</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; Software architecture</p>
+
+<h1 class="title">Software architecture</h1>
+
+<p><a href='Persistence framework.html'><span id="nextlink">Persistence framework</span></a>
+<a href='Architecture tradeoff analysis.html'><span id="prevlink">Architecture tradeoff analysis</span></a></p>
+
+<p><img id="" src="images/Eureka_Software_Architecture_Component_Diagram.jpg" alt="" title="" /></p>
+
+<h2><a href="Persistence%20framework.html">Persistence framework</a></h2>
+
+<p>The Persistence Framework provides controlled access to the underlying storage mechanisms within Eureka Streams. These storage mechanisms include DB storage, Cache, and Search.</p>
+
+<h2><a href="Task%20framework.html">Task framework</a></h2>
+
+<p>The Task Framework contains the mechanisms that allow an Action to submit a request for another Action to be executed in a separate thread. This allows Eureka to offload heavy load processes to a separate server where the load can be distributed and removed from the web servers that are responding to user requests.</p>
+
+<h2><a href="OpenSocial%20framework.html">OpenSocial framework</a></h2>
+
+<p>The OpenSocial Framework within Eureka Streams covers two particular aspects, access to the OpenSocial API as well as the OpenSocial Gadget Container. The implementation of the OpenSocial specification is covered with the open source <a href="http://shindig.apache.org">Apache Shindig</a> project in Java. Eureka Streams integrates with Shindig in 2 different places: JavaScript container file, and Java interface implementations. These two integration points enable Eureka Streams to be an OpenSocial 0.9 Container.</p>
+
+<h2><a href="User%20interface%20framework.html">User interface framework</a></h2>
+
+<p>The design of the front end is simple, modular and loosely coupled. There are two layers that exist in the front end, connected by the <strong>Event Bus</strong>. The top layer that communicates directly with the servers are the <strong>Client Models</strong> that communicate through the <strong>Action Processor</strong>. The bottom layers are the collection of views that draw the screen. Each view requests data directly from a Client Model, and is notified via the Event Bus when the data has been returned. With that data the view then renders the screen through the use of GWT widgets. All views extend an already existing GWT widget. There is a master view that is the top level view for all others. It contains a content view, as well as views for the header and footer. The content view is changed when the URL is updated via <strong>History Management</strong>, also through the <strong>Event Bus</strong>. This design follows the MVP pattern, with the Event Bus representing a common and generic Controller.</p>
+
+<h2><a href="Action%20framework.html">Action framework</a></h2>
+
+<p>This design describes the Action Framework within Eureka Streams. The Action Framework is the logical layer that contains the business logic for the system. This layer also controls the transactions to ensure ACID access to the underlying data within Eureka. Currently this design is broken into two parts, the Service and Async sides.</p>
+
+<h2><a href="Notification%20framework.html">Notification framework</a></h2>
+
+<p>Notifications are sent by calling an async action whenever an &#8220;event&#8221; occurs, typically done inside another action such as PostActivityComment. A single system event may require multiple notifications to be sent, and the flavors required may depend on rules or dynamic runtime conditions. (For example, commenting on an activity sends different notifications to the stream owner, the author of the activity, and any other people who commented, but should not notify the person making the comment.) To handle this, Translators are defined for each event type and are responsible for generating the appropriate list of notifications for that particular event. These are wired up by Spring. These translators choose from the enumeration NotificationType when determining which notifications to generate. Notifications themselves are transport- and medium-agnostic - they only contain the data itself. Notifiers are responsible for sending a notification on a specific medium, such as email. One or more Notifiers are defined in a Spring configuration file and are responsible for sending notifications for each NotificationType that a Translator returns.</p>
+
+<h2><a href="Resource%20framework.html">Resource framework</a></h2>
+
+<p>Eureka Streams exposes certain information through <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">REST</a> Resources. The REST resources support gadgets as well as the UI when calls cannot be made through GWT&#8217;s RPC mechanism. Eureka Streams uses the <a href="http://www.restlet.org/">RESTlet</a> framework for creating REST resources. RESTlet provides a way to wire up implementations for REST endpoints within Spring along with configuration of the resource url&#8217;s.</p>
+
+<h2><a href="Stream%20plugin%20framework.html">Stream plugin framework</a></h2>
+
+<p>When a user subscribes to an internet feed such as flickr, google news reader, YouTube, del.icio.us, or twitter, Eureka polls these feeds for content and inserts this content into their Activity Feed. The following is the design surrounding this.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="Persistence%20framework.html">Persistence framework</a></li>
+<li><a href="Task%20framework.html">Task framework</a></li>
+<li><a href="OpenSocial%20framework.html">OpenSocial framework</a></li>
+<li><a href="User%20interface%20framework.html">User interface framework</a></li>
+<li><a href="Action%20framework.html">Action framework</a></li>
+<li><a href="Notification%20framework.html">Notification framework</a></li>
+<li><a href="Resource%20framework.html">Resource framework</a></li>
+<li><a href="Stream%20plugin%20framework.html">Stream plugin framework</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 0.9</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../1.1/Technical%20Specification.html">1.1</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

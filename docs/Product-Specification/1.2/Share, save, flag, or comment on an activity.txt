@@ -1,0 +1,115 @@
+## Overview
+Knowledge workers can share activity between employee and group streams, save favorite activity, flag activity as inappropriate or add comments to activities.
+## Conditions of satisfaction
+1. The knowledge worker must be able to share an activity to a colleague, public group, or private group he is a member of.
+2. The knowledge worker must not be able to share activity posted to a private group.
+3. The knowledge worker must be able to attach a comment to an activity he is sharing.
+4. The knowledge worker must be able to save and un-save an activity.
+5. The knowledge worker must be able to comment on an activity when he is not restricted by stream moderation.
+6. The knowledge worker must be able to delete a comment he has posted.
+7. The comment must be restricted to 250 characters with visual feedback when the limit has been reached.
+8. The knowledge worker must be able to flag an activity as inappropriate.
+9. The organization coordinator must be able to delete any comment posted to a stream associated to his organization or sub-organization.
+10. The group coordinator must be able to delete any comment posted to his group stream.
+## User experience
+
+### Comment on an activity
+
+![](images/PS_F13_sharesaveflag_CommentOnActivity_fig01.png)
+
+1. A knowledge worker can comment on an activity by hovering over an activity and clicking on the comment link.
+
+![](images/PS_F13_sharesaveflag_CommentOnActivity_fig02.png)
+
+1. Avatar of the knowledge worker posting the comment.
+2. Content warning message (configured in system settings).
+3. Remaining character count. When the character count is less than 0, the text color changes to red and appears as a negative number.
+4. The post button is only active when the remaining character count is 0 or greater.
+
+![](images/PS_F13_sharesaveflag_CommentOnActivity_fig03.png)
+
+1. Minimized state of post box, clicking in the box expands the box to a editable text area.
+
+### Share an activity
+
+![](images/PS_F13_sharesaveflag_ShareActivity_fig01.png)
+
+1. A knowledge worker can share an activity by hovering over an activity and clicking on the share link.  Share option is not available for activities posted in a private group.
+
+![](images/PS_F13_sharesaveflag_ShareActivity_fig02.png)
+
+1. A knowledge worker can share an activity to their own stream or to another individual or group stream.  If posting is turned off, the individual or group should not be displayed in the autocomplete.
+2. Activity being shared.
+3. Input box to enter a comment.
+4. Remaining characters
+5. The share button is only active when the remaining character count is less than 250 or 0 or greater.
+
+![](images/PS_F13_sharesaveflag_ShareActivity_fig03.png)
+
+1. Name of the knowledge worker sharing the activity and the stream it is being shared to.
+2. Name of the knowledge worker that authored the activity.
+3. Comment from the knowledge worker sharing the activity.
+
+### Flag an activity
+
+![](images/PS_F13_sharesaveflag_FlagActivity_fig01.png)
+
+1. A knowledge worker can flag an activity by hovering over an activity and clicking on the flag link. When the knowledge worker clicks the flag link, a pop-up window will be displayed asking them: "Flagged activities will be sent to the organization coordinator for review.  Are you sure you want to flag this activity as inappropriate?" If the knowledge worker clicks yes the activity remains on the page.  Feedback is displayed at the top of the page with a close option: "Activity has been flagged".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.   The actions described in the [View and manage an organization profile][] Flagged activities section and [Manage and receive notifications][] UX designs are performed.
+
+### Save an activity
+
+![](images/PS_F13_sharesaveflag_SaveActivity_fig01.png)
+
+1. A knowledge worker can save an activity by hovering over an activity and clicking on save link.
+
+![](images/PS_F13_sharesaveflag_SaveActivity_fig02.png)
+
+1. When an activity is saved the save link changes to "Unsave" allowing the knowledge worker to remove the activity from their saved items.
+
+## Test plans
+### Knowledge worker
+1. **Action: Share activities**
+    * Verify an activity can be shared in the following cases:
+             * colleague to colleague
+             * colleague to public group
+             * colleague to private group where knowledge worker is a member
+             * public group to public group
+             * public group to private group where knowledge worker is a member
+             * public group to colleague
+2. **Action: Attempt to share activity within a private group**
+    * Verify share link is not provided for an activity with comments
+    * Verify share link is not provided for an activity without comments
+3. **Action: Attach comment when sharing an activity**
+    * Verify comments can be added when sharing activities
+    * Verify character count is limited to 250 characters
+    * Verify visual notification indicating character count
+4. **Action: Save and un-save an activity**
+    * Verify activities can be saved
+    * Verify activities can be un-saved
+    * Verify that saved activity appears in the Saved items stream
+5. **Action: Comment on activity (assuming commenting is enabled)**
+    * Verify a comment can be posted against any activity
+6. **Action: Delete a comment**
+    * Verify a comment can be deleted only by the knowledge worker it was posted by
+    * Verify a delete confirmation is presented
+    * Verify the delete confirmation must be acknowledged before the delete is processed
+7. **Action: Restrict character limits for commenting on activity**
+    * Verify commenting is limited to 250 characters
+    * Verify visual notification indicating character count
+8. **Action: Flag an activity as inappropriate**
+    * Verify the ability to flag an activity as inappropriate
+### Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Delete Comments**
+    * Verify a Group Coordinator is able to delete any comments in the activity stream of his group
+### Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+1. **Action: Delete Comments**
+    * Verify an Organization Coordinator is able to delete any comments in the activity stream of his organization or sub-organization
+### Root Org Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Execute same tests as Organization Coordinator**
+    * Verify tests executed successfully

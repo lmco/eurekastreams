@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Use Eureka Connect</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Use Eureka Connect</p>
+
+<h1 class="title">Use Eureka Connect</h1>
+
+<p><a href='Start Page Apps.html'><span id="nextlink">Start Page Apps</span></a>
+<a href='Discover a Stream.html'><span id="prevlink">Discover a Stream</span></a></p>
+
+<p>﻿##Overview
+Owners of sites outside of Eureka are able to integrate Eureka features into
+their websites using Eureka Connect. Knowledge workers are then able to access
+Eureka features without visiting Eureka and never leaving the site. Eureka Connect is made 
+up of the following widgets: </p>
+
+<ol>
+<li>The profile badge widget which allows a resource owner to showcase the
+Eureka avatar, display name, business unit, and title of any user via NTID.</li>
+<li>The like/share widget which allows a resource owner to allow
+knowledge workers to like or share any given resource.</li>
+<li>The stream widget which allows a resource owner to embed a stream
+into their website</li>
+<li>The comment widget which is a specialized stream widget that aggregates
+comments and share about a particular resource and allows for knowledge workers to add 
+comments to the resource.</li>
+</ol>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<h3 id="commentwidget">Comment widget</h3>
+
+<ol>
+<li>The knowledge worker must be able to leave a comment on a resource outside Eureka and 
+allow for that comment to be posted on his/her profile.</li>
+<li>The knowledge worker must be able to see other the shared activity of the link and the 
+comments associated with it on the external site</li>
+</ol>
+
+<h3 id="likesharewidget">Like/share widget</h3>
+
+<ol>
+<li>The knowledge worker must be able to like a resource outside Eureka via a widget the 
+resource owner can implement</li>
+<li>The knowledge worker must be able to see the other users who liked the link</li>
+<li>The knowledge worker must be able to share a resource outside Eureka via a widget the 
+resource owner can implement</li>
+<li>The knowledge worker must be able to see the other users who shared the link</li>
+<li>The resource owner must be able to configure whether or not Like is enabled in the 
+Like/Share widget</li>
+<li>The resource owner must be able to configure whether or not Share is enabled in the 
+Like/Share widget</li>
+</ol>
+
+<h3 id="streamwidget">Stream widget</h3>
+
+<ol>
+<li>The knowledge worker must be able to see an embedded stream outside Eureka</li>
+</ol>
+
+<h3 id="profilewidget">Profile widget</h3>
+
+<ol>
+<li>The knowledge worker must be able to see another knowledge worker&#8217;s Eureka
+avatar, business unit, and title via a widget the resource owner can
+implement.</li>
+<li>The knowledge worker must be able to follow another knowledge worker via a widget the 
+resource owner can implement</li>
+<li>The knowledge worker must be able to view the followers count of another knowledge 
+worker via a widget the resource owner can implement.</li>
+<li>The resource owner must be able to configure the image for the Follow
+widget and the user being followed.</li>
+</ol>
+
+<h3 id="general">General</h3>
+
+<ol>
+<li>The resource owner must be able to specify CSS to customize any of the
+widgets</li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="defaultstateofwidgets">Default State of Widgets</h3>
+
+<p><img id="" src="images/connect_blank.png" alt="" title="" /></p>
+
+<ol>
+<li>The profile badge widget shows the Eureka avatar, Eureka name with link to profile, title 
+from Eureka and Organization from LDAP. If the user is not in Eureka the default Avatar is shown, along with a non-linkable name from LDAP, and title and org from LDAP as well.</li>
+<li>The like part of the like/share widget. More details below.</li>
+<li>The share part of the like/share widget. More details below.</li>
+<li>The Comment widget. More details below.</li>
+</ol>
+
+<h3 id="thecommentwidget">The Comment Widget</h3>
+
+<p><img id="" src="images/connect_post_selected.png" alt="" title="" /></p>
+
+<ol>
+<li>When the user selects the Leave a Comment box the box expands to allow them to type in their comment. This behaves similarly to Eureka&#8217;s post box, with TOS message and character count down</li>
+<li>The Post to Eureka checkbox allows the user to have their comment automatically posted into their stream on Eureka. It is defaulted to the checked position. If a non-Eureka user is posting a comment this checkbox does not appear, and the avatar is the default avatar.</li>
+</ol>
+
+<p><img id="" src="images/connect_post_posted.png" alt="" title="" /></p>
+
+<ol>
+<li>Once the post button is hit the comment shows up in an embedded stream below. The same options available in Eureka are available here, including sorting and searching. The stream behaves identically to Eureka, allowing users to like, comment on, share, flag, and delete (if allowed) activity. It also has a view more button that functions identically to Eureka by showing the next ten `comments. The sorting, searching, and RSS bar can be turned off by the owner of the widget.</li>
+</ol>
+
+<p><img id="" src="images/connect_in_eureka.png" alt="" title="" /></p>
+
+<p>If the user leaves the Post to Eureka checkbox checked, the activity will show up on their stream in Eureka. If the user deletes the activity on his/her profile the activity IS NOT deleted on the original resource. If the user deletes the activity from the original resource it IS deleted from his/her profile.</p>
+
+<ol>
+<li>The first link is to the article itself. The title of the link is configurable by the owner of the widget. </li>
+<li>The second link is to the homepage the article is from. This is optional and configurable by the owner of the widget. If not specified the activity should leave this part off and end with a link back to the source link.</li>
+</ol>
+
+<p><img id="" src="images/connect_comment_full.png" alt="" title="" /></p>
+
+<ol>
+<li>The comment widget also shows all shares across Eureka of the resource the
+widget is configured for. The activity mentions the stream it was shared to
+with a link to the stream within Eureka. All comments and likes on this
+activity are synced across both the widget and Eureka.</li>
+<li>The comment widget allows for non-Eureka users to post. These posts are not
+visible in Eureka but show up in the widget with a default avatar and the
+users name from LDAP.</li>
+<li>Regular posts that have been posted back to Eureka will sync all likes and
+comments between the widget and Eureka.</li>
+</ol>
+
+<h3 id="thelikesharewidget">The Like/Share Widget</h3>
+
+<p><img id="" src="images/connect_like_share_widget.png" alt="" title="" /></p>
+
+<ol>
+<li>The badge shows the number of people who have liked or shared the resource.
+Users who have already liked a resource see &#8220;Unlike&#8221;</li>
+<li>Hovering over a badge shows a popup with up to 4 users who have liked or
+shared the resource. </li>
+<li>If more than 4 users have liked or shared the resource, a view all button
+allows the user to see all the users who have liked or shared it.</li>
+</ol>
+
+<p><img id="" src="images/connect_like_dialog.gif" alt="" title="" /></p>
+
+<p>When the user clicks the number of Likers or Sharers or the View All button,
+a new window opens up showing all the users who have liked or shared the item,
+depending on which number they&#8217;ve chosen to see.</p>
+
+<p><img id="" src="images/connect_share_dialog.png" alt="" title="" /></p>
+
+<p>When the user clicks the Share button on the Like/Share widget, a new window
+opens that allows them to post the link to Eureka on any stream. Behavior of
+this widget is identical to that on Eureka.</p>
+
+<h3 id="thestreamwidget">The Stream Widget</h3>
+
+<p><img id="" src="images/stream_widget_small.png" alt="" title="" /></p>
+
+<ol>
+<li>In addition to a full stream widget, which looks and functions exactly like a
+stream in Eureka, and allows for the full set of functionality (posting,
+sorting, searching, etc). A condensed version of the stream widget that only
+allows the user to view activity must also be made available. The number of
+activities to show is configurable. </li>
+</ol>
+
+<h3 id="theprofilewidget">The Profile Widget</h3>
+
+<p><img id="" src="images/connect_follow_before.png" alt="" title="" /></p>
+
+<ol>
+<li>The follow widget must display a configurable image, the followers count,
+and a follow button if the user has not followed already. Clicking the follow
+button will automatically follow the user the widget has been set up for.</li>
+</ol>
+
+<p><img id="" src="images/connect_follow_after.png" alt="" title="" /></p>
+
+<ol>
+<li>If the user is following the configured user already (or has just clicked the
+Follow button) the button displays &#8220;View Stream&#8221; and when clicked navigates to
+the Eureka stream for the configured user.</li>
+</ol>
+
+<h2 id="testplans">Test Plans</h2>
+
+<h3 id="testplans">Test plans</h3>
+
+<ol>
+<li><strong>Verify a knowledge worker can like a resource outside Eureka via a widget the content owner can
+implement</strong>
+<ul><li>Verify the Like/Share widget exists on a website external to Eureka Streams</li>
+<li>Verify the user has a Eureka account</li>
+<li>Verify that the user can like the current resource by clicking the Like button within the Like/Share widget</li>
+<li>Verify that, within the user&#8217;s Eureka activity stream profile, the like activity is displayed in the stream</li>
+<li>Verify that, within the external website&#8217;s resource activity stream, the like activity is displayed in the stream</li></ul></li>
+<li><strong>Verify a knowledge worker can see other users who liked the link</strong>
+<ul><li>Verify the user has a Eureka account</li>
+<li>Verify the Like/Share widget shows the number of users who liked the same link</li>
+<li>Verify, on mouse-over to the Like button, an image displays showing the avatars of all the other users that like the link</li>
+<li>Verify clicking on the avatar of one of the users that liked the link opens that user&#8217;s profile in a new window</li>
+<li>Verify, if there are more than 10 users that like the link, that a View</li>
+<li>All link appears in the mouse-over image
+<ul><li>Verify clicking on the View All link opens a modal window with a list of all the users that liked the link</li></ul></li></ul></li>
+<li><strong>Verify a knowledge worker can share a resource outside Eureka via a widget the content owner
+can implement</strong>
+<ul><li>Verify the Like/Share widget exists on a website external to Eureka Streams</li>
+<li>Verify the user has a Eureka account</li>
+<li>Verify the user can share the current resource by clicking the Share button within the Like/Share widget</li>
+<li>Verify that a modal window opens when the user clicks the Share button in the widget
+<ul><li>Verify the user can include a comment when sharing</li>
+<li>Verify the avatar (if available), description, and source of the resource is displayed in the modal</li>
+<li>Verify that including a comment is not mandatory to share the resource</li></ul></li>
+<li>Verify that within the user&#8217;s Eureka activity stream profile, the share activity is displayed in the stream</li>
+<li>Verify that within the external website&#8217;s resource activity stream, the share activity is displayed in the stream</li></ul></li>
+<li><strong>Verify a knowledge worker can see other users who shared the link</strong>
+<ul><li>Verify the user has a Eureka account</li>
+<li>Verify the Like/Share widget shows the number of users who shared the same link</li>
+<li>Verify, on mouse-over to the Share button, that an image displays showing the avatars of all the other users that shared the link</li>
+<li>Verify clicking on the avatar of one of the users that shared the link opens that user&#8217;s profile in a new window</li>
+<li>Verify, if there are more than 10 users that shared the link, that a</li>
+<li>View All link appears in the mouse-over image
+<ul><li>Verify clicking on the View All link opens a modal window with a list of all users that shared the link</li></ul></li></ul></li>
+<li><strong>Verify a Non-Eureka user does not have access to the Like/Share widget</strong>
+<ul><li>Verify that if a user without a Eureka account navigates to the same site, the Like/Share widget does not appear</li></ul></li>
+<li><strong>Verify a knowledge worker can leave a comment on a resource outside Eureka and ensure that
+comment is posted to the author&#8217;s profile</strong>
+<ul><li>Verify that an activity stream widget exists on a website external to Eureka Streams</li>
+<li>Verify that widget contains a comment field with the current user&#8217;s avatar displayed</li>
+<li>Verify that if the user does not have a Eureka account the default avatar is used</li>
+<li>Verify that when the user clicks in the comment field, the comment field box and the avatar both increase in size</li>
+<li>Verify that when the user clicks in the comment field, there is a checkbox labeled post to Eureka</li>
+<li>Verify that the checkbox is checked by default</li>
+<li>Verify that after posting the comment appears in the activity stream widget with the user&#8217;s avatar</li>
+<li>Verify that the same comment appears within the user&#8217;s activity profile within Eureka</li>
+<li>Verify that if the user unchecks the checkbox, the comment does NOT appear within the user&#8217;s activity profile within Eureka</li>
+<li>Verify that if the user does not have a Eureka account, the checkbox to post to Eureka does not appear</li>
+<li>Verify that if the user does not have a Eureka account, the comment does not appear in Eureka</li>
+<li>Verify that if the user does not have a Eureka account, the userís name does not appear as a hyperlink in the post</li></ul></li>
+<li><strong>Verify a knowledge worker can view other shared activity and comments associated with the
+resource on the external site</strong> 
+<ul><li>Verify that an activity stream widget exists on a website external to Eureka Streams</li>
+<li>Verify that every time the resource is shared, the share activity appears in the activity stream widget</li>
+<li>Verify that every time the resource is commented on from the external site, that comment appears in the activity stream widget</li></ul></li>
+<li><strong>Verify a knowledge worker can view an embedded stream outside of Eureka</strong>
+<ul><li>Verify an embedded stream widget exists on an external site.</li>
+<li>Verify that as activities appear within the stream in Eureka, the same activity appears in the embedded stream</li></ul></li>
+<li><strong>Verify a knowledge worker can Enable/Disable Like/Share within the Like/Share widget</strong>
+<ul><li>Verify the user has a Eureka account</li>
+<li>Verify that, if the implementer disables Like in the Like/Share widget, the Like button and count no longer appears, but the rest of the widget functions normally.</li>
+<li>Verify that, if the implementer disables Share in the Like/Share widget, the Share button and count no longer appear, but the rest of the widget functions normally.</li></ul></li>
+<li><strong>Verify a knowledge worker can Enable/Disable sorting and RSS on the activity stream widget</strong>
+<ul><li>Verify that the activity stream widget functions the same if the sorting and RSS options are enabled or disabled.</li>
+<li>Verify that if sorting and RSS options are enabled:
+<ul><li>the user can sort on Recent, Popular, and Active post</li>
+<li>the user can configure a feed reader to receive RSS updates from the activity stream</li></ul></li></ul></li>
+<li><strong>Verify a Eureka administrator can delete any message or url</strong>
+<ul><li>Verify a Eureka administrator is able to delete any message or url posted to an activity stream associated to his group</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a>
+<ul><li><a href="#commentwidget">Comment widget</a></li>
+<li><a href="#likesharewidget">Like/share widget</a></li>
+<li><a href="#streamwidget">Stream widget</a></li>
+<li><a href="#profilewidget">Profile widget</a></li>
+<li><a href="#general">General</a></li></ul></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#defaultstateofwidgets">Default State of Widgets</a></li>
+<li><a href="#thecommentwidget">The Comment Widget</a></li>
+<li><a href="#thelikesharewidget">The Like/Share Widget</a></li>
+<li><a href="#thestreamwidget">The Stream Widget</a></li>
+<li><a href="#theprofilewidget">The Profile Widget</a></li></ul></li>
+<li><a href="#testplans">Test Plans</a>
+<ul><li><a href="#testplans">Test plans</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.2/Product%20Specification.html">1.2</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Manage system settings</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Manage system settings</p>
+
+<h1 class="title">Manage system settings</h1>
+
+<p><a href='View and Search a Stream.html'><span id="nextlink">View and Search a Stream</span></a>
+<a href='Manage and receive notifications.html'><span id="prevlink">Manage and receive notifications</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Eureka administrator can manage system settings.  This 
+includes adding new users, 
+setting the content expiration length, and configuring a system label for the header/footers, a terms of service message, and stream plugin warning message.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of Satisfaction</h2>
+
+<h3 id="system">System</h3>
+
+<ol>
+<li>The Eureka administrator must be able to add colleagues as Eureka Administrators.</li>
+<li>The Eureka administrator must be able to control system access via a list of LDAP 
+groups or attributes.</li>
+<li>The Eureka administrator must be able to optionally associate a default tab or 
+theme from the gallery with any LDAP group or attribute.</li>
+<li>The Eureka administrator must have the option to send email invitations to 
+knowledge workers when their account is created.</li>
+<li>The system must periodically synchronize the access list.</li>
+<li>The Eureka administrator must be able to synchronize the access list on-demand.</li>
+<li>The Eureka administrator must have the option to configure a notification text 
+(limited to 250 characters, target link and whether of not it is high priority which is 
+sent to all users.</li>
+<li>The Eureka administrator must have the option to configure a system label displayed 
+in the header and footer.</li>
+<li>The Eureka administrator must have the option to configure a content warning 
+message displayed to a knowledge worker when posting an activity.</li>
+<li>The Eureka administrator must have the option to configure a stream plugin warning 
+message displayed to a knowledge worker when configuring a stream plugin for a stream.</li>
+<li>The Eureka administrator must have the option to configure a terms of service 
+message displayed at a configurable interval that must be confirmed by the knowledge worker.</li>
+<li>The Eureka administrator must be able to set the content expiration length between 
+1 and 365 days.</li>
+<li>The Eureka administrator must be able to configure the support stream.</li>
+<li>The Eureka administrator must have the option to require group creation approval.</li>
+</ol>
+
+<h3 id="plugins">Plugins</h3>
+
+<ol>
+<li>The Eureka administrator must be able to upload a plugin that adheres to the Google 
+gadget specification and eureka stream plugin feature.</li>
+<li>The Eureka administrator must be able to publish and categorize a stream plugin 
+referenced by a URL.</li>
+<li>The Eureka administrator must be able to remove a published stream plugin.</li>
+</ol>
+
+<h3 id="pendingitems">Pending Items</h3>
+
+<ol>
+<li>The Eureka administrator must be able to delete or allow an activity that has been flagged 
+as inappropriate.</li>
+<li>The Eureka administrator must be able to approve or deny pending group 
+creation requests.</li>
+</ol>
+
+<h2 id="userexperience">User Experience</h2>
+
+<h3 id="systemssettings">Systems Settings</h3>
+
+<p><img id="" src="images/PS_F19_systemSettings_Access.png" alt="" title="" /></p>
+
+<ol>
+<li>Eureka system administrators will be able to access the system settings via the Settings link in the header of their Eureka dashboard.</li>
+</ol>
+
+<p><img id="" src="images/PS_F19_systemSettings.png" alt="" title="" /></p>
+
+<ol>
+<li>Eureka administrators can be added by clicking on Add administrator. An employee lookup 
+modal pops up allowing the new Aaministrator to be picked.</li>
+<li>Clicking delete removes the administrator.</li>
+<li>Admins can select &#8220;Group Name&#8221; to enter an LDAP group name. The knowledge worker can select &#8220;Attribute&#8221; the message under the input box changes to: &#8220;Specify an LDAP attribute (in the format: attribute=value)&#8221;.</li>
+<li>Admins can optionally select a default tab from the gallery to appear for everyone within the access list&#8217;s start page.</li>
+<li>Admins can optionally select a default theme from the gallery to appear for everyone within the access list&#8217;s start page.</li>
+<li>Clicking the add button adds to the access list below.  When a user enters a group name or attribute and clicks add a processing animation appear while the system validates the group or attribute. If the group or attribute is not found an error message is shown at the top of the section.</li>
+<li>Hovering over the group or attribute displays a Delete link allowing the Eureka Administrator 
+to delete the item. When the delete icon is clicked, a pop-up window is displayed asking the user if they are sure that they want to remove the item. If they click yes the item is removed and the other items move up.</li>
+<li>The Eureka administrator has the option to send welcome emails to users when their accounts 
+are created.</li>
+<li>Refreshes the system with the current access lists. Feedback displays at the top of the page with a close option: &#8220;Access List Refresh is now processing&#8221;.  Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.   Access list refreshes and new users in the group or attribute are added to the database.</li>
+<li>Allows the admins to specify the notification to send to all users, including whether or not it&#8217;s high priority, the message and the target link. Links must start with http:// or https://</li>
+<li>Group Creation Approval allows the Eureka administrator to require approval of group requests before the group is automatically created. </li>
+<li>Site Labeling is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.</li>
+<li>Content Warning is disabled by default.  When enabled the text box is required and supports up to 250 alpha numeric characters.</li>
+<li>Plugin Configuration Warning is disabled by default.  When enabled the text box is required and the Plugin Configuration Warning rich text editor supports an infinite amount of characters.</li>
+<li>Terms of Service is disabled by default.  When enabled the text box and prompt interval are required.  Terms of Service rich text editor supports an infinite amount of characters.   Days field supports up to 5 numeric characters.</li>
+<li>The Eureka administrator can enter the name of the group stream they want to specify by 
+clicking in the input box. As they type matches to individual or group streams are displayed in a drop down 
+menu. Entering or selecting a valid stream name removes the input box and displays the name 
+of the stream. The Eureka administrator can remove the stream by clicking the &#8220;x&#8221; button 
+next to the stream name which will display an empty input box. If the Eureka administrator enters an invalid 
+stream name and tries to save the changes to the page a warning message will be displayed saying &#8220;The stream you entered could not be found&#8221;.  Field supports up to 50 characters (same length as group name in [View and manage a group profile][]</li>
+<li>Activity Expiration is disabled by default.  When enabled the text box is required, supports a number between 1 and 365.</li>
+<li>Saves the edits made to the form and returns the knowledge worker to the start page.  Feedback displays at the top of the page with a close option: &#8220;Settings saved&#8221;.  Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>Discards the changes made to the form and returns the Eureka administrator to the start 
+page.</li>
+</ol>
+
+<h3 id="pluginsystemsettings">Plugin System Settings</h3>
+
+<h4 id="viewexistingplugins">View Existing Plugins</h4>
+
+<p><img id="" src="images/PS_F19_systemSettings_Plugins_fig01.png" alt="" title="" /></p>
+
+<ol>
+<li>Allows the Eureka administrator to filter by Category.</li>
+<li>Hovering over the plugin icon or text displays the Delete link.Clicking the delete icon displays a pop-up window asking the administrator: &#8220;Are you sure you want to delete this plugin&#8221; if the administrator clicks &#8220;yes&#8221; the plugin is deleted and a warning message is displayed: &#8220;Stream plugin [insert name] has been deleted&#8221;. Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for implementation specifics.</li>
+<li>Allows the Eureka administrator to Add a new plugin</li>
+</ol>
+
+<h4 id="submitaplugin">Submit a Plugin</h4>
+
+<p><img id="" src="images/PS_F19_systemSettings_Plugins_fig02.png" alt="" title="" /></p>
+
+<ol>
+<li>Select a Category.</li>
+<li>Enter Plugin XML.</li>
+<li>Submits new plugin, returns user to the Plugin page and feedback displays at top of page with a close option: &#8220;Stream Plugin has been successfully added&#8221; Refer to the <a href="Action%20feedback.html">Action Feedback UI design pattern</a> for additional details.</li>
+<li>Cancels plugin submission and returns user to the Plugin page.</li>
+</ol>
+
+<h2 id="testplans">Test Plans</h2>
+
+<h3 id="system">System</h3>
+
+<ol>
+<li><strong>Verify the Eureka administrator can add colleagues as Eureka administrators</strong>
+<ul><li>Verify a Eureka administrator can be selected and added</li>
+<li>Verify a Eureka administrator can be deleted</li>
+<li>Verify an error message if no Eureka Administrators are selected</li></ul></li>
+<li><strong>Verify the Eureka administrator can control system access via a list of ldap groups or attributes</strong>
+<ul><li>Verify a Eureka administrator can add a Group Name (example: someaccountname = <name>)</li>
+<li>Verify a Eureka administrator can delete a Group Name</li>
+<li>Verify an error message is displayed if a blank or invalid Group Name is entered</li>
+<li>Verify a Eureka administrator can add an Attribute</li>
+<li>Verify a Eureka administrator can delete an Attribute</li>
+<li>Verify an error message is displayed if a blank or invalid Attribute is entered</li></ul></li>
+<li><strong>Verify the Eureka administrator can specify a default tab or theme from the gallery and associate it with any lDAP Group or Attribute</strong>
+<ul><li>Verify the ability to choose a tab and associate it with an LDAP Group</li>
+<li>Verify the ability to choose a theme and associate it with an LDAP Group</li>
+<li>Verify the ability to choose both a tab and theme and associate it with an LDAP Group</li>
+<li>Verify the ability to choose a tab and associate it with an Attribute</li>
+<li>Verify the ability to choose a theme and associate it with an Attribute</li>
+<li>Verify the ability to choose both a tab and a theme and associate it with an Attribute</li>
+<li>Verify the ability to not choose a tab and/or theme associate with an LDAP Group or an Attribute</li>
+<li>Verify this functionality applies only to users being entered into the database for the first time.</li>
+<li>Verify this functionality applies to an individual as well as large groups.</li></ul></li>
+<li><strong>Verify the Eureka administrator has the option to send email invitations to knowledge workers when their account is created</strong>
+<ul><li>Verify the ability to send email invitation to knowledge workers when their account is create</li>
+<li>Verify the ability to not send email invitations to knowledge workers when their account is create</li></ul></li>
+<li><strong>Verify the system periodically synchronize the access list</strong>
+<ul><li>Verify the access list is synchronized</li></ul></li>
+<li><strong>Verify the Eureka administrator has the ability to synchronize the access list on-demand</strong>
+<ul><li>Verify the access list is synchronized</li></ul></li>
+<li><strong>Verify the Eureka administrator can configure notification text</strong>
+<ul><li>Verify the ability to send a notification to all users, without being marked as high priority</li>
+<li>Verify the ability to send a high priority notification to all users</li>
+<li>Verify that notifications are limited to 250 characters.
+<ul><li>Verify that feedback is provided regarding the numbers of characters in the notification</li>
+<li>Verify a 250 character limit for notifications</li>
+<li>Verify the ability to include a notification destination</li></ul></li></ul></li>
+<li><strong>Verify the Eureka administrator can configure a system label displayed in the header and footer</strong>
+<ul><li>Verify the ability to enable or disable the system label displayed in the header and footer</li>
+<li>Verify when the option is enabled, a text input box displays, text is required and error handling is present if text is empty and the user attempts to submit</li>
+<li>Verify when the option is enabled and text is submitted, the text is displayed in the header and footer</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed in the header and footer when submitted.</li></ul></li>
+<li><strong>Verify the Eureka administrator can configure a content warning message displayed to a knowledge worker when posting an activity</strong>
+<ul><li>Verify the ability to enable or disable displaying a content warning message when posting activity</li>
+<li>Verify when the content warning message is enabled, a text input box displays, text is required and error handling is present if text is empty and the user attempts to submit</li>
+<li>Verify when the option is enabled and the text is submitted, the text is displayed below the activity posting text box and commenting text box</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed below the activity posting text box </li>
+<li>Verify when the option is disabled, there is no text displayed below the commenting text box</li></ul></li>
+<li><strong>Verify the Eureka administrator can configure a plugin warning message displayed to a knowledge worker when adding a plugin</strong>
+<ul><li>Verify the ability to enable or disable the plugin warning</li>
+<li>Verify that when the plugin warning is enabled a text input box displays, text is required and error handling is present if text is empty and the user attempts to submit</li>
+<li>Verify when the option is enabled and the text is submitted, the text is displayed in the Terms of Use for each plugin</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed in the Terms of Use for each plugin</li></ul></li>
+<li><strong>Verify the Eureka administrator can configure a terms of service message displayed at a configurable interval that must be confirmed by the knowledge worker</strong>
+<ul><li>Verify the ability to enable or disable the terms of service</li>
+<li>Verify that when the terms of service is enabled:
+<ul><li>A text input box displays
+<ul><li>There is an option to choose to display the terms of service at a specific interval</li></ul></li></ul></li>
+<li>Verify when the option is enabled and the text is submitted, the text is displayed when launching the site at the intervals selected</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, there is no text displayed in the terms of service when launching the site at the intervals selected</li></ul></li>
+<li><strong>Verify the Eureka administrator can set the content expiration length between 1 and 365 days</strong>
+<ul><li>Verify the ability to enable or disable the activity expiration</li>
+<li>Verify that when the activity expiration is enabled a text input box displays and represents the number of days and a number is required</li>
+<li>Verify that when the activity expiration is enabled error handling is present if text is empty or has a non-numeric value and the user attempts to submit</li>
+<li>Verify that the value must be between 1 and 365</li>
+<li>Verify when the option is enabled and the number is saved</li>
+<li>Verify when the option is disabled, the text box is hidden</li>
+<li>Verify when the option is disabled, data is not deleted</li></ul></li>
+<li><strong>Verify the Eureka administrator can configure the Support Stream</strong>
+<ul><li>Verify a support group can be selected and that the support group displays</li></ul></li>
+<li><strong>Verify the Eureka administrator can require group creation approval</strong>
+<ul><li>Verify the ability to require group creation approval</li>
+<li>Verify a knowledge worker cannot create a group without approval</li>
+<li>Verify the ability to not require group creation approval</li>
+<li>Verify a knowledge worker is able to create a group without approval</li></ul></li>
+</ol>
+
+<h3 id="plugins">Plugins</h3>
+
+<ol>
+<li><strong>Verify the Eureka administrator can configure a stream plugin adheres to the Google app specification and eureka stream plug in feature</strong>
+<ul><li>Verify a stream plug in that is uploaded must adhere to the Eureka stream plug in feature and the Google app specification</li>
+<li>Verify that if a stream plug in does not adhere, there is error handling</li>
+<li>Verify there is a link which will direct the user to the developers guide</li></ul></li>
+<li><strong>Verify the Eureka administrator can publish and categorize a stream plug in referenced by a url</strong>
+<ul><li>Verify there is a link from the gallery directing the user to a form to upload a stream plug in</li>
+<li>Verify error handling is present when required fields are not populated</li>
+<li>Verify a category can be selected and associated with the stream plug in</li></ul></li>
+<li><strong>Verify the Eureka administrator can remove a published stream plugin</strong>
+<ul><li>Verify a plug in can be removed</li>
+<li>Verify there is removal confirmation</li>
+<li>Verify the plug in is removed from the gallery, but and is stripped from start pages of users with the stream plug in applied</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of Satisfaction</a>
+<ul><li><a href="#system">System</a></li>
+<li><a href="#plugins">Plugins</a></li>
+<li><a href="#pendingitems">Pending Items</a></li></ul></li>
+<li><a href="#userexperience">User Experience</a>
+<ul><li><a href="#systemssettings">Systems Settings</a></li>
+<li><a href="#pluginsystemsettings">Plugin System Settings</a>
+<ul><li><a href="#viewexistingplugins">View Existing Plugins</a></li>
+<li><a href="#submitaplugin">Submit a Plugin</a></li></ul></li></ul></li>
+<li><a href="#testplans">Test Plans</a>
+<ul><li><a href="#system">System</a></li>
+<li><a href="#plugins">Plugins</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.2</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../2.0/Product%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

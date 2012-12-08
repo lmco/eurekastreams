@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Login to the system</title>
+		<link rel="stylesheet" href="style/Product Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Product%20Specification.html">Product Specification</a> &gt; <a href="Features.html">Features</a> &gt; Login to the system</p>
+
+<h1 class="title">Login to the system</h1>
+
+<p><a href='Customize the start page.html'><span id="nextlink">Customize the start page</span></a>
+<a href='Features.html'><span id="prevlink">Features</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Logging into the system is based on the credentials of the user and authentication schemes being used. A knowledge worker with access to the system authenticates. A knowledge worker who does not have access to the system needs to request access.</p>
+
+<h2 id="conditionsofsatisfaction">Conditions of satisfaction</h2>
+
+<ol>
+<li>The knowledge worker must be able to request access if he is not authorized to login to the system.</li>
+<li>The knowledge worker must be able to login via a form authenticating credentials against a kerberos or ldap backend.</li>
+<li>The knowledge worker must be able to login via the http negotiate protocol authenticating credentials against a kerberos backend.</li>
+</ol>
+
+<h2 id="userexperience">User experience</h2>
+
+<p><img id="" src="images/PS_F01_login_loginForm.png" alt="" title="" /></p>
+
+<ol>
+<li>Valid user name must be entered.</li>
+<li>Valid password must be entered. Password is masked when typed.</li>
+<li>Remembers the user name and password after initial login and automatically logs the user in when launching Eureka Streams.</li>
+<li>Logs user into Eureka Streams or displays a message on invalid login: &#8220;The username or password you entered is incorrect&#8221;</li>
+<li>Return user to the EurekaStreams.org website.</li>
+</ol>
+
+<p><img id="" src="images/PS_F01_login_noAccess.png" alt="" title="" /></p>
+
+<ol>
+<li>Message displays if user does not have access to the Eureka Streams. EurekaStreams.org should be a link to the website.</li>
+<li>This text hyperlinks to the product support team email, smp-support.fc-isgs@lmco.com</li>
+</ol>
+
+<p><img id="" src="images/PS_F01_login_TermsofService.png" alt="" title="" /></p>
+
+<ol>
+<li>Terms of Service message from the System Settings.</li>
+<li>Agree button is disabled until the user enables the &#8216;I have read and understand the terms of service.&#8217; checkbox.</li>
+<li>If Cancel button is clicked, redirect user to eurekastreams.org.</li>
+</ol>
+
+<h2 id="testplans">Test plans</h2>
+
+<ol>
+<li><strong>Verify the ability to request access if not authorized to login to the system</strong>
+<ul><li>Verify employees without access are presented with the Eureka login screen</li>
+<li>Verify there is a link to request access </li>
+<li>Verify that if integrated authentication is implemented, the user name and password fields are not displayed</li>
+<li>Verify that if integrated authentication is not implemented, the user name and password fields are displayed</li></ul></li>
+<li><strong>Verify the ability to login via a form authenticating credentials against a kerberos or ldap backend</strong>
+<ul><li>Verify the knowledge worker needs to enter his user name and password  </li>
+<li>Verify the knowledge worker can select the keep me logged in option</li>
+<li>Verify the terms of service display when a new knowledge worker logs in</li>
+<li>Verify the knowledge worker is not prompted for login information if the keep me logged in option was enabled on login</li></ul></li>
+<li><strong>Verify the ability to login via the http negotiate protocol authenticating credentials against a kerberos backend</strong>
+<ul><li>Verify the knowledge worker is automatically logged if he has access</li></ul></li>
+</ol>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#conditionsofsatisfaction">Conditions of satisfaction</a></li>
+<li><a href="#userexperience">User experience</a></li>
+<li><a href="#testplans">Test plans</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 2.0</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Product%20Specification.html">0.9</a> | <a href="../1.0/Product%20Specification.html">1.0</a> | <a href="../1.1/Product%20Specification.html">1.1</a> | <a href="../1.5/Product%20Specification.html">1.5</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

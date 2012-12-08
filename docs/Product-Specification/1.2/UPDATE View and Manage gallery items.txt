@@ -1,0 +1,128 @@
+##Overview
+Gallery can be updated with default apps and themes.  Organization Coordinators are responsible for vetting the item available within the gallery for their employees.
+##Conditions of satisfaction
+1. The system must restrict the publication, modification, and removal of a gallery item to an organization coordinator.
+2. The organization coordinator must be able to publish and categorize an app referenced by a url.
+3. The system must verify that the app adheres to the google app specification.
+4. The organization coordinator must be able to modify the category and url for a published app.
+5. The organization coordinator must be able to remove a published app.
+6. The organization coordinator must be able to publish and categorize a theme referenced by a url.
+7. The system must verify that the theme adheres to the eureka theme schema.
+8. The organization coordinator must be able to modify the category and url for a published theme.
+9. The organization coordinator must be able to remove a published theme.
+10. The organization coordinator must be able to publish and categorize a stream plugin referenced by a url.
+11. The system must verify that the stream plugin adheres to the Google app specification and eureka stream plugin feature.
+12. The organization coordinator must be able to modify the category and url for a published stream plugin.
+13. The organization coordinator must be able to remove a published stream plugin.
+##User experience
+
+### Managing Apps
+![](images/PS_F06_manageGallery_apps.png)
+
+1. Opens the add app form.
+2. Hovering over the app thumbnail, title, description or meta data displays the edit link. Clicking edit displays the edit app form. 
+3. Hovering over the app thumbnail, title, description or meta data displays the Delete link. Clicking the Delete link removes the app from the gallery. When the Organizational Coordinator clicks the Delete link a popup window is displayed asking the user: "Are you sure you want to delete this app? Deleting this app will remove it from the start page of every user that has added it to a tab." If the app is deleted a feedback message is displayed saying: "The [app name] app has been deleted". 
+
+#### Adding Apps
+
+![](images/PS_F06_manageGallery_addApp.png)
+
+1. Drop down menu containing a list of app categories
+1. Input field for app XML address
+1. Submits the form and returns the organization coordinator back to the configure page defaulted to the all apps view.  A feedback message "Your app has been successfully added" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the organization coordinator back to the configure page.
+
+#### Editing Apps
+
+![](images/PS_F06_manageGallery_editApp.png)
+
+1. Populated with the app category.
+1. Populated with URL to app XML file.
+1. Saves changes to the form and returns the organization coordinator back to the configure page defaulted to the all apps view.  A feedback message "Your app has been successfully saved" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the organization coordinator back to the configure page.
+
+### Managing Themes
+![](images/PS_F06_manageGallery_themes.png)
+
+1. Opens the add theme form.
+2. Hovering over the theme thumbnail, title, or meta data displays an edit link. Clicking edit displays the edit theme form. 
+3. Hovering over the theme thumbnail, title, or meta data displays the Delete link. Clicking the Delete link removes the theme from the gallery. When the Organizational Coordinator clicks the Delete link a popup window is displayed asking the user: "Are you sure you want to delete this theme? Deleting a theme will remove it from the start page and apply the default theme for every user that has applied it." If the theme is deleted a feedback message is displayed saying: "The [theme name] theme has been deleted" with a close link next to it. 
+
+
+#### Adding Themes
+
+![](images/PS_F06_manageGallery_addTheme.png)
+
+1. Drop down menu containing a list of theme categories
+1. Input field for theme XML address
+1. Submits the form and returns the organization coordinator back to the configure page defaulted to the all themes view.  A feedback message "Your theme has been successfully added" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the organization coordinator back to the configure page.
+
+#### Editing Themes
+
+![](images/PS_F06_manageGallery_editTheme.png)
+
+1. Populated with the theme category.
+1. Populated with URL to theme XML file.
+1. Saves changes to the form and returns the organization coordinator back to the configure page defaulted to the all themes view.  A feedback message "Your theme has been successfully saved" is also displayed at the top of the page with a close link next to it.
+1. Discards the changes made to the form and returns the organization coordinator back to the configure page.
+
+##Test plans
+###Knowledge Worker
+1. **Action: Attempt to publish, modify, or remove a gallery item**
+    * Verify a knowledge worker is unable to publish, modify, or remove a gallery item
+###Group Coordinator
+1. **Action: Attempt to publish, modify, or remove a gallery item**
+    * Verify a group coordinator is unable to publish, modify, or remove a gallery item
+###Organization Coordinator
+1. **Action: Publish and categorize an app referenced by a url**
+    * Verify there is a link from the gallery directing the user to a form to upload an app
+    * Verify error handling is present when required fields are not populated
+    * Verify a category can be selected and associated with the app
+2. **Action: Confirm apps adhere to the Google app specification**
+    * Verify a theme that is uploaded must adhere to the Google app specification
+    * Verify that if a app does not adhere there is error handling
+    * Verify there is a link which will direct the user to the app specification guide
+3. **Action: Modify the category and url for a published app**
+    * Verify the category can be changed for an app that has been uploaded to the gallery
+    * Verify the URL can be changed for an app that has been uploaded to the gallery
+    * Verify there is error handling in the edit mode
+4. **Action: Remove a published app**
+    * Verify a published app can be removed
+    * Verify there is removal confirmation
+    * Verify the app is removed from the gallery, but is not removed from any tabs of users with that app currently applied
+5. **Action: Publish and categorize a theme referenced by a url**
+    * Verify there is a link from the gallery directing the user to a form to upload a theme
+    * Verify error handling is present when required fields are not populated
+    * Verify a category can be selected and associated with the theme
+6. **Action: Confirm theme adheres to the Eureka theme schema**
+    * Verify a theme that is uploaded must adhere to the Eureka theme schema
+    * Verify that if a theme does not adhere there is error handling
+    * Verify there is a link which will direct the user to the preparation guide
+7. **Action: Modify the category and url for a published theme**
+    * Verify the category can be changed for a theme that has been uploaded to the gallery
+    * Verify the URL can be changed for a theme that has been uploaded to the gallery
+    * Verify there is error handling in the edit mode
+8. **Action: Remove a published theme**
+    * Verify a published theme can be removed
+    * Verify there is removal confirmation
+    * Verify the theme is removed from the gallery, and is stripped from start pages of users with that theme currently applied
+9. **Action: Publish and categorize a stream plug in referenced by a url**
+    * Verify there is a link from the gallery directing the user to a form to upload a stream plug in
+    * Verify error handling is present when required fields are not populated
+    * Verify a category can be selected and associated with the stream plug in
+10. **Action: Confirm stream plugins adheres to the Google app specification and eureka stream plug in feature**
+    * Verify a stream plug in that is uploaded must adhere to the Eureka stream plug in feature and the Google app specification
+    * Verify that if a stream plug in does not adhere, there is error handling
+    * Verify there is a link which will direct the user to the developers guide
+11. **Action: Modify the category and url for a published stream plugin**
+    * Verify the category can be changed for a stream plug in that has been uploaded to the gallery
+    * Verify the URL can be changed for a published stream plug in that has been uploaded to the gallery
+    * Verify there is error handling in the edit mode
+12. **Action:  Remove a published stream plugin**
+    * Verify a plug in can be removed
+    * Verify there is removal confirmation
+    * Verify the plug in is removed from the gallery, but and is stripped from start pages of users with the stream plug in applied
+###Root Organization Coordinator
+1. **Action: Execute same tests as Organization Coordinator**
+    * Verify tests executed successfully

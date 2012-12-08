@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Action framework</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; <a href="Software%20architecture.html">Software architecture</a> &gt; Action framework</p>
+
+<h1 class="title">Action framework</h1>
+
+<p><a href='Notification framework.html'><span id="nextlink">Notification framework</span></a>
+<a href='User interface framework.html'><span id="prevlink">User interface framework</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>This design describes the Action Framework within Eureka Streams. The Action Framework is the logical layer that contains the business logic for the system. This layer also controls the transactions to ensure ACID access to the underlying data within Eureka. Currently this design is broken into two parts, the Service and Async sides.</p>
+
+<h2 id="serviceactionframeworkdesign">Service action framework design</h2>
+
+<p>The following UML Class Diagram shows the relationships between the classes involved in describing the Service Action side of the Action Framework. This part of the Action Framework is responsible for handling Action calls from the web client.</p>
+
+<p><img id="" src="images/AF_ServiceAction-Class-Diagram.jpg" alt="" title="" /></p>
+
+<h3 id="serviceactioncontext">ServiceActionContext</h3>
+
+<p>This is what is populated with the person model view of the context of the request. This is to be sure that we don&#8217;t have to pass around the Spring object: UserDetails.</p>
+
+<h3 id="serviceaction">ServiceAction</h3>
+
+<p>Provides the structure for the action and a concrete implementation of the Action Framework containing Validation, Authorization, and Execution Strategies.</p>
+
+<h3 id="taskhandlerserviceaction">TaskHandlerServiceAction</h3>
+
+<p>Provide the submission implementation, this allows each action to specify its own submitter.</p>
+
+<h3 id="taskhandleractioncontext">TaskHandlerActionContext</h3>
+
+<p>This is a special ActionContext wrapper that the ServiceActionController uses to supply a TaskHandlerExecutionStrategy with a List of UserActionRequest objects. The ServiceActionController needs to be the one to supply this special context due to the way Spring loads up the Action instances. Since Spring, by default, loads the Actions as Singleton&#8217;s the Action itself cannot maintain the List of UserActionRequest objects to be submitted to the TaskHandler because each request to that action would attempt to use the same shared memory. For this reason, the ServiceActionController creates a new instance of an empty List of UserActionRequests for each execution of an action, passes it to the action and passes the resulting requests onto the configured TaskHandler for that action.</p>
+
+<h3 id="serviceactioncontroller">ServiceActionController</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Determine Security Context from Spring - this is handled by the ActionExecutor class.</li>
+<li>Load appropriate action - this is handled by the ActionExecutor class.</li>
+<li>Handle Transaction</li>
+<li>Perform execution order</li>
+<li>Supply a list of requests for the TaskHandlerExecutionStrategy to populate during execution.</li>
+<li>Post requests to the TaskHandler configured for the action being executed.</li>
+<li>Pass Undo state into Action if it implements the UndoableAction strategy</li>
+<li>Undo if exception is caught</li>
+</ul>
+
+<h2 id="asyncactionframeworkdesign">Async action framework design</h2>
+
+<p>The following UML Class Diagram shows the relationships between the classes the describe the Async Action side of the Action Framework. The Async Action side of the framework is responsible for execution of business logic that has been submitted to a job queue. This allows longer running processes to be off-loaded from the main web servers to provide a mechanism for scalability.</p>
+
+<p><img id="" src="images/AF_AsyncAction-Class-Diagram.jpg" alt="" title="" /></p>
+
+<h3 id="asyncactioncontext">AsyncActionContext</h3>
+
+<p>This contains the context that is provided to the AsyncAction when the AsyncActionController is executing the AsyncAction provided by the MDB (Message Driven Bean). This context explicitly excludes the Principal for the execution. This is because the Principal under which the AsyncAction executes always is the MDB.</p>
+
+<h3 id="asyncaction">AsyncAction</h3>
+
+<p>Null out getAuthorizationStrategy as part of the design. This helps enforce AsyncActions not having authorization as well as allow the design to communicate the difference between Service and Async Actions.</p>
+
+<h3 id="taskhandlerasyncaction">TaskHandlerAsyncAction</h3>
+
+<p>Special type of AsyncAction that contains the mechanisms for configuring a TaskHandler to submit UserActionRequests through as well as using the TaskHandlerExecutionStrategy that provides the means for the AsyncActionController to gather up UserActionRequests.</p>
+
+<h3 id="asyncactioncontroller">AsyncActionController</h3>
+
+<p>Responsibilities:</p>
+
+<ul>
+<li>Load action</li>
+<li>Handle transactions</li>
+<li>Perform execution order</li>
+<li>Provide a blank List of UserActionRequests to TaskHandlerAsyncActions so that the TaskHandlerExecutionStrategy can build up those requests during execution and provide them back to the controller for submission to the configured TaskHandler of the executing action.</li>
+<li>Post requests to the AsyncAction&#8217;s configured TaskHandler.</li>
+<li>Pass Undo state into Action if it implements the UndoableAction interface</li>
+<li>Undo if exception is caught</li>
+</ul>
+
+<h2 id="sequencediagrams">Sequence diagrams</h2>
+
+<p><img id="" src="images/Action-Framework.jpg" alt="" title="" /></p>
+
+<p>The following diagram shows the dynamic flow of execution when a ServiceAction is executed within the action framework.</p>
+
+<p><img id="" src="images/AF_ServiceActionController-Diagram.jpg" alt="" title="" /></p>
+
+<p>The following diagram shows the dynamic flow of execution when a TaskHandlerServiceAction is executed within the action framework.</p>
+
+<p><img id="" src="images/AF_ServiceActionController-With-Task-Handler-Diagram.jpg" alt="" title="" /></p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#serviceactionframeworkdesign">Service action framework design</a>
+<ul><li><a href="#serviceactioncontext">ServiceActionContext</a></li>
+<li><a href="#serviceaction">ServiceAction</a></li>
+<li><a href="#taskhandlerserviceaction">TaskHandlerServiceAction</a></li>
+<li><a href="#taskhandleractioncontext">TaskHandlerActionContext</a></li>
+<li><a href="#serviceactioncontroller">ServiceActionController</a></li></ul></li>
+<li><a href="#asyncactionframeworkdesign">Async action framework design</a>
+<ul><li><a href="#asyncactioncontext">AsyncActionContext</a></li>
+<li><a href="#asyncaction">AsyncAction</a></li>
+<li><a href="#taskhandlerasyncaction">TaskHandlerAsyncAction</a></li>
+<li><a href="#asyncactioncontroller">AsyncActionController</a></li></ul></li>
+<li><a href="#sequencediagrams">Sequence diagrams</a></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>

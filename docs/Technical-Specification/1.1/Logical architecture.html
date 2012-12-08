@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Logical architecture</title>
+		<link rel="stylesheet" href="style/Technical Specification.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li><li><span>Learn</span><ul><li class="first"><a href="http://www.eurekastreams.org/tours/reputation">Tours</a></li><li><a href="http://www.eurekastreams.org/demo">Demo</a></li><li><a href="http://www.eurekastreams.org/getting-started">Getting Started</a></li><li><a href="http://www.eurekastreams.org/faqs">FAQs</a></li></ul></li><li><span>Community</span><ul><li class="first"><a href="http://www.eurekastreams.org/participate">Participation</a></li><li><a href="http://www.eurekastreams.org/blog">Blog</a></li><li><a href="/index.html">Documentation</a></li></ul></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn"><p><a href="../../../index.html">Home</a> &gt; <a href="Technical%20Specification.html">Technical Specification</a> &gt; Logical architecture</p>
+
+<h1 class="title">Logical architecture</h1>
+
+<p><a href='Security architecture.html'><span id="nextlink">Security architecture</span></a>
+<a href='Conceptual architecture.html'><span id="prevlink">Conceptual architecture</span></a></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The logical architecture provides a more detailed view of the components that make up the system including the technical interfaces and connections between them.</p>
+
+<h2 id="componentinteractiondiagram">Component Interaction Diagram</h2>
+
+<p><img id="componentinteractiondiagram" src="images/Component-Interaction-Diagram.png" alt="Component Interaction diagram" title="" /></p>
+
+<h3 id="cachecomponent">Cache Component</h3>
+
+<p>The cache component implementation is <a href="http://memcached.org/memcached">Memcached</a> version 1.4.4.  Memcached is an in-memory key/value data store.  This component provides temporal de-normalized storage for data.  The component exposes an interface via a network socket on TCP port 11211 (for the first memcached instance) and data is transferred in binary.  The protocol used to access this component is native binary and is defined here by this <a href="http://code.google.com/p/memcached/wiki/MemcacheBinaryProtocol">reference document</a>.</p>
+
+<p>The cache component does not authentication nor authorize any client accessing it, it allows direct access to its data.  For this reason, each cache server is configured with a local TCP filter providing socket-level security allowing only Web servers and the task executor server to access the cache data.</p>
+
+<h3 id="searchcomponent">Search Component</h3>
+
+<p>The search component implementation is <a href="http://lucene.apache.org/java/docs">Apache Lucene</a> version 3.1.1 facilitated through the Hibernate object relational mapping framework.  Lucene is a full-featured text search engine.  This component provides the embedded search facility performing the indexing of data and the return of results.  The purpose of this capability is to provide search results targeting different aspects of the system.  For example, clients can search the directory for people, groups, and organizations by name.</p>
+
+<p>The component is an embedded engine within the Eureka Streams Application server.  The Model framework uses annotations to direct Lucene&#8217;s indexing.  While configurable, the primary configuration has data index requests being sent to the Lucene master search engine via messages via the task queue server.  The task executor consumes these messages and adds the data to the master index.  The master Lucene index periodically send incremental index updates to the master copy area for the Lucene slaves to consume.</p>
+
+<p>The Web server is a Lucene slave and configured to listen for incremental index updates in the master copy area.  When found, the master copy incremental index data is consumed and added to the Lucene slave index.</p>
+
+<h3 id="databasecomponent">Database Component</h3>
+
+<p>The database component implementation is <a href="http://www.postgresql.org">PostgreSQL</a> version 8.4.2.  PostgreSQL is a relational database management system (RDBMS) providing persistent storage of data in related tables.</p>
+
+<p>Connection to the database is achieved through a <a href="http://jdbc.postgresql.org/">JDBC compliant driver</a> configured through the Spring  framework.  The database component requires a username and password authentication to access the server with username authorization to access the database.  Each database server is configured with a local TCP filter providing socket-level security allowing only Web servers and the task executor server to access the database server socket.</p>
+
+<h3 id="webservercomponent">Web Server Component</h3>
+
+<p>The Web server component implementation is <a href="http://httpd.apache.org">Apache HTTPd</a> version 2.2.3.  HTTPd is a Web server supporting the <a href="http://en.wikipedia.org/wiki/Http">HTTP</a> protocol.  The module used for Kerberos authentication is <a href="http://modauthkerb.sourceforge.net/">mod-authkerb</a>, and the module performing LDAP authorization is <a href="http://httpd.apache.org/docs/2.1/mod/mod_authnz_ldap.html">authnz_ldap</a>.  This component is configured to proxy requests that are to be handled by the Application Server component via a plug-able module named the <a href="http://tomcat.apache.org/connectors-doc">Apache Tomcat Connector</a></p>
+
+<p>Each Web server is configured with a local TCP filter providing socket-level security allowing only incoming connections to port 80 (HTTP) from the firewall component and from the task executor server.</p>
+
+<h3 id="applicationservercomponent">Application Server Component</h3>
+
+<p>The application server component implementation is <a href="http://tomcat.apache.org">Apache Tomcat</a> version 6.0.24.  Tomcat is a Java Servlet container in compliance with the Java Servlet 2.5 specification.  The interface to this component is exposed via TCP port 8009 using the <a href="http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html">AJP 1.3 protocol</a>.</p>
+
+<p>This component supports the security component, the scheduler, and multiple other components and subsystems.  The application server should be thought of as an executing container that starts up and accepts configuration for multiple components and subsystems.</p>
+
+<h3 id="scheduler">Scheduler</h3>
+
+<p>The schedule component implementation is <a href="http://www.quartz-scheduler.org/">Quartz</a> embedded within the application server component.  There are particular tasks in the system that must be run either once at system start-up or periodically.</p>
+
+<p>The embedded scheduler is part of the Spring framework.  Schedules for task execution are defined via Unix <a href="http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html">Cron syntax</a>.</p>
+
+<h3 id="taskqueuecomponent">Task Queue Component</h3>
+
+<p>The task queue component implementation is [Apache ActiveMQ] (http://activemq.apache.org) version 5.3.0.  ActiveMQ is a message topic and queue server in compliance with the <a href="http://java.sun.com/products/jms/docs.html">Java JMS 1.1 specification</a>.  The purpose of this capability is to provide message queues to offload operations and tasks from the Web server and application server components.  The task queue component accepts and stores tasks that are consumed by the task executor component and handled.</p>
+
+<p>Three components use the task queue server, which are the task framework, the task executor, and search.  The task framework places messages on the queue that are encapsulated actions consumed and handled by the task executor.  The search component has a configuration state where the indexing of data is handled by a master search indexer and driven by index messages placed onto a particular queue.  The task framework has the ability to create asynchronous actions, which are actions that are encapsulated and placed onto the task queue for consumption and handling by the task executor.</p>
+
+<h3 id="taskexecutorcomponent">Task Executor Component</h3>
+
+<p>The task executor component is implemented by a message driven bean (MDB) compliant with the <a href="http://java.sun.com/products/jms/docs.html">Java JMS 1.1 specification</a> and designed to consume JMS messages.  The purpose of this capability is to consume messages placed on the task queue and handle them by executing the action encapsulated in the message.</p>
+
+<p>A configuration option exists for a message driven bean to listen for data index requests and be handled resulting in updating the master search index.  This is a part of the search component and occurs when configured for master and slave index nodes.</p>
+</td><td id="rightcolumn"><h2 id="pagecontents">PAGE CONTENTS</h2>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#componentinteractiondiagram">Component Interaction Diagram</a>
+<ul><li><a href="#cachecomponent">Cache Component</a></li>
+<li><a href="#searchcomponent">Search Component</a></li>
+<li><a href="#databasecomponent">Database Component</a></li>
+<li><a href="#webservercomponent">Web Server Component</a></li>
+<li><a href="#applicationservercomponent">Application Server Component</a></li>
+<li><a href="#scheduler">Scheduler</a></li>
+<li><a href="#taskqueuecomponent">Task Queue Component</a></li>
+<li><a href="#taskexecutorcomponent">Task Executor Component</a></li></ul></li>
+</ul>
+
+<p><hr class='thin'/>
+<strong>Version 1.1</strong></p>
+
+<p>Documentation is also available for all of the following versions:</p>
+
+<p><a href="../0.9/Technical%20Specification.html">0.9</a> | <a href="../1.0/Technical%20Specification.html">1.0</a> | <a href="../2.0/Technical%20Specification.html">2.0</a></p>
+</td></tr></table></div><div id="footer"><div><div><img src="http://www.eurekastreams.org/wp-content/themes/eurekastreams-wp-theme/images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>
