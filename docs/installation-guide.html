@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+	"http://www.w3.org/TR/2001/REC-MathML2-20010221/dtd/xhtml-math11-f.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<!-- Processed by MultiMarkdown -->
+		<meta name="Format" content="complete" />
+		<title>Eureka Streams Documentation</title>
+		<link rel="stylesheet" href="style/home.css" type="text/css" />
+	</head>
+<body>
+
+<div id='maincontent'><div id="lm"><div id="lm_banner"><span>A Lockheed Martin Open Source Project</span></div><div id="lm_menu"><a href="http://www.lockheedmartin.com">www.lockheedmartin.com</a></div></div> <div id="header"><h1>Eureka Streams</h1></div> <div id="navigation"><div id="navigation_wrapper"><ul><li><a href="http://www.eurekastreams.org/">Home</a></li></ul></div><div id="navigation_right">&nbsp;</div></div> <div id="breadcrumb"><em>Community</em> / Docs<img src="images/docs.jpg"></div><div id="mainbody"><table id="maintable" cellpadding="0" cellspacing="0"><tr><td id="leftcolumn">
+
+<div id="eurekadocumentation">
+	<h2>Eureka Streams Installation Guide</h2>
+<p>This guide provides directions for building and installing Eureka Streams in a simple, single-server configuration intended for developers and for demos.&nbsp; This uses many default values and disables some functionality; some of these are described at the end.&nbsp; A number of additional configuration options are available for more sophisticated builds for Eureka Streams to run in an enterprise environment.&nbsp; Do not use these build commands to build to a production environment.</p>
+<h1>Gather/determine&nbsp;required information</h1>
+<div>
+<ul>
+<li>Username of database superuser (generally either your logon account or "postgres")</li>
+<li>Whether you need&nbsp;to use a&nbsp;proxy server.</li>
+</ul>
+</div>
+<h1>Prerequisites</h1>
+<p>Eureka Streams has been tested with the following:</p>
+<div>
+<ul>
+<li>Java 1.6 (JDK)</li>
+<li>Maven 3.0.3</li>
+<li>Git</li>
+<li>Memcached</li>
+<li>Tomcat 7</li>
+<li>Postgres 8.4</li>
+</ul>
+</div>
+<h2>Postgres</h2>
+<div><ol>
+<li>Download and install 8.4 release from <a href="http://www.enterprisedb.com/products-services-training/pgdownload">http://www.enterprisedb.com/products-services-training/pgdownload</a></li>
+<li>Recommend rebooting. This required a reboot due to memory configuration changes </li>
+<li>Set up database users: <ol>
+<li>Superuser.&nbsp; The operating system user which will be used to run the Eureka Streams database update scripts must have a corresponding user in the database with superuser permissions.&nbsp; If you will use an account other than the postgres user to run the scripts, create it.</li>
+<li>Eureka Streams user.&nbsp; Create a user (suggested name "eurekastreams") which will be used to apply the database updates and run the application.&nbsp; No special permissions are required.<br /><ol>
+<li>Switch to the operating system user corresponding to a database superuser</li>
+<li>Insure the Postgres tools are in the PATH.</li>
+<li>Run the following command:&nbsp; <strong>createuser -P eurekastreams</strong><br />then enter <strong>eurekastreams</strong> as the password.</li>
+</ol></li>
+</ol></li>
+</ol></div>
+<p>Note: pg\_hba.conf must allow the two users to connect using TCP/IP.&nbsp; This is the default configuration.</p>
+<h2>Maven</h2>
+<p>If you are building and running behind a proxy, configure a <b>settings.xml</b> file in your local maven .m2 directory with following format (replacing example proxy values)</p>
+<p>&lt;settings&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;proxies&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;proxy&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;active&gt;true&lt;/active&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;protocol&gt;http&lt;/protocol&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;host&gt;proxy.example.com&lt;/host&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;port&gt;8080&lt;/port&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;nonProxyHosts&gt;*.example.com&lt;/nonProxyHosts&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/proxy&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/proxies&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;profiles&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;profile&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;id&gt;Dev Build Properties&lt;/id&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;activation&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;name&gt;buildtype&lt;/name&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;value&gt;dev&lt;/value&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/property&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/activation&gt; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;properties&gt; <br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;build.system.proxyhost&gt;proxy.example.com&lt;/build.system.proxyhost&gt; <br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;build.system.proxyport&gt;8080&lt;/build.system.proxyport&gt; <br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;build.system.proxyset&gt;true&lt;/build.system.proxyset&gt; <br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;build.system.nonproxyhosts&gt;*.example.com&lt;/build.system.nonproxyhosts&gt; <br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;build.shindig.proxy&gt;proxy.example.com:8080&lt;/build.shindig.proxy&gt; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/properties&gt; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/profile&gt; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/profiles&gt; <br />&lt;/settings&gt;</p>
+<h2>Memcached</h2>
+<p>The default build described in this document assumes that memcached is available on <b>localhost:11211</b>. If this is the case, no further memcached config is required. if not, add <b>-Dbuild.cache.servernames=server:port</b> to maven build command <b>OR</b> <b>&lt;build.cache.servernames&gt;server:port&lt;/build.cache.servernames&gt;</b> to the dev profile in the .m2/settings directory.</p>
+<h2>Tomcat</h2>
+<div><ol>
+<li>Download Tomcat 7 from <a href="http://tomcat.apache.org/download-70.cgi">here</a>.</li>
+<li>Extract to a directory under your home directory.</li>
+<li>The basic Eureka Stream setup requires the app base to be set to $HOME/tomcat/webapps. Edit <i>&lt;Tomcat installation directory&gt;</i>/conf/server.xml 
+<ul>
+<li>Locate the &lt;Host&gt; element within the "Catalina" service and edit attributes as follows:<br /><br />&lt;Host name="localhost"&nbsp; appBase="<em>&lt;yourHomeDir&gt;</em>/tomcat/webapps" unpackWARs="true" autoDeploy="true"&gt;</li>
+</ul>
+</li>
+<li>Restart Tomcat.</li>
+</ol></div>
+<h1>Get and build source</h1>
+<ol>
+<li>Download source code from Git: <a target="_blank" href="http://github.com/lmco/eurekastreams">http://github.com/lmco/eurekastreams</a>.&nbsp; (Take a look at the <a href="http://help.github.com/">help pages</a> to get started using Git.) <ol>
+<li><b>git clone </b><a href="mailto:git@github.com:lmco/eurekastreams.git"><b>git@github.com:lmco/eurekastreams.git</b></a><b> </b><br /><br />(This command should work for standard ssh connections) If you have trouble with that approach, take a look at this <a href="http://help.github.com/troubleshooting-ssh/">page</a> on GitHub for troubleshooting ssl connections.</li>
+<li>Alternative command using https: <br /><br /><b>git clone <a href="https://github.com/lmco/eurekastreams.git">https://git@github.com/lmco/eurekastreams.git</a></b></li>
+</ol></li>
+<li>Compile source<br /><br />
+<ul>
+<li>Go to the top-most directory of the source pulled from git </li>
+<li><b>mvn clean install -Dbuildtype=dev -Dopenaccess-security</b> 
+<ul>
+<li><b>Note</b>: if running behind proxy and checkstyle prevents build from completing with error stating it is unable to reach the checkstyle rules url (and it has been verified that you can reach the url via browser on build system with appropriate proxy settings), add <b>-Dhttp.proxyHost=<i>example.proxy.com</i> -Dhttp.proxyPort=<i>80</i></b> to above build command with appropriate proxy settings. There is a checkstyle plugin issue where it is unable to get proxy settings from the .m2/settings.xml file.</li>
+</ul>
+</li>
+</ul>
+<br />Some useful build options: 
+<ul>
+<li>Skip running tests:&nbsp; -DskipTests=true</li>
+<li>Skip building tests:&nbsp; -Dmaven.test.skip=true</li>
+<li>Skip checkstyle checks:&nbsp; -Dcheckstyle.skip=true</li>
+<li>Run a GWT "draft" compile (faster but less optimized):&nbsp; -Dgwt.draftCompile=true</li>
+<li>Run a GWT development-tailored build:&nbsp; -Dbuild.gwt.modulename=org.eurekastreams.web.ApplicationDev<br />You can edit the user-agent list in <em>&lt;ES source dir&gt;</em>/web/src/main/java/org/eurekastreams/web/ApplicationDev.gwt.xml to save time by not generating JavaScript for browsers you will not be using.</li>
+</ul>
+</li>
+</ol>
+<h1>Prepare database</h1>
+<ol>
+<li>Switch user to the account used for the database superuser (e.g. su to postgres)</li>
+<li>Change to the web/target/classes/db/scripts folder from the base of the project</li>
+<li>Run the database creation script:<br /><br /><b>./dev\_apply\_updates.sh </b><i>&lt;name of Eureka Streams database&gt; &lt;name of Eureka Streams database user&gt; &lt;URL to application&gt;</i><br /><br />e.g. ./dev\_apply\_updates.sh eurekastreams eurekastreams <a href="http://localhost:8080">http://localhost:8080</a><br /><br />Note: You will get a message "User <i>&lt;user&gt;</i> already exists"<br /><br />Important:&nbsp; You may be prompted for a password multiple times while the script runs. 
+<ul>
+<li>Use the Eureka Streams user's password if prompted after the message "Modifying the database.."</li>
+<li>For all other prompts, use the superuser's password.</li>
+</ul>
+</li>
+<li>Add a dummy row to the membership criteria table: <ol>
+<li>Execute the command: <br /><br /><strong>psql -d&nbsp;eurekastreams -U&nbsp;eurekastreams -c "insert into membershipcriteria (version,criteria) values (0, 'dummy');"</strong><br /><br />Enter password "eurekastreams"</li>
+</ol></li>
+</ol>
+<h1>First run</h1>
+<ol>
+<li>Open a browser and navigate to <a href="http://localhost:8080/">http://localhost:8080</a> </li>
+<li>Log in with "sysadmin" and no password.</li>
+</ol>
+</div>
+
+
+</td><td id="rightcolumn">&nbsp;</td>
+</tr></table></div><div id="footer"><div><div><img src="images/eureka_e.png" id="eureka_e"><span>&#xA9; Copyright 2011 Lockheed Martin Corporation</span><a href="http://www.lockheedmartin.com/disclaimer.html">Disclaimer</a><a href="http://www.lockheedmartin.com/disclaimer.html#privacy">Privacy</a></div></div></div></div>
+</body>
+</html>
