@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class PersonQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     * 
+     *
      * @param hibernateSession
      *            the hibernate session used to create the criteria.
      * @return the base criteria object.
@@ -67,6 +67,7 @@ public class PersonQueryStrategy
         fields.add(getColumn("groupStreamHiddenLineIndex"));
         fields.add(getColumn("lastAcceptedTermsOfService"));
         fields.add(getColumn("accountLocked"));
+        fields.add(getColumn("accountDeactivated"));
         fields.add(getColumn("workPhone"));
         fields.add(getColumn("cellPhone"));
         fields.add(getColumn("fax"));
@@ -84,7 +85,7 @@ public class PersonQueryStrategy
 
     /**
      * Build the PropertyProjection with alias.
-     * 
+     *
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

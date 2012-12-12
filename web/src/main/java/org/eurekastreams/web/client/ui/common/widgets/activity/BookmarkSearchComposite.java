@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,8 +206,7 @@ public class BookmarkSearchComposite extends Composite
                         if (result instanceof PersonModelView)
                         {
                             final PersonModelView person = (PersonModelView) result;
-                            itemPanel.add(new AvatarLinkPanel(EntityType.PERSON, person.getAccountId(), person
-                                    .getAvatarId(), Size.VerySmall, false));
+                            itemPanel.add(AvatarLinkPanel.create(person, Size.VerySmall, false));
                             name.setText(person.getDisplayName());
                             name.setTitle(person.getDisplayName());
                             itemContainer.addClickHandler(new ClickHandler()

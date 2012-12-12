@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,12 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundStringBridge;
+import org.eurekastreams.server.search.bridge.IsPersonVisibleInSearchClassBridge;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -66,6 +68,8 @@ import org.hibernate.validator.Length;
  */
 @Entity
 @Indexed
+@ClassBridge(name = "isVisibleInSearch", index = Index.UN_TOKENIZED, store = Store.NO, // \n
+impl = IsPersonVisibleInSearchClassBridge.class)
 public class Person extends DomainEntity implements Serializable, AvatarEntity, Followable, HasEmail, Bannerable,
         Identifiable
 {
@@ -134,8 +138,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * Used for validation.
      */
     @Transient
-    public static final String JOB_DESCRIPTION_MESSAGE = "Job Description supports up to " + MAX_JOB_DESCRIPTION_LENGTH
-            + " characters.";
+    public static final String JOB_DESCRIPTION_MESSAGE = "Job Description supports up to "
+            + MAX_JOB_DESCRIPTION_LENGTH + " characters.";
 
     /**
      * Used for validation.
@@ -521,6 +525,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @Basic(optional = false)
     private boolean accountLocked = false;
+
+    /**
+     * Flag indicating if user's account is deactivated (forced locked).
+     */
+    @Basic(optional = false)
+    private boolean accountDeactivated = false;
 
     /**
      * Optional list of sources that were traversed to locate this employee.
@@ -1199,6 +1209,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         addNonNullProperty("jobDescription", getJobDescription(), personData);
         addNonNullProperty("title", getTitle(), personData);
         addNonNullProperty("accountLocked", isAccountLocked(), personData);
+        addNonNullProperty("accountDeactivated", isAccountDeactivated(), personData);
         addNonNullProperty("companyName", getCompanyName(), personData);
 
         if (getAdditionalProperties() != null)
@@ -1762,6 +1773,23 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public List<StreamScope> getBookmarks()
     {
         return bookmarks;
+    }
+
+    /**
+     * @return Current deactivated status
+     */
+    public boolean isAccountDeactivated()
+    {
+        return accountDeactivated;
+    }
+
+    /**
+     * @param inAccountDeactivated
+     *            New deactivated status.
+     */
+    public void setAccountDeactivated(final boolean inAccountDeactivated)
+    {
+        accountDeactivated = inAccountDeactivated;
     }
 
 }

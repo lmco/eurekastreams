@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.userdetails.UserDetailsChecker;
 import org.springframework.security.userdetails.UserDetailsService;
 
 /**
@@ -34,7 +35,7 @@ import org.springframework.security.userdetails.UserDetailsService;
 public class OpenAccessAuthenticationProviderTest
 {
     /**
-     * Context for building mock objects. 
+     * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
     {
@@ -42,41 +43,43 @@ public class OpenAccessAuthenticationProviderTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
      * Test for the Authenticate method.
      */
     @Test
     public void testAuthenticate()
     {
-        final UsernamePasswordAuthenticationToken auth = 
+        final UsernamePasswordAuthenticationToken auth =
             context.mock(UsernamePasswordAuthenticationToken.class);
         final UserDetailsService uds = context.mock(UserDetailsService.class);
         final UserDetails ud = context.mock(UserDetails.class);
+        final UserDetailsChecker checker = context.mock(UserDetailsChecker.class);
 
         context.checking(new Expectations()
         {
-            {             
+            {
                 oneOf(auth).getName();
                 will(returnValue("homers"));
-                
+
                 oneOf(uds).loadUserByUsername("homers");
                 will(returnValue(ud));
-                
+
                 oneOf(auth).getCredentials();
                 will(returnValue(null));
-                
+
                 oneOf(ud).getAuthorities();
+
+                oneOf(checker).check(ud);
             }
         });
-        
-        OpenAccessAuthenticationProvider sut = new OpenAccessAuthenticationProvider();
-        sut.setUserDetailsService(uds);
-        assertEquals("User details are not correct for passed in authentication", 
+
+        OpenAccessAuthenticationProvider sut = new OpenAccessAuthenticationProvider(uds, checker);
+        assertEquals("User details are not correct for passed in authentication",
                 ud, sut.authenticate(auth).getPrincipal());
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test for the Supports method.
      */
@@ -84,9 +87,9 @@ public class OpenAccessAuthenticationProviderTest
     public void testSuports()
     {
         final UserDetailsService uds = context.mock(UserDetailsService.class);
+        final UserDetailsChecker checker = context.mock(UserDetailsChecker.class);
 
-        OpenAccessAuthenticationProvider sut = new OpenAccessAuthenticationProvider();
-        sut.setUserDetailsService(uds);
+        OpenAccessAuthenticationProvider sut = new OpenAccessAuthenticationProvider(uds, checker);
         assertTrue(sut.supports(null));
     }
 }

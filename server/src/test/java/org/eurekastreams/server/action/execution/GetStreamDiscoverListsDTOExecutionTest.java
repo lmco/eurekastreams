@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@ package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.test.EasyMatcher;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.dto.DisplayInfoSettable;
@@ -32,6 +34,7 @@ import org.eurekastreams.server.domain.dto.StreamDiscoverListsDTO;
 import org.eurekastreams.server.domain.dto.SublistWithResultCount;
 import org.eurekastreams.server.domain.strategies.DisplayInfoSettableDataPopulator;
 import org.eurekastreams.server.domain.strategies.FollowerStatusPopulator;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsRequest;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -61,39 +64,45 @@ public class GetStreamDiscoverListsDTOExecutionTest
     /**
      * Mapper to get suggested people streams.
      */
-    private DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> suggestedPersonMapper = context.mock(
+    private final DomainMapper<SuggestedStreamsRequest, List<PersonModelView>> suggestedPersonMapper = context.mock(
             DomainMapper.class, "suggestedPersonMapper");
 
     /**
      * Mapper to get suggested group streams.
      */
-    private DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> suggestedGroupMapper = context.mock(
+    private final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> suggestedGroupMapper = context.mock(
             DomainMapper.class, "suggestedGroupMapper");
 
     /**
      * Mapper to get the stream discovery lists that are the same for everyone.
      */
-    private DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper = context.mock(
+    private final DomainMapper<Serializable, StreamDiscoverListsDTO> streamDiscoveryListsMapper = context.mock(
             DomainMapper.class, "streamDiscoveryListsMapper");
 
     /**
      * Data populator for setting the DisplayName and avatar id on DisplayInfoSettables.
      */
-    private DisplayInfoSettableDataPopulator displayInfoSettableDataPopulator = context
+    private final DisplayInfoSettableDataPopulator displayInfoSettableDataPopulator = context
             .mock(DisplayInfoSettableDataPopulator.class);
 
     /**
      * Data populator for setting the follower status on DisplayInfoSettables.
      */
-    private FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator = context
+    private final FollowerStatusPopulator<DisplayInfoSettable> followerStatusPopulator = context
             .mock(FollowerStatusPopulator.class);
+
+    /**
+     * Mapper to get a list of PersonModelViews from a list of AccountIds.
+     */
+    private final DomainMapper<List<Long>, List<PersonModelView>> getPersonModelViewsByIdsDAO = context.mock(
+            DomainMapper.class, "getPersonModelViewsByIdsDAO");
 
     /**
      * System under test.
      */
-    private GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
+    private final GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
             suggestedGroupMapper, 10, streamDiscoveryListsMapper, displayInfoSettableDataPopulator, //
-            followerStatusPopulator);
+            followerStatusPopulator, getPersonModelViewsByIdsDAO);
 
     /**
      * Test execute.
@@ -118,6 +127,7 @@ public class GetStreamDiscoverListsDTOExecutionTest
         people.add(new PersonModelView(5L, "e", "foo", "bar", 300L, new Date(), 5L)); // 9
         people.add(new PersonModelView(6L, "f", "foo", "bar", 200L, new Date(), 6L));
         people.add(new PersonModelView(7L, "g", "foo", "bar", 700L, new Date(), 7L)); // 7
+        people.get(4).setAccountLocked(true);
 
         groups.add(new DomainGroupModelView(8L, "h", "foobar", 50L, new Date(), 8L));
         groups.add(new DomainGroupModelView(9L, "i", "foobar", 250L, new Date(), 9L)); // 10
@@ -135,7 +145,7 @@ public class GetStreamDiscoverListsDTOExecutionTest
         // displayInfoSettables.addAll(result.getSuggestedStreams());
         // displayInfoSettables.addAll(result.getMostActiveStreams().getResultsSublist());
 
-        FeaturedStreamDTO featured = new FeaturedStreamDTO();
+        FeaturedStreamDTO featured = new FeaturedStreamDTO(111L, "", 111L, ScopeType.RESOURCE, "", 111L);
 
         result.setFeaturedStreams(Collections.singletonList(featured));
         result.setMostFollowedStreams(Collections.singletonList((StreamDTO) people.get(0)));
@@ -179,6 +189,11 @@ public class GetStreamDiscoverListsDTOExecutionTest
             throw new RuntimeException("WTH?");
         }
 
+        final List<PersonModelView> peopleFetched = Arrays.asList(people.get(0), people.get(1), people.get(3),
+                people.get(4), people.get(6));
+        // final Set<Long> peopleIdsToFetch = new HashSet<Long>(Arrays.asList(1L, 2L, 4L, 5L, 7L));
+        final List<Long> peopleIdsToFetch = Arrays.asList(1L, 2L, 3L, 4L, 5L, 7L);
+
         context.checking(new Expectations()
         {
             {
@@ -203,6 +218,17 @@ public class GetStreamDiscoverListsDTOExecutionTest
                 oneOf(followerStatusPopulator).execute(with(personId), with(combinedList),
                         with(FollowerStatus.NOTFOLLOWING));
                 will(returnValue(combinedList));
+
+                oneOf(getPersonModelViewsByIdsDAO).execute(with(new EasyMatcher<List<Long>>()
+                {
+                    @Override
+                    protected boolean isMatch(final List<Long> t)
+                    {
+                        boolean isMatch = t.size() == peopleIdsToFetch.size() && t.containsAll(peopleIdsToFetch);
+                        return isMatch;
+                    }
+                }));
+                will(returnValue(peopleFetched));
             }
         });
 
@@ -210,7 +236,7 @@ public class GetStreamDiscoverListsDTOExecutionTest
 
         List<StreamDTO> suggestions = result.getSuggestedStreams();
 
-        Assert.assertEquals(10, suggestions.size());
+        Assert.assertEquals(9, suggestions.size());
 
         Assert.assertEquals(15, suggestions.get(0).getId());
         Assert.assertEquals(13, suggestions.get(1).getId());
@@ -220,8 +246,7 @@ public class GetStreamDiscoverListsDTOExecutionTest
         Assert.assertEquals(12, suggestions.get(5).getId());
         Assert.assertEquals(7, suggestions.get(6).getId());
         Assert.assertEquals(11, suggestions.get(7).getId());
-        Assert.assertEquals(5, suggestions.get(8).getId());
-        Assert.assertEquals(9, suggestions.get(9).getId());
+        Assert.assertEquals(9, suggestions.get(8).getId());
 
         context.assertIsSatisfied();
     }

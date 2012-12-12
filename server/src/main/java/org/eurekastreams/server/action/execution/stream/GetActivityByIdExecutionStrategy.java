@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -36,36 +37,36 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
     /**
      * Mapper to get the actual Activities.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
      * DAO for finding comment ids.
      */
-    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO;
+    private final DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO;
 
     /**
      * DAO for finding comments by id.
      */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO;
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO;
 
     /**
      * Strategy for setting Deletable property on CommentDTOs.
      */
-    private CommentDeletePropertyStrategy commentDeletableSetter;
+    private final CommentDeletePropertyStrategy commentDeletableSetter;
 
     /**
      * List of filters to apply to action.
      */
-    private List<ActivityFilter> filters;
+    private final List<ActivityFilter> filters;
 
     /**
      * Mapper to lookup a PersonModelView from an account id.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inBulkActivitiesMapper
      *            Mapper to get the ActivitieDTOs.
      * @param inCommentIdsByActivityIdDAO
@@ -96,7 +97,7 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
 
     /**
      * Gets a single ActivityDTO for a given activity ID.
-     * 
+     *
      * @param inActionContext
      *            the action context containing the id of the activity to fetch
      * @return the activityDTO or null if no matching activity was found.
@@ -108,18 +109,8 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
         Long activityId = (Long) inActionContext.getParams();
 
         // look up activity based on id passed in.
-        List<Long> activityKeys = new ArrayList<Long>();
-        activityKeys.add(activityId);
-
-        List<ActivityDTO> results = new ArrayList<ActivityDTO>(bulkActivitiesMapper.execute(activityKeys));
-
-        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(accountId);
-
-        // execute filter strategies.
-        for (ActivityFilter filter : filters)
-        {
-            filter.filter(results, person);
-        }
+        List<ActivityDTO> results = new ArrayList<ActivityDTO>(bulkActivitiesMapper.execute(Collections
+                .singletonList(activityId)));
 
         // short-circuit if no results for activity.
         if (results.size() == 0)
@@ -130,12 +121,24 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
         // load full comment list into DTO from cache and return ActivityDTO.
         // This is not maintained in DTO to avoid excess memory usage and passing
         // extra data over network when not needed.
-        return loadAllComments(accountId, results.get(0));
+        loadAllComments(accountId, results.get(0));
+
+        // execute filter strategies.
+        // (Although the interface would allow/imply it, these "filters" don't actually filter out any activities. They
+        // alter data on the activities before sending them to the client. Which is why it's ok to filter after fetching
+        // comments.)
+        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(accountId);
+        for (ActivityFilter filter : filters)
+        {
+            filter.filter(results, person);
+        }
+
+        return results.get(0);
     }
 
     /**
      * Loads all the comments for a given Activity into the DTO.
-     * 
+     *
      * @param inUserAccountId
      *            the accountid of the user making this request.
      * @param inActivityDTO

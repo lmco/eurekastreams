@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.common;
 import java.util.Date;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -42,7 +41,7 @@ public class PersonPanel extends FlowPanel
 {
     /**
      * Constructor.
-     * 
+     *
      * @param inPerson
      *            to display
      * @param showFollowers
@@ -58,7 +57,7 @@ public class PersonPanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param person
      *            to display
      * @param showFollowers
@@ -77,7 +76,7 @@ public class PersonPanel extends FlowPanel
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
 
-        add(new AvatarLinkPanel(EntityType.PERSON, person.getUniqueId(), person.getAvatarId(), Size.Small));
+        add(AvatarLinkPanel.create(person, Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
         infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
@@ -165,7 +164,7 @@ public class PersonPanel extends FlowPanel
 
     /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */

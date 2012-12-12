@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test class for Person.
- * 
+ *
  * Note: for tabGroups testing, tab groups are named after electron shells 1s, 2s, 2p, 3s, 3p, 3d
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -338,8 +338,15 @@ public class PersonTest
         sut.setCommentable(false);
         assertFalse(sut.isCommentable());
 
+        sut.setAccountLocked(true);
+        assertTrue(sut.isAccountLocked());
         sut.setAccountLocked(false);
         assertFalse(sut.isAccountLocked());
+
+        sut.setAccountDeactivated(true);
+        assertTrue(sut.isAccountDeactivated());
+        sut.setAccountDeactivated(false);
+        assertFalse(sut.isAccountDeactivated());
     }
 
     /**
@@ -405,7 +412,7 @@ public class PersonTest
 
     /**
      * jobDescription too long
-     * 
+     *
      * hibernate validation.
      */
     @Test
@@ -426,7 +433,7 @@ public class PersonTest
 
     /**
      * test phone numbers
-     * 
+     *
      * hibernate validation.
      */
     @Test
@@ -447,7 +454,7 @@ public class PersonTest
 
     /**
      * Core of phone number test: insures the given value is acceptable or not.
-     * 
+     *
      * @param testValue
      *            Test value for a phone nubmer.
      * @param ok

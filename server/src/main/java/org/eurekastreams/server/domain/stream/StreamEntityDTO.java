@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2012 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,9 @@ public class StreamEntityDTO implements Serializable, Identifiable
 
     /** The UI-friendly display name. */
     private String displayName;
+
+    /** If the stream entity is "active" (e.g. for people, they're not locked). */
+    private boolean active = true;
 
     /**
      * Constructor.
@@ -203,5 +206,24 @@ public class StreamEntityDTO implements Serializable, Identifiable
     public long getEntityId()
     {
         return destinationEntityId;
+    }
+
+    /**
+     * @return If stream entity is active.
+     */
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    /**
+     * Set if stream entity is active.
+     *
+     * @param inActive
+     *            If stream entity is active.
+     */
+    public void setActive(final boolean inActive)
+    {
+        active = inActive;
     }
 }
