@@ -209,25 +209,25 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.shindig</groupId>
+            <groupId>com.lmco.shindig</groupId>
             <artifactId>shindig-server</artifactId>
             <version>${build.gadget.shindig.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.shindig</groupId>
+            <groupId>com.lmco.shindig</groupId>
             <artifactId>shindig-social-api</artifactId>
             <version>${build.gadget.shindig.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.shindig</groupId>
+            <groupId>com.lmco.shindig</groupId>
             <artifactId>shindig-common</artifactId>
             <version>${build.gadget.shindig.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.shindig</groupId>
+            <groupId>com.lmco.shindig</groupId>
             <artifactId>shindig-gadgets</artifactId>
             <version>${build.gadget.shindig.version}</version>
         </dependency>
@@ -492,7 +492,7 @@
 					<webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
 					<overlays>
 						<overlay>
-							<groupId>org.apache.shindig</groupId>
+							<groupId>com.lmco.shindig</groupId>
 							<artifactId>shindig-server</artifactId>
 							<type>war</type>
 							<excludes>
