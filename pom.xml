@@ -51,13 +51,6 @@
     </modules>
     <pluginRepositories>
         <pluginRepository>
-            <id>Eureka Streams repository</id>
-            <url>http://maven.eurekastreams.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-        <pluginRepository>
             <id>central</id>
             <name>Maven Plugin Repository</name>
             <url>http://repo1.maven.org/maven2</url>
@@ -71,13 +64,6 @@
         </pluginRepository>
     </pluginRepositories>
 	<repositories>
-	  <repository>
-	    <id>Eureka Streams Dependency Repo</id>
-	    <snapshots>
-	    	<enabled>false</enabled>
-	    </snapshots>
-	    <url>http://maven.eurekastreams.org</url>
-	  </repository>
       <repository>
         <id>central</id>
         <name>Maven Repository Switchboard</name>
@@ -117,6 +103,39 @@
         <id>restlet</id>
         <url>http://maven.restlet.org/</url>
       </repository>
+      <repository>
+        <id>gilead</id>
+        <layout>default</layout>
+        <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo/</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+      </repository>
+      <repository>
+        <id>codehaus</id>
+        <layout>default</layout>
+        <url>http://mvnrepository.com/artifact/</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+      </repository>
+      <repository>
+        <id>spy</id>
+        <name>Spy Repository</name>
+        <layout>default</layout>
+        <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
+        <snapshots>
+			<enabled>false</enabled>
+		</snapshots>
+       </repository>
+       <repository>
+       	<id>eurekastreams-mvn-repo</id>
+       	<layout>default</layout>
+       	<url>https://github.com/lmco/eurekastreams-mvn-repo/raw/master/releases/</url>
+       	<snapshots>
+       		<enabled>false</enabled>
+       	</snapshots>
+       </repository>
 	</repositories>
     <properties>
 		<version.junit>4.8.2</version.junit>
@@ -169,7 +188,7 @@
         <build.queue.nonui.name>queue/eurekaNonUi</build.queue.nonui.name>
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>
-        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
+        <build.report.checkstyle.rulesurl>https://github.com/lmco/eurekastreams-mvn-repo/raw/master/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>2.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
