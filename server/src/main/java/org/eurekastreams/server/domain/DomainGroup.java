@@ -47,7 +47,7 @@ import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge;
-import org.eurekastreams.server.search.bridge.IsPersonVisibleInSearchClassBridge;
+import org.eurekastreams.server.search.bridge.IsGroupVisibleInSearchClassBridge;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
@@ -71,7 +71,7 @@ import org.hibernate.validator.Size;
 // whitespace analyzer and custom class bridge to use JPA to get the ids rather than load extra objects
 analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class),
         @ClassBridge(name = "isVisibleInSearch", index = Index.UN_TOKENIZED, store = Store.NO, // \n
-        impl = IsPersonVisibleInSearchClassBridge.class) })
+        impl = IsGroupVisibleInSearchClassBridge.class) })
 public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, DomainGroupEntity, CompositeEntity,
         Identifiable
 {
