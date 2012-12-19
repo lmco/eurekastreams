@@ -56,6 +56,7 @@ public class PersonModelViewAvatarDisplayTransformer implements
             newPerson.setAvatarId(mv.getAvatarId());
             newPerson.setEntityId(mv.getEntityId());
             newPerson.setDisplayName(mv.getDisplayName());
+            newPerson.setAccountLocked(mv.isAccountLocked());
             returnPeople.add(newPerson);
         }
         return returnPeople;
