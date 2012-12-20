@@ -51,6 +51,11 @@ public class DisplayEntityModelView implements Serializable
     private Long streamScopeId;
 
     /**
+     * Whether the User's Account is Locked
+     */
+    private boolean accountLocked;
+    
+    /**
      * @return the displayName
      */
     public String getDisplayName()
@@ -112,5 +117,21 @@ public class DisplayEntityModelView implements Serializable
     public void setStreamScopeId(final Long inStreamScopeId)
     {
         this.streamScopeId = inStreamScopeId;
+    }
+    
+    /**
+     * @return whether the account is locked or not
+     */
+    public boolean isAccountLocked()
+    {
+        return accountLocked;
+    }
+    
+    /** 
+     * @param inAccountLocked boolean to set whether account is locked or not
+     */
+    public void setAccountLocked(final boolean inAccountLocked)
+    {
+        accountLocked = inAccountLocked;
     }
 }

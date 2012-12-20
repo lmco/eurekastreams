@@ -156,6 +156,7 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
                 displayModelView.setStreamScopeId(person.getStreamId());
                 displayModelView.setType(EntityType.PERSON);
                 displayModelView.setUniqueKey(person.getAccountId());
+                displayModelView.setAccountLocked(person.isAccountLocked());
                 displayModelViews.add(displayModelView);
             }
             else if (modelView instanceof DomainGroupModelView)
