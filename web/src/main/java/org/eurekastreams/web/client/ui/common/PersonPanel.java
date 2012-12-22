@@ -62,6 +62,24 @@ public class PersonPanel extends FlowPanel
      *            to display
      * @param showFollowers
      *            to display
+     * @param showDescription
+     *            Whether to display the description line.
+     * @param showEmail
+     *            Whether or not the email address should be shown.
+     */
+    public PersonPanel(final PersonModelView person, final boolean showFollowers,
+            final boolean showDescription, final boolean showEmail)
+    {
+        this(person, !person.isAccountLocked(), showFollowers, showDescription, showEmail);
+    }
+    
+    /**
+     * Constructor.
+     *
+     * @param person
+     *            to display
+     * @param showFollowers
+     *            to display
      * @param makeLinkable
      *            whether to display it or not
      * @param showDescription

@@ -65,7 +65,7 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
      */
     public Panel render(final PersonModelView item)
     {
-        PersonPanel panel = new PersonPanel(item, true, false, false, false);
+        PersonPanel panel = new PersonPanel(item, false, false, false);
 
         boolean currentUserIsAdmin = Session.getInstance().getCurrentPersonRoles().contains(Role.SYSTEM_ADMIN);
 

@@ -44,7 +44,7 @@ public class PersonRenderer implements ItemRenderer<PersonModelView>
      */
     public Panel render(final PersonModelView item)
     {
-        return new PersonPanel(item, true, false, showDescription, false);
+        return new PersonPanel(item, false, showDescription, false);
     }
 
 }
