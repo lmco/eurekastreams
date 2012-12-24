@@ -144,11 +144,7 @@ public class EntitiesByPrefixResource extends WritableResource
             JSONArray jsonEntities = new JSONArray();
             for (DisplayEntityModelView femv : results)
             {
-                // Do not include Locked Accounts as part of autocomplete data
-                if (!femv.isAccountLocked())
-                {
-                    jsonEntities.add(convertDisplayEntityModelViewToJSON(femv));
-                }
+                jsonEntities.add(convertDisplayEntityModelViewToJSON(femv));
             }
             json.put(ENTITIES_KEY, jsonEntities);
             log.debug("EntitiesByPrefixResource: json =   " + json.toString());
