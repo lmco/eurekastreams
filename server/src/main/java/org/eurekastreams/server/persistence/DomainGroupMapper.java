@@ -258,6 +258,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
         followingEntity.setCoordinators(groupCoordinators);
 
+        getEntityManager().persist(followingEntity);
         getEntityManager().flush();
     }
 
