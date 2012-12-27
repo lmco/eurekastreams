@@ -297,6 +297,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
         case NOTFOLLOWING:
 
+            log.debug("Performing unfollow for user: " + followerId + " of group:" + targetId);
+
             // Check if the User to be removed is a Group Coordinator.
             boolean isToBeRemovedUserGroupCoordinator = domainGroupMapper.isInputUserGroupCoordinator(followerId,
                     targetId);
@@ -331,6 +333,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
             if (isToBeRemovedUserGroupCoordinator)
             {
+                log.debug("Follower: " + followerId + " of group: " + targetId + " is a group coordinator");
+
                 // delete group coordinator from db
                 domainGroupMapper.removeGroupCoordinator(followerId, targetId);
 
@@ -346,6 +350,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                             .singleton(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + followerId)));
                 }
             }
+
+            log.debug("Completed the unfollow action");
 
             break;
 
