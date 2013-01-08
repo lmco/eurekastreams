@@ -58,6 +58,7 @@ public class PersonModelViewAvatarDisplayTransformerTest
         final String accountId = "lsdjkfdskfl";
         final String avatarId = "lsdkjflsdkflsdjf";
         final String displayName = "sldkjfskldjfljdf";
+        final boolean accountLocked = true;
         final long entityId = 3872L;
         context.checking(new Expectations()
         {
@@ -73,6 +74,9 @@ public class PersonModelViewAvatarDisplayTransformerTest
 
                 oneOf(mv).getEntityId();
                 will(returnValue(entityId));
+
+                oneOf(mv).isAccountLocked();
+                will(returnValue(accountLocked));
             }
         });
 
@@ -83,6 +87,7 @@ public class PersonModelViewAvatarDisplayTransformerTest
         assertEquals(avatarId, people.get(0).getAvatarId());
         assertEquals(displayName, people.get(0).getDisplayName());
         assertEquals(entityId, people.get(0).getEntityId());
+        assertEquals(accountLocked, people.get(0).isAccountLocked());
 
         context.assertIsSatisfied();
     }

@@ -166,6 +166,8 @@ public class SearchPeopleAndGroupsByPrefixTest
                 allowing(groupView).getShortName();
                 oneOf(groupView).getName();
                 oneOf(groupView).getStreamId();
+
+                allowing(personView).isAccountLocked();
             }
         });
 
@@ -217,6 +219,8 @@ public class SearchPeopleAndGroupsByPrefixTest
                 allowing(groupView).getShortName();
                 oneOf(groupView).getName();
                 oneOf(groupView).getStreamId();
+
+                allowing(personView).isAccountLocked();
             }
         });
 
