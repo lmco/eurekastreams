@@ -89,7 +89,7 @@ public class EntitiesByPrefixResource extends WritableResource
 
     /**
      * Setter.
-     *
+     * 
      * @param inEntitiesDAO
      *            The mapper.
      */
@@ -100,7 +100,7 @@ public class EntitiesByPrefixResource extends WritableResource
 
     /**
      * Initialize parameters from the request object. the context of the request
-     *
+     * 
      * @param request
      *            the client's request
      */
@@ -113,7 +113,7 @@ public class EntitiesByPrefixResource extends WritableResource
 
     /**
      * Handle GET requests.
-     *
+     * 
      * @param variant
      *            the variant to be retrieved.
      * @throws ResourceException
@@ -144,7 +144,11 @@ public class EntitiesByPrefixResource extends WritableResource
             JSONArray jsonEntities = new JSONArray();
             for (DisplayEntityModelView femv : results)
             {
-                jsonEntities.add(convertDisplayEntityModelViewToJSON(femv));
+                // Do not include Locked Accounts as part of autocomplete data
+                if (!femv.isAccountLocked())
+                {
+                    jsonEntities.add(convertDisplayEntityModelViewToJSON(femv));
+                }
             }
             json.put(ENTITIES_KEY, jsonEntities);
             log.debug("EntitiesByPrefixResource: json =   " + json.toString());
@@ -162,7 +166,7 @@ public class EntitiesByPrefixResource extends WritableResource
 
     /**
      * Method to convert {@link DisplayEntityModelView} to a JSON object.
-     *
+     * 
      * @param femv
      *            {@link DisplayEntityModelView}.
      * @return JSON object representing the {@link DisplayEntityModelView}.

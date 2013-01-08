@@ -21,7 +21,7 @@ import org.eurekastreams.server.domain.EntityType;
 
 /**
  * ModelView for Displayed Entities.
- *
+ * 
  */
 public class DisplayEntityModelView implements Serializable
 {
@@ -31,24 +31,29 @@ public class DisplayEntityModelView implements Serializable
     private static final long serialVersionUID = 8218491908194565832L;
 
     /**
-     *  Display name of entity.
+     * Display name of entity.
      */
     private String displayName;
-    
+
     /**
      * Type of Entity.
      */
     private EntityType type;
-    
+
     /**
      * Id for Entity (accountId or shortname).
      */
     private String uniqueKey;
-    
+
     /**
      * StreamScopeId for DisplayEntity.
      */
     private Long streamScopeId;
+
+    /**
+     * Whether the User's Account is Locked.
+     */
+    private boolean accountLocked;
 
     /**
      * @return the displayName
@@ -59,7 +64,8 @@ public class DisplayEntityModelView implements Serializable
     }
 
     /**
-     * @param inDisplayName the displayName to set
+     * @param inDisplayName
+     *            the displayName to set
      */
     public void setDisplayName(final String inDisplayName)
     {
@@ -75,7 +81,8 @@ public class DisplayEntityModelView implements Serializable
     }
 
     /**
-     * @param inType the type to set
+     * @param inType
+     *            the type to set
      */
     public void setType(final EntityType inType)
     {
@@ -91,7 +98,8 @@ public class DisplayEntityModelView implements Serializable
     }
 
     /**
-     * @param inUniqueKey the uniqueKey to set
+     * @param inUniqueKey
+     *            the uniqueKey to set
      */
     public void setUniqueKey(final String inUniqueKey)
     {
@@ -107,10 +115,28 @@ public class DisplayEntityModelView implements Serializable
     }
 
     /**
-     * @param inStreamScopeId the streamScopeId to set
+     * @param inStreamScopeId
+     *            the streamScopeId to set
      */
     public void setStreamScopeId(final Long inStreamScopeId)
     {
         this.streamScopeId = inStreamScopeId;
+    }
+
+    /**
+     * @return whether the account is locked or not
+     */
+    public boolean isAccountLocked()
+    {
+        return accountLocked;
+    }
+
+    /**
+     * @param inAccountLocked
+     *            boolean to set whether account is locked or not
+     */
+    public void setAccountLocked(final boolean inAccountLocked)
+    {
+        accountLocked = inAccountLocked;
     }
 }
