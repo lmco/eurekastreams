@@ -132,6 +132,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.http.client.URL;
 
 /**
  * Activity Page.
@@ -1289,8 +1290,9 @@ public class ActivityContent extends Composite
                                     "custom/"
                                             + filter.getId()
                                             + "/"
-                                            + filter.getRequest().replace("%%CURRENT_USER_ACCOUNT_ID%%",
-                                                    Session.getInstance().getCurrentPerson().getAccountId()),
+                                            + URL.encodeComponent(filter.getRequest().
+                                                        replace("%%CURRENT_USER_ACCOUNT_ID%%",
+                                                            Session.getInstance().getCurrentPerson().getAccountId())),
                                     "style/images/customStream.png", new ClickHandler()
                                     {
 
@@ -1678,7 +1680,7 @@ public class ActivityContent extends Composite
         }
         else if (views.get(0).equals("custom") && views.size() >= 3)
         {
-            currentRequestObj = StreamJsonRequestFactory.getJSONRequest(views.get(2));
+            currentRequestObj = StreamJsonRequestFactory.getJSONRequest(URL.decodeComponent(views.get(2)));
             setAsActiveStream(customStreamWidgetMap.get(Long.parseLong(views.get(1))));
             currentStream.setScopeType(null);
             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
