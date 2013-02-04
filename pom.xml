@@ -73,9 +73,6 @@
 	<repositories>
 	  <repository>
 	    <id>Eureka Streams Dependency Repo</id>
-	    <snapshots>
-	    	<enabled>false</enabled>
-	    </snapshots>
 	    <url>${build.maven.repo.eurekastreams.url}</url>
 	  </repository>
       <repository>
@@ -116,14 +113,6 @@
       <repository>
         <id>restlet</id>
         <url>http://maven.restlet.org/</url>
-      </repository>
-      <repository>
-        <id>gilead</id>
-        <layout>default</layout>
-        <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo/</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
       </repository>
       <repository>
         <id>codehaus</id>
@@ -198,7 +187,7 @@
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>2.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
-        <build.maven.repo.eurekastreams.url>https://raw.github.com/lmco/eurekastreams-mvn-repo/raw/master/releases/</build.maven.repo.eurekastreams.url>
+        <build.maven.repo.eurekastreams.url>https://raw.github.com/lmco/eurekastreams-mvn-repo/master/releases/</build.maven.repo.eurekastreams.url>
         <build.infosite.url>http://eurekastreams.org</build.infosite.url>
         <build.infosite.text>eurekastreams.org</build.infosite.text>
         <build.profile.emailregex>.*@.*</build.profile.emailregex>
