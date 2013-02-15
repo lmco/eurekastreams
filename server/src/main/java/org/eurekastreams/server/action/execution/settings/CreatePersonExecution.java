@@ -59,7 +59,7 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCreatePersonActionFactory
      *            action factory persist user updates.
      * @param inPersonMapper
@@ -77,10 +77,10 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
 
     /**
      * Add person to the system.
-     *
+     * 
      * @param inActionContext
      *            The action context
-     *
+     * 
      * @return true on success.
      */
     @Override
@@ -89,8 +89,8 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
         CreatePersonRequest createRequest = (CreatePersonRequest) inActionContext.getActionContext().getParams();
         Person inPerson = createRequest.getPerson();
 
-        PersistResourceExecution<Person> persistResourceExecution = createPersonActionFactory.getCreatePersonAction(personMapper,
-                new ReflectiveUpdater());
+        PersistResourceExecution<Person> persistResourceExecution = createPersonActionFactory.getCreatePersonAction(
+                personMapper, new ReflectiveUpdater());
 
         log.debug("Adding to database: " + inPerson.getAccountId());
 
@@ -103,8 +103,8 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
         if (createRequest.getSendEmail() && sendWelcomeEmailAction != null && !sendWelcomeEmailAction.isEmpty())
         {
             inActionContext.getUserActionRequests().add(
-                    new UserActionRequest(sendWelcomeEmailAction, null, new SendWelcomeEmailRequest(inPerson
-                            .getEmail(), inPerson.getAccountId())));
+                    new UserActionRequest(sendWelcomeEmailAction, null, new SendWelcomeEmailRequest(
+                            inPerson.getEmail(), inPerson.getAccountId())));
         }
 
         return person;

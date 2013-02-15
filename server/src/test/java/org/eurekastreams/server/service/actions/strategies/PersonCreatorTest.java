@@ -218,7 +218,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals(5, p.getStreams().get(0).getId());
         assertEquals(1, p.getStreams().get(1).getId());
     }
-    
+
     /**
      * Test getting a person with an org and a displayNameSuffix.
      */
@@ -273,7 +273,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals(5, p.getStreams().get(0).getId());
         assertEquals(1, p.getStreams().get(1).getId());
     }
-    
+
     /**
      * Test getting a person with an org and a null displayNameSuffix.
      */

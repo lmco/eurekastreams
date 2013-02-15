@@ -24,47 +24,47 @@ import static org.junit.Assert.assertNull;
 /**
  * Test fixture for AttributesToDisplayNameSuffixTransformer.
  */
-public class AttributesToDisplayNameSuffixTransformerTest 
+public class AttributesToDisplayNameSuffixTransformerTest
 {
-	/**
-	 * Test transform() with a match.
-	 */
-	@Test
+    /**
+     * Test transform() with a match.
+     */
+    @Test
     public void testTransformWithMatch()
     {
-		AttributesToDisplayNameSuffixTransformer sut;
-		sut = new AttributesToDisplayNameSuffixTransformer("foo", "^.+Esquire, D.F.A.$", " (LOL)");
-		
-		Attributes attributes = new BasicAttributes("foo", "Dr. Stephen Colbert Esquire, D.F.A.");
-		String result = sut.transform(attributes);
-		assertEquals(" (LOL)", result);
+        AttributesToDisplayNameSuffixTransformer sut;
+        sut = new AttributesToDisplayNameSuffixTransformer("foo", "^.+Esquire, D.F.A.$", " (LOL)");
+
+        Attributes attributes = new BasicAttributes("foo", "Dr. Stephen Colbert Esquire, D.F.A.");
+        String result = sut.transform(attributes);
+        assertEquals(" (LOL)", result);
     }
-	
-	/**
-	 * Test transform() with no match.
-	 */
-	@Test
+
+    /**
+     * Test transform() with no match.
+     */
+    @Test
     public void testTransformWithNoMatch()
     {
-		AttributesToDisplayNameSuffixTransformer sut;
-		sut = new AttributesToDisplayNameSuffixTransformer("foo", "^.+Esquire, D.F.A.$", " (LOL)");
-		
-		Attributes attributes = new BasicAttributes("foo", "Dr. Stephen Colbert Esquire, M.D.");
-		String result = sut.transform(attributes);
-		assertNull(result);
+        AttributesToDisplayNameSuffixTransformer sut;
+        sut = new AttributesToDisplayNameSuffixTransformer("foo", "^.+Esquire, D.F.A.$", " (LOL)");
+
+        Attributes attributes = new BasicAttributes("foo", "Dr. Stephen Colbert Esquire, M.D.");
+        String result = sut.transform(attributes);
+        assertNull(result);
     }
-	
-	/**
-	 * Test transform() with the target attribute missing.
-	 */
-	@Test
-	public void testTransformWithMissingAttribute()
-	{
-		AttributesToDisplayNameSuffixTransformer sut;
-		sut = new AttributesToDisplayNameSuffixTransformer("foo", "^.+Esquire, D.F.A.$", " (LOL)");
-		
-		Attributes attributes = new BasicAttributes("bar", "Dr. Stephen Colbert Esquire, D.F.A.");
-		String result = sut.transform(attributes);
-		assertNull(result);
-	}
+
+    /**
+     * Test transform() with the target attribute missing.
+     */
+    @Test
+    public void testTransformWithMissingAttribute()
+    {
+        AttributesToDisplayNameSuffixTransformer sut;
+        sut = new AttributesToDisplayNameSuffixTransformer("foo", "^.+Esquire, D.F.A.$", " (LOL)");
+
+        Attributes attributes = new BasicAttributes("bar", "Dr. Stephen Colbert Esquire, D.F.A.");
+        String result = sut.transform(attributes);
+        assertNull(result);
+    }
 }

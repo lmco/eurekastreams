@@ -81,8 +81,8 @@ public class DomainGroupModelViewTest
     /**
      * The person that created the group.
      */
-	private final Person createdby = new Person("testid", "test", "my", "last", "preferred");
-	
+    private final Person createdby = new Person("testid", "test", "my", "last", "preferred");
+
     /**
      * IsPublic.
      */
@@ -114,18 +114,18 @@ public class DomainGroupModelViewTest
     @Before
     public void setup()
     {
-    	createdby.setDisplayNameSuffix(" (FOO)");
+        createdby.setDisplayNameSuffix(" (FOO)");
     }
-    
+
     /**
      * Test helper method to assert all properties.
-     *
+     * 
      * @param sut
      *            the SUT
      */
     private void assertAll(final DomainGroupModelView sut)
     {
-    	assertEquals(shortName, sut.getShortName());
+        assertEquals(shortName, sut.getShortName());
         assertEquals(followersCount, sut.getFollowersCount());
         assertEquals(name, sut.getName());
         assertEquals(shortName, sut.getShortName());
@@ -147,7 +147,7 @@ public class DomainGroupModelViewTest
 
     /**
      * Test helper method to assert the default values.
-     *
+     * 
      * @param sut
      *            the SUT
      */

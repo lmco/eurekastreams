@@ -28,11 +28,11 @@ import org.apache.commons.logging.Log;
  */
 public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePersonResponse>
 {
-	/**
+    /**
      * Logger.
      */
     private final Log log = LogFactory.make();
-    
+
     /**
      * Update the person in the DB.
      * 
@@ -58,10 +58,9 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
         }
 
         // Checks to see if company in ldap matches what the db has, updating db if they don't match.
-        if (dbPerson.getCompanyName() == null
-                && ldapPerson.getCompanyName() != null
-                || (dbPerson.getCompanyName() != null 
-                        && !dbPerson.getCompanyName().equals(ldapPerson.getCompanyName())))
+        if (dbPerson.getCompanyName() == null && ldapPerson.getCompanyName() != null
+                || (dbPerson.getCompanyName() != null && // line-break
+                !dbPerson.getCompanyName().equals(ldapPerson.getCompanyName())))
         {
             dbPerson.setCompanyName(ldapPerson.getCompanyName());
             wasPersonUpdated = true;
@@ -70,18 +69,18 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
         // Checks to see if the display name suffix has changed
         log.debug("Checking if the displayNameSuffix changed");
         String newDisplayNameSuffix = "";
-        if(ldapPerson.getDisplayNameSuffix() != null)
+        if (ldapPerson.getDisplayNameSuffix() != null)
         {
-        	newDisplayNameSuffix = ldapPerson.getDisplayNameSuffix();
+            newDisplayNameSuffix = ldapPerson.getDisplayNameSuffix();
         }
-        if(!dbPerson.getDisplayNameSuffix().equals(newDisplayNameSuffix))
+        if (!dbPerson.getDisplayNameSuffix().equals(newDisplayNameSuffix))
         {
-        	// display name has changed
-        	log.debug("displayNameSuffix did change - new value: " + newDisplayNameSuffix);
-        	dbPerson.setDisplayNameSuffix(newDisplayNameSuffix);
-        	wasPersonUpdated = true;
+            // display name has changed
+            log.debug("displayNameSuffix did change - new value: " + newDisplayNameSuffix);
+            dbPerson.setDisplayNameSuffix(newDisplayNameSuffix);
+            wasPersonUpdated = true;
         }
-        
+
         // Looks for any additional properties defined for the person retrieved from ldap call.
         if (ldapAdditionalProperties != null && !ldapAdditionalProperties.isEmpty())
         {

@@ -157,7 +157,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * The person's display name.
      */
     private String displayName = null;
-    
+
     /**
      * The person's display name suffix.
      */
@@ -300,7 +300,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the name of this entity.
-     *
+     * 
      * @return the name of this entity
      */
     @Override
@@ -318,10 +318,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Constructor suitable for StreamDTO.
-     *
-     * This is identical to the other constructor, but this one takes an Integer for the followerCount.
-     * The reason for this is that the field is an integer type.
-     *
+     * 
+     * This is identical to the other constructor, but this one takes an Integer for the followerCount. The reason for
+     * this is that the field is an integer type.
+     * 
      * @param inId
      *            the person id
      * @param inAccountId
@@ -342,18 +342,18 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the stream scope id
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final String inDisplayName, final String inDisplayNameSuffix,  
+            final String inLastName, final String inDisplayName, final String inDisplayNameSuffix,
             final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
     {
-        this(inId, inAccountId, inPreferredName, inLastName, inDisplayName, inDisplayNameSuffix, 
-        		new Long(inFollowerCount.longValue()), inDateAdded, inStreamScopeId);
+        this(inId, inAccountId, inPreferredName, inLastName, inDisplayName, inDisplayNameSuffix, new Long(
+                inFollowerCount.longValue()), inDateAdded, inStreamScopeId);
     }
-    
+
     /**
      * Constructor suitable for StreamDTO.
      * 
-     * This is identical to the other constructor, but this one takes a Long for the followerCount.
-     * The reason for this is that COUNT() queries return long. 
+     * This is identical to the other constructor, but this one takes a Long for the followerCount. The reason for this
+     * is that COUNT() queries return long.
      * 
      * @param inId
      *            the person id
@@ -375,7 +375,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the stream scope id
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final String inDisplayName, final String inDisplayNameSuffix,  
+            final String inLastName, final String inDisplayName, final String inDisplayNameSuffix,
             final Long inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
     {
         setEntityId(inId);
@@ -391,7 +391,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -450,23 +450,23 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
             }
             setOptOutVideos(videoIdSet);
         }
-        if(properties.containsKey("displayName"))
+        if (properties.containsKey("displayName"))
         {
-        	setDisplayName((String)properties.get("displayName"));
+            setDisplayName((String) properties.get("displayName"));
         }
         else
         {
-        	// build displayName
-	        if (properties.containsKey("lastName") && properties.containsKey("preferredName"))
-	        {
-	        	String dName = (String) properties.get("preferredName") + " " + (String) properties.get("lastName");
-	            // this should be done as a ClassBridge but ClassBridges can't currently be projected
-	            if(properties.containsKey("displayNameSuffix") && properties.get("displayNameSuffix") != null)
-	            {
-	            	dName += (String)properties.get("displayNameSuffix");
-	            }
-	            setDisplayName(dName);
-	        }
+            // build displayName
+            if (properties.containsKey("lastName") && properties.containsKey("preferredName"))
+            {
+                String dName = (String) properties.get("preferredName") + " " + (String) properties.get("lastName");
+                // this should be done as a ClassBridge but ClassBridges can't currently be projected
+                if (properties.containsKey("displayNameSuffix") && properties.get("displayNameSuffix") != null)
+                {
+                    dName += (String) properties.get("displayNameSuffix");
+                }
+                setDisplayName(dName);
+            }
         }
         if (properties.containsKey("companyName"))
         {
@@ -586,7 +586,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the date the person was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     @Override
@@ -597,7 +597,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the date the person was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -608,7 +608,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's account id.
-     *
+     * 
      * @return the accountId
      */
     public String getAccountId()
@@ -618,7 +618,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's account id.
-     *
+     * 
      * @param inAccountId
      *            the accountId to set
      */
@@ -629,7 +629,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's OpenSocial id.
-     *
+     * 
      * @return the openSocialId
      */
     public String getOpenSocialId()
@@ -639,7 +639,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's OpenSocial id.
-     *
+     * 
      * @param inOpenSocialId
      *            the openSocialId to set
      */
@@ -650,7 +650,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's title.
-     *
+     * 
      * @return the title
      */
     @Override
@@ -661,7 +661,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's title.
-     *
+     * 
      * @param inTitle
      *            the title to set
      */
@@ -672,7 +672,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's description.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -682,7 +682,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's description.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -693,7 +693,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the number of people following this person.
-     *
+     * 
      * @return the followersCount
      */
     @Override
@@ -721,7 +721,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of people following this person.
-     *
+     * 
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -732,7 +732,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's display name.
-     *
+     * 
      * @return the displayName
      */
     @Override
@@ -743,7 +743,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's display name.
-     *
+     * 
      * @param inDisplayName
      *            the displayName to set
      */
@@ -755,7 +755,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's avatar id.
-     *
+     * 
      * @return the avatarId
      */
     @Override
@@ -766,7 +766,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's avatar id.
-     *
+     * 
      * @param inAvatarId
      *            the avatarId to set
      */
@@ -778,7 +778,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the entity id.
-     *
+     * 
      * @param inEntityId
      *            the entity id of the person.
      */
@@ -791,7 +791,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The the number of updates for this person.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -801,7 +801,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of updates for this person.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -864,7 +864,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the roles.
-     *
+     * 
      * @param inRoles
      *            the roles.
      */
@@ -875,7 +875,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Gets the roles.
-     *
+     * 
      * @return the roles.
      */
     public Set<Role> getRoles()
@@ -972,7 +972,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     *
+     * 
      * @return videos the person has opted out of.
      */
     public HashSet<Long> getOptOutVideos()
@@ -982,10 +982,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * set the set of videos a person has opted out of.
-     *
+     * 
      * @param inOptOutVideos
      *            the set of videos.
-     *
+     * 
      */
     public void setOptOutVideos(final HashSet<Long> inOptOutVideos)
     {
@@ -1012,7 +1012,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the unique key for this stream.
-     *
+     * 
      * @return the person's account id
      */
     @Override
@@ -1023,7 +1023,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the last date the person accepted the terms of service.
-     *
+     * 
      * @return the last date the person accepted the terms of service
      */
     public Date getLastAcceptedTermsOfService()
@@ -1033,7 +1033,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the last date the person accepted the terms of service.
-     *
+     * 
      * @param inLastAcceptedTermsOfService
      *            the last date the person accepted the terms of service.
      */
@@ -1044,7 +1044,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties setter.
-     *
+     * 
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -1055,7 +1055,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties getter.
-     *
+     * 
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()
@@ -1317,7 +1317,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the company name.
-     *
+     * 
      * @return the company name.
      */
     public String getCompanyName()
@@ -1327,7 +1327,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the company name.
-     *
+     * 
      * @param inCompanyName
      *            the company name.
      */
@@ -1377,7 +1377,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get whether this stream is public (always true for Person).
-     *
+     * 
      * @return true
      */
     @Override
@@ -1385,7 +1385,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         return true;
     }
-    
+
     /**
      * Get the display name suffix.
      * 
@@ -1393,15 +1393,17 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public String getDisplayNameSuffix()
     {
-    	return displayNameSuffix;
+        return displayNameSuffix;
     }
-    
+
     /**
      * Set the display name suffix.
-     * @param inDisplayNameSuffix the display name suffix to set
+     * 
+     * @param inDisplayNameSuffix
+     *            the display name suffix to set
      */
     public void setDisplayNameSuffix(final String inDisplayNameSuffix)
     {
-    	displayNameSuffix = inDisplayNameSuffix;
+        displayNameSuffix = inDisplayNameSuffix;
     }
 }

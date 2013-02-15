@@ -22,78 +22,76 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Transformer to return the displayNameSuffix from a
- * javax.naming.directory.Attributes. This will return (EXP) if the displayName
- * attribute ends with " (EXP)", or null otherwise.
+ * Transformer to return the displayNameSuffix from a javax.naming.directory.Attributes. This will return (EXP) if the
+ * displayName attribute ends with " (EXP)", or null otherwise.
  */
-public class AttributesToDisplayNameSuffixTransformer implements Transformer<Attributes, String> 
+public class AttributesToDisplayNameSuffixTransformer implements Transformer<Attributes, String>
 {
-	/**
-	 * Logger.
-	 */
-	private final Log log = LogFactory.getLog(AttributesToDisplayNameSuffixTransformer.class);
+    /**
+     * Logger.
+     */
+    private final Log log = LogFactory.getLog(AttributesToDisplayNameSuffixTransformer.class);
 
-	/**
-	 * Name of the attribute to look at.
-	 */
-	private String attributeName;
-	
-	/**
-	 * Regex to use to see if the user's attribute matches.
-	 */
-	private String regularExpression;
-	
-	/**
-	 * The suffix to choose for the user if their attribute matches.
-	 */
-	private String displayNameSuffix;
-	
-	/**
-	 * Constructor.
-	 * @param inAttributeName 
-	 *         the attribute name to check for match
-	 * @param inRegularExpression 
-	 *         the regular expression test the attribute value for
-	 * @param inDisplayNameSuffix
-	 *         the display name suffix to return if the regex matches
-	 */
-	public AttributesToDisplayNameSuffixTransformer(final String inAttributeName, 
-			final String inRegularExpression, final String inDisplayNameSuffix)
-	{
-		attributeName = inAttributeName;
-		regularExpression = inRegularExpression;
-		displayNameSuffix = inDisplayNameSuffix;
-	}
-	
-	/**
-	 * Transform the input Attributes to the display name suffix, or null if not
-	 * found or not applicable.
-	 * 
-	 * @param inAttributes
-	 *            The Attributes to transform to the display name suffix
-	 * @return Transformed object.
-	 */
-	public String transform(final Attributes inAttributes) 
-	{
-		String result = null;
-		
-		try 
-		{
-			Attribute attribute = inAttributes.get(attributeName);
-			log.debug("Matching attribute:  " + attributeName + " = " + attribute.get());
-			if (attribute != null
-					&& attribute.get().toString().matches(regularExpression))
-			{
-				log.debug("Matched - result: " + displayNameSuffix);
-				result = displayNameSuffix;
-			}
-		}
-		catch (Exception ex) 
-		{
-			log.error("Error transforming Attributes to displayNameSuffix: ", ex);
-			result = null;
-		}
+    /**
+     * Name of the attribute to look at.
+     */
+    private String attributeName;
 
-		return result;
-	}
+    /**
+     * Regex to use to see if the user's attribute matches.
+     */
+    private String regularExpression;
+
+    /**
+     * The suffix to choose for the user if their attribute matches.
+     */
+    private String displayNameSuffix;
+
+    /**
+     * Constructor.
+     * 
+     * @param inAttributeName
+     *            the attribute name to check for match
+     * @param inRegularExpression
+     *            the regular expression test the attribute value for
+     * @param inDisplayNameSuffix
+     *            the display name suffix to return if the regex matches
+     */
+    public AttributesToDisplayNameSuffixTransformer(final String inAttributeName, final String inRegularExpression,
+            final String inDisplayNameSuffix)
+    {
+        attributeName = inAttributeName;
+        regularExpression = inRegularExpression;
+        displayNameSuffix = inDisplayNameSuffix;
+    }
+
+    /**
+     * Transform the input Attributes to the display name suffix, or null if not found or not applicable.
+     * 
+     * @param inAttributes
+     *            The Attributes to transform to the display name suffix
+     * @return Transformed object.
+     */
+    public String transform(final Attributes inAttributes)
+    {
+        String result = null;
+
+        try
+        {
+            Attribute attribute = inAttributes.get(attributeName);
+            log.debug("Matching attribute:  " + attributeName + " = " + attribute.get());
+            if (attribute != null && attribute.get().toString().matches(regularExpression))
+            {
+                log.debug("Matched - result: " + displayNameSuffix);
+                result = displayNameSuffix;
+            }
+        }
+        catch (Exception ex)
+        {
+            log.error("Error transforming Attributes to displayNameSuffix: ", ex);
+            result = null;
+        }
+
+        return result;
+    }
 }

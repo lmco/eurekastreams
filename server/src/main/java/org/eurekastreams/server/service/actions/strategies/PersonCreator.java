@@ -100,16 +100,16 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     {
         // create the person
         Person person = new Person((String) inFields.get("accountId"), (String) inFields.get("firstName"),
-                (String) inFields.get("middleName"), (String) inFields.get("lastName"), (String) inFields
-                        .get("preferredName"));
+                (String) inFields.get("middleName"), (String) inFields.get("lastName"),
+                (String) inFields.get("preferredName"));
         person.setEmail((String) inFields.get("email"));
         person.setOpenSocialId(UUID.randomUUID().toString());
         person.setCompanyName((String) inFields.get("companyName"));
-        
-        String displayNameSuffix = (String)inFields.get("displayNameSuffix");
-        if(displayNameSuffix == null)
+
+        String displayNameSuffix = (String) inFields.get("displayNameSuffix");
+        if (displayNameSuffix == null)
         {
-        	displayNameSuffix = "";
+            displayNameSuffix = "";
         }
         person.setDisplayNameSuffix(displayNameSuffix);
 

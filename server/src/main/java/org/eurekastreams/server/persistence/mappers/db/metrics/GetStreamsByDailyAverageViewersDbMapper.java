@@ -39,7 +39,7 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamCount
      *            the number of streams to get
      */
@@ -50,7 +50,7 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
 
     /**
      * Get a list of the stream scope ids for the most viewed streams.
-     *
+     * 
      * @param inIgnored
      *            ignored param - go nuts
      * @return list of stream scope ids
@@ -98,9 +98,9 @@ public class GetStreamsByDailyAverageViewersDbMapper extends BaseArgDomainMapper
         // get the people streams
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, displayName, displayNameSuffix, followersCount, dateAdded, streamScope.id) "
-                		+ "FROM Person "
-                        + "WHERE streamScope.id IN(:streamScopeIds)").setParameter("streamScopeIds", streamScopeIds);
+                        + "preferredName, lastName, displayName, displayNameSuffix, followersCount, "
+                        + "dateAdded, streamScope.id) FROM Person " + "WHERE streamScope.id IN(:streamScopeIds)")
+                .setParameter("streamScopeIds", streamScopeIds);
         streamDtos.addAll(q.getResultList());
 
         // get the group streams

@@ -70,8 +70,8 @@ public class GetStreamDiscoverListsDTOExecutionTest
     /**
      * Mapper to get suggested group streams.
      */
-    private final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> suggestedGroupMapper = context.mock(
-            DomainMapper.class, "suggestedGroupMapper");
+    private final DomainMapper<SuggestedStreamsRequest, List<DomainGroupModelView>> suggestedGroupMapper = context
+            .mock(DomainMapper.class, "suggestedGroupMapper");
 
     /**
      * Mapper to get the stream discovery lists that are the same for everyone.
@@ -100,8 +100,9 @@ public class GetStreamDiscoverListsDTOExecutionTest
     /**
      * System under test.
      */
-    private final GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(suggestedPersonMapper,
-            suggestedGroupMapper, 10, streamDiscoveryListsMapper, displayInfoSettableDataPopulator, //
+    private final GetStreamDiscoverListsDTOExecution sut = new GetStreamDiscoverListsDTOExecution(
+            suggestedPersonMapper, suggestedGroupMapper, 10, streamDiscoveryListsMapper,
+            displayInfoSettableDataPopulator, //
             followerStatusPopulator, getPersonModelViewsByIdsDAO);
 
     /**

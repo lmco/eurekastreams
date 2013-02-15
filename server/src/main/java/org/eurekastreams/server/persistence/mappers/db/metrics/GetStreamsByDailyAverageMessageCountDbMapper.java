@@ -42,7 +42,7 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamCount
      *            the number of streams to pull
      */
@@ -54,7 +54,7 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
     /**
      * Get a list of the stream scope ids for the most active streams. Note that this mapper expects
      * TempWeekdaysSinceDate to be populated with current data.
-     *
+     * 
      * @param inIgnored
      *            ignored param - go nuts
      * @return list of stream scope ids
@@ -101,9 +101,9 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
         // get the people streams
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, displayName, displayNameSuffix, followersCount, dateAdded, streamScope.id) "
-                        + "FROM Person "
-                        + "WHERE streamScope.id IN(:streamScopeIds)").setParameter("streamScopeIds", streamScopeIds);
+                        + "preferredName, lastName, displayName, displayNameSuffix, followersCount, dateAdded, "
+                        + "streamScope.id) FROM Person " + "WHERE streamScope.id IN(:streamScopeIds)").setParameter(
+                "streamScopeIds", streamScopeIds);
         streamDtos.addAll(q.getResultList());
 
         // get the group streams

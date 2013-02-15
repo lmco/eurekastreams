@@ -32,7 +32,7 @@ public class PersonQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     *
+     * 
      * @param hibernateSession
      *            the hibernate session used to create the criteria.
      * @return the base criteria object.
@@ -87,7 +87,7 @@ public class PersonQueryStrategy
 
     /**
      * Build the PropertyProjection with alias.
-     *
+     * 
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

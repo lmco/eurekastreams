@@ -24,8 +24,8 @@ import org.eurekastreams.server.persistence.mappers.requests.SuggestedStreamsReq
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers
- * are members of, sorted by follow count within that group, and ignoring the input user's followers as suggestions.
+ * Database mapper to get a list of suggested people streams for a person by getting all groups that their followers are
+ * members of, sorted by follow count within that group, and ignoring the input user's followers as suggestions.
  */
 public class GetSuggestedPeopleForPersonDbMapper extends
         BaseArgDomainMapper<SuggestedStreamsRequest, List<PersonModelView>>
@@ -33,7 +33,7 @@ public class GetSuggestedPeopleForPersonDbMapper extends
     /**
      * Get a list of suggested group streams for a person by getting all groups that their followers are members of,
      * sorted by follow count within that group.
-     *
+     * 
      * @param inRequest
      *            the request containing the person and stream count
      * @return the top NN suggested groups by their followers
@@ -61,8 +61,7 @@ public class GetSuggestedPeopleForPersonDbMapper extends
                                 + "AND person.accountLocked = false AND person.accountDeactivated = false "
                                 + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
                                 + "person.lastName, person.displayNameSuffix, person.displayName, person.dateAdded, "
-                                + "person.streamScope.id "
-                                + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC")
+                                + "person.streamScope.id " + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC")
                 .setParameter("personBlockedId", inRequest.getPersonId())
                 .setParameter("personId", inRequest.getPersonId());
         query.setMaxResults(inRequest.getStreamCount());

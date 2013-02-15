@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for RefreshPeopleExecution.
- *
+ * 
  */
 public class RefreshPeopleExecutionTest
 {
@@ -294,7 +294,7 @@ public class RefreshPeopleExecutionTest
 
         sut.execute(actionContext);
 
-        assertEquals(4, list.size());	// 4 requests - refreshing p1, p2, and p3, and unlocking p3
+        assertEquals(4, list.size()); // 4 requests - refreshing p1, p2, and p3, and unlocking p3
 
         HashMap<String, UserActionRequest> listOfRequests = new HashMap<String, UserActionRequest>();
         listOfRequests.put(list.get(0).getActionKey(), list.get(0));
