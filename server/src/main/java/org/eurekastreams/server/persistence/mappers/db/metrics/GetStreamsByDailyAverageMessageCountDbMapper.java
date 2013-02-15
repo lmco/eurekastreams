@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,14 +101,15 @@ public class GetStreamsByDailyAverageMessageCountDbMapper extends
         // get the people streams
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, 0, dateAdded, streamScope.id) FROM Person "
+                        + "preferredName, lastName, displayName, displayNameSuffix, followersCount, dateAdded, streamScope.id) "
+                        + "FROM Person "
                         + "WHERE streamScope.id IN(:streamScopeIds)").setParameter("streamScopeIds", streamScopeIds);
         streamDtos.addAll(q.getResultList());
 
         // get the group streams
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.DomainGroupModelView(id, "
-                        + "shortName, name, 0, dateAdded, streamScope.id, publicGroup) FROM DomainGroup "
+                        + "shortName, name, followersCount, dateAdded, streamScope.id, publicGroup) FROM DomainGroup "
                         + "WHERE streamScope.id IN(:streamScopeIds)").setParameter("streamScopeIds", streamScopeIds);
         streamDtos.addAll(q.getResultList());
 

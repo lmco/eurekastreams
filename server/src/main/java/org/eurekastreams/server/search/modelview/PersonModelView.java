@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,6 +157,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * The person's display name.
      */
     private String displayName = null;
+    
+    /**
+     * The person's display name suffix.
+     */
+    private String displayNameSuffix = null;
 
     /**
      * The person's avatar id.
@@ -314,34 +319,8 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * Constructor suitable for StreamDTO.
      *
-     * @param inId
-     *            the person id
-     * @param inAccountId
-     *            the person account id
-     * @param inPreferredName
-     *            the person preferred name
-     * @param inLastName
-     *            the person last name
-     * @param inFollowerCount
-     *            the number of followers
-     * @param inDateAdded
-     *            the date this stream was created
-     * @param inStreamScopeId
-     *            the stream scope id
-     */
-    public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final Long inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
-    {
-        setEntityId(inId);
-        setAccountId(inAccountId);
-        setDisplayName(inPreferredName + " " + inLastName);
-        setFollowersCount(inFollowerCount.intValue());
-        setDateAdded(inDateAdded);
-        setStreamScopeId(inStreamScopeId);
-    }
-
-    /**
-     * Constructor suitable for StreamDTO.
+     * This is identical to the other constructor, but this one takes an Integer for the followerCount.
+     * The reason for this is that the field is an integer type.
      *
      * @param inId
      *            the person id
@@ -351,6 +330,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the person preferred name
      * @param inLastName
      *            the person last name
+     * @param inDisplayName
+     *            the display name
+     * @param inDisplayNameSuffix
+     *            the display name suffix to show, or null if none
      * @param inFollowerCount
      *            the number of followers
      * @param inDateAdded
@@ -359,11 +342,48 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *            the stream scope id
      */
     public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
-            final String inLastName, final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
+            final String inLastName, final String inDisplayName, final String inDisplayNameSuffix,  
+            final Integer inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
+    {
+        this(inId, inAccountId, inPreferredName, inLastName, inDisplayName, inDisplayNameSuffix, 
+        		new Long(inFollowerCount.longValue()), inDateAdded, inStreamScopeId);
+    }
+    
+    /**
+     * Constructor suitable for StreamDTO.
+     * 
+     * This is identical to the other constructor, but this one takes a Long for the followerCount.
+     * The reason for this is that COUNT() queries return long. 
+     * 
+     * @param inId
+     *            the person id
+     * @param inAccountId
+     *            the person account id
+     * @param inPreferredName
+     *            the person preferred name
+     * @param inLastName
+     *            the person last name
+     * @param inDisplayName
+     *            the display name
+     * @param inDisplayNameSuffix
+     *            the display name suffix to show, or null if none
+     * @param inFollowerCount
+     *            the number of followers
+     * @param inDateAdded
+     *            the date this stream was created
+     * @param inStreamScopeId
+     *            the stream scope id
+     */
+    public PersonModelView(final Long inId, final String inAccountId, final String inPreferredName,
+            final String inLastName, final String inDisplayName, final String inDisplayNameSuffix,  
+            final Long inFollowerCount, final Date inDateAdded, final Long inStreamScopeId)
     {
         setEntityId(inId);
         setAccountId(inAccountId);
-        setDisplayName(inPreferredName + " " + inLastName);
+        setPreferredName(inPreferredName);
+        setLastName(inLastName);
+        setDisplayName(inDisplayName);
+        setDisplayNameSuffix(inDisplayNameSuffix);
         setFollowersCount(inFollowerCount.intValue());
         setDateAdded(inDateAdded);
         setStreamScopeId(inStreamScopeId);
@@ -430,10 +450,23 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
             }
             setOptOutVideos(videoIdSet);
         }
-        if (properties.containsKey("lastName") && properties.containsKey("preferredName"))
+        if(properties.containsKey("displayName"))
         {
-            // this should be done as a ClassBridge but ClassBridges can't currently be projected
-            setDisplayName((String) properties.get("preferredName") + " " + (String) properties.get("lastName"));
+        	setDisplayName((String)properties.get("displayName"));
+        }
+        else
+        {
+        	// build displayName
+	        if (properties.containsKey("lastName") && properties.containsKey("preferredName"))
+	        {
+	        	String dName = (String) properties.get("preferredName") + " " + (String) properties.get("lastName");
+	            // this should be done as a ClassBridge but ClassBridges can't currently be projected
+	            if(properties.containsKey("displayNameSuffix") && properties.get("displayNameSuffix") != null)
+	            {
+	            	dName += (String)properties.get("displayNameSuffix");
+	            }
+	            setDisplayName(dName);
+	        }
         }
         if (properties.containsKey("companyName"))
         {
@@ -1351,5 +1384,24 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public Boolean isPublic()
     {
         return true;
+    }
+    
+    /**
+     * Get the display name suffix.
+     * 
+     * @return the display name suffix.
+     */
+    public String getDisplayNameSuffix()
+    {
+    	return displayNameSuffix;
+    }
+    
+    /**
+     * Set the display name suffix.
+     * @param inDisplayNameSuffix the display name suffix to set
+     */
+    public void setDisplayNameSuffix(final String inDisplayNameSuffix)
+    {
+    	displayNameSuffix = inDisplayNameSuffix;
     }
 }

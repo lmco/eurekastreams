@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenEqualGroupAndPerson()
     {
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date(), 4L);
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "last", null, "", 50, new Date(), 4L);
         DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, new Date(), 5L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
@@ -51,8 +51,8 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenTwoPeopleEqualCount()
     {
-        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, new Date(), 6L);
-        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, new Date(), 7L);
+        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", null, "", 50, new Date(), 6L);
+        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", null, "", 50, new Date(), 7L);
 
         Assert.assertTrue(sut.compare(pmv1, pmv2) < 0);
     }
@@ -63,8 +63,8 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenTwoPeopleEqual()
     {
-        PersonModelView pmv1 = new PersonModelView(1L, "personz", "Person", "ZA", 50L, new Date(), 6L);
-        PersonModelView pmv2 = new PersonModelView(2L, "personz", "Person", "ZB", 50L, new Date(), 7L);
+        PersonModelView pmv1 = new PersonModelView(1L, "personz", "Person", "ZA", null, "", 50, new Date(), 6L);
+        PersonModelView pmv2 = new PersonModelView(2L, "personz", "Person", "ZB", null, "", 50, new Date(), 7L);
 
         Assert.assertEquals(0, sut.compare(pmv1, pmv2));
     }
@@ -99,7 +99,7 @@ public class StreamDTOFollowerCountDescendingComparatorTest
     @Test
     public void testCompareWhenGroupAndPersonHaveDifferentFollowerCounts()
     {
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, new Date(), 10L);
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "lastName", null, "", 40, new Date(), 10L);
         DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, new Date(), 11L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);

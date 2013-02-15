@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -292,6 +292,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private String lastName;
 
     /**
+     * The suffix to append to the person's display name - defaults to "".
+     */
+    @Basic(optional = false)
+    private String displayNameSuffix = "";
+    
+    /**
      * The preferred name of this Person.
      */
     @Basic(optional = false)
@@ -555,7 +561,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         if (displayName == null || displayName.isEmpty())
         {
-            displayName = preferredName + " " + lastName;
+            displayName = preferredName + " " + lastName + displayNameSuffix;
         }
         return displayName;
     }
@@ -575,7 +581,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * Allows for getting displayName in a property projection.
      */
-    @Formula("preferredName || ' ' || lastName")
+    @Formula("preferredName || ' ' || lastName || '' || displayNameSuffix")
     private String displayName;
 
     /**
@@ -610,7 +616,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         setAccountId(personModelView.getAccountId());
         openSocialId = personModelView.getOpenSocialId();
         setOptOutVideos(personModelView.getOptOutVideos());
-        displayName = personModelView.getDisplayName();
         followersCount = personModelView.getFollowersCount();
         title = personModelView.getTitle();
         email = personModelView.getEmail();
@@ -618,6 +623,13 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         additionalProperties = personModelView.getAdditionalProperties();
         lastName = personModelView.getLastName();
         preferredName = personModelView.getPreferredName();
+        displayNameSuffix = personModelView.getDisplayNameSuffix();
+        
+        if(personModelView.getDisplayName() != null)
+        {
+        	// override with the display name in the modelview
+            displayName = personModelView.getDisplayName();
+        }
     }
 
     /**
@@ -1202,6 +1214,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         addNonNullProperty("middleName", getMiddleName(), personData);
         addNonNullProperty("lastName", getLastName(), personData);
         addNonNullProperty("preferredName", getPreferredName(), personData);
+        addNonNullProperty("displayNameSuffix", getDisplayNameSuffix(), personData);
         addNonNullProperty("email", getEmail(), personData);
         addNonNullProperty("workPhone", getWorkPhone(), personData);
         addNonNullProperty("fax", getFax(), personData);
@@ -1792,4 +1805,25 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         accountDeactivated = inAccountDeactivated;
     }
 
+    /**
+     * Set the displayNameSuffix.
+     * @param inDisplayNameSuffix
+     *            The display name suffix to set.
+     */
+    public void setDisplayNameSuffix(final String inDisplayNameSuffix)
+    {
+    	displayNameSuffix = inDisplayNameSuffix;
+    	
+    	// reset the display name
+    	displayName = null;
+    }
+    
+    /**
+     * Get the displayNameSuffix.
+     * @return the display name suffix
+     */
+    public String getDisplayNameSuffix()
+    {
+    	return displayNameSuffix;
+    }
 }

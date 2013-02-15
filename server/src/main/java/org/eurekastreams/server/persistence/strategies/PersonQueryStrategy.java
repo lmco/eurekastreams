@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,8 @@ public class PersonQueryStrategy
         fields.add(getColumn("avatarCropY"));
         fields.add(getColumn("avatarCropSize"));
         fields.add(getColumn("lastName"));
+        fields.add(getColumn("displayNameSuffix"));
+        fields.add(getColumn("displayName"));
         fields.add(getColumn("preferredName"));
         fields.add(getColumn("jobDescription"));
         fields.add(getColumn("title"));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
 
 /**
  * Strategy for creating person record in the system.
- *
  */
 public class CreatePersonExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -47,11 +46,6 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
      * Send welcome email action key.
      */
     private String sendWelcomeEmailAction = null;
-
-    /**
-     * Persist resource action.
-     */
-    private PersistResourceExecution<Person> persistResourceExecution;
 
     /**
      * Factory to create person.
@@ -95,7 +89,7 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
         CreatePersonRequest createRequest = (CreatePersonRequest) inActionContext.getActionContext().getParams();
         Person inPerson = createRequest.getPerson();
 
-        persistResourceExecution = createPersonActionFactory.getCreatePersonAction(personMapper,
+        PersistResourceExecution<Person> persistResourceExecution = createPersonActionFactory.getCreatePersonAction(personMapper,
                 new ReflectiveUpdater());
 
         log.debug("Adding to database: " + inPerson.getAccountId());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -294,12 +294,13 @@ public class RefreshPeopleExecutionTest
 
         sut.execute(actionContext);
 
-        assertEquals(3, list.size());
+        assertEquals(4, list.size());	// 4 requests - refreshing p1, p2, and p3, and unlocking p3
 
         HashMap<String, UserActionRequest> listOfRequests = new HashMap<String, UserActionRequest>();
         listOfRequests.put(list.get(0).getActionKey(), list.get(0));
         listOfRequests.put(list.get(1).getActionKey(), list.get(1));
         listOfRequests.put(list.get(2).getActionKey(), list.get(2));
+        listOfRequests.put(list.get(3).getActionKey(), list.get(3));
         assertTrue(listOfRequests.containsKey("lock"));
         assertTrue(listOfRequests.containsKey("refresh"));
 
@@ -371,7 +372,7 @@ public class RefreshPeopleExecutionTest
 
         tempSut.execute(actionContext);
 
-        assertEquals(2, list.size());
+        assertEquals(3, list.size());
 
         context.assertIsSatisfied();
     }

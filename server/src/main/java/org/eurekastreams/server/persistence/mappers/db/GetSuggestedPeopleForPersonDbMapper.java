@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Lockheed Martin Corporation
+ * Copyright (c) 2011-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,8 @@ public class GetSuggestedPeopleForPersonDbMapper extends
                 .createQuery(
                         "SELECT new org.eurekastreams.server.search.modelview.PersonModelView("
                                 + "peopleTheyFollow.pk.followingId, "
-                                + "person.accountId, person.preferredName, person.lastName, "
+                                + "person.accountId, person.preferredName, person.lastName, person.displayName, "
+                                + "person.displayNameSuffix, "
                                 + "COUNT(peopleTheyFollow.pk.followingId), person.dateAdded, person.streamScope.id) "
                                 + "FROM Follower peopleIFollow, Follower peopleTheyFollow, Person person "
                                 + "WHERE peopleIFollow.pk.followingId = peopleTheyFollow.pk.followerId "
@@ -59,7 +60,8 @@ public class GetSuggestedPeopleForPersonDbMapper extends
                                 + "AND person.id = peopleTheyFollow.pk.followingId "
                                 + "AND person.accountLocked = false AND person.accountDeactivated = false "
                                 + "GROUP BY peopleTheyFollow.pk.followingId, person.accountId, person.preferredName, "
-                                + "person.lastName, person.dateAdded, person.streamScope.id "
+                                + "person.lastName, person.displayNameSuffix, person.displayName, person.dateAdded, "
+                                + "person.streamScope.id "
                                 + "ORDER BY COUNT(peopleTheyFollow.pk.followingId) DESC")
                 .setParameter("personBlockedId", inRequest.getPersonId())
                 .setParameter("personId", inRequest.getPersonId());

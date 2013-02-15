@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,6 +126,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         inFields.put("middleName", "");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Ned-diddly");
+        inFields.put("displayNameSuffix", null);
 
         context.checking(new Expectations()
         {
@@ -152,6 +153,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("", p.getMiddleName());
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
+        assertEquals("", p.getDisplayNameSuffix());
 
         // test stream order
         // IDs: 1, 5, 3
@@ -162,10 +164,66 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     }
 
     /**
-     * Test getting a person with an org.
+     * Test getting a person with an org and a displayNameSuffix.
      */
     @Test
-    public final void testGetWithOrg()
+    public final void testGetWithOrgAndDisplayNameSuffix()
+    {
+        final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
+
+        inFields.put("accountId", "nflanders");
+        inFields.put("firstName", "Ned");
+        inFields.put("middleName", "");
+        inFields.put("lastName", "Flanders");
+        inFields.put("preferredName", "Ned-diddly");
+        inFields.put("displayNameSuffix", " SUFFIX");
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(ppg).getPersonProperties(inFields);
+                will(returnValue(ppr));
+
+                oneOf(ppr).getTabTemplates();
+                will(returnValue(new ArrayList<TabTemplate>(//
+                        Arrays.asList(new TabTemplate("welcome", Layout.ONECOLUMN)))));
+
+                oneOf(ppr).getTheme();
+                will(returnValue(null));
+            }
+        });
+
+        // new SUT to test different stream order
+        GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
+        (readonlyStreamsMapper).setEntityManager(getEntityManager());
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
+
+        PersonCreator localSut = new PersonCreator(personMapperMock, readonlyStreamsMapper, streamNames, ppg);
+
+        Person p = localSut.get(null, inFields);
+        context.assertIsSatisfied();
+
+        assertNotNull(p);
+        assertNotNull(p.getStartTabGroup());
+        assertEquals("nflanders", p.getAccountId());
+        assertEquals("Ned", p.getFirstName());
+        assertEquals("", p.getMiddleName());
+        assertEquals("Flanders", p.getLastName());
+        assertEquals("Ned-diddly", p.getPreferredName());
+        assertEquals(" SUFFIX", p.getDisplayNameSuffix());
+
+        // test stream order
+        // IDs: 1, 5,
+        assertEquals(2, p.getStreams().size());
+        assertEquals(5, p.getStreams().get(0).getId());
+        assertEquals(1, p.getStreams().get(1).getId());
+    }
+    
+    /**
+     * Test getting a person with an org and a displayNameSuffix.
+     */
+    @Test
+    public final void testGetWithOrgNoDisplayNameSuffix()
     {
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
 
@@ -207,6 +265,63 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("", p.getMiddleName());
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
+        assertEquals("", p.getDisplayNameSuffix());
+
+        // test stream order
+        // IDs: 1, 5,
+        assertEquals(2, p.getStreams().size());
+        assertEquals(5, p.getStreams().get(0).getId());
+        assertEquals(1, p.getStreams().get(1).getId());
+    }
+    
+    /**
+     * Test getting a person with an org and a null displayNameSuffix.
+     */
+    @Test
+    public final void testGetWithOrgAndNullDisplayNameSuffix()
+    {
+        final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
+
+        inFields.put("accountId", "nflanders");
+        inFields.put("firstName", "Ned");
+        inFields.put("middleName", "");
+        inFields.put("lastName", "Flanders");
+        inFields.put("preferredName", "Ned-diddly");
+        inFields.put("displayNameSuffix", null);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(ppg).getPersonProperties(inFields);
+                will(returnValue(ppr));
+
+                oneOf(ppr).getTabTemplates();
+                will(returnValue(new ArrayList<TabTemplate>(//
+                        Arrays.asList(new TabTemplate("welcome", Layout.ONECOLUMN)))));
+
+                oneOf(ppr).getTheme();
+                will(returnValue(null));
+            }
+        });
+
+        // new SUT to test different stream order
+        GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
+        (readonlyStreamsMapper).setEntityManager(getEntityManager());
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone"));
+
+        PersonCreator localSut = new PersonCreator(personMapperMock, readonlyStreamsMapper, streamNames, ppg);
+
+        Person p = localSut.get(null, inFields);
+        context.assertIsSatisfied();
+
+        assertNotNull(p);
+        assertNotNull(p.getStartTabGroup());
+        assertEquals("nflanders", p.getAccountId());
+        assertEquals("Ned", p.getFirstName());
+        assertEquals("", p.getMiddleName());
+        assertEquals("Flanders", p.getLastName());
+        assertEquals("Ned-diddly", p.getPreferredName());
+        assertEquals("", p.getDisplayNameSuffix());
 
         // test stream order
         // IDs: 1, 5,
@@ -270,6 +385,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         inFields.put("middleName", "s");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Neddiddly");
+        inFields.put("displayNameSuffix", " SUFFIX");
 
         HashMap<String, String> props = new HashMap<String, String>();
         props.put("somekey", "somevalue");

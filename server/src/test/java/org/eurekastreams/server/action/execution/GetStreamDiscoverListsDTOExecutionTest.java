@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Lockheed Martin Corporation
+ * Copyright (c) 2011-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,13 +120,13 @@ public class GetStreamDiscoverListsDTOExecutionTest
 
         final StreamDiscoverListsDTO result = new StreamDiscoverListsDTO();
 
-        people.add(new PersonModelView(1L, "a", "foo", "bar", 100L, new Date(), 1L));
-        people.add(new PersonModelView(2L, "b", "foo", "bar", 900L, new Date(), 2L)); // 3
-        people.add(new PersonModelView(3L, "c", "foo", "bar", 200L, new Date(), 3L));
-        people.add(new PersonModelView(4L, "d", "foo", "bar", 800L, new Date(), 4L)); // 5
-        people.add(new PersonModelView(5L, "e", "foo", "bar", 300L, new Date(), 5L)); // 9
-        people.add(new PersonModelView(6L, "f", "foo", "bar", 200L, new Date(), 6L));
-        people.add(new PersonModelView(7L, "g", "foo", "bar", 700L, new Date(), 7L)); // 7
+        people.add(new PersonModelView(1L, "a", "foo", "bar", null, "", 100, new Date(), 1L));
+        people.add(new PersonModelView(2L, "b", "foo", "bar", null, "", 900, new Date(), 2L)); // 3
+        people.add(new PersonModelView(3L, "c", "foo", "bar", null, "", 200, new Date(), 3L));
+        people.add(new PersonModelView(4L, "d", "foo", "bar", null, "", 800, new Date(), 4L)); // 5
+        people.add(new PersonModelView(5L, "e", "foo", "bar", null, "", 300, new Date(), 5L)); // 9
+        people.add(new PersonModelView(6L, "f", "foo", "bar", null, "", 200, new Date(), 6L));
+        people.add(new PersonModelView(7L, "g", "foo", "bar", null, "", 700, new Date(), 7L)); // 7
         people.get(4).setAccountLocked(true);
 
         groups.add(new DomainGroupModelView(8L, "h", "foobar", 50L, new Date(), 8L));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2010-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,6 +152,11 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
                 {
                     log.info("Found user AcctId: " + acctId + " (" + p.getDisplayName() + ") to be unlocked.");
                 }
+                
+                // Queue action to refresh user info from AD - even if we're going to unlock the person, we should still 
+                // update the database from LDAP
+                inActionContext.getUserActionRequests().add(new UserActionRequest(refreshPersonActionKey, null, p));
+                
                 if (queueLockAccounts)
                 {
                     inActionContext.getUserActionRequests().add(
@@ -162,6 +167,8 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
             }
             else if (unLockedUserAccountIds.contains(acctId))
             {
+            	log.debug("Queuing up a refresh of person: " + acctId);
+            	
                 // Queue action to refresh user info from AD
                 inActionContext.getUserActionRequests().add(new UserActionRequest(refreshPersonActionKey, null, p));
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2011-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class StreamDTODateAddedDescendingComparatorTest
     public void testCompareWhenEqualGroupAndPerson()
     {
         Date sharedDate = new Date();
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate, 1L);
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", "hey now", "", 50, sharedDate, 1L);
         DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, sharedDate, 2L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);
@@ -55,8 +55,8 @@ public class StreamDTODateAddedDescendingComparatorTest
     public void testCompareWhenTwoPeopleEqual()
     {
         Date sharedDate = new Date();
-        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", 50L, sharedDate, 3L);
-        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", 50L, sharedDate, 4L);
+        PersonModelView pmv1 = new PersonModelView(1L, "persona", "Person", "A", "hey now", "", 50, sharedDate, 3L);
+        PersonModelView pmv2 = new PersonModelView(2L, "personb", "Person", "B", "hey now", "", 50, sharedDate, 4L);
 
         Assert.assertEquals(0, sut.compare(pmv1, pmv2));
     }
@@ -86,7 +86,7 @@ public class StreamDTODateAddedDescendingComparatorTest
         cal.add(Calendar.HOUR, -1);
         Date earlier = cal.getTime();
 
-        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", 40L, earlier, 7L);
+        PersonModelView pmv = new PersonModelView(1L, "persona", "Person", "A", "hey now", "", 40, earlier, 7L);
         DomainGroupModelView gmv = new DomainGroupModelView(1L, "groupb", "Group B", 50L, newer, 8L);
 
         Assert.assertTrue(sut.compare(pmv, gmv) > 0);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Lockheed Martin Corporation
+ * Copyright (c) 2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,8 @@ public class GetStreamsByFollowersCountDbMapper extends BaseArgDomainMapper<Seri
 
         q = getEntityManager().createQuery(
                 "SELECT new org.eurekastreams.server.search.modelview.PersonModelView(id, accountId, "
-                        + "preferredName, lastName, followersCount, dateAdded, streamScope.id) "
+                        + "preferredName, lastName, displayName, displayNameSuffix, followersCount, dateAdded, "
+                		+ "streamScope.id) "
                         + "FROM Person WHERE followersCount > 0 ORDER BY followersCount DESC");
         if (streamCount > 0)
         {

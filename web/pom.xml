@@ -690,7 +690,7 @@
                         <configuration>
                             <module>${build.gwt.modulename}</module>
                             <logLevel>INFO</logLevel>
-                            <extraJvmArgs>-Xmx1024m</extraJvmArgs>
+                            <extraJvmArgs>-Xmx3324m</extraJvmArgs>
                             <gwtVersion>${gwtVersion}</gwtVersion>
                             <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
                             <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
