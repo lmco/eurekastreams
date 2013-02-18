@@ -79,10 +79,10 @@ public class AttributesToDisplayNameSuffixTransformer implements Transformer<Att
         try
         {
             Attribute attribute = inAttributes.get(attributeName);
-            log.debug("Matching attribute:  " + attributeName + " = " + attribute.get());
+            log.debug("Matching attribute(with brackets added): [" + attributeName + " = " + attribute.get() + "]");
             if (attribute != null && attribute.get().toString().matches(regularExpression))
             {
-                log.debug("Matched - result: " + displayNameSuffix);
+                log.debug("Matched - result (with brackets added): [" + displayNameSuffix + "]");
                 result = displayNameSuffix;
             }
         }
