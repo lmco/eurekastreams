@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -95,7 +94,7 @@ public class PostToStreamComposite extends FlowPanel
     private final FlowPanel contentWarningContainer = new FlowPanel();
 
     /** The content warning. */
-    private Label contentWarning;
+    private FlowPanel contentWarning;
 
     /** error label. */
     private final Label errorMsg = new Label();
@@ -120,7 +119,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -131,7 +130,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      * @param inPostBoxDefaultText
@@ -149,7 +148,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -202,7 +201,7 @@ public class PostToStreamComposite extends FlowPanel
         links = new AddLinkComposite();
         expandedPanel.add(links);
 
-        contentWarning = new InlineLabel();
+        contentWarning = new FlowPanel();
         contentWarningContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().contentWarning());
         contentWarningContainer.add(new SimplePanel());
         contentWarningContainer.add(contentWarning);
@@ -290,7 +289,7 @@ public class PostToStreamComposite extends FlowPanel
                 String warning = event.getResponse().getContentWarningText();
                 if (warning != null && !warning.isEmpty())
                 {
-                    contentWarning.setText(warning);
+                    contentWarning.getElement().setInnerHTML(warning);
                 }
                 else
                 {
@@ -360,7 +359,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Sets up the magic show/hide for the publisher.
-     *
+     * 
      * @param inDefaultMessage
      *            Message to display when box is empty.
      */
@@ -402,7 +401,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Get the scope.
-     *
+     * 
      * @return the scope.
      */
     public StreamScope getScope()
@@ -412,7 +411,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Set the scope.
-     *
+     * 
      * @param inScope
      *            the scope.
      */

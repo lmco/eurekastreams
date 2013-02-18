@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The dialog content for sharing.
- *
+ * 
  */
 public class ShareMessageDialogContent extends BaseDialogContent
 {
@@ -105,7 +105,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
 
     /**
      * Default constructor.
-     *
+     * 
      * @param sharedMessage
      *            the shared message.
      */
@@ -145,7 +145,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
         countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
         body.add(countDown);
 
-        final Label warning = new Label();
+        final FlowPanel warning = new FlowPanel();
         warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warning());
         body.add(warning);
         Session.getInstance().getEventBus()
@@ -153,7 +153,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        warning.setText(event.getResponse().getContentWarningText());
+                        warning.getElement().setInnerHTML(event.getResponse().getContentWarningText());
                     }
 
                 });
@@ -249,7 +249,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
 
     /**
      * Shows the error.
-     *
+     * 
      * @param text
      *            the error message text.
      */
@@ -269,7 +269,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
 
     /**
      * Gets the body panel.
-     *
+     * 
      * @return the body.
      */
     public Widget getBody()
@@ -279,7 +279,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
 
     /**
      * Gets the CSS name.
-     *
+     * 
      * @return the class.
      */
     @Override
@@ -290,7 +290,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
 
     /**
      * Gets the title.
-     *
+     * 
      * @return the title.
      */
     public String getTitle()

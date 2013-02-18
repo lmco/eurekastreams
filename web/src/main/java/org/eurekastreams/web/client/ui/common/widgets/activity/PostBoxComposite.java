@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,9 +89,6 @@ public class PostBoxComposite extends Composite
 
     /** Max chars for post. */
     private static final Integer POST_MAX = 250;
-
-    /** Post box default height. */
-    private static final int POST_BOX_DEFAULT_HEIGHT = 250;
 
     /** Padding for hashtag dropdown. */
     private static final int HASH_TAG_DROP_DOWN_PADDING = 14;
@@ -201,7 +198,7 @@ public class PostBoxComposite extends Composite
      * The content warning.
      */
     @UiField
-    Label contentWarning;
+    FlowPanel contentWarning;
 
     /**
      * The content warning container.
@@ -466,7 +463,7 @@ public class PostBoxComposite extends Composite
         EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
             public void update(final MessageStreamAppendEvent event)
-            {  
+            {
                 attachment = null;
                 addLinkComposite.close();
                 postBox.setText("");
@@ -516,9 +513,9 @@ public class PostBoxComposite extends Composite
                     public void update(final MessageAttachmentChangedEvent evt)
                     {
                         attachment = evt.getAttachment();
-					    // When adding an attachment, 
-					    // make the "Post" Button visible.
-                    	checkPostBox();
+                        // When adding an attachment,
+                        // make the "Post" Button visible.
+                        checkPostBox();
                     }
                 });
 
@@ -530,7 +527,7 @@ public class PostBoxComposite extends Composite
                         String warning = event.getResponse().getContentWarningText();
                         if (warning != null && !warning.isEmpty())
                         {
-                            contentWarning.setText(warning);
+                            contentWarning.getElement().setInnerHTML(warning);
                         }
                         else
                         {
@@ -609,34 +606,33 @@ public class PostBoxComposite extends Composite
              *            the click event
              */
             public void onClick(final ClickEvent inEvent)
-            {             	
-            	if (!postButton.getStyleName().contains(style.postButtonInactive()))
+            {
+                if (!postButton.getStyleName().contains(style.postButtonInactive()))
                 {
-            		 if (!isLinkAttached() && addLinkComposite.inAddMode() && doesUnattachedLinkTextHaveText())
-                     {
-                             // Assume that the user meant to attach the link,
-                             // so attach the link to the message.
+                    if (!isLinkAttached() && addLinkComposite.inAddMode() && doesUnattachedLinkTextHaveText())
+                    {
+                        // Assume that the user meant to attach the link,
+                        // so attach the link to the message.
 
-                             // Grab the link text from the unattached link textbox
-                             LinkInformation linkInformation = new LinkInformation();
-                             String linkText = addLinkComposite.getLinkText();
-                             linkInformation.setUrl(linkText);
-                             linkInformation.setTitle(linkText);
+                        // Grab the link text from the unattached link textbox
+                        LinkInformation linkInformation = new LinkInformation();
+                        String linkText = addLinkComposite.getLinkText();
+                        linkInformation.setUrl(linkText);
+                        linkInformation.setTitle(linkText);
 
-                         	 Bookmark bookmark = new Bookmark(linkInformation);
-                         	 attachment = bookmark;
-                     }
-            		
-            		ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                				: new NotePopulator();
-            		  
-                    
+                        Bookmark bookmark = new Bookmark(linkInformation);
+                        attachment = bookmark;
+                    }
+
+                    ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                            : new NotePopulator();
+
                     ActivityDTO activity = activityPopulator.getActivityDTO(postBox.getText(),
                             DomainConversionUtility.convertToEntityType(currentStream.getScopeType()),
                             currentStream.getUniqueKey(), new PostPopulator(), objectStrat);
 
                     PostActivityRequest postRequest = new PostActivityRequest(activity);
- 
+
                     ActivityModel.getInstance().insert(postRequest);
 
                     postButton.addStyleName(style.postButtonInactive());
@@ -644,12 +640,11 @@ public class PostBoxComposite extends Composite
             }
         });
     }
-    
+
     /**
      * Checks whether there's text in an unattached link.
-     *
-     * @return boolean
-     *          true or false
+     * 
+     * @return boolean true or false
      */
     private boolean doesUnattachedLinkTextHaveText()
     {
@@ -659,16 +654,15 @@ public class PostBoxComposite extends Composite
         // Does the unattached link have "http://" and a period
         if (linkText.toLowerCase().contains(basicLegitimateHttpPattern) && linkText.contains("."))
         {
-                return true;
+            return true;
         }
-                return false;
+        return false;
     }
 
     /**
      * Returns whether a link is attached to a user's unsubmitted post.
-     *
-     * @return boolean
-     *          true or false
+     * 
+     * @return boolean true or false
      */
     private boolean isLinkAttached()
     {

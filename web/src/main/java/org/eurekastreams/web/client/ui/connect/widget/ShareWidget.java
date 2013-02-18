@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Lockheed Martin Corporation
+ * Copyright (c) 2011-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -113,7 +112,7 @@ public class ShareWidget extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param resourceUrl
      *            resource url.
      * @param inTitle
@@ -131,8 +130,8 @@ public class ShareWidget extends Composite
 
         PersonModelView person = Session.getInstance().getCurrentPerson();
 
-        StreamScope defaultStreamScope = new StreamScope(person.getDisplayName(), ScopeType.PERSON, person
-                .getAccountId(), person.getStreamId());
+        StreamScope defaultStreamScope = new StreamScope(person.getDisplayName(), ScopeType.PERSON,
+                person.getAccountId(), person.getStreamId());
 
         final PostToPanel postToPanel = new PostToPanel(defaultStreamScope);
         widget.add(postToPanel);
@@ -248,7 +247,7 @@ public class ShareWidget extends Composite
         FlowPanel contentWarningContainer = new FlowPanel();
         contentWarningContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().contentWarning());
         contentWarningContainer.add(new SimplePanel());
-        final InlineLabel contentWarning = new InlineLabel();
+        final FlowPanel contentWarning = new FlowPanel();
         contentWarningContainer.add(contentWarning);
         postContainer.add(contentWarningContainer);
         Session.getInstance().getEventBus()
@@ -256,7 +255,7 @@ public class ShareWidget extends Composite
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        contentWarning.setText(event.getResponse().getContentWarningText());
+                        contentWarning.getElement().setInnerHTML(event.getResponse().getContentWarningText());
                     }
                 });
         SystemSettingsModel.getInstance().fetch(null, true);
@@ -299,8 +298,8 @@ public class ShareWidget extends Composite
 
                 BookmarkPopulator objectStrat = new BookmarkPopulator();
                 objectStrat.setLinkInformation(link);
-                ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType, scope
-                        .getUniqueKey(), new PostPopulator(), objectStrat);
+                ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType,
+                        scope.getUniqueKey(), new PostPopulator(), objectStrat);
                 PostActivityRequest postRequest = new PostActivityRequest(activity);
 
                 ActivityModel.getInstance().insert(postRequest);
@@ -312,7 +311,7 @@ public class ShareWidget extends Composite
 
     /**
      * Called when a link is added to the message.
-     *
+     * 
      * @param link
      *            the link that was added.
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 Lockheed Martin Corporation
+ * Copyright (c) 2009-2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,7 +170,7 @@ public class PostCommentPanel extends FlowPanel
         post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
         body.add(post);
 
-        final Label warning = new Label();
+        final FlowPanel warning = new FlowPanel();
         warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warning());
         warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         body.add(warning);
@@ -184,7 +184,7 @@ public class PostCommentPanel extends FlowPanel
                         if (text != null && !text.isEmpty())
                         {
                             warning.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-                            warning.setText(text);
+                            warning.getElement().setInnerHTML(text);
                         }
                     }
 

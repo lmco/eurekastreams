@@ -134,8 +134,8 @@
 					<g:PushButton ui:field="postButton" addStyleNames="{style.post-button}"></g:PushButton>
 					<div ui:field="postCharCount" class="{style.post-char-count}"></div>
 					<div class="{resources.coreCss.contentWarning}" ui:field="contentWarningContainer">
-						<g:Label addStyleNames="{resources.coreCss.warningText}"
-							ui:field="contentWarning"></g:Label>
+						<g:FlowPanel addStyleNames="{resources.coreCss.warningText}"
+							ui:field="contentWarning"></g:FlowPanel>
 					</div>
 				</div>
 			</div>
