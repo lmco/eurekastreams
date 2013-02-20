@@ -22,8 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Transformer to return the displayNameSuffix from a javax.naming.directory.Attributes. This will return (EXP) if the
- * displayName attribute ends with " (EXP)", or null otherwise.
+ * Transformer to return the displayNameSuffix from a javax.naming.directory.Attributes. This will look 
+ * to match a field with a regex. If matched, the displayNameSuffix is returned.
  */
 public class AttributesToDisplayNameSuffixTransformer implements Transformer<Attributes, String>
 {
