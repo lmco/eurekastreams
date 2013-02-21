@@ -383,6 +383,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution">
                 <constructor-arg ref="updatePersonMapper" />
+        		<constructor-arg ref="updatePersonDisplayNameCaches" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
@@ -3390,13 +3391,13 @@
         <constructor-arg ref="membershipCriteriaPersonPropertyGenerator" />
     </bean>
 
+	<bean id="updatePersonDisplayNameCaches" class="org.eurekastreams.server.action.execution.profile.UpdatePersonDisplayNameCaches">
+	    <constructor-arg ref="getPersonsByIdsMapper" />
+	</bean>
+
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">
         <constructor-arg ref="jpaPersonMapper" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.profile.UpdatePersonDisplayNameCaches">
-                <constructor-arg ref="getPersonsByIdsMapper" />
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="updatePersonDisplayNameCaches" />
     </bean>
 
     <bean id="tabPermission"

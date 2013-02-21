@@ -31,17 +31,26 @@ public class UpdatePersonResponse
     private boolean wasUserUpdated;
 
     /**
+     * Flag indicating whether the display name was updated.
+     */
+    private boolean displayNameWasUpdated;
+
+    /**
      * Constructor.
      * 
      * @param inPersonId
      *            Person id.
      * @param inWasUserUpdated
      *            flag indicating user updated status.
+     * @param inDisplayNameWasUpdated
+     *            flag indicating whether the person's display name was updated
      */
-    public UpdatePersonResponse(final Long inPersonId, final boolean inWasUserUpdated)
+    public UpdatePersonResponse(final Long inPersonId, final boolean inWasUserUpdated,
+            final boolean inDisplayNameWasUpdated)
     {
         personId = inPersonId;
         wasUserUpdated = inWasUserUpdated;
+        displayNameWasUpdated = inDisplayNameWasUpdated;
     }
 
     /**
@@ -58,5 +67,13 @@ public class UpdatePersonResponse
     public boolean wasUserUpdated()
     {
         return wasUserUpdated;
+    }
+
+    /**
+     * @return whether the display name was updated.
+     */
+    public boolean wasDisplayNameUpdated()
+    {
+        return displayNameWasUpdated;
     }
 }

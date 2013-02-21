@@ -49,24 +49,35 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
         HashMap<String, String> ldapAdditionalProperties = ldapPerson.getAdditionalProperties();
         HashMap<String, String> dbAdditionalProperties = dbPerson.getAdditionalProperties();
         boolean wasPersonUpdated = false;
+        boolean wasPersonDisplayNameUpdated = false;
 
         // Checks to see if last name in ldap matches what the db has, updating db if they don't match.
         if (!dbPerson.getLastName().equals(ldapPerson.getLastName()))
         {
             dbPerson.setLastName(ldapPerson.getLastName());
             wasPersonUpdated = true;
+            wasPersonDisplayNameUpdated = true;
+        }
+
+        // checks to see if the email address was updated
+        if ((dbPerson.getEmail() == null && ldapPerson.getEmail() != null)
+                || (dbPerson.getEmail() != null && !dbPerson.getEmail().equals(ldapPerson.getEmail())))
+        {
+            dbPerson.setEmail(ldapPerson.getEmail());
+            wasPersonUpdated = true;
         }
 
         // Checks to see if company in ldap matches what the db has, updating db if they don't match.
-        if (dbPerson.getCompanyName() == null && ldapPerson.getCompanyName() != null
-                || (dbPerson.getCompanyName() != null && // line-break
-                !dbPerson.getCompanyName().equals(ldapPerson.getCompanyName())))
+        if ((dbPerson.getCompanyName() == null && ldapPerson.getCompanyName() != null)
+                || (dbPerson.getCompanyName() != null
+                // line wrap
+                && !dbPerson.getCompanyName().equals(ldapPerson.getCompanyName())))
         {
             dbPerson.setCompanyName(ldapPerson.getCompanyName());
             wasPersonUpdated = true;
         }
 
-        // Checks to see if the display name suffix has changed
+        // Checks to see if the display name suffix has changed - (displayNameSuffix isn't nullable)
         log.debug("Checking if the displayNameSuffix changed");
         String newDisplayNameSuffix = "";
         if (ldapPerson.getDisplayNameSuffix() != null)
@@ -79,6 +90,7 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
             log.debug("displayNameSuffix did change - new value: " + newDisplayNameSuffix);
             dbPerson.setDisplayNameSuffix(newDisplayNameSuffix);
             wasPersonUpdated = true;
+            wasPersonDisplayNameUpdated = true;
         }
 
         // Looks for any additional properties defined for the person retrieved from ldap call.
@@ -135,6 +147,6 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
             getEntityManager().flush();
         }
 
-        return new UpdatePersonResponse(dbPerson.getId(), wasPersonUpdated);
+        return new UpdatePersonResponse(dbPerson.getId(), wasPersonUpdated, wasPersonDisplayNameUpdated);
     }
 }
