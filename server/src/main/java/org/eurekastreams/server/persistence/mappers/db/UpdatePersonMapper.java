@@ -59,14 +59,6 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
             wasPersonDisplayNameUpdated = true;
         }
 
-        // checks to see if the email address was updated
-        if ((dbPerson.getEmail() == null && ldapPerson.getEmail() != null)
-                || (dbPerson.getEmail() != null && !dbPerson.getEmail().equals(ldapPerson.getEmail())))
-        {
-            dbPerson.setEmail(ldapPerson.getEmail());
-            wasPersonUpdated = true;
-        }
-
         // Checks to see if company in ldap matches what the db has, updating db if they don't match.
         if ((dbPerson.getCompanyName() == null && ldapPerson.getCompanyName() != null)
                 || (dbPerson.getCompanyName() != null

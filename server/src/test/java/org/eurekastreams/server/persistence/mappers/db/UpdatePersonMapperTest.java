@@ -81,7 +81,6 @@ public class UpdatePersonMapperTest extends MapperTest
 
         Person dbPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id")
                 .setParameter("id", PERSON_ID).getSingleResult();
-        assertTrue(dbPerson.getEmail().equals("vswatter@gmail.com"));
         assertTrue(dbPerson.getDisplayNameSuffix().equals(""));
 
         dbPerson.setAdditionalProperties(additional);
@@ -90,45 +89,12 @@ public class UpdatePersonMapperTest extends MapperTest
         assertTrue(dbPerson.getAdditionalProperties() != null);
 
         Person p = new Person("fordp", "Ford", "X", "Prefect", "Volgon-Swatter");
-        p.setEmail("vswatter@gmail.com");
         assertTrue(p.getDisplayNameSuffix().equals(""));
         p.setAdditionalProperties(additional);
         
         UpdatePersonResponse response = sut.execute(p);        
         assertFalse(response.wasUserUpdated());
         assertFalse(response.wasDisplayNameUpdated());
-    }
-
-    /**
-     * Test where additional properties are specified but do not need to be updated.
-     */
-    @Test
-    public void testNoUpdatedPropertiesWithUpdatedEmail()
-    {
-        HashMap<String, String> additional = new HashMap<String, String>();
-        additional.put("additional", "additionalValue");
-
-        Person dbPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id")
-                .setParameter("id", PERSON_ID).getSingleResult();
-
-        assertTrue(dbPerson.getDisplayNameSuffix().equals(""));
-
-        dbPerson.setAdditionalProperties(additional);
-        getEntityManager().flush();
-
-        assertTrue(dbPerson.getAdditionalProperties() != null);
-
-        Person p = new Person("fordp", "Ford", "X", "Prefect", "Volgon-Swatter");
-        p.setEmail("vswatter222@gmail.com");
-        assertTrue(p.getDisplayNameSuffix().equals(""));
-        p.setAdditionalProperties(additional);
-
-        UpdatePersonResponse response = sut.execute(p);
-
-        assertTrue(response.wasUserUpdated());
-        assertFalse(response.wasDisplayNameUpdated());
-        
-        assertTrue(dbPerson.getEmail().equals("vswatter222@gmail.com"));
     }
 
     /**
