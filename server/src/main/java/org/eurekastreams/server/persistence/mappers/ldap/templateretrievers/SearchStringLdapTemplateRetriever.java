@@ -70,7 +70,7 @@ public class SearchStringLdapTemplateRetriever extends BaseLdapTemplateRetriever
             String[] domainQueryArr = searchString.split("\\\\");
 
             // Example: "domain\attribute=foo" will give domain of "domain" and searchString of "attribute=foo".
-            String domain = domainQueryArr[0];
+            String domain = domainQueryArr[0].toLowerCase();
             searchString = domainQueryArr[1];
 
             // no matter what domain we get, modify search string to remove domain.
@@ -99,7 +99,9 @@ public class SearchStringLdapTemplateRetriever extends BaseLdapTemplateRetriever
             if (log.isDebugEnabled())
             {
                 log.debug("Domain specified, searching only on "
-                        + ((LdapContextSource) result.getContextSource()).getUrls()[0] + " for : " + searchString);
+                        + ((LdapContextSource) result.getContextSource()).getUrls()[0] 
+                        + " with base: " + ((LdapContextSource) result.getContextSource()).getBaseLdapPathAsString() 
+                        + " for : " + searchString);
             }
         }
         else

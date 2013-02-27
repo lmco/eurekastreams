@@ -85,6 +85,9 @@ public class LdapGroupDnLdapTemplateRetrieverTest
             {
                 allowing(ldapLookupRequest).getTemplateKey();
                 will(returnValue(null));
+                
+                allowing(ldapLookupRequest).getQueryString();
+                will(returnValue(""));
             }
         });
 
@@ -127,7 +130,7 @@ public class LdapGroupDnLdapTemplateRetrieverTest
         {
             {
                 allowing(ldapLookupRequest).getTemplateKey();
-                will(returnValue("dc=key"));
+                will(returnValue("cn=blah,dc=key"));
             }
         });
 
@@ -148,7 +151,7 @@ public class LdapGroupDnLdapTemplateRetrieverTest
         {
             {
                 allowing(ldapLookupRequest).getTemplateKey();
-                will(returnValue("dc=key"));
+                will(returnValue("cn=blah,dc=key"));
             }
         });
 

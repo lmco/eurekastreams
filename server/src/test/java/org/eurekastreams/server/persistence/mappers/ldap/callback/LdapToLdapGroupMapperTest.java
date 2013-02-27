@@ -23,7 +23,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.springframework.ldap.core.DirContextAdapter;
-import org.springframework.ldap.core.DistinguishedName;
 
 /**
  * Test for LdapToLdapGroupMapper.
@@ -57,19 +56,19 @@ public class LdapToLdapGroupMapperTest
     @Test
     public void test()
     {
-        final DistinguishedName dn = new DistinguishedName();
+        final String dn = new String();
 
         context.checking(new Expectations()
         {
             {
-                allowing(ctx).getDn();
+                allowing(ctx).getNameInNamespace();
                 will(returnValue(dn));
             }
         });
 
         LdapGroup result = (LdapGroup) sut.mapFromContext(ctx);
 
-        assertEquals(dn, result.getDistinguishedName());
+        assertEquals(dn, result.getDistinguishedName().toCompactString());
         context.assertIsSatisfied();
     }
 

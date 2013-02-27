@@ -33,8 +33,11 @@ public class LdapToLdapGroupMapper implements ContextMapper
     public Object mapFromContext(final Object inCtx)
     {
         DirContextAdapter dir = (DirContextAdapter) inCtx;
-
-        return new LdapGroup(new DistinguishedName(dir.getDn()));
+        
+        //This is the callback for the PagedLdapSearch, getNameInNamespace returns the fully qualified
+        //dn for the result.  This is preferred over getDn which just returns the relative dn without
+        //the base path if it was supplied by the ldaptemplate during search.
+        return new LdapGroup(new DistinguishedName(dir.getNameInNamespace()));
     }
 
 }

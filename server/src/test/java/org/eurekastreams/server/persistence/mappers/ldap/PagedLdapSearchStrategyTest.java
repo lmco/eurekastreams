@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.springframework.ldap.control.PagedResultsDirContextProcessor;
 import org.springframework.ldap.core.CollectingNameClassPairCallbackHandler;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
 
 /**
  * Test suite for the {@link PagedLdapSearchStrategy} class.
@@ -56,6 +57,11 @@ public class PagedLdapSearchStrategyTest
     private LdapTemplate ldapTemplateMock = context.mock(LdapTemplate.class);
 
     /**
+     * Mocked instance of {@link LdapContextSource} for this test suite.
+     */
+    private LdapContextSource ldapContextSourceMock = context.mock(LdapContextSource.class);
+    
+    /**
      * Mocked instnace of {@link SearchControls} for this test suite.
      */
     private SearchControls searchControlsMock = context.mock(SearchControls.class);
@@ -66,6 +72,11 @@ public class PagedLdapSearchStrategyTest
     private CollectingNameClassPairCallbackHandler handlerMock = context
             .mock(CollectingNameClassPairCallbackHandler.class);
 
+    /**
+     * ContextSource urls.
+     */
+    private String[] urls = new String[] { "url" };
+    
     /**
      * Test the sut without specifying the page size which is intended to test the default.
      */
@@ -81,6 +92,15 @@ public class PagedLdapSearchStrategyTest
         context.checking(new Expectations()
         {
             {
+            	allowing(ldapTemplateMock).getContextSource();
+            	will(returnValue(ldapContextSourceMock));
+            	
+            	allowing(ldapContextSourceMock).getUrls();
+            	will(returnValue(urls));
+            	
+            	allowing(ldapContextSourceMock).getBaseLdapPathAsString();
+            	will(returnValue("dc=blah"));
+            	
                 oneOf(ldapTemplateMock).search(with(any(String.class)), with(any(String.class)),
                         with(any(SearchControls.class)), with(any(CollectingNameClassPairCallbackHandler.class)),
                         with(any(PagedResultsDirContextProcessor.class)));
@@ -114,6 +134,15 @@ public class PagedLdapSearchStrategyTest
         context.checking(new Expectations()
         {
             {
+            	allowing(ldapTemplateMock).getContextSource();
+            	will(returnValue(ldapContextSourceMock));
+            	
+            	allowing(ldapContextSourceMock).getUrls();
+            	will(returnValue(urls));
+            	
+            	allowing(ldapContextSourceMock).getBaseLdapPathAsString();
+            	will(returnValue("dc=blah"));
+            	
                 oneOf(ldapTemplateMock).search(with(any(String.class)), with(any(String.class)),
                         with(any(SearchControls.class)), with(any(CollectingNameClassPairCallbackHandler.class)),
                         with(any(PagedResultsDirContextProcessor.class)));

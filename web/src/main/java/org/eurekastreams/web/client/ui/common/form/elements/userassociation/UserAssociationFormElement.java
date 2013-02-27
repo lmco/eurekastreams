@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class UserAssociationFormElement extends FlowPanel implements FormElement
 {
     /** Group description. */
-    private static final String GROUP_DESC = "Enter the name of the LDAP group.";
+    private static final String GROUP_DESC = "Enter the name of the LDAP group. (in the format: DOMAIN\\groupname)";
 
     /** Attribute description. */
     private static final String ATTR_DESC = "Specify an LDAP attribute (in the format: attribute=value)";

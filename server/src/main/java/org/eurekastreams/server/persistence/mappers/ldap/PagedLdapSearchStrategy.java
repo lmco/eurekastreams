@@ -22,6 +22,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.springframework.ldap.control.PagedResultsDirContextProcessor;
 import org.springframework.ldap.core.CollectingNameClassPairCallbackHandler;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
 
 /**
  * This strategy allows for searching ldap with a {@link PagedResultsDirContextProcessor}. This strategy will only work
@@ -82,7 +83,9 @@ public class PagedLdapSearchStrategy implements LdapSearchStrategy
         if (logger.isTraceEnabled())
         {
             logger.trace("Beginning paged ldap search with " + resultsPerPage + " results per page.  Filter: "
-                    + inEncodedFilter);
+                    + inEncodedFilter + " using dc: "
+            		+ ((LdapContextSource) inLdapTemplate.getContextSource()).getUrls()[0] + " using baseLdapPath: "
+            		+ ((LdapContextSource) inLdapTemplate.getContextSource()).getBaseLdapPathAsString());
         }
 
         do

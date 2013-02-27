@@ -17,6 +17,8 @@ package org.eurekastreams.server.persistence.mappers.ldap.templateretrievers;
 
 import java.util.HashMap;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
 import org.eurekastreams.server.persistence.mappers.requests.LdapLookupRequest;
 import org.springframework.ldap.core.LdapTemplate;
@@ -28,6 +30,11 @@ import org.springframework.ldap.core.LdapTemplate;
  */
 public class LdapGroupDnLdapTemplateRetriever extends BaseLdapTemplateRetriever
 {
+    /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
+    
     /**
      * Constructor.
      * 
@@ -52,20 +59,63 @@ public class LdapGroupDnLdapTemplateRetriever extends BaseLdapTemplateRetriever
     @Override
     protected LdapTemplate retrieveLdapTemplate(final LdapLookupRequest inLdapLookupRequest)
     {
-        String testString = inLdapLookupRequest.getTemplateKey();
-
-        if (testString != null && !testString.isEmpty())
+        String testString = StringUtils.lowerCase(inLdapLookupRequest.getTemplateKey());
+        //If the templateKey is null, try the query string to determine the correct template
+        //to use.
+        if(testString == null)
         {
-            for (String key : getLdapTemplates().keySet())
-            {
-                if (StringUtils.containsIgnoreCase(testString, "dc=" + key))
-                {
-                    return getLdapTemplates().get(key);
-                }
-            }
+        	testString = StringUtils.lowerCase(inLdapLookupRequest.getQueryString());
         }
 
+        if(log.isDebugEnabled())
+		{
+			log.debug("Retrieving the template based on the domain in the request template key: "
+					+ testString);
+		}
+        
+        if (testString != null && !testString.isEmpty())
+        {
+        	//Determine the very first DC in the CN to be used to find an appropriate ldap template.
+        	int firstDcIndex = StringUtils.indexOf(testString, ",dc=");
+        	if(firstDcIndex > -1 && firstDcIndex < testString.length())
+        	{
+	        	int endOfFirstDcIndex = StringUtils.indexOf(testString, ",dc=", firstDcIndex + 1);
+	        	if(endOfFirstDcIndex < 0)
+	        	{
+	        		//If there is only one dc attribute, bound it with the end of the string.
+	        		endOfFirstDcIndex = testString.length();
+	        	}
+	        	String dcSubstring = StringUtils.substring(testString, firstDcIndex, endOfFirstDcIndex);
+	        	String[] dcParts = StringUtils.split(dcSubstring, "=");
+	        	if(dcParts.length > 1)
+	        	{
+	                for (String key : getLdapTemplates().keySet())
+	                {
+	                    if (StringUtils.equalsIgnoreCase(key, dcParts[1]))
+	                    {
+	                    	if(log.isDebugEnabled())
+	                		{
+	                			log.debug("Matched ldapTemplateKey: " + dcParts[1]);
+	                		}
+	                        return getLdapTemplates().get(key);
+	                    }
+	                }
+	        	}
+        	}
+        	else
+        	{
+        		if(log.isWarnEnabled())
+        		{
+        			log.warn("No dc was supplied in the Group DN, this may not be a valid search.");
+        		}
+        	}
+        }
+
+        if(log.isDebugEnabled())
+		{
+			log.debug("No matched ldapTemplates, returning default");
+		}
+     
         return getDefaultLdapTemplate();
     }
-
 }

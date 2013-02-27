@@ -28,7 +28,6 @@ import org.eurekastreams.server.persistence.mappers.ldap.LdapGroup;
 import org.eurekastreams.server.persistence.mappers.ldap.LdapLookup;
 import org.eurekastreams.server.persistence.mappers.requests.LdapLookupRequest;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
-import org.springframework.ldap.core.DistinguishedName;
 
 /**
  * Person lookup strategy that, given an ldap group, returns all members of that group and subgroups.
@@ -105,8 +104,14 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
         // search each group for direct members and add them to bucket.
         for (LdapGroup lg : allGroups)
         {
-            List<Person> people = directGroupMemberMapper.execute(new LdapLookupRequest(getFullDnAsString(lg), lg
-                    .getDistinguishedName().toCompactString()));
+        	String groupDn = lg.getDistinguishedName().toCompactString();
+        	if (log.isInfoEnabled())
+        	{
+        		log.info("Retrieving people for group full DN: " + groupDn);
+        	}
+        	
+            List<Person> people = directGroupMemberMapper.execute(new LdapLookupRequest(
+            		groupDn));
 
             // throw all results into map to eliminate duplicates.
             for (Person p : people)
@@ -173,8 +178,15 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
 
         // get template key from relative path (pre-base ldap path prepend).
         String templateKey = inParentGroup.getDistinguishedName().toCompactString();
-
-        List<LdapGroup> subGroups = subGroupMapper.execute(new LdapLookupRequest(getFullDnAsString(inParentGroup),
+        
+        if (log.isDebugEnabled())
+        {
+        	log.debug("Searching for sub groups of group: " + inParentGroup.getDistinguishedName() 
+        			+ " with templateKey: " + templateKey);
+        }
+        
+        List<LdapGroup> subGroups = subGroupMapper.execute(new LdapLookupRequest(
+        		inParentGroup.getDistinguishedName().toCompactString(),
                 templateKey));
 
         // call once here to avoid multiple calls in loop.
@@ -203,19 +215,4 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
 
         return;
     }
-
-    /**
-     * returns relative dn with base ldap path prepended.
-     * 
-     * @param inLdapGroup
-     *            {@link LdapGroup} to get full dn for.
-     * @return relative dn with base ldap path prepended.
-     */
-    private String getFullDnAsString(final LdapGroup inLdapGroup)
-    {
-        DistinguishedName dn = new DistinguishedName(inLdapGroup.getDistinguishedName());
-        dn.prepend(new DistinguishedName(baseLdapPath));
-        return dn.toCompactString();
-    }
-
 }

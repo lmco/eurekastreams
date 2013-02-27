@@ -106,6 +106,9 @@ public class SearchStringLdapTemplateRetrieverTest
 
                 allowing(contextSource).getUrls();
                 will(returnValue(urls));
+
+                allowing(contextSource).getBaseLdapPathAsString();
+                will(returnValue("dc=blah"));
             }
         });
 
@@ -140,6 +143,9 @@ public class SearchStringLdapTemplateRetrieverTest
 
                 allowing(contextSource).getUrls();
                 will(returnValue(urls));
+
+                allowing(contextSource).getBaseLdapPathAsString();
+                will(returnValue("dc=blah"));
             }
         });
 
@@ -174,6 +180,9 @@ public class SearchStringLdapTemplateRetrieverTest
 
                 allowing(contextSource).getUrls();
                 will(returnValue(urls));
+                
+                allowing(contextSource).getBaseLdapPathAsString();
+                will(returnValue("dc=blah"));
             }
         });
 
@@ -207,6 +216,9 @@ public class SearchStringLdapTemplateRetrieverTest
 
                 allowing(contextSource).getUrls();
                 will(returnValue(urls));
+
+                allowing(contextSource).getBaseLdapPathAsString();
+                will(returnValue("dc=blah"));
             }
         });
 
@@ -239,6 +251,9 @@ public class SearchStringLdapTemplateRetrieverTest
 
                 allowing(contextSource).getUrls();
                 will(returnValue(urls));
+                
+                allowing(contextSource).getBaseLdapPathAsString();
+                will(returnValue("dc=blah"));
             }
         });
 

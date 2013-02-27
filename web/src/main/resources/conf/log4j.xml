@@ -169,6 +169,17 @@
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %m%n" />
         </layout>
     </appender>
+
+    <!-- membership refresh job log appender -->    
+    <appender name="membershipRefreshLog" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${log.home}/membershipRefresh.log.txt" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="5MB" />
+        <param name="MaxBackupIndex" value="5" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p %m%n" />
+        </layout>
+    </appender>
     
     <!-- aop perf timer log -->
     <logger name="perf.timer" additivity="false">
@@ -323,6 +334,12 @@
 		<level value="all" />
 	</logger>
 
+    <logger name="org.eurekastreams.server.action.execution.settings"
+        additivity="true">
+        <level value="all" />
+        <appender-ref ref="membershipRefreshLog" />
+    </logger>
+    
 	<root>
 		<priority value="debug" />
 		<appender-ref ref="file" />
