@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Theme>
-  <Title>Summer</Title>
-  <Description>Summer Description</Description>
-  <AuthorName>Phil Plait</AuthorName>
-  <AuthorEmail>phil.plait@awesome.com</AuthorEmail>
+	<Title>Summer</Title>
+	<Description>Summer Description</Description>
+	<AuthorName>Phil Plait</AuthorName>
+	<AuthorEmail>phil.plait@awesome.com</AuthorEmail>
 	<HeaderBackground>
 		<HeaderBackgroundColor>#DDDDBB</HeaderBackgroundColor>
 		<HeaderForegroundColor>#DDDDBB</HeaderForegroundColor>
+		<HeaderForegroundLinkColor>#DDDDBB</HeaderForegroundLinkColor>
 		<HeaderBackgroundImage Center="true">
 			http://www.laketravisrentals.net/themes/summerocean/summerocean_headerimagecenter07.jpg
 		</HeaderBackgroundImage>

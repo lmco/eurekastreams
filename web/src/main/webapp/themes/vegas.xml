@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Theme>
-  <Title>Las Vegas</Title>
-  <Description>Las Vegas sky line</Description>
-  <AuthorName>Phil Plait</AuthorName>
-  <AuthorEmail>phil.plait@awesome.com</AuthorEmail>
+	<Title>Las Vegas</Title>
+	<Description>Las Vegas sky line</Description>
+	<AuthorName>Phil Plait</AuthorName>
+	<AuthorEmail>phil.plait@awesome.com</AuthorEmail>
 	<HeaderBackground>
 		<HeaderBackgroundColor>black</HeaderBackgroundColor>
 		<HeaderForegroundColor>white</HeaderForegroundColor>
-		<HeaderBackgroundImage>http://i26.photobucket.com/albums/c104/tridirk/12.jpg</HeaderBackgroundImage>
+		<HeaderForegroundLinkColor>white</HeaderForegroundLinkColor>
+		<HeaderBackgroundImage>http://i26.photobucket.com/albums/c104/tridirk/12.jpg
+		</HeaderBackgroundImage>
 	</HeaderBackground>
 	<ActiveTabBorderColor>red</ActiveTabBorderColor>
 	<ActiveTabForegroundColor>blue</ActiveTabForegroundColor>

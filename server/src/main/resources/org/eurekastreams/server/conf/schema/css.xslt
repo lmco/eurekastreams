@@ -20,6 +20,12 @@
         {
             color: <xsl:value-of select="HeaderBackground/HeaderForegroundColor"/>;
         }
+        
+        .themeable .site-labeling a:link, .themeable .site-labeling a:visited, .themeable .site-labeling a:hover, .themeable .site-labeling a:active
+        {
+            color: <xsl:value-of select="HeaderBackground/HeaderForegroundLinkColor"/>;
+            text-decoration: underline;
+        }
 
 	.themeable div.tab, .themeable div.new-tab-button
 	{ 

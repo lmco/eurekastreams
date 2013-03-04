@@ -6,7 +6,8 @@
   <AuthorEmail>support@eurekastreams.org</AuthorEmail>
 	<HeaderBackground>
 		<HeaderBackgroundColor>white</HeaderBackgroundColor>
-		<HeaderForegroundColor>white</HeaderForegroundColor>
+		<HeaderForegroundColor>#6D6D6D</HeaderForegroundColor>
+	<HeaderForegroundLinkColor>#6D6D6D</HeaderForegroundLinkColor>
 		<HeaderBackgroundImage>/style/images/default-banner-eureka.png</HeaderBackgroundImage>
 	</HeaderBackground>
 	<ActiveTabBorderColor>#F4BD00</ActiveTabBorderColor>

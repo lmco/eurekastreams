@@ -87,13 +87,14 @@
 				background-image: url("style/images/featured_Bg.png");
 				background-color: #252525;
 				background-repeat: repeat-x;
+				padding-top: 40px;
 				/* height: 234px; */
 			}
 			
 			.featuredPager .connection-col {
 				min-height: 190px;
 			}
-			
+
 			.featuredPager .connection-item-info {
 				max-width: 185px;
 			}
