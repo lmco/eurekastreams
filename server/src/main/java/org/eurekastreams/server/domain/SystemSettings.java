@@ -44,7 +44,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      * Max characters.
      */
     @Transient
-    public static final int MAX_INPUT = 200;
+    public static final int MAX_INPUT = 2000;
 
     /**
      * Max site label characters.

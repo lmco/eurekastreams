@@ -69,7 +69,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
     /**
      * Maximum content warning length.
      */
-    private static final int MAX_CONTENT_WARNING = 200;
+    private static final int MAX_CONTENT_WARNING = 2000;
 
     /**
      * Maximum group name length.
