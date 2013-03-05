@@ -23,7 +23,7 @@
         
         .themeable .site-labeling a:link, .themeable .site-labeling a:visited, .themeable .site-labeling a:hover, .themeable .site-labeling a:active
         {
-            color: <xsl:value-of select="HeaderBackground/HeaderForegroundLinkColor"/>;
+            color: <xsl:value-of select="HeaderBackground/HeaderForegroundColor"/>;
             text-decoration: underline;
         }
 

@@ -7,9 +7,7 @@
 	<HeaderBackground>
 		<HeaderBackgroundColor>white</HeaderBackgroundColor>
 		<HeaderForegroundColor>white</HeaderForegroundColor>
-		<HeaderForegroundLinkColor>white</HeaderForegroundLinkColor>
-		<HeaderBackgroundImage>/style/images/Start_page_2.jpg
-		</HeaderBackgroundImage>
+		<HeaderBackgroundImage>/style/images/Start_page_2.jpg</HeaderBackgroundImage>
 	</HeaderBackground>
 	<ActiveTabBorderColor>#A4A5A9</ActiveTabBorderColor>
 	<ActiveTabForegroundColor>#1b3248</ActiveTabForegroundColor>

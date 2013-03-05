@@ -9,7 +9,6 @@
 						<xs:all>
 							<xs:element name="HeaderBackgroundColor" type="xs:string" />
 							<xs:element name="HeaderForegroundColor" type="xs:string" />
-							<xs:element name="HeaderForegroundLinkColor" type="xs:string" />
 							<xs:element name="HeaderBackgroundImage">
 								<xs:complexType>
 									<xs:simpleContent>

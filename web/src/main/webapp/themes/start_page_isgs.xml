@@ -6,11 +6,8 @@
 	<AuthorEmail>roberto.m.ortiz@lmco.com</AuthorEmail>
 	<HeaderBackground>
 		<HeaderForegroundColor>white</HeaderForegroundColor>
-		<HeaderForegroundLinkColor>white</HeaderForegroundLinkColor>
 		<HeaderBackgroundColor>white</HeaderBackgroundColor>
-		<HeaderForegroundLinkColor>white</HeaderForegroundLinkColor>
-		<HeaderBackgroundImage>/style/images/ISGS_Banner.png
-		</HeaderBackgroundImage>
+		<HeaderBackgroundImage>/style/images/ISGS_Banner.png</HeaderBackgroundImage>
 	</HeaderBackground>
 	<ActiveTabBorderColor>#676767</ActiveTabBorderColor>
 	<ActiveTabForegroundColor>#333333</ActiveTabForegroundColor>

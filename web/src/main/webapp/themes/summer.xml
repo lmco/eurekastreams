@@ -7,10 +7,7 @@
 	<HeaderBackground>
 		<HeaderBackgroundColor>#DDDDBB</HeaderBackgroundColor>
 		<HeaderForegroundColor>#DDDDBB</HeaderForegroundColor>
-		<HeaderForegroundLinkColor>#DDDDBB</HeaderForegroundLinkColor>
-		<HeaderBackgroundImage Center="true">
-			http://www.laketravisrentals.net/themes/summerocean/summerocean_headerimagecenter07.jpg
-		</HeaderBackgroundImage>
+		<HeaderBackgroundImage Center="true">http://www.laketravisrentals.net/themes/summerocean/summerocean_headerimagecenter07.jpg</HeaderBackgroundImage>
 	</HeaderBackground>
 	<InactiveTabBorderColor>transparent</InactiveTabBorderColor>
 	<InactiveTabBackgroundColor>#ADD6F7</InactiveTabBackgroundColor>

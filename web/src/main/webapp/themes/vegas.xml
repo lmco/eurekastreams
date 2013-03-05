@@ -7,9 +7,7 @@
 	<HeaderBackground>
 		<HeaderBackgroundColor>black</HeaderBackgroundColor>
 		<HeaderForegroundColor>white</HeaderForegroundColor>
-		<HeaderForegroundLinkColor>white</HeaderForegroundLinkColor>
-		<HeaderBackgroundImage>http://i26.photobucket.com/albums/c104/tridirk/12.jpg
-		</HeaderBackgroundImage>
+		<HeaderBackgroundImage>http://i26.photobucket.com/albums/c104/tridirk/12.jpg</HeaderBackgroundImage>
 	</HeaderBackground>
 	<ActiveTabBorderColor>red</ActiveTabBorderColor>
 	<ActiveTabForegroundColor>blue</ActiveTabForegroundColor>
