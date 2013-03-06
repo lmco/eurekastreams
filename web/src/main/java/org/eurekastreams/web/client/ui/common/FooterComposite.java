@@ -57,7 +57,7 @@ public class FooterComposite extends Composite
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        if (Session.getInstance().getHistoryHandler() != null && navPanel.getWidgetCount() == 1
+                        if (Session.getInstance().getHistoryHandler() != null && navPanel.getWidgetCount() == 0
                                 && event.getResponse().getSupportStreamGroupShortName() != null
                                 && event.getResponse().getSupportStreamGroupShortName().length() > 0)
                         {
