@@ -94,6 +94,15 @@ public class ThemeMetaDataPanel extends FlowPanel
             params.put("category", theme.getCategory().toString());
             params.put("id", String.valueOf(theme.getId()));
 
+            // we need to pass in a tab to the edit handler - we'll pluck it out of the url - carefully
+            String currentTab = "1"; // default to 1, just in case
+            if (Session.getInstance() != null && Session.getInstance().getHistoryHandler() != null
+                    && Session.getInstance().getHistoryHandler().getParameterValue("tab") != null)
+            {
+                currentTab = Session.getInstance().getHistoryHandler().getParameterValue("tab");
+            }
+            params.put("tab", currentTab);
+
             final WidgetJSNIFacadeImpl jsni = new WidgetJSNIFacadeImpl();
 
             editControls.addEditClickHandler(new ClickHandler()
@@ -118,9 +127,11 @@ public class ThemeMetaDataPanel extends FlowPanel
                     {
                         ThemeModel.getInstance().delete(theme.getId());
 
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ShowNotificationEvent(new Notification("The " + theme.getName()
-                                        + " theme has been deleted.")));
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new ShowNotificationEvent(new Notification("The " + theme.getName()
+                                                + " theme has been deleted.")));
                     }
                 }
             });
@@ -181,8 +192,8 @@ public class ThemeMetaDataPanel extends FlowPanel
 
         final ThemeMetaDataPanel thisBuffered = this;
 
-        Session.getInstance().getEventBus().addObserver(DeletedThemeResponseEvent.class,
-                new Observer<DeletedThemeResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(DeletedThemeResponseEvent.class, new Observer<DeletedThemeResponseEvent>()
                 {
                     public void update(final DeletedThemeResponseEvent arg1)
                     {

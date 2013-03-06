@@ -467,7 +467,7 @@ public class UpdateSystemSettingsValidationTest
                 + " ligula dignissim vel metus. ";
 
         formData.put("siteLabel", over2000Chars);
-        formData.put("contentWarningText", over255Chars);
+        formData.put("contentWarningText", over2000Chars);
         formData.put("termsOfService", over1000Chars);
 
         context.checking(new Expectations()
