@@ -57,7 +57,7 @@ public class FooterComposite extends Composite
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        if (Session.getInstance().getHistoryHandler() != null && navPanel.getWidgetCount() == 0
+                        if (Session.getInstance().getHistoryHandler() != null && navPanel.getWidgetCount() == 1
                                 && event.getResponse().getSupportStreamGroupShortName() != null
                                 && event.getResponse().getSupportStreamGroupShortName().length() > 0)
                         {
@@ -76,6 +76,10 @@ public class FooterComposite extends Composite
                         }
                     }
                 });
+
+        Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org");
+        poweredBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().poweredByEureka());
+        navPanel.add(poweredBy);
 
         panel.add(navPanel);
         panel.add(siteLabelingContainer);
