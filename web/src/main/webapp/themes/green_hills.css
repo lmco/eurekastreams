@@ -11,12 +11,12 @@
 
         .themeable .site-labeling
         {
-            color: #686868;
+            color: white;
         }
         
         .themeable .site-labeling a:link, .themeable .site-labeling a:visited, .themeable .site-labeling a:hover, .themeable .site-labeling a:active
         {
-            color: #686868;
+            color: white;
             text-decoration: underline;
         }
 
