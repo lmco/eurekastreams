@@ -73,7 +73,7 @@ public class BaseActivitySubscriptionModel extends BaseModel implements Fetchabl
                 Session.getInstance()
                         .getEventBus()
                         .notifyObservers(
-new GotStreamActivitySubscriptionResponseEvent(EntityType.GROUP, uniqueId, // \n
+new GotStreamActivitySubscriptionResponseEvent(entityType, uniqueId, // \n
                                 isSubscribed));
             }
         }, useClientCacheIfAvailable);
