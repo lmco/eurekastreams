@@ -102,14 +102,11 @@ $activity.baseObjectProperties.targetTitle - $activity.baseObjectProperties.targ
 #macro( replyNotice_txt )
 ##
 #if ($hasReplyAddress)
-
-You can reply directly to this message by replying to this email. Be mindful to remove your email signature so as to not attach it to your comment within Eureka.
 #end
 #end
 
 #macro( replyNotice_html )
 #if ($hasReplyAddress)
-<p>You can reply directly to this message by replying to this email. Be mindful to remove your email signature so as to not attach it to your comment within Eureka.</p>
 #end
 #end
 
