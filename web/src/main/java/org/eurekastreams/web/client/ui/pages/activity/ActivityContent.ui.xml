@@ -392,7 +392,7 @@
 						<g:Label ui:field="addToStartPage">Add to Start Page</g:Label>
 						<g:Label ui:field="subscribeViaEmail">Subscribe via Email</g:Label>
 						<g:Label ui:field="feedLink">RSS Feed</g:Label>
-						<g:Anchor ui:field="getEmailContactLink">Get Email Contact</g:Anchor>
+						<!-- <g:Anchor ui:field="getEmailContactLink">Get Email Contact</g:Anchor> -->
 					</g:FlowPanel>
 				</g:FlowPanel>
 				<div ui:field="searchContainer" class="{style.search-container}">

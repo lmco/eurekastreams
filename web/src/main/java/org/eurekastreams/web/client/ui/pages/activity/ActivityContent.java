@@ -120,7 +120,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
+//import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -372,8 +372,8 @@ public class ActivityContent extends Composite
     StreamSearchStatusWidget streamSearchStatusWidget;
 
     /** Link to get contact for emailing to stream. */
-    @UiField
-    Anchor getEmailContactLink;
+    //@UiField
+    //Anchor getEmailContactLink;
 
     /**
      * Panel for unseen activity notifications - hidden when viewing a single activity.
@@ -928,11 +928,11 @@ public class ActivityContent extends Composite
                         {
                             currentStream.setScopeType(null);
                         }
-                        if (currentStream.getScopeType() != null)
+                        /*if (currentStream.getScopeType() != null)
                         {
                             getEmailContactLink.setHref("/resources/emailcontact/stream/person/" + person.getId());
                             getEmailContactLink.setVisible(true);
-                        }
+                        }*/
                         if (!singleActivityMode)
                         {
                             EventBus.getInstance().notifyObservers(new PostableStreamScopeChangeEvent(currentStream));
@@ -1038,11 +1038,11 @@ public class ActivityContent extends Composite
 	        {
 	            currentStream.setScopeType(null);
 	        }
-	        else
+	        /*else
 	        {
 	            getEmailContactLink.setHref("/resources/emailcontact/stream/group/" + group.getId());
 	            getEmailContactLink.setVisible(true);
-	        }
+	        }*/
 	
 	        if (!singleActivityMode)
 	        {
@@ -1605,7 +1605,7 @@ public class ActivityContent extends Composite
         deferLoadAwaitingQueryBuilt = false;
         deferLoadAwaitingEntityReceived = false;
 
-        getEmailContactLink.setVisible(false);
+        //getEmailContactLink.setVisible(false);
 
         boolean streamIsAnEntity = false;
 
