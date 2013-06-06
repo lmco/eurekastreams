@@ -1359,6 +1359,29 @@ Eureka.resize = function()
     gadgets.window.adjustHeight(jQuery('body').height());
 }
 
+Eureka.authorizeNoLookup = function(allowedOrgs, org)
+{
+    var authed = false;
+    for (var k in allowedOrgs)
+    {
+        if (allowedOrgs[k] == org)
+        {
+            authed = true;
+        }
+    }
+    if (!authed)
+    {
+        if (org == null)
+        {
+            Eureka.Container.unAuthed("We are unable to fetch the data required for this application at the moment. Please try back later.");
+        }
+        else
+        {
+            Eureka.Container.unAuthed("This app is not available for your business area.  Please visit the <a target='_blank' href='https://passport.global.lmco.com'>Passport site</a> to view more information on your business area’s passport replacement resources.");
+        }
+    }
+}
+
 Eureka.authorize = function(allowedOrgs)
 {
     Eureka.getCurrentUserOrg(function(org) {
