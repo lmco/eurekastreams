@@ -2172,6 +2172,8 @@
 
     <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
 
+	<bean id="getPersonAdditionalPropertiesSingle" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalPropertiesSingle" />
+
     <bean id="getPersonActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.notification.GetStreamActivitySubscriptionDbMapper">
     	<constructor-arg value="PERSON" />
     </bean>
