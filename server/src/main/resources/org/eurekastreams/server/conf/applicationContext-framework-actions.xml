@@ -4582,7 +4582,16 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-
+	<bean id="getAllPersonAdditionalPropertiesSingle" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonAdditionalPropertiesSingle" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
 
     <!-- Action to regenerate the cache for the Stream discovery page -->
     <bean id="regenerateStreamDiscoverListsAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
