@@ -41,6 +41,12 @@ public class HtmlLinkParser
      * Matching host regex this strategy applies to.
      */
     private String regex;
+    
+    /**
+     * 7/15/2013
+     * LM-only configuration, to completely disable thumbnail previews on link attachments.
+     */
+    private Boolean showThumbnails = false;
 
     /**
      * Parse the HTML.
@@ -56,7 +62,8 @@ public class HtmlLinkParser
     {
         titleParser.parseInformation(htmlString, link, inAccountId);
         descriptionParser.parseInformation(htmlString, link, inAccountId);
-        imageParser.parseInformation(htmlString, link, inAccountId);
+        if(showThumbnails)
+        	imageParser.parseInformation(htmlString, link, inAccountId);
     }
 
     /**
