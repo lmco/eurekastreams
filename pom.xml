@@ -122,16 +122,7 @@
             <enabled>false</enabled>
         </snapshots>
       </repository>
-      <repository>
-        <id>spy</id>
-        <name>Spy Repository</name>
-        <layout>default</layout>
-        <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
-        <snapshots>
-			<enabled>false</enabled>
-		</snapshots>
-       </repository>
-	</repositories>
+    </repositories>
     <properties>
 		<version.junit>4.8.2</version.junit>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
