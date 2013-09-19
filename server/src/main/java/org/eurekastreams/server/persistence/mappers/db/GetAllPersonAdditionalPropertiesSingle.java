@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
+ * Copyright (c) 2010 Lockheed Martin Corporation
+=======
  * Copyright (c) 2013 Lockheed Martin Corporation
+>>>>>>> 82c40661cc569a8c5894d7c3c4d61f90f98f9340
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +21,6 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,10 +46,10 @@ public class GetAllPersonAdditionalPropertiesSingle extends ReadMapper<String, L
     @SuppressWarnings("unchecked")
     @Override
     public List<Map<String, Object>> execute(final String inRequest)
-    {
+    {  	
         return (List<Map<String, Object>>) getEntityManager().createQuery(
                 "select new map(p.accountId as accountId, p.email as email,"
-                        + "p.additionalProperties as additionalProperties) from Person p where p.accountId in (:uuids)")
+                        + "p.additionalProperties as additionalProperties, p.avatarId as avatarId) from Person p where p.accountId in (:uuids)")
                         .setParameter("uuids", new ArrayList<String>(Arrays.asList(inRequest.split(",")))).getResultList();
     }
 }

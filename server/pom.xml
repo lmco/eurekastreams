@@ -510,6 +510,11 @@
 			to list. -->
 			<version>1.8-NoDeps</version>
 	    </dependency>
+	    <dependency>
+		    <groupId>com.thetransactioncompany</groupId>
+		    <artifactId>cors-filter</artifactId>
+		    <version>1.7</version>
+		</dependency>
 
 	</dependencies>
 	<pluginRepositories>
