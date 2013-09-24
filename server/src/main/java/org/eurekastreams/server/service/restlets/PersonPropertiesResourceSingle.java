@@ -116,6 +116,8 @@ public class PersonPropertiesResourceSingle extends SmpResource
             personJs = new JSONObject();
             personJs.put("accountId", (String) currentPersonProperties.get("accountId"));
             personJs.put("email", (String) currentPersonProperties.get("email"));
+            personJs.put("avatarId", (String) currentPersonProperties.get("avatarId"));
+            
             if (currentPersonProperties.get("additionalProperties") != null)
             {
                 for (Entry<String, String> currentAddlProperty : ((Map<String, String>) currentPersonProperties
