@@ -46,7 +46,7 @@ public class GetAllPersonAdditionalPropertiesSingle extends ReadMapper<String, L
     {
         return (List<Map<String, Object>>) getEntityManager().createQuery(
                 "select new map(p.accountId as accountId, p.email as email,"
-                        + "p.additionalProperties as additionalProperties) from Person p where p.accountId in (:uuids)")
+                        + "p.additionalProperties as additionalProperties, p.avatarId as avatarId) from Person p where p.accountId in (:uuids)")
                         .setParameter("uuids", new ArrayList<String>(Arrays.asList(inRequest.split(",")))).getResultList();
     }
 }
