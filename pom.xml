@@ -122,16 +122,7 @@
             <enabled>false</enabled>
         </snapshots>
       </repository>
-      <repository>
-        <id>spy</id>
-        <name>Spy Repository</name>
-        <layout>default</layout>
-        <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
-        <snapshots>
-			<enabled>false</enabled>
-		</snapshots>
-       </repository>
-	</repositories>
+    </repositories>
     <properties>
 		<version.junit>4.8.2</version.junit>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -197,6 +188,7 @@
         <build.app.baseurl>http://application.com</build.app.baseurl>
         <build.app.version>${project.version}</build.app.version>
 		<build.jobs.emailIngestTrigger>dummyTrigger</build.jobs.emailIngestTrigger>
+		<build.cors.allowOrigin>http://example.com https://example.com</build.cors.allowOrigin>
         <checkstyle.enable.rss>false</checkstyle.enable.rss>
     </properties>
     <build>
