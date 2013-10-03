@@ -86,7 +86,7 @@
     
     <filter-mapping>
         <filter-name>CORS</filter-name>
-        <url-pattern>/resources/util/singlePersonProperties/*</url-pattern>
+        <url-pattern>/resources/util/singlePersonPropertiesAvatar/*</url-pattern>
         <url-pattern>/eurekastreams/*</url-pattern>
     </filter-mapping>
 
