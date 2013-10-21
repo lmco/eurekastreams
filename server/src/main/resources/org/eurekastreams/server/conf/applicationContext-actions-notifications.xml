@@ -28,12 +28,14 @@
                 	<map>
                 		<entry key="IN_APP" value-ref="notificationBulkFiltersInApp" />
                 		<entry key="EMAIL" value-ref="notificationBulkFiltersEmail" />
+                		<entry key="REST" value-ref="notificationBulkFiltersRest" />
                 	</map>
                 </constructor-arg>
                 <constructor-arg>
                 	<map>
                 		<entry key="IN_APP" value-ref="notificationRecipientFiltersInApp" />
                 		<entry key="EMAIL" value-ref="notificationRecipientFiltersEmail" />
+                		<entry key="REST" value-ref="notificationRecipientFiltersRest" />
                 	</map>
                 </constructor-arg>
 				<constructor-arg ref="defaultNotificationProperties" />
@@ -200,12 +202,16 @@
 		</bean>
 	</util:list>
 	<util:list id="notificationBulkFiltersEmail" />
+	<util:list id="notificationBulkFiltersRest" />
 	<util:list id="notificationRecipientFiltersInApp">
 		<bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
 	</util:list>
 	<util:list id="notificationRecipientFiltersEmail">
 		<bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
 	</util:list>
+	<util:list id="notificationRecipientFiltersRest">
+        <bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
+    </util:list>
 
 	<!-- ==== RENDERING ==== -->
 
@@ -265,7 +271,7 @@
             <bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetExistingInAppNotificationForAggregation" />
         </constructor-arg>
     </bean>
-
+ 
     <bean id="emailNotifier" class="org.eurekastreams.server.action.execution.notification.notifier.EmailNotifier">
 		<constructor-arg ref="velocityEngine" />
 		<constructor-arg ref="velocityGlobalContext" />
@@ -276,19 +282,18 @@
 		<constructor-arg ref="postActivityCommentAuthorizer" />
 		<constructor-arg value="${eureka.notification.mail.sendHtml}" />
     </bean>
-	
-	
-    <!-- all notifiers, by ID -->
-    <util:map id="notifiersByIdMap">
-        <entry key="IN_APP" value-ref="inAppNotifier" />
-		<entry key="EMAIL" value-ref="emailNotifier" />
-    </util:map>
 
-    <!-- names of notifiers which can be disabled, by ID, in order by columns on display -->
-    <util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
-        <entry key="IN_APP" value="In-App" />
-        <entry key="EMAIL" value="Email" />
-    </util:map>
+	<bean id="restNotifier" class="org.eurekastreams.server.action.execution.notification.notifier.JSONNotifier">
+        <constructor-arg ref="velocityEngine" />
+        <constructor-arg ref="velocityGlobalContext" />
+        <constructor-arg ref="restNotifierMessageTemplates" />
+        <constructor-arg ref="restNotifierEndpointTemplates" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+                <constructor-arg value="org.eurekastreams.server.domain.Person" />
+            </bean>
+        </constructor-arg>  
+    </bean>
 
 	<!-- data loaders (for lazy-loading) -->
 	<util:map id="notificationPropertyLoadMappers" key-type="java.lang.Class">
@@ -488,9 +493,32 @@
 	</util:map>
 	
 	<util:map id="inAppNotifierAggregateMessageTemplates">
-		<entry key="COMMENT_TO_PERSONAL_POST" value="There have been $aggregationCount new comments on your #activityType($activity)." />
-		<entry key="COMMENT_TO_COMMENTED_POST" value="There have been $aggregationCount new comments on $activity.actor.displayName's #activityType($activity)." />
+        <entry key="COMMENT_TO_PERSONAL_POST" value="There have been $aggregationCount new comments on your #activityType($activity)." />
+        <entry key="COMMENT_TO_COMMENTED_POST" value="There have been $aggregationCount new comments on $activity.actor.displayName's #activityType($activity)." />
+    </util:map>
+    
+    <util:map id="restNotifierEndpointTemplates">
+	   <entry key="REST" value="${eureka.notification.json.endpointUrl}"/>
 	</util:map>
+	<util:map id="restNotifierMessageTemplates">
+        <entry key="LIKE_ACTIVITY" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;liked your #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="POST_TO_PERSONAL_STREAM" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;posted a #activityType($activity) to your stream.&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="POST_TO_FOLLOWED_STREAM" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;posted a #activityType($activity) to #streamDescription($stream,$recipient) stream.&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="COMMENT_TO_PERSONAL_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;commented on your #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="COMMENT_TO_COMMENTED_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;also commented on $activity.actor.displayName's #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="FOLLOW_PERSON" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;is following your stream.&quot;,&quot;url&quot;:&quot;#profileUrl($actor)&quot;}" />
+        <entry key="FOLLOW_GROUP" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;is following the $stream.displayName group.&quot;,&quot;url&quot;:&quot;#profileUrl($actor)&quot;}" />
+        <entry key="FLAG_ACTIVITY" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="REQUEST_NEW_GROUP" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.name group&quot;,&quot;text&quot;:&quot;is pending approval. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="REQUEST_NEW_GROUP_APPROVED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.displayName group&quot;,&quot;text&quot;:&quot;Your request for creation has been approved. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="REQUEST_NEW_GROUP_DENIED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$groupName&quot;,&quot;text&quot;:&quot;Your request for group creation has been denied. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="REQUEST_GROUP_ACCESS" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;requested to follow the $group.displayName private group. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="REQUEST_GROUP_ACCESS_APPROVED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.displayName&quot;,&quot;text&quot;:&quot;Your request to follow this group has been approved. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="REQUEST_GROUP_ACCESS_DENIED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.displayName&quot;,&quot;text&quot;:&quot;Your request to follow this group has been denied. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
+        <entry key="COMMENT_TO_PERSONAL_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;#activityType($activity).&quot;,&quot;text&quot;:&quot;There have been new comments on your #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="COMMENT_TO_COMMENTED_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$activity.actor.displayName&quot;,&quot;text&quot;:&quot;There have been new comments on $activity.actor.displayName's #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityUrl($stream,$activity)&quot;}" />
+        <entry key="PASS_THROUGH" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;Message&quot;,&quot;text&quot;:&quot;$message&quot;,&quot;url&quot;:&quot;&quot;}" />
+    </util:map>
 
 	<!-- ==== EMAIL ==== -->
 
