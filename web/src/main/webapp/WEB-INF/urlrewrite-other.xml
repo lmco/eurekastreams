@@ -15,6 +15,10 @@
 		forwarded and starts down a new FORWARD filter chain where it encounters this same filter (again).	 
 	-->
 
+	<rule>
+		<from>^/resources/util/singlePersonPropertiesAvatar/(.*)$</from>
+		<to last="true">/newresources/avatar/json?urlJson=$1</to>
+	</rule>
 	<!-- Point email contact endpoint to Spring restlet handler and adapt parameters -->
 	<rule>
 		<from>^/resources/emailcontact/stream/person/(\d*)$</from>

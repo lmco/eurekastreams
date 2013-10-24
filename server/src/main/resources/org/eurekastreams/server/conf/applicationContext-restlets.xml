@@ -210,13 +210,6 @@
 		<constructor-arg ref="serviceActionController" />
 		<constructor-arg ref="getAllPersonAdditionalPropertiesSingle" />
 	</bean>
-	<bean name="personPropertiesResourceAvatar"
-        class="org.eurekastreams.server.service.restlets.PersonPropertiesResourceAvatar"
-        scope="prototype">
-        <constructor-arg ref="serviceActionController" />
-        <constructor-arg ref="getAllPersonAvatar" />
-        <constructor-arg ref="getAllPersonAvatarId" />
-    </bean>
 	<!-- Eureka API: The Action Resource implements the programmatic API to 
 		Eureka. -->
 
@@ -522,11 +515,6 @@
 				<entry key="/util/personProperties">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="personPropertiesResource" />
-					</bean>
-				</entry>
-				<entry key="/util/singlePersonPropertiesAvatar/{urlJson}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="personPropertiesResourceAvatar" />
 					</bean>
 				</entry>
 				<entry key="/util/singlePersonProperties/{uuid}">

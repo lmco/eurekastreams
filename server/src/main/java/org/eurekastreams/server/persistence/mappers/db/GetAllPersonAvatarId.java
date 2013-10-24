@@ -29,14 +29,14 @@ import org.eurekastreams.server.persistence.mappers.ReadMapper;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
- * This mapper just retrieves all People with accountId and additionalProperties populated from the db.
+ * This mapper returns a list of imageIdentifier and avatar image blobs
  * 
  */
 public class GetAllPersonAvatarId extends ReadMapper<String, List<Map<String, Object>>>
 {
 	private final Log logger = LogFactory.getLog(GetAllPersonAvatarId.class);
     /**
-     * Return a single Person object in the db with only accountId, email and additionalProperties populated. 
+     * return a map of image identifiers and image blobs
      * {@inheritDoc}
      * .
      */
