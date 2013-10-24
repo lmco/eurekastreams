@@ -2173,8 +2173,6 @@
     <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
 
 	<bean id="getPersonAdditionalPropertiesSingle" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalPropertiesSingle" />    
-
-    <bean id="getPersonAvatar" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAvatar" />
     
     <bean id="getPersonAvatarId" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAvatarId" />
 

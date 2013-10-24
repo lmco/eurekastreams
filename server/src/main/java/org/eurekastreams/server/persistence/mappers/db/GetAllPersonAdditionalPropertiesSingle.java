@@ -29,14 +29,14 @@ import org.eurekastreams.server.persistence.mappers.ReadMapper;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
- * This mapper just retrieves all People with accountId and additionalProperties populated from the db.
+ * This mapper just retrieves a list of People with accountId, email and additionalProperties populated from the db.
  * 
  */
 public class GetAllPersonAdditionalPropertiesSingle extends ReadMapper<String, List<Map<String, Object>>>
 {
 	private final Log logger = LogFactory.getLog(GetAllPersonAdditionalPropertiesSingle.class);
     /**
-     * Return a single Person object in the db with only accountId, email and additionalProperties populated. 
+     * Return a map of Person objects in the db with only accountId, email and additionalProperties populated. 
      * {@inheritDoc}
      * .
      */
