@@ -30,17 +30,15 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
-import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.ReadMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,10 +58,9 @@ public class PersonPropertiesAvatarController
     /**
      * Service action controller for execution the actions for this restlet.
      */
-    private final ActionController serviceActionController;
     private String IMAGE_PREFIX = "n";
     private final DomainMapper<List<String>, List<PersonModelView>> peopleMapper;
-    private final ServiceAction getAllPersonAvatarId;
+    private final ReadMapper<List<String>, List<Map<String, Object>>> avatarMapper;
     /** JSON Factory for building JSON Generators. */
     private final JsonFactory jsonFactory;
     /** JSON object mapper. */
@@ -83,15 +80,14 @@ public class PersonPropertiesAvatarController
      * @param inJsonObjectMapper
      *            - used to build the json response
      */
-    public PersonPropertiesAvatarController(final ActionController inServiceActionController,
+    public PersonPropertiesAvatarController(
     		final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
-            final ServiceAction inGetAllPersonAvatarId,
+            final ReadMapper<List<String>, List<Map<String, Object>>> inGetAllPersonAvatarIdMapper,
             final JsonFactory inJsonFactory,
             final ObjectMapper inJsonObjectMapper)
     {
-        serviceActionController = inServiceActionController;
         peopleMapper = inGetPersonModelViewsByAccountIdsMapper;
-        getAllPersonAvatarId = inGetAllPersonAvatarId;
+        avatarMapper = inGetAllPersonAvatarIdMapper;
         jsonFactory = inJsonFactory;
         jsonObjectMapper = inJsonObjectMapper;
     }
@@ -103,7 +99,7 @@ public class PersonPropertiesAvatarController
     public void getAvatars(@RequestParam("urlJson") final String urlJson, final HttpServletResponse response)
     {
     	List<PersonModelView> people = null;
-    	Map<String, String> peopleMap = new HashMap<String, String>();
+    	Map<String, String> avatarIdToPeopleMap = new HashMap<String, String>();
         List<Map<String, Object>> avatars = null;
         String json;
 
@@ -122,10 +118,13 @@ public class PersonPropertiesAvatarController
         	List<String> peopleIdsToFetch = new ArrayList<String>();
             for (Object jsonItem:jsonArray)
             {
-            	String value = ((JSONObject)jsonItem).get("id").toString();
-            	String key = ((JSONObject)jsonItem).get("avatarId").toString();
-                peopleIdsToFetch.add(value);
-                peopleMap.put(key, value);
+            	String accountId = ((JSONObject)jsonItem).get("id").toString();
+            	String avatarId = ((JSONObject)jsonItem).get("avatarId").toString();
+                peopleIdsToFetch.add(accountId);
+                if(avatarId!=null && !avatarId.isEmpty())
+                {
+                	avatarIdToPeopleMap.put(avatarId, accountId);
+                }
             }
             
             // fetch the people
@@ -139,22 +138,19 @@ public class PersonPropertiesAvatarController
         
         //create new object to be passed back as json and create list of avatarIds to be passed to the db query
         JSONArray personProperties = new JSONArray();
-        JSONObject personJs;
         List<String> avatarIdList = new ArrayList<String>();
         for (PersonModelView currentPersonProperties : people)
         {
-			if(!peopleMap.containsKey(currentPersonProperties.getAvatarId()))
+			if(!avatarIdToPeopleMap.containsKey(currentPersonProperties.getAvatarId()))
 	    	{
 	        	avatarIdList.add(IMAGE_PREFIX+currentPersonProperties.getAvatarId());
 	    	}
         }
-        String avatarIdListStr = StringUtils.join(avatarIdList,",");
         
         //get all avatar by avatarId
         try
         {
-            avatars = (ArrayList<Map<String, Object>>) serviceActionController.execute(
-            		new ServiceActionContext(avatarIdListStr, null), getAllPersonAvatarId);
+        	avatars = avatarMapper.execute(avatarIdList);
         }
         catch (Exception ex)
         {

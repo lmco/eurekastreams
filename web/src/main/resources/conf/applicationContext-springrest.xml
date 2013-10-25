@@ -23,9 +23,8 @@
     </bean>
     
     <bean id="avatarController" class="org.eurekastreams.web.services.PersonPropertiesAvatarController">
-        <constructor-arg ref="serviceActionController" />
         <constructor-arg ref="getPeopleByAccountIdsMapper" />
-        <constructor-arg ref="getAllPersonAvatarId" />
+        <constructor-arg ref="getPersonAvatarId" />
         <constructor-arg>
 			<bean class="org.codehaus.jackson.map.MappingJsonFactory">
 				<constructor-arg ref="actionApiObjectMapper" />

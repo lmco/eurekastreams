@@ -18,21 +18,17 @@ package org.eurekastreams.server.persistence.mappers.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.Arrays;
 
 /**
  * This mapper returns a list of imageIdentifier and avatar image blobs
  * 
  */
-public class GetAllPersonAvatarId extends ReadMapper<String, List<Map<String, Object>>>
+public class GetAllPersonAvatarId extends ReadMapper<List<String>, List<Map<String, Object>>>
 {
 	private final Log logger = LogFactory.getLog(GetAllPersonAvatarId.class);
     /**
@@ -42,11 +38,11 @@ public class GetAllPersonAvatarId extends ReadMapper<String, List<Map<String, Ob
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Map<String, Object>> execute(final String inRequest)
+    public List<Map<String, Object>> execute(final List<String> inRequest)
     {
         return (List<Map<String, Object>>) getEntityManager().createQuery(
                 "select new map(i.imageIdentifier as imageIdentifier, i.imageBlob as imageBlob)"
                         + " from Image i where i.imageIdentifier in (:avatarids)")
-                        .setParameter("avatarids", new ArrayList<String>(Arrays.asList(inRequest.split(",")))).getResultList();
+                        .setParameter("avatarids", inRequest).getResultList();
     }
 }
