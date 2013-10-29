@@ -47,6 +47,11 @@
             <artifactId>urlrewrite</artifactId>
             <version>3.2.0-beta</version>
         </dependency>
+            <dependency>
+            <groupId>com.thetransactioncompany</groupId>
+            <artifactId>cors-filter</artifactId>
+            <version>1.7</version>
+        </dependency>
         <!--
             commons-lang is specified here because gilead and
             spring-ldap-core both use versions that are too old to be

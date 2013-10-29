@@ -4592,7 +4592,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-
     <!-- Action to regenerate the cache for the Stream discovery page -->
     <bean id="regenerateStreamDiscoverListsAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />

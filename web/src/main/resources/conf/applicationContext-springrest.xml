@@ -15,10 +15,22 @@
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
         	<map>
+        		<entry key="/avatar/**" value-ref="avatarController" />
         		<entry key="/emailcontact/**" value-ref="emailContactController" />
         		<entry key="/apipreauth/**" value-ref="actionApiController" />
         	</map>
         </property>
+    </bean>
+    
+    <bean id="avatarController" class="org.eurekastreams.web.services.PersonPropertiesAvatarController">
+        <constructor-arg ref="getPeopleByAccountIdsMapper" />
+        <constructor-arg ref="getPersonAvatarId" />
+        <constructor-arg>
+			<bean class="org.codehaus.jackson.map.MappingJsonFactory">
+				<constructor-arg ref="actionApiObjectMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="actionApiObjectMapper" />
     </bean>
     
     <bean id="emailContactController" class="org.eurekastreams.web.services.EmailContactController">
