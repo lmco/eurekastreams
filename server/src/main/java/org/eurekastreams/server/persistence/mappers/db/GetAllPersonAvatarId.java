@@ -15,22 +15,16 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
-import java.util.Arrays;
 
 /**
- * This mapper returns a list of imageIdentifier and avatar image blobs
+ * This mapper returns a list of imageIdentifier and avatar image blobs.
  * 
  */
 public class GetAllPersonAvatarId extends ReadMapper<List<String>, List<Map<String, Object>>>
 {
-	private final Log logger = LogFactory.getLog(GetAllPersonAvatarId.class);
     /**
      * return a map of image identifiers and image blobs
      * {@inheritDoc}

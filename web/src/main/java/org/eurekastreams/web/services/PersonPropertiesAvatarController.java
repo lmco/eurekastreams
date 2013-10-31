@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (c) 2013 Lockheed Martin Corporation
  *
@@ -36,7 +34,6 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -44,9 +41,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 /**
- * This class handles the REST endpoint for retrieving non locked users from the Eureka Streams db 
- * it takes in a json array in the format [{"id":"ntid","avatarId":"avatarId"}], it will check if
- * the avatarId has changed and only return the base64 encoded image if it is different
+ * This class handles the REST endpoint for retrieving non locked users from the Eureka Streams db. 
+ * It takes in a json array in the format [{"id":"ntid", "avatarId":"avatarId"}], it will check if
+ * the avatarId has changed and only return the base64 encoded image if it is different.
  */
 public class PersonPropertiesAvatarController
 {
@@ -58,8 +55,16 @@ public class PersonPropertiesAvatarController
     /**
      * Service action controller for execution the actions for this restlet.
      */
-    private String IMAGE_PREFIX = "n";
+    private String imagePrefix = "n";
+    
+    /**
+     * mapper to read people from db.
+     */
     private final DomainMapper<List<String>, List<PersonModelView>> peopleMapper;
+    
+    /**
+     * mapper to read avatars from db.
+     */
     private final ReadMapper<List<String>, List<Map<String, Object>>> avatarMapper;
     /** JSON Factory for building JSON Generators. */
     private final JsonFactory jsonFactory;
@@ -69,11 +74,9 @@ public class PersonPropertiesAvatarController
     /**
      * Constructor.
      * 
-     * @param inServiceActionController
-     *            - instance of the ServiceActionController for executing actions.
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            - gets all users avatarId by ntid.
-     * @param inGetAllPersonAvatarId
+     * @param inGetAllPersonAvatarIdMapper
      *            - gets all users image blobs
      * @param inJsonFactory	
      * 			  - used to build the json response
@@ -104,9 +107,12 @@ public class PersonPropertiesAvatarController
         String json;
 
         //parse the json input from the url
-        try {
-			json = URLDecoder.decode(urlJson,"UTF-8");
-		} catch (UnsupportedEncodingException e) {
+        try 
+        {
+			json = URLDecoder.decode(urlJson, "UTF-8");
+		} 
+        catch (UnsupportedEncodingException e) 
+        {
 			logger.error("Invalid incoming JSON");
 			throw new ExecutionException("Invalid JSON.");
 		}        
@@ -118,8 +124,8 @@ public class PersonPropertiesAvatarController
         	List<String> peopleIdsToFetch = new ArrayList<String>();
             for (Object jsonItem:jsonArray)
             {
-            	String accountId = ((JSONObject)jsonItem).get("id").toString();
-            	String avatarId = ((JSONObject)jsonItem).get("avatarId").toString();
+            	String accountId = ((JSONObject) jsonItem).get("id").toString();
+            	String avatarId = ((JSONObject) jsonItem).get("avatarId").toString();
                 peopleIdsToFetch.add(accountId);
                 if(avatarId!=null && !avatarId.isEmpty())
                 {
@@ -143,7 +149,7 @@ public class PersonPropertiesAvatarController
         {
 			if(!avatarIdToPeopleMap.containsKey(currentPersonProperties.getAvatarId()))
 	    	{
-	        	avatarIdList.add(IMAGE_PREFIX+currentPersonProperties.getAvatarId());
+	        	avatarIdList.add(imagePrefix+currentPersonProperties.getAvatarId());
 	    	}
         }
         
@@ -165,12 +171,12 @@ public class PersonPropertiesAvatarController
 			p.put("id", currentPersonProperties.getAccountId());
 			p.put("avatarId", currentPersonProperties.getAvatarId());
         	//if it's not the same send back base64 image
-    		if(avatarIdList.contains(IMAGE_PREFIX+currentPersonProperties.getAvatarId()))
+    		if(avatarIdList.contains(imagePrefix+currentPersonProperties.getAvatarId()))
     		{
     			for(Map<String, Object>currentAvatar:avatars)
     			{
 	        		String imageId = (String) currentAvatar.get("imageIdentifier");
-	        		if((IMAGE_PREFIX+currentPersonProperties.getAvatarId()).equals(imageId))
+	        		if((imagePrefix+currentPersonProperties.getAvatarId()).equals(imageId))
 	        		{
 		    			byte[] baseBytes = Base64.encodeBase64((byte[]) currentAvatar.get("imageBlob"));
 		    			String baseString = new String(baseBytes);
@@ -186,10 +192,13 @@ public class PersonPropertiesAvatarController
         response.addHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
         JsonGenerator jsonGenerator;
-		try {
+		try 
+		{
 			jsonGenerator = jsonFactory.createJsonGenerator(response.getWriter());
 			jsonObjectMapper.writeValue(jsonGenerator, personProperties);
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			logger.error("error creating json", e);
 			throw new ExecutionException("error creating json format");
 		}
