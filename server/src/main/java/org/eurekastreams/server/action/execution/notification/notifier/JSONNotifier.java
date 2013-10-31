@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Lockheed Martin Corporation
+ * Copyright (c) 2013 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,53 +16,27 @@
 package org.eurekastreams.server.action.execution.notification.notifier;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.app.event.EventCartridge;
-import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 import org.apache.velocity.context.Context;
-import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.action.execution.email.NotificationEmailDTO;
-import org.eurekastreams.server.action.execution.notification.NotificationPropertyKeys;
-import org.eurekastreams.server.action.execution.notification.notifier.EmailNotificationTemplate.ReplyAction;
-import org.eurekastreams.server.domain.HasEmail;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.server.service.actions.strategies.ActivityInteractionType;
-import org.eurekastreams.server.service.actions.strategies.links.ConnectionFacade;
-import org.eurekastreams.server.service.email.TokenContentEmailAddressBuilder;
-import org.eurekastreams.server.service.email.TokenContentFormatter;
-import org.eurekastreams.server.service.utility.authorization.ActivityInteractionAuthorizationStrategy;
 
+/**
+ * Notifier for REST endpoints, takes a template and sends it to a REST endpoint.
+ *
+ */
 public class JSONNotifier implements Notifier
 {
 	/** Apache Velocity templating engine. */
@@ -74,36 +48,30 @@ public class JSONNotifier implements Notifier
     /** Message templates by notification type. */    
     private final Map<NotificationType, String> templates;
     
+    /** Templates detailing where to send the rest notifications. */
     private final Map<String, String> endpointTemplates;
     
+    /** Lookup the recipient of the notification. */
     private final DomainMapper<Long, Person> placeholderPersonMapper;
     
+    /** Logs. */
     private final Log logger = LogFactory.getLog(JSONNotifier.class);
-    
-    private final String endpoint = "http://166.17.46.89:8003/notifications/gapsokar";
-
 
     /**
      * Constructor.
-     *
      * @param inVelocityEngine
-     *            Apache Velocity templating engine.
+     * 			  Velocity engine used for templating
      * @param inVelocityGlobalContext
      *            Global context for Apache Velocity templating engine.
      * @param inTemplates
      *            Message templates by notification type.
-     * @param inSubjectPrefix
-     *            Prefix to use on email subjects.
-     * @param inTokenContentFormatter
-     *            Builds the token content.
-     * @param inTokenAddressBuilder
-     *            Builds the recipient email address with a token.
-     * @param inActivityAuthorizer
-     *            For determining if users can comment on an activity.
-     * @param inSendHtml
-     *            If HTML emails will be sent. (These will be multipart with a plain text component.)
+     * @param inEndpointTemplates
+     * 			  The templates containing the endpoints where the REST calls will be made.
+     * @param inPlaceholderPersonMapper
+     * 			  The mapper to lookup users
      */
-    public JSONNotifier(final VelocityEngine inVelocityEngine, final Context inVelocityGlobalContext,
+    public JSONNotifier(final VelocityEngine inVelocityEngine, 
+    		final Context inVelocityGlobalContext,
             final Map<NotificationType, String> inTemplates,
             final Map<String, String> inEndpointTemplates,
             final DomainMapper<Long, Person> inPlaceholderPersonMapper)
@@ -115,11 +83,11 @@ public class JSONNotifier implements Notifier
         placeholderPersonMapper = inPlaceholderPersonMapper;
     }
 
-
 	@Override
-	public Collection<UserActionRequest> notify(NotificationType inType,
-			Collection<Long> inRecipients, Map<String, Object> inProperties,
-			Map<Long, PersonModelView> inRecipientIndex) throws Exception 
+	public Collection<UserActionRequest> notify(final NotificationType inType,
+			final Collection<Long> inRecipients, 
+			final Map<String, Object> inProperties,
+			final Map<Long, PersonModelView> inRecipientIndex) throws Exception 
 	{	
 		Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
         velocityContext.put("context", velocityContext);
@@ -144,15 +112,22 @@ public class JSONNotifier implements Notifier
             velocityEngine.evaluate(velocityContext, writer, "JsonNotification-" + inType, template);
 
             String message = writer.toString();
-            SendJSONNotification(message, velocityContext);
+            sendJSONNotification(message, velocityContext);
   
         }
 		
 		return null;
 		
 	}
-	
-	private void SendJSONNotification(final String message, final Context velocityContext)
+
+	/**
+	 * Make the http call to the specified endpoint.
+	 * @param message
+	 * 			message to be sent to the endpoint
+	 * @param velocityContext
+	 * 			velocity engine used to format the message and endpoint
+	 */
+	private void sendJSONNotification(final String message, final Context velocityContext)
 	{
 		try
         {
