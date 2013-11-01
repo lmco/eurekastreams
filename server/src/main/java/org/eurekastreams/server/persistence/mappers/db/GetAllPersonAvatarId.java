@@ -15,33 +15,28 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-
 /**
- * This mapper just retrieves a list of People with accountId, email and additionalProperties populated from the db.
+ * This mapper returns a list of imageIdentifier and avatar image blobs.
  * 
  */
-public class GetAllPersonAdditionalPropertiesSingle extends ReadMapper<String, List<Map<String, Object>>>
+public class GetAllPersonAvatarId extends ReadMapper<List<String>, List<Map<String, Object>>>
 {
     /**
-     * Return a map of Person objects in the db with only accountId, email and additionalProperties populated. 
+     * return a map of image identifiers and image blobs
      * {@inheritDoc}
      * .
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Map<String, Object>> execute(final String inRequest)
+    public List<Map<String, Object>> execute(final List<String> inRequest)
     {
         return (List<Map<String, Object>>) getEntityManager().createQuery(
-                "select new map(p.accountId as accountId, p.email as email,"
-                        + "p.additionalProperties as additionalProperties) from Person p where p.accountId in (:uuids)")
-                        .setParameter("uuids", new ArrayList<String>(Arrays.asList(inRequest.split(","))))
-                        .getResultList();
+                "select new map(i.imageIdentifier as imageIdentifier, i.imageBlob as imageBlob)"
+                        + " from Image i where i.imageIdentifier in (:avatarids)")
+                        .setParameter("avatarids", inRequest).getResultList();
     }
 }

@@ -188,6 +188,7 @@
         <build.app.baseurl>http://application.com</build.app.baseurl>
         <build.app.version>${project.version}</build.app.version>
 		<build.jobs.emailIngestTrigger>dummyTrigger</build.jobs.emailIngestTrigger>
+		<build.cors.allowOrigin>http://example.com https://example.com</build.cors.allowOrigin>
         <checkstyle.enable.rss>false</checkstyle.enable.rss>
     </properties>
     <build>
