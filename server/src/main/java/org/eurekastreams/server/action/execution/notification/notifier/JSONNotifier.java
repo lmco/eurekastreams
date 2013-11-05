@@ -15,15 +15,18 @@
  */
 package org.eurekastreams.server.action.execution.notification.notifier;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
@@ -131,56 +134,29 @@ public class JSONNotifier implements Notifier
 	{
 		try
         {
-			for(String key : endpointTemplates.keySet())
+			for (String key : endpointTemplates.keySet())
 			{
     			StringWriter endpointString = new StringWriter();
-    			velocityEngine.evaluate(velocityContext, endpointString, "jsonEnpoint", endpointTemplates.get(key));
+    			velocityEngine.evaluate(velocityContext, 
+    									endpointString, 
+    									"jsonEnpoint", 
+    									URLDecoder.decode(endpointTemplates.get(key), "UTF-8"));
     			
 	            // Make the http request here.
-	            URL endpoint = new URL(endpointString.toString());
+	            URI endpoint = new URI(endpointString.toString());
 	            logger.debug("Target url for json notifier request " + endpoint.toString());
-	            HttpURLConnection urlConnection = null;
+	            
 	            try
 	            {
-	            	
-	                // Open the HttpConnection and make the POST.
-	                urlConnection = (HttpURLConnection) endpoint.openConnection();
-	                urlConnection.setRequestMethod("POST");
-	                urlConnection.setDoOutput(true);
-	                urlConnection.setRequestProperty("Content-Type", "application/json");
-	
-	                OutputStreamWriter out = null;
-	                try
-	                {
-	                	out = new OutputStreamWriter(urlConnection.getOutputStream());
-	                	out.write(message);
-	                	out.flush();
-	                	out.close();
-	                }
-	                catch (IOException e)
-	                {
-	                    String ioErrorMsg = "IOException occurred writing to lmlaunch outputstream.";
-	                    logger.error(ioErrorMsg, e);
-	                    throw new Exception(ioErrorMsg);
-	                }
-	                finally
-	                {
-	                    if (out != null)
-	                    {
-	                        out.close();
-	                    }
-	                }
+		            HttpClient client = new DefaultHttpClient();
+		            HttpPost post = new HttpPost(endpoint);
+		            post.setHeader("Content-Type", "application/json");
+		            post.setEntity(new StringEntity(message));
+		            client.execute(post);
 	            }
-	            catch (IOException ioex)
+	            catch (Exception ex)
 	            {
-	                throw ioex;
-	            }
-	            finally
-	            {
-	                if (urlConnection != null)
-	                {
-	                    urlConnection.disconnect();
-	                }
+	            	logger.debug("Error connecting to json notification url.", ex);
 	            }
 	        }
         }
