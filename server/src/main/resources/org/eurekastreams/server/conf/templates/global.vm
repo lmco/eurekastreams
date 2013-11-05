@@ -27,6 +27,10 @@ $activity.BaseObjectType##
 #appUrl($uiUrlBuilder.relativeUrlForActivity(${activity.id}))##
 #end
 
+#macro( activityRelativeUrl $stream $activity )
+$uiUrlBuilder.relativeUrlForActivity(${activity.id})##
+#end
+
 #macro( profileUrl $whom )
 #appUrl($uiUrlBuilder.relativeUrlForEntity($whom))##
 #end
