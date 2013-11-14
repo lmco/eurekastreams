@@ -518,10 +518,10 @@
 					</bean>
 				</entry>
 				<entry key="/util/singlePersonProperties/{uuid}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="personPropertiesResourceSingle" />
-					</bean>
-				</entry>
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="personPropertiesResourceSingle" />
+                    </bean>
+                </entry>
 				<entry key="/util/streamIdValidation/type/{type}/id/{uniqueKey}">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="streamIdValidationResource" />

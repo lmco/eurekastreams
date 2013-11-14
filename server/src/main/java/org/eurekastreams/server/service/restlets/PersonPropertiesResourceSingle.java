@@ -54,6 +54,9 @@ public class PersonPropertiesResourceSingle extends SmpResource
      */
     private final ActionController serviceActionController;
 
+    /**
+     * id of the user for which you want the properties.
+     */
     private String uuid = null;
     
     /**
@@ -66,7 +69,7 @@ public class PersonPropertiesResourceSingle extends SmpResource
      * 
      * @param inServiceActionController
      *            - instance of the ServiceActionController for executing actions.
-     * @param inGetAllPersonAdditionalPropertiesAction
+     * @param inGetAllPersonAdditionalPropertiesActionSingle
      *            - instance of the action used to retreive all of the db ids for the users in the db.
      */
     public PersonPropertiesResourceSingle(final ActionController inServiceActionController,
