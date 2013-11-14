@@ -292,8 +292,22 @@
             <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
                 <constructor-arg value="org.eurekastreams.server.domain.Person" />
             </bean>
-        </constructor-arg>  
+        </constructor-arg>
+        <constructor-arg ref="httpClientBuilder" />
     </bean>
+    
+    <bean id="httpClientBuilder" class="org.eurekastreams.server.action.execution.notification.notifier.RestHttpClientBuilder">
+        <constructor-arg ref="restHttpClient" />
+        <constructor-arg ref="restHttpPost" /> 
+        <constructor-arg value="${eureka.notification.json.basicAuthUsername}" />
+        <constructor-arg value="${eureka.notification.json.basicAuthPassword}" />
+    </bean>
+
+    <bean id="restHttpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+    </bean>
+    
+    <bean id="restHttpPost" class="org.apache.http.client.methods.HttpPost">
+    </bean> 
 
 	<!-- data loaders (for lazy-loading) -->
 	<util:map id="notificationPropertyLoadMappers" key-type="java.lang.Class">

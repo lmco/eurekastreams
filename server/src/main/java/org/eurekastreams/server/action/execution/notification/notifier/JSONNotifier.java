@@ -23,10 +23,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
@@ -60,6 +56,9 @@ public class JSONNotifier implements Notifier
     /** Logs. */
     private final Log logger = LogFactory.getLog(JSONNotifier.class);
 
+    /** Object used to send http requests. */
+    private final HttpClientBuilder httpClientBuilder;
+    
     /**
      * Constructor.
      * @param inVelocityEngine
@@ -71,19 +70,23 @@ public class JSONNotifier implements Notifier
      * @param inEndpointTemplates
      * 			  The templates containing the endpoints where the REST calls will be made.
      * @param inPlaceholderPersonMapper
-     * 			  The mapper to lookup users
+     * 			  The mapper to lookup users.
+     * @param inHttpClientBuilder
+     * 			  Used to build an http client to post to endpoint
      */
     public JSONNotifier(final VelocityEngine inVelocityEngine, 
     		final Context inVelocityGlobalContext,
             final Map<NotificationType, String> inTemplates,
             final Map<String, String> inEndpointTemplates,
-            final DomainMapper<Long, Person> inPlaceholderPersonMapper)
+            final DomainMapper<Long, Person> inPlaceholderPersonMapper,
+            final HttpClientBuilder inHttpClientBuilder)
     {
         velocityEngine = inVelocityEngine;
         velocityGlobalContext = inVelocityGlobalContext;
         templates = inTemplates;
         endpointTemplates = inEndpointTemplates;
         placeholderPersonMapper = inPlaceholderPersonMapper;
+        httpClientBuilder = inHttpClientBuilder;
     }
 
 	@Override
@@ -92,10 +95,12 @@ public class JSONNotifier implements Notifier
 			final Map<String, Object> inProperties,
 			final Map<Long, PersonModelView> inRecipientIndex) throws Exception 
 	{	
+		//wrap context to prevent changes to properties map
 		Context velocityContext = new VelocityContext(new VelocityContext(inProperties, velocityGlobalContext));
         velocityContext.put("context", velocityContext);
         velocityContext.put("type", inType);
-		
+    	String template = templates.get(inType);
+
 		for (long recipientId : inRecipients)
         {
             Person recipient = placeholderPersonMapper.execute(recipientId);
@@ -104,7 +109,6 @@ public class JSONNotifier implements Notifier
                 continue;
             }
 
-        	String template = templates.get(inType);
             if (template == null)
             {
                 return null;
@@ -115,6 +119,7 @@ public class JSONNotifier implements Notifier
             velocityEngine.evaluate(velocityContext, writer, "JsonNotification-" + inType, template);
 
             String message = writer.toString();
+
             sendJSONNotification(message, velocityContext);
   
         }
@@ -130,6 +135,7 @@ public class JSONNotifier implements Notifier
 	 * @param velocityContext
 	 * 			velocity engine used to format the message and endpoint
 	 */
+
 	private void sendJSONNotification(final String message, final Context velocityContext)
 	{
 		try
@@ -146,18 +152,8 @@ public class JSONNotifier implements Notifier
 	            URI endpoint = new URI(endpointString.toString());
 	            logger.debug("Target url for json notifier request " + endpoint.toString());
 	            
-	            try
-	            {
-		            HttpClient client = new DefaultHttpClient();
-		            HttpPost post = new HttpPost(endpoint);
-		            post.setHeader("Content-Type", "application/json");
-		            post.setEntity(new StringEntity(message));
-		            client.execute(post);
-	            }
-	            catch (Exception ex)
-	            {
-	            	logger.debug("Error connecting to json notification url.", ex);
-	            }
+	            //send post
+	            httpClientBuilder.post(endpoint, message);
 	        }
         }
         catch (Exception ex)
