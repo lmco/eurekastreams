@@ -189,7 +189,9 @@
         <build.app.version>${project.version}</build.app.version>
 		<build.jobs.emailIngestTrigger>dummyTrigger</build.jobs.emailIngestTrigger>
 		<build.cors.allowOrigin>http://example.com https://example.com</build.cors.allowOrigin>
-		<build.notification.rest.endpointUrl>http://example.com</build.notification.rest.endpointUrl>
+		<build.notification.rest.endpointUrl>https://example.com</build.notification.rest.endpointUrl>
+		<build.notification.rest.basicAuthUsername>exampleusername</build.notification.rest.basicAuthUsername>
+		<build.notification.rest.basicAuthPassword>examplepassword</build.notification.rest.basicAuthPassword>
         <checkstyle.enable.rss>false</checkstyle.enable.rss>
     </properties>
     <build>
