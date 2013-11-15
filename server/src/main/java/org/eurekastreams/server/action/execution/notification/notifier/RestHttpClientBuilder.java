@@ -19,9 +19,11 @@ package org.eurekastreams.server.action.execution.notification.notifier;
 import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.jboss.security.Base64Encoder;
 
 
@@ -75,6 +77,7 @@ public class RestHttpClientBuilder implements HttpClientBuilder
 	@Override
 	public void post(final URI endpoint, final String body) 
 	{	
+		String strResponse = "";
 	    try
 	    {
 	    	if (!basicAuthUsername.isEmpty())
@@ -85,11 +88,12 @@ public class RestHttpClientBuilder implements HttpClientBuilder
 	    	httpPost.setURI(endpoint);
 	        httpPost.setHeader("Content-Type", "application/json");
 	        httpPost.setEntity(new StringEntity(body));
-	        httpClient.execute(httpPost);
+	        HttpResponse response = httpClient.execute(httpPost);
+	        strResponse = EntityUtils.toString(response.getEntity());
 	    }
 	    catch (Exception ex)
 	    {
-	    	logger.debug("Error connecting to json notification url.", ex);
+	    	logger.debug("Error connecting to json notification url. Response:"+strResponse, ex);
 	    }
 	}
 }
