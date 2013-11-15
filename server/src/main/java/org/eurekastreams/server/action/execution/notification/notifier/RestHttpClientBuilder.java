@@ -16,12 +16,17 @@
 
 package org.eurekastreams.server.action.execution.notification.notifier;
 
+import java.io.IOException;
 import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.jboss.security.Base64Encoder;
 
 
@@ -85,11 +90,21 @@ public class RestHttpClientBuilder implements HttpClientBuilder
 	    	httpPost.setURI(endpoint);
 	        httpPost.setHeader("Content-Type", "application/json");
 	        httpPost.setEntity(new StringEntity(body));
-	        httpClient.execute(httpPost);
+	        HttpResponse response = httpClient.execute(httpPost);
+	        String strResponse = EntityUtils.toString(response.getEntity());
+	        if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
+	        {
+	        	logger.error("Error posting to rest. Code:" + response.getStatusLine().getStatusCode()
+	        			+ " Response:"+strResponse);
+	        }
+	    }
+	    catch (IOException e) 
+	    {
+	    	logger.error("Error posting to rest service." + ((HttpResponseException) e).getMessage());
 	    }
 	    catch (Exception ex)
 	    {
-	    	logger.debug("Error connecting to json notification url.", ex);
+	    	logger.error("Error connecting to json notification url.", ex);
 	    }
 	}
 }
