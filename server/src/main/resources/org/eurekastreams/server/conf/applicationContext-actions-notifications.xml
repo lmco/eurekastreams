@@ -510,29 +510,6 @@
         <entry key="COMMENT_TO_PERSONAL_POST" value="There have been $aggregationCount new comments on your #activityType($activity)." />
         <entry key="COMMENT_TO_COMMENTED_POST" value="There have been $aggregationCount new comments on $activity.actor.displayName's #activityType($activity)." />
     </util:map>
-    
-    <util:map id="restNotifierEndpointTemplates">
-	   <entry key="REST" value="${eureka.notification.json.endpointUrl}"/>
-	</util:map>
-	<util:map id="restNotifierMessageTemplates">
-        <entry key="LIKE_ACTIVITY" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;liked your #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="POST_TO_PERSONAL_STREAM" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;posted a #activityType($activity) to your stream.&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="POST_TO_FOLLOWED_STREAM" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;posted a #activityType($activity) to #streamDescription($stream,$recipient) stream.&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="COMMENT_TO_PERSONAL_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;commented on your #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="COMMENT_TO_COMMENTED_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;also commented on $activity.actor.displayName's #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="FOLLOW_PERSON" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;is following your stream.&quot;,&quot;url&quot;:&quot;#profileUrl($actor)&quot;}" />
-        <entry key="FOLLOW_GROUP" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;is following the $stream.displayName group.&quot;,&quot;url&quot;:&quot;#profileUrl($actor)&quot;}" />
-        <entry key="FLAG_ACTIVITY" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;flagged a #activityType($activity) in #streamDescription($stream,$recipient) stream. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="REQUEST_NEW_GROUP" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.name group&quot;,&quot;text&quot;:&quot;is pending approval. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="REQUEST_NEW_GROUP_APPROVED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.displayName group&quot;,&quot;text&quot;:&quot;Your request for creation has been approved. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="REQUEST_NEW_GROUP_DENIED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$groupName&quot;,&quot;text&quot;:&quot;Your request for group creation has been denied. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="REQUEST_GROUP_ACCESS" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$actor.displayName&quot;,&quot;text&quot;:&quot;requested to follow the $group.displayName private group. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="REQUEST_GROUP_ACCESS_APPROVED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.displayName&quot;,&quot;text&quot;:&quot;Your request to follow this group has been approved. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="REQUEST_GROUP_ACCESS_DENIED" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$group.displayName&quot;,&quot;text&quot;:&quot;Your request to follow this group has been denied. Please navigate to the desktop version to respond.&quot;,&quot;url&quot;:&quot;&quot;}" />
-        <entry key="COMMENT_TO_PERSONAL_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;#activityType($activity).&quot;,&quot;text&quot;:&quot;There have been new comments on your #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="COMMENT_TO_COMMENTED_POST" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;$activity.actor.displayName&quot;,&quot;text&quot;:&quot;There have been new comments on $activity.actor.displayName's #activityType($activity).&quot;,&quot;url&quot;:&quot;#activityRelativeUrl($stream,$activity)&quot;}" />
-        <entry key="PASS_THROUGH" value="{&quot;appId&quot;:&quot;eureka&quot;,&quot;title&quot;:&quot;Message&quot;,&quot;text&quot;:&quot;$message&quot;,&quot;url&quot;:&quot;&quot;}" />
-    </util:map>
 
 	<!-- ==== EMAIL ==== -->
 
