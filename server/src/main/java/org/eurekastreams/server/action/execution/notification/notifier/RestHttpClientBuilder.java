@@ -16,11 +16,14 @@
 
 package org.eurekastreams.server.action.execution.notification.notifier;
 
+import java.io.IOException;
 import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
@@ -77,7 +80,6 @@ public class RestHttpClientBuilder implements HttpClientBuilder
 	@Override
 	public void post(final URI endpoint, final String body) 
 	{	
-		String strResponse = "";
 	    try
 	    {
 	    	if (!basicAuthUsername.isEmpty())
@@ -89,11 +91,20 @@ public class RestHttpClientBuilder implements HttpClientBuilder
 	        httpPost.setHeader("Content-Type", "application/json");
 	        httpPost.setEntity(new StringEntity(body));
 	        HttpResponse response = httpClient.execute(httpPost);
-	        strResponse = EntityUtils.toString(response.getEntity());
+	        String strResponse = EntityUtils.toString(response.getEntity());
+	        if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
+	        {
+	        	logger.error("Error posting to rest. Code:" + response.getStatusLine().getStatusCode()
+	        			+ " Response:"+strResponse);
+	        }
+	    }
+	    catch (IOException e) 
+	    {
+	    	logger.error("Error posting to rest service." + ((HttpResponseException) e).getMessage());
 	    }
 	    catch (Exception ex)
 	    {
-	    	logger.debug("Error connecting to json notification url. Response:"+strResponse, ex);
+	    	logger.error("Error connecting to json notification url.", ex);
 	    }
 	}
 }
