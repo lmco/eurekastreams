@@ -2544,6 +2544,7 @@
                                     <constructor-arg value="255" />
                                 </bean>
                             </property>
+                            <property name="disableThumbnails" value="${eureka.service.actions.disableThumbnails}" />
                         </bean>
                         <bean
                             class="org.eurekastreams.server.service.actions.strategies.links.HtmlLinkParser">
@@ -2568,6 +2569,7 @@
                                     <constructor-arg value="255" />
                                 </bean>
                             </property>
+                            <property name="disableThumbnails" value="${eureka.service.actions.disableThumbnails}" />
                         </bean>
                     </list>
                 </constructor-arg>

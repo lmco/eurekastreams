@@ -41,6 +41,11 @@ public class HtmlLinkParser
      * Matching host regex this strategy applies to.
      */
     private String regex;
+    
+    /**
+     * Completely disable HTML link image preview thumbnails.
+     */
+    private boolean disableThumbnails;
 
     /**
      * Parse the HTML.
@@ -56,7 +61,10 @@ public class HtmlLinkParser
     {
         titleParser.parseInformation(htmlString, link, inAccountId);
         descriptionParser.parseInformation(htmlString, link, inAccountId);
-        imageParser.parseInformation(htmlString, link, inAccountId);
+        if(!disableThumbnails)
+        {
+        	imageParser.parseInformation(htmlString, link, inAccountId);
+        }
     }
 
     /**
@@ -106,4 +114,16 @@ public class HtmlLinkParser
     {
         return regex;
     }
+    
+    /**
+     * Option to disable thumbnails altogether.
+     * 
+     * @param inDisableThumbnails
+     *            boolean value to enable/disable thumbnails.
+     */
+    public void setDisableThumbnails(final boolean inDisableThumbnails)
+    {
+        this.disableThumbnails = inDisableThumbnails;
+    }
+
 }
