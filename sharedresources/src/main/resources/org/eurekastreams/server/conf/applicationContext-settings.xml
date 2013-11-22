@@ -30,5 +30,23 @@
 	<bean id="bannerContentTemplate" class="java.lang.String">
 		<constructor-arg value="" />
 	</bean>
+	   <util:map id="notifiersByIdMap">
+        <entry key="IN_APP" value-ref="inAppNotifier" />
+        <entry key="EMAIL" value-ref="emailNotifier" />
+    </util:map>
+        
+    <!-- names of notifiers which can be disabled, by ID, in order by columns on display -->
+    <util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
+        <entry key="IN_APP" value="In-App" />
+        <entry key="EMAIL" value="Email" />
+    </util:map>
+    
+    <!-- list of endpoints for rest notifier -->
+    <util:map id="restNotifierEndpointTemplates">
+    </util:map>
+    
+    <!-- list of json responses to the rest service -->
+    <util:map id="restNotifierMessageTemplates">
+    </util:map>
 </beans>
  

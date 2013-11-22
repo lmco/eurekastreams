@@ -28,12 +28,14 @@
                 	<map>
                 		<entry key="IN_APP" value-ref="notificationBulkFiltersInApp" />
                 		<entry key="EMAIL" value-ref="notificationBulkFiltersEmail" />
+                		<entry key="REST" value-ref="notificationBulkFiltersRest" />
                 	</map>
                 </constructor-arg>
                 <constructor-arg>
                 	<map>
                 		<entry key="IN_APP" value-ref="notificationRecipientFiltersInApp" />
                 		<entry key="EMAIL" value-ref="notificationRecipientFiltersEmail" />
+                		<entry key="REST" value-ref="notificationRecipientFiltersRest" />
                 	</map>
                 </constructor-arg>
 				<constructor-arg ref="defaultNotificationProperties" />
@@ -200,12 +202,16 @@
 		</bean>
 	</util:list>
 	<util:list id="notificationBulkFiltersEmail" />
+	<util:list id="notificationBulkFiltersRest" />
 	<util:list id="notificationRecipientFiltersInApp">
 		<bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
 	</util:list>
 	<util:list id="notificationRecipientFiltersEmail">
 		<bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
 	</util:list>
+	<util:list id="notificationRecipientFiltersRest">
+        <bean class="org.eurekastreams.server.action.execution.notification.filter.LockedUserRecipientFilter" />
+    </util:list>
 
 	<!-- ==== RENDERING ==== -->
 
@@ -265,7 +271,7 @@
             <bean class="org.eurekastreams.server.persistence.mappers.db.notification.GetExistingInAppNotificationForAggregation" />
         </constructor-arg>
     </bean>
-
+ 
     <bean id="emailNotifier" class="org.eurekastreams.server.action.execution.notification.notifier.EmailNotifier">
 		<constructor-arg ref="velocityEngine" />
 		<constructor-arg ref="velocityGlobalContext" />
@@ -276,19 +282,32 @@
 		<constructor-arg ref="postActivityCommentAuthorizer" />
 		<constructor-arg value="${eureka.notification.mail.sendHtml}" />
     </bean>
-	
-	
-    <!-- all notifiers, by ID -->
-    <util:map id="notifiersByIdMap">
-        <entry key="IN_APP" value-ref="inAppNotifier" />
-		<entry key="EMAIL" value-ref="emailNotifier" />
-    </util:map>
 
-    <!-- names of notifiers which can be disabled, by ID, in order by columns on display -->
-    <util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
-        <entry key="IN_APP" value="In-App" />
-        <entry key="EMAIL" value="Email" />
-    </util:map>
+	<bean id="restNotifier" class="org.eurekastreams.server.action.execution.notification.notifier.JSONNotifier">
+        <constructor-arg ref="velocityEngine" />
+        <constructor-arg ref="velocityGlobalContext" />
+        <constructor-arg ref="restNotifierMessageTemplates" />
+        <constructor-arg ref="restNotifierEndpointTemplates" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetPlaceholderEntityMapper">
+                <constructor-arg value="org.eurekastreams.server.domain.Person" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="httpClientBuilder" />
+    </bean>
+    
+    <bean id="httpClientBuilder" class="org.eurekastreams.server.action.execution.notification.notifier.RestHttpClientBuilder">
+        <constructor-arg ref="restHttpClient" />
+        <constructor-arg ref="restHttpPost" /> 
+        <constructor-arg value="${eureka.notification.json.basicAuthUsername}" />
+        <constructor-arg value="${eureka.notification.json.basicAuthPassword}" />
+    </bean>
+
+    <bean id="restHttpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+    </bean>
+    
+    <bean id="restHttpPost" class="org.apache.http.client.methods.HttpPost">
+    </bean> 
 
 	<!-- data loaders (for lazy-loading) -->
 	<util:map id="notificationPropertyLoadMappers" key-type="java.lang.Class">
@@ -488,9 +507,9 @@
 	</util:map>
 	
 	<util:map id="inAppNotifierAggregateMessageTemplates">
-		<entry key="COMMENT_TO_PERSONAL_POST" value="There have been $aggregationCount new comments on your #activityType($activity)." />
-		<entry key="COMMENT_TO_COMMENTED_POST" value="There have been $aggregationCount new comments on $activity.actor.displayName's #activityType($activity)." />
-	</util:map>
+        <entry key="COMMENT_TO_PERSONAL_POST" value="There have been $aggregationCount new comments on your #activityType($activity)." />
+        <entry key="COMMENT_TO_COMMENTED_POST" value="There have been $aggregationCount new comments on $activity.actor.displayName's #activityType($activity)." />
+    </util:map>
 
 	<!-- ==== EMAIL ==== -->
 
