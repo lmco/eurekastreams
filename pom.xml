@@ -192,6 +192,7 @@
 		<build.notification.rest.endpointUrl>https://example.com</build.notification.rest.endpointUrl>
 		<build.notification.rest.basicAuthUsername>exampleusername</build.notification.rest.basicAuthUsername>
 		<build.notification.rest.basicAuthPassword>examplepassword</build.notification.rest.basicAuthPassword>
+		<build.service.actions.disableThumbnails>false</build.service.actions.disableThumbnails>
         <checkstyle.enable.rss>false</checkstyle.enable.rss>
     </properties>
     <build>
