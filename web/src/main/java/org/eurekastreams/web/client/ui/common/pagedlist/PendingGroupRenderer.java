@@ -95,9 +95,17 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
                 Session.getInstance().generateUrl(
                         new CreateUrlRequest(Page.PEOPLE, group.getPersonCreatedByAccountId()));
         groupMetaData.add(new InlineHyperlink(group.getPersonCreatedByDisplayName(), url));
+        
+        // Display Business Area (BA) information 
         insertActionSeparator(groupMetaData);
+        groupMetaData.add(new InlineLabel("BA: "));
+        Label label = new InlineLabel(group.getPersonCreatedByCompanyName());
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
+        groupMetaData.add(label);
+        insertActionSeparator(groupMetaData);
+        
         groupMetaData.add(new InlineLabel("Privacy Setting: "));
-        Label label = new InlineLabel(group.isPublic() ? "Public" : "Private");
+        label = new InlineLabel(group.isPublic() ? "Public" : "Private");
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
         groupMetaData.add(label);
 

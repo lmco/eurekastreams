@@ -176,6 +176,11 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * The display name of the person that created this group.
      */
     private String personCreatedByDisplayName = UNINITIALIZED_STRING_VALUE;
+    
+    /**
+     * The display name of the company name of the person that created this group.
+     */
+    private String personCreatedByCompanyName = UNINITIALIZED_STRING_VALUE;
 
     /**
      * Stream id for this group.
@@ -460,6 +465,10 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         {
             setStickyActivityId((Long) properties.get("stickyActivityId"));
         }
+        if (properties.containsKey("personCreatedByCompanyName"))
+        {
+            setPersonCreatedByCompanyName((String) properties.get("personCreatedByCompanyName"));
+        }
     }
 
     /**
@@ -659,6 +668,24 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     {
         personCreatedByDisplayName = inPersonCreatedByDisplayName;
     }
+    
+    /**
+    *
+    * @return the person created by company name.
+    */
+   public String getPersonCreatedByCompanyName()
+   {
+       return personCreatedByCompanyName;
+   }
+
+   /**
+    * @param inPersonCreatedByCompanyName
+    *            The created by company name to set.
+    */
+   public void setPersonCreatedByCompanyName(final String inPersonCreatedByCompanyName)
+   {
+       personCreatedByCompanyName = inPersonCreatedByCompanyName;
+   }
 
     /**
      * @return The person created by account ID.
