@@ -247,8 +247,18 @@ img {
 	text-indent: 1000em;
 }
 
+@sprite .learnmore-header-button {
+	gwt-image: "navLearnMore";
+}
+
+.learnmore-header-button a {
+    display: block;
+	overflow: hidden;
+	text-indent: -1000em;
+}
+
 @sprite .start-header-button > div > a{
-	gwt-image: "navStartPage";
+	gwt-image: "navStartPage";	
 }
 
 @sprite .activity-header-button > div  > a {
@@ -273,7 +283,6 @@ img {
 
 .settings-header-button>div {
 }
-
 
 .nav-bar ul.horizontal li > * {
 	display: inline-block;
@@ -6309,7 +6318,6 @@ body div.eureka-connect-liked-activity-wrapper {
 		display: inline;
 		zoom: 1;
 	}
-
 
 	.notif-count {
 		background-image: url("style/images/notificationBackground_none.png");

@@ -2,6 +2,7 @@ find . -iname '*.java' | xargs perl -pi -e 's/"access-groups"/ResourceBundle.INS
 find . -iname '*.java' | xargs perl -pi -e 's/"access-list-refresh-button"/ResourceBundle.INSTANCE.coreCss().accessListRefreshButton()/g'
 find . -iname '*.java' | xargs perl -pi -e 's/"activity-expiration"/ResourceBundle.INSTANCE.coreCss().activityExpiration()/g'
 find . -iname '*.java' | xargs perl -pi -e 's/"activity-header-button"/ResourceBundle.INSTANCE.coreCss().activityHeaderButton()/g'
+find . -iname '*.java' | xargs perl -pi -e 's/"learnmore-header-button"/ResourceBundle.INSTANCE.coreCss().learnmoreHeaderButton()/g'
 find . -iname '*.java' | xargs perl -pi -e 's/"add-as-gadget"/ResourceBundle.INSTANCE.coreCss().addAsGadget()/g'
 find . -iname '*.java' | xargs perl -pi -e 's/"addbutton"/ResourceBundle.INSTANCE.coreCss().addButton()/g'
 find . -iname '*.java' | xargs perl -pi -e 's/"add-button-submit"/ResourceBundle.INSTANCE.coreCss().addButtonSubmit()/g'
