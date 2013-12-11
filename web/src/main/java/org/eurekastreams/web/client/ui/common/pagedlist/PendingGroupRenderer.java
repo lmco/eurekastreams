@@ -99,13 +99,13 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
         // Display Business Area (BA) information 
         insertActionSeparator(groupMetaData);
         groupMetaData.add(new InlineLabel("BA: "));
-        Label label = new InlineLabel(group.getPersonCreatedByCompanyName());
-        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
-        groupMetaData.add(label);
+        Label baLabel = new InlineLabel(group.getPersonCreatedByCompanyName());
+        baLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
+        groupMetaData.add(baLabel);
         insertActionSeparator(groupMetaData);
         
         groupMetaData.add(new InlineLabel("Privacy Setting: "));
-        label = new InlineLabel(group.isPublic() ? "Public" : "Private");
+        Label label = new InlineLabel(group.isPublic() ? "Public" : "Private");
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
         groupMetaData.add(label);
 
