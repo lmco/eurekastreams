@@ -16,8 +16,12 @@
 	-->
 
 	<rule>
+		<from>^/resources/util/singlePersonPropertiesAvatar/(.*)/(.*)$</from>
+		<to last="true">/newresources/avatar/json?urlJson=$2&amp;avatarSize=$1</to>
+	</rule>
+	<rule>
 		<from>^/resources/util/singlePersonPropertiesAvatar/(.*)$</from>
-		<to last="true">/newresources/avatar/json?urlJson=$1</to>
+		<to last="true">/newresources/avatar/json?urlJson=$1&amp;avatarSize=s</to>
 	</rule>
 	<!-- Point email contact endpoint to Spring restlet handler and adapt parameters -->
 	<rule>
