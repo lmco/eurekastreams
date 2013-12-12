@@ -178,7 +178,7 @@
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>2.1.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
-        <build.maven.repo.eurekastreams.url>https://github.com/lmco/eurekastreams-mvn-repo/tree/master/releases/</build.maven.repo.eurekastreams.url>
+        <build.maven.repo.eurekastreams.url>http://lmco.github.io/eurekastreams-mvn-repo/releases/</build.maven.repo.eurekastreams.url>
         <build.infosite.url>http://eurekastreams.org</build.infosite.url>
         <build.infosite.text>eurekastreams.org</build.infosite.text>
         <build.profile.emailregex>.*@.*</build.profile.emailregex>
