@@ -181,11 +181,11 @@ public class PersonPropertiesAvatarController
         for (PersonModelView currentPersonProperties : people)
         {
         	JSONObject p = new JSONObject();
-			p.put("id", currentPersonProperties.getAccountId());
-			p.put("avatarId", currentPersonProperties.getAvatarId());
-        	//if it's not the same send back base64 image
+        	//if it's not the same send back base64 image and info
     		if(avatarIdList.contains(imagePrefix+currentPersonProperties.getAvatarId()))
     		{
+    			p.put("id", currentPersonProperties.getAccountId());
+    			p.put("avatarId", currentPersonProperties.getAvatarId());
     			for(Map<String, Object>currentAvatar:avatars)
     			{
 	        		String imageId = (String) currentAvatar.get("imageIdentifier");
@@ -196,8 +196,8 @@ public class PersonPropertiesAvatarController
 		    			p.put("imageBlob", baseString);
 	        		}
     			}
+    			personProperties.add(p);
     		}
-    		personProperties.add(p);
         }
         
         //return response
