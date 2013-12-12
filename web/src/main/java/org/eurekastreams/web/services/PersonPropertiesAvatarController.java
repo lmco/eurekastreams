@@ -41,8 +41,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.Arrays;
 /**
  * This class handles the REST endpoint for retrieving non locked users from the Eureka Streams db. 
  * It takes in a json array in the format [{"id":"ntid", "avatarId":"avatarId"}], it will check if
