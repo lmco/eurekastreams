@@ -297,40 +297,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         FlowPanel xPanelOptions = new FlowPanel();
         xPanel.add(xPanelOptions);
 
-        // Flag (as inappropriate)
-        if (!state.equals(State.READONLY) && !showManageFlagged)
-        {
-            Label link = new Label("Flag");
-            xPanelOptions.add(link);
-
-            link.addClickHandler(new ClickHandler()
-            {
-                public void onClick(final ClickEvent event)
-                {
-                    if (new WidgetJSNIFacadeImpl()
-                            .confirm("Flagged activities will be sent to the system administrators for review. "
-                                    + "Are you sure you want to flag this activity as inappropriate?"))
-                    {
-                        EventBus.getInstance().addObserver(UpdatedActivityFlagResponseEvent.class,
-                                new Observer<UpdatedActivityFlagResponseEvent>()
-                                {
-                                    public void update(final UpdatedActivityFlagResponseEvent ev)
-                                    {
-                                        if (ev.getResponse() == msg.getId())
-                                        {
-                                            EventBus.getInstance().removeObserver(ev, this);
-                                            EventBus.getInstance().notifyObservers(
-                                                    new ShowNotificationEvent(new Notification(
-                                                            "Activity has been flagged")));
-                                        }
-                                    }
-                                });
-                        FlaggedActivityModel.getInstance().update(new UpdateActivityFlagRequest(msg.getId(), true));
-                    }
-                }
-            });
-        }
-
         // Delete
         if (!state.equals(State.READONLY) && msg.isDeletable())
         {
@@ -562,7 +528,44 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                     GroupStickyActivityModel.getInstance().insert(msg);
                 }
             });
-        }
+          }
+            
+            // Flag as Inappropriate
+            if (!state.equals(State.READONLY) && !showManageFlagged)
+            {
+                insertActionSeparator(actionsPanel);
+	            Label flagLink = new InlineLabel("Flag as Inappropriate");
+	            flagLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+	            actionsPanel.add(flagLink);
+	           
+	            flagLink.addClickHandler(new ClickHandler()
+	            {
+	                public void onClick(final ClickEvent event)
+	                {
+	                    if (new WidgetJSNIFacadeImpl()
+	                            .confirm("Flagged activities will be sent to the system administrators for review. "
+	                                    + "Are you sure you want to flag this activity as inappropriate?"))
+	                    {
+	                        EventBus.getInstance().addObserver(UpdatedActivityFlagResponseEvent.class,
+	                                new Observer<UpdatedActivityFlagResponseEvent>()
+	                                {
+	                                    public void update(final UpdatedActivityFlagResponseEvent ev)
+	                                    {
+	                                        if (ev.getResponse() == msg.getId())
+	                                        {
+	                                            EventBus.getInstance().removeObserver(ev, this);
+	                                            EventBus.getInstance().notifyObservers(
+	                                                    new ShowNotificationEvent(new Notification(
+	                                                            "Activity has been flagged")));
+	                                        }
+	                                    }
+	                                });
+	                        		FlaggedActivityModel.getInstance().update(
+	                        								new UpdateActivityFlagRequest(msg.getId(), true));
+	                    }
+	                }
+	            });
+           }
 
         return actionsPanel;
     }
