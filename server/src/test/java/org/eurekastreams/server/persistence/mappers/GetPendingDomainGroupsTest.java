@@ -122,9 +122,7 @@ public class GetPendingDomainGroupsTest extends MapperTest
                 // mock out the request
                 atLeast(3).of(requestMock).getPageStart();
                 will(returnValue(0));
-                oneOf(requestMock).getMaxResults();
-                will(returnValue(3));
-
+ 
                 allowing(getPeopleByIdsMapperMock).execute(expectedPersonIdsToFetch);
                 will(returnValue(fetchedPeople));
             }
