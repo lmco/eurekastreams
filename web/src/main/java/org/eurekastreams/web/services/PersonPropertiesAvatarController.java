@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -40,6 +41,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.Arrays;
 /**
  * This class handles the REST endpoint for retrieving non locked users from the Eureka Streams db. 
  * It takes in a json array in the format [{"id":"ntid", "avatarId":"avatarId"}], it will check if
@@ -51,16 +53,15 @@ public class PersonPropertiesAvatarController
      * Local logger instance for this class.
      */
     private final Log logger = LogFactory.make();
-
-    /**
-     * Service action controller for execution the actions for this restlet.
-     */
-    private String imagePrefix = "n";
     
     /**
      * mapper to read people from db.
      */
     private final DomainMapper<List<String>, List<PersonModelView>> peopleMapper;
+    /**
+     * acceptable image prefixes.
+     */
+    private final String[] acceptablePrefixes = {"s" , "n" , "o"};
     
     /**
      * mapper to read avatars from db.
@@ -96,16 +97,24 @@ public class PersonPropertiesAvatarController
     }
 
     /**
-     * {@inheritDoc}. return the ntid, avatarid and imageBlob if it is neede
+     * {@inheritDoc}. return the ntid, avatarid and imageBlob if it is needed
+     * proper avatar sizes are s|n|o, for small|normal|original
      */
     @RequestMapping(value = "json", method = RequestMethod.GET)
-    public void getAvatars(@RequestParam("urlJson") final String urlJson, final HttpServletResponse response)
+    public void getAvatars(@RequestParam("urlJson") final String urlJson, 
+    		@RequestParam("avatarSize") final String imagePrefix,
+    		final HttpServletResponse response)
     {
     	List<PersonModelView> people = null;
     	Map<String, String> avatarIdToPeopleMap = new HashMap<String, String>();
         List<Map<String, Object>> avatars = null;
         String json;
 
+        if(!Arrays.asList(acceptablePrefixes).contains(imagePrefix))
+        {
+        	logger.error("Invalid image size");
+			throw new ExecutionException("Invalid image size.");
+        }
         //parse the json input from the url
         try 
         {
@@ -156,7 +165,10 @@ public class PersonPropertiesAvatarController
         //get all avatar by avatarId
         try
         {
-        	avatars = avatarMapper.execute(avatarIdList);
+        	if(!avatarIdList.isEmpty())
+        	{
+        		avatars = avatarMapper.execute(avatarIdList);
+        	}
         }
         catch (Exception ex)
         {
@@ -168,11 +180,11 @@ public class PersonPropertiesAvatarController
         for (PersonModelView currentPersonProperties : people)
         {
         	JSONObject p = new JSONObject();
-			p.put("id", currentPersonProperties.getAccountId());
-			p.put("avatarId", currentPersonProperties.getAvatarId());
-        	//if it's not the same send back base64 image
+        	//if it's not the same send back base64 image and info
     		if(avatarIdList.contains(imagePrefix+currentPersonProperties.getAvatarId()))
     		{
+    			p.put("id", currentPersonProperties.getAccountId());
+    			p.put("avatarId", currentPersonProperties.getAvatarId());
     			for(Map<String, Object>currentAvatar:avatars)
     			{
 	        		String imageId = (String) currentAvatar.get("imageIdentifier");
@@ -183,8 +195,8 @@ public class PersonPropertiesAvatarController
 		    			p.put("imageBlob", baseString);
 	        		}
     			}
+    			personProperties.add(p);
     		}
-    		personProperties.add(p);
         }
         
         //return response
