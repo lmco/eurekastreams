@@ -15,12 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +29,6 @@ import edu.emory.mathcs.backport.java.util.Arrays;
  */
 public class GetAllPersonAdditionalPropertiesSingle extends ReadMapper<String, List<Map<String, Object>>>
 {
-	private final Log logger = LogFactory.getLog(GetAllPersonAdditionalPropertiesSingle.class);
     /**
      * Return a map of Person objects in the db with only accountId, email and additionalProperties populated. 
      * {@inheritDoc}
@@ -47,6 +41,7 @@ public class GetAllPersonAdditionalPropertiesSingle extends ReadMapper<String, L
         return (List<Map<String, Object>>) getEntityManager().createQuery(
                 "select new map(p.accountId as accountId, p.email as email,"
                         + "p.additionalProperties as additionalProperties) from Person p where p.accountId in (:uuids)")
-                        .setParameter("uuids", new ArrayList<String>(Arrays.asList(inRequest.split(",")))).getResultList();
+                        .setParameter("uuids", new ArrayList<String>(Arrays.asList(inRequest.split(","))))
+                        .getResultList();
     }
 }

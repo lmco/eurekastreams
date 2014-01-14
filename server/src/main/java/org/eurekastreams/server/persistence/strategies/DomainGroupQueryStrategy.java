@@ -62,6 +62,7 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("stickyActivityId"));
         fields.add(Projections.property("cb.accountId").as("personCreatedByAccountId"));
         fields.add(Projections.property("cb.displayName").as("personCreatedByDisplayName"));
+        fields.add(Projections.property("cb.companyName").as("personCreatedByCompanyName"));
         fields.add(Projections.property("stream.id").as("streamId"));
         criteria.setProjection(fields);
         criteria.createAlias("createdBy", "cb");

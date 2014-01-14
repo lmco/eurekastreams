@@ -28,7 +28,8 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notification.NotificationCountWidget;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
-
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -63,6 +64,11 @@ public class HeaderComposite extends Composite
      * Link Panel to encapsulate external links in header.
      */
     FlowPanel galleryLinkPanel = new FlowPanel();
+    
+    /**
+     * Link Panel to encapsulate external links in header.
+     */
+    FlowPanel learnMoreLinkPanel = new FlowPanel();
 
     /** The search box. */
     private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("Find a Stream");
@@ -122,7 +128,7 @@ public class HeaderComposite extends Composite
         Hyperlink directoryLink = new Hyperlink("Discover", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.DISCOVER)));
         directoryLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
-
+        
         Hyperlink settingsLink = new Hyperlink("Settings", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.SETTINGS)));
         settingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
@@ -138,7 +144,7 @@ public class HeaderComposite extends Composite
         activityLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityHeaderButton());
         directoryLinkPanel.add(directoryLink);
         directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().discoverHeaderButton());
-
+        
         linkMap.put(Page.START, startPageLink);
         linkMap.put(Page.ACTIVITY, activityLink);
         linkMap.put(Page.DISCOVER, directoryLink);
@@ -148,7 +154,7 @@ public class HeaderComposite extends Composite
         linkMap.put(Page.PERSONAL_SETTINGS, directoryLink);
         linkMap.put(Page.SETTINGS, settingsLink);
 
-        HorizontalULPanel mainNav = new HorizontalULPanel();
+        final HorizontalULPanel mainNav = new HorizontalULPanel();
 
         userNav = new HorizontalULPanel();
 
@@ -159,6 +165,30 @@ public class HeaderComposite extends Composite
         mainNav.add(activityLinkPanel);
         mainNav.add(directoryLinkPanel);
         mainNav.add(galleryLinkPanel);
+        
+        // Add learn more conditionally if support stream exists
+        EventBus.getInstance().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
+        {
+            public void update(final GotSystemSettingsResponseEvent event)
+            {
+              if (event.getResponse().getSupportStreamGroupShortName() != null
+                       && event.getResponse().getSupportStreamGroupShortName().length() > 0 
+                       && event.getResponse().getSupportStreamWebsite() != null
+                            && event.getResponse().getSupportStreamWebsite().length() > 0)
+                     {
+						
+						Anchor learnMoreLink = new Anchor("Learn", event.getResponse().getSupportStreamWebsite(),
+														   "_blank");
+						learnMoreLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());   
+						learnMoreLinkPanel.add(learnMoreLink);
+						learnMoreLinkPanel.addStyleName(
+						                   StaticResourceBundle.INSTANCE.coreCss().learnmoreHeaderButton());
+						mainNav.add(learnMoreLinkPanel);
+                     }
+               }
+        });
+        
         notif.init();
 
         FlowPanel myProfileLinkPanel = new FlowPanel();
