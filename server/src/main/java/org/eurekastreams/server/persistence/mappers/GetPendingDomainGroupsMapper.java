@@ -43,6 +43,12 @@ public class GetPendingDomainGroupsMapper extends
      * Mapper to get people by IDs, using cache.
      */
     private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper;
+    
+    /**
+     * Max pending groups.
+     */
+    private static final int MAX_RESULTS = 10;
+
 
     /**
      * Execute getting the groups pending for an org.
@@ -87,8 +93,10 @@ public class GetPendingDomainGroupsMapper extends
         resultTransformer = new ModelViewResultTransformer<DomainGroupModelView>(new DomainGroupModelViewFactory());
         criteria.setResultTransformer(resultTransformer);
 
+        //The First result sets the start row offset for the dataset 
+        //The Max result denotes the no. of rows fetched from the dataset
         criteria.setFirstResult(inRequest.getPageStart());
-        criteria.setMaxResults(inRequest.getMaxResults());
+        criteria.setMaxResults(MAX_RESULTS);
 
         // get the results
         List<DomainGroupModelView> results = criteria.list();
@@ -147,6 +155,7 @@ public class GetPendingDomainGroupsMapper extends
                 PersonModelView person = peopleByIdMap.get(result.getPersonCreatedById());
                 result.setPersonCreatedByAccountId(person.getAccountId());
                 result.setPersonCreatedByDisplayName(person.getDisplayName());
+                result.setPersonCreatedByCompanyName(person.getCompanyName());
             }
         }
     }

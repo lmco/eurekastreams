@@ -52,6 +52,9 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/navLogo.png")
     ImageResource navLogo();
+    
+    @Source("style/images/navLearnMore.png")
+    ImageResource navLearnMore();
 
     @Source("style/images/saveChangesBtn.png")
     ImageResource saveChangesBtn();
@@ -73,7 +76,7 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/navDiscover.png")
     ImageResource navDiscover();
-
+    
     @Source("style/images/navStartPageActive.png")
     ImageResource navStartPageActive();
 

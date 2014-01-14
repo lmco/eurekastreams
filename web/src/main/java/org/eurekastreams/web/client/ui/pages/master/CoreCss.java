@@ -254,7 +254,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("discover-header-button")
     String discoverHeaderButton();
-
+    
     @ClassName("directory-item")
     String directoryItem();
 
@@ -330,6 +330,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("external-header-button")
     String externalHeaderButton();
+    
+    @ClassName("learnmore-header-button")
+    String learnmoreHeaderButton();
 
     String filter();
 

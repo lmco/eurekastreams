@@ -115,6 +115,7 @@
 			.createGroupArea>div {
 				margin-left: auto;
 				margin-right: auto;
+				margin-bottom: 20px;
 			}
 			
 			.createGroupText {
@@ -176,6 +177,13 @@
 				<g:Label ui:field="goSearch" addStyleNames="{style.goSearch}" />
 			</g:FlowPanel>
 		</div>
+		
+		<div class="{style.createGroupArea}">
+			<div class="{style.createGroupText}">Group Streams allow you to collaborate with individuals in a team, 
+			or centered around a special interest group or topic. If you can't find a business relevant group you're 
+			looking for, or need one for your team, create a group by clicking the button below.</div>
+			<g:Hyperlink addStyleNames="{style.createGroupButton}" ui:field="createGroupButton" />
+		</div>
 
 		<div>
 			<pager:PagerComposite addStyleNames="{style.streamPager} {style.mostActivePager}"
@@ -205,12 +213,6 @@
 			<g:FlowPanel addStyleNames="{style.discoverStreamListChild} {coreCss.discoverPageList}" ui:field="mostRecentStreamsPanel" />
 		</div>
 
-		<div class="{style.createGroupArea}">
-			<div class="{style.createGroupText}">Group Streams allow you to collaborate with individuals in a team, 
-			or centered around a special interest group or topic. If you can't find a business relevant group you're 
-			looking for, or need one for your team, create a group by clicking the button below.</div>
-			<g:Hyperlink addStyleNames="{style.createGroupButton}" ui:field="createGroupButton" />
-		</div>
 	</g:HTMLPanel>
 
 </ui:UiBinder>
