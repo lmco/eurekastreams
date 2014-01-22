@@ -128,8 +128,6 @@
 			background:#F3F3F3;
 			border-top:1px solid #BBB;
 			padding:10px;
-			height:130px;
-			*height:120px;
 		}
         div.post-contents div.post-button
         {
