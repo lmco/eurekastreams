@@ -984,6 +984,7 @@ Eureka.PostBox = function(text, postcb, maxlength, contentWarning)
             if (!post.hasClass('post-button-disabled'))
             {
 			    var comment = commentInput.val();
+			    comment = comment.replace(/\\/g, "");
     			postcb(comment);
 	    		commentInput.val("");
 		    	postComment.hide();

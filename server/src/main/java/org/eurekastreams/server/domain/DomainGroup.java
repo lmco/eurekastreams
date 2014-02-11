@@ -130,7 +130,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
 
     /** Used for validation. */
     @Transient
-    public static final String SHORT_NAME_CHARACTERS = "A short name can only contain "
+    public static final String SHORT_NAME_CHARACTERS = "A Group Web Address can only contain "
             + "alphanumeric characters and no spaces.";
 
     /** Pattern for validating legal group names. */
