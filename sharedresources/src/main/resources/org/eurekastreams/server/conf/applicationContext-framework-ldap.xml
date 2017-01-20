@@ -43,6 +43,7 @@
         <property name="lastNameAttrib" value="none" />
         <property name="titleAttrib" value="none" />
         <property name="fullNameAttrib" value="none" />
+        <property name="companyAttrib" value="none" />
         <property name="emailAttrib" value="none" />
     </bean>
 
